@@ -21909,7 +21909,7 @@
     "_id": "i18n-message-en-moderation-failed",
     "key": "moderation.failed",
     "lang": "en",
-    "value": "Unable to save or load moderation. Reload and retry."
+    "value": "Unable to save or load moderation. Please try again."
   },
   {
     "_id": "i18n-message-en-moderation-changed",
@@ -22330,6 +22330,18 @@
     "key": "game.location.required.title",
     "lang": "en",
     "value": "Location required"
+  },
+  {
+    "_id": "i18n-message-en-game-profile-load-failed-title",
+    "key": "game.profile.load.failed.title",
+    "lang": "en",
+    "value": "Profile failed to load"
+  },
+  {
+    "_id": "i18n-message-en-game-profile-load-failed-description",
+    "key": "game.profile.load.failed.description",
+    "lang": "en",
+    "value": "Reload the page to try again."
   },
   {
     "_id": "i18n-message-en-game-location-required-description",
@@ -23169,7 +23181,7 @@
     "_id": "i18n-message-en-contact-chat-pending",
     "key": "contact.chat.pending",
     "lang": "en",
-    "value": "Pending"
+    "value": "Awaiting approval"
   },
   {
     "_id": "i18n-message-en-contact-chat-approved",
@@ -24022,6 +24034,78 @@
     "key": "notification.kind.community-takeover.message",
     "lang": "en",
     "value": "An administrator took over responsibility for {workspaceGroupName}."
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-group-title",
+    "key": "groups.confirm.restore-group.title",
+    "lang": "en",
+    "value": "Restore this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-group",
+    "key": "groups.confirm.restore-group",
+    "lang": "en",
+    "value": "Restore “{name}” and resume responsibility as its admin?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-title",
+    "key": "groups.confirm.restore.title",
+    "lang": "en",
+    "value": "Restore your group membership?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore",
+    "key": "groups.confirm.restore",
+    "lang": "en",
+    "value": "Restore your membership in “{name}” without a new approval?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-blocked-title",
+    "key": "groups.confirm.restore-blocked.title",
+    "lang": "en",
+    "value": "Request to rejoin this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-blocked",
+    "key": "groups.confirm.restore-blocked",
+    "lang": "en",
+    "value": "You were removed from “{name}”. Send a request for an admin to approve your membership again?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-title",
+    "key": "payment.cash.delete.title",
+    "lang": "en",
+    "value": "Delete cash receipt?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-message",
+    "key": "payment.cash.delete.message",
+    "lang": "en",
+    "value": "This receipt will be marked as deleted and excluded from both members’ payment totals."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-error",
+    "key": "payment.cash.delete.error",
+    "lang": "en",
+    "value": "Unable to delete the cash receipt."
+  },
+  {
+    "_id": "i18n-message-en-payment-status-deleted",
+    "key": "payment.status.deleted",
+    "lang": "en",
+    "value": "Deleted"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-refund-request-message",
+    "key": "payment.cash.refund.request.message",
+    "lang": "en",
+    "value": "Request a refund of this cash receipt from the recipient?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-refund-approve-message",
+    "key": "payment.cash.refund.approve.message",
+    "lang": "en",
+    "value": "Confirm that you have returned this cash amount to the payer?"
   },
   {
     "_id": "i18n-message-hu-navigator-community",
@@ -45933,7 +46017,7 @@
     "_id": "i18n-message-hu-moderation-failed",
     "key": "moderation.failed",
     "lang": "hu",
-    "value": "A moderáció betöltése vagy mentése sikertelen. Töltsd újra és próbáld ismét."
+    "value": "A moderáció betöltése vagy mentése sikertelen. Próbáld újra."
   },
   {
     "_id": "i18n-message-hu-moderation-changed",
@@ -46354,6 +46438,18 @@
     "key": "game.location.required.title",
     "lang": "hu",
     "value": "Hiányzó helyadat"
+  },
+  {
+    "_id": "i18n-message-hu-game-profile-load-failed-title",
+    "key": "game.profile.load.failed.title",
+    "lang": "hu",
+    "value": "Nem sikerült betölteni a profilodat"
+  },
+  {
+    "_id": "i18n-message-hu-game-profile-load-failed-description",
+    "key": "game.profile.load.failed.description",
+    "lang": "hu",
+    "value": "Töltsd újra az oldalt az újrapróbáláshoz."
   },
   {
     "_id": "i18n-message-hu-game-location-required-description",
@@ -47193,7 +47289,7 @@
     "_id": "i18n-message-hu-contact-chat-pending",
     "key": "contact.chat.pending",
     "lang": "hu",
-    "value": "Folyamatban"
+    "value": "Jóváhagyásra vár"
   },
   {
     "_id": "i18n-message-hu-contact-chat-approved",
@@ -48046,5 +48142,77 @@
     "key": "notification.kind.community-takeover.message",
     "lang": "hu",
     "value": "Egy admin átvette a(z) {workspaceGroupName} csoport felelősségét."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-group-title",
+    "key": "groups.confirm.restore-group.title",
+    "lang": "hu",
+    "value": "Visszaállítod ezt a csoportot?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-group",
+    "key": "groups.confirm.restore-group",
+    "lang": "hu",
+    "value": "Visszaállítod a(z) „{name}” csoportot, és újra átveszed az adminisztrálását?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-title",
+    "key": "groups.confirm.restore.title",
+    "lang": "hu",
+    "value": "Visszaállítod a csoporttagságodat?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore",
+    "key": "groups.confirm.restore",
+    "lang": "hu",
+    "value": "Visszaállítod a tagságodat a(z) „{name}” csoportban újabb jóváhagyás nélkül?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-blocked-title",
+    "key": "groups.confirm.restore-blocked.title",
+    "lang": "hu",
+    "value": "Kéred az újbóli csatlakozást?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-blocked",
+    "key": "groups.confirm.restore-blocked",
+    "lang": "hu",
+    "value": "Eltávolítottak a(z) „{name}” csoportból. Küldesz kérelmet az adminnak a tagságod újbóli jóváhagyására?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-delete-title",
+    "key": "payment.cash.delete.title",
+    "lang": "hu",
+    "value": "Törlöd a készpénzes tételt?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-delete-message",
+    "key": "payment.cash.delete.message",
+    "lang": "hu",
+    "value": "A tétel törölt jelölést kap, és nem számít bele egyik tag fizetési összesítőibe sem."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-delete-error",
+    "key": "payment.cash.delete.error",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a készpénzes tételt."
+  },
+  {
+    "_id": "i18n-message-hu-payment-status-deleted",
+    "key": "payment.status.deleted",
+    "lang": "hu",
+    "value": "Törölve"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-refund-request-message",
+    "key": "payment.cash.refund.request.message",
+    "lang": "hu",
+    "value": "Kéred ennek a készpénzes tételnek a visszatérítését a kedvezményezettől?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-refund-approve-message",
+    "key": "payment.cash.refund.approve.message",
+    "lang": "hu",
+    "value": "Megerősíted, hogy ezt az összeget készpénzben visszaadtad a fizetőnek?"
   }
 ]

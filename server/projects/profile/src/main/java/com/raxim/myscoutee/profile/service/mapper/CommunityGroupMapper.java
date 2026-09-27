@@ -8,6 +8,7 @@ import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.ActivityMemberEntr
 public final class CommunityGroupMapper {
     private CommunityGroupMapper() {}
     public static String membershipBucket(String role, String status, String requestKind) {
+        if ("deleted".equals(status) || "blocked".equals(status)) return "trash";
         if ("accepted".equals(status) && "Admin".equals(role)) return "hosting";
         if ("pending".equals(status) && "invite".equals(requestKind)) return "invitations";
         if ("pending".equals(status)) return "pending";
@@ -15,7 +16,7 @@ public final class CommunityGroupMapper {
     }
     public static Group toDto(CommunityGroup group, Users owner, Users viewer,
             List<ActivityMember> members, long activity) {
-        ActivityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && List.of("accepted", "pending").contains(m.getStatus())).findFirst().orElse(null);
+        ActivityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && (List.of("accepted", "pending").contains(m.getStatus()) || restorableMembership(m))).findFirst().orElse(null);
         boolean admin = own != null && "accepted".equals(own.getStatus()) && "Admin".equals(own.getRole());
         return new Group(group.id(), group.ownerUserId(), owner.getName(), avatar(owner),
                 group.name(), group.description(), group.imageUrl(), group.category(), group.visibility(),
@@ -26,7 +27,15 @@ public final class CommunityGroupMapper {
                 (int)pendingMembers(group, own),
                 (own != null && "accepted".equals(own.getStatus()) ? activity : 0) + membersActivity(group, own)
                     + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
-                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own));
+                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own), canRestoreGroup(group, own));
+    }
+    public static boolean restorableMembership(ActivityMember member) {
+        return member != null && ("blocked".equals(member.getStatus()) || "deleted".equals(member.getStatus()) && member.getRequestKind() == null
+            && "remove".equals(member.getCommunityAction()) && member.getUserId().equals(member.getCommunityActor()));
+    }
+    public static boolean canRestoreGroup(CommunityGroup group, ActivityMember own) {
+        return group.deleted() && restorableMembership(own) && "Admin".equals(own.getRole())
+            && "deleted".equals(own.getStatus());
     }
     public static boolean canTakeOver(CommunityGroup group, List<ActivityMember> members, ActivityMember own) {
         return group.awaitingOwner() && own != null && "accepted".equals(own.getStatus())

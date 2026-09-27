@@ -46,7 +46,8 @@ class CashReceiptTest {
         assertThat(saved.get().getReceiptNote()).isEqualTo("Lunch");
         assertThat(saved.get().getAccountedSpentAmount()).isEqualTo(20D);
         verify(payments, times(1)).save(any(Payment.class));
-        verify(notifications, times(2)).enqueue(argThat(intent -> intent.recipientUserIds().equals(List.of("payer"))));
+        verify(notifications, times(2)).enqueueOnce(eq("payment-cash-received:" + saved.get().getId()),
+                argThat(intent -> intent.recipientUserIds().equals(List.of("payer"))));
         assertThatThrownBy(() -> service.recordCashReceipt("recipient", new CashReceiptRequestDto(
                 request.requestId(), "payer", 21D, "EUR", "Lunch"))).isInstanceOf(ResponseStatusException.class);
     }

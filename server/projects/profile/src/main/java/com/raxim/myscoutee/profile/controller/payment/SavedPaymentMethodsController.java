@@ -115,6 +115,13 @@ public class SavedPaymentMethodsController {
         return payments.recordCashReceipt(resolveCurrentUserId(userId), request);
     }
 
+    @DeleteMapping("/history/cash/{paymentId}")
+    public PaymentHistoryMutationDto deleteCashReceipt(
+            @PathVariable String paymentId,
+            @RequestParam(value = "userId", required = false) String userId) {
+        return payments.deleteCashReceipt(resolveCurrentUserId(userId), paymentId);
+    }
+
     @GetMapping("/history")
     public PaymentHistoryPageDto history(
             @RequestParam(value = "userId", required = false) String userId,

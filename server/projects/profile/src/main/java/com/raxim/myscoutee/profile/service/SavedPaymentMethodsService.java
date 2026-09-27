@@ -564,7 +564,7 @@ public class SavedPaymentMethodsService {
                         .map(Payment::getAmount)
                         .orElse(payment.getAmount())
                 : null;
-        PaymentRefundCalculator.Preview refund = cashReceipt ? null : refundAudit
+        PaymentRefundCalculator.Preview refund = refundAudit
                 ? "pending".equals(requestStatus)
                         ? PaymentRefundCalculator.storedOrCurrentPreview(
                                 payment,
@@ -597,7 +597,7 @@ public class SavedPaymentMethodsService {
                         refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),
                         refund.refundKind(), refund.refundValue(), refund.ruleDescription()),
                 paymentMethod, payment.getReceiptNote(),
-                "income".equals(direction) ? payment.getReceiptPayerName() : payment.getReceiptRecipientName());
+                viewerId.equals(userId) ? payment.getReceiptRecipientName() : payment.getReceiptPayerName());
     }
 
     private String paymentHistoryDirection(Payment payment, String viewerUserId) {

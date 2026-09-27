@@ -1,0 +1,1514 @@
+{
+  "sourceObjects": [
+    {
+      "file": "activity/components/activities-popup/activities-popup.component.ts",
+      "line": 622,
+      "title": "`${label}.question`",
+      "button": "label"
+    },
+    {
+      "file": "activity/components/activities-popup/activities-popup.component.ts",
+      "line": 2202,
+      "title": "this.i18n(config.titleKey)",
+      "button": "this.i18n(config.confirmLabelKey)"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 518,
+      "title": "readOnlySummary ? 'event.checkout.payment.summary' : 'event.checkout.continue.booking'",
+      "button": "'Join'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 550,
+      "title": "readOnlySummary ? 'event.checkout.payment.summary' : 'event.checkout.continue.booking'",
+      "button": "'Join'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 941,
+      "title": "'Accept invitation?'",
+      "button": "'Accept'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 969,
+      "title": "'Accept invitation?'",
+      "button": "'Accept'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 985,
+      "title": "'Accept invitation?'",
+      "button": "'Accept'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1087,
+      "title": "'Restore event?'",
+      "button": "'Restore'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1102,
+      "title": "organizer ? 'event.cancel.confirm.title' : 'event.cancel.booking.confirm.title'",
+      "button": "organizer ? 'cancel.event' : 'cancel.booking.refund'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1129,
+      "title": "this.activitySecondaryConfirmTitle(row, isRejectInvitation)",
+      "button": "this.activitySecondaryConfirmActionLabel(row, isRejectInvitation)"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1144,
+      "title": "'event.editor.publish.question'",
+      "button": "'Publish'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1159,
+      "title": "'event.editor.unpublish.question'",
+      "button": "'Unpublish'"
+    },
+    {
+      "file": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1174,
+      "title": "'Take over event?'",
+      "button": "'Take Over'"
+    },
+    {
+      "file": "activity/components/event-chat-popup/event-chat-popup.component.ts",
+      "line": 3450,
+      "title": "this.i18n.translate('event.chat.external.link.title')",
+      "button": "this.i18n.translate('continue')"
+    },
+    {
+      "file": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 1388,
+      "title": "this.checkoutRemoveItemTitle(item.status)",
+      "button": "this.checkoutRemoveItemLabel(item.status)"
+    },
+    {
+      "file": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2061,
+      "title": "`${this.checkoutLifecycleCancelLabel()}?`",
+      "button": "this.checkoutLifecycleCancelLabel()"
+    },
+    {
+      "file": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "title": "this.paymentStep\n        ? 'event.checkout.payment.confirm.title'\n        : label === 'Join' ? 'event.checkout.join.confirm.title'\n        : label.toLowerCase() === 'update' ? 'event.checkout.update.confirm.title'\n        : this.checkoutActionPendingReason() === 'waitlist' ? 'event.checkout.waitlist.confirm.title'\n        : this.checkoutActionPendingReason() === 'approval' ? 'event.checkout.request.confirm.title'\n        : 'event.checkout.continue.confirm.title'",
+      "button": "label"
+    },
+    {
+      "file": "activity/components/event-editor-popup/event-editor-popup.component.ts",
+      "line": 1319,
+      "title": "publishing\n        ? 'event.editor.publish.question'\n        : 'event.editor.unpublish.question'",
+      "button": "publishing ? 'publish' : 'unpublish'"
+    },
+    {
+      "file": "activity/components/event-editor-popup/event-editor-popup.component.ts",
+      "line": 1375,
+      "title": "'error'",
+      "button": "'OK'"
+    },
+    {
+      "file": "activity/components/event-explore-popup/event-explore-popup.component.ts",
+      "line": 873,
+      "title": "this.eventExploreJoinDialogTitle(record)",
+      "button": "this.eventExploreJoinConfirmLabel(record)"
+    },
+    {
+      "file": "activity/components/event-explore-popup/event-explore-popup.component.ts",
+      "line": 1715,
+      "title": "'event.explore.filters'",
+      "button": "'OK'"
+    },
+    {
+      "file": "activity/components/event-explore-popup/event-explore-popup.component.ts",
+      "line": 2145,
+      "title": "this.eventExploreJoinDialogTitle(record, dialogOptions)",
+      "button": "this.eventExploreJoinConfirmLabel(record, dialogOptions)"
+    },
+    {
+      "file": "activity/components/event-feedback-popup/event-feedback-popup.component.ts",
+      "line": 679,
+      "title": "'event.feedback.confirm.remove.title'",
+      "button": "'remove'"
+    },
+    {
+      "file": "activity/components/event-feedback-popup/event-feedback-popup.component.ts",
+      "line": 689,
+      "title": "'event.feedback.confirm.restore.title'",
+      "button": "'restore.feedback'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 769,
+      "title": "'event.following.unfollow.question'",
+      "button": "'event.following.unfollow'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 833,
+      "title": "'Approve request?'",
+      "button": "'Approve'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 853,
+      "title": "this.memberRemovalTitle(entry)",
+      "button": "this.memberRemovalConfirmLabel(entry)"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 879,
+      "title": "'Leave event?'",
+      "button": "'Leave event'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 903,
+      "title": "'Disqualify member?'",
+      "button": "'Disqualify'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 923,
+      "title": "'Reinstate member?'",
+      "button": "'Reinstate'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 943,
+      "title": "assetManagerPromotion ? 'Make member an Asset Manager?' : 'Promote member to admin?'",
+      "button": "assetManagerPromotion ? 'Make Manager' : 'Promote'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 968,
+      "title": "`Step down as ${managerRole}?`",
+      "button": "'Step down'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 991,
+      "title": "setAsParticipant ? 'confirmation.count.as.participant' : 'confirmation.organizer.only'",
+      "button": "setAsParticipant ? 'Count as participant' : 'Organizer only'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 1015,
+      "title": "this.ownerRef?.ownerType === 'community' ? 'groups.admin.revoke.title' : 'Revoke Asset Manager?'",
+      "button": "this.ownerRef?.ownerType === 'community' ? 'groups.admin.revoke' : 'Revoke Manager'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 1035,
+      "title": "'Leave asset?'",
+      "button": "'Leave asset'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 1055,
+      "title": "'Leave asset?'",
+      "button": "'Leave'"
+    },
+    {
+      "file": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 1081,
+      "title": "'Take over asset?'",
+      "button": "'Take Over'"
+    },
+    {
+      "file": "activity/components/event-resource-popup/asset-explore/event-resource-asset-explore.component.ts",
+      "line": 1627,
+      "title": "'Cancel borrow?'",
+      "button": "'Cancel borrow'"
+    },
+    {
+      "file": "activity/components/event-resource-popup/event-resource-popup.component.ts",
+      "line": 2550,
+      "title": "this.i18n.translate('confirmation.leave.named.asset').replace('{name}', sourceCard.title)",
+      "button": "'Leave'"
+    },
+    {
+      "file": "activity/components/event-resource-popup/event-resource-popup.component.ts",
+      "line": 3237,
+      "title": "this.i18n.translate('confirmation.remove.named.asset').replace('{name}', pending.title)",
+      "button": "'Remove'"
+    },
+    {
+      "file": "activity/components/event-subevent-definitions-panel/event-subevent-definitions-panel.component.ts",
+      "line": 829,
+      "title": "this.mode === 'Tournament' ? 'event.editor.subevents.stage.delete.title' : 'event.editor.subevents.definition.delete.title'",
+      "button": "'Delete'"
+    },
+    {
+      "file": "activity/components/event-subevents-list-popup/event-subevents-list-popup.component.ts",
+      "line": 842,
+      "title": "context.title",
+      "button": "context.confirmLabel"
+    },
+    {
+      "file": "activity/components/event-subevents-list-popup/event-subevents-list-popup.component.ts",
+      "line": 898,
+      "title": "context.title",
+      "button": "context.confirmLabel"
+    },
+    {
+      "file": "activity/components/event-supply-contributions-popup/event-supply-contributions-popup.component.ts",
+      "line": 608,
+      "title": "'confirmation.delete.supply'",
+      "button": "'Delete'"
+    },
+    {
+      "file": "activity/components/event-tournament-groups-popup/event-tournament-groups-popup.component.ts",
+      "line": 1386,
+      "title": "'confirmation.delete.tournament.group'",
+      "button": "'Delete'"
+    },
+    {
+      "file": "admin/components/content-moderation-popup/content-moderation-popup.component.ts",
+      "line": 139,
+      "title": "`${this.decisionLabel(item, status)}.question`",
+      "button": "'confirm'"
+    },
+    {
+      "file": "admin/components/feedback-popup/admin-feedback-popup.component.ts",
+      "line": 294,
+      "title": "resolved\n        ? 'admin.feedback.confirm.mark.solved.title'\n        : 'admin.feedback.confirm.mark.unresolved.title'",
+      "button": "resolved ? 'admin.review.action.mark.solved' : 'admin.review.action.mark.unresolved'"
+    },
+    {
+      "file": "admin/components/help-editor-popup/admin-help-editor-popup.component.ts",
+      "line": 1101,
+      "title": "this.i18n.translate('confirmation.delete.help.revision').replace('{version}', String(revision.version))",
+      "button": "'Delete'"
+    },
+    {
+      "file": "admin/components/idea-editor-popup/admin-idea-editor-popup.component.ts",
+      "line": 696,
+      "title": "'Move article to trash?'",
+      "button": "'Move to trash'"
+    },
+    {
+      "file": "admin/components/idea-editor-popup/admin-idea-editor-popup.component.ts",
+      "line": 732,
+      "title": "nextPublished ? 'Publish article?' : 'Unpublish article?'",
+      "button": "nextPublished ? 'Publish' : 'Unpublish'"
+    },
+    {
+      "file": "admin/components/idea-editor-popup/admin-idea-editor-popup.component.ts",
+      "line": 749,
+      "title": "'Restore article?'",
+      "button": "'Restore'"
+    },
+    {
+      "file": "admin/components/idea-editor-popup/admin-idea-editor-popup.component.ts",
+      "line": 821,
+      "title": "nextFeatured ? 'Feature article?' : 'Remove featured article?'",
+      "button": "nextFeatured ? 'Feature' : 'Unfeature'"
+    },
+    {
+      "file": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 524,
+      "title": "this.i18nText('admin.reports.confirm.block.title', { user: user.name })",
+      "button": "'admin.reports.action.block'"
+    },
+    {
+      "file": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 538,
+      "title": "resolved\n        ? 'admin.reports.confirm.mark.solved.title'\n        : 'admin.reports.confirm.mark.unresolved.title'",
+      "button": "resolved ? 'admin.review.action.mark.solved' : 'admin.review.action.mark.unresolved'"
+    },
+    {
+      "file": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 678,
+      "title": "this.i18nText('admin.reports.confirm.unblock.title', { user: user.name })",
+      "button": "'admin.reports.action.unblock'"
+    },
+    {
+      "file": "asset/components/asset-availability-popup/asset-availability-popup.component.ts",
+      "line": 557,
+      "title": "this.i18n.translate(\n        accepting\n          ? 'asset.requests.confirm.accept.title'\n          : promoting ? 'asset.requests.promote.question' : revoking ? 'asset.requests.revoke.question' : 'asset.requests.confirm.reject.title'\n      )",
+      "button": "this.i18n.translate(promoting ? 'asset.requests.promote.to.manager' : revoking ? 'Visszavonás' : accepting ? 'accept' : 'reject')"
+    },
+    {
+      "file": "asset/components/asset-popup/asset-popup.component.ts",
+      "line": 689,
+      "title": "'Take over asset?'",
+      "button": "'Take Over'"
+    },
+    {
+      "file": "entry/components/entry-page/entry-page.component.ts",
+      "line": 1483,
+      "title": "'please.register'",
+      "button": "'OK'"
+    },
+    {
+      "file": "operator/components/operator-action-popup/operator-action-popup.component.ts",
+      "line": 1964,
+      "title": "this.i18n.translate('operator.claim.client.code.dialog.title')",
+      "button": "this.i18n.translate('operator.claim.client.code.copy')"
+    },
+    {
+      "file": "profile/components/contacts-popup/contacts-popup.component.ts",
+      "line": 548,
+      "title": "`contact.chat.${action}.question`",
+      "button": "`contact.chat.${action}`"
+    },
+    {
+      "file": "profile/components/contacts-popup/contacts-popup.component.ts",
+      "line": 655,
+      "title": "this.i18n.translate('confirmation.delete.contact').replace('{name}', contact.name)",
+      "button": "'Delete'"
+    },
+    {
+      "file": "profile/components/integration-settings-popup/integration-settings-popup.component.ts",
+      "line": 195,
+      "title": "'integration.token.generate.confirm.title'",
+      "button": "'integration.token.generate.confirm'"
+    },
+    {
+      "file": "profile/components/integration-settings-popup/integration-settings-popup.component.ts",
+      "line": 223,
+      "title": "'integration.token.revoke.confirm.title'",
+      "button": "'integration.token.revoke'"
+    },
+    {
+      "file": "profile/components/integration-settings-popup/mcp-connections.component.ts",
+      "line": 74,
+      "title": "'mcp.revoke.question'",
+      "button": "'integration.token.revoke'"
+    },
+    {
+      "file": "shared/ui/components/core/dialog/dialog.component.ts",
+      "line": 242,
+      "title": "state.title",
+      "button": "state.confirmLabel"
+    },
+    {
+      "file": "shared/ui/components/core/form/popups/profile-experience-manager/profile-experience-manager.component.ts",
+      "line": 716,
+      "title": "'Delete experience?'",
+      "button": "'Delete'"
+    },
+    {
+      "file": "shared/ui/components/notification-center-popup/notification-center-popup.component.ts",
+      "line": 445,
+      "title": "muted ? 'Mute notification alerts?' : 'Unmute notification alerts?'",
+      "button": "muted ? 'Mute alerts' : 'Unmute alerts'"
+    },
+    {
+      "file": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 457,
+      "title": "'payment.cards.delete.title'",
+      "button": "'payment.cards.delete'"
+    },
+    {
+      "file": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 823,
+      "title": "'payment.cash.delete.title'",
+      "button": "'delete'"
+    },
+    {
+      "file": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 834,
+      "title": "'payment.history.refund.request.title'",
+      "button": "'payment.history.refund.request'"
+    },
+    {
+      "file": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 849,
+      "title": "'payment.history.refund.approve.title'",
+      "button": "'payment.history.refund.approve'"
+    },
+    {
+      "file": "shared/ui/components/photo-feed-popup/photo-feed-popup.component.ts",
+      "line": 99,
+      "title": "'feed.remove.question'",
+      "button": "'feed.remove'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2029,
+      "title": "'Reactivate account?'",
+      "button": "'Reactivate'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2186,
+      "title": "'Delete account?'",
+      "button": "'Delete'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2214,
+      "title": "'Delete account'",
+      "button": "'OK'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2231,
+      "title": "'logout.question'",
+      "button": "'Logout'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2250,
+      "title": "'Logout'",
+      "button": "'OK'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2272,
+      "title": "'Logout'",
+      "button": "'OK'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2548,
+      "title": "'invite.external.title'",
+      "button": "'OK'"
+    },
+    {
+      "file": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2605,
+      "title": "'event.partner.invite'",
+      "button": "'OK'"
+    },
+    {
+      "file": "shared/ui/context/stores/community-groups.store.ts",
+      "line": 140,
+      "title": "`groups.confirm.${confirmation}.title`",
+      "button": "String(item.label)"
+    },
+    {
+      "file": "shared/ui/context/stores/dialog.store.ts",
+      "line": 60,
+      "title": "config.title.trim() || 'Confirmation'",
+      "button": "config.confirmLabel?.trim() || 'OK'"
+    },
+    {
+      "file": "shared/ui/context/stores/event-checkout-dialog.store.ts",
+      "line": 98,
+      "title": "config.title?.trim() || (config.mode === 'invitation' ? 'Accept Invitation' : 'Join Event')",
+      "button": "config.confirmLabel?.trim() || 'Confirm'"
+    },
+    {
+      "file": "shared/ui/context/stores/following.store.ts",
+      "line": 28,
+      "title": "`${label}.question`",
+      "button": "label"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 226,
+      "title": "'mingle.action.start.question'",
+      "button": "'mingle.action.start.confirm'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 241,
+      "title": "'mingle.action.pause.title'",
+      "button": "'mingle.action.pause.confirm'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 246,
+      "title": "'mingle.action.end.question'",
+      "button": "'mingle.action.end'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 251,
+      "title": "'mingle.action.complete.question'",
+      "button": "'mingle.action.complete.confirm'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 259,
+      "title": "'mingle.action.resume.title'",
+      "button": "'mingle.action.resume.confirm'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 266,
+      "title": "'mingle.action.next.question'",
+      "button": "'mingle.action.next.confirm'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 273,
+      "title": "'mingle.action.next.question'",
+      "button": "'mingle.action.next.confirm'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 305,
+      "title": "options.title",
+      "button": "options.confirmLabel"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 352,
+      "title": "'confirmation.start.stage'",
+      "button": "'Start'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 368,
+      "title": "'confirmation.close.stage'",
+      "button": "'Close Stage'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 384,
+      "title": "'confirmation.finalize.stage'",
+      "button": "'Finalize'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 400,
+      "title": "'confirmation.reopen.scores'",
+      "button": "'Reopen'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 416,
+      "title": "'confirmation.suspend.stage'",
+      "button": "'Suspend'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 435,
+      "title": "'confirmation.resume.stage'",
+      "button": "'Resume'"
+    },
+    {
+      "file": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 537,
+      "title": "options.title",
+      "button": "options.confirmLabel"
+    }
+  ],
+  "resolvedLiteralKeys": [
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 518,
+      "key": "event.checkout.payment.summary",
+      "en": "Payment summary",
+      "hu": "Fizetési összegzés"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 518,
+      "key": "event.checkout.continue.booking",
+      "en": "Continue booking",
+      "hu": "Foglalás folytatása"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 550,
+      "key": "event.checkout.payment.summary",
+      "en": "Payment summary",
+      "hu": "Fizetési összegzés"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 550,
+      "key": "event.checkout.continue.booking",
+      "en": "Continue booking",
+      "hu": "Foglalás folytatása"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1102,
+      "key": "event.cancel.confirm.title",
+      "en": "Would you like to cancel this event?",
+      "hu": "Szeretnéd lemondani ezt az eseményt?"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1102,
+      "key": "event.cancel.booking.confirm.title",
+      "en": "Would you like to cancel your booking for a full refund?",
+      "hu": "Szeretnéd lemondani a foglalásodat teljes visszatérítéssel?"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1144,
+      "key": "event.editor.publish.question",
+      "en": "Do you want to publish this event?",
+      "hu": "Közzéteszed az eseményt?"
+    },
+    {
+      "source": "activity/components/activities-popup/templates/event/activities-event-template.component.ts",
+      "line": 1159,
+      "key": "event.editor.unpublish.question",
+      "en": "Do you want to unpublish this event?",
+      "hu": "Visszavonod az esemény közzétételét?"
+    },
+    {
+      "source": "activity/components/event-chat-popup/event-chat-popup.component.ts",
+      "line": 3450,
+      "key": "event.chat.external.link.title",
+      "en": "Would you like to open this external link?",
+      "hu": "Megnyitod ezt a külső hivatkozást?"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "event.checkout.payment.confirm.title",
+      "en": "Would you like to proceed with payment?",
+      "hu": "Szeretnéd elindítani a fizetést?"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "event.checkout.join.confirm.title",
+      "en": "Would you like to join this event?",
+      "hu": "Szeretnél csatlakozni ehhez az eseményhez?"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "update",
+      "en": "Update",
+      "hu": "Frissítés"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "event.checkout.update.confirm.title",
+      "en": "Would you like to update your booking?",
+      "hu": "Módosítod a foglalásodat?"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "event.checkout.waitlist.confirm.title",
+      "en": "Would you like to join the waiting list?",
+      "hu": "Feliratkozol a várólistára?"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "event.checkout.request.confirm.title",
+      "en": "Would you like to request approval to join?",
+      "hu": "Jóváhagyást kérsz a csatlakozáshoz?"
+    },
+    {
+      "source": "activity/components/event-checkout-popup/event-checkout-popup.component.ts",
+      "line": 2251,
+      "key": "event.checkout.continue.confirm.title",
+      "en": "Would you like to continue your booking?",
+      "hu": "Folytatod a foglalásodat?"
+    },
+    {
+      "source": "activity/components/event-editor-popup/event-editor-popup.component.ts",
+      "line": 1319,
+      "key": "event.editor.publish.question",
+      "en": "Do you want to publish this event?",
+      "hu": "Közzéteszed az eseményt?"
+    },
+    {
+      "source": "activity/components/event-editor-popup/event-editor-popup.component.ts",
+      "line": 1319,
+      "key": "event.editor.unpublish.question",
+      "en": "Do you want to unpublish this event?",
+      "hu": "Visszavonod az esemény közzétételét?"
+    },
+    {
+      "source": "activity/components/event-explore-popup/event-explore-popup.component.ts",
+      "line": 1715,
+      "key": "event.explore.filters",
+      "en": "Event filters",
+      "hu": "Eseményszűrők"
+    },
+    {
+      "source": "activity/components/event-feedback-popup/event-feedback-popup.component.ts",
+      "line": 679,
+      "key": "event.feedback.confirm.remove.title",
+      "en": "Remove feedback?",
+      "hu": "Visszajelzés eltávolítása?"
+    },
+    {
+      "source": "activity/components/event-feedback-popup/event-feedback-popup.component.ts",
+      "line": 689,
+      "key": "event.feedback.confirm.restore.title",
+      "en": "Restore feedback?",
+      "hu": "Visszajelzés visszaállítása?"
+    },
+    {
+      "source": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 769,
+      "key": "event.following.unfollow.question",
+      "en": "Would you like to unfollow this organizer?",
+      "hu": "Leállítod ennek a szervezőnek a követését?"
+    },
+    {
+      "source": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 991,
+      "key": "confirmation.count.as.participant",
+      "en": "Would you like to count as a participant too?",
+      "hu": "Résztvevőként is szeretnél szerepelni?"
+    },
+    {
+      "source": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 991,
+      "key": "confirmation.organizer.only",
+      "en": "Would you like to remain an organizer without taking a participant place?",
+      "hu": "Csak szervezőként szeretnél szerepelni, résztvevői hely foglalása nélkül?"
+    },
+    {
+      "source": "activity/components/event-members-popup/event-members-popup.component.ts",
+      "line": 1015,
+      "key": "groups.admin.revoke.title",
+      "en": "Revoke this member’s admin role?",
+      "hu": "Visszavonod a tag adminjogát?"
+    },
+    {
+      "source": "activity/components/event-resource-popup/event-resource-popup.component.ts",
+      "line": 2550,
+      "key": "confirmation.leave.named.asset",
+      "en": "Would you like to leave the asset “{name}”?",
+      "hu": "Kilépsz a(z) „{name}” eszközből?"
+    },
+    {
+      "source": "activity/components/event-resource-popup/event-resource-popup.component.ts",
+      "line": 3237,
+      "key": "confirmation.remove.named.asset",
+      "en": "Would you like to remove “{name}” from this event?",
+      "hu": "Eltávolítod a(z) „{name}” eszközt erről az eseményről?"
+    },
+    {
+      "source": "activity/components/event-subevent-definitions-panel/event-subevent-definitions-panel.component.ts",
+      "line": 829,
+      "key": "event.editor.subevents.stage.delete.title",
+      "en": "Would you like to delete this stage definition?",
+      "hu": "Törlöd ezt a szakaszdefiníciót?"
+    },
+    {
+      "source": "activity/components/event-subevent-definitions-panel/event-subevent-definitions-panel.component.ts",
+      "line": 829,
+      "key": "event.editor.subevents.definition.delete.title",
+      "en": "Would you like to delete this sub-event definition?",
+      "hu": "Törlöd ezt az alesemény-definíciót?"
+    },
+    {
+      "source": "activity/components/event-supply-contributions-popup/event-supply-contributions-popup.component.ts",
+      "line": 608,
+      "key": "confirmation.delete.supply",
+      "en": "Would you like to delete this supply entry?",
+      "hu": "Törlöd ezt a kellékbejegyzést?"
+    },
+    {
+      "source": "activity/components/event-tournament-groups-popup/event-tournament-groups-popup.component.ts",
+      "line": 1386,
+      "key": "confirmation.delete.tournament.group",
+      "en": "Would you like to delete this tournament group?",
+      "hu": "Törlöd ezt a versenycsoportot?"
+    },
+    {
+      "source": "admin/components/feedback-popup/admin-feedback-popup.component.ts",
+      "line": 294,
+      "key": "admin.feedback.confirm.mark.solved.title",
+      "en": "Would you like to mark this feedback as resolved?",
+      "hu": "Megoldottnak jelölöd ezt a visszajelzést?"
+    },
+    {
+      "source": "admin/components/feedback-popup/admin-feedback-popup.component.ts",
+      "line": 294,
+      "key": "admin.feedback.confirm.mark.unresolved.title",
+      "en": "Would you like to mark this feedback as unresolved?",
+      "hu": "Megoldatlannak jelölöd ezt a visszajelzést?"
+    },
+    {
+      "source": "admin/components/help-editor-popup/admin-help-editor-popup.component.ts",
+      "line": 1101,
+      "key": "confirmation.delete.help.revision",
+      "en": "Would you like to delete help revision v{version}?",
+      "hu": "Törlöd a súgó v{version} változatát?"
+    },
+    {
+      "source": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 524,
+      "key": "admin.reports.confirm.block.title",
+      "en": "Block {user}?",
+      "hu": "Letiltod {user} felhasználót?"
+    },
+    {
+      "source": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 538,
+      "key": "admin.reports.confirm.mark.solved.title",
+      "en": "Would you like to mark this report as resolved?",
+      "hu": "Megoldottnak jelölöd ezt a jelentést?"
+    },
+    {
+      "source": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 538,
+      "key": "admin.reports.confirm.mark.unresolved.title",
+      "en": "Would you like to mark this report as unresolved?",
+      "hu": "Megoldatlannak jelölöd ezt a jelentést?"
+    },
+    {
+      "source": "admin/components/reports-popup/admin-reports-popup.component.ts",
+      "line": 678,
+      "key": "admin.reports.confirm.unblock.title",
+      "en": "Unblock {user}?",
+      "hu": "Feloldod {user} tiltását?"
+    },
+    {
+      "source": "asset/components/asset-availability-popup/asset-availability-popup.component.ts",
+      "line": 557,
+      "key": "asset.requests.confirm.accept.title",
+      "en": "Accept borrow request?",
+      "hu": "Elfogadod a kölcsönkérést?"
+    },
+    {
+      "source": "asset/components/asset-availability-popup/asset-availability-popup.component.ts",
+      "line": 557,
+      "key": "asset.requests.promote.question",
+      "en": "Would you like to appoint this member as an asset manager?",
+      "hu": "Kinevezed ezt a tagot eszközkezelőnek?"
+    },
+    {
+      "source": "asset/components/asset-availability-popup/asset-availability-popup.component.ts",
+      "line": 557,
+      "key": "asset.requests.revoke.question",
+      "en": "Would you like to revoke this member’s asset manager role?",
+      "hu": "Visszavonod ennek a tagnak az eszközkezelői szerepét?"
+    },
+    {
+      "source": "asset/components/asset-availability-popup/asset-availability-popup.component.ts",
+      "line": 557,
+      "key": "asset.requests.confirm.reject.title",
+      "en": "Reject borrow request?",
+      "hu": "Elutasítod a kölcsönkérést?"
+    },
+    {
+      "source": "entry/components/entry-page/entry-page.component.ts",
+      "line": 1483,
+      "key": "please.register",
+      "en": "Please register",
+      "hu": "Regisztráció"
+    },
+    {
+      "source": "operator/components/operator-action-popup/operator-action-popup.component.ts",
+      "line": 1964,
+      "key": "operator.claim.client.code.dialog.title",
+      "en": "Client code for another deployment",
+      "hu": "Klienskód egy másik telepítéshez"
+    },
+    {
+      "source": "profile/components/contacts-popup/contacts-popup.component.ts",
+      "line": 655,
+      "key": "confirmation.delete.contact",
+      "en": "Would you like to delete the contact {name}?",
+      "hu": "Törlöd {name} névjegyét?"
+    },
+    {
+      "source": "profile/components/integration-settings-popup/integration-settings-popup.component.ts",
+      "line": 195,
+      "key": "integration.token.generate.confirm.title",
+      "en": "Generate API key?",
+      "hu": "Létrehozod az API-kulcsot?"
+    },
+    {
+      "source": "profile/components/integration-settings-popup/integration-settings-popup.component.ts",
+      "line": 223,
+      "key": "integration.token.revoke.confirm.title",
+      "en": "Revoke API key?",
+      "hu": "Visszavonod az API-kulcsot?"
+    },
+    {
+      "source": "profile/components/integration-settings-popup/mcp-connections.component.ts",
+      "line": 74,
+      "key": "mcp.revoke.question",
+      "en": "Would you like to revoke this AI connection?",
+      "hu": "Visszavonod ezt az AI-kapcsolatot?"
+    },
+    {
+      "source": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 457,
+      "key": "payment.cards.delete.title",
+      "en": "Delete saved card?",
+      "hu": "Törlöd a mentett kártyát?"
+    },
+    {
+      "source": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 823,
+      "key": "payment.cash.delete.title",
+      "en": "Delete cash receipt?",
+      "hu": "Törlöd a készpénzes tételt?"
+    },
+    {
+      "source": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 834,
+      "key": "payment.history.refund.request.title",
+      "en": "Request refund?",
+      "hu": "Visszatérítést kérsz?"
+    },
+    {
+      "source": "shared/ui/components/payment-methods-popup/payment-methods-popup.component.ts",
+      "line": 849,
+      "key": "payment.history.refund.approve.title",
+      "en": "Would you like to approve this refund request?",
+      "hu": "Jóváhagyod ezt a visszatérítési kérelmet?"
+    },
+    {
+      "source": "shared/ui/components/photo-feed-popup/photo-feed-popup.component.ts",
+      "line": 99,
+      "key": "feed.remove.question",
+      "en": "Would you like to remove this photo?",
+      "hu": "Eltávolítod ezt a fényképet?"
+    },
+    {
+      "source": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2231,
+      "key": "logout.question",
+      "en": "Are you sure you want to log out?",
+      "hu": "Biztosan ki szeretnél jelentkezni?"
+    },
+    {
+      "source": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2548,
+      "key": "invite.external.title",
+      "en": "Share link",
+      "hu": "Megosztási link"
+    },
+    {
+      "source": "shared/ui/components/side-menu/side-menu.component.ts",
+      "line": 2605,
+      "key": "event.partner.invite",
+      "en": "Event invitation",
+      "hu": "Eseménymeghívó"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 226,
+      "key": "mingle.action.start.question",
+      "en": "Would you like to start Speed meeting?",
+      "hu": "Elindítod a gyorsismerkedést?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 241,
+      "key": "mingle.action.pause.title",
+      "en": "Would you like to pause Speed meeting?",
+      "hu": "Szünetelteted a gyorsismerkedést?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 246,
+      "key": "mingle.action.end.question",
+      "en": "Would you like to end this round?",
+      "hu": "Befejezed ezt a kört?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 251,
+      "key": "mingle.action.complete.question",
+      "en": "Would you like to finish Speed meeting?",
+      "hu": "Befejezed a gyorsismerkedést?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 259,
+      "key": "mingle.action.resume.title",
+      "en": "Would you like to resume Speed meeting?",
+      "hu": "Folytatod a gyorsismerkedést?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 266,
+      "key": "mingle.action.next.question",
+      "en": "Would you like to start the next round?",
+      "hu": "Elindítod a következő kört?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 273,
+      "key": "mingle.action.next.question",
+      "en": "Would you like to start the next round?",
+      "hu": "Elindítod a következő kört?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 352,
+      "key": "confirmation.start.stage",
+      "en": "Would you like to start this stage?",
+      "hu": "Elindítod ezt a szakaszt?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 368,
+      "key": "confirmation.close.stage",
+      "en": "Would you like to close this stage for score review?",
+      "hu": "Lezárod ezt a szakaszt az eredmények ellenőrzéséhez?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 384,
+      "key": "confirmation.finalize.stage",
+      "en": "Would you like to finalize this stage?",
+      "hu": "Véglegesíted ezt a szakaszt?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 400,
+      "key": "confirmation.reopen.scores",
+      "en": "Would you like to reopen the scores?",
+      "hu": "Újra megnyitod az eredményeket szerkesztésre?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 416,
+      "key": "confirmation.suspend.stage",
+      "en": "Would you like to suspend this stage?",
+      "hu": "Felfüggeszted ezt a szakaszt?"
+    },
+    {
+      "source": "shared/ui/converters/event-subevent-runtime-menu.converter.ts",
+      "line": 435,
+      "key": "confirmation.resume.stage",
+      "en": "Would you like to resume this stage?",
+      "hu": "Folytatod ezt a szakaszt?"
+    }
+  ],
+  "confirmationCatalog": [
+    {
+      "key": "activities.support.case.confirm.block.title",
+      "en": "Would you like to block this support case?",
+      "hu": "Letiltod ezt az ügyfélszolgálati ügyet?"
+    },
+    {
+      "key": "activities.support.case.confirm.pick.title",
+      "en": "Would you like to take this support case?",
+      "hu": "Átveszed ezt az ügyfélszolgálati ügyet?"
+    },
+    {
+      "key": "activities.support.case.confirm.reopen.title",
+      "en": "Would you like to reopen this support case?",
+      "hu": "Újra megnyitod ezt az ügyfélszolgálati ügyet?"
+    },
+    {
+      "key": "activities.support.case.confirm.solve.title",
+      "en": "Would you like to mark this support case as resolved?",
+      "hu": "Megoldottnak jelölöd ezt az ügyfélszolgálati ügyet?"
+    },
+    {
+      "key": "activities.support.case.confirm.unpick.title",
+      "en": "Would you like to release this support case?",
+      "hu": "Visszaadod ezt az ügyfélszolgálati ügyet?"
+    },
+    {
+      "key": "admin.feedback.confirm.mark.solved.title",
+      "en": "Would you like to mark this feedback as resolved?",
+      "hu": "Megoldottnak jelölöd ezt a visszajelzést?"
+    },
+    {
+      "key": "admin.feedback.confirm.mark.unresolved.title",
+      "en": "Would you like to mark this feedback as unresolved?",
+      "hu": "Megoldatlannak jelölöd ezt a visszajelzést?"
+    },
+    {
+      "key": "admin.reports.confirm.block.title",
+      "en": "Block {user}?",
+      "hu": "Letiltod {user} felhasználót?"
+    },
+    {
+      "key": "admin.reports.confirm.mark.solved.title",
+      "en": "Would you like to mark this report as resolved?",
+      "hu": "Megoldottnak jelölöd ezt a jelentést?"
+    },
+    {
+      "key": "admin.reports.confirm.mark.unresolved.title",
+      "en": "Would you like to mark this report as unresolved?",
+      "hu": "Megoldatlannak jelölöd ezt a jelentést?"
+    },
+    {
+      "key": "admin.reports.confirm.unblock.title",
+      "en": "Unblock {user}?",
+      "hu": "Feloldod {user} tiltását?"
+    },
+    {
+      "key": "asset.requests.confirm.accept.title",
+      "en": "Accept borrow request?",
+      "hu": "Elfogadod a kölcsönkérést?"
+    },
+    {
+      "key": "asset.requests.confirm.reject.title",
+      "en": "Reject borrow request?",
+      "hu": "Elutasítod a kölcsönkérést?"
+    },
+    {
+      "key": "confirmation.accept.invitation",
+      "en": "Accept invitation?",
+      "hu": "Elfogadod a meghívást?"
+    },
+    {
+      "key": "confirmation.approve.request",
+      "en": "Approve request?",
+      "hu": "Jóváhagyod ezt a kérelmet?"
+    },
+    {
+      "key": "confirmation.cancel.borrow",
+      "en": "Cancel borrow?",
+      "hu": "Lemondod a kölcsönzést?"
+    },
+    {
+      "key": "confirmation.cancel.checkout",
+      "en": "Cancel checkout?",
+      "hu": "Megszakítod a foglalást?"
+    },
+    {
+      "key": "confirmation.cancel.join.request",
+      "en": "Cancel join request?",
+      "hu": "Visszavonod a csatlakozási kérelmet?"
+    },
+    {
+      "key": "confirmation.cancel.payment",
+      "en": "Cancel payment?",
+      "hu": "Megszakítod a fizetést?"
+    },
+    {
+      "key": "confirmation.cancel.payment.item",
+      "en": "Cancel payment item?",
+      "hu": "Törlöd ezt a fizetendő tételt?"
+    },
+    {
+      "key": "confirmation.cancel.request",
+      "en": "Cancel request?",
+      "hu": "Visszavonod a kérelmet?"
+    },
+    {
+      "key": "confirmation.close.stage",
+      "en": "Would you like to close this stage for score review?",
+      "hu": "Lezárod ezt a szakaszt az eredmények ellenőrzéséhez?"
+    },
+    {
+      "key": "confirmation.continue.booking",
+      "en": "Continue booking?",
+      "hu": "Folytatod a foglalást?"
+    },
+    {
+      "key": "confirmation.count.as.participant",
+      "en": "Would you like to count as a participant too?",
+      "hu": "Résztvevőként is szeretnél szerepelni?"
+    },
+    {
+      "key": "confirmation.delete.asset",
+      "en": "Would you like to delete this asset?",
+      "hu": "Törlöd ezt az eszközt?"
+    },
+    {
+      "key": "confirmation.delete.contact",
+      "en": "Would you like to delete the contact {name}?",
+      "hu": "Törlöd {name} névjegyét?"
+    },
+    {
+      "key": "confirmation.delete.experience",
+      "en": "Delete experience?",
+      "hu": "Törlöd ezt a tapasztalatot?"
+    },
+    {
+      "key": "confirmation.delete.help.revision",
+      "en": "Would you like to delete help revision v{version}?",
+      "hu": "Törlöd a súgó v{version} változatát?"
+    },
+    {
+      "key": "confirmation.delete.invitation",
+      "en": "Delete invitation?",
+      "hu": "Törlöd a meghívást?"
+    },
+    {
+      "key": "confirmation.delete.supply",
+      "en": "Would you like to delete this supply entry?",
+      "hu": "Törlöd ezt a kellékbejegyzést?"
+    },
+    {
+      "key": "confirmation.delete.tournament.group",
+      "en": "Would you like to delete this tournament group?",
+      "hu": "Törlöd ezt a versenycsoportot?"
+    },
+    {
+      "key": "confirmation.disqualify.member",
+      "en": "Disqualify member?",
+      "hu": "Kizárod ezt a tagot?"
+    },
+    {
+      "key": "confirmation.finalize.stage",
+      "en": "Would you like to finalize this stage?",
+      "hu": "Véglegesíted ezt a szakaszt?"
+    },
+    {
+      "key": "confirmation.join.waiting.list",
+      "en": "Join waiting list?",
+      "hu": "Feliratkozol a várólistára?"
+    },
+    {
+      "key": "confirmation.leave.asset",
+      "en": "Leave asset?",
+      "hu": "Kilépsz ebből az eszközből?"
+    },
+    {
+      "key": "confirmation.leave.chat",
+      "en": "Leave chat?",
+      "hu": "Kilépsz a csevegésből?"
+    },
+    {
+      "key": "confirmation.leave.event",
+      "en": "Leave event?",
+      "hu": "Kilépsz az eseményből?"
+    },
+    {
+      "key": "confirmation.leave.group",
+      "en": "Leave group?",
+      "hu": "Kilépsz a csoportból?"
+    },
+    {
+      "key": "confirmation.leave.named.asset",
+      "en": "Would you like to leave the asset “{name}”?",
+      "hu": "Kilépsz a(z) „{name}” eszközből?"
+    },
+    {
+      "key": "confirmation.leave.sub.event",
+      "en": "Leave sub event?",
+      "hu": "Kilépsz az aleseményből?"
+    },
+    {
+      "key": "confirmation.leave.waitlist",
+      "en": "Leave waitlist?",
+      "hu": "Leiratkozol a várólistáról?"
+    },
+    {
+      "key": "confirmation.make.member.an.asset.manager",
+      "en": "Make member an Asset Manager?",
+      "hu": "Kinevezed ezt a tagot eszközkezelőnek?"
+    },
+    {
+      "key": "confirmation.move.article.to.trash",
+      "en": "Move article to trash?",
+      "hu": "Kukába helyezed ezt a cikket?"
+    },
+    {
+      "key": "confirmation.mute.notification.alerts",
+      "en": "Mute notification alerts?",
+      "hu": "Elnémítod az értesítési jelzéseket?"
+    },
+    {
+      "key": "confirmation.organizer.only",
+      "en": "Would you like to remain an organizer without taking a participant place?",
+      "hu": "Csak szervezőként szeretnél szerepelni, résztvevői hely foglalása nélkül?"
+    },
+    {
+      "key": "confirmation.promote.member.to.admin",
+      "en": "Promote member to admin?",
+      "hu": "Adminisztrátorrá lépteted elő ezt a tagot?"
+    },
+    {
+      "key": "confirmation.reinstate.member",
+      "en": "Reinstate member?",
+      "hu": "Visszaállítod ezt a tagot?"
+    },
+    {
+      "key": "confirmation.reject.invitation",
+      "en": "Reject invitation?",
+      "hu": "Elutasítod a meghívást?"
+    },
+    {
+      "key": "confirmation.reject.request",
+      "en": "Reject request?",
+      "hu": "Elutasítod a kérelmet?"
+    },
+    {
+      "key": "confirmation.remove.admin",
+      "en": "Remove admin?",
+      "hu": "Eltávolítod ezt az adminisztrátort?"
+    },
+    {
+      "key": "confirmation.remove.checkout.item",
+      "en": "Remove checkout item?",
+      "hu": "Eltávolítod ezt a foglalási tételt?"
+    },
+    {
+      "key": "confirmation.remove.member",
+      "en": "Remove member?",
+      "hu": "Eltávolítod ezt a tagot?"
+    },
+    {
+      "key": "confirmation.remove.named.asset",
+      "en": "Would you like to remove “{name}” from this event?",
+      "hu": "Eltávolítod a(z) „{name}” eszközt erről az eseményről?"
+    },
+    {
+      "key": "confirmation.reopen.scores",
+      "en": "Would you like to reopen the scores?",
+      "hu": "Újra megnyitod az eredményeket szerkesztésre?"
+    },
+    {
+      "key": "confirmation.request.to.join",
+      "en": "Request to join?",
+      "hu": "Kéred a csatlakozást?"
+    },
+    {
+      "key": "confirmation.restore.event",
+      "en": "Restore event?",
+      "hu": "Visszaállítod az eseményt?"
+    },
+    {
+      "key": "confirmation.resume.stage",
+      "en": "Would you like to resume this stage?",
+      "hu": "Folytatod ezt a szakaszt?"
+    },
+    {
+      "key": "confirmation.revoke.asset.manager",
+      "en": "Revoke Asset Manager?",
+      "hu": "Visszavonod az eszközkezelői szerepet?"
+    },
+    {
+      "key": "confirmation.start.stage",
+      "en": "Would you like to start this stage?",
+      "hu": "Elindítod ezt a szakaszt?"
+    },
+    {
+      "key": "confirmation.step.down.as.admin",
+      "en": "Step down as admin?",
+      "hu": "Lemondasz az adminisztrátori szerepről?"
+    },
+    {
+      "key": "confirmation.step.down.as.manager",
+      "en": "Step down as manager?",
+      "hu": "Lemondasz a kezelői szerepről?"
+    },
+    {
+      "key": "confirmation.suspend.stage",
+      "en": "Would you like to suspend this stage?",
+      "hu": "Felfüggeszted ezt a szakaszt?"
+    },
+    {
+      "key": "confirmation.unmute.notification.alerts",
+      "en": "Unmute notification alerts?",
+      "hu": "Visszakapcsolod az értesítési jelzéseket?"
+    },
+    {
+      "key": "event.cancel.booking.confirm.title",
+      "en": "Would you like to cancel your booking for a full refund?",
+      "hu": "Szeretnéd lemondani a foglalásodat teljes visszatérítéssel?"
+    },
+    {
+      "key": "event.cancel.confirm.title",
+      "en": "Would you like to cancel this event?",
+      "hu": "Szeretnéd lemondani ezt az eseményt?"
+    },
+    {
+      "key": "event.checkout.continue.confirm.title",
+      "en": "Would you like to continue your booking?",
+      "hu": "Folytatod a foglalásodat?"
+    },
+    {
+      "key": "event.checkout.join.confirm.title",
+      "en": "Would you like to join this event?",
+      "hu": "Szeretnél csatlakozni ehhez az eseményhez?"
+    },
+    {
+      "key": "event.checkout.payment.confirm.title",
+      "en": "Would you like to proceed with payment?",
+      "hu": "Szeretnéd elindítani a fizetést?"
+    },
+    {
+      "key": "event.checkout.request.confirm.title",
+      "en": "Would you like to request approval to join?",
+      "hu": "Jóváhagyást kérsz a csatlakozáshoz?"
+    },
+    {
+      "key": "event.checkout.update.confirm.title",
+      "en": "Would you like to update your booking?",
+      "hu": "Módosítod a foglalásodat?"
+    },
+    {
+      "key": "event.checkout.waitlist.confirm.title",
+      "en": "Would you like to join the waiting list?",
+      "hu": "Feliratkozol a várólistára?"
+    },
+    {
+      "key": "event.feedback.confirm.remove.title",
+      "en": "Remove feedback?",
+      "hu": "Visszajelzés eltávolítása?"
+    },
+    {
+      "key": "event.feedback.confirm.restore.title",
+      "en": "Restore feedback?",
+      "hu": "Visszajelzés visszaállítása?"
+    },
+    {
+      "key": "groups.confirm.accept.title",
+      "en": "Would you like to accept this invitation?",
+      "hu": "Elfogadod a meghívást?"
+    },
+    {
+      "key": "groups.confirm.join.title",
+      "en": "Would you like to join this group?",
+      "hu": "Szeretnél csatlakozni a csoporthoz?"
+    },
+    {
+      "key": "groups.confirm.remove.title",
+      "en": "Leave this group?",
+      "hu": "Kilépsz ebből a csoportból?"
+    },
+    {
+      "key": "groups.confirm.report.title",
+      "en": "Would you like to report this group?",
+      "hu": "Szeretnéd jelenteni a csoportot?"
+    },
+    {
+      "key": "groups.confirm.restore-blocked.title",
+      "en": "Request to rejoin this group?",
+      "hu": "Kéred az újbóli csatlakozást?"
+    },
+    {
+      "key": "groups.confirm.restore.title",
+      "en": "Restore your group membership?",
+      "hu": "Visszaállítod a csoporttagságodat?"
+    },
+    {
+      "key": "groups.confirm.take-over.title",
+      "en": "Take over responsibility for this group?",
+      "hu": "Átveszed a csoport felelősségét?"
+    },
+    {
+      "key": "integration.token.generate.confirm.title",
+      "en": "Generate API key?",
+      "hu": "Létrehozod az API-kulcsot?"
+    },
+    {
+      "key": "integration.token.revoke.confirm.title",
+      "en": "Revoke API key?",
+      "hu": "Visszavonod az API-kulcsot?"
+    }
+  ],
+  "catalogQuestionsAndBothLanguages": true,
+  "dynamicExamples": [
+    {
+      "key": "confirmation.delete.help.revision",
+      "en": "Would you like to delete help revision v3?",
+      "hu": "Törlöd a súgó v3 változatát?"
+    },
+    {
+      "key": "confirmation.leave.named.asset",
+      "en": "Would you like to leave the asset “QA25 Event”?",
+      "hu": "Kilépsz a(z) „QA25 Event” eszközből?"
+    },
+    {
+      "key": "confirmation.delete.contact",
+      "en": "Would you like to delete the contact QA25 Event?",
+      "hu": "Törlöd QA25 Event névjegyét?"
+    }
+  ],
+  "scope": "Source review covers the 99 explicit title+confirmLabel objects and 82 confirmation catalog keys; informational notices, forms, payment summaries and forwarding/default configuration are classified separately. Dynamic lifecycle title helpers reviewed. This is not execution of every dialog; no separate unit runner was started alongside watcher."
+}

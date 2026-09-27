@@ -124,6 +124,12 @@ public class Users {
     private Map<String, Double> paymentSpentTotals = new LinkedHashMap<>();
     private Map<String, Double> paymentIncomeTotals = new LinkedHashMap<>();
     private Map<String, Double> paymentAllTotals = new LinkedHashMap<>();
+    private List<String> cashReceiptReversals = new ArrayList<>();
+
+    public List<String> getCashReceiptReversals() { return cashReceiptReversals; }
+    public void setCashReceiptReversals(List<String> value) {
+        cashReceiptReversals = value == null ? new ArrayList<>() : new ArrayList<>(value);
+    }
     private Integer paymentRefundsPending;
     private Integer contactRequestsPending;
 

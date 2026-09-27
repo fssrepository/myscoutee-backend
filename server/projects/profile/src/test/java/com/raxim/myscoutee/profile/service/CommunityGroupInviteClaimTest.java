@@ -27,7 +27,7 @@ class CommunityGroupInviteClaimTest {
 
     @BeforeEach void setup() {
         Map<String, Users> accounts = new HashMap<>();
-        for (String id : List.of("owner", "recipient")) {
+        for (String id : List.of("owner", "recipient", "sender")) {
             var user = new Users(); user.setId(id); user.setUserId(id); user.setName(id);
             accounts.put(id, user);
         }
@@ -65,6 +65,33 @@ class CommunityGroupInviteClaimTest {
         assertThat(rows.get("recipient").getRequestKind()).isNull();
         verify(profiles).admit(group, "recipient");
         verify(profiles, atLeastOnce()).activate(argThat(user -> "recipient".equals(user.getUserId())), eq("group"));
+    }
+
+    @Test void eventLinkFromAnAcceptedMemberCreatesOneAcceptedMembershipAndReusesItsProfile() {
+        eventInviter();
+        var selected = new Users(); selected.setUserId("group-recipient"); selected.setWorkspaceGroupId("group"); selected.setAccountUserId("recipient");
+        when(profiles.activate(any(), eq("group"))).thenReturn(selected);
+        assertThat(service.claimEventInvite("group", "group-sender", "recipient")).isSameAs(selected);
+        assertThat(service.claimEventInvite("group", "group-sender", "recipient")).isSameAs(selected);
+        assertThat(rows.get("recipient").getStatus()).isEqualTo("accepted");
+        assertThat(rows.get("recipient").getRole()).isEqualTo("Member");
+        verify(profiles).admit(group, "recipient");
+    }
+
+    @Test void eventLinkCannotBypassRemovalOrPendingRestorationApproval() {
+        eventInviter();
+        var blocked = member("recipient", "Member", "blocked", null);
+        rows.put("recipient", blocked);
+        assertThatThrownBy(() -> service.claimEventInvite("group", "group-sender", "recipient")).isInstanceOf(ResponseStatusException.class);
+        blocked.setStatus("pending"); blocked.setRequestKind("join"); blocked.setCommunityAction("restore");
+        assertThatThrownBy(() -> service.claimEventInvite("group", "group-sender", "recipient")).isInstanceOf(ResponseStatusException.class);
+        verify(profiles, never()).admit(any(), anyString());
+    }
+
+    private void eventInviter() {
+        var profile = new Users(); profile.setUserId("group-sender"); profile.setAccountUserId("sender"); profile.setWorkspaceGroupId("group");
+        when(users.findByUserId("group-sender")).thenReturn(Optional.of(profile));
+        rows.put("sender", member("sender", "Member", "accepted", null));
     }
 
     @Test void anExistingJoinRequestIsApprovedUsingTheInvitingAdministratorsAuthority() {

@@ -34,6 +34,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.mongodb.client.result.UpdateResult;
 
 import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.ContactChatAccess;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.ActivityMember;
@@ -206,7 +207,37 @@ class ChatServiceTest {
     }
 
     @Test
+    void contactInvitationRequiresEverySavedTargetToHaveApprovedBeforeAnyWrite() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
+                "2026-09-25T10:00:00Z", "contact")));
+        var contacts = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile();
+        contacts.setContacts(List.of("approved", "pending").stream().map(id -> {
+            var contact = new com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.NavigatorContactRecord();
+            contact.setUserId(id);
+            return contact;
+        }).toList());
+        when(mongoTemplate.findOne(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.NavigatorContactsProfile.class)))
+                .thenReturn(contacts);
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(
+                user("viewer", "Viewer", "V"), user("approved", "Approved", "A"), user("pending", "Pending", "P")));
+        when(mongoTemplate.count(any(Query.class), eq(ContactChatAccess.class))).thenReturn(1L);
+
+        assertThatThrownBy(() -> service.addContactChatMembers("contact", "viewer", List.of("approved", "pending")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class)
+                .hasMessageContaining("403");
+        var query = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate).count(query.capture(), eq(ContactChatAccess.class));
+        assertThat(query.getValue().getQueryObject().getString("status")).isEqualTo("approved");
+        assertThat(query.getValue().getQueryObject().get("_id", Document.class).getList("$in", String.class))
+                .containsExactly(ContactChatAccess.pairId("viewer", "approved"), ContactChatAccess.pairId("viewer", "pending"));
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
     void contactInviteReturnsAllMembersAndPreservesExistingUnreadState() {
+        when(mongoTemplate.count(any(Query.class), eq(ContactChatAccess.class))).thenReturn(1L);
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var current = chat("contact", "viewer", 7, "2026-09-25T10:00:00Z", "contact");
         var other = chat("contact", "sender", 3, current.getDateIso(), "contact");

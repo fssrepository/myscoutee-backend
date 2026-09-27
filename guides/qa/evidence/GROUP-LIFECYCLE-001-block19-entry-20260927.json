@@ -1,0 +1,2029 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 19,
+  "date": "2026-09-27",
+  "status": "HTTP PASS / CLOSED; Local NOT RUN",
+  "mode": "HTTP",
+  "browser": "GROUP-LIFECYCLE-001-ENTRY-BLOCK19; one anonymous versioned-launcher window; actual Login/demo selector actions",
+  "passed": [
+    "Valid Alex: eligibility before one session/login POST, initial profile load and game",
+    "Saved Alex point retained with denied geolocation and unsupported Paris browser point; no automatic Setup or logout",
+    "Isolated Zoe missing coordinates: one Location needed badge, Setup before session, rejected Paris point, cancel signed out, accepted Budapest retry",
+    "Zoe invalid 999/999 control: Setup and accepted retry; point persisted by first profile-ext request, pending cleared after success",
+    "Reload retained Zoe session fingerprint dfaaa552, same account and persisted Budapest point",
+    "19.1/4 failed first profile request retained pending coordinates; same-session reload resent them, received200, cleared pending and persisted server point",
+    "19.1/5 HTTP invitation cancel/retry, claim then first target profile, reload, repeat without duplicates, logout/login with denied GPS and exact fixture cleanup",
+    "Requested Setup Update disabled while mandatory Location is OFF, shared disabled style without custom CSS; toggling ON enables it",
+    "Initial avatar wait has no error panel, including delayed claim and full profile request; actual failure then displays load error and reload recovers"
+  ],
+  "locationRace": {
+    "before": {
+      "events": [
+        {
+          "t": 140,
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "t": 313,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 410,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 532,
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "t": 547,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "transitions": [
+        {
+          "t": 438,
+          "path": "/game",
+          "session": true,
+          "pending": true,
+          "profilePoint": null,
+          "extPoint": null,
+          "missing": true,
+          "memberActions": false,
+          "load": "loading",
+          "banner": null
+        },
+        {
+          "t": 556,
+          "path": "/game",
+          "session": true,
+          "pending": false,
+          "profilePoint": null,
+          "extPoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "missing": true,
+          "memberActions": false,
+          "load": "success",
+          "banner": null
+        },
+        {
+          "t": 661,
+          "path": "/game",
+          "session": true,
+          "pending": false,
+          "profilePoint": null,
+          "extPoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "missing": true,
+          "memberActions": false,
+          "load": "success",
+          "banner": "location_off\nLocation required\n\nTo see profiles, open Settings \u2192 Install, enable location access, then press Update."
+        }
+      ],
+      "last": {
+        "t": 12438,
+        "path": "/game",
+        "session": true,
+        "pending": false,
+        "profilePoint": null,
+        "extPoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "missing": true,
+        "memberActions": false,
+        "load": "success",
+        "banner": "location_off\nLocation required\n\nTo see profiles, open Settings \u2192 Install, enable location access, then press Update."
+      },
+      "sampleCount": 121
+    },
+    "after": {
+      "events": [
+        {
+          "t": 84,
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "t": 178,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 298,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 368,
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "t": 387,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "realtimeBodies": [
+        {
+          "t": 400,
+          "userId": "b0971e779dbdb71f9327eabb",
+          "locationCoordinates": null,
+          "serverTsIso": "2026-09-27T15:31:31.828275627Z"
+        }
+      ],
+      "transitions": [
+        {
+          "t": 337,
+          "path": "/game",
+          "session": true,
+          "pending": true,
+          "profilePoint": null,
+          "extPoint": null,
+          "missing": true,
+          "memberActions": false,
+          "load": "loading",
+          "banner": null
+        },
+        {
+          "t": 441,
+          "path": "/game",
+          "session": true,
+          "pending": false,
+          "profilePoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "extPoint": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "missing": false,
+          "memberActions": true,
+          "load": "success",
+          "banner": null
+        }
+      ],
+      "last": {
+        "t": 12413,
+        "path": "/game",
+        "session": true,
+        "pending": false,
+        "profilePoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "extPoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "missing": false,
+        "memberActions": true,
+        "load": "success",
+        "banner": null
+      },
+      "sampleCount": 121
+    },
+    "cause": "An in-flight realtime snapshot returned locationCoordinates:null after profile-ext had saved valid coordinates. It overwrote the active profile until a later poll.",
+    "fix": "Capture current location with the existing realtime synchronization tokens; ignore location fields from a poll when the profile coordinates changed during that request.",
+    "verification": "Same browser login/logout/login sequence. After fix the actual realtime payload still contained null; active profile kept Budapest and no banner appeared in 121 samples over 12.4 seconds.",
+    "frontendWatcher": "Build completed 2026-09-27T15:24:34.019Z; synced at17:24:36 local. Regression spec added; no separate test/build process run."
+  },
+  "invalidControl": {
+    "events": [
+      {
+        "t": 100,
+        "path": "/api/auth/session/login",
+        "status": 200
+      },
+      {
+        "t": 225,
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "t": 338,
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "t": 470,
+        "path": "/api/auth/me/realtime/long-poll",
+        "status": 200
+      },
+      {
+        "t": 515,
+        "path": "/api/auth/me/profile-ext",
+        "status": 200
+      }
+    ],
+    "transitions": [
+      {
+        "t": 413,
+        "path": "/game",
+        "session": true,
+        "pending": true,
+        "profilePoint": {
+          "latitude": 999,
+          "longitude": 999
+        },
+        "extPoint": null,
+        "missing": false,
+        "memberActions": true,
+        "load": "loading",
+        "banner": null
+      },
+      {
+        "t": 544,
+        "path": "/game",
+        "session": true,
+        "pending": false,
+        "profilePoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "extPoint": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "missing": false,
+        "memberActions": true,
+        "load": "success",
+        "banner": null
+      }
+    ],
+    "last": {
+      "t": 12519,
+      "path": "/game",
+      "session": true,
+      "pending": false,
+      "profilePoint": {
+        "latitude": 47.4979,
+        "longitude": 19.0402
+      },
+      "extPoint": {
+        "latitude": 47.4979,
+        "longitude": 19.0402
+      },
+      "missing": false,
+      "memberActions": true,
+      "load": "success",
+      "banner": null
+    },
+    "sampleCount": 121
+  },
+  "fixture": {
+    "actor": "Zoe Turner",
+    "userId": "b0971e779dbdb71f9327eabb",
+    "snapshotRetained": false,
+    "currentPoint": {
+      "latitude": 47.5147,
+      "longitude": 19.0354
+    },
+    "restoreCommand": "restore-location-control community-group GROUP-LIFECYCLE-001",
+    "restored": true
+  },
+  "remaining": [
+    "Local mode separate run"
+  ],
+  "counts": {
+    "httpClosed": 16,
+    "httpTotal": 48,
+    "lifecycleClosed": 16,
+    "lifecycleTotal": 29
+  },
+  "failedProfileRetry": {
+    "before": {
+      "path": "/game",
+      "activeUser": "b0971e779dbdb71f9327eabb",
+      "sessionHash": "44384784",
+      "pending": [
+        "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+      ],
+      "point": null,
+      "load": "error",
+      "banner": null
+    },
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/me",
+        "latitude": null,
+        "longitude": null,
+        "locationHeaders": []
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext",
+        "latitude": "47.4979",
+        "longitude": "19.0402",
+        "locationHeaders": []
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll",
+        "latitude": null,
+        "longitude": null,
+        "locationHeaders": []
+      }
+    ],
+    "responses": [
+      {
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "status": 200
+      }
+    ],
+    "after": {
+      "path": "/game",
+      "activeUser": "b0971e779dbdb71f9327eabb",
+      "sessionHash": "44384784",
+      "pending": [],
+      "point": {
+        "latitude": 47.4979,
+        "longitude": 19.0402
+      },
+      "load": "success",
+      "banner": null
+    },
+    "failure": "Native CDP transport failure before first profile-ext reached server; pending Budapest point retained and load state error. Mongo still had no coordinates.",
+    "serverAfterRetry": {
+      "latitude": 47.4979,
+      "longitude": 19.0402
+    }
+  },
+  "userRequestedErrorPanel": {
+    "status": "PASS",
+    "implementation": "Existing game-blocked-panel and avatar load error/timeout state; centered role=alert; English/Hungarian strings and all three Mongo seeds synchronized.",
+    "watcher": "frontend-sync build15:48:16Z, sync17:48:18 local",
+    "i18nAudit": "PASS:8032 messages,2 bundles,3 Mongo seeds",
+    "localeAndLayout": {
+      "failed": [
+        "http://localhost/api/auth/me/profile-ext?userId=b0971e779dbdb71f9327eabb&latitude=47.4979&longitude=19.0402"
+      ],
+      "hu": {
+        "text": "error_outline\nProfile failed to load\n\nReload the page to try again.",
+        "role": "alert",
+        "panel": {
+          "x": 22.578125,
+          "y": 301.71875,
+          "width": 610.84375,
+          "height": 148.046875
+        },
+        "available": {
+          "x": 22.578125,
+          "y": 67.453125,
+          "width": 610.84375,
+          "height": 616.5625
+        },
+        "centerDelta": {
+          "x": 0,
+          "y": 0.0078125
+        },
+        "overflow": false,
+        "viewport": {
+          "width": 656,
+          "height": 713
+        },
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ]
+      },
+      "mobile": {
+        "text": "error_outline\nNem siker\u00fclt bet\u00f6lteni a profilodat\n\nT\u00f6ltsd \u00fajra az oldalt az \u00fajrapr\u00f3b\u00e1l\u00e1shoz.",
+        "role": "alert",
+        "panel": {
+          "x": 22.578125,
+          "y": 325.21875,
+          "width": 314.84375,
+          "height": 168.046875
+        },
+        "available": {
+          "x": 22.578125,
+          "y": 67.453125,
+          "width": 314.84375,
+          "height": 683.5625
+        },
+        "centerDelta": {
+          "x": 0,
+          "y": 0.0078125
+        },
+        "overflow": false,
+        "viewport": {
+          "width": 360,
+          "height": 780
+        },
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ]
+      },
+      "desktop": {
+        "text": "error_outline\nNem siker\u00fclt bet\u00f6lteni a profilodat\n\nT\u00f6ltsd \u00fajra az oldalt az \u00fajrapr\u00f3b\u00e1l\u00e1shoz.",
+        "role": "alert",
+        "panel": {
+          "x": 272.390625,
+          "y": 331.609375,
+          "width": 560,
+          "height": 154.453125
+        },
+        "available": {
+          "x": 33.78125,
+          "y": 70.65625,
+          "width": 1037.21875,
+          "height": 676.34375
+        },
+        "centerDelta": {
+          "x": 0,
+          "y": 0.0078125
+        },
+        "overflow": false,
+        "viewport": {
+          "width": 1100,
+          "height": 780
+        },
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ]
+      }
+    },
+    "successfulRetry": {
+      "before": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a4b0254d",
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ],
+        "point": null,
+        "load": "error",
+        "banner": "error_outline\nNem siker\u00fclt bet\u00f6lteni a profilodat\n\nT\u00f6ltsd \u00fajra az oldalt az \u00fajrapr\u00f3b\u00e1l\u00e1shoz."
+      },
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": "47.4979",
+          "longitude": "19.0402",
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a4b0254d",
+        "pending": [],
+        "point": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "load": "success",
+        "banner": null
+      }
+    }
+  },
+  "invitationEntry": {
+    "apiIssue": {
+      "connect": 200,
+      "initialIssueBeforeFix": 500,
+      "cause": "Missing primitive reusable field in API upsert",
+      "afterFix": 200,
+      "repeat": 200,
+      "stableUrl": true,
+      "reusableStoredServerSide": false
+    },
+    "cancel": {
+      "claim": null,
+      "participantMappings": 0,
+      "memberships": 0,
+      "groupProfiles": 0,
+      "session": false,
+      "invitationReturnRetained": true
+    },
+    "beforeOrderFix": {
+      "before": {
+        "path": "/entry",
+        "activeUser": null,
+        "sessionHash": "811c9dc5",
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ],
+        "point": null,
+        "workspace": null,
+        "banner": null
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/api/auth/session/login",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/partner-invite/claim",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": "47.4979",
+          "longitude": "19.0402",
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": null,
+          "longitude": null,
+          "groupId": "seed-community-design-circle",
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/partner-invite/claim",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "d85a733b",
+        "pending": [],
+        "point": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "load": "success",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "banner": null
+      }
+    },
+    "afterOrderFix": {
+      "before": {
+        "path": "/entry",
+        "activeUser": null,
+        "sessionHash": "811c9dc5",
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ],
+        "point": null,
+        "workspace": null,
+        "banner": null
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/api/auth/session/login",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/partner-invite/claim",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": "47.4979",
+          "longitude": "19.0402",
+          "groupId": "seed-community-design-circle",
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/partner-invite/claim",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        }
+      ],
+      "events": [
+        {
+          "kind": "request",
+          "path": "/api/auth/session/login",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/realtime/long-poll",
+          "groupId": null
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/partner-invite/claim",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/partner-invite/claim",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/profile-ext",
+          "groupId": "seed-community-design-circle"
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/realtime/long-poll",
+          "groupId": null
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a8873226",
+        "pending": [],
+        "point": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "load": "success",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "banner": null
+      }
+    },
+    "reload": {
+      "before": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a8873226",
+        "pending": [],
+        "point": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "load": "success",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "banner": null
+      },
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "events": [
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/profile-ext",
+          "groupId": null
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/realtime/long-poll",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/realtime/long-poll",
+          "groupId": null
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "a8873226",
+        "pending": [],
+        "point": {
+          "latitude": 47.4979,
+          "longitude": 19.0402
+        },
+        "load": "success",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "banner": null
+      }
+    },
+    "savedPointDeniedLogin": {
+      "before": {
+        "path": "/entry",
+        "activeUser": null,
+        "sessionHash": "811c9dc5",
+        "pending": [],
+        "point": null,
+        "workspace": null,
+        "banner": null
+      },
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/auth/eligibility",
+          "latitude": "47.4939392",
+          "longitude": "19.0676992",
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/session/login",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/eligibility",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        }
+      ],
+      "events": [
+        {
+          "kind": "request",
+          "path": "/api/auth/eligibility",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/eligibility",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/session/login",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/realtime/long-poll",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/profile-ext",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "964b45b0",
+        "pending": [],
+        "point": {
+          "latitude": 47.4939392,
+          "longitude": 19.0676992
+        },
+        "load": "success",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "banner": null
+      }
+    },
+    "finalPersistence": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "userId": "b0971e779dbdb71f9327eabb",
+      "name": "Zoe Turner",
+      "coordinates": {
+        "latitude": 47.4939392,
+        "longitude": 19.0676992
+      },
+      "partitionKey": "country:hu",
+      "activeSessions": 0,
+      "prepared": true,
+      "invitation": {
+        "groupId": "seed-community-design-circle",
+        "participantId": "qa-group-entry-19-zoe",
+        "claimed": "b0971e779dbdb71f9327eabb",
+        "mappings": 1,
+        "memberships": [
+          {
+            "status": "accepted",
+            "role": "Member"
+          }
+        ],
+        "profiles": [
+          {
+            "userId": "group-80c4a847-d48f-41d3-8e77-0329883892d6",
+            "coordinates": {
+              "latitude": 47.4939392,
+              "longitude": 19.0676992
+            }
+          }
+        ],
+        "activeWorkspaceGroupId": "seed-community-design-circle"
+      }
+    },
+    "keyRevoke": {
+      "revokedClientConnectStatus": 401
+    },
+    "restored": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "userId": "b0971e779dbdb71f9327eabb",
+      "name": "Zoe Turner",
+      "coordinates": {
+        "latitude": 47.5147,
+        "longitude": 19.0354
+      },
+      "partitionKey": "country:hu",
+      "activeSessions": 0,
+      "prepared": false,
+      "invitation": null
+    }
+  },
+  "avatarPanelTiming": {
+    "entry": {
+      "mode": "entry",
+      "events": [
+        {
+          "t": 77,
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "t": 183,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 262,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "t": 281,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 337,
+          "kind": "held",
+          "path": "/api/auth/me/partner-invite/claim"
+        },
+        {
+          "t": 431,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "t": 1840,
+          "kind": "released",
+          "path": "/api/auth/me/partner-invite/claim"
+        },
+        {
+          "t": 1961,
+          "path": "/api/auth/me/partner-invite/claim",
+          "status": 200
+        },
+        {
+          "t": 1994,
+          "kind": "held",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "t": 3496,
+          "kind": "released",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "t": 3656,
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "t": 3711,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "frames": 315,
+      "transitions": [
+        {
+          "t": 5,
+          "path": "/entry",
+          "summary": null,
+          "avatar": null,
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 192,
+          "path": "/entry",
+          "summary": null,
+          "avatar": null,
+          "point": null,
+          "panel": null,
+          "workspace": "public\nMain profile\nexpand_more\n99+"
+        },
+        {
+          "t": 294,
+          "path": "/entry",
+          "summary": null,
+          "avatar": null,
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 320,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "idle",
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 404,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "idle",
+          "point": null,
+          "panel": null,
+          "workspace": "public\nMain profile\nexpand_more\n99+"
+        },
+        {
+          "t": 1987,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "loading",
+          "point": null,
+          "panel": null,
+          "workspace": "public\nMain profile\nexpand_more\n99+"
+        },
+        {
+          "t": 3638,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "success",
+          "point": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "panel": null,
+          "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+        }
+      ]
+    },
+    "failure": {
+      "mode": "failure",
+      "events": [
+        {
+          "t": 312,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 403,
+          "kind": "held",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "t": 449,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "t": 1904,
+          "kind": "failed",
+          "path": "/api/auth/me/profile-ext"
+        }
+      ],
+      "frames": 326,
+      "transitions": [
+        {
+          "t": 5,
+          "path": "/game",
+          "summary": null,
+          "avatar": null,
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 384,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "loading",
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 1893,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "error",
+          "point": null,
+          "panel": "error_outline\nProfile failed to load\n\nReload the page to try again.",
+          "workspace": null
+        }
+      ]
+    },
+    "reload": {
+      "mode": "reload",
+      "events": [
+        {
+          "t": 242,
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "t": 269,
+          "kind": "held",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "t": 368,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "t": 1770,
+          "kind": "released",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "t": 1815,
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        },
+        {
+          "t": 1910,
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        }
+      ],
+      "frames": 323,
+      "transitions": [
+        {
+          "t": 6,
+          "path": "/game",
+          "summary": null,
+          "avatar": null,
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 260,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "loading",
+          "point": null,
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 1857,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "success",
+          "point": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "panel": null,
+          "workspace": null
+        },
+        {
+          "t": 1878,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "success",
+          "point": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "panel": null,
+          "workspace": "DC\nDesign Circle\nexpand_more"
+        },
+        {
+          "t": 1894,
+          "path": "/game",
+          "summary": "success",
+          "avatar": "success",
+          "point": {
+            "latitude": 47.4979,
+            "longitude": 19.0402
+          },
+          "panel": null,
+          "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+        }
+      ]
+    },
+    "fix": "Full profile load has its own existing-runtime-store context and session identity; summary response does not settle the avatar. Online authoritative demo profile failure cannot synthesize success from a cached summary."
+  },
+  "setupUpdateDisabled": {
+    "before": {
+      "disabled": true,
+      "opacity": "0.52",
+      "label": "check\nUpdate"
+    },
+    "ignored": {
+      "error": null,
+      "busy": true
+    },
+    "on": {
+      "disabled": false,
+      "opacity": "0.920009"
+    },
+    "offAgain": {
+      "disabled": true,
+      "opacity": "0.52"
+    }
+  },
+  "selectorCache": {
+    "before": "Server coordinate persisted but cached selector still reported Location needed",
+    "save": {
+      "before": {
+        "path": "/entry",
+        "activeUser": null,
+        "sessionHash": "811c9dc5",
+        "pending": [
+          "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login"
+        ],
+        "point": null,
+        "workspace": null,
+        "banner": null
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/api/auth/session/login",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "latitude": null,
+          "longitude": null,
+          "groupId": null,
+          "locationHeaders": []
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext",
+          "latitude": "47.4939392",
+          "longitude": "19.0676992",
+          "groupId": null,
+          "locationHeaders": []
+        }
+      ],
+      "responses": [
+        {
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        }
+      ],
+      "events": [
+        {
+          "kind": "request",
+          "path": "/api/auth/session/login",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/session/login",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/realtime/long-poll",
+          "groupId": null
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me",
+          "status": 200
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/realtime/long-poll",
+          "status": 200
+        },
+        {
+          "kind": "request",
+          "path": "/api/auth/me/profile-ext",
+          "groupId": null
+        },
+        {
+          "kind": "response",
+          "path": "/api/auth/me/profile-ext",
+          "status": 200
+        }
+      ],
+      "after": {
+        "path": "/game",
+        "activeUser": "b0971e779dbdb71f9327eabb",
+        "sessionHash": "d2ec0b1c",
+        "pending": [],
+        "point": {
+          "latitude": 47.4939392,
+          "longitude": 19.0676992
+        },
+        "load": "success",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "banner": null
+      }
+    },
+    "after": {
+      "id": "b0971e779dbdb71f9327eabb",
+      "locationCoordinates": {
+        "latitude": 47.4939392,
+        "longitude": 19.0676992
+      },
+      "locationRequired": false
+    },
+    "fix": "Existing demo_users CacheEvict applies after successful initial-coordinate profile load."
+  },
+  "admission19_2": {
+    "seedEligibility": {
+      "total": 53,
+      "eligibleBySelector": 53,
+      "invalid": []
+    },
+    "firebaseRuntime": {
+      "status": 404,
+      "configured": false,
+      "fields": [
+        "timestamp",
+        "status",
+        "error",
+        "trace",
+        "message",
+        "path"
+      ]
+    },
+    "pendingByAccount": {
+      "Alex": {
+        "before": {
+          "path": "/entry",
+          "activeUser": null,
+          "sessionHash": "811c9dc5",
+          "pending": {
+            "myscoutee.http.location.v1:af0436815ab38f4864dd1e24:pending-login": {
+              "latitude": 48.8566,
+              "longitude": 2.3522
+            },
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": {
+              "latitude": 40.7128,
+              "longitude": -74.006
+            }
+          },
+          "point": null,
+          "workspace": null,
+          "banner": null
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/auth/eligibility",
+            "latitude": "47.4811",
+            "longitude": "19.0366",
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/session/login",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/me/realtime/long-poll",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me/profile-ext",
+            "latitude": "48.8566",
+            "longitude": "2.3522",
+            "groupId": null,
+            "locationHeaders": []
+          }
+        ],
+        "responses": [
+          {
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "events": [
+          {
+            "kind": "request",
+            "path": "/api/auth/eligibility",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/session/login",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/realtime/long-poll",
+            "groupId": null
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/profile-ext",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "after": {
+          "path": "/game",
+          "activeUser": "af0436815ab38f4864dd1e24",
+          "sessionHash": "d0f4a17d",
+          "pending": {
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": {
+              "latitude": 40.7128,
+              "longitude": -74.006
+            }
+          },
+          "point": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          },
+          "load": "success",
+          "workspace": "public\nMain profile\nexpand_more\n99+",
+          "banner": "visibility_off\nGame discovery is paused\n\nChange your profile visibility to Public if you want to rate profiles and appear in game suggestions."
+        }
+      },
+      "Zoe": {
+        "before": {
+          "path": "/entry",
+          "activeUser": null,
+          "sessionHash": "811c9dc5",
+          "pending": {
+            "myscoutee.http.location.v1:b0971e779dbdb71f9327eabb:pending-login": {
+              "latitude": 40.7128,
+              "longitude": -74.006
+            }
+          },
+          "point": null,
+          "workspace": null,
+          "banner": null
+        },
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/api/auth/eligibility",
+            "latitude": "47.5147",
+            "longitude": "19.0354",
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/session/login",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "POST",
+            "path": "/api/auth/me/realtime/long-poll",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me",
+            "latitude": null,
+            "longitude": null,
+            "groupId": null,
+            "locationHeaders": []
+          },
+          {
+            "method": "GET",
+            "path": "/api/auth/me/profile-ext",
+            "latitude": "40.7128",
+            "longitude": "-74.006",
+            "groupId": null,
+            "locationHeaders": []
+          }
+        ],
+        "responses": [
+          {
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "events": [
+          {
+            "kind": "request",
+            "path": "/api/auth/eligibility",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/eligibility",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/session/login",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/session/login",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/realtime/long-poll",
+            "groupId": null
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/realtime/long-poll",
+            "status": 200
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me",
+            "status": 200
+          },
+          {
+            "kind": "request",
+            "path": "/api/auth/me/profile-ext",
+            "groupId": null
+          },
+          {
+            "kind": "response",
+            "path": "/api/auth/me/profile-ext",
+            "status": 200
+          }
+        ],
+        "after": {
+          "path": "/game",
+          "activeUser": "b0971e779dbdb71f9327eabb",
+          "sessionHash": "bf17cc96",
+          "pending": {},
+          "point": {
+            "latitude": 47.5147,
+            "longitude": 19.0354
+          },
+          "load": "success",
+          "workspace": "public\nMain profile\nexpand_more\n99+",
+          "banner": null
+        }
+      }
+    },
+    "serverPointsAfter": [
+      {
+        "id": "af0436815ab38f4864dd1e24",
+        "locationCoordinates": {
+          "latitude": 47.4811,
+          "longitude": 19.0366
+        },
+        "locationRequired": false
+      },
+      {
+        "id": "b0971e779dbdb71f9327eabb",
+        "locationCoordinates": {
+          "latitude": 47.5147,
+          "longitude": 19.0354
+        },
+        "locationRequired": false
+      }
+    ],
+    "preparation": "Versioned anonymous PENDING-BLOCK19 launcher seeds only scoped stale pending samples; actual Login/demo selector, requests, rejection of unsupported point and acknowledgement are observed. Native GPS denied. This is not evidence of collecting those pending points from native GPS."
+  },
+  "deferredExternalConfiguration": {
+    "userRequested": true,
+    "case": "DEPLOY-EXTERNAL-CONFIG-001",
+    "status": "DEFERRED / NOT RUN"
+  }
+}

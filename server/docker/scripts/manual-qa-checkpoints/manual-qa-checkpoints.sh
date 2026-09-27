@@ -8,10 +8,12 @@ usage() {
   cat <<'USAGE'
 Usage:
   bash manual-qa-checkpoints.sh status community-group GROUP-LIFECYCLE-001
-  bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete>
+  bash manual-qa-checkpoints.sh prepare-sharing|restore-sharing community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh track-sharing-registration community-group GROUP-LIFECYCLE-001 <new-demo-profile-id>
+  bash manual-qa-checkpoints.sh capture|restore|verify-savepoint community-group GROUP-LIFECYCLE-001 <lists-ready|block-1-complete|after-editor-checks|after-join-approval|after-invitation-checks|after-workspace-selection|after-moderation-checks|after-membership-trash>
   bash manual-qa-checkpoints.sh prepare-list-pagination|restore-list-pagination community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-invitation|prepare-hidden-invitation|restore-invitation community-group GROUP-LIFECYCLE-001
-  bash manual-qa-checkpoints.sh prepare-admin-lifecycle|prepare-admin-moderation|prepare-admin-feed-event|prepare-admin-base-feed|restore-admin-lifecycle community-group GROUP-LIFECYCLE-001
+  bash manual-qa-checkpoints.sh prepare-admin-lifecycle|prepare-admin-moderation|prepare-admin-feed-event|prepare-admin-previews|prepare-admin-base-chat-read|prepare-admin-base-chat-message|prepare-admin-base-feed|restore-admin-lifecycle community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-member-invitation|restore-member-invitation community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-editor|restore-editor community-group GROUP-LIFECYCLE-001
   bash manual-qa-checkpoints.sh prepare-creation|restore-creation community-group GROUP-LIFECYCLE-001
@@ -961,11 +963,24 @@ PY
       fi
     fi
     ;;
-  community-group:capture|community-group:restore|community-group:verify-savepoint)
+  community-group:restore-sharing)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    sharing_registrants="$(run_scenario "sharing-registrants" "${scenario}" 30 "$3")"
+    sharing_media_owners="$(python3 -c 'import json,sys; print("\n".join(json.load(sys.stdin)["users"]))' <<<"${sharing_registrants}")"
+    while IFS= read -r sharing_media_owner; do
+      [ -n "${sharing_media_owner}" ] || continue
+      [[ "${sharing_media_owner}" =~ ^demo-profile-[a-f0-9-]{36}$ ]] || fail "Invalid tracked media owner."
+      # Same exact-owner media cleanup as the Affiliate registration fixture.
+      # Keep the database snapshot if media cleanup fails, so retry is safe.
+      docker exec minio sh -c 'export MC_HOST_qa="http://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@localhost:9000"; mc rm --recursive --force "qa/myscoutee-media/public/demo/images/$1/"' group-sharing-media-reset "${sharing_media_owner}" >/dev/null
+    done <<<"${sharing_media_owners}"
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  community-group:capture|community-group:restore|community-group:verify-savepoint|community-group:track-sharing-registration|community-group:capture-admin-authority|community-group:restore-admin-authority-branch)
     [ "$#" -eq 4 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "$4"
     ;;
-  community-group:prepare-admin-lifecycle|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
+  community-group:prepare-tools|community-group:prepare-tools-explore|community-group:inspect-tools|community-group:restore-tools|community-group:inspect-location-control|community-group:prepare-location-control|community-group:prepare-tracking-control|community-group:prepare-location-invitation|community-group:set-location-control-invalid|community-group:restore-location-control|community-group:prepare-contact-request-pages|community-group:prepare-contact-invitees|community-group:prepare-contacts|community-group:prepare-profile-contacts|community-group:prepare-profile-notifications|community-group:prepare-profile-notification-controls|community-group:prepare-profile-api|community-group:restore-profile-api|community-group:restore-profile-notifications|community-group:restore-profile-contacts|community-group:restore-contacts|community-group:prepare-cash-payment-methods|community-group:prepare-cash-checkout|community-group:prepare-cash-history|community-group:restore-cash-history|community-group:prepare-chat-sharing|community-group:prepare-chat-sharing-context|community-group:restore-chat-sharing|community-group:prepare-menu-checkout|community-group:prepare-group-asset-payment|community-group:prepare-group-asset-scope|community-group:prepare-profile-tickets|community-group:prepare-profile-group-tickets|community-group:prepare-group-asset-payment-card|community-group:inspect-group-asset-payment|community-group:prepare-sharing-group-event|community-group:reset-sharing-failed-event-claim|community-group:repair-sharing-identifiers|community-group:sharing-registrants|community-group:prepare-sharing-attribution|community-group:prepare-sharing|community-group:prepare-admin-lifecycle|community-group:prepare-admin-authority|community-group:prepare-admin-last-member|community-group:prepare-admin-return|community-group:inspect-admin-authority|community-group:prepare-admin-outsider|community-group:prepare-header-roles|community-group:prepare-list-ordering|community-group:prepare-distance-surfaces|community-group:prepare-admin-moderation|community-group:prepare-admin-feed-event|community-group:prepare-admin-previews|community-group:prepare-admin-base-chat-read|community-group:prepare-admin-base-chat-message|community-group:prepare-admin-base-feed|community-group:restore-admin-lifecycle|community-group:prepare-member-invitation|community-group:restore-member-invitation|community-group:status|community-group:verify-lists|community-group:prepare-badges|community-group:prepare-join|community-group:restore-badges|community-group:prepare-list-pagination|community-group:restore-list-pagination|community-group:prepare-invitation|community-group:prepare-hidden-invitation|community-group:restore-invitation|community-group:prepare-editor|community-group:restore-editor|community-group:prepare-creation|community-group:restore-creation)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

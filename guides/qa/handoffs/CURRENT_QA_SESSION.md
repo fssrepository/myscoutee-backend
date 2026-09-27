@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-26
+Updated: 2026-09-27
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -86,18 +86,19 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: GROUP-LIFECYCLE-001
-checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP 1–5 closed under the explicit relocated boundaries; 5/29 HTTP blocks, 0/29 Local. Current HTTP block 6; complete it before advancing. Original numbered steps remain traceable; no full-case PASS.
-fixture_phase: Main badge-writes-ready / after-workspace-selection retained. Isolated manual-qa-community-admin and adminLifecycleSnapshots are LIVE with two processed moderation controls, one UI-published/approved photo, fixture Feed event f02609260000000000000101 and Group support chat/reply. Do not reset or replay the campaign.
+checkpoint: GROUP-ISOLATION-001
+checklist: ../checklists/group/GROUP-ISOLATION-001.md
+substage: QUEUED / NOT STARTED. User explicitly said to close Lifecycle and not start Isolation.
+fixture_phase: All27–29 temporary Admin/role/distance-event scopes exactly restored. One managed PENDING-BLOCK19 browser, Alex EN. Mobile rule controls single-column; category/member toggle remains one row with ellipsis. SmartList sticky date updates after reordered patch. No active temporary Admin fixture.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
-execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue HTTP block 6 only: settings save/reopen/mobile/authority, block/unblock/worker, Group support View Event repair and real Feed publication/approval are now verified. Finish app-admin moderation, stale response and remaining support/counter boundaries. Preserve current UI/DB evidence; do not reopen blocks 1–5 for structural changes. Follow HTTP 7–29, then separate Local 1–29, Isolation and Integration. Show closed/total and current block at every boundary.
-savepoint: community-group after-workspace-selection, captured and verified 2026-09-26T20:13:47.292Z, HTTP resume block 5 remaining checks. Earlier after-invitation-checks, after-editor-checks and after-join-approval retained. Saved state is not a whole-case PASS.
-queue: HTTP Lifecycle 6–29, then Local Lifecycle 1–29, Group Isolation 1–12, Integration API Group 1–7. True unavailable external/native prerequisites must be explicit counted later blocks, with USB/native last. Closed PASS cases untouched.
-resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
-runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
-last_completed: EVENT-CALENDAR-EXPORT-001 PASS/CLOSED; AFFILIATE-REVENUE-001 remains PASS. Location fixes and baseline checks are not Group UI PASS.
+execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
+next_action: WAIT FOR EXPLICIT USER CONTINUATION. Lifecycle current HTTP scope CLOSED29/29; transferred external branches belong solely to deployment QA. Before future Isolation staging, remove exact evidence-proven duplicates, preserve unique combinations and independent fixture/restage/checkpoints. Do not launch, stage or test now.
+savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
+queue: Group Isolation next NOT STARTED; Integration API Group separate NOT RUN. Deployment external checks own independent scope. Full Local run remains unexecuted, not an active Lifecycle continuation.
+resume_gate: Do not execute now. On explicit continuation, read queued checklist, reconcile duplicate scope, verify its own versioned baseline before managed launcher. Never reuse another testcase fixture as an execution prerequisite.
+runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
+mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
+last_completed: GROUP-LIFECYCLE-001 CLOSED by user2026-09-27; accepted round compact-chevron badges. HTTP29/29 scope-adjusted closures; Group29/48. See scope-closure JSON.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

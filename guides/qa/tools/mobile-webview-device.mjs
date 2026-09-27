@@ -94,6 +94,14 @@ if (action === 'transport-online') {
   unlinkSync(transportSnapshot);
   console.log('Restored the recorded QA reverse transport and CDP.'); process.exit(0);
 }
+if (action === 'launch-browser') {
+  const route = args[0] || '/entry';
+  if (!route.startsWith('/') || route.startsWith('//')) throw Error('Only QA-relative paths allowed');
+  execFileSync('adb', ['shell', 'am', 'start', '-a', 'android.intent.action.VIEW',
+    '-d', `http://localhost:8080${route}`, 'com.android.chrome'], { stdio: 'pipe' });
+  console.log('Opened the local QA origin in Chrome; existing browser storage retained.');
+  process.exit(0);
+}
 if (action === 'launch' || action === 'cold-launch') {
   if (action === 'cold-launch') execFileSync('adb', ['shell', 'am', 'force-stop', packageName]);
   const component = execFileSync('adb', ['shell', 'cmd', 'package', 'resolve-activity', '--brief', packageName], { encoding: 'utf8' }).trim().split('\n').at(-1);
@@ -130,6 +138,11 @@ const evaluate = async expression => {
   if (result.exceptionDetails) throw Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
   return result.result?.value;
 };
+const tap = async (selector, index = 0) => {
+  const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(selector)})[${Number(index)}];if(!e)throw Error('Control missing');const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(e.disabled||!r.width||!r.height||!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered, offscreen or disabled');return{x,y}})()`);
+  await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
+  await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+};
 try {
   if (action === 'inspect') {
     console.log(JSON.stringify(await evaluate(`(async()=>({
@@ -159,9 +172,43 @@ try {
     input.close();
   } else if (action === 'eval') console.log(JSON.stringify(await evaluate(readFileSync(0, 'utf8')), null, 2));
   else if (action === 'click') {
-    const point = await evaluate(`(()=>{const e=document.querySelectorAll(${JSON.stringify(args[0])})[${Number(args[1] || 0)}];if(!e)throw Error('Control missing');const r=e.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2;if(e.disabled||!r.width||!r.height||!e.contains(document.elementFromPoint(x,y)))throw Error('Control covered, offscreen or disabled');return{x,y}})()`);
-    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
-    await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await tap(args[0], args[1] || 0);
+  } else if (action === 'logout-back') {
+    // Final device cleanup also exercises native Back while a real confirmation
+    // is busy. Hold only this page's logout request, then release it unchanged.
+    let held, timer;
+    const paused = new Promise((resolve, reject) => {
+      timer = setTimeout(() => reject(Error('Logout request was not observed')), 10000);
+      socket.on('message', data => {
+        const message = JSON.parse(data);
+        if (message.method !== 'Fetch.requestPaused') return;
+        held = message.params.requestId;
+        clearTimeout(timer);
+        resolve();
+      });
+    });
+    const state = () => evaluate(`(()=>{const d=document.querySelector('app-dialog');return {path:location.pathname,confirmation:d?.innerText??'',busy:!!d?.querySelector('button:disabled'),workspace:document.querySelector('[aria-label="Munkatér kiválasztása"],[aria-label="Choose workspace"]')?.innerText}})()`);
+    await send('Fetch.enable', { patterns: [{ urlPattern: 'http://localhost:8080/api/auth/me/logout', requestStage: 'Request' }] });
+    try {
+      await tap(args[0]);
+      await paused;
+      const before = await state();
+      const afterBack = [];
+      for (let i = 0; i < 2; i++) {
+        execFileSync('adb', ['shell', 'input', 'keyevent', 'KEYCODE_BACK']);
+        await new Promise(resolve => setTimeout(resolve, 350));
+        afterBack.push(await state());
+      }
+      await send('Fetch.continueRequest', { requestId: held });
+      held = null;
+      for (let i = 0; i < 80 && await evaluate('location.pathname') !== '/entry'; i++)
+        await new Promise(resolve => setTimeout(resolve, 100));
+      console.log(JSON.stringify({ before, afterBack, completed: await state() }, null, 2));
+    } finally {
+      clearTimeout(timer);
+      if (held) await send('Fetch.continueRequest', { requestId: held });
+      await send('Fetch.disable');
+    }
   } else if (action === 'drag-notification') {
     const start = await evaluate(`(()=>{const r=document.querySelector('.notification-attention-menu button')?.getBoundingClientRect();if(!r)throw Error('Notification control missing');return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
     await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [start] });

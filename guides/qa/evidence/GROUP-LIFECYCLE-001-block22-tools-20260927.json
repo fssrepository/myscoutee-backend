@@ -1,0 +1,1309 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 22,
+  "date": "2026-09-27",
+  "status": "PASS/CLOSED / HTTP",
+  "local": "NOT RUN",
+  "scope": "UI create/edit/delete in Design Circle; Base/Design Circle/Seattle Friends same account-owned inventory and live counters. Real delayed long-poll response after delete did not resurrect count. Same document timeOrigin throughout. Asset Explore UI public foreign-group-booked control visible; all three profile HTTP result sets identical; own/friends/private controls absent. Public asset detail allowed; private/friends and foreign event detail empty responses (HTTP200, not403). Event Explore real UI scoped per workspace. No product change required.",
+  "observations": {
+    "baseline": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "prepared": true,
+      "profiles": [
+        {
+          "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-seattle-friends",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        },
+        {
+          "userId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-photo-walks",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        },
+        {
+          "userId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-study-buddies",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        },
+        {
+          "userId": "af0436815ab38f4864dd1e24",
+          "accountUserId": null,
+          "workspaceGroupId": null,
+          "activities": {
+            "game": 121,
+            "chats": -10,
+            "invitations": 6,
+            "events": 21,
+            "hosting": 0,
+            "cars": 0,
+            "accommodation": 0,
+            "supplies": 0,
+            "tickets": 0,
+            "contacts": 0,
+            "feedback": 2,
+            "chat": {
+              "all": -10,
+              "event": -10,
+              "subEvent": 0,
+              "group": 0,
+              "service": 0,
+              "appSupport": 0
+            },
+            "event": {
+              "all": 27,
+              "active": 21,
+              "pending": 0,
+              "invitations": 6,
+              "hosting": 0,
+              "drafts": 0,
+              "trash": 0,
+              "watchlist": 0
+            },
+            "asset": {
+              "cars": 0,
+              "accommodation": 0,
+              "supplies": 0,
+              "tickets": 0
+            },
+            "eventFeedback": {
+              "ownEvents": 0,
+              "pending": 2,
+              "feedbacked": 0,
+              "removed": 0
+            },
+            "adminJobs": 0,
+            "adminMetrics": 0,
+            "notifications": 12
+          }
+        },
+        {
+          "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-design-circle",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        }
+      ],
+      "assets": [],
+      "foreignPublic": []
+    },
+    "after-create": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "prepared": true,
+      "profiles": [
+        {
+          "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-seattle-friends",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        },
+        {
+          "userId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-photo-walks",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        },
+        {
+          "userId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-study-buddies",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        },
+        {
+          "userId": "af0436815ab38f4864dd1e24",
+          "accountUserId": null,
+          "workspaceGroupId": null,
+          "activities": {
+            "game": 121,
+            "chats": -10,
+            "invitations": 6,
+            "events": 21,
+            "hosting": 0,
+            "cars": 0,
+            "accommodation": 0,
+            "supplies": 1,
+            "tickets": 0,
+            "contacts": 0,
+            "feedback": 2,
+            "chat": {
+              "all": -10,
+              "event": -10,
+              "subEvent": 0,
+              "group": 0,
+              "service": 0,
+              "appSupport": 0
+            },
+            "event": {
+              "all": 27,
+              "active": 21,
+              "pending": 0,
+              "invitations": 6,
+              "hosting": 0,
+              "drafts": 0,
+              "trash": 0,
+              "watchlist": 0
+            },
+            "asset": {
+              "cars": 0,
+              "accommodation": 0,
+              "supplies": 1,
+              "tickets": 0,
+              "accommodationPending": 0,
+              "carsPending": 0,
+              "suppliesPending": 0
+            },
+            "eventFeedback": {
+              "ownEvents": 0,
+              "pending": 2,
+              "feedbacked": 0,
+              "removed": 0
+            },
+            "adminJobs": 0,
+            "adminMetrics": 0,
+            "notifications": 12
+          }
+        },
+        {
+          "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "accountUserId": "af0436815ab38f4864dd1e24",
+          "workspaceGroupId": "seed-community-design-circle",
+          "activities": {
+            "game": 0,
+            "chats": 0,
+            "invitations": 0,
+            "events": 0,
+            "hosting": 0
+          }
+        }
+      ],
+      "assets": [
+        {
+          "id": "asset-1790529581669",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "title": "QA Group 22 Supplies",
+          "type": "Supplies",
+          "status": "A",
+          "visibility": "Public"
+        }
+      ],
+      "foreignPublic": []
+    },
+    "create": {
+      "network": [
+        {
+          "method": "POST",
+          "path": "/api/assets/upsert"
+        }
+      ],
+      "responses": [
+        {
+          "id": "1389064.3802",
+          "status": 200,
+          "path": "/api/assets/upsert"
+        }
+      ],
+      "ui": {
+        "tail": "yScoutee\nvisibility_off\nGame discovery is paused\n\nChange your profile visibility to Public if you want to rate profiles and appear in game suggestions.\n\nnotifications_active\n19\nAssets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\n1\npending_actions\nadd\nimage_not_supported\n0\ninventory_2\nQA Group 22 Supplies\n\nSupplies\n\nmore_vert",
+        "buttons": [
+          {
+            "text": "",
+            "aria": "Close user menu",
+            "cls": "app-menu__button-row-item app-menu__button-row-item--image app-menu__palette--blue"
+          },
+          {
+            "text": "notifications_active\n19",
+            "aria": "Open notifications, 19 new",
+            "cls": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--violet"
+          },
+          {
+            "text": "",
+            "aria": "Open profile editor",
+            "cls": "header-card__edit"
+          },
+          {
+            "text": "",
+            "aria": "Choose workspace",
+            "cls": "app-menu__trigger motion-static app-menu__trigger--static-icon app-menu__trigger--layout-pill app-menu__palette--violet"
+          },
+          {
+            "text": "",
+            "aria": "Open notifications, 19 new",
+            "cls": "app-menu__button-row-item app-menu__palette--violet"
+          },
+          {
+            "text": "",
+            "aria": "Turn explanations off",
+            "cls": "app-menu__button-row-item app-menu__button-row-item--active app-menu__button-row-item--toggle app-menu__palette--default"
+          },
+          {
+            "text": "",
+            "aria": "Share MyScoutee",
+            "cls": "app-menu__button-row-item app-menu__palette--default"
+          },
+          {
+            "text": "",
+            "aria": "Open settings menu",
+            "cls": "app-menu__button-row-item app-menu__palette--default"
+          },
+          {
+            "text": "",
+            "aria": "Close menu",
+            "cls": "user-menu-close-btn"
+          },
+          {
+            "text": "",
+            "aria": null,
+            "cls": "app-menu__tile-item app-menu__palette--orange"
+          },
+          {
+            "text": "",
+            "aria": null,
+            "cls": "app-menu__tile-item app-menu__palette--cyan"
+          },
+          {
+            "text": "",
+            "aria": null,
+            "cls": "app-menu__tile-item app-menu__palette--lime"
+          },
+          {
+            "text": "",
+            "aria": "Open impressions",
+            "cls": "app-menu__tile-item app-menu__tile-item--segmented app-menu__palette--default"
+          },
+          {
+            "text": "",
+            "aria": "Open feedback",
+            "cls": "app-menu__tile-item app-menu__palette--purple"
+          },
+          {
+            "text": "",
+            "aria": "Open rates",
+            "cls": "app-menu__tile-item app-menu__palette--gold"
+          },
+          {
+            "text": "",
+            "aria": "Open chat",
+            "cls": "app-menu__tile-item app-menu__palette--blue"
+          },
+          {
+            "text": "",
+            "aria": "Open invitations",
+            "cls": "app-menu__tile-item app-menu__palette--purple"
+          },
+          {
+            "text": "",
+            "aria": "Open events",
+            "cls": "app-menu__tile-item app-menu__palette--blue"
+          },
+          {
+            "text": "",
+            "aria": "Open payment history",
+            "cls": "app-menu__tile-item app-menu__palette--green"
+          },
+          {
+            "text": "",
+            "aria": "Transport",
+            "cls": "app-menu__tile-item app-menu__palette--blue"
+          },
+          {
+            "text": "",
+            "aria": "Accommodation",
+            "cls": "app-menu__tile-item app-menu__palette--green"
+          },
+          {
+            "text": "",
+            "aria": "Supplies",
+            "cls": "app-menu__tile-item app-menu__palette--brown"
+          },
+          {
+            "text": "",
+            "aria": "Ticket",
+            "cls": "app-menu__tile-item app-menu__palette--blue"
+          },
+          {
+            "text": "",
+            "aria": "Contacts",
+            "cls": "app-menu__tile-item app-menu__palette--teal"
+          },
+          {
+            "text": "close",
+            "aria": "Close",
+            "cls": "ui-popup__close"
+          },
+          {
+            "text": "inventory_2\nSupplies\nexpand_more\n1",
+            "aria": "Open asset filter",
+            "cls": "app-menu__trigger motion-static app-menu__trigger--layout-pill app-menu__palette--brown"
+          },
+          {
+            "text": "pending_actions",
+            "aria": "Show assets with pending requests only",
+            "cls": "ui-popup__action ui-popup__action--compact-mobile ui-popup__action--rose"
+          },
+          {
+            "text": "add",
+            "aria": "Add asset",
+            "cls": "ui-popup__action ui-popup__action--icon-only ui-popup__action--green"
+          },
+          {
+            "text": "0",
+            "aria": "0 active items, 0 pending items",
+            "cls": "ui-info-card__overlay-action ui-info-card__overlay-action--end asset-occupancy-badge ui-info-card__overlay-action--badge ui-info-card__overlay-action--shape-circle ui-info-card__overlay-action--tone-warm"
+          },
+          {
+            "text": "more_vert",
+            "aria": "Open menu",
+            "cls": "app-menu__trigger motion-static app-menu__trigger--label-hidden app-menu__trigger--layout-icon app-menu__palette--default"
+          }
+        ],
+        "menus": [
+          {
+            "text": "",
+            "cls": "app-menu__panel app-menu__panel--inline"
+          },
+          {
+            "text": "",
+            "cls": "app-menu__panel app-menu__panel--inline"
+          }
+        ]
+      }
+    },
+    "edit": {
+      "network": [
+        {
+          "method": "GET",
+          "path": "/api/assets/asset-1790529581669"
+        },
+        {
+          "method": "POST",
+          "path": "/api/assets/upsert"
+        }
+      ],
+      "ui": "Assets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\n1\npending_actions\nadd\nimage_not_supported\n0\ninventory_2\nQA Group 22 Supplies edited\n\nSupplies\n\nmore_vert"
+    },
+    "workspaces": {
+      "out": [
+        {
+          "name": "Main profile",
+          "before": {
+            "workspace": "public\nMain profile\nexpand_more\n99+",
+            "supplies": "inventory_2\nSupplies\n1",
+            "events": "event\nEvents\n27",
+            "timeOrigin": 1790528837452
+          },
+          "inventory": {
+            "text": "Assets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\n1\npending_actions\nadd\nimage_not_supported\n0\ninventory_2\nQA Group 22 Supplies\n\nSupplies\n\nmore_vert",
+            "owner": "af0436815ab38f4864dd1e24"
+          }
+        },
+        {
+          "name": "Seattle Friends",
+          "before": {
+            "workspace": "SF\nSeattle Friends\nexpand_more\n99+",
+            "supplies": "inventory_2\nSupplies\n1",
+            "events": "event\nEvents",
+            "timeOrigin": 1790528837452
+          },
+          "inventory": {
+            "text": "Assets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\n1\npending_actions\nadd\nimage_not_supported\n0\ninventory_2\nQA Group 22 Supplies\n\nSupplies\n\nmore_vert",
+            "owner": "af0436815ab38f4864dd1e24"
+          }
+        },
+        {
+          "name": "Design Circle",
+          "before": {
+            "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+            "supplies": "inventory_2\nSupplies\n1",
+            "events": "event\nEvents",
+            "timeOrigin": 1790528837452
+          },
+          "inventory": {
+            "text": "Assets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\n1\npending_actions\nadd\nimage_not_supported\n0\ninventory_2\nQA Group 22 Supplies\n\nSupplies\n\nmore_vert",
+            "owner": "af0436815ab38f4864dd1e24"
+          }
+        }
+      ],
+      "network": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "method": "GET",
+          "path": "/api/help/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/privacy/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/terms/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/groups/workspaces"
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/assets"
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "method": "GET",
+          "path": "/api/help/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/privacy/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/terms/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/groups/workspaces"
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/assets"
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "method": "GET",
+          "path": "/api/help/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/privacy/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/terms/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/groups/workspaces"
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/assets"
+        }
+      ]
+    },
+    "late": {
+      "held": {
+        "path": "/api/auth/me/realtime/long-poll",
+        "status": 200
+      },
+      "poll": {
+        "keys": [
+          "userId",
+          "profileStatus",
+          "locationCoordinates",
+          "counters",
+          "impressions",
+          "offlineTicketSnapshot",
+          "paymentTotals",
+          "notificationDevices",
+          "cursor",
+          "serverTsIso",
+          "following",
+          "contentModeration",
+          "feedCounters",
+          "paymentCardsAvailable",
+          "accountCounters"
+        ]
+      },
+      "beforeRelease": {
+        "list": "Assets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\npending_actions\nadd\nNo supplies yet\n\nAdd supplies or shared gear so the list can populate.",
+        "summary": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0,
+          "cars": 0,
+          "accommodation": 0,
+          "supplies": 1,
+          "tickets": 0,
+          "contacts": 0,
+          "feedback": 0,
+          "notifications": 0,
+          "paymentRefundsPending": 0,
+          "contactRequestsPending": 0,
+          "chat": {
+            "all": 0,
+            "event": 0,
+            "subEvent": 0,
+            "group": 0,
+            "service": 0,
+            "appSupport": 0,
+            "contacts": 0,
+            "groupSupport": 0,
+            "supportCases": {
+              "pending": 0,
+              "warned": 0,
+              "picked": 0,
+              "solved": 0,
+              "blocked": 0,
+              "all": 0
+            }
+          },
+          "event": {
+            "all": 0,
+            "active": 0,
+            "pending": 0,
+            "invitations": 0,
+            "hosting": 0,
+            "drafts": 0,
+            "watchlist": 0,
+            "trash": 0
+          },
+          "asset": {
+            "cars": 0,
+            "accommodation": 0,
+            "supplies": 1,
+            "tickets": 0,
+            "carsPending": 0,
+            "accommodationPending": 0,
+            "suppliesPending": 0
+          },
+          "eventFeedback": {
+            "ownEvents": 0,
+            "pending": 0,
+            "feedbacked": 0,
+            "removed": 0
+          },
+          "adminJobs": 0,
+          "adminMetrics": 0
+        },
+        "timeOrigin": 1790528837452
+      },
+      "afterRelease": {
+        "supplies": "inventory_2\nSupplies",
+        "events": "event\nEvents",
+        "timeOrigin": 1790528837452
+      },
+      "network": [
+        {
+          "method": "GET",
+          "path": "/api/deployment/configuration"
+        },
+        {
+          "method": "GET",
+          "path": "/api/deployment/configuration"
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll"
+        },
+        {
+          "method": "POST",
+          "path": "/api/assets/delete"
+        }
+      ]
+    },
+    "explore-prepared": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "ids": [
+        "f02709270000000000000091",
+        "f02709270000000000000092",
+        "f02709270000000000000093",
+        "f02709270000000000000094"
+      ],
+      "eventId": "f02709270000000000000095",
+      "groupId": "seed-community-language-lab",
+      "foreignOwnerId": "0216b1ceb256d6f2c89073b8",
+      "groupOwnerId": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+      "noViewerFriendship": true,
+      "noViewerGroupMembership": true,
+      "preparationOnly": true
+    },
+    "api": [
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "status": 200,
+        "keys": [
+          "items",
+          "total",
+          "nextCursor",
+          "checkoutResultStates"
+        ],
+        "total": 8,
+        "ids": [
+          "93530c3d5db41f141f534de8",
+          "f02709270000000000000091",
+          "11eb582dc0bcc7581ac991e7",
+          "4420be96abbbb3a0f755a73b",
+          "f26cbd1becbfe2a33ff3035c",
+          "2d86c6a3285d01ac096bd755",
+          "30b3000c189953476fd4225a",
+          "0e34ae88cf81e01a304d4b58"
+        ],
+        "controls": [
+          {
+            "id": "f02709270000000000000091",
+            "title": "QA 22 Explore Public"
+          }
+        ]
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "status": 200,
+        "keys": [
+          "items",
+          "total",
+          "nextCursor",
+          "checkoutResultStates"
+        ],
+        "total": 8,
+        "ids": [
+          "93530c3d5db41f141f534de8",
+          "f02709270000000000000091",
+          "11eb582dc0bcc7581ac991e7",
+          "4420be96abbbb3a0f755a73b",
+          "f26cbd1becbfe2a33ff3035c",
+          "2d86c6a3285d01ac096bd755",
+          "30b3000c189953476fd4225a",
+          "0e34ae88cf81e01a304d4b58"
+        ],
+        "controls": [
+          {
+            "id": "f02709270000000000000091",
+            "title": "QA 22 Explore Public"
+          }
+        ]
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "status": 200,
+        "keys": [
+          "items",
+          "total",
+          "nextCursor",
+          "checkoutResultStates"
+        ],
+        "total": 8,
+        "ids": [
+          "93530c3d5db41f141f534de8",
+          "f02709270000000000000091",
+          "11eb582dc0bcc7581ac991e7",
+          "4420be96abbbb3a0f755a73b",
+          "f26cbd1becbfe2a33ff3035c",
+          "2d86c6a3285d01ac096bd755",
+          "30b3000c189953476fd4225a",
+          "0e34ae88cf81e01a304d4b58"
+        ],
+        "controls": [
+          {
+            "id": "f02709270000000000000091",
+            "title": "QA 22 Explore Public"
+          }
+        ]
+      }
+    ],
+    "api-denial": [
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000091",
+        "status": 200,
+        "id": "f02709270000000000000091",
+        "bodyKind": "object"
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000092",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000093",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "path": "/activities/events/detail",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000091",
+        "status": 200,
+        "id": "f02709270000000000000091",
+        "bodyKind": "object"
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000092",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000093",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "path": "/activities/events/detail",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000091",
+        "status": 200,
+        "id": "f02709270000000000000091",
+        "bodyKind": "object"
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000092",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "path": "/assets/f02709270000000000000093",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "path": "/activities/events/detail",
+        "status": 200,
+        "id": null,
+        "bodyKind": "undefined"
+      }
+    ],
+    "event-scope": {
+      "out": [
+        {
+          "name": "Main profile",
+          "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nSun, 7 Feb 2027\nSun, 7 Feb 2027\nMS\n0.0\nstar\ngroups\n1 / 19\n1\npublic\nHandmade Pasta Table\n\nEvent · Public · 7744.5 km\n\nmore_vert\n\nPairs roll dough, shape filled pasta, and share the first cooked batch.\n\nSun Feb 22, 6:30 PM\n\nMon, 1 Mar 2027\nNE\n0.0\nstar\ngroups\n9 / 20\n2\ngroups\nGreenhouse Neighbor Tea\n\nEvent · Friends only · 8799.1 km\n\nmore_vert\n\nResidents from nearby blocks meet among citrus trees and shared tea trays.\n\nMar 1 · 10:00 AM - 12:00 PM\n\nNE\n0.0\nstar\ngroups\n12 / 50\n1\npublic\nNight Food League\n\nEvent · Public · 8799.1 km\n\nmore_vert\n\nTeams sample three market stalls and compare aroma, texture, and presentation.\n\nMar 12 · 7:30 PM - 11:30 PM\n\nWed, 3 Mar 2027\nNE\n0.0\nstar\ngroups\n7 / 50\n2\npublic\nDarkroom Contact Sheet Night\n\nEvent · Public · 8799.1 km\n\nmore_vert\n\nAnalog photographers inspect fresh contact sheets under safe red light.\n\nMar 3 · 11:30 AM - 2:30 PM\n\nSun, 7 Mar 2027\nMG\n0.0\nstar\ngroups\n6 / 50\n1\npublic\nDesert Porch Folk Session\n\nEvent · Public · 9780.9 km\n\nmore_vert\n\nAcoustic players trade short songs while listeners settle into porch chairs.\n\nMar 7 · 1:30 PM - 3:30 PM\n\nThu, 11 Mar 2027\nKB\n0.0\nstar\ngroups\n5 / 50\n2\npublic\nSunrise Run and Market Brunch\n\nEvent · Public · 7744.5 km\n\nmore_vert\n\nAn easy-pace run finishes beside a breakfast table with fruit, rolls, and coffee flasks.\n\nFeb 28 · 8:00 AM - 12:00 PM",
+          "dialogs": [
+            "Activities",
+            "Event Explore"
+          ]
+        },
+        {
+          "name": "Design Circle",
+          "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nNo items\nNo visible events right now.\n\nTry another filter or check back later.",
+          "dialogs": [
+            "Activities",
+            "Event Explore"
+          ]
+        },
+        {
+          "name": "Seattle Friends",
+          "text": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\nclose\nNo items\nNo visible events right now.\n\nTry another filter or check back later.",
+          "dialogs": [
+            "Activities",
+            "Event Explore"
+          ]
+        }
+      ],
+      "requests": [
+        {
+          "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "order": "upcoming",
+          "view": "day",
+          "followedOnly": false,
+          "friendsOnly": false,
+          "openSpotsOnly": false,
+          "topic": "",
+          "mode": "",
+          "excludedSourceIds": [],
+          "limit": 6,
+          "cursor": null
+        },
+        {
+          "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+          "order": "upcoming",
+          "view": "day",
+          "followedOnly": false,
+          "friendsOnly": false,
+          "openSpotsOnly": false,
+          "topic": "",
+          "mode": "",
+          "excludedSourceIds": [],
+          "limit": 6,
+          "cursor": null
+        }
+      ],
+      "network": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "method": "GET",
+          "path": "/api/help/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/privacy/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/terms/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/groups/workspaces"
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/deployment/configuration"
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/events/filter"
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/page-filter-preferences"
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/events/explore"
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/profile-ext"
+        },
+        {
+          "method": "GET",
+          "path": "/api/help/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/privacy/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/terms/active"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/groups/workspaces"
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/me/realtime/long-poll"
+        },
+        {
+          "method": "GET",
+          "path": "/api/activities/events/mingle/state"
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/events/filter"
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me/page-filter-preferences"
+        },
+        {
+          "method": "POST",
+          "path": "/api/activities/events/explore"
+        }
+      ]
+    },
+    "explore-ui": {
+      "text": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\ndone\nclose\ninventory_2\nSupplies\nexpand_more\n–\ncalendar_month\n4+ left\n4+ left\n6 left\nadd\npublic\nGroup Safety Base\n\nSupplies · Safety · Denver\n\nmore_vert\n\nCentral safety point for moving groups, night checks, and incident response.\n\nLina Park · Public\n\nFree borrow\nNo policy\n6 left\nadd\npublic\nQA 22 Explore Public\n\nSupplies · Camping · Los Angeles\n\nmore_vert\n\nPacked for a two-night lakeside stay; cookware and lighting are included.\n\nSophia Lane · Public\n\nFree borrow\nNo policy\n6 left\nadd\npublic\nWinter Mountaineering Safety Set\n\nSupplies · Camping · Phoenix\n\nmore_vert\n\nCold-weather technical equipment organized for a supervised alpine route.\n\nIvy Stone · Public\n\nFree borrow\nNo policy\n4 left\nadd\npublic\nHygiene and Cleanup Station\n\nSupplies · Camping · Miami\n\nmore_vert\n\nReusable sanitation and cleanup equipment for a shared trip or outdoor event.\n\nSophia Baker · Public\n\nFree borrow\nNo policy\n4 left\nadd\npublic\nOutdoor Projection Pack\n\nSupplies · Camping · Denver\n\nmore_vert\n\nPortable film and presentation setup for a sheltered community gathering.\n\nOwen Rivera · Public\n\nFree borrow\nNo policy\n4 left\nadd\npublic\nPortable Audio Rig\n\nSupplies · Audio · Nashville\n\nmore_vert\n\nCable-managed sound equipment for announcements, Music, or a small workshop.\n\nEthan Turner · Public\n\nFree borrow\nNo policy",
+      "network": [
+        {
+          "method": "GET",
+          "path": "/api/assets/explore"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        },
+        {
+          "method": "GET",
+          "path": "/media/public"
+        }
+      ]
+    },
+    "chat-restored": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "chatSharingRestored": true,
+      "generatedAssetTokensRemoved": 0,
+      "verifiedScopes": 12
+    },
+    "restored": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "toolsRestored": true
+    },
+    "final-status": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "phase": "badge-writes-ready",
+      "readyChecklistBlocks": [
+        1,
+        "6.1"
+      ],
+      "productWritesPrepared": true,
+      "groups": 10,
+      "memberships": 27,
+      "actors": [
+        {
+          "userId": "af0436815ab38f4864dd1e24",
+          "name": "Alex Turner",
+          "coordinates": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          }
+        },
+        {
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "name": "Nagy Eszter",
+          "coordinates": {
+            "latitude": 47.5099,
+            "longitude": 19.0354
+          }
+        },
+        {
+          "userId": "1b1c70be2349b3359a8f6f94",
+          "name": "Maya Stone",
+          "coordinates": {
+            "latitude": 47.5111,
+            "longitude": 19.0354
+          }
+        }
+      ],
+      "paginationPrepared": false,
+      "invitationPrepared": false,
+      "memberInvitationPrepared": false,
+      "adminLifecyclePrepared": false,
+      "editorPrepared": false,
+      "creationPrepared": false,
+      "retainedTemporaryControls": [
+        "badgeSnapshots",
+        "contactSnapshots"
+      ],
+      "savepoints": [
+        {
+          "name": "lists-ready",
+          "capturedAtIso": "2026-09-26T17:00:07.714Z",
+          "resumeBlock": 1,
+          "adapter": "http"
+        },
+        {
+          "name": "block-1-complete",
+          "capturedAtIso": "2026-09-26T17:10:23.889Z",
+          "resumeBlock": 2,
+          "adapter": "http"
+        },
+        {
+          "name": "after-editor-checks",
+          "capturedAtIso": "2026-09-26T18:55:19.459Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-join-approval",
+          "capturedAtIso": "2026-09-26T19:17:15.405Z",
+          "resumeBlock": 4,
+          "adapter": "http"
+        },
+        {
+          "name": "after-invitation-checks",
+          "capturedAtIso": "2026-09-26T19:34:07.723Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-workspace-selection",
+          "capturedAtIso": "2026-09-26T20:13:47.292Z",
+          "resumeBlock": 5,
+          "adapter": "http"
+        },
+        {
+          "name": "after-moderation-checks",
+          "capturedAtIso": "2026-09-26T23:05:42.557Z",
+          "resumeBlock": 7,
+          "adapter": "http"
+        },
+        {
+          "name": "after-membership-trash",
+          "capturedAtIso": "2026-09-26T23:28:34.299Z",
+          "resumeBlock": 8,
+          "adapter": "http"
+        },
+        {
+          "name": "after-chat-sharing",
+          "capturedAtIso": "2026-09-27T02:06:58.260Z",
+          "resumeBlock": 10,
+          "adapter": "http"
+        },
+        {
+          "name": "after-cash-history",
+          "capturedAtIso": "2026-09-27T03:24:57.100Z",
+          "resumeBlock": 11,
+          "adapter": "http"
+        },
+        {
+          "name": "after-contacts",
+          "capturedAtIso": "2026-09-27T04:04:51.310Z",
+          "resumeBlock": 12,
+          "adapter": "http"
+        },
+        {
+          "name": "after-contact-controls",
+          "capturedAtIso": "2026-09-27T04:40:57.723Z",
+          "resumeBlock": 13,
+          "adapter": "http"
+        }
+      ],
+      "resumedFrom": "after-editor-checks",
+      "alexBaseline": [
+        {
+          "name": "Book Circle",
+          "ownerUserId": "bf057de7c586eede7e84bdc7",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Design Circle",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "invitation"
+        },
+        {
+          "name": "Game Night",
+          "ownerUserId": "7822c5f99eff99d63abe8933",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "invite",
+          "visibility": "invitation"
+        },
+        {
+          "name": "Language Lab",
+          "ownerUserId": "1b1c70be2349b3359a8f6f94",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "private"
+        },
+        {
+          "name": "Makers Network",
+          "ownerUserId": "cdd937e0adcbd1a5e38f3ceb",
+          "status": "pending",
+          "role": "Member",
+          "requestKind": "join",
+          "visibility": "private"
+        },
+        {
+          "name": "Seattle Neighbours",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Photo Walks",
+          "ownerUserId": "178e8d0cbe164fa3fede5884",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Friends",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "status": "accepted",
+          "role": "Admin",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Study Buddies",
+          "ownerUserId": "b29df68956f3fe15e04558de",
+          "status": "accepted",
+          "role": "Member",
+          "requestKind": null,
+          "visibility": "public"
+        },
+        {
+          "name": "Seattle Trail Club",
+          "ownerUserId": "9f3b3f085e23af6c89dbc432",
+          "status": null,
+          "role": null,
+          "requestKind": null,
+          "visibility": "public"
+        }
+      ]
+    }
+  }
+}

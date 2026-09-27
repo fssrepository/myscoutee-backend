@@ -41,6 +41,34 @@ class IntegrationParticipantInviteServiceTest {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "users", users);
     }
 
+    @Test void groupEventLinkUsesTheAdmittedProfileAndRestoresTheAccountAuthentication() {
+        var account = new Users(); account.setId("account"); account.setUserId("account");
+        var inviter = new Users(); inviter.setId("owner"); inviter.setUserId("owner"); inviter.setWorkspaceGroupId("group");
+        var recipient = new Users(); recipient.setId("group-recipient"); recipient.setUserId("group-recipient");
+        recipient.setWorkspaceGroupId("group"); recipient.setAccountUserId("account");
+        var principal = new com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal("account", "", List.of(), account);
+        var original = new com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationToken(principal, null, principal.getAuthorities());
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(original);
+        try {
+            when(profiles.resolveSelectedUserId("account")).thenReturn("account");
+            when(users.findByUserId("account")).thenReturn(Optional.of(account));
+            when(users.findByUserId("owner")).thenReturn(Optional.of(inviter));
+            var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setWorkspaceGroupId("group");
+            when(events.findBySourceId("event")).thenReturn(List.of(event));
+            when(access.canInviteEventMembers("event", "owner")).thenReturn(true);
+            when(groups.claimEventInvite("group", "owner", "account")).thenReturn(recipient);
+            when(mongo.findOne(any(Query.class), eq(IntegrationParticipantInvite.class))).thenReturn(
+                    new IntegrationParticipantInvite("link", "owner", "event", null, token, "hash", null, "now", null, "event", true));
+            doAnswer(call -> {
+                assertThat(CommunityGroupProfilesService.currentGroupId()).isEqualTo("group");
+                return null;
+            }).when(members).claimIntegrationInvite(any(), eq(event), eq("group-recipient"));
+            assertThat(service.claim("account", token).workspaceGroupId()).isEqualTo("group");
+            verify(members).claimIntegrationInvite(argThat(invite -> "group-recipient".equals(invite.claimedUserId())), eq(event), eq("group-recipient"));
+            assertThat(org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
+        } finally { org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
+    }
+
     @Test void groupClaimUsesTheSameIdentityBindingAndAdmitsTheBoundRecipient() {
         when(profiles.resolveSelectedUserId("actual-user")).thenReturn("actual-user");
         var owner = new Users(); owner.setId("owner"); owner.setUserId("owner");

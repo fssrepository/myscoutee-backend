@@ -1,0 +1,3434 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 27,
+  "adapter": "HTTP",
+  "status": "HTTP PASS / CLOSED; full Local browser NOT RUN",
+  "fixture": "prepare-admin-authority + prepare-admin-outsider + prepare-header-roles; exact restore-admin-lifecycle PASS",
+  "observations": {
+    "layout-admin": {
+      "mobile": {
+        "width": 360,
+        "description": {
+          "x": 27.390625,
+          "y": 355.5,
+          "right": 332.609375,
+          "bottom": 432.171875,
+          "w": 305.21875,
+          "h": 76.671875
+        },
+        "category": {
+          "x": 27.390625,
+          "y": 449.171875,
+          "right": 140.078125,
+          "bottom": 485.171875,
+          "w": 112.6875,
+          "h": 36
+        },
+        "visibility": {
+          "x": 139.953125,
+          "y": 497.171875,
+          "right": 332.609375,
+          "bottom": 533.171875,
+          "w": 192.65625,
+          "h": 36
+        },
+        "overflow": false
+      },
+      "desktop": {
+        "width": 1100,
+        "description": {
+          "x": 461.390625,
+          "y": 192.546875,
+          "right": 1052.609375,
+          "bottom": 269.21875,
+          "w": 591.21875,
+          "h": 76.671875
+        },
+        "category": {
+          "x": 461.390625,
+          "y": 291.84375,
+          "right": 574.078125,
+          "bottom": 327.84375,
+          "w": 112.6875,
+          "h": 36
+        },
+        "visibility": {
+          "x": 859.953125,
+          "y": 291.84375,
+          "right": 1052.609375,
+          "bottom": 327.84375,
+          "w": 192.65625,
+          "h": 36
+        },
+        "overflow": false
+      },
+      "adminCard": {
+        "text": "groups\n4\n1\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n0 km\n\nmore_vert",
+        "memberButton": true
+      }
+    },
+    "hidden-member": {
+      "text": "visibility_off\n4\ndiversity_3\nQA Admin Transfer\n\nFriends\n\n3.3 km\n\nclose",
+      "memberButton": false,
+      "menus": [
+        "Affinity\n:\n1\nGo\narrow_forward",
+        "QA ADMIN TRANSFER\nclose\nvisibility\nView\nlogout\nLeave group\nflag\nReport group"
+      ]
+    },
+    "hidden-outsider": {
+      "actor": "Zoe Turner",
+      "text": "visibility_off\n4\ndiversity_3\nQA Admin TransferWWW\n\nFriends\n\n3.7 km\n\nmore_vert",
+      "memberButton": false,
+      "badges": [
+        {
+          "text": "visibility_off\n4",
+          "cls": "ui-info-card__overlay-action ui-info-card__overlay-action--end asset-occupancy-badge asset-occupancy-badge-static ui-info-card__overlay-action--badge ui-info-card__overlay-action--layout-badge-with-leading-accessory ui-info-card__overlay-action--tone-inactive"
+        },
+        {
+          "text": "visibility_off\n4",
+          "cls": "ui-info-card__overlay-badge-body"
+        },
+        {
+          "text": "visibility_off",
+          "cls": "ui-info-card__overlay-leading-accessory ui-info-card__overlay-leading-accessory--badge ui-info-card__overlay-leading-accessory--tone-negative"
+        }
+      ]
+    },
+    "policy-layout": [
+      {
+        "viewport": 320,
+        "fields": [
+          {
+            "id": "profile.profession",
+            "rect": {
+              "x": 27.390625,
+              "y": 111.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "visibility\nProfession",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 120.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 120.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.experience.workplace",
+            "rect": {
+              "x": 162,
+              "y": 111.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "apartment\nWorkplace",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 120.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 120.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.experience.school",
+            "rect": {
+              "x": 27.390625,
+              "y": 159.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "school\nSchool",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 168.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 168.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.horoscope",
+            "rect": {
+              "x": 162,
+              "y": 159.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "visibility\nHoroscope",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 168.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 168.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.interest",
+            "rect": {
+              "x": 27.390625,
+              "y": 263.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "sell\nInterest",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 272.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 272.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.drinking",
+            "rect": {
+              "x": 162,
+              "y": 263.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "groups\nDrinking",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 272.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 272.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.smoking",
+            "rect": {
+              "x": 27.390625,
+              "y": 311.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "smoking_rooms\nSmoking",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 320.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 320.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.workout",
+            "rect": {
+              "x": 162,
+              "y": 311.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "fitness_center\nWorkout",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 320.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 320.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.pets",
+            "rect": {
+              "x": 27.390625,
+              "y": 359.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "pets\nPets",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 368.734375,
+              "w": 49.125,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 368.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.familyPlans",
+            "rect": {
+              "x": 27.390625,
+              "y": 463.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "family_restroom\nFamily plans",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 472.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 472.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.children",
+            "rect": {
+              "x": 162,
+              "y": 463.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "child_care\nChildren",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 472.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 472.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.loveStyle",
+            "rect": {
+              "x": 27.390625,
+              "y": 511.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "explore\nLove style",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 520.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 520.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.communicationStyle",
+            "rect": {
+              "x": 162,
+              "y": 511.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "forum\nCommunication style",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 520.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 520.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.sexualOrientation",
+            "rect": {
+              "x": 27.390625,
+              "y": 559.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "all_inclusive\nSexual orientation",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 568.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 568.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.religion",
+            "rect": {
+              "x": 27.390625,
+              "y": 663.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "self_improvement\nReligion",
+            "labelRect": {
+              "x": 38.9375,
+              "y": 672.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 106.453125,
+              "y": 672.734375,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.values",
+            "rect": {
+              "x": 162,
+              "y": 663.734375,
+              "w": 120.609375,
+              "h": 36
+            },
+            "label": "auto_awesome\nValues",
+            "labelRect": {
+              "x": 173.546875,
+              "y": 672.734375,
+              "w": 60.171875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 241.0625,
+              "y": 672.734375,
+              "w": 30,
+              "h": 18
+            }
+          }
+        ],
+        "overflow": false,
+        "scrolls": []
+      },
+      {
+        "viewport": 1100,
+        "fields": [
+          {
+            "id": "profile.profession",
+            "rect": {
+              "x": 47.390625,
+              "y": 132.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "visibility\nProfession",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 141.921875,
+              "w": 86.265625,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 141.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.experience.workplace",
+            "rect": {
+              "x": 552,
+              "y": 132.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "apartment\nWorkplace",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 141.921875,
+              "w": 84.703125,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 141.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.experience.school",
+            "rect": {
+              "x": 47.390625,
+              "y": 180.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "school\nSchool",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 189.921875,
+              "w": 63.96875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 189.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.horoscope",
+            "rect": {
+              "x": 552,
+              "y": 180.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "visibility\nHoroscope",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 189.921875,
+              "w": 86.9375,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 189.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.interest",
+            "rect": {
+              "x": 47.390625,
+              "y": 284.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "sell\nInterest",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 293.921875,
+              "w": 67.359375,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 293.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.drinking",
+            "rect": {
+              "x": 552,
+              "y": 284.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "groups\nDrinking",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 293.921875,
+              "w": 72.75,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 293.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.smoking",
+            "rect": {
+              "x": 47.390625,
+              "y": 332.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "smoking_rooms\nSmoking",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 341.921875,
+              "w": 74.78125,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 341.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.workout",
+            "rect": {
+              "x": 552,
+              "y": 332.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "fitness_center\nWorkout",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 341.921875,
+              "w": 72.515625,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 341.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.pets",
+            "rect": {
+              "x": 47.390625,
+              "y": 380.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "pets\nPets",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 389.921875,
+              "w": 49.125,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 389.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.familyPlans",
+            "rect": {
+              "x": 47.390625,
+              "y": 484.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "family_restroom\nFamily plans",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 493.921875,
+              "w": 97.078125,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 493.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.children",
+            "rect": {
+              "x": 552,
+              "y": 484.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "child_care\nChildren",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 493.921875,
+              "w": 72.75,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 493.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.loveStyle",
+            "rect": {
+              "x": 47.390625,
+              "y": 532.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "explore\nLove style",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 541.921875,
+              "w": 82.90625,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 541.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.communicationStyle",
+            "rect": {
+              "x": 552,
+              "y": 532.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "forum\nCommunication style",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 541.921875,
+              "w": 146.375,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 541.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.sexualOrientation",
+            "rect": {
+              "x": 47.390625,
+              "y": 580.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "all_inclusive\nSexual orientation",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 589.921875,
+              "w": 128.828125,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 589.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.religion",
+            "rect": {
+              "x": 47.390625,
+              "y": 684.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "self_improvement\nReligion",
+            "labelRect": {
+              "x": 58.9375,
+              "y": 693.921875,
+              "w": 71.390625,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 496.453125,
+              "y": 693.921875,
+              "w": 30,
+              "h": 18
+            }
+          },
+          {
+            "id": "profile.details.values",
+            "rect": {
+              "x": 552,
+              "y": 684.921875,
+              "w": 490.609375,
+              "h": 36
+            },
+            "label": "auto_awesome\nValues",
+            "labelRect": {
+              "x": 563.546875,
+              "y": 693.921875,
+              "w": 61.96875,
+              "h": 18
+            },
+            "toggleRect": {
+              "x": 1001.0625,
+              "y": 693.921875,
+              "w": 30,
+              "h": 18
+            }
+          }
+        ],
+        "overflow": false,
+        "scrolls": []
+      }
+    ],
+    "editor-controls": {
+      "text": "Group\nlock\nPrivate\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nName*\nDescription\n49/4000\ndiversity_3\nFriends\nexpand_more\nvisibility_off\nMember list visible\nbadge\nRequired Profile Fields\ntoggle_on\nON\ntune\nProfile visibility rules\nProfession\t\ncheck\nRequired\nWorkplace\t\ncheck\nRequired\npolicy\nGroup Policies\n\nDescribe the rules and recommendations for this group.\n\ntoggle_on\nON\ngavel\nOpen Policy Setup\nSUMMARY\n\nNo group policies have been added.",
+      "buttons": [
+        {
+          "aria": "Open groups.visibility.private",
+          "text": "lock\nPrivate\nexpand_more",
+          "cls": "app-menu__trigger motion-static app-menu__trigger--layout-pill app-menu__palette--blue",
+          "rect": {
+            "x": 164.625,
+            "y": 8.3125,
+            "w": 109.234375,
+            "h": 36
+          }
+        },
+        {
+          "aria": "Save",
+          "text": "done",
+          "cls": "app-menu__button-row-item app-menu__palette--success",
+          "rect": {
+            "x": 279.296875,
+            "y": 10.3125,
+            "w": 32,
+            "h": 32
+          }
+        },
+        {
+          "aria": "Close",
+          "text": "close",
+          "cls": "ui-popup__close",
+          "rect": {
+            "x": 318.328125,
+            "y": 8.3125,
+            "w": 34,
+            "h": 34
+          }
+        },
+        {
+          "aria": "Copy image link",
+          "text": "content_copy",
+          "cls": "image-carousel__slot-action image-carousel__slot-action--copy",
+          "rect": {
+            "x": 31.90625,
+            "y": 88.25,
+            "w": 26,
+            "h": 26
+          }
+        },
+        {
+          "aria": "Remove image",
+          "text": "close",
+          "cls": "image-carousel__slot-action image-carousel__slot-action--remove",
+          "rect": {
+            "x": 287.09375,
+            "y": 88.25,
+            "w": 26,
+            "h": 26
+          }
+        },
+        {
+          "aria": "Replace image slot 1",
+          "text": "",
+          "cls": "image-carousel__slot-hit",
+          "rect": {
+            "x": 28.390625,
+            "y": 84.734375,
+            "w": 288.21875,
+            "h": 167.671875
+          }
+        },
+        {
+          "aria": "Open groups.category.friends",
+          "text": "diversity_3\nFriends\nexpand_more",
+          "cls": "app-menu__trigger motion-static app-menu__trigger--layout-pill app-menu__palette--teal",
+          "rect": {
+            "x": 27.390625,
+            "y": 441.078125,
+            "w": 112.6875,
+            "h": 36
+          }
+        },
+        {
+          "aria": "Only administrators are visible",
+          "text": "visibility_off\nMember list visible",
+          "cls": "app-menu__button-row-item app-menu__button-row-item--toggle app-menu__button-row-item--labelled app-menu__palette--red",
+          "rect": {
+            "x": 124.953125,
+            "y": 489.078125,
+            "w": 192.65625,
+            "h": 36
+          }
+        },
+        {
+          "aria": "Profile visibility rules",
+          "text": "toggle_on\nON",
+          "cls": "on-off-toggle is-on",
+          "rect": {
+            "x": 235.609375,
+            "y": 563.078125,
+            "w": 82,
+            "h": 38
+          }
+        },
+        {
+          "aria": "Profile visibility rules",
+          "text": "tune\nProfile visibility rules",
+          "cls": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__palette--violet",
+          "rect": {
+            "x": 27.390625,
+            "y": 611.078125,
+            "w": 168.8125,
+            "h": 36
+          }
+        },
+        {
+          "aria": "Group Policies",
+          "text": "toggle_on\nON",
+          "cls": "on-off-toggle is-on",
+          "rect": {
+            "x": 221.171875,
+            "y": 800.59375,
+            "w": 82,
+            "h": 38
+          }
+        },
+        {
+          "aria": null,
+          "text": "gavel\nOpen Policy Setup",
+          "cls": "event-slots-open-btn event-slots-open-btn-inline",
+          "rect": {
+            "x": 41.828125,
+            "y": 891.75,
+            "w": 164.71875,
+            "h": 38
+          }
+        }
+      ],
+      "tables": [
+        {
+          "text": "Profession\t\ncheck\nRequired",
+          "cells": [
+            {
+              "text": "Profession",
+              "weight": "700",
+              "bg": "rgba(0, 0, 0, 0)"
+            },
+            {
+              "text": "check\nRequired",
+              "weight": "400",
+              "bg": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        },
+        {
+          "text": "Workplace\t\ncheck\nRequired",
+          "cells": [
+            {
+              "text": "Workplace",
+              "weight": "700",
+              "bg": "rgba(0, 0, 0, 0)"
+            },
+            {
+              "text": "check\nRequired",
+              "weight": "400",
+              "bg": "rgba(0, 0, 0, 0)"
+            }
+          ]
+        }
+      ]
+    },
+    "long-name-admin": {
+      "text": "QA\nQA Admin TransferWWW\nexpand_more\n99+",
+      "html": "<button _ngcontent-ng-c4136455779=\"\" type=\"button\" class=\"app-menu__trigger motion-static app-menu__trigger--static-icon app-menu__trigger--layout-pill app-menu__palette--violet\" aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Choose workspace\"><!--container--><span _ngcontent-ng-c4136455779=\"\" class=\"app-menu__trigger-image app-menu__trigger-image--circle\"><!--container--><span _ngcontent-ng-c4136455779=\"\">QA</span><!--container--></span><!--container--><!--container--><span _ngcontent-ng-c4136455779=\"\" data-i18n-ignore=\"\" class=\"app-menu__trigger-label\">QA Admin TransferWWW</span><!--container--><mat-icon _ngcontent-ng-c4136455779=\"\" role=\"img\" class=\"mat-icon notranslate app-menu__trigger-caret material-icons mat-ligature-font mat-icon-no-color\" aria-hidden=\"true\" data-mat-icon-type=\"font\"> expand_more </mat-icon><!--container--><span _ngcontent-ng-c4136455779=\"\" class=\"app-menu__counter app-menu__counter--trigger\"> 99+ </span><!--container--></button>",
+      "body": "yScoutee\nvisibility_off\nGame discovery is paused\n\nChange your profile visibility to Public if you want to rate profiles and appear in game suggestions.\n\n9+\nnotifications_active\n23\nedit\n61%\nAlex Turner, 31\nlocation_on\nSeattle\nQA\nQA Admin TransferWWW\nexpand_more\n99+\nnotifications\n23\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n4\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "rect": {
+        "x": 10.546875,
+        "y": 14.078125,
+        "w": 108.4375,
+        "h": 36
+      },
+      "label": {
+        "x": 47.453125,
+        "y": 24.859375,
+        "w": 44.625,
+        "h": 14.4375
+      },
+      "overflow": false
+    },
+    "header-geometry": {
+      "label": {
+        "x": 47.453125,
+        "y": 24.859375,
+        "w": 44.625,
+        "h": 14.4375,
+        "client": 45,
+        "scroll": 140,
+        "ellipsis": "ellipsis"
+      },
+      "monogram": {
+        "x": 18.265625,
+        "y": 19.078125,
+        "w": 26,
+        "h": 26,
+        "radius": "50%",
+        "shrink": "0"
+      },
+      "toolbar": [
+        {
+          "class": "user-menu-close-btn",
+          "rect": {
+            "x": 276.734375,
+            "y": 15.078125,
+            "w": 34,
+            "h": 34
+          }
+        }
+      ]
+    },
+    "scroll": {
+      "before": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 640,
+          "top": 0,
+          "right": 320,
+          "bottom": 640,
+          "left": 0
+        },
+        "overflow": false,
+        "scroll": [
+          {
+            "cls": "ui-popup__body ui-popup__body--default",
+            "top": 0,
+            "height": 590,
+            "total": 687
+          }
+        ]
+      },
+      "after": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 640,
+          "top": 0,
+          "right": 320,
+          "bottom": 640,
+          "left": 0
+        },
+        "text": "Profile visibility rules\ndone\nclose\nBasics\nvisibility\nProfession\napartment\nWorkplace\nschool\nSchool\nvisibility\nHoroscope\nLifestyle\nsell\nInterest\ngroups\nDrinking\nsmoking_rooms\nSmoking\nfitness_center\nWorkout\npets\nPets\nRelationships\nfamily_restroom\nFamily plans\nchild_care\nChildren\nexplore\nLove style\nforum\nCommunication style\nall_inclusive\nSexual orientation\nBeliefs\nself_improvement\nReligion\nauto_awesome\nValues",
+        "scroll": [
+          {
+            "cls": "ui-popup__body ui-popup__body--default",
+            "top": 97
+          }
+        ]
+      }
+    },
+    "mobile-single-column": [
+      {
+        "width": 320,
+        "overflow": false,
+        "controls": [
+          {
+            "text": "visibility\nProfession",
+            "rect": {
+              "x": 27.390625,
+              "y": 111.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 111.734375,
+              "right": 267.609375,
+              "bottom": 147.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "visibility\nProfession",
+                "client": 86,
+                "scroll": 86
+              },
+              {
+                "text": "Profession",
+                "client": 63,
+                "scroll": 63
+              }
+            ]
+          },
+          {
+            "text": "apartment\nWorkplace",
+            "rect": {
+              "x": 27.390625,
+              "y": 159.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 159.734375,
+              "right": 267.609375,
+              "bottom": 195.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "apartment\nWorkplace",
+                "client": 85,
+                "scroll": 85
+              },
+              {
+                "text": "Workplace",
+                "client": 61,
+                "scroll": 61
+              }
+            ]
+          },
+          {
+            "text": "school\nSchool",
+            "rect": {
+              "x": 27.390625,
+              "y": 207.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 207.734375,
+              "right": 267.609375,
+              "bottom": 243.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "school\nSchool",
+                "client": 64,
+                "scroll": 64
+              },
+              {
+                "text": "School",
+                "client": 41,
+                "scroll": 41
+              }
+            ]
+          },
+          {
+            "text": "visibility\nHoroscope",
+            "rect": {
+              "x": 27.390625,
+              "y": 255.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 255.734375,
+              "right": 267.609375,
+              "bottom": 291.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "visibility\nHoroscope",
+                "client": 87,
+                "scroll": 87
+              },
+              {
+                "text": "Horoscope",
+                "client": 64,
+                "scroll": 64
+              }
+            ]
+          },
+          {
+            "text": "sell\nInterest",
+            "rect": {
+              "x": 27.390625,
+              "y": 359.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 359.734375,
+              "right": 267.609375,
+              "bottom": 395.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "sell\nInterest",
+                "client": 67,
+                "scroll": 67
+              },
+              {
+                "text": "Interest",
+                "client": 44,
+                "scroll": 44
+              }
+            ]
+          },
+          {
+            "text": "groups\nDrinking",
+            "rect": {
+              "x": 27.390625,
+              "y": 407.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 407.734375,
+              "right": 267.609375,
+              "bottom": 443.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "groups\nDrinking",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Drinking",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "smoking_rooms\nSmoking",
+            "rect": {
+              "x": 27.390625,
+              "y": 455.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 455.734375,
+              "right": 267.609375,
+              "bottom": 491.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "smoking_rooms\nSmoking",
+                "client": 75,
+                "scroll": 75
+              },
+              {
+                "text": "Smoking",
+                "client": 51,
+                "scroll": 51
+              }
+            ]
+          },
+          {
+            "text": "fitness_center\nWorkout",
+            "rect": {
+              "x": 27.390625,
+              "y": 503.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 503.734375,
+              "right": 267.609375,
+              "bottom": 539.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "fitness_center\nWorkout",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Workout",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "pets\nPets",
+            "rect": {
+              "x": 27.390625,
+              "y": 551.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 551.734375,
+              "right": 267.609375,
+              "bottom": 587.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "pets\nPets",
+                "client": 49,
+                "scroll": 49
+              },
+              {
+                "text": "Pets",
+                "client": 26,
+                "scroll": 26
+              }
+            ]
+          },
+          {
+            "text": "family_restroom\nFamily plans",
+            "rect": {
+              "x": 27.390625,
+              "y": 655.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 655.734375,
+              "right": 267.609375,
+              "bottom": 691.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "family_restroom\nFamily plans",
+                "client": 97,
+                "scroll": 97
+              },
+              {
+                "text": "Family plans",
+                "client": 74,
+                "scroll": 74
+              }
+            ]
+          },
+          {
+            "text": "child_care\nChildren",
+            "rect": {
+              "x": 27.390625,
+              "y": 703.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 703.734375,
+              "right": 267.609375,
+              "bottom": 739.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "child_care\nChildren",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Children",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "explore\nLove style",
+            "rect": {
+              "x": 27.390625,
+              "y": 751.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 751.734375,
+              "right": 267.609375,
+              "bottom": 787.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "explore\nLove style",
+                "client": 83,
+                "scroll": 83
+              },
+              {
+                "text": "Love style",
+                "client": 59,
+                "scroll": 59
+              }
+            ]
+          },
+          {
+            "text": "forum\nCommunication style",
+            "rect": {
+              "x": 27.390625,
+              "y": 799.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 799.734375,
+              "right": 267.609375,
+              "bottom": 835.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "forum\nCommunication style",
+                "client": 146,
+                "scroll": 146
+              },
+              {
+                "text": "Communication style",
+                "client": 123,
+                "scroll": 123
+              }
+            ]
+          },
+          {
+            "text": "all_inclusive\nSexual orientation",
+            "rect": {
+              "x": 27.390625,
+              "y": 847.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 847.734375,
+              "right": 267.609375,
+              "bottom": 883.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "all_inclusive\nSexual orientation",
+                "client": 129,
+                "scroll": 129
+              },
+              {
+                "text": "Sexual orientation",
+                "client": 105,
+                "scroll": 105
+              }
+            ]
+          },
+          {
+            "text": "self_improvement\nReligion",
+            "rect": {
+              "x": 27.390625,
+              "y": 951.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 951.734375,
+              "right": 267.609375,
+              "bottom": 987.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "self_improvement\nReligion",
+                "client": 71,
+                "scroll": 71
+              },
+              {
+                "text": "Religion",
+                "client": 48,
+                "scroll": 48
+              }
+            ]
+          },
+          {
+            "text": "auto_awesome\nValues",
+            "rect": {
+              "x": 27.390625,
+              "y": 999.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 999.734375,
+              "right": 267.609375,
+              "bottom": 1035.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "auto_awesome\nValues",
+                "client": 62,
+                "scroll": 62
+              },
+              {
+                "text": "Values",
+                "client": 39,
+                "scroll": 39
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "width": 360,
+        "overflow": false,
+        "controls": [
+          {
+            "text": "visibility\nProfession",
+            "rect": {
+              "x": 27.390625,
+              "y": 111.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 111.734375,
+              "right": 307.609375,
+              "bottom": 147.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "visibility\nProfession",
+                "client": 86,
+                "scroll": 86
+              },
+              {
+                "text": "Profession",
+                "client": 63,
+                "scroll": 63
+              }
+            ]
+          },
+          {
+            "text": "apartment\nWorkplace",
+            "rect": {
+              "x": 27.390625,
+              "y": 159.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 159.734375,
+              "right": 307.609375,
+              "bottom": 195.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "apartment\nWorkplace",
+                "client": 85,
+                "scroll": 85
+              },
+              {
+                "text": "Workplace",
+                "client": 61,
+                "scroll": 61
+              }
+            ]
+          },
+          {
+            "text": "school\nSchool",
+            "rect": {
+              "x": 27.390625,
+              "y": 207.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 207.734375,
+              "right": 307.609375,
+              "bottom": 243.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "school\nSchool",
+                "client": 64,
+                "scroll": 64
+              },
+              {
+                "text": "School",
+                "client": 41,
+                "scroll": 41
+              }
+            ]
+          },
+          {
+            "text": "visibility\nHoroscope",
+            "rect": {
+              "x": 27.390625,
+              "y": 255.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 255.734375,
+              "right": 307.609375,
+              "bottom": 291.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "visibility\nHoroscope",
+                "client": 87,
+                "scroll": 87
+              },
+              {
+                "text": "Horoscope",
+                "client": 64,
+                "scroll": 64
+              }
+            ]
+          },
+          {
+            "text": "sell\nInterest",
+            "rect": {
+              "x": 27.390625,
+              "y": 359.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 359.734375,
+              "right": 307.609375,
+              "bottom": 395.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "sell\nInterest",
+                "client": 67,
+                "scroll": 67
+              },
+              {
+                "text": "Interest",
+                "client": 44,
+                "scroll": 44
+              }
+            ]
+          },
+          {
+            "text": "groups\nDrinking",
+            "rect": {
+              "x": 27.390625,
+              "y": 407.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 407.734375,
+              "right": 307.609375,
+              "bottom": 443.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "groups\nDrinking",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Drinking",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "smoking_rooms\nSmoking",
+            "rect": {
+              "x": 27.390625,
+              "y": 455.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 455.734375,
+              "right": 307.609375,
+              "bottom": 491.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "smoking_rooms\nSmoking",
+                "client": 75,
+                "scroll": 75
+              },
+              {
+                "text": "Smoking",
+                "client": 51,
+                "scroll": 51
+              }
+            ]
+          },
+          {
+            "text": "fitness_center\nWorkout",
+            "rect": {
+              "x": 27.390625,
+              "y": 503.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 503.734375,
+              "right": 307.609375,
+              "bottom": 539.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "fitness_center\nWorkout",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Workout",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "pets\nPets",
+            "rect": {
+              "x": 27.390625,
+              "y": 551.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 551.734375,
+              "right": 307.609375,
+              "bottom": 587.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "pets\nPets",
+                "client": 49,
+                "scroll": 49
+              },
+              {
+                "text": "Pets",
+                "client": 26,
+                "scroll": 26
+              }
+            ]
+          },
+          {
+            "text": "family_restroom\nFamily plans",
+            "rect": {
+              "x": 27.390625,
+              "y": 655.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 655.734375,
+              "right": 307.609375,
+              "bottom": 691.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "family_restroom\nFamily plans",
+                "client": 97,
+                "scroll": 97
+              },
+              {
+                "text": "Family plans",
+                "client": 74,
+                "scroll": 74
+              }
+            ]
+          },
+          {
+            "text": "child_care\nChildren",
+            "rect": {
+              "x": 27.390625,
+              "y": 703.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 703.734375,
+              "right": 307.609375,
+              "bottom": 739.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "child_care\nChildren",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Children",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "explore\nLove style",
+            "rect": {
+              "x": 27.390625,
+              "y": 751.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 751.734375,
+              "right": 307.609375,
+              "bottom": 787.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "explore\nLove style",
+                "client": 83,
+                "scroll": 83
+              },
+              {
+                "text": "Love style",
+                "client": 59,
+                "scroll": 59
+              }
+            ]
+          },
+          {
+            "text": "forum\nCommunication style",
+            "rect": {
+              "x": 27.390625,
+              "y": 799.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 799.734375,
+              "right": 307.609375,
+              "bottom": 835.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "forum\nCommunication style",
+                "client": 146,
+                "scroll": 146
+              },
+              {
+                "text": "Communication style",
+                "client": 123,
+                "scroll": 123
+              }
+            ]
+          },
+          {
+            "text": "all_inclusive\nSexual orientation",
+            "rect": {
+              "x": 27.390625,
+              "y": 847.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 847.734375,
+              "right": 307.609375,
+              "bottom": 883.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "all_inclusive\nSexual orientation",
+                "client": 129,
+                "scroll": 129
+              },
+              {
+                "text": "Sexual orientation",
+                "client": 105,
+                "scroll": 105
+              }
+            ]
+          },
+          {
+            "text": "self_improvement\nReligion",
+            "rect": {
+              "x": 27.390625,
+              "y": 951.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 951.734375,
+              "right": 307.609375,
+              "bottom": 987.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "self_improvement\nReligion",
+                "client": 71,
+                "scroll": 71
+              },
+              {
+                "text": "Religion",
+                "client": 48,
+                "scroll": 48
+              }
+            ]
+          },
+          {
+            "text": "auto_awesome\nValues",
+            "rect": {
+              "x": 27.390625,
+              "y": 999.734375,
+              "width": 280.21875,
+              "height": 36,
+              "top": 999.734375,
+              "right": 307.609375,
+              "bottom": 1035.734375,
+              "left": 27.390625
+            },
+            "label": [
+              {
+                "text": "auto_awesome\nValues",
+                "client": 62,
+                "scroll": 62
+              },
+              {
+                "text": "Values",
+                "client": 39,
+                "scroll": 39
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "width": 1100,
+        "overflow": false,
+        "controls": [
+          {
+            "text": "visibility\nProfession",
+            "rect": {
+              "x": 47.390625,
+              "y": 132.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 132.921875,
+              "right": 538,
+              "bottom": 168.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "visibility\nProfession",
+                "client": 86,
+                "scroll": 86
+              },
+              {
+                "text": "Profession",
+                "client": 63,
+                "scroll": 63
+              }
+            ]
+          },
+          {
+            "text": "apartment\nWorkplace",
+            "rect": {
+              "x": 552,
+              "y": 132.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 132.921875,
+              "right": 1042.609375,
+              "bottom": 168.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "apartment\nWorkplace",
+                "client": 85,
+                "scroll": 85
+              },
+              {
+                "text": "Workplace",
+                "client": 61,
+                "scroll": 61
+              }
+            ]
+          },
+          {
+            "text": "school\nSchool",
+            "rect": {
+              "x": 47.390625,
+              "y": 180.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 180.921875,
+              "right": 538,
+              "bottom": 216.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "school\nSchool",
+                "client": 64,
+                "scroll": 64
+              },
+              {
+                "text": "School",
+                "client": 41,
+                "scroll": 41
+              }
+            ]
+          },
+          {
+            "text": "visibility\nHoroscope",
+            "rect": {
+              "x": 552,
+              "y": 180.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 180.921875,
+              "right": 1042.609375,
+              "bottom": 216.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "visibility\nHoroscope",
+                "client": 87,
+                "scroll": 87
+              },
+              {
+                "text": "Horoscope",
+                "client": 64,
+                "scroll": 64
+              }
+            ]
+          },
+          {
+            "text": "sell\nInterest",
+            "rect": {
+              "x": 47.390625,
+              "y": 284.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 284.921875,
+              "right": 538,
+              "bottom": 320.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "sell\nInterest",
+                "client": 67,
+                "scroll": 67
+              },
+              {
+                "text": "Interest",
+                "client": 44,
+                "scroll": 44
+              }
+            ]
+          },
+          {
+            "text": "groups\nDrinking",
+            "rect": {
+              "x": 552,
+              "y": 284.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 284.921875,
+              "right": 1042.609375,
+              "bottom": 320.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "groups\nDrinking",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Drinking",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "smoking_rooms\nSmoking",
+            "rect": {
+              "x": 47.390625,
+              "y": 332.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 332.921875,
+              "right": 538,
+              "bottom": 368.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "smoking_rooms\nSmoking",
+                "client": 75,
+                "scroll": 75
+              },
+              {
+                "text": "Smoking",
+                "client": 51,
+                "scroll": 51
+              }
+            ]
+          },
+          {
+            "text": "fitness_center\nWorkout",
+            "rect": {
+              "x": 552,
+              "y": 332.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 332.921875,
+              "right": 1042.609375,
+              "bottom": 368.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "fitness_center\nWorkout",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Workout",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "pets\nPets",
+            "rect": {
+              "x": 47.390625,
+              "y": 380.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 380.921875,
+              "right": 538,
+              "bottom": 416.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "pets\nPets",
+                "client": 49,
+                "scroll": 49
+              },
+              {
+                "text": "Pets",
+                "client": 26,
+                "scroll": 26
+              }
+            ]
+          },
+          {
+            "text": "family_restroom\nFamily plans",
+            "rect": {
+              "x": 47.390625,
+              "y": 484.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 484.921875,
+              "right": 538,
+              "bottom": 520.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "family_restroom\nFamily plans",
+                "client": 97,
+                "scroll": 97
+              },
+              {
+                "text": "Family plans",
+                "client": 74,
+                "scroll": 74
+              }
+            ]
+          },
+          {
+            "text": "child_care\nChildren",
+            "rect": {
+              "x": 552,
+              "y": 484.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 484.921875,
+              "right": 1042.609375,
+              "bottom": 520.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "child_care\nChildren",
+                "client": 73,
+                "scroll": 73
+              },
+              {
+                "text": "Children",
+                "client": 49,
+                "scroll": 49
+              }
+            ]
+          },
+          {
+            "text": "explore\nLove style",
+            "rect": {
+              "x": 47.390625,
+              "y": 532.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 532.921875,
+              "right": 538,
+              "bottom": 568.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "explore\nLove style",
+                "client": 83,
+                "scroll": 83
+              },
+              {
+                "text": "Love style",
+                "client": 59,
+                "scroll": 59
+              }
+            ]
+          },
+          {
+            "text": "forum\nCommunication style",
+            "rect": {
+              "x": 552,
+              "y": 532.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 532.921875,
+              "right": 1042.609375,
+              "bottom": 568.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "forum\nCommunication style",
+                "client": 146,
+                "scroll": 146
+              },
+              {
+                "text": "Communication style",
+                "client": 123,
+                "scroll": 123
+              }
+            ]
+          },
+          {
+            "text": "all_inclusive\nSexual orientation",
+            "rect": {
+              "x": 47.390625,
+              "y": 580.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 580.921875,
+              "right": 538,
+              "bottom": 616.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "all_inclusive\nSexual orientation",
+                "client": 129,
+                "scroll": 129
+              },
+              {
+                "text": "Sexual orientation",
+                "client": 105,
+                "scroll": 105
+              }
+            ]
+          },
+          {
+            "text": "self_improvement\nReligion",
+            "rect": {
+              "x": 47.390625,
+              "y": 684.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 684.921875,
+              "right": 538,
+              "bottom": 720.921875,
+              "left": 47.390625
+            },
+            "label": [
+              {
+                "text": "self_improvement\nReligion",
+                "client": 71,
+                "scroll": 71
+              },
+              {
+                "text": "Religion",
+                "client": 48,
+                "scroll": 48
+              }
+            ]
+          },
+          {
+            "text": "auto_awesome\nValues",
+            "rect": {
+              "x": 552,
+              "y": 684.921875,
+              "width": 490.609375,
+              "height": 36,
+              "top": 684.921875,
+              "right": 1042.609375,
+              "bottom": 720.921875,
+              "left": 552
+            },
+            "label": [
+              {
+                "text": "auto_awesome\nValues",
+                "client": 62,
+                "scroll": 62
+              },
+              {
+                "text": "Values",
+                "client": 39,
+                "scroll": 39
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "hu-single-column": {
+      "editor": {
+        "text": "Csoport\nlock\nPrivát\nexpand_more\ndone\nclose\n1\ncontent_copy\nclose\nNév*\nLeírás\n49/4000\ndiversity_3\nBarátok\nexpand_more\nvisibility_off\nTaglista látható\nbadge\nKötelező profilmezők\ntoggle_on\nBE\ntune\nProfil-láthatósági szabályok\nFoglalkozás\t\ncheck\nKötelező\nMunkahely\t\ncheck\nKötelező\npolicy\nCsoportszabályzat\n\nAdd meg a csoport szabályait és ajánlásait.\n\ntoggle_on\nBE\ngavel\nSzabályzatbeállítás megnyitása\nÖSSZEGZÉS\n\nMég nincs megadva csoportszabályzat.",
+        "buttons": [
+          {
+            "t": "lock\nPrivát\nexpand_more",
+            "a": "Open groups.visibility.private"
+          },
+          {
+            "t": "done",
+            "a": "Mentés"
+          },
+          {
+            "t": "close",
+            "a": "Bezárás"
+          },
+          {
+            "t": "content_copy",
+            "a": "Képlink másolása"
+          },
+          {
+            "t": "close",
+            "a": "Kép eltávolítása"
+          },
+          {
+            "t": "",
+            "a": "Képhely cseréje 1"
+          },
+          {
+            "t": "diversity_3\nBarátok\nexpand_more",
+            "a": "Open groups.category.friends"
+          },
+          {
+            "t": "visibility_off\nTaglista látható",
+            "a": "Csak az adminok láthatók"
+          },
+          {
+            "t": "toggle_on\nBE",
+            "a": "Profil-láthatósági szabályok"
+          },
+          {
+            "t": "tune\nProfil-láthatósági szabályok",
+            "a": "Profil-láthatósági szabályok"
+          },
+          {
+            "t": "toggle_on\nBE",
+            "a": "Csoportszabályzat"
+          },
+          {
+            "t": "gavel\nSzabályzatbeállítás megnyitása",
+            "a": null
+          }
+        ]
+      },
+      "rules": {
+        "text": "Profil-láthatósági szabályok\ndone\nclose\nAlapadatok\nvisibility\nFoglalkozás\napartment\nMunkahely\nschool\nIskola\nvisibility\nHoroszkóp\nÉletmód\nsell\nÉrdeklődés\ngroups\nAlkohol\nsmoking_rooms\nDohányzás\nfitness_center\nEdzés\npets\nHáziállatok\nKapcsolatok\nfamily_restroom\nCsaládtervek\nchild_care\nGyerekek\nexplore\nKapcsolati stílus\nforum\nKommunikációs stílus\nall_inclusive\nSzexuális orientáció\nHiedelmek\nself_improvement\nVallás\nauto_awesome\nÉrtékek",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 740,
+          "top": 0,
+          "right": 320,
+          "bottom": 740,
+          "left": 0
+        },
+        "overflow": false,
+        "controls": [
+          {
+            "t": "visibility\nFoglalkozás",
+            "rect": {
+              "x": 27.390625,
+              "y": 111.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 111.734375,
+              "right": 267.609375,
+              "bottom": 147.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "apartment\nMunkahely",
+            "rect": {
+              "x": 27.390625,
+              "y": 159.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 159.734375,
+              "right": 267.609375,
+              "bottom": 195.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "school\nIskola",
+            "rect": {
+              "x": 27.390625,
+              "y": 207.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 207.734375,
+              "right": 267.609375,
+              "bottom": 243.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "visibility\nHoroszkóp",
+            "rect": {
+              "x": 27.390625,
+              "y": 255.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 255.734375,
+              "right": 267.609375,
+              "bottom": 291.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "sell\nÉrdeklődés",
+            "rect": {
+              "x": 27.390625,
+              "y": 359.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 359.734375,
+              "right": 267.609375,
+              "bottom": 395.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "groups\nAlkohol",
+            "rect": {
+              "x": 27.390625,
+              "y": 407.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 407.734375,
+              "right": 267.609375,
+              "bottom": 443.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "smoking_rooms\nDohányzás",
+            "rect": {
+              "x": 27.390625,
+              "y": 455.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 455.734375,
+              "right": 267.609375,
+              "bottom": 491.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "fitness_center\nEdzés",
+            "rect": {
+              "x": 27.390625,
+              "y": 503.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 503.734375,
+              "right": 267.609375,
+              "bottom": 539.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "pets\nHáziállatok",
+            "rect": {
+              "x": 27.390625,
+              "y": 551.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 551.734375,
+              "right": 267.609375,
+              "bottom": 587.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "family_restroom\nCsaládtervek",
+            "rect": {
+              "x": 27.390625,
+              "y": 655.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 655.734375,
+              "right": 267.609375,
+              "bottom": 691.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "child_care\nGyerekek",
+            "rect": {
+              "x": 27.390625,
+              "y": 703.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 703.734375,
+              "right": 267.609375,
+              "bottom": 739.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "explore\nKapcsolati stílus",
+            "rect": {
+              "x": 27.390625,
+              "y": 751.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 751.734375,
+              "right": 267.609375,
+              "bottom": 787.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "forum\nKommunikációs stílus",
+            "rect": {
+              "x": 27.390625,
+              "y": 799.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 799.734375,
+              "right": 267.609375,
+              "bottom": 835.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "all_inclusive\nSzexuális orientáció",
+            "rect": {
+              "x": 27.390625,
+              "y": 847.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 847.734375,
+              "right": 267.609375,
+              "bottom": 883.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "self_improvement\nVallás",
+            "rect": {
+              "x": 27.390625,
+              "y": 951.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 951.734375,
+              "right": 267.609375,
+              "bottom": 987.734375,
+              "left": 27.390625
+            }
+          },
+          {
+            "t": "auto_awesome\nÉrtékek",
+            "rect": {
+              "x": 27.390625,
+              "y": 999.734375,
+              "width": 240.21875,
+              "height": 36,
+              "top": 999.734375,
+              "right": 267.609375,
+              "bottom": 1035.734375,
+              "left": 27.390625
+            }
+          }
+        ]
+      }
+    },
+    "normal-header": {
+      "base": {
+        "width": 320,
+        "header": {
+          "text": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 174.390625,
+            "top": 0,
+            "right": 320,
+            "bottom": 174.390625,
+            "left": 0
+          },
+          "color": "rgb(26, 27, 31)"
+        },
+        "toolbar": {
+          "text": "public\nMain profile\nexpand_more\n99+\nnotifications\n24\ntips_and_updates\nshare\nsettings\nclose",
+          "rect": {
+            "x": 10.546875,
+            "y": 14.078125,
+            "width": 300.1875,
+            "height": 36,
+            "top": 14.078125,
+            "right": 310.734375,
+            "bottom": 50.078125,
+            "left": 10.546875
+          },
+          "color": "rgb(26, 27, 31)"
+        },
+        "headerChildren": [
+          {
+            "text": "edit\n61%",
+            "rect": {
+              "x": 11.546875,
+              "y": 73,
+              "width": 74,
+              "height": 85,
+              "top": 73,
+              "right": 85.546875,
+              "bottom": 158,
+              "left": 11.546875
+            },
+            "color": "rgb(26, 27, 31)"
+          },
+          {
+            "text": "",
+            "rect": {
+              "x": 11.546875,
+              "y": 73,
+              "width": 74,
+              "height": 74,
+              "top": 73,
+              "right": 85.546875,
+              "bottom": 147,
+              "left": 11.546875
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "text": "",
+            "rect": {
+              "x": 7.546875,
+              "y": 69,
+              "width": 0,
+              "height": 0,
+              "top": 69,
+              "right": 7.546875,
+              "bottom": 69,
+              "left": 7.546875
+            },
+            "color": "rgb(26, 27, 31)"
+          }
+        ],
+        "trigger": {
+          "text": "public\nMain profile\nexpand_more\n99+",
+          "rect": {
+            "x": 10.546875,
+            "y": 14.078125,
+            "width": 108.4375,
+            "height": 36,
+            "top": 14.078125,
+            "right": 118.984375,
+            "bottom": 50.078125,
+            "left": 10.546875
+          },
+          "color": "rgb(35, 109, 81)"
+        },
+        "icon": {
+          "text": "public",
+          "rect": {
+            "x": 18.265625,
+            "y": 24.078125,
+            "width": 16,
+            "height": 16,
+            "top": 24.078125,
+            "right": 34.265625,
+            "bottom": 40.078125,
+            "left": 18.265625
+          },
+          "color": "rgb(47, 138, 84)"
+        },
+        "sections": [
+          {
+            "text": "diversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n4",
+            "rect": {
+              "x": 13.75,
+              "y": 188.140625,
+              "width": 292.5,
+              "height": 98.3125,
+              "top": 188.140625,
+              "right": 306.25,
+              "bottom": 286.453125,
+              "left": 13.75
+            },
+            "color": "rgb(26, 27, 31)"
+          },
+          {
+            "text": "psychology\nIMPRESSIONS\nworkspace_premium\nSilver\nHOST\ntrending_up\nAmbitious\nATTENDEE\nrate_review\nFeedback\n2\nlocal_activity\nACTIVITIES\nstar\nRates\n99+\nchat\nChats\nmail\nInvitations\n6\nevent\nEvents\n27\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+            "rect": {
+              "x": 13.75,
+              "y": 302.453125,
+              "width": 292.5,
+              "height": 326.9375,
+              "top": 302.453125,
+              "right": 306.25,
+              "bottom": 629.390625,
+              "left": 13.75
+            },
+            "color": "rgb(26, 27, 31)"
+          }
+        ]
+      },
+      "group": {
+        "width": 320,
+        "header": {
+          "text": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 174.390625,
+            "top": 0,
+            "right": 320,
+            "bottom": 174.390625,
+            "left": 0
+          },
+          "color": "rgb(26, 27, 31)"
+        },
+        "toolbar": {
+          "text": "QA\nQA Admin TransferWWW\nexpand_more\n99+\nnotifications\n24\ntips_and_updates\nshare\nsettings\nclose",
+          "rect": {
+            "x": 10.546875,
+            "y": 14.078125,
+            "width": 300.1875,
+            "height": 36,
+            "top": 14.078125,
+            "right": 310.734375,
+            "bottom": 50.078125,
+            "left": 10.546875
+          },
+          "color": "rgb(26, 27, 31)"
+        },
+        "headerChildren": [
+          {
+            "text": "edit\n61%",
+            "rect": {
+              "x": 11.546875,
+              "y": 73,
+              "width": 74,
+              "height": 85,
+              "top": 73,
+              "right": 85.546875,
+              "bottom": 158,
+              "left": 11.546875
+            },
+            "color": "rgb(26, 27, 31)"
+          },
+          {
+            "text": "",
+            "rect": {
+              "x": 11.546875,
+              "y": 73,
+              "width": 74,
+              "height": 74,
+              "top": 73,
+              "right": 85.546875,
+              "bottom": 147,
+              "left": 11.546875
+            },
+            "color": "rgba(0, 0, 0, 0)"
+          },
+          {
+            "text": "",
+            "rect": {
+              "x": 7.546875,
+              "y": 69,
+              "width": 0,
+              "height": 0,
+              "top": 69,
+              "right": 7.546875,
+              "bottom": 69,
+              "left": 7.546875
+            },
+            "color": "rgb(26, 27, 31)"
+          }
+        ],
+        "trigger": {
+          "text": "QA\nQA Admin TransferWWW\nexpand_more\n99+",
+          "rect": {
+            "x": 10.546875,
+            "y": 14.078125,
+            "width": 108.4375,
+            "height": 36,
+            "top": 14.078125,
+            "right": 118.984375,
+            "bottom": 50.078125,
+            "left": 10.546875
+          },
+          "color": "rgb(101, 69, 155)"
+        },
+        "icon": {
+          "text": "expand_more",
+          "rect": {
+            "x": 95.265625,
+            "y": 24.078125,
+            "width": 16,
+            "height": 16,
+            "top": 24.078125,
+            "right": 111.265625,
+            "bottom": 40.078125,
+            "left": 95.265625
+          },
+          "color": "rgb(66, 106, 152)"
+        },
+        "sections": [
+          {
+            "text": "diversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n4",
+            "rect": {
+              "x": 13.75,
+              "y": 188.140625,
+              "width": 292.5,
+              "height": 98.3125,
+              "top": 188.140625,
+              "right": 306.25,
+              "bottom": 286.453125,
+              "left": 13.75
+            },
+            "color": "rgb(26, 27, 31)"
+          },
+          {
+            "text": "psychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+            "rect": {
+              "x": 13.75,
+              "y": 302.453125,
+              "width": 292.5,
+              "height": 326.9375,
+              "top": 302.453125,
+              "right": 306.25,
+              "bottom": 629.390625,
+              "left": 13.75
+            },
+            "color": "rgb(26, 27, 31)"
+          }
+        ]
+      }
+    },
+    "admin-header": [
+      {
+        "path": "/admin",
+        "width": 320,
+        "panel": {
+          "text": "edit\nADMIN\nAva Moderation\nadmin_panel_settings\nModeration workspace\nnotifications\nsettings\nclose\nadmin_panel_settings\nMODERATION & SUPPORT\nfact_check\nContent moderation\nreport\nReports\n2\nfeedback\nFeedback\n2\nchat\nChats\ntune\nCONFIGURATION\npending_actions\nJobs\ntune\nParams\nedit_note\nContent\ntips_and_updates\nArticle\nmonitoring\nMONITORING\nquery_stats\nStats\nmonitoring\nMetrics\nhub\nGraph\nscience\nTESTING\ncredit_card_gear\nPayment simulator\nverified_user\n3DS",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 800,
+            "top": 0,
+            "right": 320,
+            "bottom": 800,
+            "left": 0
+          }
+        },
+        "toolbar": {
+          "text": "notifications\nsettings\nclose",
+          "rect": {
+            "x": 10.546875,
+            "y": 14.078125,
+            "width": 300.1875,
+            "height": 34,
+            "top": 14.078125,
+            "right": 310.734375,
+            "bottom": 48.078125,
+            "left": 10.546875
+          }
+        },
+        "avatar": {
+          "text": "",
+          "rect": {
+            "x": 11.546875,
+            "y": 94.890625,
+            "width": 74,
+            "height": 74,
+            "top": 94.890625,
+            "right": 85.546875,
+            "bottom": 168.890625,
+            "left": 11.546875
+          }
+        },
+        "name": {
+          "text": "Ava Moderation",
+          "rect": {
+            "x": 100.734375,
+            "y": 123.046875,
+            "width": 152.78125,
+            "height": 22.9375,
+            "top": 123.046875,
+            "right": 253.515625,
+            "bottom": 145.984375,
+            "left": 100.734375
+          }
+        },
+        "location": {
+          "text": "admin_panel_settings\nModeration workspace",
+          "rect": {
+            "x": 100.734375,
+            "y": 149.8125,
+            "width": 207.71875,
+            "height": 34.71875,
+            "top": 149.8125,
+            "right": 308.453125,
+            "bottom": 184.53125,
+            "left": 100.734375
+          }
+        },
+        "workspaceSelector": false,
+        "overflow": false,
+        "sections": [
+          {
+            "text": "admin_panel_settings\nMODERATION & SUPPORT\nfact_check\nContent moderation\nreport\nReports\n2\nfeedback\nFeedback\n2\nchat\nChats\ntune\nCONFIGURATION\npending_actions\nJobs\ntune\nParams\nedit_note\nContent\ntips_and_updates\nArticle\nmonitoring\nMONITORING\nquery_stats\nStats\nmonitoring\nMetrics\nhub\nGraph\nscience\nTESTING\ncredit_card_gear\nPayment simulator\nverified_user\n3DS",
+            "rect": {
+              "x": 13.75,
+              "y": 231.9375,
+              "width": 292.5,
+              "height": 441.25,
+              "top": 231.9375,
+              "right": 306.25,
+              "bottom": 673.1875,
+              "left": 13.75
+            }
+          }
+        ]
+      },
+      {
+        "path": "/admin",
+        "width": 1100,
+        "panel": {
+          "text": "edit\nADMIN\nAva Moderation\nadmin_panel_settings\nModeration workspace\nnotifications\nsettings\nclose\nadmin_panel_settings\nMODERATION & SUPPORT\nfact_check\nContent moderation\nreport\nReports\n2\nfeedback\nFeedback\n2\nchat\nChats\ntune\nCONFIGURATION\npending_actions\nJobs\ntune\nParams\nedit_note\nContent\ntips_and_updates\nArticle\nmonitoring\nMONITORING\nquery_stats\nStats\nmonitoring\nMetrics\nhub\nGraph\nscience\nTESTING\ncredit_card_gear\nPayment simulator\nverified_user\n3DS",
+          "rect": {
+            "x": 655,
+            "y": 0,
+            "width": 445,
+            "height": 800,
+            "top": 0,
+            "right": 1100,
+            "bottom": 800,
+            "left": 655
+          }
+        },
+        "toolbar": {
+          "text": "notifications\nsettings\nclose",
+          "rect": {
+            "x": 666.546875,
+            "y": 14.078125,
+            "width": 424.1875,
+            "height": 34,
+            "top": 14.078125,
+            "right": 1090.734375,
+            "bottom": 48.078125,
+            "left": 666.546875
+          }
+        },
+        "avatar": {
+          "text": "",
+          "rect": {
+            "x": 667.546875,
+            "y": 83.890625,
+            "width": 96,
+            "height": 96,
+            "top": 83.890625,
+            "right": 763.546875,
+            "bottom": 179.890625,
+            "left": 667.546875
+          }
+        },
+        "name": {
+          "text": "Ava Moderation",
+          "rect": {
+            "x": 778.734375,
+            "y": 130.796875,
+            "width": 152.78125,
+            "height": 22.9375,
+            "top": 130.796875,
+            "right": 931.515625,
+            "bottom": 153.734375,
+            "left": 778.734375
+          }
+        },
+        "location": {
+          "text": "admin_panel_settings\nModeration workspace",
+          "rect": {
+            "x": 778.734375,
+            "y": 157.5625,
+            "width": 235.78125,
+            "height": 19.234375,
+            "top": 157.5625,
+            "right": 1014.515625,
+            "bottom": 176.796875,
+            "left": 778.734375
+          }
+        },
+        "workspaceSelector": false,
+        "overflow": false,
+        "sections": [
+          {
+            "text": "admin_panel_settings\nMODERATION & SUPPORT\nfact_check\nContent moderation\nreport\nReports\n2\nfeedback\nFeedback\n2\nchat\nChats\ntune\nCONFIGURATION\npending_actions\nJobs\ntune\nParams\nedit_note\nContent\ntips_and_updates\nArticle\nmonitoring\nMONITORING\nquery_stats\nStats\nmonitoring\nMetrics\nhub\nGraph\nscience\nTESTING\ncredit_card_gear\nPayment simulator\nverified_user\n3DS",
+            "rect": {
+              "x": 669.75,
+              "y": 231.9375,
+              "width": 416.5,
+              "height": 441.25,
+              "top": 231.9375,
+              "right": 1086.25,
+              "bottom": 673.1875,
+              "left": 669.75
+            }
+          }
+        ]
+      }
+    ],
+    "operator-header": [
+      {
+        "path": "/operator",
+        "width": 320,
+        "panel": {
+          "text": "edit\nOperator\nDemo Operator\nsettings_input_component\nOperator workspace\nsettings\nclose",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 800,
+            "top": 0,
+            "right": 320,
+            "bottom": 800,
+            "left": 0
+          }
+        },
+        "toolbar": {
+          "text": "settings\nclose",
+          "rect": {
+            "x": 10.546875,
+            "y": 14.078125,
+            "width": 300.1875,
+            "height": 34,
+            "top": 14.078125,
+            "right": 310.734375,
+            "bottom": 48.078125,
+            "left": 10.546875
+          }
+        },
+        "avatar": {
+          "text": "",
+          "rect": {
+            "x": 11.546875,
+            "y": 94.890625,
+            "width": 74,
+            "height": 74,
+            "top": 94.890625,
+            "right": 85.546875,
+            "bottom": 168.890625,
+            "left": 11.546875
+          }
+        },
+        "name": {
+          "text": "Demo Operator",
+          "rect": {
+            "x": 100.734375,
+            "y": 131.734375,
+            "width": 149,
+            "height": 22.9375,
+            "top": 131.734375,
+            "right": 249.734375,
+            "bottom": 154.671875,
+            "left": 100.734375
+          }
+        },
+        "location": {
+          "text": "settings_input_component\nOperator workspace",
+          "rect": {
+            "x": 100.734375,
+            "y": 158.5,
+            "width": 201.359375,
+            "height": 17.359375,
+            "top": 158.5,
+            "right": 302.09375,
+            "bottom": 175.859375,
+            "left": 100.734375
+          }
+        },
+        "workspaceSelector": false,
+        "overflow": false,
+        "sections": []
+      },
+      {
+        "path": "/operator",
+        "width": 1100,
+        "panel": {
+          "text": "edit\nOperator\nDemo Operator\nsettings_input_component\nOperator workspace\nsettings\nclose",
+          "rect": {
+            "x": 655,
+            "y": 0,
+            "width": 445,
+            "height": 800,
+            "top": 0,
+            "right": 1100,
+            "bottom": 800,
+            "left": 655
+          }
+        },
+        "toolbar": {
+          "text": "settings\nclose",
+          "rect": {
+            "x": 666.546875,
+            "y": 14.078125,
+            "width": 424.1875,
+            "height": 34,
+            "top": 14.078125,
+            "right": 1090.734375,
+            "bottom": 48.078125,
+            "left": 666.546875
+          }
+        },
+        "avatar": {
+          "text": "",
+          "rect": {
+            "x": 667.546875,
+            "y": 83.890625,
+            "width": 96,
+            "height": 96,
+            "top": 83.890625,
+            "right": 763.546875,
+            "bottom": 179.890625,
+            "left": 667.546875
+          }
+        },
+        "name": {
+          "text": "Demo Operator",
+          "rect": {
+            "x": 778.734375,
+            "y": 130.796875,
+            "width": 149,
+            "height": 22.9375,
+            "top": 130.796875,
+            "right": 927.734375,
+            "bottom": 153.734375,
+            "left": 778.734375
+          }
+        },
+        "location": {
+          "text": "settings_input_component\nOperator workspace",
+          "rect": {
+            "x": 778.734375,
+            "y": 157.5625,
+            "width": 216.765625,
+            "height": 19.234375,
+            "top": 157.5625,
+            "right": 995.5,
+            "bottom": 176.796875,
+            "left": 778.734375
+          }
+        },
+        "workspaceSelector": false,
+        "overflow": false,
+        "sections": []
+      }
+    ],
+    "row-colors": [
+      {
+        "text": "Profession\t\ncheck\nRequired",
+        "palette": "blue",
+        "background": "linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)) repeat scroll 0% 0% / auto padding-box border-box, rgba(0, 0, 0, 0) linear-gradient(rgb(242, 247, 255) 0%, rgb(227, 239, 255) 100%) repeat scroll 0% 0% / auto padding-box border-box",
+        "fontWeight": "700"
+      },
+      {
+        "text": "Workplace\t\ncheck\nRequired",
+        "palette": "pink",
+        "background": "linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)) repeat scroll 0% 0% / auto padding-box border-box, rgba(0, 0, 0, 0) linear-gradient(rgb(255, 240, 244) 0%, rgb(253, 230, 238) 100%) repeat scroll 0% 0% / auto padding-box border-box",
+        "fontWeight": "700"
+      }
+    ]
+  },
+  "correction": {
+    "request": "Mobile policy controls must use one full-width row each.",
+    "implementation": "Remove local two-column mobile override and use existing FormFlow default.",
+    "verification": "Existing frontend-sync built/synced 2026-09-27 22:10:19 CEST. Browser reload, EN320/360 one column; desktop1100 two columns; HU320 one column; no horizontal overflow. Shared FormFlow default reused."
+  },
+  "remaining": [],
+  "cleanup": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "adminLifecycleRestored": true
+  },
+  "sameCasePriorEvidence": {
+    "file": "GROUP-LIFECYCLE-001-members-media-policy-20260926.json",
+    "assertions": [
+      "hiddenInvitation-cancel-persisted",
+      "hiddenInvitation-accepted-persisted",
+      "hiddenInvitation-reloaded-proof",
+      "policyReadOnly"
+    ],
+    "note": "Same testcase actual outcomes reused exactly; no repeat invitation lifecycle. Current independent three-role visibility and current editor geometry captured above."
+  },
+  "scopeNotes": [
+    "Admin/operator ordinary demo-login and visible header geometry at320/1100; workspace selector absent there by existing design.",
+    "Table background is a gradient; backgroundColor alone is transparent. Final row-colors record confirms blue Profession and pink Workplace gradients."
+  ],
+  "memberToggleCorrection": {
+    "request": "Category and Member list visible stay on one mobile row; truncate member label with ellipsis. Supersedes earlier wrapping acceptance.",
+    "implementation": "Existing FormFlow end-aligned wrapping control now consumes remaining row space with flex:1 1 0; shared menu label already provides ellipsis. No custom button style.",
+    "build": "Existing frontend-sync 2026-09-27 22:24:50 CEST",
+    "viewports": [
+      {
+        "width": 320,
+        "category": {
+          "x": 27.390625,
+          "y": 431.40625,
+          "width": 112.6875,
+          "height": 36,
+          "top": 431.40625,
+          "right": 140.078125,
+          "bottom": 467.40625,
+          "left": 27.390625
+        },
+        "member": {
+          "x": 154.078125,
+          "y": 431.40625,
+          "width": 138.53125,
+          "height": 36,
+          "top": 431.40625,
+          "right": 292.609375,
+          "bottom": 467.40625,
+          "left": 154.078125
+        },
+        "button": {
+          "x": 154.078125,
+          "y": 431.40625,
+          "width": 138.53125,
+          "height": 36,
+          "top": 431.40625,
+          "right": 292.609375,
+          "bottom": 467.40625,
+          "left": 154.078125
+        },
+        "label": {
+          "text": "Member list visible",
+          "client": 55,
+          "scroll": 109,
+          "textOverflow": "ellipsis"
+        },
+        "toggle": {
+          "x": 251.0625,
+          "y": 440.40625,
+          "width": 30,
+          "height": 18,
+          "top": 440.40625,
+          "right": 281.0625,
+          "bottom": 458.40625,
+          "left": 251.0625
+        }
+      },
+      {
+        "width": 360,
+        "category": {
+          "x": 27.390625,
+          "y": 449.171875,
+          "width": 112.6875,
+          "height": 36,
+          "top": 449.171875,
+          "right": 140.078125,
+          "bottom": 485.171875,
+          "left": 27.390625
+        },
+        "member": {
+          "x": 154.078125,
+          "y": 449.171875,
+          "width": 178.53125,
+          "height": 36,
+          "top": 449.171875,
+          "right": 332.609375,
+          "bottom": 485.171875,
+          "left": 154.078125
+        },
+        "button": {
+          "x": 154.078125,
+          "y": 449.171875,
+          "width": 178.53125,
+          "height": 36,
+          "top": 449.171875,
+          "right": 332.609375,
+          "bottom": 485.171875,
+          "left": 154.078125
+        },
+        "label": {
+          "text": "Member list visible",
+          "client": 95,
+          "scroll": 109,
+          "textOverflow": "ellipsis"
+        },
+        "toggle": {
+          "x": 291.0625,
+          "y": 458.171875,
+          "width": 30,
+          "height": 18,
+          "top": 458.171875,
+          "right": 321.0625,
+          "bottom": 476.171875,
+          "left": 291.0625
+        }
+      },
+      {
+        "width": 500,
+        "category": {
+          "x": 27.390625,
+          "y": 524.78125,
+          "width": 112.6875,
+          "height": 36,
+          "top": 524.78125,
+          "right": 140.078125,
+          "bottom": 560.78125,
+          "left": 27.390625
+        },
+        "member": {
+          "x": 154.078125,
+          "y": 524.78125,
+          "width": 318.53125,
+          "height": 36,
+          "top": 524.78125,
+          "right": 472.609375,
+          "bottom": 560.78125,
+          "left": 154.078125
+        },
+        "button": {
+          "x": 279.953125,
+          "y": 524.78125,
+          "width": 192.65625,
+          "height": 36,
+          "top": 524.78125,
+          "right": 472.609375,
+          "bottom": 560.78125,
+          "left": 279.953125
+        },
+        "label": {
+          "text": "Member list visible",
+          "client": 109,
+          "scroll": 109,
+          "textOverflow": "ellipsis"
+        },
+        "toggle": {
+          "x": 431.0625,
+          "y": 533.78125,
+          "width": 30,
+          "height": 18,
+          "top": 533.78125,
+          "right": 461.0625,
+          "bottom": 551.78125,
+          "left": 431.0625
+        }
+      },
+      {
+        "width": 1100,
+        "category": {
+          "x": 461.390625,
+          "y": 291.84375,
+          "width": 288.609375,
+          "height": 36,
+          "top": 291.84375,
+          "right": 750,
+          "bottom": 327.84375,
+          "left": 461.390625
+        },
+        "member": {
+          "x": 764,
+          "y": 291.84375,
+          "width": 288.609375,
+          "height": 36,
+          "top": 291.84375,
+          "right": 1052.609375,
+          "bottom": 327.84375,
+          "left": 764
+        },
+        "button": {
+          "x": 859.953125,
+          "y": 291.84375,
+          "width": 192.65625,
+          "height": 36,
+          "top": 291.84375,
+          "right": 1052.609375,
+          "bottom": 327.84375,
+          "left": 859.953125
+        },
+        "label": {
+          "text": "Member list visible",
+          "client": 109,
+          "scroll": 109,
+          "textOverflow": "ellipsis"
+        },
+        "toggle": {
+          "x": 1011.0625,
+          "y": 300.84375,
+          "width": 30,
+          "height": 18,
+          "top": 300.84375,
+          "right": 1041.0625,
+          "bottom": 318.84375,
+          "left": 1011.0625
+        }
+      }
+    ],
+    "offState": {
+      "category": {
+        "x": 27.390625,
+        "y": 449.171875,
+        "width": 112.6875,
+        "height": 36,
+        "top": 449.171875,
+        "right": 140.078125,
+        "bottom": 485.171875,
+        "left": 27.390625
+      },
+      "member": {
+        "x": 154.078125,
+        "y": 449.171875,
+        "width": 178.53125,
+        "height": 36,
+        "top": 449.171875,
+        "right": 332.609375,
+        "bottom": 485.171875,
+        "left": 154.078125
+      },
+      "text": "visibility_off\nMember list visible",
+      "label": {
+        "client": 95,
+        "scroll": 109,
+        "overflow": "ellipsis"
+      }
+    },
+    "fixture": "Fresh prepare-admin-authority for regression and block29; retained for next block. Prior27/28 fixture cleanup remains proven."
+  }
+}

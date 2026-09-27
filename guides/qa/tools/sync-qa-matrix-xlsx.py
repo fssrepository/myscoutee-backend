@@ -90,6 +90,7 @@ ROW_FILL_COLORS.update({
 # owner. Deployment qualification is not Pair QA. Operator remains a normal
 # manual-QA domain and uses the same domain-priority table as every other row.
 EXACT_DOMAIN_OVERRIDES = {
+    "DEPLOY-EXTERNAL-CONFIG-001": "Identity & access",
     "AFFILIATE-INVITATION-001": "API test",
     "AFFILIATE-REVENUE-001": "API test",
     "ADMIN-CLIENT-API-001": "API test",

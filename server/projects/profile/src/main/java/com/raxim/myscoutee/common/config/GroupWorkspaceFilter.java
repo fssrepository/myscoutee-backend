@@ -43,10 +43,7 @@ public class GroupWorkspaceFilter extends OncePerRequestFilter {
                         : profiles.getObject().select(account.getUserId(), requestedGroup))
                     : profiles.getObject().current(account.getUser());
             if (profile == account.getUser()) { chain.doFilter(request, response); return; }
-            var principal = new FirebasePrincipal(profile.getUserId(), account.getEmail(),
-                    original.getAuthorities().stream().map(a -> a.getAuthority()).toList(), profile, account.isEmailVerified());
-            SecurityContextHolder.getContext().setAuthentication(new FirebaseAuthenticationToken(principal,
-                    original.getCredentials(), principal.getAuthorities()));
+            SecurityContextHolder.getContext().setAuthentication(FirebaseAuthenticationToken.forProfile(original, profile));
             chain.doFilter(request, response);
         } catch (ResponseStatusException error) { response.sendError(error.getStatusCode().value()); }
         finally { SecurityContextHolder.getContext().setAuthentication(original); }

@@ -1,0 +1,362 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 18,
+  "date": "2026-09-27",
+  "status": "PASS / CLOSED — HTTP, real Android Chrome and desktop Chrome",
+  "boundary": "User requested completing block18 and stopping before19. Block19 not started; Local campaign not run.",
+  "defect": {
+    "observed": "Android native Back closed the inner menu, but the next Back exited Chrome while the parent Profile popup remained.",
+    "owner": "frontend/src/app/shared/ui/context/stores/overlay-navigation.store.ts",
+    "fix": "Retain one same-route history entry per visible overlay. Back consumes existing entries; busy/refused closes restore the existing forward entry. X consumes exactly the removed layers. Do not push another entry after native Back.",
+    "build": "Existing frontend-sync watcher succeeded and synced 2026-09-27T05:46:29.340Z. No separate compiler/test process.",
+    "regressionSpecs": "Updated overlay-navigation.store.spec.ts; not separately executed. Physical device and browser results below are the acceptance evidence."
+  },
+  "coverage": {
+    "nativeBack": "Menu, parent popup, confirmation cancellation, nested X/Back and rapid X/reopen/Back passed on physical Android.",
+    "busy": "Actual logout request delayed only at transport, then released unchanged. Two native Back presses retained the busy confirmation; subsequent observation confirmed intended logout to /entry. No fabricated response or application-state injection.",
+    "required": "Existing required-popup close predicate retained; same declined-close history branch exercised by the busy confirmation. No fresh consent/location journey opened.",
+    "router": "No-overlay /game → /privacy-policy → Back /game → Forward /privacy-policy → Back /game passed. Reload with overlay open removed stale marker and preserved Alex/Design Circle.",
+    "dockedRating": "Main-profile existing rating10 opened dock without increasing overlay depth2; scrolling retained its existing dock behavior; clicking its rating trigger closed it, score10 unchanged. Returned normally to Design Circle.",
+    "retention": "Alex/Design Circle and saved profile location retained through close/Back/reload checks; no entry consent or re-login before deliberate final phone logout.",
+    "notClaimed": "Installed PWA/WebView variant and Local data mode were not exercised; this is the HTTP Chrome block18 result."
+  },
+  "mobileReloadAfter": {
+    "path": "/game",
+    "dialogs": [],
+    "overlayMarker": false,
+    "workspace": "Design Circle",
+    "identity": "Alex Turner",
+    "profileCity": "Seattle",
+    "consent": false,
+    "source": "Observed live after phone reload, before final busy/logout check."
+  },
+  "observations": {
+    "mobileNestedBefore": {
+      "path": "/game",
+      "dialogs": [
+        "Profil"
+      ],
+      "expanded": [
+        "groups\nCsak barátok\nexpand_more"
+      ],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileMenuBack": {
+      "path": "/game",
+      "dialogs": [
+        "Profil"
+      ],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobilePopupBack": {
+      "path": "/game",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileConfirmationBefore": {
+      "path": "/game",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "Biztosan ki szeretnél jelentkezni?\n\nAlex Turner\n\nMégse\nKijelentkezés",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileConfirmationBack": {
+      "path": "/game",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileNestedXBefore": {
+      "path": "/game",
+      "dialogs": [
+        "Profil",
+        "Affiliate beállítások megnyitása"
+      ],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileNestedXAfter": {
+      "path": "/game",
+      "dialogs": [
+        "Profil"
+      ],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileBackAfterX": {
+      "path": "/game",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileRapidReopen": {
+      "path": "/game",
+      "dialogs": [
+        "Profil"
+      ],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileRapidBack": {
+      "path": "/game",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileRouteBack": {
+      "path": "/game",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileReloadBefore": {
+      "path": "/game",
+      "dialogs": [
+        "Profil"
+      ],
+      "expanded": [],
+      "confirmation": "",
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "name": "edit\n61%\nAlex Turner, 31\nlocation_on\nSeattle",
+      "entryConsent": false,
+      "viewport": 360
+    },
+    "mobileBusyConfirmation": {
+      "before": {
+        "path": "/game",
+        "confirmation": "Biztosan ki szeretnél jelentkezni?\n\nAlex Turner\n\nMégse\nhourglass_empty\nFolyamatban...",
+        "busy": true,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+      },
+      "afterBack": [
+        {
+          "path": "/game",
+          "confirmation": "Biztosan ki szeretnél jelentkezni?\n\nAlex Turner\n\nMégse\nhourglass_empty\nFolyamatban...",
+          "busy": true,
+          "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+        },
+        {
+          "path": "/game",
+          "confirmation": "Biztosan ki szeretnél jelentkezni?\n\nAlex Turner\n\nMégse\nhourglass_empty\nFolyamatban...",
+          "busy": true,
+          "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+        }
+      ],
+      "completed": {
+        "path": "/game",
+        "confirmation": "Biztosan ki szeretnél jelentkezni?\n\nAlex Turner\n\nMégse\nhourglass_empty\nFolyamatban...",
+        "busy": true
+      }
+    },
+    "mobileLogoutFinal": {
+      "path": "/entry",
+      "dialogs": [],
+      "expanded": [],
+      "confirmation": "",
+      "entryConsent": true,
+      "viewport": 360
+    },
+    "desktopAfterReload": {
+      "path": "/game",
+      "dialogs": [],
+      "userMenu": false,
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+    },
+    "desktopOverlayChecks": {
+      "before": {
+        "path": "/game",
+        "dialogs": [],
+        "expanded": [],
+        "userMenu": false,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": false,
+        "depth": 0
+      },
+      "nested": {
+        "path": "/game",
+        "dialogs": [
+          "Profile"
+        ],
+        "expanded": [
+          "groups\nFriends only\nexpand_more"
+        ],
+        "userMenu": true,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": true,
+        "depth": 3
+      },
+      "menuBack": {
+        "path": "/game",
+        "dialogs": [
+          "Profile"
+        ],
+        "expanded": [],
+        "userMenu": true,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": true,
+        "depth": 2
+      },
+      "popupBack": {
+        "path": "/game",
+        "dialogs": [],
+        "expanded": [],
+        "userMenu": true,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": true,
+        "depth": 1
+      },
+      "forward": {
+        "path": "/game",
+        "dialogs": [],
+        "expanded": [],
+        "userMenu": true,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": true,
+        "depth": 1
+      },
+      "afterX": {
+        "path": "/game",
+        "dialogs": [],
+        "expanded": [],
+        "userMenu": true,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": true,
+        "depth": 1
+      },
+      "backAfterX": {
+        "path": "/game",
+        "dialogs": [],
+        "expanded": [],
+        "userMenu": false,
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "marker": false,
+        "depth": 0
+      }
+    },
+    "desktopRouteBefore": {
+      "path": "/game",
+      "marker": false
+    },
+    "desktopPrivacyRoute": {
+      "path": "/privacy-policy",
+      "marker": false
+    },
+    "desktopRouteBack": {
+      "path": "/game",
+      "marker": false,
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+      "consent": false
+    },
+    "desktopRouteForward": {
+      "path": "/privacy-policy",
+      "marker": false
+    },
+    "desktopRouteFinal": {
+      "path": "/game",
+      "dialogs": [],
+      "userMenu": false,
+      "workspace": "DC\nDesign Circle\nexpand_more\n99+"
+    },
+    "desktopRatingDock": {
+      "before": {
+        "depth": 2,
+        "dialogs": [
+          "Activities"
+        ],
+        "dock": [],
+        "rating": "star\n10"
+      },
+      "opened": {
+        "depth": 2,
+        "dialogs": [
+          "Activities"
+        ],
+        "dock": [
+          {
+            "tag": "APP-MENU-OUTLET",
+            "class": "app-menu-outlet--open app-menu-outlet--dock",
+            "text": "Affinity · Single · Mason Parker\n:\n10\nSave\narrow_forward"
+          }
+        ],
+        "rating": "star\n10"
+      },
+      "afterScroll": {
+        "depth": 2,
+        "dialogs": [
+          "Activities"
+        ],
+        "dock": [
+          {
+            "tag": "APP-MENU-OUTLET",
+            "class": "app-menu-outlet--open app-menu-outlet--dock",
+            "text": "Affinity · Single · Mason Parker\n:\n10\nSave\narrow_forward"
+          }
+        ],
+        "rating": "star\n10"
+      },
+      "scrollTop": 310
+    },
+    "desktopRatingDockClose": {
+      "depthBefore": 2,
+      "depthAfter": 2,
+      "dockPresent": false,
+      "rating": "star\n10",
+      "restored": {
+        "path": "/game",
+        "workspace": "DC\nDesign Circle\nexpand_more\n99+",
+        "dialogs": [],
+        "marker": false
+      }
+    }
+  },
+  "cleanup": {
+    "phone": "Normal final logout completed. Closed only the localhost QA tab; removed owned tcp8080 reverse and tcp36087 CDP forward. Unrelated phone tabs untouched.",
+    "desktop": "Restored Alex/Design Circle with no overlays, closed only GROUP-LIFECYCLE-001-MCP test window. User ENTRY registration window untouched.",
+    "data": "No rating submission, database/session/coordinate patch, fixture reset or new account. Normal workspace selection restored."
+  }
+}

@@ -9,18 +9,17 @@ evidence log; this is the stable checklist.
 - Complete blocks in dependency order. A block is closed only when every check
   assigned to it is evidenced in its named adapter; a fixture/savepoint or source
   change alone never closes it.
-- Before advancing past an unavailable prerequisite, move the exact unexecuted
-  checks into an explicitly numbered later block, retain the original-step
-  mapping, and include that block in the denominator. Do not move a defect merely
-  to avoid repairing/retesting it. Never discard a requirement or reopen closed
-  PASS cases to change accounting.
+- When separating external/configuration scope, move only unexecuted assertions
+  into a self-contained testcase with its own baseline, restaging, checkpoints
+  and cleanup. Remove those assertions from the source checklist. Keep transfer
+  provenance and execution status in the evidence ledger, not as cross-case
+  execution dependencies. Do not move a defect to avoid repairing/retesting it;
+  do not duplicate already verified assertions in the destination.
 - Report **closed execution blocks / total execution blocks**, current block,
   next block and actual blockers. Do not use the currently visited block number
   as the completed count. HTTP and Local each contribute their own blocks.
-- The same rule applies to the queued Group Isolation and Integration API
-  checklists. Their blocks remain in the campaign denominator before they start.
-  Device/external-prerequisite checks remain open until executed; moving them
-  later never gives them partial or inferred credit.
+- Count each independent testcase in its own scope. Unexecuted transferred
+  checks are not execution evidence and do not remain pending in the source.
 - Preserve captured evidence and resume the next unfinished check from the
   corresponding savepoint. Structural edits are not new test results.
 
@@ -254,11 +253,25 @@ definition of all group activity.
 
 ## 7. Leave and remove membership
 
-16. Leave/remove the test membership and check the remaining group lists and
-    workspace choices after reload. An owner cannot be removed through an
-    ordinary member action. Voluntary creator departure and responsibility
-    transfer are covered separately in block 26. Restore only the checkpoint's
-    exact snapshots.
+16. Leave the test group. Its card moves from Active groups to Trash and its
+    workspace becomes unavailable. Trash uses the Activity Event delete icon,
+    danger menu palette and deleted card tone; it adds no change-count badge.
+    Restore a voluntary departure: after persisted success the membership is
+    accepted again without approval, the card leaves Trash and the workspace
+    returns. A failed save retains the dialog and unchanged card; while saving,
+    the confirmation remains busy. No reload is needed for mutation updates.
+17. An administrator removes the same ordinary member: its status is blocked
+    and the group appears in that member's Trash. Restore now submits a pending
+    join request requiring administrator approval. The confirmation explains
+    this distinction. The recipient cannot self-approve or turn the blocked
+    membership into a voluntary departure to bypass approval. Retry must not
+    duplicate the request or notifications. Approve through the administrator's
+    member card and verify the retained member/group lists and workspace choices.
+18. Independently check persisted state and ordinary reload. An owner cannot be
+    removed through an ordinary member action. Last-member group deletion,
+    voluntary creator departure, restored administrator responsibility and
+    handover remain in block 26.
+    Restore fixture data only from the checkpoint's exact snapshots.
 
 ## Independent oracles
 
@@ -275,12 +288,14 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
 
 ## 8. External sharing links and admission
 
-1. Open Share from a group/event/asset card. There is one sharing entry, with
+1. Open Share from a group/event card. There is one sharing entry, with
    the common share icon and contextual teal color. It opens the **external
    link popup**, not the former raw-token confirmation dialog or a second
    legacy copy menu. Compare its read-only link field, Copy icon, dimensions,
    spacing and copied checkmark directly with Profile → Affiliate, in HU/EN
    and on desktop/mobile. Copy and reopen the complete URL, not a raw token.
+   Asset cards have no external Share-link menu entry; Assets are selected
+   with checkmarks and shared inside chat through the existing basket flow.
 2. Follow an external group link while signed out, register and finish the
    existing onboarding gates. Verify inviter attribution, accepted membership,
    one workspace profile and the selected active group. Reopen as that account:
@@ -292,13 +307,18 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
    accepted/pending/payment/approval state; flag a missing automatic attachment
    to the event. Existing capacity, payment and approval requirements still
    apply; do not mark the check PASS merely because registration succeeded.
+4. For an event belonging to a group, the external invitation also establishes
+   group membership and one group profile, then selects that workspace so the
+   event is accessible. Replaying the link must not duplicate either membership
+   or profile. A Main-profile event must not create group membership. Preserve
+   the removed/blocked-member approval rule from block 7.
 
 ## 9. Chat sharing basket and message changes
 
 4. In an open chat, choose Share event, then Share asset separately. These open
    the card selection surface. Check the usual basket count/list, removable
-   basket items, and the confirmation tick beside Close. The card selector sits
-   below the three-dot button and stays circular at wide and tall image ratios;
+   basket items, and the confirmation tick beside Close. The card selector sits at the image
+   bottom-right, above the three-dot button, and stays circular at wide and tall image ratios;
    existing member and status badges remain unobscured.
 5. Select **two new cards**, then confirm once. The background chat receives
    **two separate messages**, each with its own attachment and message ID.
@@ -333,7 +353,22 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     cash and a normal cash checkout. Neither contributes. A non-cash control
     still contributes normally; its refund still reverses the proper amount.
     Ordinary payment history/totals continue to include cash. A manual receipt
-    has no fabricated booking link or booking-refund action.
+    has no fabricated booking link. The payer can Request refund on an active
+    cash receipt; the recipient can approve it through the existing confirmation
+    flow. Verify pending/approved history, notifications and totals for both
+    parties, with no affiliate contribution. A deleted receipt cannot request
+    another refund.
+11. On a manually recorded cash receipt, the recording recipient's item menu
+    offers the standard red Delete action and a confirmation dialog with a matching red confirm button. Cancel leaves the
+    receipt and totals unchanged. During deletion the confirmation waits for
+    persistence; failure retains the dialog with an error and the existing row.
+    After success, retain the receipt with a Deleted badge and no further Delete
+    menu action; reverse its income/expense totals for both parties without
+    reloading the list. Reopen both histories to verify
+    persistence. Repeating deletion must not reverse totals twice; replaying
+    the original create request must not resurrect the deleted receipt. The
+    payer and unrelated users cannot delete another member's recorded receipt;
+    ordinary checkout payments do not expose this manual-receipt Delete action.
 
 ## 11. Contacts and the existing chat popup
 
@@ -348,7 +383,10 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     ordinary list. Event and support channels keep their existing categories.
     Open the direct-chat avatar pill/member popup and exercise its supported
     member invitation with the existing picker. Its candidates must be **only
-    the inviting user's saved contacts**, excluding people already in this chat.
+    the inviting user's saved contacts with approved chat access**, excluding people already in this chat.
+    Request, pending and rejected contacts must not appear in the invitation picker;
+    direct commands must reject them before writing any member or owner copy,
+    including a batch containing both approved and unapproved contacts.
     An empty contact list stays empty; it must never fall back to general member
     discovery. A person saved only by another participant is not eligible for
     this inviter. Try a non-contact and a foreign-workspace contact by direct
@@ -360,12 +398,10 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     Record absent or incorrect behavior as a defect, never an inferred PASS.
 
 For each failed microcheck, record its number, mode, actor/workspace IDs and
-observed result. All twelve remain NOT RUN until explicitly executed.
+observed result.
 
-These extend this existing unexecuted checkpoint; they do not reopen or inherit
-PASS from closed journeys. The implementation/task status is tracked separately
-in [UI notes](../../../plans/UI_NOTES_2026_09_25.md). Record frontend-local and
-dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
+Record frontend-local and dev HTTP outcomes independently, in HU/EN and at
+desktop/mobile widths.
 
 ## 12. Selection limits and contact-request controls
 
@@ -377,12 +413,11 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    limit has no fabricated maximum. The suffix is in the heading, not a longer
    explanation or trigger label. Existing select/deselect enforcement remains
    consistent with the displayed limit, including nested menus and mobile.
-2. **Contact requests (UI note 2).** Execute the separate direct-chat permission
-   micros in [GROUP-ISOLATION-001](GROUP-ISOLATION-001.md#separate-direct-chat-permission--not-run-refinement-2026-09-26):
-   pending-only side-menu badge, search-row icon+label filter, reverse request
-   order, recipient decisions/notifications, persisted contact on approval and
-   immediate SmartList remove/insert without reload. Do not substitute this
-   link for executing those steps.
+2. **Contact requests (UI note 2).** Prepare sender and recipient accounts with
+   this testcase's own pending request. Check the pending-only side-menu badge,
+   search-row icon+label filter and newest-first request order. Exercise recipient
+   approval/rejection, the corresponding notifications, durable contact on
+   approval and immediate SmartList remove/insert without reload.
 
 ## 13. Empty calendar export
 
@@ -398,16 +433,16 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    shared date control; save, reopen and reload. Day/month must not swap, and
    the profile shows Libra/Mérleg. Reject an invalid day without rolling into
    the next month. Do not infer or bulk-repair ambiguous historical birthdays.
-5. **Children (UI note 9).** Check Nincs/Van and No/Yes in the editor, profile
-   and filter; save/reopen and confirm the stored meaning and existing
-   non-disclosure option remain intact.
+5. **Children (UI note 9).** In the existing profile editor, check Nincs/Van
+   and No children/Has children; save, reopen and reload. Confirm the stored
+   meaning and existing non-disclosure option remain intact.
 
 ## 15. Landing social heading
 
 6. **Landing social heading (UI note 10).** Check Kövess minket / Follow us
    above the existing social links. This label change must not alter targets.
 
-### 15.1. Earlier landing and reporting requests — NOT RUN
+### 15.1. Landing presentation and runtime version
 
 1. In Partners, check the additional concise closed-community/company card,
    including its employee wellbeing use case, in HU/EN. Before Optional network
@@ -416,11 +451,7 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    internal company systems without claiming broader permissions.
 2. On desktop, the discovery/join button row is left aligned. Supported countries
    and Report an issue use the same blurred backdrop as the other footer popups.
-3. On the frontend GitHub issue chooser, verify the concise Bug, Feature and
-   Question templates. Merely finding local template files does not prove that
-   the remote repository has them. Do not submit an issue for this check.
-4. Check the current version on the right of the installation/settings menu,
-   including when installation is already complete and its button is hidden.
+3. Check the current version on the right of the installation/settings menu.
    It uses the existing runtime version source; a popup-only or hardcoded version
    is not sufficient. Do not change landing content to implement this label.
 
@@ -429,27 +460,28 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
 7. **Setup help (UI note 12).** The question-mark button is beside X. It opens
    the existing information popup with short blocks explaining location,
    notifications, installation and prior browser/OS denial. Check Android and
-   iOS guidance separately; after changing the relevant external settings,
-   return and retry. Closing the help leaves the underlying setup popup intact.
+   iOS guidance text separately. Closing the help leaves the underlying setup
+   popup intact.
    Confirmation-like notices blur their parent; full-cover surfaces do not
-   need an additional visible-parent requirement. Record physical-device
-   branches separately; desktop observation is not a device PASS.
+   need an additional visible-parent requirement.
 
 ## 17. Common help seed and AI integration
 
-Check the expanded 17-topic side-menu Help accordion structure,
-coverage of existing features, readability and HU/EN text. Compare the canonical
-frontend-local and prod/dev/demo/e2e seed sources, including fresh seed and the
-existing supported update/import path; never reseed a live production database
-as a QA shortcut. Old content must not remain in one adapter/environment while
-another receives the new version. This is the side-menu Help task, separate
-from the already implemented setup-permissions help above. AI integration is the
-second topic. Anonymous MCP reads the same active HU/EN help API. Local private
-MCP discovery matches the key's actual profile/group and authorized operations;
-group keys cannot create assets. See the API checklist for detailed MCP micros.
-Personal remote OAuth and the connections table are implemented; exercise their
-profile-bound permissions and local-only settings in the API checklist’s NOT RUN
-micros. The seeded common help revision is v3 in both languages.
+1. Open the side-menu Help in HU and EN. Check all 17 topics, readability and
+   coverage of existing features. AI integration is the second topic. This is
+   separate from the setup-permissions help above.
+2. Compare the canonical frontend-local and prod/dev/demo/e2e seed sources.
+   Check fresh initialization and the supported update/import path in the
+   local/dev/e2e test environments. Both languages use common help revision v3. Keep local and HTTP
+   execution results separate.
+3. Check that anonymous MCP reads the active HU/EN help and that private MCP
+   discovery identifies the key's actual profile/group and authorized operations.
+   Group keys must not advertise asset creation. Discovery must not probe write
+   operations.
+
+Prepare the required identities, profile/group boundaries and UI-created keys
+inside this testcase's own versioned checkpoint. Record this run's help and
+discovery responses. Earlier runs or other testcases do not supply a PASS.
 
 ## 18. Back and close-button history
 
@@ -466,11 +498,9 @@ micros. The seeded common help revision is v3 in both languages.
   scroll/inline dismissal behavior. Record real device and Router behavior;
   isolated store tests alone do not prove the user journey.
 
-Keep these micros in this existing NOT RUN case; no new case or manual PASS.
+## 19. First location save and demo admission
 
-## 19. First location save and Firebase sign-in
-
-### 19.1. Complete demo entry — NOT RUN
+### 19.1. Complete demo entry
 
 Use a separately prepared signed-out browser and the actual Login/demo-selector
 UI. The Group list fixture's injected session is not evidence for this block.
@@ -493,12 +523,8 @@ damage the three valid Group list actors to create this negative control.
    another real demo selection. Reload restores the same authenticated account;
    logout/login creates only the intended new session. A failed profile load
    can be retried and cannot admit a different actor or acknowledge stale data.
-5. Follow a group invitation while signed out and repeat the selector/Setup
-   cancellation/retry branch under INTEGRATION-API-GROUP-001 block 3. Its claim,
-   membership and active workspace are verified there; this block does not
-   borrow PASS from previously closed registration/authentication cases.
 
-### 19.2. Admission, pending coordinates and Firebase — NOT RUN
+### 19.2. Demo admission and pending coordinates
 
 Demo admission (pre-registered profiles; run local and HTTP separately):
 
@@ -522,18 +548,11 @@ Demo admission (pre-registered profiles; run local and HTTP separately):
   complete the normal profile preparation and first profile-load persistence,
   then enter once. Restore the control from its snapshot after the check.
 
-1. Fresh Firebase registration/sign-in with no saved coordinate: request location
-   through Setup, then complete onboarding. The scoped browser pending point
-   survives reload and is sent only on the first `/auth/me/profile-ext` request
-   as latitude/longitude parameters (alongside groupId when selected), with no
-   location X-header. Verify Mongo account/active group profile and local
-   IndexedDB separately. Only a successful authoritative response clears pending.
-2. Fail that profile request: no cached-success acknowledgement, no losing the
-   pending point; retry sends it again. Account switch must not send another
-   account's point, and an older reply must not clear a newer staged point.
-3. Existing registered Firebase user: logout and sign in once, with avatar preview
-   changing. Enter the app on that first attempt. Real logout/account/session
-   change still discards stale reads; failed group switch unlocks the selector.
+- In demo mode, verify pending-coordinate retry after a failed full profile load,
+  account isolation. A failed request retains pending; the next authoritative
+  success clears the sent sample.
+  A different account must never send or clear that sample.
+
 
 ## 20. Stored location and optional tracking
 
@@ -612,7 +631,7 @@ are pending manual verification, not extensions of an earlier PASS.
 
 ## 25. Global notifications and scoped API keys
 
-### 25.1. Notification layout — NOT RUN
+### 25.1. Notification layout
 
 1. At the narrow mobile size from the report, the date/time badge aligns with
    the first row. The explanation uses the available space up to the three-dot
@@ -633,7 +652,7 @@ are pending manual verification, not extensions of an earlier PASS.
   Base: the group key still cannot create assets. Revoking membership blocks the
   group key. No group header or per-request group selection is involved.
 
-### 25.3. Application confirmation wording — NOT RUN
+### 25.3. Application confirmation wording
 
 1. Review action confirmations in Group/Event/Asset membership and lifecycle,
    checkout/refunds, contacts/following, moderation/support, account actions,
@@ -681,13 +700,24 @@ replayable fixture savepoints between the independent branches below.
    Apply the same invariant when stepping down or revoking the last Admin.
 5. Return the former creator through the normal invitation/join flow. The account
    returns as an ordinary Member; neither its former creator status nor old
-   grants restore Admin authority. A fresh promotion follows the same grant rule.
+   grants restore Admin authority. Also exercise Trash Restore for a voluntary
+   departure: membership returns accepted without approval, but historical Admin
+   authority is not resurrected. Responsibility still follows the explicit
+   takeover action where applicable. A fresh promotion follows the same grant rule.
 6. In a separate isolated group, let every member leave, including the last
    remaining Admin/member. Confirm automatic group deletion. Without reload, the
    card disappears from all open relevant lists and selectors; the selected
    deleted workspace is no longer usable and affected counters update once.
    Reload and direct API reads confirm the deletion and loss of workspace access.
-   Repeating the final action must not resurrect the group or repeat its effects.
+   In Trash, former members and departed Admins retain the group card with a
+   Deleted status badge. Any user who departed as Admin has Restore and may
+   reactivate the group as its responsible Admin; cancel first, then confirm.
+   Exercise an Admin who left before the final departure, plus a competing retry.
+   While deleted, ordinary members have no Restore menu and cannot restore,
+   rejoin or enter through an invitation. After the Admin restores the group,
+   a departed member can restore their own membership as Member. Other departed
+   members are not restored automatically. Retrying either restoration produces
+   no duplicate membership, notification or counter change.
 7. Reuse the Asset Manager action icons and base palettes contextually: promotion
    uses `admin_panel_settings` / blue, revocation `person_remove` / warning,
    departure `logout` / danger, takeover `verified_user` / warning, and voluntary
@@ -715,32 +745,34 @@ and Admin-role controls (block 26). Reuse their closest savepoint instead of
 recreating their lifecycle. Existing observations may satisfy individual checks;
 close this block only after its complete role/viewport matrix is proven.
 
-### 27.1. Roster visibility (former block 2, step 4)
+### 27.1. Roster visibility
 
 1. Toggle **Taglista látható** and compare organizer, accepted-member and
    unrelated-account roster views. The toggle aligns with the description's
-   right edge and its state survives reload. Category and toggle share the row
-   when both fit, wrapping only at narrower widths. A hidden member list uses
+   right edge and its state survives reload. Category and toggle stay on the same
+   row on mobile; the toggle label truncates with an ellipsis when space is tight.
+   A hidden member list uses
    the existing Event Explore disabled badge and crossed-out eye; its member
    badge has no red counter for non-administrators. The administrator retains
    access and pending-member counter. The card actions contain no duplicate
    Members entry; the member badge is the entry point. Own invitation acceptance
    remains available from the invitation card, including with a hidden roster.
 
-### 27.2. Policy editor presentation (former block 3, steps 5–8)
+### 27.2. Policy editor presentation
 
 - Profile visibility rules stack sections vertically. Optional fields use equal
-  two-column controls with labels left and switches right; Base mandatory fields
-  are absent. Check desktop size, mobile full screen, scrolling and no opening jump.
+  two-column controls on desktop and one full-width control per row on mobile,
+  with labels left and switches right; Base mandatory fields are absent.
+  Check desktop size, mobile full screen, scrolling and no opening jump.
 - Reopened selected-field tables use bold first-column labels and pale row colors
   corresponding to their toggles. Read-only viewing remains legible.
 - Required Profile Fields / Kötelező profilmezők uses the profile-badge heading
   icon; its picker label remains visible on mobile. Group Policies retains the
   shared Event Policy editor and purple palette. Open Policy Setup is left-aligned
-  at content width. Member list visible shares the category row when both fit,
-  wrapping only when they no longer fit.
+  at content width. Member list visible stays beside the category, with its label
+  truncated by an ellipsis on narrow screens.
 
-### 27.3. Workspace header across roles (former block 5, step 11)
+### 27.3. Workspace header across roles
 
 Long names truncate only the label; the monogram remains circular and fully
 visible. Base-profile globe and group choices use their contextual colors.
@@ -750,7 +782,7 @@ menu sections; smoke normal, admin and operator layouts where exposed.
 ## 28. Group detail loading and adapter request boundaries
 
 Prerequisite: the saved editor/policy state from blocks 2–3; repeat the corresponding
-request checks during the separately counted Local pass. This preserves former block 3 step 8.
+request checks during the separately counted Local pass.
 List summaries omit description/policy. View/Edit loads the detail on opening.
 Opening the nested rules editor performs no additional detail request. Local
 uses its configured route delay; HTTP adds no artificial client delay. Capture

@@ -1,0 +1,280 @@
+{
+  "mode": "HTTP",
+  "writes": "Application UI only. Browser-native coordinates; no emulation for GROUP-LIFECYCLE-001-ENTRY. Mongo queries were read-only apart from the existing versioned snapshot-tracking harness.",
+  "group": {
+    "beforeSession": {
+      "userId": "demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+      "hasBrowserCoordinates": true,
+      "onboardingOpen": true,
+      "sessionActive": false,
+      "eligible": true,
+      "partition": "country:hu"
+    },
+    "nativeSource": {
+      "permission": "granted",
+      "nativeApi": true,
+      "elapsedMs": 4,
+      "positionAgeMs": 0,
+      "accuracyMeters": 110752.44926037677,
+      "matchesPending": true,
+      "isAustinOverride": false,
+      "isBudapestOverride": false
+    },
+    "savedUi": {
+      "path": "/game",
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nnotifications_active\n1\nedit\n31%\nGroup Admission QA, 31\nlocation_on\nBudapest\nDC\nDesign Circle\nexpand_more\nnotifications\n1\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nHome cards\ndone\nGot it\nRate a card\n\nChoose a score from 1 to 10.\n\nTap or drag the Affinity bar. Your choice is saved immediately, then the next card appears.\n\nWhy ratings matter\n\nRatings help improve later suggestions.\n\nYour score shows how interested you are in the person or pair on the card. MyScoutee can use it with other signals to make future suggestions more relevant.\n\nPhotos and profile\n\nSee more before you rate.\n\nTap the left or right side of the image to browse photos. Use the eye icon to open the full profile.\n\nFilters and modes\n\nChoose which cards you want to see.\n\nThe filter button narrows the results, and its number shows how many matches remain. Use Preferences, Friends in Common, Inside Network, or Outside Network to switch card groups.\n\nRating history\n\nReview or change an earlier rating.\n\nOpen history from the header. To change a rating later, open Activity ratings and select its star action."
+    },
+    "persisted": {
+      "userId": "demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+      "registered": true,
+      "hasLocation": true,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-04a1c5cb-a41c-4d4b-a586-ca8931cd0ab1",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [],
+      "referrer": {
+        "_id": "demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+        "referrerUserId": "af0436815ab38f4864dd1e24"
+      }
+    },
+    "replayed": {
+      "userId": "demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+      "registered": true,
+      "hasLocation": true,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-04a1c5cb-a41c-4d4b-a586-ca8931cd0ab1",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [],
+      "referrer": {
+        "_id": "demo-profile-38a11707-f100-4ad0-be49-f96c18eaf4a3",
+        "referrerUserId": "af0436815ab38f4864dd1e24"
+      }
+    },
+    "home": {
+      "permission": "granted",
+      "profileId": "group-04a1c5cb-a41c-4d4b-a586-ca8931cd0ab1",
+      "hasCoordinates": true,
+      "locationRequired": false,
+      "memberActionsAvailable": true,
+      "trackingSettings": {
+        "myscoutee.http.location.tracking-enabled.v1": "true"
+      }
+    }
+  },
+  "event": {
+    "beforeSession": {
+      "userId": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+      "hasBrowserCoordinates": true,
+      "onboardingOpen": true,
+      "sessionActive": false,
+      "eligible": true,
+      "partition": "country:hu"
+    },
+    "savedUi": {
+      "path": "/game",
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n1\nhistory\nRatings\n\nName · Maya Stone\n\nCity · San Diego\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\nedit\n31%\nEvent Admission QA, 31\nlocation_on\nBudapest\nDC\nDesign Circle\nexpand_more\nnotifications\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\n1\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nActivities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\nwidgets\nAll\nexpand_more\n1\nexplore\nMon, 28 Sept 2026\n2 / 10\n2\nmail\nQA Workspace Link Event\n\nSep 28, 1:38 AM - 2:38 AM\n\nSeattle · 2.738 km\n\nmore_vert\n\nAlex Turner\n\nEvents\ndone\nGot it\nChoose an event list\n\nOpen the group you need.\n\nSwitch between all or active events, pending items, invitations, your events, drafts, and trash. Use Explore for public events or the plus button to create one.\n\nRead an event card\n\nSee the key details at a glance.\n\nThe card shows the event image, title, time, place, and organizer. A badge such as 1 / 5 shows accepted people against capacity, while a red number marks pending items.\n\nPeople and actions\n\nOpen members or the actions available to you.\n\nTap the capacity badge to see participants and pending people. The three-dot menu changes with your role and the event state, so it may offer viewing, editing, publishing, invitation handling, sharing, leaving, deleting, or restoring.\n\nJoin an event\n\nThe steps depend on the event settings.\n\nYou can accept or reject an invitation from its card. Some events confirm you immediately; others require approval, a ticket, accepted rules, payment, or choices before your place is final.\n\nCreate or host\n\nStart simple and add details when needed.\n\nThe plus button opens the event editor. You can create a basic meetup or add sub-events, groups, resources, tickets, pricing, and capacity rules."
+    },
+    "pending": {
+      "userId": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+      "registered": true,
+      "hasLocation": true,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-ae12ef98-82d5-4df6-9537-a9f8afc2f20b",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [
+        {
+          "_id": "6ab86f81296c75ec86d3c789",
+          "ownerId": "f02709270000000000000083",
+          "userId": "group-ae12ef98-82d5-4df6-9537-a9f8afc2f20b",
+          "status": "pending"
+        }
+      ],
+      "referrer": {
+        "_id": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+        "referrerUserId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24"
+      }
+    },
+    "acceptedUi": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n1\nhistory\nRatings\n\nName · Maya Stone\n\nCity · San Diego\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\nedit\n31%\nEvent Admission QA, 31\nlocation_on\nBudapest\nDC\nDesign Circle\nexpand_more\nnotifications\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nActivities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\n1\nwidgets\nAll\nexpand_more\n1\nexplore\nMon, 28 Sept 2026\n3 / 10\n1\npublic\nQA Workspace Link Event\n\nSep 28, 1:38 AM - 2:38 AM\n\nSeattle · 2.738 km\n\nmore_vert\n\nExternal sharing prerequisite",
+      "activitiesRetained": true
+    },
+    "accepted": {
+      "userId": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+      "registered": true,
+      "hasLocation": true,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-ae12ef98-82d5-4df6-9537-a9f8afc2f20b",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [
+        {
+          "_id": "6ab86f81296c75ec86d3c789",
+          "ownerId": "f02709270000000000000083",
+          "userId": "group-ae12ef98-82d5-4df6-9537-a9f8afc2f20b",
+          "status": "accepted"
+        }
+      ],
+      "referrer": {
+        "_id": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+        "referrerUserId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24"
+      }
+    },
+    "replayed": {
+      "userId": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+      "registered": true,
+      "hasLocation": true,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-ae12ef98-82d5-4df6-9537-a9f8afc2f20b",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [
+        {
+          "_id": "6ab86f81296c75ec86d3c789",
+          "ownerId": "f02709270000000000000083",
+          "userId": "group-ae12ef98-82d5-4df6-9537-a9f8afc2f20b",
+          "status": "accepted"
+        }
+      ],
+      "referrer": {
+        "_id": "demo-profile-9168c4af-32f8-43a6-aedf-d5305b7901dd",
+        "referrerUserId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24"
+      }
+    }
+  },
+  "existingMissingLocation": {
+    "before": {
+      "userId": "demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8",
+      "registered": true,
+      "hasLocation": false,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-5c50bb25-61b8-4a3a-9f3a-11103574fea6",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [],
+      "referrer": {
+        "_id": "demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8",
+        "referrerUserId": "af0436815ab38f4864dd1e24"
+      }
+    },
+    "afterUpdate": {
+      "setupOpen": true,
+      "pending": false,
+      "error": "",
+      "locationApproved": true,
+      "sessionActive": false,
+      "onboardingOpen": false
+    },
+    "afterClose": {
+      "path": "/game",
+      "setupVisible": false,
+      "tail": "\n\nName · Maya Stone\n\nCity · San Diego\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\nnotifications_active\n2\nedit\n31%\nGroup Link Visitor, 18\nlocation_on\nAustin\nDC\nDesign Circle\nexpand_more\nnotifications\n2\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts"
+    },
+    "persisted": {
+      "userId": "demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8",
+      "registered": true,
+      "hasLocation": true,
+      "activeWorkspace": "seed-community-design-circle",
+      "profileStatus": "public",
+      "profiles": [
+        {
+          "userId": "group-5c50bb25-61b8-4a3a-9f3a-11103574fea6",
+          "workspaceGroupId": "seed-community-design-circle",
+          "locationMatchesAccount": true
+        }
+      ],
+      "groupMemberships": [
+        {
+          "_id": "community:seed-community-design-circle:demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8",
+          "role": "Member",
+          "status": "accepted"
+        }
+      ],
+      "eventMemberships": [],
+      "referrer": {
+        "_id": "demo-profile-331d498c-7fb5-4e0a-8626-5785c6060fb8",
+        "referrerUserId": "af0436815ab38f4864dd1e24"
+      }
+    }
+  },
+  "limitations": [
+    "Browser location reports approximately 111 km accuracy; this is not precise GPS evidence.",
+    "Firebase continuation uses the same AppSetupStore; live Firebase authentication was not executed.",
+    "New standalone regression specs were added but not run alongside the active dev compilation owner.",
+    "Exact sharing cleanup is still pending; block8 is not closed."
+  ]
+}

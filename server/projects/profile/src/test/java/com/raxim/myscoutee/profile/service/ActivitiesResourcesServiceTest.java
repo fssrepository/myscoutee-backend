@@ -34,6 +34,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationToken;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.AccessGrant;
 import com.raxim.myscoutee.profile.data.document.AccessPolicyDefinition;
@@ -147,6 +149,20 @@ class ActivitiesResourcesServiceTest {
     @AfterEach
     void tearDown() {
         SecurityContextHolder.clearContext();
+        MongoSessionModeContext.clear();
+    }
+
+    @Test
+    void demoReplaceRejectsForgedParticipantWithoutWritingResources() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        authenticateAs("outsider");
+
+        assertThatThrownBy(() -> service.replace(request("event-1", "sub-1", "member")))
+                .isInstanceOfSatisfying(ResponseStatusException.class, exception ->
+                        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN));
+
+        verifyNoInteractions(assetsService, activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository, activitiesMembersServiceProvider);
     }
 
     @Test

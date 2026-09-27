@@ -54,12 +54,18 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
-Group lifecycle QA is **IN PROGRESS**; the other two group journeys remain **NOT RUN**: [group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md),
-[workspace isolation samples](guides/qa/checklists/group/GROUP-ISOLATION-001.md)
-and [shared participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md).
+Group lifecycle QA is **CLOSED for the agreed HTTP scope**: **29/29** blocks
+closed (26 full-block closures plus3 scope-transfer closures), **29/48** across
+the three Group journeys. External/configured/device acceptance belongs to the
+independent [deployment QA](guides/qa/checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md)
+and has no pending dependency back to Group Lifecycle. Full Local remains NOT RUN.
+**Next: [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md),
+explicitly NOT STARTED at the user's request.**
+[Group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) and
+[participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md)
+retain their separate evidence and scope.
 See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
-domain order; participant-link coverage belongs to API test. Existing PASS
-evidence does not cover these new journeys.
+domain order; participant-link coverage belongs to API test. Existing lifecycle evidence does not close the separate Isolation or API journey.
 
 The five new delegated cases are tracked in the matrix. [Gallery/Feed/Moderation](guides/qa/evidence/EVENT-GALLERY-FEED-001-20260923-progress.md) is PASS on the user-started dev stack (2026-09-23), with fixture reset complete. [Email QA](guides/qa/evidence/OPERATOR-EMAIL-WARNING-001-20260923-progress.md), including durable retries and the [public unsubscribe/branding supplement](guides/qa/evidence/EMAIL-UNSUBSCRIBE-001-20260923.md), is PASS on the dev stack with cleanup complete. [Admin client QA](guides/qa/evidence/ADMIN-CLIENT-API-001-20260923-progress.md) is PASS in the recorded dev scope, with platform boundaries explicitly NOT RUN and fixture reset. [Affiliate revenue](guides/qa/evidence/AFFILIATE-REVENUE-001-20260923-progress.md) is PASS in the recorded dev HTTP/simulator and frontend-local scope (2026-09-24); production-installation and provider hold-only UI boundaries remain explicit in the evidence. [Calendar export QA](guides/qa/evidence/EVENT-CALENDAR-EXPORT-001-20260924.md) is PASS/CLOSED (2026-09-24), including One-time/Daily/Weekly occurrences, physical imports and an offline native reminder. Importer update/deletion/alarm limitations are recorded; fixture cleanup is complete. Earlier closed cases remain unchanged.
 
@@ -79,3 +85,5 @@ The separate [following menu and confirmation QA](guides/qa/evidence/EVENT-FOLLO
 is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
 committed deltas, failed-save retry, immediate list removal and stored-state poll.
 Its isolated fixture and browser sessions are cleaned.
+
+Firebase and externally configured MCP/client checks are tracked separately as **DEFERRED / NOT RUN** in [deployment integration QA](guides/qa/checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md); they do not block the active Group campaign.

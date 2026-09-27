@@ -17,16 +17,29 @@ const option = name => {
 };
 const actorName = option('--actor');
 const requestedPermission = option('--permission').toLowerCase();
+const requestedLatitude = option('--latitude');
+const requestedLongitude = option('--longitude');
 const reload = args.includes('--reload');
+const noReload = args.includes('--no-reload');
 
 if (!checkpointId || !actorName) {
   throw new Error(
     'Usage: apply-checkpoint-browser-location.mjs CHECKPOINT_ID --actor NAME '
-    + '[--permission granted|denied|prompt] [--reload]'
+    + '[--permission granted|denied|prompt] [--latitude LAT --longitude LON] [--reload|--no-reload]'
   );
 }
+if (reload && noReload) throw new Error('Choose --reload or --no-reload.');
 if (requestedPermission && !['granted', 'denied', 'prompt'].includes(requestedPermission)) {
   throw new Error(`Unsupported geolocation permission '${requestedPermission}'.`);
+}
+if ((requestedLatitude === '') !== (requestedLongitude === '')
+  || (requestedLatitude !== '' && (
+    !Number.isFinite(Number(requestedLatitude))
+    || !Number.isFinite(Number(requestedLongitude))
+    || Math.abs(Number(requestedLatitude)) > 90
+    || Math.abs(Number(requestedLongitude)) > 180
+  ))) {
+  throw new Error('Provide a valid latitude and longitude together.');
 }
 
 const safeCheckpointId = checkpointId.replace(/[^A-Za-z0-9_.-]+/g, '-');
@@ -47,6 +60,11 @@ const session = matches[0];
 const port = Number(session.devToolsPort);
 const permission = requestedPermission
   || `${session.activeGeolocationPermission ?? session.geolocationPermission ?? 'granted'}`;
+const geolocation = requestedLatitude !== '' ? {
+  latitude: Number(requestedLatitude),
+  longitude: Number(requestedLongitude),
+  accuracy: Number(session.geolocation?.accuracy ?? 10)
+} : session.activeGeolocation ?? session.geolocation;
 const pageUrl = await currentPage(port);
 await stopExistingHolder(session, port);
 
@@ -57,10 +75,11 @@ const readyFile = path.join(
 const holder = spawn(process.execPath, [
   holderPath,
   '--port', `${port}`,
-  '--latitude', `${Number(session.geolocation?.latitude)}`,
-  '--longitude', `${Number(session.geolocation?.longitude)}`,
-  '--accuracy', `${Number(session.geolocation?.accuracy ?? 10)}`,
+  '--latitude', `${Number(geolocation?.latitude)}`,
+  '--longitude', `${Number(geolocation?.longitude)}`,
+  '--accuracy', `${Number(geolocation?.accuracy ?? 10)}`,
   '--permission', permission,
+  ...(noReload ? ['--no-reload'] : []),
   '--url', pageUrl.url,
   '--ready-file', readyFile
 ], {
@@ -84,6 +103,7 @@ if (holderState?.status !== 'ready') {
 
 session.geolocationHolderPid = holder.pid;
 session.activeGeolocationPermission = permission;
+session.activeGeolocation = geolocation;
 session.locationAppliedAtIso = new Date().toISOString();
 await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 await delay(reload ? 1200 : 700);
@@ -107,8 +127,9 @@ process.stdout.write(`${JSON.stringify({
   actor: session.actor,
   permission,
   configuredGeolocation: session.geolocation ?? null,
+  activeGeolocation: geolocation ?? null,
   observed,
-  reloaded: true
+  reloaded: !noReload
 }, null, 2)}\n`);
 
 async function stopExistingHolder(activeSession, activePort) {

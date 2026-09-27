@@ -185,7 +185,7 @@ try {
     );
     await prepareBrowserMicrophone(port, entryUrl, microphonePermission);
     if (sessionKind === 'anonymous') {
-      await clearManagedSession(port, storageScope);
+      await clearManagedSession(port, storageScope, session.localStorage);
       if (bootstrapEntryConsent) {
         await acceptEntryConsentOnCurrentEntry(port, storageScope);
       }
@@ -713,10 +713,14 @@ async function installDemoSession(port, scope, userId, sessionId, destinationUrl
   await evaluateInOnlyPage(port, expression, true);
 }
 
-async function clearManagedSession(port, scope) {
+async function clearManagedSession(port, scope, configuredLocalStorage) {
   const sessionKey = `myscoutee.${scope}.session.v1`;
   const activeUserKey = `myscoutee.${scope}.demo.active-user.v1`;
+  const localStorageEntries = normalizeLocalStorageEntries(configuredLocalStorage);
   await evaluateInOnlyPage(port, `(() => {
+    for (const [key, value] of ${JSON.stringify(localStorageEntries)}) {
+      localStorage.setItem(key, value);
+    }
     localStorage.removeItem(${JSON.stringify(sessionKey)});
     localStorage.removeItem(${JSON.stringify(activeUserKey)});
     return true;

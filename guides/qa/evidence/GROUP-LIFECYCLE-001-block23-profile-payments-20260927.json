@@ -1,0 +1,1325 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 23,
+  "date": "2026-09-27",
+  "status": "PASS / CLOSED / HTTP",
+  "local": "NOT RUN",
+  "profileScope": {
+    "out": [
+      {
+        "name": "Design Circle",
+        "id": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "profileId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "affiliate": "Affiliate\n\nShare your personal invitation link or connect an API client.\n\npayments\nquestion_mark\nclose\nPersonal invitation link\n0\ncontent_copy\nBase URL\nhttp://localhost/api/integrations/v1\ncontent_copy\nMaximum assets or events per request: 1000\nClient keys\n0 / 3 active\n0 / 0\nkey\nGenerate token\n\nNo active client keys.\n\nAI / MCP connections\nadd\nNew connection\nMCP URL\ncontent_copy\n\nNo active MCP connections.",
+        "payments": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\nNo payment history\n\nCompleted and pending payments will appear here."
+      },
+      {
+        "name": "Seattle Friends",
+        "id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "profileId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "affiliate": "Affiliate\n\nShare your personal invitation link or connect an API client.\n\npayments\nquestion_mark\nclose\nPersonal invitation link\n0\ncontent_copy\nBase URL\nhttp://localhost/api/integrations/v1\ncontent_copy\nMaximum assets or events per request: 1000\nClient keys\n0 / 3 active\n0 / 0\nkey\nGenerate token\n\nNo active client keys.\n\nAI / MCP connections\nadd\nNew connection\nMCP URL\ncontent_copy\n\nNo active MCP connections.",
+        "payments": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\nNo payment history\n\nCompleted and pending payments will appear here."
+      },
+      {
+        "name": "Main profile",
+        "id": "af0436815ab38f4864dd1e24",
+        "profileId": "af0436815ab38f4864dd1e24",
+        "affiliate": "Affiliate\n\nShare your personal invitation link or connect an API client.\n\npayments\nquestion_mark\nclose\nPersonal invitation link\n0\ncontent_copy\nBase URL\nhttp://localhost/api/integrations/v1\ncontent_copy\nMaximum assets or events per request: 1000\nClient keys\n2 / 3 active\n0 / 0\nkey\nGenerate token\nKliens 2\ncontent_copy\n[redacted]…\nExpires 18 Dec 2026\ndelete\nKliens 1\nlock\n[redacted]…\nExpires 18 Dec 2026\nIP: 172.19.0.1\ndelete\nAI / MCP connections\nadd\nNew connection\nMCP URL\ncontent_copy\n\nNo active MCP connections.",
+        "payments": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −43.50 ›\nEUR +21.00 ›\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert\n2026-08-"
+      }
+    ],
+    "requests": [
+      {
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/help/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/privacy/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/terms/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "POST"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/mcp/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/payment-methods/history",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/help/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/privacy/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/terms/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "POST"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/mcp/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/payment-methods/history",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/help/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/privacy/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/terms/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "POST"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/mcp/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/payment-methods/history",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      }
+    ]
+  },
+  "remaining": [],
+  "runtime": "23 sharing fixture exactly restored; original contact/badge snapshots retained. One managed PENDING-BLOCK19 window, Alex; real UI profile alignment required before24.",
+  "note": "After exact22 snapshot restore, normal workspace switches realigned browser and stored workspace before23 scope readings. Base has2 keys and historic payments; both group profiles0 keys/no history.",
+  "affiliateHeaderFix": {
+    "requested": "Affiliate revenue control must use affiliate icon/palette, not cash payments imagery.",
+    "change": "Existing profile affiliate group_add/pink reused in integration-settings-popup header.",
+    "watcher": "frontend-sync PASS 2026-09-27T17:34:02.424Z, synced19:34:02 local.",
+    "browser": {
+      "icon": "group_add",
+      "class": "app-menu__trigger motion-static app-menu__trigger--collapsible app-menu__trigger--layout-pill app-menu__palette--pink",
+      "color": "rgb(148, 65, 95)",
+      "background": "rgba(0, 0, 0, 0)",
+      "hit": true,
+      "affiliateEntry": "app-menu__button-row-item app-menu__palette--pink",
+      "revenue": "Referral revenue\nEUR\nchevron_right\nclose\nPaid purchases\n0\nPaid event bookings\n0\nPurchases total\n0.00 EUR\nRefunded\n0.00 EUR\nAfter refunds\n0.00 EUR\nA percentage-based affiliate commission is planned. Its rate and eligibility rules have not been set; these amounts are referral revenue, not earned commission."
+    }
+  },
+  "revokeLayoutFix": {
+    "change": "Shared integration-token-row align-items:start; API-token actions column-reverse puts Revoke before the IP badge. MCP rows consume the same stylesheet.",
+    "watcher": "frontend-sync PASS 2026-09-27T17:36:56.684Z",
+    "browser": {
+      "mobile": [
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        },
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        }
+      ],
+      "desktop": [
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        },
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        }
+      ]
+    },
+    "boundary": "Live API token cards checked at360px/1100px. MCP uses identical row rule; no new MCP credential created for this layout check."
+  },
+  "paymentAttemptFixtureFailure": {
+    "ui": {
+      "tail": "M - 8:41 PM\n\nmore_vert\n\nGroup payer / Base Asset recipient\n\nQA Group Asset Payment - QA Group Asset Borrow\n\nSep 28, 7:41 PM - 8:41 PM\n\nclose\ninventory_2\nSupplies\nexpand_more\nadd\nNo assigned resources yet.\n\nAssign current-user assets to see them here.\n\nExplore - QA Group Asset Borrow\n\nQA Group Asset Payment - QA Group Asset Borrow\n\ninventory_2\nAvailable first\nexpand_more\nclose\nforest\nCamping\nexpand_more\n–\ncalendar_month\n4+ left\n6 left\npublic\nQA Group Paid Supplies\n\nSupplies · Camping · Los Angeles\n\nmore_vert\n\nPacked for a two-night lakeside stay; cookware and lighting are included.\n\nMaya Stone · Public\n\nHUF3,200\nNo policy\nshopping_basket\n1\nBorrow QA Group Paid Supplies\n\nQA Group Asset Payment - QA Group Asset Borrow\n\nclose\nshopping_basket\nBasket\n\nItems to pay for\n\nQA Group Asset Payment - QA Group Asset Borrow\nLos Angeles\nSep 28, 7:41 PM - 8:41 PM\nSELECTED ITEMS\n1 item\nQA Group Paid Supplies\nSep 28, 7:41 PM - 8:41 PM\nQuantity: 1\nHUF 3,200.00\nCurrent Price Review\nprice_check\nDaily rate\nHUF 3,200.00\nFinal price\nHUF 3,200.00\npayments\nPayment\n\nPay for the confirmed borrow window.\n\nAMOUNT\nHUF 3,200.00\nSTATUS\nPayment continues through the configured payment provider after confirmation.\n•••• •••• •••• 4444\nCARDHOLDER\nALEX TURNER\nEXPIRES\n09/29\nMASTERCARD ENDING 4444\ncurrency_exchange\nCancellation & Reimbursement\nCurrent reimbursement\n\nFull refund when cancelled at least 0 days before start.\n\nHUF 3,200\n0 days before start\nFull refund\n\nUnable to send the borrow request.\n\nBack\nCancel\nPay",
+      "buttons": [
+        {
+          "t": "close",
+          "a": "Close asset explore"
+        },
+        {
+          "t": "forest\nCamping\nexpand_more",
+          "a": "Open asset explore category"
+        },
+        {
+          "t": "calendar_month",
+          "a": "Toggle date range picker"
+        },
+        {
+          "t": "",
+          "a": "Open Maya Stone impressions"
+        },
+        {
+          "t": "6 left",
+          "a": "Borrow asset"
+        },
+        {
+          "t": "more_vert",
+          "a": "Open card actions"
+        },
+        {
+          "t": "shopping_basket\n1",
+          "a": "Open borrow basket with 1 request"
+        },
+        {
+          "t": "close",
+          "a": "Close borrow request"
+        },
+        {
+          "t": "•••• •••• •••• 4444\nCARDHOLDER\nALEX TURNER\nEXPIRES\n09/29\nMASTERCARD ENDING 4444",
+          "a": "Change payment card"
+        },
+        {
+          "t": "Back",
+          "a": "Back"
+        },
+        {
+          "t": "Cancel",
+          "a": "Cancel"
+        },
+        {
+          "t": "Pay",
+          "a": "Pay"
+        }
+      ]
+    },
+    "network": [
+      {
+        "method": "POST",
+        "path": "/api/activities/events/checkout/authorize"
+      },
+      {
+        "method": "POST",
+        "path": "/api/activities/events/checkout/state"
+      }
+    ],
+    "responses": [
+      {
+        "id": "1389064.4854",
+        "status": 500,
+        "path": "/api/activities/events/checkout/authorize"
+      },
+      {
+        "id": "1389064.4855",
+        "status": 200,
+        "path": "/api/activities/events/checkout/state"
+      }
+    ]
+  },
+  "paymentRetry": {
+    "network": [
+      {
+        "method": "POST",
+        "path": "/api/activities/events/checkout/authorize"
+      },
+      {
+        "method": "POST",
+        "path": "/api/assets/upsert"
+      },
+      {
+        "method": "POST",
+        "path": "/api/activities/events/subevent-resources/replace"
+      },
+      {
+        "method": "POST",
+        "path": "/api/activities/events/checkout/state"
+      }
+    ],
+    "responses": [
+      {
+        "id": "1389064.4912",
+        "status": 200,
+        "path": "/api/activities/events/checkout/authorize"
+      },
+      {
+        "id": "1389064.4913",
+        "status": 200,
+        "path": "/api/assets/upsert"
+      },
+      {
+        "id": "1389064.4914",
+        "status": 200,
+        "path": "/api/activities/events/subevent-resources/replace"
+      },
+      {
+        "id": "1389064.4915",
+        "status": 200,
+        "path": "/api/activities/events/checkout/state"
+      }
+    ],
+    "ui": {
+      "dialogs": [
+        {
+          "a": "Activities",
+          "t": "Activities\n\nAll\n\nschedule\ntoday\nclose\nevent\nEvents\nexpand_more\nwidgets\nAll\nexpand_more\nexplore\nMon, 28 Sept 2026\n1 / 10\npublic\nQA Group Asset Payment\n\nSep 28, 7:41 PM - 8:41 PM\n\nSeattle · 0 km\n\nmore_vert\n\nExternal sharing prerequisite"
+        },
+        {
+          "a": "QA Group Asset Payment",
+          "t": "QA Group Asset Payment\n\nSep 28, 7:41 PM - 8:41 PM\n\nschedule\ntoday\nclose\nperson_pin\nMy participation\nedit\nEdit\ngroups\nMembers\nMon, 28 Sept 2026\ninventory_2\nSub Event 1\nStandard\nlocation_on\nblock\nMandatory\nblock\nQA Group Asset Borrow\n\nSep 28, 7:41 PM - 8:41 PM\n\nmore_vert\n\nGroup payer / Base Asset recipient"
+        },
+        {
+          "a": "QA Group Asset Payment - QA Group Asset Borrow",
+          "t": "QA Group Asset Payment - QA Group Asset Borrow\n\nSep 28, 7:41 PM - 8:41 PM\n\n0 members · 1 pending\n\nclose\ninventory_2\nSupplies\nexpand_more\n1\nadd\n0 / 6\n1\ninventory_2\nQA Group Paid Supplies\n\nSupplies · 4-person dome + sleep systems + lantern · Los Angeles\n\nSep 28 · 7:41 PM - 8:41 PM\n\nmore_vert\n\nPacked for a two-night lakeside stay; cookware and lighting are included."
+        },
+        {
+          "a": "Explore - QA Group Asset Borrow",
+          "t": "Explore - QA Group Asset Borrow\n\nQA Group Asset Payment - QA Group Asset Borrow\n\ninventory_2\nAvailable first\nexpand_more\nclose\nforest\nCamping\nexpand_more\n–\ncalendar_month\n4+ left\n5 left\npublic\nQA Group Paid Supplies\n\nSupplies · Camping · Los Angeles\n\nmore_vert\n\nPacked for a two-night lakeside stay; cookware and lighting are included.\n\nMaya Stone · Public\n\nHUF3,200\nNo policy"
+        }
+      ]
+    }
+  },
+  "capturedState": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "eventId": "f02709270000000000000083",
+    "stageId": "qa-group23-borrow",
+    "assetId": "f02709270000000000000082",
+    "payerId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "recipientId": "1b1c70be2349b3359a8f6f94",
+    "prepared": true,
+    "paymentOutcomeSeeded": false,
+    "payments": [
+      {
+        "id": {
+          "$oid": "6ab957392d0874c32bf37999"
+        },
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "recipientUserId": "1b1c70be2349b3359a8f6f94",
+        "sourceId": "f02709270000000000000082",
+        "sourceType": null,
+        "status": "failed",
+        "amount": 3200,
+        "currency": "HUF",
+        "refundedAmount": null
+      },
+      {
+        "id": {
+          "$oid": "6ab957ba2d0874c32bf3799a"
+        },
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "recipientUserId": "1b1c70be2349b3359a8f6f94",
+        "sourceId": "f02709270000000000000082",
+        "sourceType": null,
+        "status": "captured",
+        "amount": 3200,
+        "currency": "HUF",
+        "refundedAmount": null
+      }
+    ],
+    "profiles": [
+      {
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "spent": {},
+        "income": {
+          "HUF": 3200
+        },
+        "all": {
+          "HUF": 3200
+        }
+      },
+      {
+        "userId": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "spent": {
+          "HUF": 17400
+        },
+        "income": {
+          "HUF": 8400
+        },
+        "all": {
+          "HUF": 25800
+        }
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "spent": {
+          "HUF": 3200
+        },
+        "income": null,
+        "all": {
+          "HUF": 3200
+        }
+      },
+      {
+        "userId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+        "spent": null,
+        "income": null,
+        "all": null
+      }
+    ],
+    "requests": [
+      {
+        "id": "f02709270000000000000082:request:borrow:group:seed-community-design-circle:af0436815ab38f4864dd1e24:f02709270000000000000082:qa-group23-borrow:4dc378df-dad6-44d2-8e76-23149a8bc8bc",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": "1b1c70be2349b3359a8f6f94",
+        "status": "pending",
+        "booking": {
+          "eventId": "f02709270000000000000083",
+          "eventTitle": "QA Group Asset Payment",
+          "subEventId": "qa-group23-borrow",
+          "subEventTitle": "QA Group Asset Borrow",
+          "slotKey": "qa-group23-borrow",
+          "slotLabel": "QA Group Asset Borrow",
+          "timeframe": "Sep 28 · 7:41 PM - 8:41 PM",
+          "startAtIso": "2026-09-28T17:41:00.000Z",
+          "endAtIso": "2026-09-28T18:41:00.000Z",
+          "quantity": 1,
+          "totalAmount": 3200,
+          "currency": "HUF",
+          "acceptedPolicyIds": [],
+          "paymentSessionId": "pay_0191d36a-9d80-46fe-9433-a9c7a42d2c21"
+        }
+      }
+    ]
+  },
+  "payerHistoryScope": {
+    "out": [
+      {
+        "name": "Design Circle",
+        "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −8.00 ›\nEUR +0.00 ›\n2026-09-27\nCaptured\ncheck_circle\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:51:54\nmore_vert\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:49:45\nmore_vert"
+      },
+      {
+        "name": "Main profile",
+        "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −43.50 ›\nEUR +21.00 ›\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert\n2026-08-17\nCaptured\ncheck_circle\nHUF −12,500\npayment\nstripe\n15d3049967690e9c3abcf0df\n17/08/2026, 11:15:00\nmore_vert\n2026-08-10\nCaptured\ncheck_circle\nHUF +8,400\naccount_balance_wallet\ncash\n21746c9aacc985817e31cf9f\n10/08/2026, 18:00:00\nmore_vert"
+      },
+      {
+        "name": "Seattle Friends",
+        "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\nNo payment history\n\nCompleted and pending payments will appear here."
+      }
+    ],
+    "reads": [
+      {
+        "method": "GET",
+        "path": "/api/payment-methods/history",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/help/active",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/active",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/terms/active",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/payment-methods/history",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/help/active",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/privacy/active",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/terms/active",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null
+      },
+      {
+        "method": "GET",
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24"
+      },
+      {
+        "method": "GET",
+        "path": "/api/payment-methods/history",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24"
+      }
+    ]
+  },
+  "recipientIncome": {
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +8.00 ›\n2026-09-27\nCaptured\ncheck_circle\nHUF +3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:51:54\nmore_vert\nFailed\npayments\nHUF +3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:49:45\nmore_vert",
+    "history": {
+      "items": [
+        {
+          "id": "6ab957ba2d0874c32bf3799a",
+          "sourceId": "f02709270000000000000082",
+          "direction": "income",
+          "paymentMethodId": "pm_77a06c84-adc7-4797-98f3-6eb6dee4810d",
+          "provider": "barion",
+          "status": "captured",
+          "failureReason": null,
+          "amount": 3200,
+          "currency": "HUF",
+          "bookingStatus": "joined",
+          "auditKind": "payment",
+          "fulfillmentKind": "client",
+          "checkoutSessionId": "pay_0191d36a-9d80-46fe-9433-a9c7a42d2c21",
+          "createdAtIso": "2026-09-27T17:51:54.250677645Z",
+          "recipientUserId": "1b1c70be2349b3359a8f6f94",
+          "serviceContext": "asset",
+          "contextEventId": "f02709270000000000000083",
+          "contextSubEventId": "qa-group23-borrow",
+          "contextAssetId": "f02709270000000000000082",
+          "refundRequestStatus": "none",
+          "refundRequestedAtIso": null,
+          "canRequestRefund": false,
+          "canApproveRefund": false,
+          "refundPreview": {
+            "paidAmount": 3200,
+            "refundableAmount": 3200,
+            "retainedAmount": 0,
+            "currency": "HUF",
+            "status": "full",
+            "ruleId": "qa-group-full-refund",
+            "ruleOffsetUnit": "days",
+            "ruleOffsetValue": 0,
+            "refundKind": "full",
+            "refundValue": null,
+            "ruleDescription": "Full refund when requested at least 0 days before start."
+          },
+          "paymentMethod": {
+            "id": "pm_77a06c84-adc7-4797-98f3-6eb6dee4810d",
+            "provider": "barion",
+            "brand": "Mastercard",
+            "last4": "4444",
+            "expiryMonth": 9,
+            "expiryYear": 2029,
+            "cardholderName": "Barion Test User 004",
+            "artworkKey": "midnight",
+            "artworkUrl": "/media/public?key=payment-cards/card-midnight.webp",
+            "status": "active",
+            "createdAtIso": "2026-09-27T17:51:42.764012484Z",
+            "updatedAtIso": "2026-09-27T17:51:42.764012484Z"
+          },
+          "note": null,
+          "counterpartyName": null
+        },
+        {
+          "id": "6ab957392d0874c32bf37999",
+          "sourceId": "f02709270000000000000082",
+          "direction": "income",
+          "paymentMethodId": "qa-group23-barion",
+          "provider": "barion",
+          "status": "failed",
+          "failureReason": "400 Bad Request on POST request for \"http://payment-simulator:18082/v2/Payment/Start\": \"{\"Errors\":[{\"ErrorCode\":\"InvalidTraceId\",\"Title\":\"InvalidTraceId\",\"Description\":\"The saved simulator payment method is unknown.\"}]}<EOL>\"",
+          "amount": 3200,
+          "currency": "HUF",
+          "bookingStatus": "initiated",
+          "auditKind": "payment",
+          "fulfillmentKind": "client",
+          "checkoutSessionId": "pay_8aac7f35-f26c-41c7-9cd0-1efc5773f9c3",
+          "createdAtIso": "2026-09-27T17:49:45.525065579Z",
+          "recipientUserId": "1b1c70be2349b3359a8f6f94",
+          "serviceContext": "asset",
+          "contextEventId": null,
+          "contextSubEventId": null,
+          "contextAssetId": "f02709270000000000000082",
+          "refundRequestStatus": "none",
+          "refundRequestedAtIso": null,
+          "canRequestRefund": false,
+          "canApproveRefund": false,
+          "refundPreview": {
+            "paidAmount": 3200,
+            "refundableAmount": 0,
+            "retainedAmount": 3200,
+            "currency": "HUF",
+            "status": "not_eligible",
+            "ruleId": null,
+            "ruleOffsetUnit": null,
+            "ruleOffsetValue": null,
+            "refundKind": null,
+            "refundValue": null,
+            "ruleDescription": "No cancellation refund policy applies to this payment."
+          },
+          "paymentMethod": null,
+          "note": null,
+          "counterpartyName": null
+        }
+      ],
+      "total": 2,
+      "nextCursor": null,
+      "spendingTotals": {},
+      "incomeTotals": {
+        "HUF": 3200
+      },
+      "pendingRefundCount": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 8,
+        "gross": 8,
+        "refunded": 0,
+        "net": 8,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  "recipientGroupExclusion": {
+    "group": "Language Lab",
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\nNo payment history\n\nCompleted and pending payments will appear here."
+  },
+  "ownerAcceptance": {
+    "text": "ctive recently\nvisibility\n\nName · Ryan Baker\n\nCity · Portland\n\nActive recently\nvisibility\n\nName · Noah Lane\n\nCity · Boston\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\nnotifications_active\n12\nAssets · Supplies\nclose\ninventory_2\nSupplies\nexpand_more\n1\npending_actions\n1\nadd\n1\ninventory_2\nQA Group Paid Supplies\n\nSupplies · 4-person dome + sleep systems + lantern · Los Angeles\n\nmore_vert\n\nPacked for a two-night lakeside stay; cookware and lighting are included.\n\nQA Group Paid Supplies\n\n4-person dome + sleep systems + lantern\n\nschedule\ntoday\nclose\nview_list\nAll\nexpand_more\n1\nMon 28 Sept\nBorrowed: 1\nat\nAlex Turner\nQA Group Asset Payment · QA Group Asset Borrow\nSep 28 5:41 PM - 6:41 PM",
+    "network": [
+      {
+        "method": "GET",
+        "path": "/api/assets/f02709270000000000000082"
+      },
+      {
+        "method": "POST",
+        "path": "/api/assets/upsert"
+      },
+      {
+        "method": "GET",
+        "path": "/api/assets/f02709270000000000000082/availability"
+      },
+      {
+        "method": "GET",
+        "path": "/api/deployment/configuration"
+      }
+    ],
+    "responses": [
+      {
+        "id": "1389064.5063",
+        "status": 200,
+        "path": "/api/assets/f02709270000000000000082"
+      },
+      {
+        "id": "1389064.5064",
+        "status": 200,
+        "path": "/api/assets/upsert"
+      },
+      {
+        "id": "1389064.5065",
+        "status": 200,
+        "path": "/api/assets/f02709270000000000000082/availability"
+      },
+      {
+        "id": "1389064.5066",
+        "status": 200,
+        "path": "/api/deployment/configuration"
+      }
+    ]
+  },
+  "refundRequest": {
+    "network": [
+      {
+        "method": "POST",
+        "path": "/api/payment-methods/history/6ab957ba2d0874c32bf3799a/refund-request"
+      }
+    ],
+    "responses": [
+      {
+        "id": "1389064.5526",
+        "status": 200,
+        "path": "/api/payment-methods/history/6ab957ba2d0874c32bf3799a/refund-request"
+      }
+    ],
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −8.00 ›\nEUR +0.00 ›\n2026-09-27\nRefund requested\ncurrency_exchange\nHUF +3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:56:36\nCaptured\ncheck_circle\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:51:54\nmore_vert\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:49:45\nmore_vert"
+  },
+  "refundApproval": {
+    "network": [
+      {
+        "method": "POST",
+        "path": "/api/payment-methods/history/refund%3A6ab957ba2d0874c32bf3799a/refund-approve"
+      }
+    ],
+    "responses": [
+      {
+        "id": "1389064.5635",
+        "status": 200,
+        "path": "/api/payment-methods/history/refund%3A6ab957ba2d0874c32bf3799a/refund-approve"
+      }
+    ],
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −8.00 ›\nEUR +8.00 ›\n2026-09-27\nRefunded\ncurrency_exchange\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:56:36\nCaptured\ncheck_circle\nHUF +3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:51:54\nmore_vert\nFailed\npayments\nHUF +3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:49:45\nmore_vert"
+  },
+  "refundState": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "eventId": "f02709270000000000000083",
+    "stageId": "qa-group23-borrow",
+    "assetId": "f02709270000000000000082",
+    "payerId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+    "recipientId": "1b1c70be2349b3359a8f6f94",
+    "prepared": true,
+    "paymentOutcomeSeeded": false,
+    "payments": [
+      {
+        "id": {
+          "$oid": "6ab957392d0874c32bf37999"
+        },
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "recipientUserId": "1b1c70be2349b3359a8f6f94",
+        "sourceId": "f02709270000000000000082",
+        "sourceType": null,
+        "status": "failed",
+        "amount": 3200,
+        "currency": "HUF",
+        "refundedAmount": null
+      },
+      {
+        "id": {
+          "$oid": "6ab957ba2d0874c32bf3799a"
+        },
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "recipientUserId": "1b1c70be2349b3359a8f6f94",
+        "sourceId": "f02709270000000000000082",
+        "sourceType": null,
+        "status": "captured",
+        "amount": 3200,
+        "currency": "HUF",
+        "refundedAmount": 3200
+      },
+      {
+        "id": "refund:6ab957ba2d0874c32bf3799a",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "recipientUserId": "1b1c70be2349b3359a8f6f94",
+        "sourceId": "f02709270000000000000082",
+        "sourceType": null,
+        "status": "refunded",
+        "amount": 3200,
+        "currency": "HUF",
+        "refundedAmount": 3200
+      }
+    ],
+    "profiles": [
+      {
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "spent": {
+          "HUF": 3200
+        },
+        "income": {
+          "HUF": 3200
+        },
+        "all": {
+          "HUF": 6400
+        }
+      },
+      {
+        "userId": "group:seed-community-language-lab:1b1c70be2349b3359a8f6f94",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "group:seed-community-neighbours:1b1c70be2349b3359a8f6f94",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "af0436815ab38f4864dd1e24",
+        "spent": {
+          "HUF": 17400
+        },
+        "income": {
+          "HUF": 8400
+        },
+        "all": {
+          "HUF": 25800
+        }
+      },
+      {
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "spent": {
+          "HUF": 3200
+        },
+        "income": {
+          "HUF": 3200
+        },
+        "all": {
+          "HUF": 6400
+        }
+      },
+      {
+        "userId": "group:seed-community-photo-walks:af0436815ab38f4864dd1e24",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "spent": null,
+        "income": null,
+        "all": null
+      },
+      {
+        "userId": "group:seed-community-study-buddies:af0436815ab38f4864dd1e24",
+        "spent": null,
+        "income": null,
+        "all": null
+      }
+    ],
+    "requests": [
+      {
+        "id": "f02709270000000000000082:request:borrow:group:seed-community-design-circle:af0436815ab38f4864dd1e24:f02709270000000000000082:qa-group23-borrow:4dc378df-dad6-44d2-8e76-23149a8bc8bc",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": "1b1c70be2349b3359a8f6f94",
+        "status": "accepted",
+        "booking": {
+          "eventId": "f02709270000000000000083",
+          "eventTitle": "QA Group Asset Payment",
+          "subEventId": "qa-group23-borrow",
+          "subEventTitle": "QA Group Asset Borrow",
+          "slotKey": "qa-group23-borrow",
+          "slotLabel": "QA Group Asset Borrow",
+          "timeframe": "Sep 28 · 7:41 PM - 8:41 PM",
+          "startAtIso": "2026-09-28T17:41:00.000Z",
+          "endAtIso": "2026-09-28T18:41:00.000Z",
+          "quantity": 1,
+          "totalAmount": 3200,
+          "currency": "HUF",
+          "acceptedPolicyIds": [],
+          "paymentSessionId": "pay_0191d36a-9d80-46fe-9433-a9c7a42d2c21"
+        }
+      }
+    ]
+  },
+  "payerRefund": {
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −8.00 ›\nEUR +8.00 ›\n2026-09-27\nRefunded\ncurrency_exchange\nHUF +3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:56:36\nCaptured\ncheck_circle\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:51:54\nmore_vert\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\nf02709270000000000000082\n27/09/2026, 19:49:45\nmore_vert"
+  },
+  "providerCardRevoked": {
+    "network": [
+      {
+        "method": "DELETE",
+        "path": "/api/payment-methods/pm_77a06c84-adc7-4797-98f3-6eb6dee4810d"
+      },
+      {
+        "method": "GET",
+        "path": "/api/payment-methods/history"
+      },
+      {
+        "method": "GET",
+        "path": "/api/payment-methods"
+      }
+    ],
+    "responses": [
+      {
+        "id": "1389064.5740",
+        "status": 204,
+        "path": "/api/payment-methods/pm_77a06c84-adc7-4797-98f3-6eb6dee4810d"
+      },
+      {
+        "id": "1389064.5742",
+        "status": 200,
+        "path": "/api/payment-methods"
+      },
+      {
+        "id": "1389064.5741",
+        "status": 200,
+        "path": "/api/payment-methods/history"
+      }
+    ],
+    "text": "Payment cards\n\nUp to 6 tokenized cards\n\nadd\nAdd card\nclose\nNo saved cards\n\nUse the plus button to register a card with the payment provider."
+  },
+  "menuScopeSmoke": [
+    {
+      "workspace": "Main profile",
+      "entry": "Feed",
+      "ui": [
+        {
+          "a": "Feed",
+          "text": "Feed\npublic\nPublic feed\nexpand_more\nadd\nclose\nNo items\nNo shared photos yet"
+        }
+      ],
+      "calls": [
+        {
+          "path": "/api/activities/feed",
+          "method": "GET",
+          "userId": "af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        }
+      ]
+    },
+    {
+      "workspace": "Main profile",
+      "entry": "Open impressions",
+      "ui": [
+        {
+          "a": "Alex Turner, 31 · My Impressions",
+          "text": "Alex Turner, 31 · My Impressions\nclose\nAlex Turner, 31\n\nlocation_on\nSeattle\n\nMetrics first, then movement.\nworkspace_premium\nSilver\nHOST\nRATE\n0.0\nPEOPLE / EVENTS\n0 / 0\nRETURNEES / NOSHOW\n0 / 0\nVIBE\nPERSONALITY\n#1\nAmbitious Go-Getter\n56%\n#2\nSocial Charmer\n24%\n#3\nReliable One\n15%\ntrending_up\nAmbitious Go-Getter\n\nDriven, goal-oriented, high standards\n\n56%\n0 signals\nMotivated\nFocused\nStrategic thinker\nCATEGORY\ntrending_up\nAmbitious\nATTENDEE\nPEOPLE / EVENTS\n0 / 0\nRETURNEES / NOSHOW\n0 / 0\nVIBE\nPERSONALITY\n#1\nAmbitious Go-Getter\n56%\n#2\nSocial Charmer\n24%\n#3\nReliable One\n15%\ntrending_up\nAmbitious Go-Getter\n\nDriven, goal-oriented, high standards\n\n56%\n0 signals\nMotivated\nFocused\nStrategic thinker\nCATEGORY"
+        }
+      ],
+      "calls": []
+    },
+    {
+      "workspace": "Main profile",
+      "entry": "Open chat",
+      "ui": [
+        {
+          "a": "Activities",
+          "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nSun, 1 Mar 2026\n9+\nAlex Turner\nGroup A\nLibrary Mentorship Milestone Map · Qualifiers · Mar 27, 1:00 PM - 2:00 PM\nPerfect, locking this in.\n9+\nOlivia Rivera\nGroup A\nGreenhouse Brunch Table · Finals · Apr 6, 10:00 AM - 10:45 AM\nPerfect, locking this in.\n9+\nAlex Turner\nGroup B\nGolden Hour Rooftop Meetup · Semifinals · Mar 12, 8:00 PM - 8:45 PM\nPerfect, locking this in.\nAlex Turner\nCourtyard String Social\nPerfect, locking this in.\nSat, 28 Feb 2026\n9+\nAlex Turner\nLakeside Walk Lab\nPerfect, locking this in.\n9+\nAlex Turner\nGroup C\nLibrary Mentor Office Hours · Qualifiers · Mar 13, 9:00 AM - 10:00 AM\nPerfect, locking this in.\n9+\nAlex Turner\nGroup C\nLakeside Walk Lab · Qualifiers · Mar 23, 12:00 PM - 1:00 PM\nPerfect, locking this"
+        }
+      ],
+      "calls": [
+        {
+          "path": "/api/activities/chats/page",
+          "method": "GET",
+          "userId": "af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        },
+        {
+          "path": "/api/activities/chats/page",
+          "method": "GET",
+          "userId": "af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        }
+      ]
+    },
+    {
+      "workspace": "Main profile",
+      "entry": "Ticket",
+      "ui": [
+        {
+          "a": "Assets · Ticket",
+          "text": "Assets · Ticket\n\n0 ticketed events\n\nschedule\nUpcoming\nexpand_more\nclose\nqr_code_2\nTicket\nexpand_more\nqr_code_scanner\nNo tickets\nNo ticketed events\n\nEnable Ticketing On in an event to generate a ticket here."
+        }
+      ],
+      "calls": [
+        {
+          "path": "/api/assets/tickets",
+          "method": "GET",
+          "userId": "af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        }
+      ]
+    },
+    {
+      "workspace": "Design Circle",
+      "entry": "Feed",
+      "ui": [
+        {
+          "a": "Feed",
+          "text": "Feed\npublic\nPublic feed\nexpand_more\nadd\nclose\nNo items\nNo shared photos yet"
+        }
+      ],
+      "calls": [
+        {
+          "path": "/api/activities/feed",
+          "method": "GET",
+          "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        }
+      ]
+    },
+    {
+      "workspace": "Design Circle",
+      "entry": "Open impressions",
+      "ui": [
+        {
+          "a": "Alex Turner, 31 · My Impressions",
+          "text": "Alex Turner, 31 · My Impressions\nclose\nAlex Turner, 31\n\nlocation_on\nSeattle\n\nMetrics first, then movement.\ninsights\nNo available data yet\nImpressions appear after real host or attendee activity."
+        }
+      ],
+      "calls": []
+    },
+    {
+      "workspace": "Design Circle",
+      "entry": "Open chat",
+      "ui": [
+        {
+          "a": "Activities",
+          "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\nforum\nAll\nexpand_more\nNo items\nNo Chats items in this filter."
+        }
+      ],
+      "calls": [
+        {
+          "path": "/api/activities/chats/page",
+          "method": "GET",
+          "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        }
+      ]
+    },
+    {
+      "workspace": "Design Circle",
+      "entry": "Ticket",
+      "ui": [
+        {
+          "a": "Assets · Ticket",
+          "text": "Assets · Ticket\n\n0 ticketed events\n\nschedule\nUpcoming\nexpand_more\nclose\nqr_code_2\nTicket\nexpand_more\nqr_code_scanner\nNo tickets\nNo ticketed events\n\nEnable Ticketing On in an event to generate a ticket here."
+        }
+      ],
+      "calls": [
+        {
+          "path": "/api/assets/tickets",
+          "method": "GET",
+          "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+          "ownerId": null,
+          "profileId": null
+        }
+      ]
+    }
+  ],
+  "ellipsisLayout": [
+    {
+      "width": 360,
+      "text": "Borrowed: 1\nat\nAlex Turner\nQA Group Asset Payment · QA Group Asset Borrow\nSep 28 5:41 PM - 6:41 PM",
+      "subtitle": {
+        "x": 60.1875,
+        "y": 201.234375,
+        "width": 188.53125,
+        "height": 20,
+        "top": 201.234375,
+        "right": 248.71875,
+        "bottom": 221.234375,
+        "left": 60.1875
+      },
+      "badge": {
+        "x": 256.71875,
+        "y": 179.96875,
+        "width": 87.09375,
+        "height": 28,
+        "top": 179.96875,
+        "right": 343.8125,
+        "bottom": 207.96875,
+        "left": 256.71875
+      },
+      "overflow": "ellipsis",
+      "clipped": true,
+      "noOverlap": true
+    },
+    {
+      "width": 320,
+      "text": "Borrowed: 1\nat\nAlex Turner\nQA Group Asset Payment · QA Group Asset Borrow\nSep 28 5:41 PM - 6:41 PM",
+      "subtitle": {
+        "x": 60.1875,
+        "y": 201.234375,
+        "width": 148.53125,
+        "height": 20,
+        "top": 201.234375,
+        "right": 208.71875,
+        "bottom": 221.234375,
+        "left": 60.1875
+      },
+      "badge": {
+        "x": 216.71875,
+        "y": 179.96875,
+        "width": 87.09375,
+        "height": 28,
+        "top": 179.96875,
+        "right": 303.8125,
+        "bottom": 207.96875,
+        "left": 216.71875
+      },
+      "overflow": "ellipsis",
+      "clipped": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1100,
+      "text": "Borrowed: 1\nat\nAlex Turner\nQA Group Asset Payment · QA Group Asset Borrow\nSep 28 5:41 PM - 6:41 PM",
+      "subtitle": {
+        "x": 76.1875,
+        "y": 205.21875,
+        "width": 896.53125,
+        "height": 20,
+        "top": 205.21875,
+        "right": 972.71875,
+        "bottom": 225.21875,
+        "left": 76.1875
+      },
+      "badge": {
+        "x": 980.71875,
+        "y": 183.953125,
+        "width": 87.09375,
+        "height": 28,
+        "top": 183.953125,
+        "right": 1067.8125,
+        "bottom": 211.953125,
+        "left": 980.71875
+      },
+      "overflow": "ellipsis",
+      "clipped": false,
+      "noOverlap": true
+    }
+  ],
+  "fixtureCorrection": "Initial fixture card was unknown to provider (InvalidTraceId); failed attempt retained as failure, not a duplicate capture. Versioned prepare-group-asset-payment-card snapshots registration/card scopes; real provider UI Generate test card -> Tokenize and save -> checkout retry succeeded. Provider card revoked through UI before Mongo restore.",
+  "implementationReview": {
+    "paymentHistory": "SavedPaymentMethodsService.queryHistory uses stored payer/recipient IDs; toHistoryDto classifies client fulfillment as asset without looking up Asset/Event to determine direction/type. One captured payment and its normal refund audit share original payer/recipient.",
+    "ticketScope": "AssetsService.queryTicketPage resolves account profile IDs (lines472ff); both Base and Group ticket UI were empty in this baseline. Ticket converter has no workspace badge; populated-ticket visual behavior not exercised in block23.",
+    "scopeCoverage": "Bounded Base/Design Circle Feed, Impressions, Chats and Ticket smoke plus payment/event/resource/asset-availability nested flow. No exhaustive tour of every nested screen."
+  },
+  "ellipsisFix": {
+    "file": "frontend/src/app/shared/ui/components/core/smart-list/card/single-row/single-row.component.scss",
+    "build": "Existing frontend-sync watcher PASS 2026-09-27T17:54:53.783Z, sync19:54:55",
+    "verified": "Real accepted booking row at320/360/1100: no badge overlap; ellipsis at320/360. Original screenshot pending row shares layout; not separately restaged."
+  },
+  "restoration": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "sharingRestored": true
+  }
+}

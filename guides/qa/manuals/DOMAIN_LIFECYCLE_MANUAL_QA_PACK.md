@@ -11325,3 +11325,107 @@ NOT RUN. The isolated Admin control was restored. Latest verified replay boundar
 is `after-workspace-selection` (block 5 remaining checks), following observed
 profile-selection timeout, rollback, retry and late-response isolation. Detailed
 evidence remains in the dated Group log; closed PASS rows are unchanged.
+
+
+2026-09-27 resumed Group HTTP block19: real demo selector/admission, denied and unsupported browser location, snapshot-owned missing/invalid coordinate Setup cancel/retry, first profile persistence and reload have partial PASS evidence. The observed false Location required panel was fixed and replayed against the real stale realtime response. Block19 remains IN PROGRESS; HTTP15/48, Lifecycle15/29 closed. Detailed results and remaining branches are in [block19 evidence](../evidence/GROUP-LIFECYCLE-001-block19-entry-20260927.json). One managed ENTRY-BLOCK19 window is active; Zoe's snapshot remains retained.
+
+2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
+
+### DEPLOY-EXTERNAL-CONFIG-001 — deferred by user2026-09-27
+
+[Dedicated checklist](../checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+Real Firebase entry/location and externally configured MCP OAuth/client callbacks
+moved out of the Group campaign. DEFERRED / NOT RUN; configure later. The existing
+DEPLOY-FIREBASE-LIFECYCLE-001 pending-invitation-policy assertion is retained in
+section1. Group19 continues with demo admission/pending coordinates; it is not
+blocked by Firebase. No earlier PASS is reopened or external PASS inferred.
+
+2026-09-27 Group19 HTTP PASS/CLOSED after user scope separation. Real selector pending-sample controls proved stored-point admission, unsupported pending delivery only through profile-ext, successful saved-point response and account-scoped acknowledgement. HTTP16/48, Lifecycle16/29 closed;20 tracking active. Local remains NOT RUN. Older partial fixtures preserved.
+
+
+2026-09-27 block20 HTTP PASS/CLOSED: stored point with denied GPS and same-session reload; tracking OFF/save/reopen/ON; <5km zero writes, >=5km POST200; unsupported Paris POST403 retains accepted profile/cache/baseline/session and no popup; later eligible movement POST200. Independent Mongo point47.6747/19.0354 verified, normal logout then exact original47.5147/19.0354 restore, location snapshot removed. Evidence: GROUP-LIFECYCLE-001-block20-tracking-20260927.json. HTTP17/48 (35.42%), Lifecycle17/29 closed (1–13,17–20);21 active. Local NOT RUN; older contact/badge snapshots retained.
+
+User clarification 2026-09-27: testcases are independent closed execution units. Transferred checks are CLOSED BY SCOPE TRANSFER in the source, not pending dependencies. DEPLOY-EXTERNAL-CONFIG-001 requires its own fixture, restaging, entry checkpoints, execution and cleanup; prior/cross-case evidence cannot substitute. Transfer provenance stays in the ledger, not executable cross-case references. Audit the remaining NOT RUN cases only at the current testcase boundary, before advancing to another testcase.
+
+2026-09-27 block21 HTTP partial: seven audited menu surfaces, profile multiselect, pricing scope and card menus exercised; HU320/EN360/desktop1100 representative checks. Notification launcher overlap and forced-sheet desktop X repaired and replayed through existing frontend-sync. Assignment basket restaged with own Group fixture and exactly restored, no assignment/share/checkout commit. Checkout optional-item menu remains NOT RUN because selected real event/date combinations returned no available slots; suitable own checkpoint required. Do not mark full21 closed. Evidence GROUP-LIFECYCLE-001-block21-menus-20260927.json. HTTP17/48 and Lifecycle17/29 unchanged.
+
+
+2026-09-27 block21 HTTP PASS/CLOSED: final checkout optional-card control used its own versioned Group slot fixture. Native pointer selected/reverted optional item; mobile X remained reachable and closed only the sheet with parent dialogs/scroll retained; desktop title/no mobile X PASS. No checkout writes; draft discarded. Exact restore-sharing completed and original contact/badge snapshots retained. Together with the recorded seven menu surfaces, profile/price controls and HU/EN smoke,21 is closed. Evidence GROUP-LIFECYCLE-001-block21-menus-20260927.json. HTTP18/48 (37.50%), Lifecycle18/29 (1–13,17–21);22 active. Local NOT RUN.
+
+
+2026-09-27 block22 HTTP PASS/CLOSED: Design Circle UI create/edit/delete persisted Base asset ownership; Main/Design Circle/Seattle Friends inventory and immediate asset counters match, event counters remain separate. Real response-stage delayed long-poll released after deletion did not resurrect count; no page reload. Own scoped fixture public Asset booked to an inaccessible Language Lab event remains in Explore (UI + three-profile authenticated reads); own/private/non-friend controls absent, foreign Event/private Asset details withheld with empty HTTP200. Event Explore UI changes with workspace. Existing Group chat preparation and tools fixtures exactly restored; no chat share submitted. Evidence GROUP-LIFECYCLE-001-block22-tools-20260927.json. HTTP19/48 (39.58%), Lifecycle19/29 (1–13,17–22);23 active. Local NOT RUN.
+
+
+2026-09-27 API-domain MCP development requirement: URL-first client Connect,
+browser sign-in/profile approval and callback without manual client-secret
+copying is NOT IMPLEMENTED. Develop it in the existing API/MCP owners first,
+then execute INTEGRATION-API-GROUP-001 section7 from its own checkpoint.
+DEPLOY-EXTERNAL-CONFIG-001 retains independent configured real-client checks.
+No OAuth implementation undertaken in the active Group QA correction.
+
+Local/dev must complete the real MCP/OAuth application flow with a versioned test client/callback receiver: URL discovery, browser sign-in/consent, token exchange and private tool call. No fabricated grant or callback. Public HTTPS, external registration and real client/provider interoperability stay in the independent deployment case when external configuration is required.
+
+
+2026-09-27 block23 HTTP PASS/CLOSED: independent Group Asset checkout captured HUF3200 on Design Circle payer; Maya Base reads the same stored payment as income, Base/other Group controls excluded. Real owner acceptance and payer refund request/recipient approval reversed HUF3200 on the same payer/recipient; one capture plus normal refund audit. Initial unknown provider-card fixture caused one failed attempt; repaired via snapshot-protected real provider card registration, not a manufactured payment. Card revoked and restore-sharing exactly verified. Base/Group Profile/Affiliate/API/history and bounded Feed/Impressions/Chats/Ticket scope smoke recorded; empty ticket views supported by account-scope/converter source review, no populated-ticket visual claim or exhaustive nested-screen sweep. Shared booking-row badge overlap fixed and watcher/mobile320/360/desktop1100 verified. Evidence GROUP-LIFECYCLE-001-block23-profile-payments-20260927.json. HTTP20/48 (41.67%), Lifecycle20/29 (1–13,17–23);24 next. Local NOT RUN.
+
+
+2026-09-27 block24 HTTP checklist scope PASS/CLOSED: own contact snapshot; Group Create contact candidate account resolution repaired, eight real candidates returned. Saved contact request/reject/re-request/approve passed; one Base-account conversation, same senders and read receipts under Main/Design Circle; delayed old-account HTTP response did not replace the new account contact list. Contact snapshot restored exactly. Independent free resource fixture: account-owned Asset assigned by the participating Design Circle profile; persisted request retained that participant profile. Base/Seattle Friends subjects without target Event membership returned403. Assets remain usable from any workspace; authority comes from target Event/group membership. Both Base- and Group-held tickets visible from all three workspaces; scanner rejected forged actor bodies from Base/Seattle and accepted authenticated Design Circle despite Base body, persisted correct usedByUserId and attendance. No saved contacts meant zero Event invite candidates despite prior-met profiles. Exact restore-sharing PASS. Shared empty-state spans full grid; user-requested entire contact headline row removed without replacement, watcher/UI verified. Extra forged resource-subject probe under optional-auth dev policy is separately recorded as unproven authenticated-policy boundary, not a security PASS. Evidence GROUP-LIFECYCLE-001-block24-account-contacts-20260927.json. HTTP21/48 (43.75%), Lifecycle21/29 (1–13,17–24);25 next. Local NOT RUN.
+
+
+2026-09-27 block24 authorization correction and closure: user explicitly required direct forged-actor assignment rejection, then requested Java verification and excluded E2E. Reopened premature closure; removed optional-auth/demo bypass from resource-assignment submit/manage checks, using authenticated caller and existing policies. Added demo forged-subject/no-write, anonymous and valid-admin regressions; updated obsolete anonymous dev acceptance. Existing main watcher compile/restart PASS20:33:41 local. 19 focused JUnit authorization/resource-service tests PASS (zero skips/failures), reusing existing main outputs and cached test dependencies; no second main build/Gradle/server and no post-fix browser/E2E replay. Valid accepted member/admin and parent Event/generated-group assignment remain allowed; missing membership/forged actor rejected before writes.24 now closed on prior HTTP lifecycle plus this user-approved Java-only repair verification. HTTP21/48, Lifecycle21/29;25 next.24 fixtures and temporary25 notification snapshot were exactly restored.
+
+
+2026-09-27 block25 partial PASS: EN320/360/1100 and HU320 notification layout verified; remaining account notification/live-counter branch not yet executed. UI-issued Base and Photo Walks API keys used while Seattle Friends selected: Base asset and Photo Walks event created under their issuing profiles; Group JSON/multipart asset requests returned403 both from Seattle Friends and after Base selection, without created assets/external-ID mappings. Authentication filter rejects before image-controller ingestion; separate object-store inventory was not captured. Real UI Leave group caused Group key403; Base key Revoke caused401. Exact versioned restore-profile-api PASS, membership restored, generated resources/mappings/dependents and the newly created affiliate link removed; old keys retained. Shared menu checkmark moved before badges in all three list item variants; watcher PASS18:52:18.930Z and actual checked/unchecked rows share badge right edge336.125px at360px viewport. Evidence GROUP-LIFECYCLE-001-block25-notifications-api-20260927.json.25 remains IN PROGRESS for notification account scope/live counters and confirmation wording; HTTP21/48 and Lifecycle21/29 unchanged.
+
+
+2026-09-27 block25 HTTP PASS/CLOSED: notification layout and API-key scope evidence retained; versioned group notification inputs with actual read mutations verified All/Base/group filtering and account counter23→22→21 across Design/Seattle/Base. Original fixture counter drift recorded separately; aligned prerequisite before assertions, exactly restored afterward. Missing notification group label repaired in existing source subtitle. Real contact request/cancel/approve drove pending1→0 and account approval notification visible from Seattle; own snapshot restored. Independent two-group ticket inputs returned2 in Base/A/B; real Seattle Leave event canceled then confirmed, ticketD/member suppressed and both account ticket counters1, one Design ticket in all profiles. User-requested ticket group label added to existing metadata line; watcher/mobile PASS. Confirmation source audit99 objects/82 EN-HU keys plus bounded runtime/cancellation/320px HU check recorded separately; not every dialog executed, no extra unit runner. Exact temporary fixture/dependent cleanup PASS. Evidence block25-notifications-api-20260927.json and block25-confirmation-audit-20260927.json. HTTP22/48 (45.83%), Lifecycle22/29 (1–13,17–25);26 active. Local NOT RUN.
+
+
+2026-09-27 21:37: Block26.1–4 own HTTP execution: grants and revocations preserve provenance; Admin-first owner handover, ordinary-member fallback, sole-Admin step-down verified. Trash Restore returns former creator as Member; normal invitation return, last-member deletion and remaining notification/UI checks continue. Same-actor takeover retry200 is idempotent, competing403; pending fallback403/outsider404. See block26-admin-authority-20260927.json. Block26 remains IN PROGRESS.
+
+
+2026-09-27 22:00: Block26 HTTP PASS/CLOSED. Own grants/revocations, Admin-first and ordinary-member fallback, sole-admin step-down, normal invite and Trash return, final-member deletion and user-corrected recovery verified. Corrected rule: Deleted card remains in Trash; any voluntarily departed Admin can restore group/responsibility, ordinary member has no Restore and direct restore/join404 until admin recovery; then Member Restore succeeds. Earlier departed Admin cancel/confirm and idempotent retry proven. Exact notification read/avatar173→172/group2→1 survives reload. Shared Deleted badge bottom-right and common X16px centered. Local25+store2+popup6+converter12 focused tests PASS (45 distinct), full Local browser NOT RUN; Java mapper spec added/not run separately. Existing dev watchers compiled, exact fixture cleanup PASS. HTTP23/48 (47.92%), Lifecycle23/29 (1–13,17–26);27 next. See block26-admin-authority-20260927.json.
+
+### Blocks27–28 HTTP closed — 2026-09-27 22:19 CEST
+
+27: fresh owned fixture compared Admin, accepted Member and outsider with hidden roster. Admin retained access/pending counter; others displayed crossed-eye badge without red counter or roster action. Same-case saved invitation cancel/accept/reload and read-only policy evidence reused. Current editor desktop/mobile geometry, required headings EN/HU, blue/pink selected-field row gradients, bold labels, shared purple policy editor and left-aligned setup checked. User correction: mobile optional fields now one full-width row each, using the existing FormFlow default; EN320/360, HU320 and desktop1100 browser checks passed after watcher build. Long-name ellipsis retained26px circular monogram; Base green/group violet and normal/Admin/Operator header layouts checked,320/1100. Admin/operator expose no group selector by design. No separate build/test runner.
+
+28: normal browser network captured GET /api/groups summaries without description/policy, separate detail GET on View and Edit, zero additional detail GET for nested rules. HTTP adapter uses direct HttpClient without artificial delay. Local route delay inspected in source only; Local browser remains NOT RUN. Exact restore-admin-lifecycle restored all temporary scopes including role-account snapshots.
+
+Evidence: `GROUP-LIFECYCLE-001-block27-presentation-20260927.json`, `GROUP-LIFECYCLE-001-block28-requests-20260927.json`. HTTP25/48 (52.08%); Lifecycle25/29 (1–13,17–28);29 next;14–16 retained partial.
+
+### Block29 HTTP closed — 2026-09-27 22:34 CEST
+
+Real coordinate fixtures verified Activity Events and Event Explore Distance for0/3.2/4.999/5/5.1/9.999/10km, grouped0/0/0/5/5/5/10km. An old owned Group moved from third to first after real UI Save without reload; Hosting/Recent and scrollTop51 retained. Exact request replay409 retained version2; real30s sync200 retained order/scroll. Found and repaired stale sticky date after row reorder: shared SmartList.patchVisibleItem now uses existing refreshSurfaceSoon. Fresh restage and browser retest showed Sep27 header immediately and after sync, with no new list load. Existing watcher compiled. All temporary groups/events/members/role scopes exactly restored. No standalone runner.
+
+Evidence: `GROUP-LIFECYCLE-001-block29-distance-ordering-20260927.json`. HTTP26/48 (54.17%), Lifecycle26/29 (1–13,17–29);14–16 retained partial remain. Local full browser NOT RUN. Next user-requested addition: general InfoCard clickable-badge chevron, then remaining Group scope.
+
+### User-requested testcase closure — 2026-09-27
+
+GROUP-LIFECYCLE-001 is CLOSED for its agreed HTTP scope. The user accepted the
+final round clickable badges with a close-to-edge chevron and explicitly said
+not to start Group Isolation. Existing frontend-sync and Event/Rates browser
+checks passed; the discarded squared/pointed trials are superseded.
+
+Scope-transfer reconciliation: blocks14–16 were incorrectly left partial in
+current summaries after the instruction to separate external/configured checks.
+The Group checklist now retains the executed profile-editor/date, landing/runtime
+version and desktop help assertions. Untested registration, profile-view and Hungarian-filter
+assertions, authenticated remote reporting, installed-app version and physical
+Android/iOS recovery are complete independent blocks4–6 in
+DEPLOY-EXTERNAL-CONFIG-001, with their own entry checkpoints and cleanup. Already verified editor save/reload,
+English filter and help-layout/text checks were not copied into those blocks.
+They remain NOT RUN in that destination; no external/device PASS is inferred.
+The old partial source statuses are superseded by CLOSED BY SCOPE TRANSFER.
+
+Current HTTP scope: 29/29 lifecycle blocks CLOSED (26 unchanged full-block
+closures;3 retained successful scopes with the remaining branches transferred).
+Group journeys:29/48 closed (60.42%). This is scope-adjusted closure, not three
+new test executions. Historical observations and full Local NOT RUN stay intact.
+Evidence: block14/15/16 JSON retained checks; block27/28/29 closure artifacts;
+GROUP-LIFECYCLE-001-infocard-chevron-20260927.json and scope-closure JSON.
+
+NEXT: GROUP-ISOLATION-001 — NOT STARTED. On a later explicit continuation,
+first remove exact evidence-proven duplicates while preserving unique combinations
+and its independent fixture/restage/checkpoint contract. No Isolation fixture,
+launcher, browser action or test is authorized by this closure request.
