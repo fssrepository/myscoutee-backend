@@ -24036,6 +24036,18 @@
     "value": "An administrator took over responsibility for {workspaceGroupName}."
   },
   {
+    "_id": "i18n-message-en-groups-confirm-restore-group-title",
+    "key": "groups.confirm.restore-group.title",
+    "lang": "en",
+    "value": "Restore this group?"
+  },
+  {
+    "_id": "i18n-message-en-groups-confirm-restore-group",
+    "key": "groups.confirm.restore-group",
+    "lang": "en",
+    "value": "Restore “{name}” and resume responsibility as its admin?"
+  },
+  {
     "_id": "i18n-message-en-groups-confirm-restore-title",
     "key": "groups.confirm.restore.title",
     "lang": "en",
@@ -48130,6 +48142,18 @@
     "key": "notification.kind.community-takeover.message",
     "lang": "hu",
     "value": "Egy admin átvette a(z) {workspaceGroupName} csoport felelősségét."
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-group-title",
+    "key": "groups.confirm.restore-group.title",
+    "lang": "hu",
+    "value": "Visszaállítod ezt a csoportot?"
+  },
+  {
+    "_id": "i18n-message-hu-groups-confirm-restore-group",
+    "key": "groups.confirm.restore-group",
+    "lang": "hu",
+    "value": "Visszaállítod a(z) „{name}” csoportot, és újra átveszed az adminisztrálását?"
   },
   {
     "_id": "i18n-message-hu-groups-confirm-restore-title",

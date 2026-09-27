@@ -101,7 +101,7 @@ public class CommunityGroupsService {
         var owners = users.findByUserIdIn(records.stream().map(CommunityGroup::ownerUserId).distinct().toList()).stream()
                 .collect(Collectors.toMap(Users::getUserId, u -> u));
         var profileByGroup = groupProfiles.profilesByGroup(actor.getUserId());
-        var rows = records.stream().filter(g -> !g.deleted()).filter(g -> !bucket.equals("explore") || !g.awaitingOwner() && g.moderationVisible())
+        var rows = records.stream().filter(g -> !g.deleted() || bucket.equals("trash")).filter(g -> !bucket.equals("explore") || !g.awaitingOwner() && g.moderationVisible())
                 .filter(g -> category == null || category.isBlank() || category.equals(g.category()))
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,
@@ -314,13 +314,16 @@ public class CommunityGroupsService {
             if ("take-over".equals(request.action())) notifyHandover(group, actor.getUserId(), target, "takeover");
             return new ActivityMemberActionResponseDto(group.deleted() || self && "deleted".equals(target.getStatus()) ? List.of() : roster(actor, id, false), null, dto(actor, group, members(id)));
         }
-        if (group.deleted()) throw error(HttpStatus.NOT_FOUND);
+        boolean restoreGroup = "restore".equals(request.action()) && self && CommunityGroupMapper.canRestoreGroup(group, target);
+        if (group.deleted() && !restoreGroup) throw error(HttpStatus.NOT_FOUND);
         if (!"restore".equals(request.action())) group = visible(actor, id);
         if (group.awaitingOwner() && !Set.of("take-over", "remove", "restore").contains(request.action())) throw error(HttpStatus.CONFLICT);
         switch (request.action()) {
             case "restore" -> {
                 if (!self || !CommunityGroupMapper.restorableMembership(target)) throw error(HttpStatus.FORBIDDEN);
-                target.setRole("Member"); target.setOrganizerOnly(false); target.setManagerGrantedByUserId(null);
+                if (restoreGroup && groups.claimResponsibility(id, group.ownerReleasedAtIso(), actor.getUserId(), Instant.now().toString(), "deleted") == 0)
+                    throw error(HttpStatus.CONFLICT);
+                target.setRole(restoreGroup ? "Admin" : "Member"); target.setOrganizerOnly(false); target.setManagerGrantedByUserId(null);
                 if ("blocked".equals(target.getStatus())) {
                     target.setStatus("pending"); target.setRole("Member"); target.setRequestKind("join"); target.setPendingSource("member");
                 } else target.setStatus("accepted");
@@ -349,7 +352,7 @@ public class CommunityGroupsService {
             }
             case "take-over" -> {
                 if (!self || !CommunityGroupMapper.canTakeOver(group, members(id), target)) throw error(HttpStatus.FORBIDDEN);
-                if (groups.claimResponsibility(id, group.ownerReleasedAtIso(), actor.getUserId(), Instant.now().toString()) == 0)
+                if (groups.claimResponsibility(id, group.ownerReleasedAtIso(), actor.getUserId(), Instant.now().toString(), "under-review") == 0)
                     throw error(HttpStatus.CONFLICT);
                 target.setRole("Admin"); target.setManagerGrantedByUserId(null);
             }

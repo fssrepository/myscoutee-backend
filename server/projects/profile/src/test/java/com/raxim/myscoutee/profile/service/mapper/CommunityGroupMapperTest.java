@@ -51,6 +51,22 @@ class CommunityGroupMapperTest {
         assertEquals(1, CommunityGroupMapper.toDto(group, viewer, viewer, List.of(pending), 7).activity());
     }
 
+    @Test void deletedGroupRestoreRequiresVoluntaryDepartureAsAdminButNotTheLastDeparture() {
+        var group = new CommunityGroup("group", "owner", "Group", "", null, "friends", "private", false,
+                new CommunityGroup.Policy(true, false, List.of()), "created", "last-leave", 1L,
+                "accepted", 0L, 0L, 0L, 0L, "deleted", "last-leave", List.of());
+        var former = member("Admin", "deleted", null, 0);
+        former.setCommunityAction("remove"); former.setCommunityActor(former.getUserId());
+        former.setActionAtIso("earlier-leave");
+        assertTrue(CommunityGroupMapper.canRestoreGroup(group, former));
+        former.setRole("Member");
+        assertFalse(CommunityGroupMapper.canRestoreGroup(group, former));
+        former.setRole("Admin"); former.setStatus("blocked");
+        assertFalse(CommunityGroupMapper.canRestoreGroup(group, former));
+        former.setStatus("deleted"); former.setCommunityActor("another-user");
+        assertFalse(CommunityGroupMapper.canRestoreGroup(group, former));
+    }
+
     private CommunityGroup groupWithPendingMembers(long pending) {
         return new CommunityGroup("A", "owner", "Group", "", "", "friends", "public", false,
                 new CommunityGroup.Policy(true, false, List.of()), "now", "now", 1L, "accepted", 1L, 0L, 0L, pending);

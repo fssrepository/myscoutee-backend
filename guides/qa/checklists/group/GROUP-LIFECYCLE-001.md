@@ -724,8 +724,15 @@ replayable fixture savepoints between the independent branches below.
    card disappears from all open relevant lists and selectors; the selected
    deleted workspace is no longer usable and affected counters update once.
    Reload and direct API reads confirm the deletion and loss of workspace access.
-   Repeating the final action or submitting Trash Restore must not resurrect the
-   deleted group or repeat its effects.
+   In Trash, former members and departed Admins retain the group card with a
+   Deleted status badge. Any user who departed as Admin has Restore and may
+   reactivate the group as its responsible Admin; cancel first, then confirm.
+   Exercise an Admin who left before the final departure, plus a competing retry.
+   While deleted, ordinary members have no Restore menu and cannot restore,
+   rejoin or enter through an invitation. After the Admin restores the group,
+   a departed member can restore their own membership as Member. Other departed
+   members are not restored automatically. Retrying either restoration produces
+   no duplicate membership, notification or counter change.
 7. Reuse the Asset Manager action icons and base palettes contextually: promotion
    uses `admin_panel_settings` / blue, revocation `person_remove` / warning,
    departure `logout` / danger, takeover `verified_user` / warning, and voluntary

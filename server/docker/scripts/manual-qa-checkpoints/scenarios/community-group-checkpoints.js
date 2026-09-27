@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-notification-controls", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-profile-group-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-outsider", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "prepare-admin-last-member", "prepare-admin-return", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-outsider", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -1082,9 +1082,10 @@
   const paginationIds = Array.from({length: 24}, (_, index) => `manual-qa-community-page-${String(index + 1).padStart(2, "0")}`);
   const paginationOwnerIds = paginationIds.map((_, index) => `f026092600000000000000${String(index + 1).padStart(2, "0")}`);
   const paginationDistances = [0, 3.2, 4.9, 5, 5.1, 9.9, 10, 10.1];
-  if (["prepare-admin-lifecycle", "prepare-admin-authority"].includes(command)) {
+  if (["prepare-admin-lifecycle", "prepare-admin-authority", "prepare-admin-last-member"].includes(command)) {
     const authority = command === "prepare-admin-authority";
-    const caseActors = authority ? [...actors, "178e8d0cbe164fa3fede5884", "eb1ca0b761885bb0763e2929"] : actors;
+    const caseActors = command === "prepare-admin-last-member" ? [actors[0], actors[1], "178e8d0cbe164fa3fede5884"]
+      : authority ? [...actors, "178e8d0cbe164fa3fede5884", "eb1ca0b761885bb0763e2929"] : actors;
     const acceptedActors = authority ? caseActors.slice(0, 4) : caseActors;
     const groupId = "manual-qa-community-admin";
     if (state.adminLifecycleSnapshots || Q.collection("communityGroups").countDocuments({_id: groupId})) Q.fail("Admin lifecycle control already exists.");
@@ -1118,8 +1119,8 @@
       pendingMembers: authority ? 1 : 0, moderationPending: 0, moderationStatus: "accepted", version: 0, createdAtIso: now, updatedAtIso: now});
     Q.collection("activityMembers").insertMany(caseActors.map((userId, index) => ({...memberTemplate,
       _id: `community:${groupId}:${userId}`, syncKey: `community:${groupId}:${userId}`, ownerId: groupId, userId,
-      role: index === 0 ? "Admin" : "Member", status: index < acceptedActors.length ? "accepted" : "pending", organizerOnly: false,
-      managerGrantedByUserId: null, requestKind: null, pendingSource: null, communityUpdates: 0,
+      role: index === 0 || command === "prepare-admin-last-member" && index === 1 ? "Admin" : "Member", status: index < acceptedActors.length ? "accepted" : "pending", organizerOnly: false,
+      managerGrantedByUserId: command === "prepare-admin-last-member" && index === 1 ? actors[0] : null, requestKind: null, pendingSource: null, communityUpdates: 0,
       communityAction: null, communityActor: null, actionAtIso: now, updatedDate: now})));
     Q.collection("users").insertMany(profiles);
     Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: acceptedActors.length, pendingMembers: caseActors.length - acceptedActors.length, admin: actors[0], rolesTested: false});
@@ -1160,6 +1161,7 @@
     }
     Q.printObject({checkpointId, command, savepoint: name || null,
       group: Q.collection("communityGroups").findOne({_id: groupId}, {name: 1, ownerUserId: 1, lifecycleStatus: 1, takeoverCandidates: 1}),
+      counters: Q.collection("users").find({userId: {$in: [...actors, "178e8d0cbe164fa3fede5884", "eb1ca0b761885bb0763e2929"]}}, {userId: 1, "activities.notifications": 1}).toArray(),
       members: Q.collection("activityMembers").find({ownerType: "community", ownerId: groupId}).toArray()
         .map(m => ({userId: m.userId, role: m.role, status: m.status, grantedBy: m.managerGrantedByUserId, updates: m.communityUpdates})),
       notifications: Q.collection("userNotifications").find({sourceType: "community", sourceId: groupId}).toArray()
@@ -1328,20 +1330,26 @@
     }
     // Chat maps its Java chatId field to Mongo "id". Normalize the retained
     // selector from the first moderation control prepared before this correction.
-    Q.restoreSnapshots(state.adminLifecycleSnapshots.map(snapshot =>
+    const retained = state.adminLifecycleSnapshots.map(snapshot =>
       snapshot.collection === "chats" && snapshot.selector.chatId
-        ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot));
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminOutsiderPrepared: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
+        ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot);
+    Q.restoreSnapshots(retained);
+    for (const snapshot of retained)
+      if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+        Q.fail("Admin fixture restore differs; retain snapshots.");
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminOutsiderPrepared: "", adminReturnPrepared: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;
   }
-  if (command === "prepare-member-invitation") {
-    if (state.memberInvitationSnapshots) Q.fail("Member invitation control already prepared.");
-    const groupId = "seed-community-trail-club";
+  if (["prepare-member-invitation", "prepare-admin-return"].includes(command)) {
+    const adminReturn = command === "prepare-admin-return";
+    if (adminReturn && (!state.adminLifecycleSnapshots || state.adminReturnPrepared)) Q.fail("Fresh Admin return prerequisite required.");
+    if (!adminReturn && state.memberInvitationSnapshots) Q.fail("Member invitation control already prepared.");
+    const groupId = adminReturn ? "manual-qa-community-admin" : "seed-community-trail-club";
     const rateId = "manual-qa-community-invite-encounter";
     const ratePair = {ownerUserId: actors[1], relatedUserId: actors[0], mode: "single"};
     if (Q.collection("userRates").countDocuments({_id: rateId})
-        || Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: groupId, userId: actors[0]})) {
+        || Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: groupId, userId: actors[0], ...(adminReturn ? {status: {$in: ["accepted", "pending"]}} : {})})) {
       Q.fail("Invitation control is not an unrelated actor baseline.");
     }
     const retained = Q.snapshotSpecs([
@@ -1352,7 +1360,10 @@
       {collection: "userNotifications", selector: {sourceType: "community", sourceId: groupId}},
       {collection: "notificationOutbox", selector: {entityType: "community", entityId: groupId}}
     ]);
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {memberInvitationSnapshots: retained}});
+    if (adminReturn) {
+      // Membership and notification baselines already belong to the outer Admin fixture.
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {adminLifecycleSnapshots: {$each: retained.filter(s => s.collection === "userRates")}}, $set: {adminReturnPrepared: true}});
+    } else Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {memberInvitationSnapshots: retained}});
     // A met encounter is the ordinary shared invite-picker prerequisite. The
     // membership and invitation are created only by the subsequent browser flow.
     Q.collection("userRates").updateOne(ratePair, {
