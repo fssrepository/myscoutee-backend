@@ -1183,3 +1183,12 @@ not claimed from the demo/shared-store checks here.
 - Transport Explore opens all categories. Removed the invalid synthetic-subevent resource hydration from standalone Explore using the existing `hydrate:false` option; UI shows 12 cards and zero invalid scope requests.
 - Closed managed browsers before versioned cleanup. `restore-chat-sharing` verified 13 scopes and removed four generated asset-owner share tokens. Independent chat oracle: original41 messages, zero paging messages, zero temporary share/tombstone records. Exact `after-membership-trash` savepoint verification PASS; new immutable `after-chat-sharing` snapshot captured at 2026-09-27T02:06:58.260Z, resume10.
 - **HTTP9/48 closed (18.75%); Lifecycle9/29. Block10 current; Local NOT RUN.**
+
+### HTTP block 10 — active cash receipt boundary (2026-09-27)
+
+- Versioned cash-history snapshot now uses existing eligible Alex/Milo Main profiles with valid locations; no payment/revenue outcome seeded. Maya companion closed; Milo launched through the versioned companion configuration.
+- Shared payer selector: translated heading, Received from retained, person+Select member becomes avatar+name, no duplicate inner title. Error uses the existing payment error style directly below the header; geometry verified.
+- Manual EUR12.50: response deliberately lost after HTTP200, changed request rejected409, identical retry200. One payment and totals persisted. First replay found duplicate notification; switched to existing enqueueOnce. Second receipt replay: exactly one notification and no affiliate contribution.
+- Delete: red menu and red confirmation; cancellation leaves state, transport failure retains dialog/error/approved row. Success waits for persistence then patches the same retained SmartList row to Deleted with no Delete menu and resets totals. Both histories retain Deleted on reopen.
+- Cash payer Request refund and recipient approval use existing refund flow; HTTP200 each, EUR12.50 reversal audit shown for both, mutation patches initiating list and totals. Refund counterparty labels repaired. Updated cash policy wording still needs final-bundle replay.
+- Evidence: GROUP-LIFECYCLE-001-block10-cash-20260927.json. Other-party retained history has no automatic refresh, so only reopen evidence is claimed there. Normal checkout cash/noncash affiliate controls and negative/retry completion remain. **9/48 closed; block10 IN PROGRESS.**

@@ -1460,13 +1460,42 @@ public class PaymentService {
                 || !request.currency().equals(payment.getCurrency()) || !request.amount().equals(payment.getAmount())
                 || !note.equals(payment.getReceiptNote()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Receipt request already used.");
-        cashNotifications.enqueue(new NotificationIntent(
+        if ("deleted".equals(payment.getStatus()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Receipt was deleted.");
+        cashNotifications.enqueueOnce("payment-cash-received:" + id, new NotificationIntent(
                 "payment-cash-received", "payment", id, "payment-participant", List.of(payerId),
                 "Cash receipt recorded", recipient.getName() + " recorded a cash receipt.", "/game",
                 "/assets/logo/heart.webp", "/assets/logo/heart.webp", "payment-cash-received:" + id,
                 Map.of("paymentId", id, "notification_title_key", "notification.kind.payment-cash-received.title",
                         "notification_message_key", "notification.kind.payment-cash-received.message"), recipientId));
         return savedPaymentMethodsService.mutationDto(payment, recipientId);
+    }
+
+    public PaymentHistoryMutationDto deleteCashReceipt(String recipientId, String paymentId) {
+        Payment payment = paymentsRepository.findById(paymentId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Receipt unavailable."));
+        if (!"cash-receipt".equals(payment.getFulfillmentKind()) || !recipientId.equals(payment.getRecipientUserId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Receipt unavailable.");
+        // Retain the command identity so a late create retry cannot resurrect it.
+        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(paymentId)
+                        .and("recipientUserId").is(recipientId).and("fulfillmentKind").is("cash-receipt")),
+                new Update().set("status", "deleted").set("accountedSpentAmount", 0D), Payment.class);
+        // Each user's reversal and its receipt marker commit together. A retry
+        // completes either side after interruption without applying it twice.
+        reverseCashReceiptTotal(payment.getUserId(), payment, "paymentSpentTotals");
+        reverseCashReceiptTotal(recipientId, payment, "paymentIncomeTotals");
+        payment.setStatus("deleted");
+        payment.setAccountedSpentAmount(0D);
+        return savedPaymentMethodsService.mutationDto(payment, recipientId);
+    }
+
+    private void reverseCashReceiptTotal(String userId, Payment payment, String directionField) {
+        String currency = safeCurrency(payment.getCurrency()).toUpperCase(java.util.Locale.ROOT);
+        mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(userId)
+                        .and("cashReceiptReversals").ne(payment.getId())),
+                new Update().inc(directionField + "." + currency, -safeAmount(payment.getAmount()))
+                        .inc("paymentAllTotals." + currency, -safeAmount(payment.getAmount()))
+                        .addToSet("cashReceiptReversals", payment.getId()), Users.class);
     }
 
     private Payment saveAndProjectSpending(Payment payment) {
@@ -1609,6 +1638,9 @@ public class PaymentService {
         history.setSourceId(normalizeId(payment.getSourceId()));
         history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
         history.setProvider(safeText(payment.getProvider()));
+        history.setReceiptPayerName(payment.getReceiptPayerName());
+        history.setReceiptRecipientName(payment.getReceiptRecipientName());
+        history.setReceiptNote(payment.getReceiptNote());
         history.setGatewayRefundTargetAmount(targetAmount);
         history.setStatus("refund_requested");
         history.setAmount(refund.refundableAmount());
@@ -1668,6 +1700,9 @@ public class PaymentService {
         history.setSourceId(normalizeId(payment.getSourceId()));
         history.setPaymentMethodId(normalizeId(payment.getPaymentMethodId()));
         history.setProvider(safeText(payment.getProvider()));
+        history.setReceiptPayerName(payment.getReceiptPayerName());
+        history.setReceiptRecipientName(payment.getReceiptRecipientName());
+        history.setReceiptNote(payment.getReceiptNote());
         history.setStatus("refunded");
         history.setAmount(amount);
         history.setCurrency(hasText(payment.getRefundCurrency())

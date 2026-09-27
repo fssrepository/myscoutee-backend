@@ -354,7 +354,22 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     cash and a normal cash checkout. Neither contributes. A non-cash control
     still contributes normally; its refund still reverses the proper amount.
     Ordinary payment history/totals continue to include cash. A manual receipt
-    has no fabricated booking link or booking-refund action.
+    has no fabricated booking link. The payer can Request refund on an active
+    cash receipt; the recipient can approve it through the existing confirmation
+    flow. Verify pending/approved history, notifications and totals for both
+    parties, with no affiliate contribution. A deleted receipt cannot request
+    another refund.
+11. On a manually recorded cash receipt, the recording recipient's item menu
+    offers the standard red Delete action and a confirmation dialog with a matching red confirm button. Cancel leaves the
+    receipt and totals unchanged. During deletion the confirmation waits for
+    persistence; failure retains the dialog with an error and the existing row.
+    After success, retain the receipt with a Deleted badge and no further Delete
+    menu action; reverse its income/expense totals for both parties without
+    reloading the list. Reopen both histories to verify
+    persistence. Repeating deletion must not reverse totals twice; replaying
+    the original create request must not resurrect the deleted receipt. The
+    payer and unrelated users cannot delete another member's recorded receipt;
+    ordinary checkout payments do not expose this manual-receipt Delete action.
 
 ## 11. Contacts and the existing chat popup
 

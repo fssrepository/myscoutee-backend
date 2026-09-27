@@ -21,6 +21,12 @@ final class PaymentRefundCalculator {
             return new Preview(0D, 0D, currency, "none", null, null, null, null, null,
                     "This payment has no refundable amount.");
         }
+        if ("cash-receipt".equals(payment.getFulfillmentKind())) {
+            double remaining = "deleted".equals(payment.getStatus()) ? 0D
+                    : Math.max(0D, paid - money(payment.getRefundedAmount()));
+            return new Preview(paid, remaining, currency, remaining > 0 ? "full" : "not_eligible",
+                    "cash-receipt", null, null, "full", 100D, "Cash receipt refund.");
+        }
         PricingCancellationPolicyDto policy = payment.getCancellationPolicy();
         LocalDateTime bookingStart = dateTime(payment.getBookingStartAtIso());
         LocalDateTime requestedAt = dateTime(requestedAtIso);

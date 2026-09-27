@@ -3,7 +3,7 @@
 // Attaches to versioned-launcher sessions; never creates logins.
 import { readFile, writeFile } from 'node:fs/promises';
 const [checkpoint, actor = '0', command = 'inspect', input = '', output = ''] = process.argv.slice(2);
-if (!['GROUP-LIFECYCLE-001-ENTRY', 'GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
+if (!['GROUP-LIFECYCLE-001-CASH', 'GROUP-LIFECYCLE-001-ENTRY', 'GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
 const manifest = JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`, 'utf8'));
 const session = manifest.sessions[Number(actor)];
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
@@ -72,7 +72,7 @@ try {
       result = { url: request.request.url, during, timedOut, retry, release, after: await inspect() };
     } finally { await send('Fetch.disable'); }
   } else if (command === 'fail-request') {
-    const { urlPattern, clickSelector, upload } = JSON.parse(await readFile(input, 'utf8'));
+    const { urlPattern, clickSelector, upload, requestStage = 'Request' } = JSON.parse(await readFile(input, 'utf8'));
     const intercepted = new Promise((resolve, reject) => {
       const listener = async event => {
         const message = JSON.parse(event.data);
@@ -81,12 +81,12 @@ try {
         try {
           const request = message.params.request;
           await send('Fetch.failRequest', { requestId: message.params.requestId, errorReason: 'Failed' });
-          resolve({ failedUrl: request.url, method: request.method });
+          resolve({ failedUrl: request.url, method: request.method, requestStage, responseStatus: message.params.responseStatusCode ?? null });
         } catch (error) { reject(error); }
       };
       ws.addEventListener('message', listener);
     });
-    await send('Fetch.enable', { patterns: [{ urlPattern, requestStage: 'Request' }] });
+    await send('Fetch.enable', { patterns: [{ urlPattern, requestStage }] });
     try {
       if (upload) {
         const tree = await send('DOM.getDocument');

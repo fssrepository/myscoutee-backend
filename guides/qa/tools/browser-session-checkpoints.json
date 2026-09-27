@@ -14,6 +14,28 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "GROUP-LIFECYCLE-001-CASH": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Milo cash payer",
+          "sessionKind": "demo",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "expectedName": "Milo Grant",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        }
+      ]
+    },
     "GROUP-LIFECYCLE-001-APP-ADMIN": {
       "preserveOtherSessions": true,
       "fixtureCheckpointId": "GROUP-LIFECYCLE-001",

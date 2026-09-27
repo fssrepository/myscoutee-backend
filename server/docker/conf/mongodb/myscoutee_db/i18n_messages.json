@@ -48094,5 +48094,53 @@
     "key": "groups.confirm.restore-blocked",
     "lang": "hu",
     "value": "Eltávolítottak a(z) „{name}” csoportból. Küldesz kérelmet az adminnak a tagságod újbóli jóváhagyására?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-title",
+    "key": "payment.cash.delete.title",
+    "lang": "en",
+    "value": "Delete cash receipt?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-error",
+    "key": "payment.cash.delete.error",
+    "lang": "en",
+    "value": "Unable to delete the cash receipt."
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-delete-title",
+    "key": "payment.cash.delete.title",
+    "lang": "hu",
+    "value": "Törlöd a készpénzes tételt?"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-delete-error",
+    "key": "payment.cash.delete.error",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a készpénzes tételt."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-message",
+    "key": "payment.cash.delete.message",
+    "lang": "en",
+    "value": "This receipt will be marked as deleted and excluded from both members’ payment totals."
+  },
+  {
+    "_id": "i18n-message-en-payment-status-deleted",
+    "key": "payment.status.deleted",
+    "lang": "en",
+    "value": "Deleted"
+  },
+  {
+    "_id": "i18n-message-hu-payment-cash-delete-message",
+    "key": "payment.cash.delete.message",
+    "lang": "hu",
+    "value": "A tétel törölt jelölést kap, és nem számít bele egyik tag fizetési összesítőibe sem."
+  },
+  {
+    "_id": "i18n-message-hu-payment-status-deleted",
+    "key": "payment.status.deleted",
+    "lang": "hu",
+    "value": "Törölve"
   }
 ]

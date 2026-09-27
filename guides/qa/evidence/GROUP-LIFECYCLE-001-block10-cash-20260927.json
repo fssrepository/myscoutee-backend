@@ -1,0 +1,170 @@
+{
+  "retry": {
+    "changedRequest": {
+      "error": "Could not save the cash receipt. Please try again.",
+      "open": true
+    },
+    "closedAfterIdenticalRetry": true,
+    "history": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −43.50 ›\nEUR +33.50 ›\n2026-09-27\nApproved\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nmore_vert\nDeleted\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert\n2026-08-17\nCaptured\ncheck_circle\nHUF −12,500\npayment\nstripe\n15d3049967690e9c3abcf0df\n17/08/2026, 11:15:00\nmore_vert\n2026-08-10\nCaptured\ncheck_circle\nHUF",
+    "responses": [
+      {
+        "status": 0
+      },
+      {
+        "status": 409
+      },
+      {
+        "status": 200
+      }
+    ]
+  },
+  "errorPlacement": {
+    "text": "Could not save the cash receipt. Please try again.",
+    "background": "rgb(255, 241, 240)",
+    "color": "rgb(168, 44, 34)",
+    "border": "rgba(180, 35, 24, 0.22)",
+    "headerBottom": 50.34375,
+    "errorTop": 56.734375,
+    "errorBottom": 100.484375,
+    "formTop": 112,
+    "firstBodyElement": true
+  },
+  "delete": {
+    "before": {
+      "error": true,
+      "approved": true,
+      "text": "Approved\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nmore_vert",
+      "menu": true
+    },
+    "during": {
+      "confirmPresent": true,
+      "disabled": true
+    },
+    "after": {
+      "historyRetained": true,
+      "rowRetained": true,
+      "row": "Deleted\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt",
+      "deleteMenu": false,
+      "totals": [
+        "EUR −43.50 ›",
+        "EUR +21.00 ›"
+      ],
+      "dialogGone": true
+    },
+    "responses": [
+      {
+        "status": 0
+      },
+      {
+        "status": 200
+      }
+    ]
+  },
+  "payerDeletedReopen": {
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\n2026-09-27\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt"
+  },
+  "refundRequest": {
+    "dialogGone": true,
+    "history": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −12.50 ›\nEUR +0.00 ›\n2026-09-27\nRefund requested\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt",
+    "statuses": [
+      200
+    ]
+  },
+  "refundApproval": {
+    "confirmation": {
+      "text": "Would you like to approve this refund request?\n\nApprove this policy-based refund?\nRefund: EUR +12.50\nRetained amount: EUR −0.00\nPolicy: 0% refund with at least 0 days notice.\n\nCancel\nApprove refund",
+      "class": "app-menu__button-row-item app-menu__button-row-item--labelled app-menu__button-row-item--action app-menu__palette--blue"
+    },
+    "dialogGone": true,
+    "history": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −56.00 ›\nEUR +33.50 ›\n2026-09-27\nRefunded\ncurrency_exchange\nEUR −12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nApproved\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\nmore_vert\nDeleted\npayments\nEUR +12.50\naccount_balance_wallet\ncash\nMilo Grant\nQA block 10 cash receipt\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert\n2026-08-17\nCaptured\ncheck_circle\nHUF −12,500\npayment\nstripe\n15d3049967690e9c3abcf0df\n17/08/2026, 11:",
+    "statuses": [
+      200
+    ]
+  },
+  "payerRefundReopen": {
+    "text": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −12.50 ›\nEUR +12.50 ›\n2026-09-27\nRefunded\ncurrency_exchange\nEUR +12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nApproved\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt\nDeleted\npayments\nEUR −12.50\naccount_balance_wallet\ncash\nAlex Turner\nQA block 10 cash receipt"
+  },
+  "retryOracle": {
+    "receipts": [
+      {
+        "id": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476",
+        "payer": "eb1ca0b761885bb0763e2929",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "status": "deleted",
+        "amount": 12.5,
+        "currency": "EUR",
+        "note": "QA block 10 cash receipt",
+        "accounted": 0
+      },
+      {
+        "id": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787",
+        "payer": "eb1ca0b761885bb0763e2929",
+        "recipient": "af0436815ab38f4864dd1e24",
+        "status": "approved",
+        "amount": 12.5,
+        "currency": "EUR",
+        "note": "QA block 10 cash receipt",
+        "accounted": 12.5
+      }
+    ],
+    "users": [
+      {
+        "_id": "af0436815ab38f4864dd1e24",
+        "userId": "af0436815ab38f4864dd1e24",
+        "paymentSpentTotals": {
+          "HUF": 17400
+        },
+        "paymentIncomeTotals": {
+          "HUF": 8400,
+          "EUR": 12.5
+        },
+        "cashReceiptReversals": [
+          "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+        ]
+      },
+      {
+        "_id": "eb1ca0b761885bb0763e2929",
+        "userId": "eb1ca0b761885bb0763e2929",
+        "paymentSpentTotals": {
+          "EUR": 12.5
+        },
+        "cashReceiptReversals": [
+          "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+        ]
+      }
+    ],
+    "affiliate": null,
+    "contributions": [],
+    "notifications": [
+      {
+        "_id": "6ab87f5c296c75ec86d3c940",
+        "recipientUserId": "eb1ca0b761885bb0763e2929",
+        "kind": "payment-cash-received",
+        "sourceId": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+      },
+      {
+        "_id": "6ab87f82296c75ec86d3c942",
+        "recipientUserId": "eb1ca0b761885bb0763e2929",
+        "kind": "payment-cash-received",
+        "sourceId": "cash:af0436815ab38f4864dd1e24:7fef6761-6f0d-42c2-85cf-220546e1d476"
+      },
+      {
+        "_id": "6ab880b2296c75ec86d3c948",
+        "recipientUserId": "eb1ca0b761885bb0763e2929",
+        "kind": "payment-cash-received",
+        "sourceId": "cash:af0436815ab38f4864dd1e24:4cc1a882-feea-4799-99d7-5eb9e29a9787"
+      }
+    ],
+    "outbox": []
+  },
+  "status": "IN PROGRESS",
+  "block": 10,
+  "limitations": [
+    "First receipt reproduced duplicate notification; enqueueOnce fix passed on second receipt.",
+    "Approval screenshot used pre-deploy policy text; cash rule display was corrected, replay pending.",
+    "Counterparty names in refund rows corrected and payer reopening verified.",
+    "Other-party open history does not automatically refresh; only initiating surface in-place update proven.",
+    "Normal cash checkout, noncash/refund affiliate controls, negative authorization and repeat-delete/replayed-create checks remain.",
+    "Added/updated unit specs not run separately from existing compilation owners."
+  ]
+}

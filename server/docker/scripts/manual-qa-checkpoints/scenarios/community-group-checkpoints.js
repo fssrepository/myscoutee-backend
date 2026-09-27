@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -151,6 +151,60 @@
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {chatSharingSnapshots: "", chatSharingChatId: ""}});
     Q.printObject({checkpointId, chatSharingRestored: true, generatedAssetTokensRemoved: cleanupTokenIds.length, verifiedScopes: retained.length});
+    return;
+  }
+  if (command === "prepare-cash-history") {
+    if (state.cashHistorySnapshots || state.sharingSnapshots || state.chatSharingSnapshots)
+      Q.fail("Restore prior temporary controls before cash history preparation.");
+    if (!(state.savepoints || []).some(point => point.name === "after-chat-sharing"))
+      Q.fail("The closed chat-sharing boundary is required.");
+    // Milo is an existing eligible payer in Alex's normal member picker.
+    const payerId = "eb1ca0b761885bb0763e2929";
+    const participantIds = [actors[0], payerId];
+    const users = Q.collection("users").find({userId: {$in: participantIds}}).toArray();
+    if (users.length !== 2 || users.some(user => user.workspaceGroupId
+        || !Number.isFinite(user.locationCoordinates?.latitude) || !Number.isFinite(user.locationCoordinates?.longitude)))
+      Q.fail("Existing Main-profile actors with valid stored locations are required.");
+    const referralSelector = {_id: {$in: [payerId, ObjectId(payerId)]}};
+    const existingReferral = Q.collection("affiliateRegistrations").findOne(referralSelector);
+    if (existingReferral && existingReferral.referrerUserId !== actors[0])
+      Q.fail("Retain existing attribution; this control requires the configured referrer.");
+    const paymentSelector = {$or: [{userId: {$in: participantIds}}, {recipientUserId: {$in: participantIds}}]};
+    const receiptId = {$regex: "^cash:" + actors[0] + ":"};
+    const related = {$or: [{sourceId: receiptId}, {entityId: receiptId}, {"payload.paymentId": receiptId}]};
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {userId: {$in: participantIds}}},
+      {collection: "payments", selector: paymentSelector},
+      {collection: "affiliateRegistrations", selector: referralSelector},
+      {collection: "affiliatePartners", selector: {_id: actors[0]}},
+      {collection: "affiliatePaymentContributions", selector: {ownerUserId: actors[0]}},
+      {collection: "userNotifications", selector: related},
+      {collection: "notificationOutbox", selector: related}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      cashHistorySnapshots: retained, cashHistoryPreparedAtIso: Q.nowIso(), resumeBlock: 10
+    }});
+    // Existing referral is a precondition for a meaningful cash-exclusion check.
+    // No payment, totals, contribution or notification result is seeded.
+    if (!existingReferral) Q.collection("affiliateRegistrations").insertOne({
+      _id: payerId, referrerUserId: actors[0], code: "qa-group-cash-attribution",
+      registeredAtIso: "2026-09-01T12:00:00Z"
+    });
+    Q.printObject({checkpointId, recipient: actors[0], payer: payerId, prepared: true,
+      seededPayments: 0, seededRevenue: 0, actorLocationsChanged: false});
+    return;
+  }
+  if (command === "restore-cash-history") {
+    if (!state.cashHistorySnapshots) Q.fail("No cash history boundary to restore.");
+    Q.restoreSnapshots(state.cashHistorySnapshots);
+    for (const snapshot of state.cashHistorySnapshots) {
+      if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+        Q.fail(`${snapshot.collection} cash restoration differs; retain snapshots.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
+      cashHistorySnapshots: "", cashHistoryPreparedAtIso: ""
+    }});
+    Q.printObject({checkpointId, cashHistoryRestored: true});
     return;
   }
   if (command === "prepare-sharing") {
@@ -700,7 +754,7 @@
     // Add later boundaries only with their prepared selectors and checklist oracle.
     const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7, "after-membership-trash": 8, "after-chat-sharing": 10};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.sharingSnapshots || state.chatSharingSnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.sharingSnapshots || state.chatSharingSnapshots || state.cashHistorySnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
