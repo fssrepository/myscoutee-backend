@@ -537,6 +537,7 @@ run_scenario() {
   fi
 
   case "${scenario}" in
+    group-isolation) scenario_script="${SCRIPT_DIR}/scenarios/group-isolation-checkpoints.js" ;;
     community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
@@ -962,6 +963,14 @@ PY
         set_payment_simulator_cash_only
       fi
     fi
+    ;;
+  group-isolation:stage|group-isolation:status|group-isolation:reset)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  group-isolation:capture|group-isolation:restore|group-isolation:verify-savepoint)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
     ;;
   community-group:restore-sharing)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
