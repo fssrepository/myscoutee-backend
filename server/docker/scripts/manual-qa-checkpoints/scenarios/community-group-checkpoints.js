@@ -170,7 +170,8 @@
       {collection: "users", selector: {userId: {$in: participantIds}}},
       {collection: "navigatorContacts", selector: {userId: {$in: participantIds}}},
       {collection: "contactChatAccess", selector: {leftUserId: {$in: participantIds}, rightUserId: {$in: participantIds}}},
-      {collection: "chats", selector: {chatId}},
+      {collection: "privacyConsents", selector: {userId: {$in: participantIds}}},
+      {collection: "chats", selector: {id: chatId}},
       {collection: "chatMessages", selector: {chatId}},
       {collection: "userNotifications", selector: related},
       {collection: "notificationOutbox", selector: related},
@@ -192,6 +193,8 @@
     const retained = Q.snapshotSpecs([
       {collection: "users", selector: {userId: {$in: ids}}},
       {collection: "navigatorContacts", selector: {userId: {$in: ids}}},
+      {collection: "privacyConsents", selector: {userId: {$in: ids}}},
+      {collection: "contactChatAccess", selector: {$or: [{leftUserId: {$in: ids}}, {rightUserId: {$in: ids}}]}},
       {collection: "userNotifications", selector: {recipientUserId: {$in: ids}, kind: {$regex: "^contact-chat-"}}},
       {collection: "notificationOutbox", selector: {recipientUserId: {$in: ids}, kind: {$regex: "^contact-chat-"}}}
     ]);
@@ -203,8 +206,22 @@
   }
   if (command === "restore-contacts") {
     if (!state.contactSnapshots) Q.fail("No contacts boundary to restore.");
-    Q.restoreSnapshots(state.contactSnapshots);
-    for (const snapshot of state.contactSnapshots) {
+    const retained = [...state.contactSnapshots];
+    const oldChatScope = retained.find(snapshot => snapshot.collection === "chats" && snapshot.selector.chatId === state.contactChatId);
+    if (oldChatScope) {
+      // Early block-11 capture used the Java property rather than Mongo's mapped `id`.
+      // Only remove the exact UI-created QA conversation; preserve unfamiliar state.
+      const copies = Q.collection("chats").find({id: state.contactChatId}).toArray();
+      const messages = Q.collection("chatMessages").find({chatId: state.contactChatId}).toArray();
+      const knownTexts = ["QA block 11 hello from Alex", "QA block 11 reply from Milo"];
+      if (oldChatScope.documents.length || copies.length !== 4 || messages.length !== 2
+          || copies.some(copy => copy.channelType !== "contact" || !state.contactActorIds.includes(copy.ownerUserId))
+          || messages.some(message => !knownTexts.includes(message.text)))
+        Q.fail("Legacy contacts cleanup differs from the recorded UI-only conversation; retain state.");
+      retained.push({collection: "chats", selector: {id: state.contactChatId}, documents: []});
+    }
+    Q.restoreSnapshots(retained);
+    for (const snapshot of retained) {
       if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
         Q.fail(`${snapshot.collection} contact restoration differs; retain snapshots.`);
     }

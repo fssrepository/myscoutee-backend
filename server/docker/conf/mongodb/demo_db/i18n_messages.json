@@ -23169,7 +23169,7 @@
     "_id": "i18n-message-en-contact-chat-pending",
     "key": "contact.chat.pending",
     "lang": "en",
-    "value": "Pending"
+    "value": "Awaiting approval"
   },
   {
     "_id": "i18n-message-en-contact-chat-approved",
@@ -24046,6 +24046,42 @@
     "key": "groups.confirm.restore-blocked",
     "lang": "en",
     "value": "You were removed from “{name}”. Send a request for an admin to approve your membership again?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-title",
+    "key": "payment.cash.delete.title",
+    "lang": "en",
+    "value": "Delete cash receipt?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-message",
+    "key": "payment.cash.delete.message",
+    "lang": "en",
+    "value": "This receipt will be marked as deleted and excluded from both members’ payment totals."
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-delete-error",
+    "key": "payment.cash.delete.error",
+    "lang": "en",
+    "value": "Unable to delete the cash receipt."
+  },
+  {
+    "_id": "i18n-message-en-payment-status-deleted",
+    "key": "payment.status.deleted",
+    "lang": "en",
+    "value": "Deleted"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-refund-request-message",
+    "key": "payment.cash.refund.request.message",
+    "lang": "en",
+    "value": "Request a refund of this cash receipt from the recipient?"
+  },
+  {
+    "_id": "i18n-message-en-payment-cash-refund-approve-message",
+    "key": "payment.cash.refund.approve.message",
+    "lang": "en",
+    "value": "Confirm that you have returned this cash amount to the payer?"
   },
   {
     "_id": "i18n-message-hu-navigator-community",
@@ -47217,7 +47253,7 @@
     "_id": "i18n-message-hu-contact-chat-pending",
     "key": "contact.chat.pending",
     "lang": "hu",
-    "value": "Folyamatban"
+    "value": "Jóváhagyásra vár"
   },
   {
     "_id": "i18n-message-hu-contact-chat-approved",
@@ -48096,40 +48132,10 @@
     "value": "Eltávolítottak a(z) „{name}” csoportból. Küldesz kérelmet az adminnak a tagságod újbóli jóváhagyására?"
   },
   {
-    "_id": "i18n-message-en-payment-cash-delete-title",
-    "key": "payment.cash.delete.title",
-    "lang": "en",
-    "value": "Delete cash receipt?"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-delete-error",
-    "key": "payment.cash.delete.error",
-    "lang": "en",
-    "value": "Unable to delete the cash receipt."
-  },
-  {
     "_id": "i18n-message-hu-payment-cash-delete-title",
     "key": "payment.cash.delete.title",
     "lang": "hu",
     "value": "Törlöd a készpénzes tételt?"
-  },
-  {
-    "_id": "i18n-message-hu-payment-cash-delete-error",
-    "key": "payment.cash.delete.error",
-    "lang": "hu",
-    "value": "Nem sikerült törölni a készpénzes tételt."
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-delete-message",
-    "key": "payment.cash.delete.message",
-    "lang": "en",
-    "value": "This receipt will be marked as deleted and excluded from both members’ payment totals."
-  },
-  {
-    "_id": "i18n-message-en-payment-status-deleted",
-    "key": "payment.status.deleted",
-    "lang": "en",
-    "value": "Deleted"
   },
   {
     "_id": "i18n-message-hu-payment-cash-delete-message",
@@ -48138,22 +48144,16 @@
     "value": "A tétel törölt jelölést kap, és nem számít bele egyik tag fizetési összesítőibe sem."
   },
   {
+    "_id": "i18n-message-hu-payment-cash-delete-error",
+    "key": "payment.cash.delete.error",
+    "lang": "hu",
+    "value": "Nem sikerült törölni a készpénzes tételt."
+  },
+  {
     "_id": "i18n-message-hu-payment-status-deleted",
     "key": "payment.status.deleted",
     "lang": "hu",
     "value": "Törölve"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-refund-request-message",
-    "key": "payment.cash.refund.request.message",
-    "lang": "en",
-    "value": "Request a refund of this cash receipt from the recipient?"
-  },
-  {
-    "_id": "i18n-message-en-payment-cash-refund-approve-message",
-    "key": "payment.cash.refund.approve.message",
-    "lang": "en",
-    "value": "Confirm that you have returned this cash amount to the payer?"
   },
   {
     "_id": "i18n-message-hu-payment-cash-refund-request-message",

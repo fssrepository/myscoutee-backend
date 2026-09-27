@@ -477,6 +477,11 @@ public class ChatService {
         List<String> newTargets = targets.stream().filter(id -> !safeMemberIds(chat.getMemberIds()).contains(id)).toList();
         if (!newTargets.isEmpty()) {
             requireContactTargets(actorId, newTargets);
+            List<String> consentIds = newTargets.stream().map(target -> ContactChatAccess.pairId(actorId, target)).toList();
+            long approved = mongoTemplate.count(Query.query(Criteria.where("_id").in(consentIds)
+                    .and("status").is("approved")), ContactChatAccess.class);
+            if (approved != consentIds.size())
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Direct chat access requires approval.");
             mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
                     new Update().addToSet("memberIds").each(newTargets.toArray()).inc("revision", 1L), Chat.class);
         }

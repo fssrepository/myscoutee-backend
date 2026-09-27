@@ -1,0 +1,518 @@
+{
+  "baseline": {
+    "users": [
+      {
+        "_id": "1b1c70be2349b3359a8f6f94",
+        "userId": "1b1c70be2349b3359a8f6f94",
+        "name": "Maya Stone",
+        "locationCoordinates": {
+          "latitude": 47.5111,
+          "longitude": 19.0354
+        },
+        "activeWorkspaceGroupId": "seed-community-neighbours"
+      },
+      {
+        "_id": "9f3b3f085e23af6c89dbc432",
+        "userId": "9f3b3f085e23af6c89dbc432",
+        "name": "Nagy Eszter",
+        "locationCoordinates": {
+          "latitude": 47.5099,
+          "longitude": 19.0354
+        }
+      },
+      {
+        "_id": "af0436815ab38f4864dd1e24",
+        "userId": "af0436815ab38f4864dd1e24",
+        "name": "Alex Turner",
+        "locationCoordinates": {
+          "latitude": 47.4811,
+          "longitude": 19.0366
+        },
+        "activeWorkspaceGroupId": "seed-community-design-circle"
+      },
+      {
+        "_id": "eb1ca0b761885bb0763e2929",
+        "locationCoordinates": {
+          "latitude": 47.5123,
+          "longitude": 19.0234
+        },
+        "name": "Milo Grant",
+        "userId": "eb1ca0b761885bb0763e2929"
+      }
+    ],
+    "contacts": [],
+    "access": [],
+    "chats": []
+  },
+  "prepared": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+    "prepared": true,
+    "productWrites": false,
+    "actors": [
+      "af0436815ab38f4864dd1e24",
+      "eb1ca0b761885bb0763e2929",
+      "9f3b3f085e23af6c89dbc432",
+      "1b1c70be2349b3359a8f6f94"
+    ]
+  },
+  "inviteesPrepared": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "prepared": true,
+    "invitees": [
+      "f6f22ba0a6f14cfcf4585d47",
+      "9184901a15076d32ea8b626f"
+    ],
+    "productWrites": false
+  },
+  "savedContacts": {
+    "before": "Invite members\n\nCreate contact\n\ngroups\n3\ndone\nclose\nschedule\nRecent\nexpand_more\ncheck\nvisibility\nMilo Grant\n\nMet Milo Grant · Jan 5, 2026\n\ncheck\nvisibility\nEthan Rivera\n\nMet Leo Reed · Dec 30, 2025\n\ncheck\nvisibility\nNora Hale\n\nMet Olivia Rivera · Dec 24, 2025\n\nadd\nvisibility\nAva Baker\n\nMet Ava Baker · Dec 18, 2025\n\nadd\nvisibility\nSophia Baker\n\nMet Lina Stone · Dec 12, 2025\n\nadd\nvisibility\nMason Parker\n\nMet Alex Turner · Dec 6, 2025",
+    "contacts": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nE\nEthan Rivera\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nNashville\n\nMyScoutee · Request\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\nMyScoutee · Request\nN\nNora Hale\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nChicago\n\nMyScoutee · Request",
+    "dialogs": [
+      "Contacts"
+    ]
+  },
+  "chatPermission": {
+    "contacts": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\nmark_chat_unread\nRequests\nexpand_more\nNo contacts\nNo pending requests",
+    "confirmation": ""
+  },
+  "retainedContactSearch": {
+    "filter": "Milo",
+    "contactsRetained": true,
+    "rows": 1,
+    "chat": "Milo Grant\nevent\nView Event\nclose\npush_pin\nNo messages yet\n\nStart the conversation.\n\nadd\nsend"
+  },
+  "ownerMessage": {
+    "chat": "Milo Grant\nevent\nView Event\nclose\npush_pin\nYou\n5:31 AM\n\nQA block 11 hello from Alex\n\nToday\nadd\nsend"
+  },
+  "peerMessage": {
+    "chat": "Alex Turner\nevent\nView Event\nclose\npush_pin\nYou\n5:32 AM\n\nQA block 11 reply from Milo\n\nAlex Turner\n5:31 AM\n\nQA block 11 hello from Alex\n\nToday\nadd\nsend"
+  },
+  "ownCandidates": {
+    "dialogs": [
+      {
+        "title": "Members",
+        "text": "Members\n\nMilo Grant\n\n2 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·"
+      },
+      {
+        "title": "Invite members",
+        "text": "Invite members\n\nMilo Grant\n\ndone\nclose\nschedule\nRecent\nexpand_more\nadd\nvisibility\nEthan Rivera\n\n· Sep 27, 2026\n\nadd\nvisibility\nNora Hale\n\n· Sep 27, 2026"
+      },
+      {
+        "title": "Contacts",
+        "text": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\nclose\ncontacts\nContacts\nexpand_more\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\n9/27/26, 5:29 AM\n\nMyScoutee · Chat"
+      },
+      {
+        "title": "Milo Grant",
+        "text": "Milo Grant\nevent\nView Event\nclose\npush_pin\nMilo Grant\n5:32 AM\n\nQA block 11 reply from Milo\n\nYou\n5:31 AM\n\nQA block 11 hello from Alex\n\nToday\nadd\nsend"
+      }
+    ]
+  },
+  "peerEmptyCandidates": {
+    "dialogs": [
+      {
+        "title": "Members",
+        "text": "Members\n\nAlex Turner\n\n2 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·"
+      },
+      {
+        "title": "Invite members",
+        "text": "Invite members\n\nAlex Turner\n\ndone\nclose\nschedule\nRecent\nexpand_more\nNo invite candidates right now.\n\nMeet more people first or try again later."
+      },
+      {
+        "title": "Contacts",
+        "text": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nA\nAlex Turner\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nSeattle\n\n9/27/26, 5:29 AM\n\nMyScoutee · Chat"
+      },
+      {
+        "title": "Alex Turner",
+        "text": "Alex Turner\nevent\nView Event\nclose\npush_pin\nYou\n5:32 AM\n\nQA block 11 reply from Milo\n\nAlex Turner\n5:31 AM\n\nQA block 11 hello from Alex\n\nToday\nadd\nsend"
+      }
+    ]
+  },
+  "invited": {
+    "before": "Invite members\n\nMilo Grant\n\ngroups\n2\ndone\nclose\nschedule\nRecent\nexpand_more\ncheck\nvisibility\nEthan Rivera\n\n· Sep 27, 2026\n\ncheck\nvisibility\nNora Hale\n\n· Sep 27, 2026",
+    "contacts": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\nclose\ncontacts\nContacts\nexpand_more\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\n9/27/26, 5:29 AM\n\nMyScoutee · Chat",
+    "dialogs": [
+      "Members",
+      "Contacts",
+      "Milo Grant"
+    ]
+  },
+  "header": {
+    "members": "Members\n\nMilo Grant\n\n4 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·\n\nperson\nvisibility\nEthan Rivera\n\nMember ·\n\nperson\nvisibility\nNora Hale\n\nMember ·",
+    "chat": "Milo Grant\nevent\nView Event\nclose\npush_pin\nMilo Grant\n5:32 AM\n\nQA block 11 reply from Milo\n\nYou\n5:31 AM\n\nQA block 11 hello from Alex\n\nToday\nadd\nsend",
+    "memberButton": "4 members"
+  },
+  "oracle": {
+    "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+    "contacts": [
+      {
+        "_id": "6ab88d86296c75ec86d3c996",
+        "userId": "af0436815ab38f4864dd1e24",
+        "contacts": [
+          {
+            "userId": "f6f22ba0a6f14cfcf4585d47",
+            "methods": []
+          },
+          {
+            "userId": "eb1ca0b761885bb0763e2929",
+            "methods": []
+          },
+          {
+            "userId": "9184901a15076d32ea8b626f",
+            "methods": []
+          }
+        ]
+      },
+      {
+        "_id": "6ab88dc9296c75ec86d3c999",
+        "userId": "eb1ca0b761885bb0763e2929",
+        "contacts": [
+          {
+            "userId": "af0436815ab38f4864dd1e24",
+            "methods": []
+          }
+        ]
+      }
+    ],
+    "chats": [
+      {
+        "_id": "chat-owner-copy:3c4228f3-5523-3853-ad7a-e1600c1de803",
+        "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "ownerUserId": "af0436815ab38f4864dd1e24",
+        "lastMessage": "QA block 11 reply from Milo",
+        "memberIds": [
+          "af0436815ab38f4864dd1e24",
+          "eb1ca0b761885bb0763e2929",
+          "f6f22ba0a6f14cfcf4585d47",
+          "9184901a15076d32ea8b626f"
+        ],
+        "unread": 0,
+        "channelType": "contact"
+      },
+      {
+        "_id": "chat-owner-copy:9b25d905-eb28-32e7-b2ed-e8153eb57156",
+        "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "ownerUserId": "eb1ca0b761885bb0763e2929",
+        "lastMessage": "QA block 11 reply from Milo",
+        "memberIds": [
+          "af0436815ab38f4864dd1e24",
+          "eb1ca0b761885bb0763e2929",
+          "f6f22ba0a6f14cfcf4585d47",
+          "9184901a15076d32ea8b626f"
+        ],
+        "unread": 0,
+        "channelType": "contact"
+      },
+      {
+        "_id": "chat-owner-copy:3bfb0595-afea-3a47-9b7a-0066e4ff4113",
+        "channelType": "contact",
+        "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "lastMessage": "QA block 11 reply from Milo",
+        "memberIds": [
+          "af0436815ab38f4864dd1e24",
+          "eb1ca0b761885bb0763e2929",
+          "f6f22ba0a6f14cfcf4585d47",
+          "9184901a15076d32ea8b626f"
+        ],
+        "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
+        "unread": 0
+      },
+      {
+        "_id": "chat-owner-copy:71ff6112-a72b-3d5a-a9f8-2ffe1b8c76e4",
+        "channelType": "contact",
+        "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "lastMessage": "QA block 11 reply from Milo",
+        "memberIds": [
+          "af0436815ab38f4864dd1e24",
+          "eb1ca0b761885bb0763e2929",
+          "f6f22ba0a6f14cfcf4585d47",
+          "9184901a15076d32ea8b626f"
+        ],
+        "ownerUserId": "9184901a15076d32ea8b626f",
+        "unread": 0
+      }
+    ],
+    "messages": [
+      {
+        "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:79bd198f-dba8-3dc1-9df8-0c8f4f79dcc0",
+        "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "text": "QA block 11 hello from Alex"
+      },
+      {
+        "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:ba319bdd-0c86-37dd-84c2-ae14f5414e6f",
+        "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "text": "QA block 11 reply from Milo"
+      }
+    ]
+  },
+  "status": "IN PROGRESS; HTTP10/48 closed. Remaining steps in CURRENT_QA_SESSION. Earlier selector label mismatches were harness errors, not product failures.",
+  "consentRepair": {
+    "status": "HTTP guard and approved invitation PASS; block11 remains open",
+    "preFixInviteOutcome": "superseded: saved contacts Ethan/Nora were not approved",
+    "reset": "versioned restore-contacts PASS; prepare-contacts and prepare-contact-invitees snapshot-only",
+    "checks": {
+      "request-excluded": {
+        "dialogs": [
+          {
+            "title": "Members",
+            "text": "Members\n\nMilo Grant\n\n2 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·"
+          },
+          {
+            "title": "Invite members",
+            "text": "Invite members\n\nMilo Grant\n\ndone\nclose\nschedule\nRecent\nexpand_more\nNo invite candidates right now.\n\nMeet more people first or try again later."
+          },
+          {
+            "title": "Contacts",
+            "text": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nE\nEthan Rivera\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nNashville\n\nMyScoutee · Request\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\n9/27/26, 5:42 AM\n\nMyScoutee · Chat\nN\nNora Hale\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nChicago\n\nMyScoutee · Request"
+          },
+          {
+            "title": "Milo Grant",
+            "text": "Milo Grant\nclose\npush_pin\nNo messages yet\n\nStart the conversation.\n\nadd\nsend"
+          }
+        ]
+      },
+      "pending-excluded": {
+        "dialogs": [
+          {
+            "title": "Members",
+            "text": "Members\n\nMilo Grant\n\n2 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·"
+          },
+          {
+            "title": "Invite members",
+            "text": "Invite members\n\nMilo Grant\n\ndone\nclose\nschedule\nRecent\nexpand_more\nNo invite candidates right now.\n\nMeet more people first or try again later."
+          },
+          {
+            "title": "Contacts",
+            "text": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nE\nE\nEthan Rivera\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nNashville\n\n9/27/26, 5:43 AM\n\nMyScoutee · Pending\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\n9/27/26, 5:42 AM\n\nMyScoutee · Chat\nN\nNora Hale\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nChicago\n\nMyScoutee · Request"
+          },
+          {
+            "title": "Milo Grant",
+            "text": "Milo Grant\nclose\npush_pin\nNo messages yet\n\nStart the conversation.\n\nadd\nsend"
+          }
+        ]
+      },
+      "request-denied": {
+        "results": [
+          {
+            "name": "saved-without-approval",
+            "status": 403
+          },
+          {
+            "name": "saved-without-approval-batch",
+            "status": 403
+          },
+          {
+            "name": "non-contact",
+            "status": 404
+          },
+          {
+            "name": "foreign-workspace",
+            "status": 404
+          }
+        ],
+        "before": {
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929"
+          ],
+          "revision": 1
+        },
+        "after": {
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929"
+          ],
+          "revision": 1
+        },
+        "unchanged": true
+      },
+      "pending-denied": {
+        "results": [
+          {
+            "name": "saved-without-approval",
+            "status": 403
+          },
+          {
+            "name": "saved-without-approval-batch",
+            "status": 403
+          },
+          {
+            "name": "non-contact",
+            "status": 404
+          },
+          {
+            "name": "foreign-workspace",
+            "status": 404
+          }
+        ],
+        "before": {
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929"
+          ],
+          "revision": 1
+        },
+        "after": {
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929"
+          ],
+          "revision": 1
+        },
+        "unchanged": true
+      },
+      "approved-only": {
+        "dialogs": [
+          {
+            "title": "Members",
+            "text": "Members\n\nMilo Grant\n\n2 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·"
+          },
+          {
+            "title": "Invite members",
+            "text": "Invite members\n\nMilo Grant\n\ndone\nclose\nschedule\nRecent\nexpand_more\nadd\nvisibility\nEthan Rivera\n\n· Sep 27, 2026"
+          },
+          {
+            "title": "Contacts",
+            "text": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nE\nE\nEthan Rivera\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nNashville\n\n9/27/26, 5:43 AM\n\nMyScoutee · Chat\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\n9/27/26, 5:42 AM\n\nMyScoutee · Chat\nN\nNora Hale\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nChicago\n\nMyScoutee · Request"
+          },
+          {
+            "title": "Milo Grant",
+            "text": "Milo Grant\nclose\npush_pin\nNo messages yet\n\nStart the conversation.\n\nadd\nsend"
+          }
+        ]
+      },
+      "mixed-denied": {
+        "results": [
+          {
+            "name": "approved-plus-unapproved-batch",
+            "status": 403
+          }
+        ],
+        "before": {
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929"
+          ],
+          "revision": 1
+        },
+        "after": {
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929"
+          ],
+          "revision": 1
+        },
+        "unchanged": true
+      },
+      "approved-invited": {
+        "dialogs": [
+          {
+            "title": "Members",
+            "text": "Members\n\nMilo Grant\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·\n\nperson\nvisibility\nEthan Rivera\n\nMember ·"
+          },
+          {
+            "title": "Contacts",
+            "text": "Contacts\n\n3 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nE\nE\nEthan Rivera\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nNashville\n\n9/27/26, 5:43 AM\n\nMyScoutee · Chat\nM\nMilo Grant\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\n9/27/26, 5:42 AM\n\nMyScoutee · Chat\nN\nNora Hale\n\nQuick reach card\n\nvisibility\nmore_vert\n\nlocation_on\nChicago\n\nMyScoutee · Request"
+          },
+          {
+            "title": "Milo Grant",
+            "text": "Milo Grant\nclose\npush_pin\nNo messages yet\n\nStart the conversation.\n\nadd\nsend"
+          }
+        ],
+        "memberButton": "3 members"
+      },
+      "after-approved-invite": {
+        "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+        "contacts": [
+          {
+            "_id": "6ab890b7296c75ec86d3c9a8",
+            "userId": "af0436815ab38f4864dd1e24",
+            "contacts": [
+              {
+                "userId": "f6f22ba0a6f14cfcf4585d47",
+                "methods": []
+              },
+              {
+                "userId": "eb1ca0b761885bb0763e2929",
+                "methods": []
+              },
+              {
+                "userId": "9184901a15076d32ea8b626f",
+                "methods": []
+              }
+            ]
+          },
+          {
+            "_id": "6ab890c3296c75ec86d3c9ab",
+            "userId": "eb1ca0b761885bb0763e2929",
+            "contacts": [
+              {
+                "userId": "af0436815ab38f4864dd1e24",
+                "methods": []
+              }
+            ]
+          },
+          {
+            "_id": "6ab89191296c75ec86d3c9b6",
+            "userId": "f6f22ba0a6f14cfcf4585d47",
+            "contacts": [
+              {
+                "userId": "af0436815ab38f4864dd1e24",
+                "methods": []
+              }
+            ]
+          }
+        ],
+        "chats": [
+          {
+            "_id": "chat-owner-copy:3c4228f3-5523-3853-ad7a-e1600c1de803",
+            "channelType": "contact",
+            "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+            "lastMessage": "",
+            "memberIds": [
+              "af0436815ab38f4864dd1e24",
+              "eb1ca0b761885bb0763e2929",
+              "f6f22ba0a6f14cfcf4585d47"
+            ],
+            "ownerUserId": "af0436815ab38f4864dd1e24",
+            "unread": 0
+          },
+          {
+            "_id": "chat-owner-copy:9b25d905-eb28-32e7-b2ed-e8153eb57156",
+            "channelType": "contact",
+            "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+            "lastMessage": "",
+            "memberIds": [
+              "af0436815ab38f4864dd1e24",
+              "eb1ca0b761885bb0763e2929",
+              "f6f22ba0a6f14cfcf4585d47"
+            ],
+            "ownerUserId": "eb1ca0b761885bb0763e2929",
+            "unread": 0
+          },
+          {
+            "_id": "chat-owner-copy:3bfb0595-afea-3a47-9b7a-0066e4ff4113",
+            "channelType": "contact",
+            "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+            "lastMessage": "",
+            "memberIds": [
+              "af0436815ab38f4864dd1e24",
+              "eb1ca0b761885bb0763e2929",
+              "f6f22ba0a6f14cfcf4585d47"
+            ],
+            "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
+            "unread": 0
+          }
+        ],
+        "messages": []
+      }
+    },
+    "unitTests": "updated, NOT RUN separately (existing watchers own builds)"
+  }
+}

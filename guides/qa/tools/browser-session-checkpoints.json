@@ -14,6 +14,41 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "GROUP-LIFECYCLE-001-CONTACT-INVITEES": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Ethan Rivera contact invitee",
+          "sessionKind": "demo",
+          "userId": "f6f22ba0a6f14cfcf4585d47",
+          "expectedName": "Ethan Rivera",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
+        },
+        {
+          "actor": "Nora Hale contact invitee",
+          "sessionKind": "demo",
+          "userId": "9184901a15076d32ea8b626f",
+          "expectedName": "Nora Hale",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        }
+      ]
+    },
     "GROUP-LIFECYCLE-001-CONTACTS": {
       "preserveOtherSessions": true,
       "fixtureCheckpointId": "GROUP-LIFECYCLE-001",

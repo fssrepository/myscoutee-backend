@@ -384,7 +384,10 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
     ordinary list. Event and support channels keep their existing categories.
     Open the direct-chat avatar pill/member popup and exercise its supported
     member invitation with the existing picker. Its candidates must be **only
-    the inviting user's saved contacts**, excluding people already in this chat.
+    the inviting user's saved contacts with approved chat access**, excluding people already in this chat.
+    Request, pending and rejected contacts must not appear in the invitation picker;
+    direct commands must reject them before writing any member or owner copy,
+    including a batch containing both approved and unapproved contacts.
     An empty contact list stays empty; it must never fall back to general member
     discovery. A person saved only by another participant is not eligible for
     this inviter. Try a non-contact and a foreign-workspace contact by direct
