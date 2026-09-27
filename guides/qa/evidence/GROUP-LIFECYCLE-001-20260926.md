@@ -997,3 +997,54 @@ tracked registration form remains open.
   At 360px: one 332.22px column, no forced two-column overflow.
 - This is a presentation regression check, not closure of sharing/admission.
   HTTP progress remains 7/48; Lifecycle 7/29, block 8 in progress.
+
+### 02:55 — Block 8 continuation: admission, language comparison and removed-member protection
+
+HTTP remains **7/48 closed**, Lifecycle **7/29**. Block 8 is not closed;
+sharing snapshots and temporary media remain retained pending exact cleanup.
+Machine observations: [block-8 progress](GROUP-LIFECYCLE-001-block8-progress-20260927.json).
+
+- Fresh Group Link Visitor completed normal registration through the Design
+  Circle external link: accepted membership, one group profile and selected
+  workspace. Existing Maya's historical inviter attribution was retained.
+- Fresh Event Link Visitor and existing Maya entered the Main Event's normal
+  pending-invitation flow. The Main event did not create a group membership.
+- The group-owned QA Workspace Link Event admitted Event Link Visitor to
+  Design Circle, created one group profile, selected that workspace and created
+  one pending Event invitation for that profile. Reopening retained the same
+  membership/profile identities and the independent Main Event invitation.
+- HU desktop (676px) and mobile (360px) checks now pass for Group, Event and
+  Affiliate copy controls: read-only complete URL, copied checkmark, 32px Copy
+  button and 27.44px field height, no horizontal overflow. Earlier EN desktop/
+  mobile observations are retained. Initial HU clipboard failure was not a
+  product PASS; foreground-window retries succeeded without application changes.
+- Using the owner's real Members menu and confirmation, removed Event Link
+  Visitor. The retained Members/Groups surfaces updated without reloading.
+  The confirmation used the shared red gradient. The external Event link was
+  then rejected; Mongo retained blocked Group membership and the same Event
+  association. A normal Trash Restore requested approval; replaying the Event
+  link again failed instead of accepting the pending restoration.
+- Asset external Share-link entries were removed as requested; chat checkbox/
+  basket sharing remains for block 9. The owned Asset menu visibly contained
+  Availability, Edit and Delete only.
+- Home Local candidate scoping was corrected earlier; five focused tests passed,
+  and the combined group-entry suite passed 30/30. This does not constitute the
+  full browser Home rating isolation check, which belongs to Isolation block 3.
+- User asked to stop editing the missing Events primary badge and continue QA.
+  The current code still uses the Active Events count there: invitation-only
+  observation Events=0 / All=1 remains unresolved; no badge-fix PASS is claimed.
+- User explicitly requested fixing the fresh test user's missing location.
+  Normal Settings Update returned 403; it did not save coordinates. The tracked
+  QA account and its retained group profile were given the launcher's configured
+  Austin coordinates (30.2672, -97.7431). After fixture verification reload,
+  locationRequired=false and memberActionsAvailable=true. This is an authorized
+  test-data correction, not proof of the production Settings save path.
+- Only Alex and Event Link Visitor browser windows remain open. Other managed
+  actors were closed at the user's request; their persisted fixture state remains.
+
+Remaining before block 8 closure: exact sharing/media cleanup. Its group-profile
+Affiliate link selector needs attention: the snapshot uses userId, while the
+stored affiliateLinks record is keyed by _id. Do not discard the retained
+snapshot or claim cleanup until this scope is accounted for. The fresh visitor
+currently has a pending restoration; the event-link rejection dialog remains
+open. No closed block was reset or replayed.

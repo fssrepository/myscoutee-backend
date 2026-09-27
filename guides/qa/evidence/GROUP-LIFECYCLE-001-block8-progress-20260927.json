@@ -1,0 +1,298 @@
+{
+  "hu_event_desktop": {
+    "language": "hu",
+    "label": "Megosztási link\nclose\nQA Workspace Link Event\n\nMásold ki a linket: a meghívott ezen keresztül csatlakozhat a MyScoutee-hoz és megnyithatja ezt a tartalmat.\n\ndone",
+    "readonly": true,
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "copied": "done",
+    "field": {
+      "width": 595.3125,
+      "height": 27.4375,
+      "right": 616.296875
+    },
+    "button": {
+      "width": 32,
+      "height": 32,
+      "right": 655.015625
+    },
+    "viewport": 676
+  },
+  "hu_event_mobile": {
+    "language": "hu",
+    "label": "Megosztási link\nclose\nQA Workspace Link Event\n\nMásold ki a linket: a meghívott ezen keresztül csatlakozhat a MyScoutee-hoz és megnyithatja ezt a tartalmat.\n\ndone",
+    "readonly": true,
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "copied": "done",
+    "field": {
+      "width": 279.3125,
+      "height": 27.4375,
+      "right": 300.296875
+    },
+    "button": {
+      "width": 32,
+      "height": 32,
+      "right": 339.015625
+    },
+    "viewport": 360
+  },
+  "hu_group_desktop": {
+    "language": "hu",
+    "label": "Megosztási link\nclose\nDesign Circle\n\nMásold ki a linket: a meghívott ezen keresztül csatlakozhat a MyScoutee-hoz és megnyithatja ezt a tartalmat.\n\ndone",
+    "readonly": true,
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "copied": "done",
+    "field": {
+      "width": 595.3125,
+      "height": 27.4375,
+      "right": 616.296875
+    },
+    "button": {
+      "width": 32,
+      "height": 32,
+      "right": 655.015625
+    },
+    "viewport": 676
+  },
+  "hu_group_mobile": {
+    "language": "hu",
+    "label": "Megosztási link\nclose\nDesign Circle\n\nMásold ki a linket: a meghívott ezen keresztül csatlakozhat a MyScoutee-hoz és megnyithatja ezt a tartalmat.\n\ndone",
+    "readonly": true,
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "copied": "done",
+    "field": {
+      "width": 279.3125,
+      "height": 27.4375,
+      "right": 300.296875
+    },
+    "button": {
+      "width": 32,
+      "height": 32,
+      "right": 339.015625
+    },
+    "viewport": 360
+  },
+  "hu_affiliate_desktop": {
+    "language": "hu",
+    "readonly": true,
+    "queryKeys": [
+      "affiliate"
+    ],
+    "copied": "done",
+    "field": {
+      "width": 287.84375,
+      "height": 27.4375,
+      "right": 458.25
+    },
+    "button": {
+      "width": 32,
+      "height": 32,
+      "right": 496.96875
+    },
+    "viewport": 676
+  },
+  "hu_affiliate_mobile": {
+    "language": "hu",
+    "readonly": true,
+    "queryKeys": [
+      "affiliate"
+    ],
+    "copied": "done",
+    "field": {
+      "width": 248.640625,
+      "height": 27.4375,
+      "right": 280.640625
+    },
+    "button": {
+      "width": 32,
+      "height": 32,
+      "right": 319.359375
+    },
+    "viewport": 360
+  },
+  "group_event_before_replay": {
+    "activeGroup": "seed-community-design-circle",
+    "profiles": [
+      {
+        "workspaceGroupId": "seed-community-design-circle",
+        "accountUserId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      }
+    ],
+    "groupMembers": [
+      {
+        "_id": "community:seed-community-design-circle:demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "role": "Member",
+        "status": "accepted"
+      }
+    ],
+    "eventMembers": [
+      {
+        "_id": "6ab86475296c75ec86d3c759",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5",
+        "status": "pending",
+        "pendingSource": "admin",
+        "requestKind": "invite"
+      }
+    ],
+    "mainInvitationCount": 1,
+    "event": null
+  },
+  "group_event_after_replay": {
+    "activeGroup": "seed-community-design-circle",
+    "profiles": [
+      {
+        "workspaceGroupId": "seed-community-design-circle",
+        "accountUserId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      }
+    ],
+    "groupMembers": [
+      {
+        "_id": "community:seed-community-design-circle:demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "role": "Member",
+        "status": "accepted"
+      }
+    ],
+    "eventMembers": [
+      {
+        "_id": "6ab86475296c75ec86d3c759",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5",
+        "status": "pending",
+        "pendingSource": "admin",
+        "requestKind": "invite"
+      }
+    ],
+    "mainInvitationCount": 1,
+    "event": {
+      "acceptedMembers": 1,
+      "pendingMembers": 1,
+      "pendingMemberUserIds": [
+        "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      ]
+    }
+  },
+  "removed_group_member": {
+    "profiles": [
+      {
+        "workspaceGroupId": "seed-community-design-circle",
+        "accountUserId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      }
+    ],
+    "groupMembers": [
+      {
+        "_id": "community:seed-community-design-circle:demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "role": "Member",
+        "status": "blocked"
+      }
+    ],
+    "eventMembers": [
+      {
+        "_id": "6ab86475296c75ec86d3c759",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5",
+        "status": "pending",
+        "pendingSource": "admin",
+        "requestKind": "invite"
+      }
+    ],
+    "mainInvitationCount": 1,
+    "event": {
+      "acceptedMembers": 1,
+      "pendingMembers": 1,
+      "pendingMemberUserIds": [
+        "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      ]
+    }
+  },
+  "blocked_link_replay": {
+    "profiles": [
+      {
+        "workspaceGroupId": "seed-community-design-circle",
+        "accountUserId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      }
+    ],
+    "groupMembers": [
+      {
+        "_id": "community:seed-community-design-circle:demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "role": "Member",
+        "status": "blocked"
+      }
+    ],
+    "eventMembers": [
+      {
+        "_id": "6ab86475296c75ec86d3c759",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5",
+        "status": "pending",
+        "pendingSource": "admin",
+        "requestKind": "invite"
+      }
+    ],
+    "mainInvitationCount": 1,
+    "event": {
+      "acceptedMembers": 1,
+      "pendingMembers": 1,
+      "pendingMemberUserIds": [
+        "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      ]
+    }
+  },
+  "restore_pending": {
+    "profiles": [
+      {
+        "workspaceGroupId": "seed-community-design-circle",
+        "accountUserId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      }
+    ],
+    "groupMembers": [
+      {
+        "_id": "community:seed-community-design-circle:demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "userId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+        "role": "Member",
+        "status": "pending"
+      }
+    ],
+    "eventMembers": [
+      {
+        "_id": "6ab86475296c75ec86d3c759",
+        "userId": "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5",
+        "status": "pending",
+        "pendingSource": "admin",
+        "requestKind": "invite"
+      }
+    ],
+    "mainInvitationCount": 1,
+    "event": {
+      "acceptedMembers": 1,
+      "pendingMembers": 1,
+      "pendingMemberUserIds": [
+        "group-d93a453d-ed5a-48bb-84ff-da1611f79ce5"
+      ]
+    }
+  },
+  "location_ready": {
+    "permission": "granted",
+    "profileId": "demo-profile-c4ec6332-06c6-4e84-8972-756adcca991a",
+    "hasCoordinates": true,
+    "locationRequired": false,
+    "memberActionsAvailable": true,
+    "trackingSettings": {}
+  }
+}
