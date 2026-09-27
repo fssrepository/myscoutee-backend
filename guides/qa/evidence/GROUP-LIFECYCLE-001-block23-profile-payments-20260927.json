@@ -1,0 +1,313 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 23,
+  "date": "2026-09-27",
+  "status": "IN PROGRESS / HTTP",
+  "local": "NOT RUN",
+  "profileScope": {
+    "out": [
+      {
+        "name": "Design Circle",
+        "id": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "profileId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "affiliate": "Affiliate\n\nShare your personal invitation link or connect an API client.\n\npayments\nquestion_mark\nclose\nPersonal invitation link\n0\ncontent_copy\nBase URL\nhttp://localhost/api/integrations/v1\ncontent_copy\nMaximum assets or events per request: 1000\nClient keys\n0 / 3 active\n0 / 0\nkey\nGenerate token\n\nNo active client keys.\n\nAI / MCP connections\nadd\nNew connection\nMCP URL\ncontent_copy\n\nNo active MCP connections.",
+        "payments": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\nNo payment history\n\nCompleted and pending payments will appear here."
+      },
+      {
+        "name": "Seattle Friends",
+        "id": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "profileId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "affiliate": "Affiliate\n\nShare your personal invitation link or connect an API client.\n\npayments\nquestion_mark\nclose\nPersonal invitation link\n0\ncontent_copy\nBase URL\nhttp://localhost/api/integrations/v1\ncontent_copy\nMaximum assets or events per request: 1000\nClient keys\n0 / 3 active\n0 / 0\nkey\nGenerate token\n\nNo active client keys.\n\nAI / MCP connections\nadd\nNew connection\nMCP URL\ncontent_copy\n\nNo active MCP connections.",
+        "payments": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −0.00 ›\nEUR +0.00 ›\nNo payment history\n\nCompleted and pending payments will appear here."
+      },
+      {
+        "name": "Main profile",
+        "id": "af0436815ab38f4864dd1e24",
+        "profileId": "af0436815ab38f4864dd1e24",
+        "affiliate": "Affiliate\n\nShare your personal invitation link or connect an API client.\n\npayments\nquestion_mark\nclose\nPersonal invitation link\n0\ncontent_copy\nBase URL\nhttp://localhost/api/integrations/v1\ncontent_copy\nMaximum assets or events per request: 1000\nClient keys\n2 / 3 active\n0 / 0\nkey\nGenerate token\nKliens 2\ncontent_copy\n[redacted]…\nExpires 18 Dec 2026\ndelete\nKliens 1\nlock\n[redacted]…\nExpires 18 Dec 2026\nIP: 172.19.0.1\ndelete\nAI / MCP connections\nadd\nNew connection\nMCP URL\ncontent_copy\n\nNo active MCP connections.",
+        "payments": "Payment history\n\nExpenses and income\n\nfilter_list\npayments\ncredit_card\nclose\nEUR −43.50 ›\nEUR +21.00 ›\n2026-09-05\nFailed\npayments\nHUF −3,200\naccount_balance_wallet\nbarion\n21746c9aacc985817e31cf9f\n05/09/2026, 10:23:40\nmore_vert\n2026-08-24\nCaptured\ncheck_circle\nHUF −4,900\npayment\nstripe\n21746c9aacc985817e31cf9f\n24/08/2026, 19:30:00\nmore_vert\n2026-08-"
+      }
+    ],
+    "requests": [
+      {
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/help/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/privacy/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/terms/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "POST"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/mcp/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/payment-methods/history",
+        "userId": "group:seed-community-design-circle:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/help/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/privacy/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/terms/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "POST"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/mcp/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/payment-methods/history",
+        "userId": "group:seed-community-seattle-friends:af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/help/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/privacy/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/terms/active",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/groups/workspaces",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "POST"
+      },
+      {
+        "path": "/api/activities/events/mingle/state",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/integrations/mcp/settings",
+        "userId": null,
+        "ownerUserId": null,
+        "method": "GET"
+      },
+      {
+        "path": "/api/payment-methods/history",
+        "userId": "af0436815ab38f4864dd1e24",
+        "ownerUserId": null,
+        "method": "GET"
+      }
+    ]
+  },
+  "remaining": [
+    "Group-payer Asset checkout, single persisted payment payer/recipient, Base owner income vs group expense, other profile exclusion and refund.",
+    "Remaining nested Community/Impressions/Activities scope checks."
+  ],
+  "runtime": "One managed PENDING-BLOCK19 window, Alex Design Circle /game; 23 sharingSnapshots active, paid Asset f02709270000000000000082 / Event f02709270000000000000083 / stage qa-group23-borrow. Resource assignment open; no payment submitted yet. Cleanup: restore-sharing.",
+  "note": "After exact22 snapshot restore, normal workspace switches realigned browser and stored workspace before23 scope readings. Base has2 keys and historic payments; both group profiles0 keys/no history.",
+  "affiliateHeaderFix": {
+    "requested": "Affiliate revenue control must use affiliate icon/palette, not cash payments imagery.",
+    "change": "Existing profile affiliate group_add/pink reused in integration-settings-popup header.",
+    "watcher": "frontend-sync PASS 2026-09-27T17:34:02.424Z, synced19:34:02 local.",
+    "browser": {
+      "icon": "group_add",
+      "class": "app-menu__trigger motion-static app-menu__trigger--collapsible app-menu__trigger--layout-pill app-menu__palette--pink",
+      "color": "rgb(148, 65, 95)",
+      "background": "rgba(0, 0, 0, 0)",
+      "hit": true,
+      "affiliateEntry": "app-menu__button-row-item app-menu__palette--pink",
+      "revenue": "Referral revenue\nEUR\nchevron_right\nclose\nPaid purchases\n0\nPaid event bookings\n0\nPurchases total\n0.00 EUR\nRefunded\n0.00 EUR\nAfter refunds\n0.00 EUR\nA percentage-based affiliate commission is planned. Its rate and eligibility rules have not been set; these amounts are referral revenue, not earned commission."
+    }
+  },
+  "revokeLayoutFix": {
+    "change": "Shared integration-token-row align-items:start; API-token actions column-reverse puts Revoke before the IP badge. MCP rows consume the same stylesheet.",
+    "watcher": "frontend-sync PASS 2026-09-27T17:36:56.684Z",
+    "browser": {
+      "mobile": [
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        },
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        }
+      ],
+      "desktop": [
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        },
+        {
+          "height": 82.125,
+          "align": "start",
+          "actionTop": 9.796875,
+          "actionRight": 10.90625,
+          "actionHeight": 32,
+          "actionsDirection": "column-reverse"
+        }
+      ]
+    },
+    "boundary": "Live API token cards checked at360px/1100px. MCP uses identical row rule; no new MCP credential created for this layout check."
+  }
+}

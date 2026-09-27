@@ -118,6 +118,120 @@ and not updates to any closed Affiliate/Event/API PASS evidence.
 
 ## 7. MCP discovery, help and client packages — NOT RUN
 
+### API development required before this MCP flow is tested
+
+The complete URL-first MCP connection flow is **NOT IMPLEMENTED**. Implement
+it in the API/MCP domain first, then execute this block from its own staged
+baseline. This is API feature work, not deployment configuration.
+
+Required behavior: the user enters the MCP URL in a supported client such as
+ChatGPT or Codex and starts Connect there. The client opens the application's
+sign-in and profile/group approval flow, completes its callback and gains the
+approved private tools. Ordinary users must not manually copy a client secret.
+The current manual client-ID/secret registration and consent page are partial
+implementation only; they do not satisfy this complete connection flow.
+
+Extend the existing MCP authorization and connection owners. The external client
+initiates Connect; determine any additional application-side action from that
+flow rather than adding a speculative sign-in button beside Revoke.
+
+### Client experience and simulator acceptance target
+
+Provide a small browser client surface: MCP URL input, Connect, connection status
+and a tool request/result view. Connect discovers the server's authorization
+metadata and opens the real MyScoutee sign-in/approval surface. The callback
+returns to this initiating client; subsequent private MCP requests use the grant
+obtained by that flow, without a manually pasted token or client secret. Exercise
+initialization, tool discovery and an allowed tool call with its real result.
+Keep the post-connect request/result transcript visible so QA can follow the
+same connection through to use. Label deterministic test actions accurately;
+they do not prove model-driven tool selection or a real ChatGPT/Claude chat.
+
+First evaluate the existing MCP Inspector browser/OAuth client for reuse. Keep
+only the missing MyScoutee-specific scenario/UI wrapper in the optional
+`myscoutee-mcp` test command; do not reimplement an existing OAuth client merely
+to reproduce a client's appearance. An LLM is unnecessary for the local OAuth
+and authenticated MCP-call oracle. Real conversation/tool-selection acceptance
+is executed separately in the actual external clients.
+
+The connection implementation must support the chosen external client's
+discovery and client-identification/registration contract. Current MyScoutee
+manual confidential-client provisioning does not establish URL-only onboarding.
+Select and implement the supported automatic registration/metadata route before
+claiming that an ordinary user needs only the URL. Keep the configured client
+identity, redirect, issuer, resource and PKCE checks in the real exchange.
+
+Reference behavior, reviewed 2026-09-27 (recheck client UI labels at execution):
+
+- ChatGPT: add an MCP connection, complete OAuth when requested, then enable it
+  in a conversation and make a request that invokes an approved tool. The OAuth
+  callback itself need not create or open a new chat. See official
+  [connection testing](https://developers.openai.com/plugins/deploy/connect-chatgpt)
+  and [OAuth authentication](https://developers.openai.com/plugins/build/auth).
+- Claude: add the remote MCP URL under custom connectors, Connect and approve,
+  then enable the connector in the conversation. See official
+  [custom connector instructions](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
+- Reuse candidate: official [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector),
+  which supplies a browser client and OAuth support. Its acceptance here still
+  requires exercising the actual MyScoutee endpoints and approved identity.
+
+### Two separately seeded help surfaces
+
+After the connection flow is implemented, extend both existing HU/EN help
+surfaces and verify each from its own UI entry:
+
+- Full Help Center: the AI integration chapter owned by
+  `frontend/src/app/shared/core/local/seed/builders/help-center-content-seed.builder.ts`
+  and the Mongo `helpCenterRevisions.json` seeds. Explain URL, client-side
+  Connect, MyScoutee sign-in/profile approval, return to the client, conversation
+  use and revocation.
+- API/Affiliate popup's `?` help: the existing template renders `affiliate.help`
+  and `integration.help.*`. Extend its concise instructions through
+  `frontend/src/assets/i18n/{en,hu}.json` and the corresponding Mongo
+  `i18n_messages.json` seed entries; retain its documentation link. These are
+  separate from Help Center revision content.
+
+Use the existing generation/synchronization paths for demo, e2e and deployment
+seed variants. Verify both help entry points in local and HTTP modes, including
+fresh seed and the supported update path. Record the feature as pending until
+implemented; do not publish URL-only onboarding as current functionality early.
+This requirement alone does not call for an API management popup redesign.
+
+Make the complete flow runnable in local/dev during development. Provide a
+versioned test MCP/OAuth client with its own callback receiver and isolated
+identities through the existing QA harness. Keep this simulator in the existing
+`myscoutee-mcp` repository as a separately invoked command (for example,
+`cmd/myscoutee-mcp-simulator`), reusing its MCP SDK and build conventions. A new
+GitHub repository is unnecessary. Give it an explicit development/test target;
+starting the production MCP service must not start the simulator.
+This is an optional QA client, not an application runtime dependency. Its
+repository location does not make it part of the normal deployment: launch it
+only for the test, and stop its callback receiver during checkpoint cleanup.
+It must start from the MCP URL,
+use the real application discovery/authorization/token/private-tool endpoints,
+open the normal browser sign-in and consent UI, receive the callback and finish
+with an authenticated private tool call. Do not fabricate grants, callbacks,
+tokens or successful responses; a mocked callback is not full-flow evidence.
+Run this client simulator outside the application, with its own registered
+callback address. Follow discovered authorization metadata to the existing
+`/mcp/authorize` browser route with a fresh state and PKCE challenge. After the
+real user approval and callback, exchange the code through
+`/api/mcp/oauth/token` and call `/mcp/private`. The simulator owns the client
+side of this exchange; the application handles real sign-in, consent and grants.
+Use a development identity provider/test configuration if sign-in needs one.
+Determine the supported local redirect/transport setup during implementation
+without weakening production validation. A live production system must not be
+required merely to finish development of this API flow.
+
+After implementation, independently stage and run this complete local/dev flow
+in this testcase. Verify signed-out and signed-in authorization, explicit profile/group approval,
+cancellation, callback completion, reconnect and revocation. Private tools must
+remain unavailable before approval and after revocation. Validate client/state,
+redirect, PKCE, resource, code expiry/reuse and refresh replay at their existing
+API authorization boundaries.
+
+### API QA checks
+
 Prepare this testcase's own UI-created keys and profile boundaries. Execute
 these checks again from its versioned checkpoint, regardless of earlier coverage.
 
@@ -143,3 +257,7 @@ session; browser logout does not revoke it, while explicit key revocation does.
 - Two concurrent identities remain isolated. Profile switches during creation
   cannot expose the previous secret; create/revoke reconcile the table without
   reload. Local/demo persists settings only. API-key slots remain independent.
+
+- Keep Revoke at the top right of every API-key/MCP connection card, including
+  tall cards with a one-time credential, wrapped callback and last-used text.
+  Verify narrow mobile and desktop layouts; the action remains reachable.

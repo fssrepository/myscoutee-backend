@@ -11351,3 +11351,16 @@ User clarification 2026-09-27: testcases are independent closed execution units.
 
 
 2026-09-27 block21 HTTP PASS/CLOSED: final checkout optional-card control used its own versioned Group slot fixture. Native pointer selected/reverted optional item; mobile X remained reachable and closed only the sheet with parent dialogs/scroll retained; desktop title/no mobile X PASS. No checkout writes; draft discarded. Exact restore-sharing completed and original contact/badge snapshots retained. Together with the recorded seven menu surfaces, profile/price controls and HU/EN smoke,21 is closed. Evidence GROUP-LIFECYCLE-001-block21-menus-20260927.json. HTTP18/48 (37.50%), Lifecycle18/29 (1–13,17–21);22 active. Local NOT RUN.
+
+
+2026-09-27 block22 HTTP PASS/CLOSED: Design Circle UI create/edit/delete persisted Base asset ownership; Main/Design Circle/Seattle Friends inventory and immediate asset counters match, event counters remain separate. Real response-stage delayed long-poll released after deletion did not resurrect count; no page reload. Own scoped fixture public Asset booked to an inaccessible Language Lab event remains in Explore (UI + three-profile authenticated reads); own/private/non-friend controls absent, foreign Event/private Asset details withheld with empty HTTP200. Event Explore UI changes with workspace. Existing Group chat preparation and tools fixtures exactly restored; no chat share submitted. Evidence GROUP-LIFECYCLE-001-block22-tools-20260927.json. HTTP19/48 (39.58%), Lifecycle19/29 (1–13,17–22);23 active. Local NOT RUN.
+
+
+2026-09-27 API-domain MCP development requirement: URL-first client Connect,
+browser sign-in/profile approval and callback without manual client-secret
+copying is NOT IMPLEMENTED. Develop it in the existing API/MCP owners first,
+then execute INTEGRATION-API-GROUP-001 section7 from its own checkpoint.
+DEPLOY-EXTERNAL-CONFIG-001 retains independent configured real-client checks.
+No OAuth implementation undertaken in the active Group QA correction.
+
+Local/dev must complete the real MCP/OAuth application flow with a versioned test client/callback receiver: URL discovery, browser sign-in/consent, token exchange and private tool call. No fabricated grant or callback. Public HTTPS, external registration and real client/provider interoperability stay in the independent deployment case when external configuration is required.

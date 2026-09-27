@@ -36,11 +36,35 @@ Execution status and evidence belong in the QA ledger, not this checklist.
 
 ## 2. Remote MCP and external clients
 
+This section owns checks that actually require a configured reachable deployment
+or an external provider/client: public HTTPS, service registration, permitted
+redirects and real ChatGPT/Codex/Claude interoperability. Develop and exercise
+the application protocol end to end in local/dev; deployment-only configuration
+must not be used as a substitute for a working development flow. The complete
+URL-first user flow is not implemented yet, so this checklist is an acceptance
+target, not a claim of current support. This testcase still requires its own
+fresh configured run and cannot inherit a local/dev PASS.
+
 - Install the unpublished OpenAI/Claude packages in their actual external
   clients; local package validation alone does not prove installation.
-- Personal remote `/mcp/private`: create a profile-owned MCP connection under
-  API keys, copy the one-time secret into client settings, sign in and explicitly
-  approve the displayed profile/group. Check both ChatGPT and Claude callbacks.
+- Personal remote `/mcp/private`: add the MCP URL in each supported external
+  client (ChatGPT, Codex and Claude), then use its Connect action. Verify the
+  browser sign-in and explicit profile/group approval, return to the initiating
+  client, and a successful private tool call without manual client-secret copying.
+  Enable the connection in an actual conversation and submit a representative
+  prompt; record the selected tool, arguments and real result using that same
+  OAuth connection. Callback completion alone is not conversation acceptance,
+  and automatic opening of a new chat is not required.
+  For the assistant-host acceptance, the user clicks Connect and completes the
+  real MyScoutee login/approval. In that same configured host/account, verify
+  that the assistant can discover the authorized MyScoutee MCP tools and invoke
+  an allowed read operation through the resulting connection. Record the
+  approved profile/group and actual tool result. A simulator success or a
+  connector visible only in a different client/session does not prove this
+  assistant has access. Configure the host's supported MCP connection mechanism
+  before execution; the simulator callback cannot install tools into a host.
+  Check fresh sign-in, an existing signed-in session, cancellation, reconnect,
+  and each client's callback within this testcase's own checkpoint.
   Invalid state round-trip, redirect, client, PKCE, resource, expired/reused code,
   refresh replay and revocation must not expose private operations/data.
 - An enrolled browser session must not be required for an independently verified
@@ -49,6 +73,12 @@ Execution status and evidence belong in the QA ledger, not this checklist.
 
 Record client installation, callbacks, grants and revocation from this run.
 Previous configuration or authentication evidence cannot close these checks.
+External-client QA may use an isolated development deployment exposed through a
+supported tunnel; production data is not required. Record the actual transport
+and reachability. ChatGPT documents public HTTPS and Secure MCP Tunnel options;
+Claude remote connectors require reachability from Anthropic's infrastructure.
+See [ChatGPT connection testing](https://developers.openai.com/plugins/deploy/connect-chatgpt)
+and [Claude remote connector requirements](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
 
 ## 3. Configured deployment help initialization/update
 
