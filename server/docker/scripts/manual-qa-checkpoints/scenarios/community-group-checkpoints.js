@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -252,6 +252,62 @@
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {chatSharingSnapshots: "", chatSharingChatId: ""}});
     Q.printObject({checkpointId, chatSharingRestored: true, generatedAssetTokensRemoved: cleanupTokenIds.length, verifiedScopes: retained.length});
+    return;
+  }
+  if (["prepare-profile-api", "restore-profile-api"].includes(command)) {
+    const groupId = "seed-community-photo-walks";
+    if (command === "prepare-profile-api") {
+      if (state.profileApiSnapshots || state.sharingSnapshots || state.profileContactSnapshots)
+        Q.fail("Restore previous temporary controls before API scope preparation.");
+      const profiles = Q.collection("users").find({$or: [{userId: actors[0]}, {accountUserId: actors[0]}]}).toArray();
+      const profileIds = profiles.map(user => user.userId);
+      const members = Q.collection("activityMembers").find({ownerType: "community", ownerId: groupId}).toArray();
+      const actorMember = members.find(member => member.userId === actors[0]);
+      if (!actorMember || actorMember.status !== "accepted" || actorMember.role !== "Member")
+        Q.fail("Alex must be an ordinary accepted Photo Walks member before this independent branch.");
+      const affected = [...new Set([...profileIds, ...members.map(member => member.userId)])];
+      const retained = Q.snapshotSpecs([
+        {collection: "users", selector: {$or: [{userId: {$in: affected}}, {workspaceGroupId: groupId}]}},
+        {collection: "communityGroups", selector: {_id: groupId}},
+        {collection: "activityMembers", selector: {ownerType: "community", ownerId: groupId}},
+        {collection: "integrationTokens", selector: {ownerUserId: {$in: profileIds}}},
+        {collection: "integrationExternalIds", selector: {ownerUserId: {$in: profileIds}}},
+        {collection: "assets", selector: {ownerUserId: {$in: profileIds}}},
+        {collection: "events", selector: {ownerUserId: {$in: profileIds}}},
+        {collection: "userNotifications", selector: {$or: [{recipientUserId: {$in: affected}}, {sourceId: groupId}]}},
+        {collection: "notificationOutbox", selector: {entityId: groupId}}
+      ]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {profileApiSnapshots: retained,
+        profileApiPreparedAtIso: Q.nowIso(), profileApiProfileIds: profileIds}});
+      Q.printObject({checkpointId, profileApiPrepared: true, groupId, productWrites: false});
+    } else {
+      if (!state.profileApiSnapshots) Q.fail("No independent API snapshot to restore.");
+      const oldMappings = state.profileApiSnapshots.find(snapshot => snapshot.collection === "integrationExternalIds").documents;
+      const oldMappingIds = new Set(oldMappings.map(mapping => String(mapping._id)));
+      const newMappings = Q.collection("integrationExternalIds").find({ownerUserId: {$in: state.profileApiProfileIds}})
+        .toArray().filter(mapping => !oldMappingIds.has(String(mapping._id)));
+      if (newMappings.some(mapping => !/^25250927-0000-4000-8000-00000000000[1-6]$/.test(mapping.externalId)
+          || mapping.createdAtIso < state.profileApiPreparedAtIso))
+        Q.fail("Foreign API mapping appeared during checkpoint; retain all snapshots.");
+      const createdIds = newMappings.map(mapping => mapping.internalId);
+      // These server-generated IDs were absent at the snapshot boundary. Keep
+      // dependent cleanup inside this fixture, after verifying its external IDs.
+      for (const spec of [
+        {collection: "activityMembers", selector: {ownerId: {$in: createdIds}}},
+        {collection: "chats", selector: {eventId: {$in: createdIds}}},
+        {collection: "chatMessages", selector: {chatId: {$in: createdIds}}},
+        {collection: "userNotifications", selector: {sourceId: {$in: createdIds}}},
+        {collection: "notificationOutbox", selector: {entityId: {$in: createdIds}}},
+        {collection: "affinityRecomputeTasks", selector: {targetId: {$in: createdIds}}}
+      ]) Q.collection(spec.collection).deleteMany(spec.selector);
+      Q.restoreSnapshots(state.profileApiSnapshots);
+      for (const snapshot of state.profileApiSnapshots) {
+        if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+          Q.fail(`${snapshot.collection} API restoration differs; retain snapshots.`);
+      }
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {profileApiSnapshots: "", profileApiPreparedAtIso: "", profileApiProfileIds: ""}});
+      Q.printObject({checkpointId, profileApiRestored: true});
+    }
     return;
   }
   if (["prepare-profile-notifications", "restore-profile-notifications"].includes(command)) {

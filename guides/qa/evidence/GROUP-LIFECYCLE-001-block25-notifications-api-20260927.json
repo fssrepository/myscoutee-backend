@@ -1,0 +1,359 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 25,
+  "status": "IN PROGRESS",
+  "fixture": "prepare-profile-notifications active, no outcomes seeded",
+  "layout": {
+    "en": [
+      {
+        "width": 320,
+        "controls": [
+          {
+            "text": "fiber_new\nNew\nexpand_more\n21",
+            "rect": {
+              "x": 140.578125,
+              "y": 8.3125,
+              "w": 93.28125,
+              "h": 36,
+              "right": 233.859375,
+              "bottom": 44.3125
+            }
+          },
+          {
+            "text": "notifications_active",
+            "rect": {
+              "x": 239.296875,
+              "y": 10.3125,
+              "w": 32,
+              "h": 32,
+              "right": 271.296875,
+              "bottom": 42.3125
+            }
+          },
+          {
+            "text": "close",
+            "rect": {
+              "x": 278.328125,
+              "y": 8.3125,
+              "w": 34,
+              "h": 34,
+              "right": 312.328125,
+              "bottom": 42.3125
+            }
+          },
+          {
+            "text": "apps\nAll\nexpand_more",
+            "rect": {
+              "x": 238.5,
+              "y": 64.328125,
+              "w": 73.828125,
+              "h": 36,
+              "right": 312.328125,
+              "bottom": 100.328125
+            }
+          }
+        ],
+        "title": {
+          "x": 62.1875,
+          "y": 158.046875,
+          "w": 228.75,
+          "h": 28,
+          "right": 290.9375,
+          "bottom": 186.046875
+        },
+        "badge": {
+          "x": 170.296875,
+          "y": 158.046875,
+          "w": 118.25,
+          "h": 28,
+          "right": 288.546875,
+          "bottom": 186.046875
+        },
+        "detail": {
+          "x": 62.1875,
+          "y": 205.59375,
+          "w": 228.75,
+          "h": 32.71875,
+          "right": 290.9375,
+          "bottom": 238.3125,
+          "whiteSpace": "normal",
+          "clamp": "2",
+          "text": "New login from Chrome on Linux desktop."
+        },
+        "action": {
+          "x": 256.546875,
+          "y": 190.046875,
+          "w": 32,
+          "h": 32,
+          "right": 288.546875,
+          "bottom": 222.046875
+        }
+      },
+      {
+        "width": 360,
+        "controls": [
+          {
+            "text": "fiber_new\nNew\nexpand_more\n21",
+            "rect": {
+              "x": 180.578125,
+              "y": 8.3125,
+              "w": 93.28125,
+              "h": 36,
+              "right": 273.859375,
+              "bottom": 44.3125
+            }
+          },
+          {
+            "text": "notifications_active",
+            "rect": {
+              "x": 279.296875,
+              "y": 10.3125,
+              "w": 32,
+              "h": 32,
+              "right": 311.296875,
+              "bottom": 42.3125
+            }
+          },
+          {
+            "text": "close",
+            "rect": {
+              "x": 318.328125,
+              "y": 8.3125,
+              "w": 34,
+              "h": 34,
+              "right": 352.328125,
+              "bottom": 42.3125
+            }
+          },
+          {
+            "text": "apps\nAll\nexpand_more",
+            "rect": {
+              "x": 278.5,
+              "y": 64.328125,
+              "w": 73.828125,
+              "h": 36,
+              "right": 352.328125,
+              "bottom": 100.328125
+            }
+          }
+        ],
+        "title": {
+          "x": 62.1875,
+          "y": 158.046875,
+          "w": 268.75,
+          "h": 28,
+          "right": 330.9375,
+          "bottom": 186.046875
+        },
+        "badge": {
+          "x": 210.296875,
+          "y": 158.046875,
+          "w": 118.25,
+          "h": 28,
+          "right": 328.546875,
+          "bottom": 186.046875
+        },
+        "detail": {
+          "x": 62.1875,
+          "y": 205.59375,
+          "w": 268.75,
+          "h": 32.703125,
+          "right": 330.9375,
+          "bottom": 238.296875,
+          "whiteSpace": "normal",
+          "clamp": "2",
+          "text": "New login from Chrome on Linux desktop."
+        },
+        "action": {
+          "x": 296.546875,
+          "y": 190.046875,
+          "w": 32,
+          "h": 32,
+          "right": 328.546875,
+          "bottom": 222.046875
+        }
+      },
+      {
+        "width": 1100,
+        "controls": [
+          {
+            "text": "fiber_new\nNew\nexpand_more\n21",
+            "rect": {
+              "x": 906.171875,
+              "y": 28.375,
+              "w": 93.28125,
+              "h": 36,
+              "right": 999.453125,
+              "bottom": 64.375
+            }
+          },
+          {
+            "text": "notifications_active",
+            "rect": {
+              "x": 1004.890625,
+              "y": 30.375,
+              "w": 32,
+              "h": 32,
+              "right": 1036.890625,
+              "bottom": 62.375
+            }
+          },
+          {
+            "text": "close",
+            "rect": {
+              "x": 1043.609375,
+              "y": 29.375,
+              "w": 34,
+              "h": 34,
+              "right": 1077.609375,
+              "bottom": 63.375
+            }
+          },
+          {
+            "text": "apps\nAll\nexpand_more",
+            "rect": {
+              "x": 994.03125,
+              "y": 84.15625,
+              "w": 83.578125,
+              "h": 36,
+              "right": 1077.609375,
+              "bottom": 120.15625
+            }
+          }
+        ],
+        "title": {
+          "x": 78.1875,
+          "y": 177.875,
+          "w": 968.75,
+          "h": 28,
+          "right": 1046.9375,
+          "bottom": 205.875
+        },
+        "badge": {
+          "x": 934.296875,
+          "y": 177.875,
+          "w": 118.25,
+          "h": 28,
+          "right": 1052.546875,
+          "bottom": 205.875
+        },
+        "detail": {
+          "x": 78.1875,
+          "y": 225.421875,
+          "w": 968.75,
+          "h": 32.703125,
+          "right": 1046.9375,
+          "bottom": 258.125,
+          "whiteSpace": "normal",
+          "clamp": "2",
+          "text": "New login from Chrome on Linux desktop."
+        },
+        "action": {
+          "x": 1020.546875,
+          "y": 209.875,
+          "w": 32,
+          "h": 32,
+          "right": 1052.546875,
+          "bottom": 241.875
+        }
+      }
+    ],
+    "hu": {
+      "lang": "hu",
+      "text": "schedule\n27 Sept, 20:16\nwarning_amber\nBiztons\u00e1gi figyelmeztet\u00e9s\nMyScoutee\n\u00daj bejelentkez\u00e9s innen: Chrome on Linux desktop.\nmore_vert",
+      "controls": [
+        {
+          "text": "fiber_new\n\u00daj\nexpand_more\n21",
+          "rect": {
+            "x": 153.75,
+            "y": 8.3125,
+            "right": 233.859375,
+            "bottom": 44.3125,
+            "w": 80.109375,
+            "h": 36
+          }
+        },
+        {
+          "text": "notifications_active",
+          "rect": {
+            "x": 239.296875,
+            "y": 10.3125,
+            "right": 271.296875,
+            "bottom": 42.3125,
+            "w": 32,
+            "h": 32
+          }
+        },
+        {
+          "text": "close",
+          "rect": {
+            "x": 278.328125,
+            "y": 8.3125,
+            "right": 312.328125,
+            "bottom": 42.3125,
+            "w": 34,
+            "h": 34
+          }
+        },
+        {
+          "text": "apps\n\u00d6sszes\nexpand_more",
+          "rect": {
+            "x": 212.1875,
+            "y": 64.328125,
+            "right": 312.328125,
+            "bottom": 100.328125,
+            "w": 100.140625,
+            "h": 36
+          }
+        }
+      ],
+      "badge": {
+        "x": 170.296875,
+        "y": 158.046875,
+        "right": 288.546875,
+        "bottom": 186.046875,
+        "w": 118.25,
+        "h": 28
+      },
+      "headline": {
+        "x": 62.1875,
+        "y": 158.046875,
+        "right": 290.9375,
+        "bottom": 186.046875,
+        "w": 228.75,
+        "h": 28
+      },
+      "detail": {
+        "x": 62.1875,
+        "y": 205.59375,
+        "right": 290.9375,
+        "bottom": 238.3125,
+        "w": 228.75,
+        "h": 32.71875,
+        "paddingEnd": "40px",
+        "lineClamp": "2"
+      },
+      "action": {
+        "x": 256.546875,
+        "y": 190.046875,
+        "right": 288.546875,
+        "bottom": 222.046875,
+        "w": 32,
+        "h": 32
+      },
+      "menu": {
+        "text": "BIZTONS\u00c1GI FIGYELMEZTET\u00c9S\nclose\ndone_all\nMark as read",
+        "x": 6.390625,
+        "right": 313.609375,
+        "bottom": 793.609375,
+        "close": true
+      }
+    }
+  },
+  "verified": "Existing timestamp/first-row alignment, 2-line details with action padding; New/bell/Close stay header, workspace All goes below. 320/360/1100 EN and320 HU, row action menu fits viewport. No style changes required.",
+  "remaining": [
+    "notification account scope/live write counters including contact and multi-group tickets",
+    "scoped API keys JSON/multipart/role revocation",
+    "confirmation wording review"
+  ]
+}
