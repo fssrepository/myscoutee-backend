@@ -77,6 +77,7 @@ public class IntegrationParticipantInviteService {
             byte[] bytes = new byte[32]; random.nextBytes(bytes);
             String token = Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
             writes.upsert(Query.query(Criteria.where("_id").is(entry.getKey())), new Update()
+                    .set("reusable", false)
                     .setOnInsert("ownerUserId", ownerUserId).setOnInsert("eventId", eventId)
                     .setOnInsert("ownerType", ownerType).setOnInsert("participantId", entry.getValue()).setOnInsert("token", token)
                     .setOnInsert("tokenHash", digest(token)).setOnInsert("createdAtIso", now));

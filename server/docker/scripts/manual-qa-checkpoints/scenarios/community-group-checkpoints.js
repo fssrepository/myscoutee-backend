@@ -6,7 +6,7 @@
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
-  if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
+  if (!["status", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
@@ -23,8 +23,11 @@
     "1b1c70be2349b3359a8f6f94"
   ];
   if (!Q.sameJson(state.actors, actors)) Q.fail("Group baseline actors differ.");
-  if (["inspect-location-control", "prepare-location-control", "set-location-control-invalid", "restore-location-control"].includes(command)) {
+  if (["inspect-location-control", "prepare-location-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control"].includes(command)) {
     const userId = "b0971e779dbdb71f9327eabb";
+    const groupId = "seed-community-design-circle";
+    const participantId = "qa-group-entry-19-zoe";
+    const keyName = "Client 3"; // The English UI names the next key after the two retained keys.
     const users = Q.collection("users");
     const control = users.findOne({userId});
     if (!control || control.name !== "Zoe Turner" || control.accountUserId || control.workspaceGroupId) {
@@ -35,7 +38,15 @@
         coordinates: control.locationCoordinates ?? null,
         partitionKey: control.partitionKey ?? null,
         activeSessions: control.activeSessions?.length ?? 0,
-        prepared: Boolean(state.locationControlSnapshot)});
+        prepared: Boolean(state.locationControlSnapshot),
+        invitation: state.locationInvitationSnapshots ? {
+          groupId, participantId,
+          claimed: Q.collection("integrationParticipantInvites").findOne({ownerUserId: actors[0], eventId: groupId, participantId})?.claimedUserId ?? null,
+          mappings: Q.collection("integrationExternalIds").countDocuments({ownerUserId: actors[0], resourceType: "participant", externalId: participantId}),
+          memberships: Q.collection("activityMembers").find({ownerType: "community", ownerId: groupId, userId}).toArray().map(m => ({status: m.status, role: m.role})),
+          profiles: users.find({workspaceGroupId: groupId, accountUserId: userId}).toArray().map(p => ({userId: p.userId, coordinates: p.locationCoordinates ?? null})),
+          activeWorkspaceGroupId: control.activeWorkspaceGroupId ?? null
+        } : null});
       return;
     }
     if (command === "prepare-location-control") {
@@ -53,6 +64,35 @@
       return;
     }
     if (!state.locationControlSnapshot?.length) Q.fail("No location-control snapshot is retained.");
+    if (command === "prepare-location-invitation") {
+      const group = Q.collection("communityGroups").findOne({_id: groupId});
+      const memberSelector = {ownerType: "community", ownerId: groupId};
+      const members = Q.collection("activityMembers").find(memberSelector).toArray();
+      if (state.locationInvitationSnapshots || state.locationControlPhase !== "missing" || control.locationCoordinates
+          || group?.visibility !== "invitation" || group.ownerUserId !== actors[0]
+          || !members.some(m => m.userId === actors[0] && m.role === "Admin" && m.status === "accepted")
+          || members.some(m => m.userId === userId)
+          || users.countDocuments({workspaceGroupId: groupId, accountUserId: userId})
+          || Q.collection("integrationTokens").countDocuments({ownerUserId: actors[0], name: keyName})
+          || Q.collection("integrationParticipantInvites").countDocuments({ownerUserId: actors[0], eventId: groupId, participantId})
+          || Q.collection("integrationExternalIds").countDocuments({ownerUserId: actors[0], resourceType: "participant", externalId: participantId})) {
+        Q.fail("The isolated missing-location invitation baseline differs.");
+      }
+      const memberIds = [...new Set(members.map(m => m.userId))];
+      const snapshots = Q.snapshotSpecs([
+        {collection: "users", selector: {$or: [{userId: {$in: memberIds}}, {workspaceGroupId: groupId}]}},
+        {collection: "communityGroups", selector: {_id: groupId}},
+        {collection: "activityMembers", selector: memberSelector},
+        {collection: "integrationTokens", selector: {ownerUserId: actors[0], name: keyName}},
+        {collection: "integrationParticipantInvites", selector: {ownerUserId: actors[0], eventId: groupId, participantId}},
+        {collection: "integrationExternalIds", selector: {ownerUserId: actors[0], resourceType: "participant", externalId: participantId}},
+        {collection: "userNotifications", selector: {sourceId: groupId}},
+        {collection: "notificationOutbox", selector: {entityId: groupId}}
+      ]);
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {locationInvitationSnapshots: snapshots}});
+      Q.printObject({checkpointId, groupId, userId, participantId, keyName, prepared: true, claimOrMembershipSeeded: false});
+      return;
+    }
     if (command === "set-location-control-invalid") {
       if (state.locationControlPhase !== "missing"
           || control.locationCoordinates?.latitude !== 47.4979
@@ -64,14 +104,23 @@
       Q.printObject({checkpointId, userId, phase: "invalid"});
       return;
     }
+    if (state.locationInvitationSnapshots) {
+      Q.restoreSnapshots(state.locationInvitationSnapshots);
+      const ordered = rows => [...rows].sort((a, b) => Q.text(a._id).localeCompare(Q.text(b._id)));
+      for (const snapshot of state.locationInvitationSnapshots) {
+        if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray()))) {
+          Q.fail(`${snapshot.collection} location invitation restoration differs; retain snapshots.`);
+        }
+      }
+    }
     Q.restoreSnapshots(state.locationControlSnapshot);
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
-      locationControlSnapshot: "", locationControlPhase: ""
-    }});
     const restored = users.findOne({userId});
     if (!Q.sameJson(state.locationControlSnapshot[0].documents[0], restored)) {
       Q.fail("Location control differs from its retained snapshot after restore.");
     }
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
+      locationControlSnapshot: "", locationControlPhase: "", locationInvitationSnapshots: ""
+    }});
     Q.printObject({checkpointId, userId, restored: true});
     return;
   }
