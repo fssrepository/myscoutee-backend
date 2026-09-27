@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
-      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-notification-controls", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -322,6 +322,30 @@
     }
     return;
   }
+  if (command === "prepare-profile-notification-controls") {
+    if (!state.profileNotificationSnapshots || state.profileNotificationControlsPrepared)
+      Q.fail("Retained notification baseline required; controls must not already exist.");
+    const recipient = actors[0], now = Q.nowIso();
+    const groups = ["seed-community-design-circle", "seed-community-seattle-friends"];
+    const controls = groups.map((id, index) => {
+      const group = Q.collection("communityGroups").findOne({_id: id});
+      if (!group) Q.fail("Missing notification group control.");
+      return {_id: `qa25-notification-${index}`, syncKey: `qa25-notification-${index}`,
+        recipientUserId: recipient, kind: "event-reminder", category: "event",
+        title: "Event reminder", message: "Your event starts soon.", sourceType: "community", sourceId: id,
+        payload: {workspaceGroupId: id, workspaceGroupName: group.name},
+        occurrenceCount: 1, revision: 1, createdDate: now, updatedDate: now};
+    });
+    if (Q.collection("userNotifications").countDocuments({_id: {$in: controls.map(row => row._id)}}))
+      Q.fail("Notification control IDs already exist.");
+    Q.collection("userNotifications").insertMany(controls);
+    const unread = Q.collection("userNotifications").countDocuments({recipientUserId: recipient, readAtIso: {$in: [null, ""]}});
+    Q.collection("users").updateOne({userId: recipient}, {$set: {"activities.notifications": unread}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {profileNotificationControlsPrepared: true}});
+    Q.printObject({checkpointId, inputNotificationsSeeded: controls.length, unreadBaseline: unread,
+      readOutcomesSeeded: false, originalCounterAndNotificationsRetained: true});
+    return;
+  }
   if (["prepare-profile-notifications", "restore-profile-notifications"].includes(command)) {
     if (command === "prepare-profile-notifications") {
       if (state.profileNotificationSnapshots || state.sharingSnapshots || state.profileContactSnapshots)
@@ -342,7 +366,7 @@
         if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
           Q.fail(`${snapshot.collection} notification restoration differs; retain snapshots.`);
       }
-      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {profileNotificationSnapshots: ""}});
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {profileNotificationSnapshots: "", profileNotificationControlsPrepared: ""}});
       Q.printObject({checkpointId, profileNotificationsRestored: true});
     }
     return;
@@ -361,7 +385,7 @@
       Q.fail("Four existing Main profiles with stored locations are required.");
     const chatId = "c-contact-" + Buffer.from([actors[0], participantIds[1]].sort().join("\n")).toString("base64url");
     const related = {$or: [{sourceId: chatId}, {entityId: chatId}, {"payload.chatId": chatId},
-      {recipientUserId: {$in: participantIds}, kind: {$regex: "^contact-chat-"}}]};
+      {recipientUserId: {$in: participantIds}}]};
     const retained = Q.snapshotSpecs([
       {collection: "users", selector: {userId: {$in: participantIds}}},
       {collection: "navigatorContacts", selector: {userId: {$in: participantIds}}},
