@@ -1165,3 +1165,11 @@ were not replayed or changed. See
 Only the actors needed by each next test are to remain open; all obsolete
 registration windows were closed. Firebase live sign-in remains owned by19,
 not claimed from the demo/shared-store checks here.
+
+### Block 9 — chat sharing, in progress (2026-09-27)
+
+- Versioned `prepare-chat-sharing` captured the existing Tidal Marsh Bird Walk chat without product outcome writes. Alex and Maya remain open; unused actor window closed.
+- Event cancel produced no writes (41 messages). Apply two events produced two IDs (43); one mixed add-two/remove-two produced two new IDs (45), original IDs became deleted. Peer updated without reload.
+- Asset apply produced two IDs (47). A deliberate failed POST `/api/share-tokens` after the two removals retained the picker and Retry; retry added only the two outstanding messages (49). Active Event shares retained their original IDs.
+- Shared card selector is 32×32 on the image above the menu; asset basket reopens both persisted selections and Apply is disabled without a delta.
+- Detailed proof: `GROUP-LIFECYCLE-001-block9-chat-sharing-20260927.json`. Block remains open; off-page, baseline failure, late response, mobile and cleanup checks remain. Totals unchanged: HTTP 8/48, Lifecycle 8/29.

@@ -318,8 +318,8 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
 
 4. In an open chat, choose Share event, then Share asset separately. These open
    the card selection surface. Check the usual basket count/list, removable
-   basket items, and the confirmation tick beside Close. The card selector sits
-   below the three-dot button and stays circular at wide and tall image ratios;
+   basket items, and the confirmation tick beside Close. The card selector sits at the image
+   bottom-right, above the three-dot button, and stays circular at wide and tall image ratios;
    existing member and status badges remain unobscured.
 5. Select **two new cards**, then confirm once. The background chat receives
    **two separate messages**, each with its own attachment and message ID.

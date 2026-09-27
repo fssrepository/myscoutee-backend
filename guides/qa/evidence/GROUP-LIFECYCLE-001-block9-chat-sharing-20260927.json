@@ -1,0 +1,568 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 9,
+  "status": "IN PROGRESS",
+  "chatId": "1ba26e819a02104398ea0799",
+  "method": "UI actions in existing versioned managed Alex/Maya sessions; read-only Mongo oracles; one intentional CDP network failure of POST /api/share-tokens; no domain outcome injection.",
+  "proofs": {
+    "new-selection-geometry": [
+      {
+        "id": "c66972829391ece30a38e9be",
+        "width": 32,
+        "height": 32,
+        "insideImage": true,
+        "aboveMenu": true,
+        "imageChild": true
+      },
+      {
+        "id": "9e5a5b0c84e154e6e71b2d41",
+        "width": 32,
+        "height": 32,
+        "insideImage": true,
+        "aboveMenu": true,
+        "imageChild": true
+      },
+      {
+        "id": "9018da9f33929fec90a0df70",
+        "width": 32,
+        "height": 32,
+        "insideImage": true,
+        "aboveMenu": true,
+        "imageChild": true
+      }
+    ],
+    "two-assets-selected": {
+      "geometry": [
+        {
+          "title": "Concert Night Shuttle Van",
+          "width": 32,
+          "height": 32,
+          "belowMenu": false,
+          "borderRadius": "999px"
+        },
+        {
+          "title": "Dinner District Electric Taxi",
+          "width": 32,
+          "height": 32,
+          "belowMenu": false,
+          "borderRadius": "999px"
+        }
+      ],
+      "header": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\nshopping_basket\n2\ndone\nclose\ndirections_car\nTransport\nexpand_more\n\u2013\ncalendar_month\n4+ left\n4+ left\n4 left\ncheck\npublic\nConcert Night Shuttle Van\n\nTransport \u00b7 Sedan \u00b7 San D",
+      "applyDisabled": false,
+      "buttons": [
+        {
+          "aria": "Open asset explore order",
+          "text": "inventory_2\nAvailable first\nexpand_more"
+        },
+        {
+          "aria": "Selected items",
+          "text": "shopping_basket\n2"
+        },
+        {
+          "aria": "Apply chat shares",
+          "text": "done"
+        },
+        {
+          "aria": "Close asset explore",
+          "text": "close"
+        },
+        {
+          "aria": "Open asset explore category",
+          "text": "directions_car\nTransport\nexpand_more"
+        },
+        {
+          "aria": "Toggle date range picker",
+          "text": "calendar_month"
+        },
+        {
+          "aria": "Open Mia Parker impressions",
+          "text": ""
+        },
+        {
+          "aria": "Borrow asset",
+          "text": "4 left"
+        },
+        {
+          "aria": "Remove from shared items",
+          "text": "check"
+        }
+      ]
+    },
+    "assets-basket": {
+      "applyDisabled": true,
+      "head": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\nclose\n2\ndone\nSELECTED ITEMS\nclose\ninventory_2\nDinner District Electric Taxi\nclose\ninventory_2\nConcert Night Shuttle Van\nclose\nclose\ndirections_car\nSedan\nexpand_more\n\u2013\ncalendar_month\ntravel_explore\nNo visible assets match this date range and category yet."
+    },
+    "first-apply": {
+      "pickerOpen": false,
+      "chatListRetained": true,
+      "tail": "iers \u00b7 Mar 17, 11:00 AM - 12:20 PM\nPerfect, locking this in.\nFri, 27 Feb 2026\n9+\nAlex Turner\nGroup B\nGolden Hour Rooftop Meetup \u00b7 Qualifiers \u00b7 Mar 12, 7:00 PM - 8:00 PM\nPerfect, locking this in.\nChloe Brooks\nGroup A\nElevated-Rail Architecture Walk \u00b7 Finals \u00b7 Mar 23, 5:10 PM - 6:30 PM\nPerfect, locking this in.\nThu, 26 Feb 2026\n9+\nAlex Turner\nGroup C\nGreenhouse Brunch Table \u00b7 Qualifiers \u00b7 Apr 6, 8:00 AM - 9:00 AM\nPerfect, locking this in.\nTidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nYou\n3:37 AM\nevent\nEVENT\nNight Food League\nMar 12 \u00b7 7:30 PM - 11:30 PM\nTeams sample three market stalls and compare aroma, texture, and presentation.\nYou\n3:37 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nToday\nOwen Hale\n12:48 PM\n\nPerfect, locking this in.\n\nMaya Stone\n12:12 PM\n\nMain event channel for San Diego Cinder Social MS205.\n\nAva Baker\n11:25 AM\n\nRoute and timing look good on my side.\n\nMaya Stone\n10:40 AM\n\nI can bring two more people.\n\nOwen Hale\n10:00 AM\n\nLet us align the plan for San Diego Cinder Social MS205 \u00b7 Main Event.\n\nOwen Hale\n4:20 AM\n\nShared updated ETA for everyone.\n\nOwen Hale\n3:40 AM\n\nPinned the checklist in this room.\n\nMaya Stone\n3:00 AM\n\nConfirmed who can bring supplies.\n\nOwen Hale\n2:20 AM\n\nNoted backup plan if weather changes.\n\nOwen Hale\n1:40 AM\n\nAdded the new member to transport.\n\nMaya Stone\n1:00 AM\n\nAssigned table and seat groups.\n\nOwen Hale\n12:20 AM\n\nSynced on arrival windows.\n\nFri, Feb 27, 2026\nOwen Hale\n11:40 PM\n\nCollected final confirmations.\n\nMaya Stone\n11:00 PM\n\nShared updated ETA for everyone.\n\nOwen Hale\n10:20 PM\n\nPinned the checklist in this room.\n\nThu, Feb 26, 2026\nadd\nsend"
+    },
+    "peer-first-shares": {
+      "chatOpen": true,
+      "chatListRetained": true,
+      "pastaVisible": true,
+      "foodVisible": true,
+      "head": "Tidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nAlex Turner\n3:37 AM\nevent\nEVENT\nNight Food League\nMar 12 \u00b7 7:30 PM - 11:30 PM\nTeams sample three market stalls and compare aroma, texture, and presentation.\nAlex Turner\n3:37 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nToday\nOwen Hale\n12:48 PM\n\nPerfect, locking this in.\n\nYou\n12:12 PM\n\nMain event channel for San Diego Cinder Social MS205.\n\nAva Baker\n11:25 AM\n\nRoute and timing look good on my side.\n\nYou\n10:40 AM\n\nI can bring two more people.\n\nOwen Hale\n10:00 AM\n\nLet us align t"
+    },
+    "mixed-apply": {
+      "pickerOpen": false,
+      "chatListRetained": true,
+      "tail": " 2026\n9+\nAlex Turner\nGroup B\nGolden Hour Rooftop Meetup \u00b7 Qualifiers \u00b7 Mar 12, 7:00 PM - 8:00 PM\nPerfect, locking this in.\nChloe Brooks\nGroup A\nElevated-Rail Architecture Walk \u00b7 Finals \u00b7 Mar 23, 5:10 PM - 6:30 PM\nPerfect, locking this in.\nThu, 26 Feb 2026\n9+\nAlex Turner\nGroup C\nGreenhouse Brunch Table \u00b7 Qualifiers \u00b7 Apr 6, 8:00 AM - 9:00 AM\nPerfect, locking this in.\nTidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nYou\n3:38 AM\nevent\nEVENT\nDesert Porch Folk Session\nMar 7 \u00b7 1:30 PM - 3:30 PM\nAcoustic players trade short songs while listeners settle into porch chairs.\nYou\n3:38 AM\nevent\nEVENT\nDarkroom Contact Sheet Night\nMar 3 \u00b7 11:30 AM - 2:30 PM\nAnalog photographers inspect fresh contact sheets under safe red light.\n\nYou deleted this message\n\nYou deleted this message\n\nToday\nOwen Hale\n12:48 PM\n\nPerfect, locking this in.\n\nMaya Stone\n12:12 PM\n\nMain event channel for San Diego Cinder Social MS205.\n\nAva Baker\n11:25 AM\n\nRoute and timing look good on my side.\n\nMaya Stone\n10:40 AM\n\nI can bring two more people.\n\nOwen Hale\n10:00 AM\n\nLet us align the plan for San Diego Cinder Social MS205 \u00b7 Main Event.\n\nOwen Hale\n4:20 AM\n\nShared updated ETA for everyone.\n\nOwen Hale\n3:40 AM\n\nPinned the checklist in this room.\n\nMaya Stone\n3:00 AM\n\nConfirmed who can bring supplies.\n\nOwen Hale\n2:20 AM\n\nNoted backup plan if weather changes.\n\nOwen Hale\n1:40 AM\n\nAdded the new member to transport.\n\nMaya Stone\n1:00 AM\n\nAssigned table and seat groups.\n\nOwen Hale\n12:20 AM\n\nSynced on arrival windows.\n\nFri, Feb 27, 2026\nOwen Hale\n11:40 PM\n\nCollected final confirmations.\n\nMaya Stone\n11:00 PM\n\nShared updated ETA for everyone.\n\nOwen Hale\n10:20 PM\n\nPinned the checklist in this room.\n\nThu, Feb 26, 2026\nadd\nsend"
+    },
+    "peer-mixed-shares": {
+      "chatOpen": true,
+      "chatListRetained": true,
+      "pastaVisible": false,
+      "foodVisible": false,
+      "head": "Tidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nAlex Turner\n3:38 AM\nevent\nEVENT\nDesert Porch Folk Session\nMar 7 \u00b7 1:30 PM - 3:30 PM\nAcoustic players trade short songs while listeners settle into porch chairs.\nAlex Turner\n3:38 AM\nevent\nEVENT\nDarkroom Contact Sheet Night\nMar 3 \u00b7 11:30 AM - 2:30 PM\nAnalog photographers inspect fresh contact sheets under safe red light.\n\nAlex Turner deleted this message\n\nAlex Turner deleted this message\n\nToday\nOwen Hale\n12:48 PM\n\nPerfect, locking this in.\n\nYou\n12:12 PM\n\nMain event channel for San Diego Cinder Social MS205.\n\nAva Baker\n11:25 AM\n\nRoute and timing look good on "
+    },
+    "assets-apply": {
+      "pickerOpen": false,
+      "chatListRetained": true,
+      "tail": "use Brunch Table \u00b7 Qualifiers \u00b7 Apr 6, 8:00 AM - 9:00 AM\nPerfect, locking this in.\nTidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nYou\n3:42 AM\ninventory_2\nASSET\nDinner District Electric Taxi\nTransport - Chicago\nQuiet unbranded electric taxi reserved for an evening group.\nYou\n3:42 AM\ninventory_2\nASSET\nConcert Night Shuttle Van\nTransport - San Diego\nCompact passenger van for a clearly coordinated post-event return.\nYou\n3:38 AM\nevent\nEVENT\nDesert Porch Folk Session\nMar 7 \u00b7 1:30 PM - 3:30 PM\nAcoustic players trade short songs while listeners settle into porch chairs.\nYou\n3:38 AM\nevent\nEVENT\nDarkroom Contact Sheet Night\nMar 3 \u00b7 11:30 AM - 2:30 PM\nAnalog photographers inspect fresh contact sheets under safe red light.\n\nYou deleted this message\n\nYou deleted this message\n\nToday\nOwen Hale\n12:48 PM\n\nPerfect, locking this in.\n\nMaya Stone\n12:12 PM\n\nMain event channel for San Diego Cinder Social MS205.\n\nAva Baker\n11:25 AM\n\nRoute and timing look good on my side.\n\nMaya Stone\n10:40 AM\n\nI can bring two more people.\n\nOwen Hale\n10:00 AM\n\nLet us align the plan for San Diego Cinder Social MS205 \u00b7 Main Event.\n\nOwen Hale\n4:20 AM\n\nShared updated ETA for everyone.\n\nOwen Hale\n3:40 AM\n\nPinned the checklist in this room.\n\nMaya Stone\n3:00 AM\n\nConfirmed who can bring supplies.\n\nOwen Hale\n2:20 AM\n\nNoted backup plan if weather changes.\n\nOwen Hale\n1:40 AM\n\nAdded the new member to transport.\n\nMaya Stone\n1:00 AM\n\nAssigned table and seat groups.\n\nOwen Hale\n12:20 AM\n\nSynced on arrival windows.\n\nFri, Feb 27, 2026\nOwen Hale\n11:40 PM\n\nCollected final confirmations.\n\nMaya Stone\n11:00 PM\n\nShared updated ETA for everyone.\n\nOwen Hale\n10:20 PM\n\nPinned the checklist in this room.\n\nThu, Feb 26, 2026\nadd\nsend"
+    },
+    "peer-assets-proof": {
+      "chatOpen": true,
+      "chatListRetained": true,
+      "pastaVisible": true,
+      "foodVisible": true,
+      "head": "Tidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nAlex Turner\n3:42 AM\ninventory_2\nASSET\nDinner District Electric Taxi\nTransport - Chicago\nQuiet unbranded electric taxi reserved for an evening group.\nAlex Turner\n3:42 AM\ninventory_2\nASSET\nConcert Night Shuttle Van\nTransport - San Diego\nCompact passenger van for a clearly coordinated post-event return.\nAlex Turner\n3:38 AM\nevent\nEVENT\nDesert Porch Folk Session\nMar 7 \u00b7 1:30 PM - 3:30 PM\nAcoustic players trade short songs while listeners settle into porch chairs.\nAlex Turner\n3:38 AM\nevent\nEVENT\nDarkroom Contact Sheet Night\nMar 3 \u00b7 11:30 AM - 2:30 PM\nAnalog phot"
+    },
+    "partial-fail-result": {
+      "failedUrl": "http://localhost/api/share-tokens",
+      "method": "POST"
+    },
+    "partial-failure-ui": {
+      "pickerOpen": true,
+      "head": "Explore - Asset Explore\n\nAssets - Asset Explore\n\ninventory_2\nAvailable first\nexpand_more\nshopping_basket\n2\ndone\nclose\ndirections_car\nTransport\nexpand_more\n\u2013\ncalendar_month\n4+ left\n4+ left\n4 left\nadd\npublic\nConcert Night Shuttle Van\n\nTranspo",
+      "controls": [
+        {
+          "aria": "Open asset explore order",
+          "disabled": false
+        },
+        {
+          "aria": "Selected items",
+          "disabled": false
+        },
+        {
+          "aria": "Retry sharing",
+          "disabled": false
+        },
+        {
+          "aria": "Close asset explore",
+          "disabled": false
+        },
+        {
+          "aria": "Open asset explore category",
+          "disabled": false
+        },
+        {
+          "aria": "Toggle date range picker",
+          "disabled": false
+        }
+      ],
+      "selected": [
+        "Community Equipment Pickup",
+        "Festival Utility Buggy"
+      ]
+    },
+    "partial-retry": {
+      "pickerOpen": false,
+      "chatListRetained": true,
+      "chatHead": "Tidal Marsh Bird Walk\nevent\nView Event\nclose\n+10\npush_pin\nYou\n3:44 AM\ninventory_2\nASSET\nFestival Utility Buggy\nTransport - Boston\nLow-speed electric utility vehicle for an enclosed event site.\nYou\n3:44 AM\ninventory_2\nASSET\nCommunity Equipment Pickup\nTransport - Denver\nDouble-cab pickup for bulky community-event supplies.\n\nYou deleted this message\n\nYou deleted this message\n\nYou\n3:38 AM\nevent\nEVENT\nDesert Porch Folk Session\nMar 7 \u00b7 1:30 PM - 3:30 PM\nAcoustic players trade short songs while listeners settle into porch chairs.\nYou\n3:38 AM\nevent\nEVENT\nDarkroom Contact Sheet Night\nMar 3 \u00b7 11:30 AM - 2:30 PM\nAnalog photographers inspect fresh contact sheets under safe red light.\n\nYou deleted this message\n\nYou deleted this message\n\nToday\nOwen Hale\n12:48 PM\n\nPerfect, locking this in.\n\nMaya Stone\n12:12 PM\n\nMain event channel for San Diego Cinder Social MS205.\n\nAva Baker\n11:25 AM\n\nRoute and timing look good on my side.\n\nMaya Stone\n10:40 AM\n\nI can bring two more people.\n\nOwen Hale\n10:00 AM\n\nLet us align the plan for San Diego Cinder Social MS205 \u00b7 Main Event.\n\nOwen Hale\n4:20 AM\n\nShared updated E"
+    },
+    "messages-before": {
+      "total": 41,
+      "activeShares": []
+    },
+    "messages-after-cancel": {
+      "total": 41,
+      "activeShares": []
+    },
+    "after-first-apply": {
+      "total": 43,
+      "activeShares": [
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:2b8d5ace-82ae-33b5-ae5b-15bd78415d64",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Night Food League",
+              "id": "event:9018da9f33929fec90a0df70:1790473037664",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:b0911c0b-91e0-3c8a-97dd-83b747932819",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Handmade Pasta Table",
+              "id": "event:c66972829391ece30a38e9be:1790473037511",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "after-mixed-apply": {
+      "total": 45,
+      "activeShares": [
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:6d2639ec-1d7b-3b57-a4e7-5968b24fbc15",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Darkroom Contact Sheet Night",
+              "id": "event:23099224f1bc48899659ecd2:1790473090317",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:71fbc4d0-ff75-3e8b-9e95-8f366fac1695",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Desert Porch Folk Session",
+              "id": "event:06b17361f07de1f83082b2a4:1790473090385",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "after-assets": {
+      "total": 47,
+      "activeShares": [
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:6d2639ec-1d7b-3b57-a4e7-5968b24fbc15",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Darkroom Contact Sheet Night",
+              "id": "event:23099224f1bc48899659ecd2:1790473090317",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:71fbc4d0-ff75-3e8b-9e95-8f366fac1695",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Desert Porch Folk Session",
+              "id": "event:06b17361f07de1f83082b2a4:1790473090385",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:c72446dc-5bc4-37df-ba3b-ac1dd3fb6968",
+          "attachments": [
+            {
+              "type": "asset",
+              "title": "Dinner District Electric Taxi",
+              "id": "asset:d1344cc795e50601c2a3441a:1790473370315",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:c7fd941c-5614-3127-ac37-e63637a713e7",
+          "attachments": [
+            {
+              "type": "asset",
+              "title": "Concert Night Shuttle Van",
+              "id": "asset:91364d2cf1337e36879248a3:1790473370167",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "after-partial-fail": {
+      "total": 47,
+      "activeShares": [
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:6d2639ec-1d7b-3b57-a4e7-5968b24fbc15",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Darkroom Contact Sheet Night",
+              "id": "event:23099224f1bc48899659ecd2:1790473090317",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:71fbc4d0-ff75-3e8b-9e95-8f366fac1695",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Desert Porch Folk Session",
+              "id": "event:06b17361f07de1f83082b2a4:1790473090385",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "after-partial-retry": {
+      "total": 49,
+      "activeShares": [
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:6d2639ec-1d7b-3b57-a4e7-5968b24fbc15",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Darkroom Contact Sheet Night",
+              "id": "event:23099224f1bc48899659ecd2:1790473090317",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:6fb0deb9-4d94-3141-8f3e-e1a5da339476",
+          "attachments": [
+            {
+              "type": "asset",
+              "title": "Community Equipment Pickup",
+              "id": "asset:72782ab8fc8635ee622b00be:1790473496394",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:71fbc4d0-ff75-3e8b-9e95-8f366fac1695",
+          "attachments": [
+            {
+              "type": "event",
+              "title": "Desert Porch Folk Session",
+              "id": "event:06b17361f07de1f83082b2a4:1790473090385",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chat-message:1ba26e819a02104398ea0799:e2f23a08-b878-38cb-a1d7-d84dd39bdfa2",
+          "attachments": [
+            {
+              "type": "asset",
+              "title": "Festival Utility Buggy",
+              "id": "asset:5539911338c3a6a07f594417:1790473496517",
+              "keys": [
+                "id",
+                "type",
+                "title",
+                "entityId",
+                "assetType",
+                "ownerUserId",
+                "status",
+                "unavailableReason",
+                "subtitle",
+                "description",
+                "url",
+                "previewUrl",
+                "mimeType"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "remaining": [
+    "Never-sent select/unselect no-op",
+    "Off-first-page persisted own share removal",
+    "Remove/re-add identity",
+    "Baseline load failure/retry",
+    "Pending response context switch",
+    "Mobile geometry",
+    "Exact fixture cleanup"
+  ]
+}

@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "restore-chat-sharing", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -81,16 +81,67 @@
     Q.printObject({checkpointId, chatId, prepared: true, productWrites: false});
     return;
   }
+  if (command === "prepare-chat-sharing-context") {
+    if (!state.chatSharingSnapshots) Q.fail("Prepare the chat-sharing boundary first.");
+    const chatId = "f6fb610ec35ba384162acc98";
+    if (state.chatSharingSnapshots.some(snapshot => snapshot.collection === "chats" && snapshot.selector.id === chatId)) {
+      Q.printObject({checkpointId, chatId, alreadyCaptured: true, productWrites: false});
+      return;
+    }
+    const owners = Q.collection("chats").distinct("ownerUserId", {id: chatId});
+    if (!owners.includes(actors[0])) Q.fail("The alternate chat must already belong to the producer.");
+    const capturedUsers = new Set(state.chatSharingSnapshots.filter(snapshot => snapshot.collection === "users")
+      .flatMap(snapshot => snapshot.documents.map(user => user.userId)));
+    const related = {$or: [{sourceId: chatId}, {entityId: chatId}, {"payload.chatId": chatId}]};
+    const retained = Q.snapshotSpecs([
+      {collection: "chats", selector: {id: chatId}},
+      {collection: "chatMessages", selector: {chatId}},
+      {collection: "users", selector: {userId: {$in: owners.filter(owner => !capturedUsers.has(owner))}}},
+      {collection: "userNotifications", selector: related},
+      {collection: "notificationOutbox", selector: related}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {chatSharingSnapshots: {$each: retained}}});
+    Q.printObject({checkpointId, chatId, captured: true, productWrites: false});
+    return;
+  }
   if (command === "restore-chat-sharing") {
     if (!state.chatSharingSnapshots) Q.fail("No chat sharing boundary to restore.");
-    Q.restoreSnapshots(state.chatSharingSnapshots);
-    for (const snapshot of state.chatSharingSnapshots) {
+    // Asset share tokens carry the asset owner, not necessarily either chat actor.
+    // Recover only tokens proven to belong to a newly persisted share command;
+    // retained baseline messages/tokens are never part of this derived cleanup.
+    const retained = [...state.chatSharingSnapshots];
+    const messagesSnapshot = retained.find(snapshot => snapshot.collection === "chatMessages"
+      && snapshot.selector.chatId === state.chatSharingChatId);
+    if (!messagesSnapshot) Q.fail("Missing original chat-message baseline.");
+    const originalMessageIds = new Set(messagesSnapshot.documents.map(message => Q.text(message._id)));
+    const tokenSnapshots = retained.filter(snapshot => snapshot.collection === "shareTokens");
+    const capturedTokenOwners = new Set(tokenSnapshots.flatMap(snapshot => snapshot.selector.ownerUserId?.$in || []));
+    const cleanupTokenIds = [];
+    for (const message of Q.collection("chatMessages").find({chatId: state.chatSharingChatId}).toArray()) {
+      if (originalMessageIds.has(Q.text(message._id))) continue;
+      const match = /^share:[^:]+:(event|asset):([^:]+)$/.exec(Q.text(message.clientId));
+      if (!match) continue;
+      if (!actors.includes(message.senderAvatar?.id)) Q.fail("Unexpected share author at cleanup boundary.");
+      const sentAt = Date.parse(message.sentAtIso);
+      if (!Number.isFinite(sentAt)) Q.fail("Missing share send time at cleanup boundary.");
+      const tokens = Q.collection("shareTokens").find({kind: match[1], entityId: match[2]}).toArray()
+        .filter(token => !capturedTokenOwners.has(token.ownerUserId)
+          && Date.parse(token.createdAtIso) <= sentAt
+          && Date.parse(token.createdAtIso) >= sentAt - 5000);
+      if (!tokens.length) continue; // Already covered by the original token-owner snapshot.
+      if (tokens.length !== 1) Q.fail("Ambiguous generated share token; retain the chat boundary.");
+      cleanupTokenIds.push(tokens[0]._id);
+    }
+    if (cleanupTokenIds.length) retained.push({collection: "shareTokens",
+      selector: {_id: {$in: cleanupTokenIds}}, documents: []});
+    Q.restoreSnapshots(retained);
+    for (const snapshot of retained) {
       if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray()))) {
         Q.fail(`${snapshot.collection} chat restoration differs; retain snapshots.`);
       }
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {chatSharingSnapshots: "", chatSharingChatId: ""}});
-    Q.printObject({checkpointId, chatSharingRestored: true});
+    Q.printObject({checkpointId, chatSharingRestored: true, generatedAssetTokensRemoved: cleanupTokenIds.length, verifiedScopes: retained.length});
     return;
   }
   if (command === "prepare-sharing") {
