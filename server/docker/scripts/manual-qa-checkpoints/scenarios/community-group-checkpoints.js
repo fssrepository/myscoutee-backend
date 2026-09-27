@@ -8,7 +8,7 @@
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "prepare-tools", "prepare-tools-explore", "inspect-tools", "restore-tools", "verify-lists", "inspect-location-control", "prepare-location-control", "prepare-tracking-control", "prepare-location-invitation", "set-location-control-invalid", "restore-location-control", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-profile-contacts", "prepare-profile-notifications", "prepare-profile-notification-controls", "prepare-profile-api", "restore-profile-api", "restore-profile-notifications", "restore-profile-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-menu-checkout", "prepare-group-asset-payment", "prepare-group-asset-scope", "prepare-profile-tickets", "prepare-profile-group-tickets", "prepare-group-asset-payment-card", "inspect-group-asset-payment", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
-      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
+      "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-authority", "capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority", "prepare-admin-outsider", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
     Q.fail("Only the retained Group list baseline status is supported here.");
@@ -1125,6 +1125,20 @@
     Q.printObject({checkpointId, groupId, prepared: true, acceptedMembers: acceptedActors.length, pendingMembers: caseActors.length - acceptedActors.length, admin: actors[0], rolesTested: false});
     return;
   }
+  if (command === "prepare-admin-outsider") {
+    const userId = "b0971e779dbdb71f9327eabb";
+    if (!state.adminLifecycleSnapshots || state.adminOutsiderPrepared
+        || Q.collection("activityMembers").countDocuments({ownerType: "community", ownerId: "manual-qa-community-admin", userId}))
+      Q.fail("Admin fixture with unrelated outsider required.");
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {$or: [{userId}, {accountUserId: userId}]}},
+      {collection: "userNotifications", selector: {recipientUserId: userId}},
+      {collection: "notificationOutbox", selector: {recipientUserIds: userId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {adminLifecycleSnapshots: {$each: retained}}, $set: {adminOutsiderPrepared: true}});
+    Q.printObject({checkpointId, outsiderPrepared: true, productWrites: false});
+    return;
+  }
   if (["capture-admin-authority", "restore-admin-authority-branch", "inspect-admin-authority"].includes(command)) {
     const groupId = "manual-qa-community-admin";
     if (!state.adminLifecycleSnapshots) Q.fail("Independent Admin fixture required.");
@@ -1317,7 +1331,7 @@
     Q.restoreSnapshots(state.adminLifecycleSnapshots.map(snapshot =>
       snapshot.collection === "chats" && snapshot.selector.chatId
         ? {...snapshot, selector: {id: snapshot.selector.chatId}} : snapshot));
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {adminLifecycleSnapshots: "", adminAuthoritySavepoints: "", adminOutsiderPrepared: "", adminBaseFeedUnrelatedItems: "", adminBaseChatReadPrepared: "", adminBaseChatMessagePrepared: ""}});
     Q.printObject({checkpointId, adminLifecycleRestored: true});
     return;
   }

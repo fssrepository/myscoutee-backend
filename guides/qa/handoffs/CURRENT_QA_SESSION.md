@@ -89,7 +89,7 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
 substage: Block25 HTTP CLOSED;26 ACTIVE. HTTP22/48; Lifecycle22/29 (1–13,17–25),14–16 partial retained.
-fixture_phase: All25 temporary API/contact/notification/sharing/ticket scopes exactly restored. Older contactSnapshots/badgeSnapshots untouched. Browser Alex Base EN after HU cancellation check. No Admin26 fixture staged yet.
+fixture_phase: Admin26 fixture active (adminLifecycleSnapshots/adminAuthoritySavepoints, plus outsider snapshot). members-ready and admins-granted saved. Promotion/revocation/grant denials and retries verified; current branch has Eszter Member and Maya Admin. Browser Zoe Base EN, Groups.25 scopes restored.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
 next_action: Execute26 Admin grant/revocation, responsibility release/takeover and last-member deletion with own fixture and branch restore. At whole Group testcase boundary remove exact evidence-proven duplicates from GROUP-ISOLATION-001, preserving unique combinations; keep transfer provenance in ledger and executable blocks self-contained. Also audit remaining NOT RUN deployment-dependent checks into independent deployment QA. Local MCP OAuth remains API block7; browser ChatGPT manual acceptance remains deployment scope.
