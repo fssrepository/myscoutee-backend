@@ -1048,3 +1048,36 @@ stored affiliateLinks record is keyed by _id. Do not discard the retained
 snapshot or claim cleanup until this scope is accounted for. The fresh visitor
 currently has a pending restoration; the event-link rejection dialog remains
 open. No closed block was reset or replayed.
+
+### Continuation with a valid existing actor — Maya, application UI only
+
+The user prohibits ad hoc Mongo writes. The manually corrected fresh actor is
+excluded from subsequent PASS evidence. No location fixture command or product
+code change was introduced. Existing actors were reopened by the versioned
+launcher after the read-only status gate; only Alex and Maya remain open.
+
+Maya's location was present before this replay in Mongo and the loaded UI:
+`locationRequired=false`, `memberActionsAvailable=true`. All membership changes
+below were submitted through visible application controls and confirmations.
+Mongo was used only as an independent read oracle.
+
+- External group-owned Event link selected Design Circle and created one pending
+  invitation for Maya's existing group profile. Existing Group membership,
+  historical referrer and independent Main Event invitation remained intact.
+- Accept through the card and confirmation persisted accepted membership.
+  The retained card changed 1/10→2/10 without reload. Reopening the same link
+  preserved the identical membership IDs, accepted state and one group profile.
+- Alex removed Maya through Members. Reopening the old Event link failed and
+  left Group membership blocked; accepted Event membership did not bypass it.
+- Maya used Trash→Restore and confirmed the request. The existing owner Members
+  popup received the pending request without reload. Reopening the Event link
+  again failed, preserving pending restoration.
+- Alex approved Maya through the Members confirmation. Group membership became
+  accepted; the link then opened the existing accepted Event again with the same
+  profile and association. No test outcome was seeded or patched.
+
+[Full replay evidence](GROUP-LIFECYCLE-001-block8-maya-20260927.json).
+This completes the valid-existing-user admission/replay/removed-member chain.
+Block 8 remains open pending its cleanup boundary; HTTP7/48, Lifecycle7/29.
+The fresh-user location correction is not a successful registration/location
+save test. Earlier fresh-actor observations must not be presented as that proof.
