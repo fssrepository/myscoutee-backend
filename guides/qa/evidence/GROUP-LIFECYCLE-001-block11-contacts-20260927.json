@@ -245,9 +245,9 @@
       }
     ]
   },
-  "status": "IN PROGRESS; HTTP10/48 closed. Remaining steps in CURRENT_QA_SESSION. Earlier selector label mismatches were harness errors, not product failures.",
+  "status": "HTTP PASS/CLOSED; Local NOT RUN",
   "consentRepair": {
-    "status": "HTTP guard and approved invitation PASS; block11 remains open",
+    "status": "HTTP guard and approved invitation PASS; completed evidence in completionChecks",
     "preFixInviteOutcome": "superseded: saved contacts Ethan/Nora were not approved",
     "reset": "versioned restore-contacts PASS; prepare-contacts and prepare-contact-invitees snapshot-only",
     "checks": {
@@ -514,5 +514,498 @@
       }
     },
     "unitTests": "updated, NOT RUN separately (existing watchers own builds)"
-  }
+  },
+  "completionChecks": {
+    "repair-nora-approved": {
+      "contacts": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\nmark_chat_unread\nRequests\nexpand_more\nNo contacts\nNo pending requests",
+      "confirmation": ""
+    },
+    "ethan-contact-chat-list": {
+      "text": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n13\ncontacts\nContacts\nexpand_more\nSun, 27 Sept 2026\nAlex Turner\nMilo Grant",
+      "rows": [
+        {
+          "tag": "ARTICLE",
+          "cls": "motion-static ui-single-row ui-single-row--clickable",
+          "aria": null,
+          "text": "Alex Turner\nMilo Grant"
+        }
+      ]
+    },
+    "ethan-message": {
+      "chat": "Milo Grant\nclose\npush_pin\nYou\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend"
+    },
+    "alex-filter-unread": {
+      "items": [
+        "forum\nAll\n6",
+        "event\nEvent\n5",
+        "event_available\nSub event",
+        "groups\nGroup",
+        "support_agent\nService",
+        "contacts\nContacts\n1",
+        "forum\nGroup support",
+        "admin_panel_settings\nApp support"
+      ]
+    },
+    "alex-unread-row": {
+      "text": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n6\ncontacts\nContacts\nexpand_more\n1\nSun, 27 Sept 2026\n1\nEthan Rivera\nMilo Grant\nQA block 11 approved invitee Ethan message",
+      "rows": [
+        {
+          "tag": "ARTICLE",
+          "cls": "motion-static ui-single-row ui-single-row--clickable ui-single-row--with-top-right",
+          "aria": null,
+          "text": "1\nEthan Rivera\nMilo Grant\nQA block 11 approved invitee Ethan message"
+        }
+      ]
+    },
+    "alex-invited-message-read": {
+      "chat": "Milo Grant\nclose\npush_pin\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "aria": "Close chat popup",
+          "text": "close"
+        },
+        {
+          "aria": "3 members",
+          "text": ""
+        },
+        {
+          "aria": "Open pinned messages",
+          "text": "push_pin"
+        },
+        {
+          "aria": "Open chat tools",
+          "text": "add"
+        },
+        {
+          "aria": "Send message",
+          "text": "send"
+        }
+      ],
+      "inputs": [
+        "Write message"
+      ]
+    },
+    "alex-read-reset": {
+      "retainedList": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n5\ncontacts\nContacts\nexpand_more\nSun, 27 Sept 2026\nEthan Rivera\nMilo Grant\nQA block 11 approved invitee Ethan message",
+      "members": "Members\n\nMilo Grant\n\n3 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·\n\nperson\nvisibility\nEthan Rivera\n\nMember ·"
+    },
+    "nora-invited": {
+      "dialogs": [
+        {
+          "title": "Members",
+          "text": "Members\n\nMilo Grant\n\n4 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·\n\nperson\nvisibility\nEthan Rivera\n\nMember ·\n\nperson\nvisibility\nNora Hale\n\nMember ·"
+        },
+        {
+          "title": "Activities",
+          "text": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n5\ncontacts\nContacts\nexpand_more\nSun, 27 Sept 2026\nEthan Rivera\nMilo Grant\nQA block 11 approved invitee Ethan message"
+        },
+        {
+          "title": "Milo Grant",
+          "text": "Milo Grant\nclose\npush_pin\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend"
+        }
+      ],
+      "memberButton": "4 members"
+    },
+    "approved-welcome": {
+      "chat": "Milo Grant\nclose\npush_pin\nYou\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend"
+    },
+    "phone-saved": {
+      "formOpen": false,
+      "card": "Milo Grant\nvisibility\nmore_vert\n\nlocation_on\nPhoenix\n\nMyScoutee · Chat\ncall\n+1 202 555 0147"
+    },
+    "share-nesting": {
+      "contactsRetained": true,
+      "chatRetained": true,
+      "pickerClosed": true,
+      "chat": "Milo Grant\nclose\npush_pin\nYou\n5:55 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nYou\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend"
+    },
+    "confirm-delete-contact-proof": {
+      "contactsAfterDelete": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nNo contacts\nNo contacts saved yet\n\nUse Create contact to add members into your personal quick-reach list."
+    },
+    "real-empty-invite-list": {
+      "dialogs": [
+        {
+          "title": "Members",
+          "text": "Members\n\nAlex Turner\n\n4 members\nclose\nperson_add\nInvite\npending_actions\nPending only\nperson\nvisibility\nAlex Turner\n\nMember ·\n\nperson\nvisibility\nMilo Grant\n\nMember ·\n\nperson\nvisibility\nEthan Rivera\n\nMember ·\n\nperson\nvisibility\nNora Hale\n\nMember ·"
+        },
+        {
+          "title": "Invite members",
+          "text": "Invite members\n\nAlex Turner\n\ndone\nclose\nschedule\nRecent\nexpand_more\nNo invite candidates right now.\n\nMeet more people first or try again later."
+        },
+        {
+          "title": "Activities",
+          "text": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n15\ncontacts\nContacts\nexpand_more\nSun, 27 Sept 2026\nAlex Turner\nAlex Turner\nShared an event"
+        },
+        {
+          "title": "Alex Turner",
+          "text": "Alex Turner\nclose\npush_pin\nAlex Turner\n5:55 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nAlex Turner\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend"
+        }
+      ]
+    },
+    "nora-open-chats": {
+      "dialogs": [
+        {
+          "title": "Activities",
+          "text": "Activities\n\nChats\n\nclose\nchat\nChats\nexpand_more\n3\nforum\nAll\nexpand_more\n3\nSun, 27 Sept 2026\n2\nAlex Turner\nMilo Grant\nShared an event\nTue, 24 Feb 2026\nOwen Hale\nSpring Festival Build Crew\nPerfect, locking this in.\n1\nOlivia Rivera\nMuseum After-Hours Trail\nPerfect, locking this in.\nMon, 23 Feb 2026\nOlivia Rivera\nGlasshouse Padel Ladder\nPerfect, locking this in.\nSun, 22 Feb 2026\nNagy Eszter\nCreative Nights Gesture Circle\nPerfect, locking this in."
+        },
+        {
+          "title": "Chats",
+          "text": "Chats\ndone\nGot it\nChoose a chat list\n\nFilter conversations by their purpose.\n\nShow all chats or filter by Event, Sub-event, Group, Service, or App Support. Red counters show unread items.\n\nRead a chat row\n\nSee the latest activity before opening it.\n\nA row shows the latest sender, channel, recent message, time, member count, and unread count. Tap it to open the conversation.\n\nChannel types\n\nKeep each conversation in the right place.\n\nEvent chats cover the whole event, sub-event chats cover one part, and group chats cover a smaller team. Service and App Support chats handle their own help or system-related topics.\n\nOpen a conversation\n\nRead messages and use the available actions.\n\nThe header opens members, the related event or group, and pinned messages. Message actions depend on ownership and content: you may reply, react, edit or unsend your own message, pin it, open an attachment, or report it.\n\nSend more than text\n\nUse chat tools for practical planning.\n\nThe plus button lets you add an image, voice clip, poll, event, or asset. Shared items stay in the conversation so participants can open them later."
+        }
+      ],
+      "buttons": [
+        {
+          "aria": "Close activities",
+          "text": "close"
+        },
+        {
+          "aria": "Open Chats",
+          "text": "chat\nChats\nexpand_more\n3"
+        },
+        {
+          "aria": "Open all",
+          "text": "forum\nAll\nexpand_more\n3"
+        }
+      ]
+    },
+    "nora-chat-filter": {
+      "items": [
+        "forum\nAll\n3",
+        "event\nEvent\n1",
+        "event_available\nSub event",
+        "groups\nGroup",
+        "support_agent\nService",
+        "contacts\nContacts\n2",
+        "forum\nGroup support",
+        "admin_panel_settings\nApp support"
+      ]
+    },
+    "nora-chat-contacts-filter": {
+      "text": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n3\ncontacts\nContacts\nexpand_more\n2\nSun, 27 Sept 2026\n2\nAlex Turner\nMilo Grant\nShared an event",
+      "rows": [
+        {
+          "tag": "ARTICLE",
+          "cls": "motion-static ui-single-row ui-single-row--clickable ui-single-row--with-top-right",
+          "aria": null,
+          "text": "2\nAlex Turner\nMilo Grant\nShared an event"
+        }
+      ]
+    },
+    "nora-open-invited-chat": {
+      "chat": "Milo Grant\nclose\npush_pin\nAlex Turner\n5:55 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nAlex Turner\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "aria": "Close chat popup",
+          "text": "close"
+        },
+        {
+          "aria": "4 members",
+          "text": ""
+        },
+        {
+          "aria": "Open pinned messages",
+          "text": "push_pin"
+        },
+        {
+          "aria": "Open chat tools",
+          "text": "add"
+        },
+        {
+          "aria": "Send message",
+          "text": "send"
+        }
+      ],
+      "inputs": [
+        "Write message"
+      ]
+    },
+    "nora-reply": {
+      "chat": "Milo Grant\nclose\npush_pin\nYou\n5:57 AM\n\nQA block 11 approved invitee Nora reply\n\nAlex Turner\n5:55 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nAlex Turner\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend"
+    },
+    "nora-read-reset": {
+      "chat": "Milo Grant\nclose\npush_pin\nYou\n5:57 AM\n\nQA block 11 approved invitee Nora reply\n\nAlex Turner\n5:55 AM\nevent\nEVENT\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nAlex Turner\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend",
+      "retainedList": "Activities\n\nChats · Contacts\n\nclose\nchat\nChats\nexpand_more\n1\ncontacts\nContacts\nexpand_more\nSun, 27 Sept 2026\nNora Hale\nMilo Grant\nQA block 11 approved invitee Nora reply",
+      "memberButton": "4 members"
+    },
+    "hu-mobile-proof": {
+      "language": "hu",
+      "width": 390,
+      "popupBounds": {
+        "left": 0,
+        "right": 390
+      },
+      "horizontalOverflow": false,
+      "chat": "Milo Grant\nclose\npush_pin\nYou\n5:57 AM\n\nQA block 11 approved invitee Nora reply\n\nAlex Turner\n5:55 AM\nevent\nESEMÉNY\nHandmade Pasta Table\nSun Feb 22, 6:30 PM\nPairs roll dough, shape filled pasta, and share the first cooked batch.\nAlex Turner\n5:53 AM\n\nQA block 11 welcome approved Ethan and Nora\n\nEthan Rivera\n5:51 AM\n\nQA block 11 approved invitee Ethan message\n\nToday\nadd\nsend",
+      "list": "Tevékenységek\n\nCsevegések · Kapcsolatok\n\nclose\nchat\nCsevegések\nexpand_more\n1\ncontacts\nKapcsolatok\nexpand_more\n2026. szept. 27., V\nNora Hale\nMilo Grant\nQA block 11 approved invitee Nora reply",
+      "buttons": [
+        "Close chat popup",
+        "4 tag",
+        "Open pinned messages",
+        "Open chat tools",
+        "Send message"
+      ]
+    },
+    "final-oracle": {
+      "chatId": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+      "chats": [
+        {
+          "_id": "chat-owner-copy:3c4228f3-5523-3853-ad7a-e1600c1de803",
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "ownerUserId": "af0436815ab38f4864dd1e24",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929",
+            "f6f22ba0a6f14cfcf4585d47",
+            "9184901a15076d32ea8b626f"
+          ],
+          "unread": 1,
+          "channelType": "contact",
+          "revision": {
+            "low": 8,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        {
+          "_id": "chat-owner-copy:9b25d905-eb28-32e7-b2ed-e8153eb57156",
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "ownerUserId": "eb1ca0b761885bb0763e2929",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929",
+            "f6f22ba0a6f14cfcf4585d47",
+            "9184901a15076d32ea8b626f"
+          ],
+          "unread": 1,
+          "channelType": "contact",
+          "revision": {
+            "low": 8,
+            "high": 0,
+            "unsigned": false
+          }
+        },
+        {
+          "_id": "chat-owner-copy:3bfb0595-afea-3a47-9b7a-0066e4ff4113",
+          "channelType": "contact",
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929",
+            "f6f22ba0a6f14cfcf4585d47",
+            "9184901a15076d32ea8b626f"
+          ],
+          "ownerUserId": "f6f22ba0a6f14cfcf4585d47",
+          "revision": {
+            "low": 7,
+            "high": 0,
+            "unsigned": false
+          },
+          "unread": 3
+        },
+        {
+          "_id": "chat-owner-copy:71ff6112-a72b-3d5a-a9f8-2ffe1b8c76e4",
+          "id": "c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ",
+          "ownerUserId": "9184901a15076d32ea8b626f",
+          "memberIds": [
+            "af0436815ab38f4864dd1e24",
+            "eb1ca0b761885bb0763e2929",
+            "f6f22ba0a6f14cfcf4585d47",
+            "9184901a15076d32ea8b626f"
+          ],
+          "unread": 0,
+          "channelType": "contact",
+          "revision": {
+            "low": 9,
+            "high": 0,
+            "unsigned": false
+          }
+        }
+      ],
+      "contacts": [
+        {
+          "_id": "6ab892b8296c75ec86d3c9c3",
+          "userId": "9184901a15076d32ea8b626f",
+          "contacts": [
+            {
+              "userId": "af0436815ab38f4864dd1e24",
+              "methods": []
+            }
+          ]
+        },
+        {
+          "_id": "6ab890b7296c75ec86d3c9a8",
+          "userId": "af0436815ab38f4864dd1e24",
+          "contacts": [
+            {
+              "userId": "f6f22ba0a6f14cfcf4585d47",
+              "methods": []
+            },
+            {
+              "userId": "eb1ca0b761885bb0763e2929",
+              "methods": [
+                {
+                  "id": "method-3c7e19fa-fc3b-4e30-8cce-89e5413e9e54",
+                  "type": "phone",
+                  "value": "+1 202 555 0147"
+                }
+              ]
+            },
+            {
+              "userId": "9184901a15076d32ea8b626f",
+              "methods": []
+            }
+          ]
+        },
+        {
+          "_id": "6ab890c3296c75ec86d3c9ab",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "contacts": []
+        },
+        {
+          "_id": "6ab89191296c75ec86d3c9b6",
+          "userId": "f6f22ba0a6f14cfcf4585d47",
+          "contacts": [
+            {
+              "userId": "af0436815ab38f4864dd1e24",
+              "methods": []
+            }
+          ]
+        }
+      ],
+      "access": [
+        {
+          "_id": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929",
+          "leftUserId": "af0436815ab38f4864dd1e24",
+          "rightUserId": "eb1ca0b761885bb0763e2929",
+          "requestedBy": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "requestedAtIso": "2026-09-27T03:42:48.172350809Z",
+          "decidedAtIso": "2026-09-27T03:42:59.018350173Z",
+          "version": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "_class": "com.raxim.myscoutee.profile.data.document.ContactChatAccess"
+        },
+        {
+          "_id": "24:af0436815ab38f4864dd1e24f6f22ba0a6f14cfcf4585d47",
+          "leftUserId": "af0436815ab38f4864dd1e24",
+          "rightUserId": "f6f22ba0a6f14cfcf4585d47",
+          "requestedBy": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "requestedAtIso": "2026-09-27T03:43:50.308541111Z",
+          "decidedAtIso": "2026-09-27T03:46:25.662996278Z",
+          "version": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "_class": "com.raxim.myscoutee.profile.data.document.ContactChatAccess"
+        },
+        {
+          "_id": "24:9184901a15076d32ea8b626faf0436815ab38f4864dd1e24",
+          "leftUserId": "9184901a15076d32ea8b626f",
+          "rightUserId": "af0436815ab38f4864dd1e24",
+          "requestedBy": "af0436815ab38f4864dd1e24",
+          "status": "approved",
+          "requestedAtIso": "2026-09-27T03:48:40.646948510Z",
+          "decidedAtIso": "2026-09-27T03:51:20.683017013Z",
+          "version": {
+            "low": 1,
+            "high": 0,
+            "unsigned": false
+          },
+          "_class": "com.raxim.myscoutee.profile.data.document.ContactChatAccess"
+        }
+      ],
+      "messages": [
+        {
+          "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:234a802c-f337-3708-b141-e9789543b961",
+          "senderAvatar": {
+            "id": "af0436815ab38f4864dd1e24",
+            "initials": "AT",
+            "gender": "man"
+          },
+          "text": "QA block 11 welcome approved Ethan and Nora",
+          "attachments": []
+        },
+        {
+          "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:a7b29813-da58-30f6-b831-202d3dfa637f",
+          "senderAvatar": {
+            "id": "f6f22ba0a6f14cfcf4585d47",
+            "initials": "ER",
+            "gender": "man"
+          },
+          "text": "QA block 11 approved invitee Ethan message",
+          "attachments": []
+        },
+        {
+          "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:ce4a9f9c-6f78-3b4f-8a8f-158b516515bf",
+          "senderAvatar": {
+            "id": "af0436815ab38f4864dd1e24",
+            "initials": "AT",
+            "gender": "man"
+          },
+          "text": "",
+          "attachments": [
+            {
+              "id": "event:c66972829391ece30a38e9be:1790481305502",
+              "type": "event",
+              "title": "Handmade Pasta Table",
+              "entityId": "c66972829391ece30a38e9be",
+              "assetType": "",
+              "ownerUserId": "",
+              "status": "available",
+              "unavailableReason": "",
+              "subtitle": "Sun Feb 22, 6:30 PM",
+              "description": "Pairs roll dough, shape filled pasta, and share the first cooked batch.",
+              "url": "https://example.com/event/b29df68956f3fe15e04558de/c66972829391ece30a38e9be",
+              "previewUrl": "/media/public?key=images/demo-events/event-036/v1/large.webp",
+              "mimeType": ""
+            }
+          ]
+        },
+        {
+          "_id": "chat-message:c-contact-YWYwNDM2ODE1YWIzOGY0ODY0ZGQxZTI0CmViMWNhMGI3NjE4ODViYjA3NjNlMjkyOQ:f41fc2c1-e2be-3166-8a10-cffa68bce78d",
+          "senderAvatar": {
+            "id": "9184901a15076d32ea8b626f",
+            "initials": "NH",
+            "gender": "woman"
+          },
+          "text": "QA block 11 approved invitee Nora reply",
+          "attachments": []
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "cleanup": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "contactsRestored": true
+    },
+    "baseline-restored": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "command": "verify-savepoint",
+      "savepoint": "after-cash-history",
+      "capturedAtIso": "2026-09-27T03:24:57.100Z",
+      "resumeBlock": 11,
+      "adapter": "http",
+      "note": "Saved fixture state is not a QA PASS; UI evidence and mode status remain in the evidence log and ledger."
+    },
+    "savepoint": {
+      "checkpointId": "GROUP-LIFECYCLE-001",
+      "command": "capture",
+      "savepoint": "after-contacts",
+      "capturedAtIso": "2026-09-27T04:04:51.310Z",
+      "resumeBlock": 12,
+      "adapter": "http",
+      "note": "Saved fixture state is not a QA PASS; UI evidence and mode status remain in the evidence log and ledger."
+    }
+  },
+  "verificationLimits": [
+    "EN desktop and HU mobile exercised; not every locale/viewport combination.",
+    "Phone method saved and shown; external dialing not attempted.",
+    "Local and separate unit specs NOT RUN. Cosmetic changes checked through existing watcher; no functional replay."
+  ]
 }

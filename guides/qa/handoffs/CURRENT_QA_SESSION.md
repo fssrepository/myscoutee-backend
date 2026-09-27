@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP10/48 overall; Lifecycle10/29 closed/current block11. Local NOT RUN.
-fixture_phase: Contacts baseline restored through versioned harness after consent fix; Alex/Milo approved and two-member chat recreated. Ethan requested/approved through UI and invited: 3 members/3 owner copies. Nora request sent, still pending; excluded from invite candidates. No chat messages in this replay yet. Earlier independent two-way/search/overlay proof retained.
+substage: HTTP11/48 overall (22.92%); Lifecycle11/29 closed/current block12. Local NOT RUN.
+fixture_phase: after-contacts savepoint retained; fresh contactSnapshots active for block12. Alex Main profile saved Milo via UI; first request rejected, second approved via UI (version3). Current CONTACTS windows both open. Restore this scope only after remaining block12 checks; no block11 replay.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue block11 only. Approve Nora through her normal Requests UI, invite her, then verify recipient chat-list/unread/read-reset and remaining phone/share-picker steps. CONTACTS actor0 Milo/actor1 Alex currently open, invitee windows closed. Saved-unapproved and pending absent from picker; API single/batch/mixed denial403 with unchanged membership/revision; Ethan approved-only candidate and successful add PASS. Latest UI fixes are common app-menu buttons with logo, toolbar end gap, no contact date; do not replay completed behavior for cosmetic changes. HTTP translation bundle5 published, cache refresh may take60s.
-savepoint: community-group after-cash-history captured 2026-09-27T03:24:57.100Z, resume11; exact after-chat-sharing verification PASS. Earlier savepoints immutable.
-queue: HTTP Lifecycle11–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
+next_action: Continue block12 only; see block12-controls-20260927.json for completed checks and remaining list. Selection max5 enforcement/unlimited/max1 PASS; HU mobile values heading red including parentheses. Request cancellation/no-resend, rejection cancellation/failure/retry, fresh request with held response, sender/recipient API denials, approval same-list removal PASS. Do not redo these. CONTACTS actor0 Milo Requests empty after approval; actor1 Alex Contacts still open, approved Milo. Scope changes, pagination/order/search and final boundaries remain.
+savepoint: community-group after-contacts captured 2026-09-27T04:04:51.310Z, resume12; exact after-cash-history verification PASS. Earlier savepoints immutable.
+queue: HTTP Lifecycle12–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block10 PASS/CLOSED, evidence block10-cash JSON pointStatus/cleanup. After compaction continue block11 only. Unit specs remain NOT RUN separately from existing watcher.
+last_completed: GROUP-LIFECYCLE-001 HTTP block11 PASS/CLOSED; block11-contacts JSON completionChecks and cleanup. After compaction continue block12 only. Separate unit specs and Local NOT RUN.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

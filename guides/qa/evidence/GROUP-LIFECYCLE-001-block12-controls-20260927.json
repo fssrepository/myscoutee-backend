@@ -1,0 +1,378 @@
+{
+  "status": "IN PROGRESS; HTTP11/48 closed remains unchanged",
+  "checks": {
+    "profile-open": {
+      "dialogs": [
+        {
+          "title": "Profile",
+          "text": "Profile\npublic\nPublic\nexpand_more\ndone\nclose\nedit\n31%\nMilo Grant, 28\nlocation_on\nPhoenix\ncalendar_month\ngroup_add\nbadge\nAlapadatok\nAbout\n77/160\nName*\nBirthday\n*\ncalendar_month\nHoroscope\n♋\nCancer\nCity*\nHeight (cm)*\nPhysique*\naccessibility_new\nAverage\nexpand_more\nGender*\nmale\nMan\nexpand_more\nLanguages*\nlanguage\nEnglish, Spanish\nexpand_more\nProfession\npublic\nWorkplace\napartment\nSelect workplace\nchevron_right\npublic\nSchool\nschool\nSelect school\nchevron_right\npublic\ninterests\nLifestyle\nDrinking\ngroups\nSelect\nexpand_more\ngroups\nSmoking\nsmoking_rooms\nSelect\nexpand_more\ngroups\nWorkout\nfitness_center\nSelect\nexpand_more\npublic\nPets\npets\nSelect\nexpand_more\npublic\nFamily plans\nfamily_restroom\nSelect\nexpand_more\nvisibility_off\nChildren\nchild_care\nSelect\nexpand_more\nvisibility_off\nLove style\nexplore\nSelect\nexpand_more\nvisibility_off\nCommunication style\nforum\nSelect\nexpand_more\ngroups\nSexual orientation\nall_inclusive\nSelect\nexpand_more\nvisibility_off\nReligion\nself_improvement\nSelect\nexpand_more\nvisibility_off\nValues\nauto_awesome\nSelect values\nexpand_more\ngroups\nInterests\nsell\nSelect interests\nexpand_more\ngroups"
+        },
+        {
+          "title": "Profile editor",
+          "text": "Profile editor\ndone\nGot it\nBasic details\n\nComplete the information used on your profile.\n\nFor a regular profile, name, birthday, city, height, physique, gender, and languages are required. The short About text, work, and school entries add useful context.\n\nmanage_accounts\nProfile photos\n\nManage images in a separate panel.\n\nUse the edit action on the profile card to open Images. Add, reorder, replace, or remove photos, then return to the main panel before saving.\n\nadd_photo_alternate\nDetails and visibility\n\nAdd optional details and choose who can see them.\n\nAdd experience, lifestyle, values, and interests as needed. The header controls the overall profile status, while visibility icons beside supported details choose Public, Friends, Hosts, or Private.\n\ntune\nSave your profile\n\nUse the checkmark when you are finished.\n\nThe checkmark saves your changes and closes the editor. Closing the main panel without saving does not submit the changes.\n\nsave"
+        }
+      ]
+    },
+    "limit-five": {
+      "heading": "INTERESTS (max. 5)",
+      "atLimit": [
+        {
+          "text": "groups\n#GoingOut",
+          "disabled": false,
+          "checked": "true",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--active"
+        },
+        {
+          "text": "groups\n#Nightlife",
+          "disabled": false,
+          "checked": "true",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--active"
+        },
+        {
+          "text": "groups\n#StayingIn",
+          "disabled": false,
+          "checked": "true",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--active"
+        },
+        {
+          "text": "groups\n#Brunch",
+          "disabled": false,
+          "checked": "true",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--active"
+        },
+        {
+          "text": "groups\n#WineTasting",
+          "disabled": false,
+          "checked": "true",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--active"
+        },
+        {
+          "text": "groups\n#CoffeeDates",
+          "disabled": true,
+          "checked": "false",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--disabled"
+        },
+        {
+          "text": "groups\n#ContentCreation",
+          "disabled": true,
+          "checked": "false",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--disabled"
+        },
+        {
+          "text": "groups\n#InfluencerLife",
+          "disabled": true,
+          "checked": "false",
+          "class": "app-menu__tabs-item app-menu__palette--blue app-menu__tabs-item--disabled"
+        }
+      ],
+      "afterRemoval": [
+        {
+          "text": "groups\n#GoingOut",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#Nightlife",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#StayingIn",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#Brunch",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#WineTasting",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#CoffeeDates",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#ContentCreation",
+          "disabled": false
+        },
+        {
+          "text": "groups\n#InfluencerLife",
+          "disabled": false
+        }
+      ]
+    },
+    "unlimited": {
+      "text": "LANGUAGES\nclose\nsearch\nlanguage\nEnglish\nlanguage\nSpanish\nlanguage\nFrench\nlanguage\nGerman\nlanguage\nItalian\nlanguage\nPortuguese\nlanguage\nHungarian\nlanguage\nRomanian\nlanguage\nPolish\nlanguage\nDutch\nlanguage\nTurkish\nlanguage\nArabic\nlanguage\nHindi\nlanguage\nJapanese\nlanguage\nKorean\nlanguage\nMandarin",
+      "maximum": null
+    },
+    "one-enforce": {
+      "heading": "TOPIC (max. 1)",
+      "selected": "sell\n#Nightlife\nexpand_more",
+      "oneSelection": true,
+      "saved": false
+    },
+    "selection-mobile": {
+      "heading": "ÉRTÉKEK (max. 5 db)",
+      "limit": "(max. 5 db)",
+      "color": "rgb(164, 60, 69)",
+      "panel": {
+        "x": 9.59375,
+        "y": 512.234375,
+        "width": 370.8125,
+        "height": 340.171875,
+        "top": 512.234375,
+        "right": 380.40625,
+        "bottom": 852.40625,
+        "left": 9.59375
+      },
+      "viewport": 390,
+      "tabs": [
+        "family_restroom\nCsalád",
+        "rocket_launch\nAmbíció",
+        "eco\nÉletmód",
+        "auto_awesome\nHiedelmek"
+      ],
+      "text": "ÉRTÉKEK (max. 5 db)\nclose\nsearch\nfamily_restroom\nCsalád\nrocket_launch\nAmbíció\neco\nÉletmód\nauto_awesome\nHiedelmek\nfamily_restroom\nHosszú távú kapcsolat\nfamily_restroom\nHázasságközpontú\nfamily_restroom\nKötetlen randizás\nfamily_restroom\nNyitott / felfedező\nfamily_restroom\nCsalád az első\nfamily_restroom\nSzeretne gyereket\nfamily_restroom\nFüggetlen életmód"
+    },
+    "request-open": {
+      "dialog": "Would you like to request direct chat access?\n\nRequest permission to chat directly with this contact on MyScoutee?\n\nCancel\nRequest",
+      "buttons": [
+        {
+          "aria": "Cancel",
+          "text": "Cancel"
+        },
+        {
+          "aria": "Request",
+          "text": "Request"
+        }
+      ],
+      "contactStillOpen": true
+    },
+    "request-cancel": {
+      "samePopup": true,
+      "dialogOpen": true,
+      "contact": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nM\nMilo Grant\n\nlocation_on\nPhoenix\n\nvisibility\nmore_vert\nMyScoutee · Request"
+    },
+    "cancel-persisted": {
+      "access": [],
+      "notifications": [],
+      "contacts": [
+        {
+          "_id": "6ab89660296c75ec86d3c9e4",
+          "userId": "af0436815ab38f4864dd1e24",
+          "contacts": [
+            {
+              "userId": "eb1ca0b761885bb0763e2929",
+              "methods": []
+            }
+          ]
+        }
+      ]
+    },
+    "request-sent": {
+      "samePopup": true,
+      "text": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nM\nMilo Grant\n\nlocation_on\nPhoenix\n\nvisibility\nmore_vert\nMyScoutee · Awaiting approval",
+      "dialog": ""
+    },
+    "request-persisted": {
+      "access": [
+        {
+          "_id": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929",
+          "leftUserId": "af0436815ab38f4864dd1e24",
+          "rightUserId": "eb1ca0b761885bb0763e2929",
+          "requestedBy": "af0436815ab38f4864dd1e24",
+          "status": "pending",
+          "requestedAtIso": "2026-09-27T04:13:48.985480853Z",
+          "version": {
+            "low": 0,
+            "high": 0,
+            "unsigned": false
+          },
+          "_class": "com.raxim.myscoutee.profile.data.document.ContactChatAccess"
+        }
+      ],
+      "notifications": [
+        {
+          "_id": "6ab897fd296c75ec86d3c9e6",
+          "recipientUserId": "eb1ca0b761885bb0763e2929",
+          "kind": "contact-chat-requested",
+          "sourceId": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929"
+        }
+      ],
+      "contacts": [
+        {
+          "_id": "6ab89660296c75ec86d3c9e4",
+          "userId": "af0436815ab38f4864dd1e24",
+          "contacts": [
+            {
+              "userId": "eb1ca0b761885bb0763e2929",
+              "methods": []
+            }
+          ]
+        }
+      ]
+    },
+    "no-resend": {
+      "notice": "Awaiting approval\nclose\n\nYour request is awaiting a response.",
+      "buttons": [
+        {
+          "text": "close",
+          "aria": "Close"
+        }
+      ],
+      "samePopup": true
+    },
+    "reject-cancel": {
+      "text": "Would you like to reject this chat request?\n\nReject this direct chat request?\n\nCancel\nReject",
+      "color": "rgb(255, 255, 255)",
+      "afterCancel": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\nmark_chat_unread\nRequests\nexpand_more\n1\nRequests\nAlex Turner\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee · Awaiting approval",
+      "samePopup": true
+    },
+    "reject-failure": {
+      "failedUrl": "http://localhost/api/navigator/contacts/af0436815ab38f4864dd1e24/chat-access",
+      "method": "PUT",
+      "requestStage": "Request",
+      "responseStatus": null
+    },
+    "reject-failure-retained": {
+      "contacts": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\nmark_chat_unread\nRequests\nexpand_more\n1\nRequests\nAlex Turner\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee · Awaiting approval",
+      "side": "contacts\nContacts\n1",
+      "notifications": "notifications_active\n13",
+      "dialog": "Would you like to reject this chat request?\n\nReject this direct chat request?\n\nThe chat request could not be updated. Please try again.\n\nCancel\nReject"
+    },
+    "reject-retry": {
+      "samePopup": true,
+      "sameList": true,
+      "contacts": "Contacts\n\n0 saved contacts\n\nperson_add\nclose\nsearch\nmark_chat_unread\nRequests\nexpand_more\nNo contacts\nNo pending requests",
+      "side": "contacts\nContacts",
+      "dialog": ""
+    },
+    "rejected-sender": {
+      "contacts": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nM\nMilo Grant\n\nlocation_on\nPhoenix\n\nvisibility\nmore_vert\nMyScoutee · Rejected",
+      "samePopup": true,
+      "notifications": "notifications_active\n13",
+      "palette": "app-menu__trigger motion-static app-menu__trigger--layout-pill app-menu__palette--red"
+    },
+    "request-delay": {
+      "url": "http://localhost/api/navigator/contacts/eb1ca0b761885bb0763e2929/chat-access",
+      "during": {
+        "label": "MyScoutee · Rejected",
+        "disabled": true,
+        "dialog": "Would you like to request direct chat access?\n\nRequest permission to chat directly with this contact on MyScoutee?\n\nCancel\nhourglass_empty\nWorking..."
+      },
+      "timedOut": {
+        "label": "MyScoutee · Rejected",
+        "disabled": true,
+        "dialog": "Would you like to request direct chat access?\n\nRequest permission to chat directly with this contact on MyScoutee?\n\nCancel\nhourglass_empty\nWorking..."
+      },
+      "retry": null,
+      "release": "released",
+      "after": {
+        "label": "MyScoutee · Awaiting approval",
+        "disabled": false,
+        "dialog": ""
+      }
+    },
+    "sender-denials": {
+      "actor": "af0436815ab38f4864dd1e24",
+      "results": [
+        {
+          "name": "requester-approve",
+          "status": 403
+        },
+        {
+          "name": "requester-reject",
+          "status": 403
+        },
+        {
+          "name": "duplicate-request",
+          "status": 200
+        },
+        {
+          "name": "foreign-workspace",
+          "status": 404
+        },
+        {
+          "name": "unapproved-chat",
+          "status": 403
+        }
+      ],
+      "unchanged": true,
+      "pendingCount": 0,
+      "record": {
+        "id": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929",
+        "requestedBy": "af0436815ab38f4864dd1e24",
+        "status": "pending",
+        "requestedAtIso": "2026-09-27T04:17:35.401403402Z",
+        "decidedAtIso": null,
+        "version": 2,
+        "contact": {
+          "id": "eb1ca0b761885bb0763e2929",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "name": "Milo Grant",
+          "initials": "MG",
+          "gender": "man",
+          "city": "Phoenix",
+          "avatarUrl": "/media/public?key=images/demo-profiles/eb1ca0b761885bb0763e2929/photo-01/large.webp",
+          "headline": "",
+          "createdAtIso": "2026-09-27T04:17:35.401403402Z",
+          "updatedAtIso": "2026-09-27T04:17:35.401403402Z",
+          "methods": []
+        }
+      }
+    },
+    "recipient-denials": {
+      "actor": "eb1ca0b761885bb0763e2929",
+      "results": [
+        {
+          "name": "stale-approve",
+          "status": 409
+        },
+        {
+          "name": "stale-reject",
+          "status": 409
+        },
+        {
+          "name": "unapproved-chat",
+          "status": 404
+        }
+      ],
+      "unchanged": true,
+      "pendingCount": 1,
+      "record": {
+        "id": "24:af0436815ab38f4864dd1e24eb1ca0b761885bb0763e2929",
+        "requestedBy": "af0436815ab38f4864dd1e24",
+        "status": "pending",
+        "requestedAtIso": "2026-09-27T04:17:35.401403402Z",
+        "decidedAtIso": null,
+        "version": 2,
+        "contact": {
+          "id": "af0436815ab38f4864dd1e24",
+          "userId": "af0436815ab38f4864dd1e24",
+          "name": "Alex Turner",
+          "initials": "AT",
+          "gender": "man",
+          "city": "Seattle",
+          "avatarUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp",
+          "headline": "",
+          "createdAtIso": "2026-09-27T04:17:35.401403402Z",
+          "updatedAtIso": "2026-09-27T04:17:35.401403402Z",
+          "methods": []
+        }
+      }
+    },
+    "approved": {
+      "samePopup": true,
+      "sameList": true,
+      "text": "Contacts\n\n1 saved contacts\n\nperson_add\nclose\nsearch\nmark_chat_unread\nRequests\nexpand_more\nNo contacts\nNo pending requests",
+      "side": "contacts\nContacts"
+    }
+  },
+  "remaining": [
+    "Multiple incoming requests/newest-first/search/later page",
+    "Scope changes during delayed commands",
+    "Final approved persistence and private-method isolation",
+    "Nested/mobile selection enforcement and remaining selector coverage",
+    "Fixture cleanup and closure"
+  ],
+  "note": "Preserve these proofs after compaction. Sender pending label remains Awaiting approval. Response-delay check proves busy confirmation and immediate post-success same-card update. Local and separate unit specs NOT RUN."
+}

@@ -6,7 +6,7 @@
   const checkpointId = "GROUP-LIFECYCLE-001";
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
-  if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
+  if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges", "prepare-contact-request-pages",
       "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
@@ -204,6 +204,54 @@
     Q.printObject({checkpointId, prepared: true, invitees: ids, productWrites: false});
     return;
   }
+  if (command === "prepare-contact-request-pages") {
+    if (!state.contactSnapshots || state.contactRequestPageIds
+        || !(state.savepoints || []).some(point => point.name === "after-contacts"))
+      Q.fail("Block12 contact snapshot and closed block11 boundary required, once only.");
+    const recipient = actors[0];
+    const existing = new Set(Q.collection("contactChatAccess")
+      .find({$or: [{leftUserId: recipient}, {rightUserId: recipient}]}).toArray()
+      .flatMap(record => [record.leftUserId, record.rightUserId]));
+    const candidates = Q.collection("users").find({workspaceGroupId: null, deletedAtIso: null,
+      profileStatus: {$ne: "deleted"}, userId: {$nin: state.contactActorIds}}).sort({userId: 1}).toArray()
+      .filter(user => /^[a-f0-9]{24}$/.test(user.userId) && !existing.has(user.userId)
+        && Number.isFinite(user.locationCoordinates?.latitude)
+        && Number.isFinite(user.locationCoordinates?.longitude)).slice(0, 11);
+    if (candidates.length !== 11) Q.fail("Eleven existing eligible Main profiles are required.");
+    const ids = candidates.map(user => user.userId);
+    const pairs = ids.map(id => { const pair = [id, recipient].sort(); return `${pair[0].length}:${pair.join("")}`; });
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {userId: {$in: ids}}},
+      {collection: "navigatorContacts", selector: {userId: {$in: ids}}},
+      {collection: "contactChatAccess", selector: {_id: {$in: pairs}}},
+      {collection: "userNotifications", selector: {sourceId: {$in: pairs}}},
+      {collection: "notificationOutbox", selector: {sourceId: {$in: pairs}}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {
+      contactSnapshots: {$each: retained}, contactActorIds: {$each: ids}
+    }, $set: {contactRequestPageIds: pairs}});
+    const owner = Q.collection("users").findOne({userId: recipient});
+    const now = Date.now();
+    candidates.forEach((user, index) => {
+      const requestedAtIso = new Date(now - (candidates.length - index) * 60000).toISOString();
+      const saved = Q.collection("navigatorContacts").findOne({userId: user.userId});
+      const contacts = [...(saved?.contacts || [])];
+      if (!contacts.some(contact => contact.userId === recipient)) contacts.push({
+        id: recipient, userId: recipient, name: owner.name, initials: owner.initials, gender: owner.gender,
+        city: owner.city, avatarUrl: owner.images?.[0] || "", headline: "", methods: [],
+        createdAtIso: requestedAtIso, updatedAtIso: requestedAtIso
+      });
+      Q.collection("navigatorContacts").updateOne({userId: user.userId}, {$set: {contacts}}, {upsert: true});
+      Q.collection("users").updateOne({userId: user.userId}, {$set: {contacts: contacts.length}});
+      const [leftUserId, rightUserId] = [user.userId, recipient].sort();
+      Q.collection("contactChatAccess").insertOne({_id: pairs[index], leftUserId, rightUserId,
+        requestedBy: user.userId, status: "pending", requestedAtIso, decidedAtIso: null, version: NumberLong("0")});
+    });
+    Q.collection("users").updateOne({userId: recipient}, {$inc: {contactRequestsPending: ids.length}});
+    Q.printObject({checkpointId, prepared: true, purpose: "Block12 pagination prerequisites only; no request/decision/notification PASS",
+      expectedNewestFirst: [...candidates].reverse().map(user => ({userId: user.userId, name: user.name})), count: ids.length});
+    return;
+  }
   if (command === "restore-contacts") {
     if (!state.contactSnapshots) Q.fail("No contacts boundary to restore.");
     const retained = [...state.contactSnapshots];
@@ -226,7 +274,7 @@
         Q.fail(`${snapshot.collection} contact restoration differs; retain snapshots.`);
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
-      contactSnapshots: "", contactChatId: "", contactActorIds: "", contactInviteesPrepared: ""
+      contactSnapshots: "", contactChatId: "", contactActorIds: "", contactInviteesPrepared: "", contactRequestPageIds: ""
     }});
     Q.printObject({checkpointId, contactsRestored: true});
     return;
