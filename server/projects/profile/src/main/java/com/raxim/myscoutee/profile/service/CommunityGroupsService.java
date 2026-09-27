@@ -272,6 +272,30 @@ public class CommunityGroupsService {
                 acceptingActor.getUserId(), actorUserId, "accept", null));
         groupProfiles.activate(recipient, invite.eventId());
     }
+    /** A validated event sharing link also admits its recipient to the event workspace. */
+    synchronized Users claimEventInvite(String groupId, String inviterProfileId, String accountId) {
+        var inviter = users.findByUserId(inviterProfileId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var recipient = users.findByUserId(accountId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var group = groups.findById(groupId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
+        var inviterMembership = membership(groupId, inviter.getAccountUserId());
+        if (!groupId.equals(inviter.getWorkspaceGroupId()) || inviterMembership == null
+                || !"accepted".equals(inviterMembership.getStatus()) || recipient.getWorkspaceGroupId() != null
+                || group.deleted() || group.awaitingOwner() || !group.moderationVisible() || !group.policy().workspace())
+            throw error(HttpStatus.FORBIDDEN);
+        var member = membership(groupId, accountId);
+        if (member != null && ("blocked".equals(member.getStatus())
+                || "pending".equals(member.getStatus()) && "restore".equals(member.getCommunityAction())))
+            throw error(HttpStatus.FORBIDDEN);
+        if (member == null || !"accepted".equals(member.getStatus())) {
+            boolean wasPending = member != null && "pending".equals(member.getStatus());
+            memberships.save(newMember(group, accountId, "Member", "pending", "invite", inviter.getAccountUserId()));
+            if (!wasPending) counters.applyCommunityMemberDelta(groupId, 1);
+            action(recipient, new ActivityMemberActionRequestDto(new ActivityMemberOwnerRefDto(OWNER_TYPE, groupId),
+                    accountId, accountId, "accept", null));
+        }
+        return groupProfiles.activate(recipient, groupId);
+    }
+
     public synchronized ActivityMemberActionResponseDto action(Users actor, ActivityMemberActionRequestDto request) {
         String id = request.owner().ownerId(); var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         var target = membership(id, request.targetUserId());

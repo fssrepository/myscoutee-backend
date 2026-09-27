@@ -31,6 +31,16 @@ public class FirebaseAuthenticationToken extends AbstractAuthenticationToken {
         return credentials;
     }
 
+    /** Rebind the authenticated account to a profile already authorized by the caller. */
+    public static FirebaseAuthenticationToken forProfile(org.springframework.security.core.Authentication original,
+            com.raxim.myscoutee.profile.data.document.Users profile) {
+        if (!(original.getPrincipal() instanceof com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal account))
+            throw new org.springframework.security.authentication.InsufficientAuthenticationException("Account required");
+        var principal = new com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal(profile.getUserId(), account.getEmail(),
+                original.getAuthorities().stream().map(a -> a.getAuthority()).toList(), profile, account.isEmailVerified());
+        return new FirebaseAuthenticationToken(principal, original.getCredentials(), principal.getAuthorities());
+    }
+
     @Override
     public Object getPrincipal() {
         return principal;

@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-sharing", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -105,6 +105,34 @@
     Q.printObject({checkpointId, prepared: true, sharingGroupId, sharingEventId, sharingAssetId, outcomesSeeded: false});
     return;
   }
+  if (command === "prepare-sharing-group-event") {
+    if (!state.sharingSnapshots || state.sharingGroupEventPrepared) Q.fail("Sharing baseline required; group event must only be prepared once.");
+    const eventId = "f02709270000000000000083";
+    const owner = Q.collection("users").findOne({workspaceGroupId: sharingGroupId, accountUserId: actors[0]});
+    const source = Q.collection("events").findOne({sourceId: sharingEventId, ownerUserId: actors[0]});
+    const member = Q.collection("activityMembers").findOne({ownerType: "event", ownerId: sharingEventId, userId: actors[0]});
+    if (!owner || !source || !member || Q.collection("events").countDocuments({sourceId: eventId})) Q.fail("Group-event prerequisite missing or occupied.");
+    const retained = Q.snapshotSpecs([
+      {collection: "events", selector: {sourceId: eventId}},
+      {collection: "activityMembers", selector: {ownerType: "event", ownerId: eventId}},
+      {collection: "integrationParticipantInvites", selector: {eventId}},
+      {collection: "affiliateLinks", selector: {userId: owner.userId}},
+      {collection: "affiliatePartners", selector: {userId: owner.userId}},
+      {collection: "userNotifications", selector: {sourceId: eventId}},
+      {collection: "notificationOutbox", selector: {entityId: eventId}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {sharingSnapshots: {$each: retained}}, $set: {sharingGroupEventPrepared: true}});
+    const now = Q.nowIso();
+    Q.collection("events").insertOne({...source, _id: ObjectId(eventId), sourceId: eventId, syncKey: eventId,
+      ownerUserId: owner.userId, creatorUserId: owner.userId, admins: [owner.userId], workspaceGroupId: sharingGroupId,
+      title: "QA Workspace Link Event", isAdmin: true, acceptedMembers: 1, pendingMembers: 0,
+      acceptedMemberUserIds: [owner.userId], pendingMemberUserIds: [], activity: 0, unread: 0,
+      createdDate: now, updatedDate: now, createdUser: owner.userId, updatedUser: owner.userId});
+    Q.collection("activityMembers").insertOne({...member, _id: `event:${eventId}:${owner.userId}`, syncKey: `event:${eventId}:${owner.userId}`,
+      ownerId: eventId, userId: owner.userId, actionAtIso: now, updatedDate: now});
+    Q.printObject({checkpointId, groupId: sharingGroupId, eventId, prepared: true, recipientMembershipSeeded: false});
+    return;
+  }
   if (command === "reset-sharing-failed-event-claim") {
     if (!state.sharingSnapshots) Q.fail("Sharing baseline required.");
     const event = Q.collection("events").findOne({sourceId: sharingEventId});
@@ -168,7 +196,7 @@
   if (command === "restore-sharing") {
     if (!state.sharingSnapshots) Q.fail("No sharing snapshot to restore.");
     Q.restoreSnapshots(state.sharingSnapshots);
-    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: ""}});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {sharingSnapshots: "", sharingRegistrants: "", sharingPreparedAtIso: "", sharingExistingAttributionPrepared: "", sharingFailedClaimEvidence: "", sharingGroupEventPrepared: ""}});
     Q.printObject({checkpointId, sharingRestored: true});
     return;
   }

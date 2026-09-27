@@ -289,12 +289,14 @@ has no inherited PASS from the earlier Event/Asset/Chat checkpoints.
 
 ## 8. External sharing links and admission
 
-1. Open Share from a group/event/asset card. There is one sharing entry, with
+1. Open Share from a group/event card. There is one sharing entry, with
    the common share icon and contextual teal color. It opens the **external
    link popup**, not the former raw-token confirmation dialog or a second
    legacy copy menu. Compare its read-only link field, Copy icon, dimensions,
    spacing and copied checkmark directly with Profile → Affiliate, in HU/EN
    and on desktop/mobile. Copy and reopen the complete URL, not a raw token.
+   Asset cards have no external Share-link menu entry; Assets are selected
+   with checkmarks and shared inside chat through the existing basket flow.
 2. Follow an external group link while signed out, register and finish the
    existing onboarding gates. Verify inviter attribution, accepted membership,
    one workspace profile and the selected active group. Reopen as that account:

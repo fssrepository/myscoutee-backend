@@ -105,8 +105,32 @@ public class IntegrationParticipantInviteService {
         var owner = community ? users.findByUserId(invite.ownerUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)) : null;
         if (community) groups.requireAdmin(owner, invite.eventId());
         if (community) actor = groups.actor(actor).getUserId();
-        var event = community ? null : invite.reusable() ? sharedEventRecord(invite.eventId()) : requireOwnedEvent(invite.ownerUserId(), invite.eventId());
+        var event = community ? null : invite.reusable() ? sharedEventRecord(invite) : requireOwnedEvent(invite.ownerUserId(), invite.eventId());
         boolean invitationAvailable = community || !hasEnded(event);
+        if (!community && event.getWorkspaceGroupId() != null && invitationAvailable) {
+            var account = users.findByUserId(actor).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+            String accountId = account.getAccountUserId() == null ? account.getUserId() : account.getAccountUserId();
+            // Bind API participant claims to the group profile, while rejecting another
+            // account's already-bound token before admitting anyone to the group.
+            if (invite.claimedUserId() != null && users.findByWorkspaceGroupIdAndAccountUserId(event.getWorkspaceGroupId(), accountId)
+                    .filter(profile -> invite.claimedUserId().equals(profile.getUserId())).isEmpty())
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
+            var original = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (original == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            var recipient = groups.claimEventInvite(event.getWorkspaceGroupId(), invite.ownerUserId(), accountId);
+            try {
+                org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                        com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationToken.forProfile(original, recipient));
+                return claimBoundInvite(recipient.getUserId(), invite, event, false, true);
+            } finally {
+                org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(original);
+            }
+        }
+        return claimBoundInvite(actor, invite, event, community, invitationAvailable);
+    }
+
+    private IntegrationParticipantClaimDto claimBoundInvite(String actor, IntegrationParticipantInvite invite,
+            ActivityEvent event, boolean community, boolean invitationAvailable) {
         if (!community && !invite.reusable() && invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
         if (invite.claimedUserId() != null && !actor.equals(invite.claimedUserId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
@@ -193,9 +217,10 @@ public class IntegrationParticipantInviteService {
         return URI.create(endpoint.resolve()).resolve("/game") + "?" + affiliateQuery;
     }
 
-    private ActivityEvent sharedEventRecord(String eventId) {
-        return events.findBySourceId(eventId).stream()
-                .filter(event -> CommunityGroupProfilesService.allows(event.getWorkspaceGroupId()))
+    private ActivityEvent sharedEventRecord(IntegrationParticipantInvite invite) {
+        var inviter = users.findByUserId(invite.ownerUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return events.findBySourceId(invite.eventId()).stream()
+                .filter(event -> Objects.equals(inviter.getWorkspaceGroupId(), event.getWorkspaceGroupId()))
                 .filter(event -> !Boolean.TRUE.equals(event.getIsTrashed()))
                 .min(Comparator.comparing(event -> !Boolean.TRUE.equals(event.getIsAdmin())))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
