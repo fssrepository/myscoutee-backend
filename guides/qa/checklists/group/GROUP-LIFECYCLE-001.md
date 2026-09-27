@@ -481,23 +481,16 @@ dev HTTP outcomes independently, in HU/EN and at desktop/mobile widths.
    separate from the setup-permissions help above.
 2. Compare the canonical frontend-local and prod/dev/demo/e2e seed sources.
    Check fresh initialization and the supported update/import path in the
-   local/dev/e2e test environments. Configured production deployment checks
-   belong to DEPLOY-EXTERNAL-CONFIG-001; never reseed production as a QA shortcut. Both languages use common help revision v3. Keep local and HTTP
+   local/dev/e2e test environments. Both languages use common help revision v3. Keep local and HTTP
    execution results separate.
 3. Check that anonymous MCP reads the active HU/EN help and that private MCP
    discovery identifies the key's actual profile/group and authorized operations.
    Group keys must not advertise asset creation. Discovery must not probe write
    operations.
 
-Reuse the existing **INTEGRATION-API-001** evidence for API key generation,
-revocation, Asset/Event operations, callbacks and resource ownership. This Help
-checkpoint does not repeat that API journey. Detailed new MCP authorization,
-group asset rejection and locally testable connection-table checks belong to
-[INTEGRATION-API-GROUP-001, block 7](../integration/INTEGRATION-API-GROUP-001.md#7-mcp-discovery-help-and-client-packages--not-run).
-Record overlapping observations once and reference them from that checklist;
-an earlier API PASS does not imply an untested MCP/OAuth PASS. Personal remote
-OAuth and external client callbacks are deferred to
-[DEPLOY-EXTERNAL-CONFIG-001](../deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+Prepare the required identities, profile/group boundaries and UI-created keys
+inside this testcase's own versioned checkpoint. Record this run's help and
+discovery responses. Earlier runs or other testcases do not supply a PASS.
 
 ## 18. Back and close-button history
 
@@ -575,9 +568,6 @@ Demo admission (pre-registered profiles; run local and HTTP separately):
   success clears the sent sample.
   A different account must never send or clear that sample.
 
-Real Firebase registration/sign-in and externally configured provider checks are
-owned by [DEPLOY-EXTERNAL-CONFIG-001](../deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
-They are deferred separately and do not gate this Group checkpoint.
 
 ## 20. Stored location and optional tracking
 

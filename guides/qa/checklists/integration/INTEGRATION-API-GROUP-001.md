@@ -1,8 +1,7 @@
 # INTEGRATION-API-GROUP-001 — Group participant links
 
-Domain: API test. Reuse INTEGRATION-API-001's normal API-key/client and
-sign-in/registration path. This adds group coverage without reopening its
-closed event evidence or creating a separate invitation mechanism.
+Domain: API test. Independently execute the application's normal API-key/client
+and sign-in/registration paths from this testcase's own staged baseline.
 
 ## Baseline
 
@@ -45,8 +44,9 @@ registered identity. Use the actual registration mode for the fresh account.
 ## 3. Existing accounts and rejected claims
 
 For the demo existing-account branch, follow the invitation while signed out,
-then select its pre-registered recipient through the real demo selector. Run
-the complete entry checks in [Group Lifecycle block 19](../group/GROUP-LIFECYCLE-001.md#19-first-location-save-and-demo-admission).
+then select its pre-registered recipient through the real demo selector. Stage
+this testcase's own valid, missing and invalid saved-coordinate controls; verify
+consent, admission and first full profile load through that UI.
 The URL must survive Setup cancellation/retry and successful login. A failed
 entry must not claim the link or create membership/workspace/session records.
 After successful entry, verify the target group is active on the first profile
@@ -77,7 +77,7 @@ usable with browser GPS denied or outside supported countries.
     pending-invitation, payment/approval and ended-event rules remain intact;
     group auto-admission must not bypass Event acceptance or checkout.
 11. Verify the new group profile against Base and the second group using the
-    recorded private target IDs from GROUP-ISOLATION-001. No cross-workspace
+    private target IDs prepared and recorded in this testcase's own baseline. No cross-workspace
     access follows from possessing this group invitation.
 12. Revoke the QA API key and verify rejection. Reset only checkpoint-owned
     invitation mappings, accounts/profiles, memberships and groups, preserving
@@ -118,8 +118,8 @@ and not updates to any closed Affiliate/Event/API PASS evidence.
 
 ## 7. MCP discovery, help and client packages — NOT RUN
 
-These unexecuted additions belong to this NOT RUN case. Reuse UI-created keys
-and the group checkpoint's profile boundaries; do not reopen INTEGRATION-API-001.
+Prepare this testcase's own UI-created keys and profile boundaries. Execute
+these checks again from its versioned checkpoint, regardless of earlier coverage.
 
 - The authenticated connect response identifies the key's profile/group and
   authorized operations. Base/group keys produce the corresponding MCP discovery;
@@ -135,17 +135,11 @@ and the group checkpoint's profile boundaries; do not reopen INTEGRATION-API-001
   local and Mongo-backed help agree. Anonymous MCP help explains that no login or
   key is needed, and uses the current published revision.
 - Build separate unpublished OpenAI/Claude packages from the common plugin source.
-  Verify the original MyScoutee logo and shared skill, record package validation here. Installation in the
-  external client is deferred to the separate deployment QA. See `myscoutee-mcp/docs/QA.md` for the individual steps.
+  Verify the original MyScoutee logo and shared skill; record package validation here.
 
-External ChatGPT/Claude installation, personal remote OAuth, callbacks and
-OAuth-grant lifecycle checks are deferred to
-[DEPLOY-EXTERNAL-CONFIG-001](../deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
-They do not gate the local/dev API-key and connection-settings checks here.
 An independently verified API key must still work without an enrolled browser
 session; browser logout does not revoke it, while explicit key revocation does.
 
 - Two concurrent identities remain isolated. Profile switches during creation
   cannot expose the previous secret; create/revoke reconcile the table without
   reload. Local/demo persists settings only. API-key slots remain independent.
-  Full steps: `myscoutee-mcp/docs/QA.md`, still **NOT RUN**.

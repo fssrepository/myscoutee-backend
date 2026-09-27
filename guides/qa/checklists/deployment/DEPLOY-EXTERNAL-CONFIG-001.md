@@ -1,6 +1,6 @@
 # DEPLOY-EXTERNAL-CONFIG-001 — Externally configured authentication and integrations
 
-Domain: deployment integration. Deferred by the user from the Group campaign.
+Domain: deployment integration. This is an independent testcase.
 This checklist covers the existing checks requiring provider configuration or
 external client registration. Use an isolated configured test deployment and
 controlled accounts; it does not authorize changing a live production system.
@@ -15,9 +15,7 @@ Execution status and evidence belong in the QA ledger, not this checklist.
 - Reuse the existing fixture harness and browser launcher. Real authentication
   must use the normal UI; injected demo sessions cannot prove these checks.
 
-## 1. Firebase entry and location — DEPLOY-FIREBASE-LIFECYCLE-001
-
-Moved from GROUP-LIFECYCLE-00119.2; shared demo behavior remains in Group QA.
+## 1. Firebase entry and location
 
 1. Fresh Firebase registration/sign-in with no saved coordinate: request location
    through Setup, then complete onboarding. The scoped browser pending point
@@ -32,14 +30,11 @@ Moved from GROUP-LIFECYCLE-00119.2; shared demo behavior remains in Group QA.
    changing. Enter the app on that first attempt. Real logout/account/session
    change still discards stale reads; failed group switch unlocks the selector.
 
-- Retain the previously deferred EVENT-INV-002 assertion: using a verified
-  non-demo identity, reject an unauthorized direct/deep link to a pending
-  invitation's private actions/resources. Do not reopen its closed demo UI case.
+4. Using a verified non-demo identity, reject an unauthorized direct/deep link
+   to a pending invitation's private actions/resources. Prepare the private event,
+   pending recipient and unrelated account within this checkpoint.
 
 ## 2. Remote MCP and external clients
-
-Moved from INTEGRATION-API-GROUP-0017. Keep the existing local API-key,
-discovery, package validation and connection-table evidence separate.
 
 - Install the unpublished OpenAI/Claude packages in their actual external
   clients; local package validation alone does not prove installation.
@@ -52,19 +47,34 @@ discovery, package validation and connection-table evidence separate.
   API key/OAuth grant. Browser logout does not revoke the key; explicit key/grant
   revocation does. Ordinary app requests still require their session.
 
-Use `myscoutee-mcp/docs/QA.md` for the detailed external-client steps. Reuse
-existing configuration and auth QA evidence where it proves the same assertion.
+Record client installation, callbacks, grants and revocation from this run.
+Previous configuration or authentication evidence cannot close these checks.
 
 ## 3. Configured deployment help initialization/update
 
-Moved from GROUP-LIFECYCLE-00117: on the separately configured deployment,
+On this testcase's separately configured deployment,
 verify fresh initialization and the supported help update/import path for both
 languages against the canonical help revision. Never reseed live production as
 a QA shortcut. Local/dev/e2e and source comparisons remain in Group QA.
 
-## Scope boundary
+## Restaging, checkpoints and cleanup
 
-Configuration-dependent checks are deferred here; this is not a PASS or a
-replacement for real provider evidence. Local/demo and simulator-backed payment,
-API-key, help and data-isolation checks remain in the active Group campaign.
-Earlier closed provider cases retain their recorded results and limitations.
+- Start with an isolated configured test deployment and a snapshot of its tested
+  configuration revisions. Prepare fresh and existing identity actors, two
+  disjoint groups/profile owners, a private pending invitation and unrelated
+  denial actor. Record their IDs in this testcase's fixture manifest.
+- Register the fixture and actor/browser configuration under this testcase's
+  own checkpoint ID in the existing versioned harness and launcher. Verify the
+  baseline before starting; no retained state from another testcase is assumed.
+- Capture separate entry checkpoints for Firebase, remote MCP and help setup.
+  Restage the applicable checkpoint before retrying a failed branch. Snapshot
+  provider settings, test identities, invitation/membership records and grants
+  within the exact cleanup scope; never reset unrelated deployment data.
+- For fresh-install help checks, use a separately initialized disposable
+  deployment. For update checks, stage the recorded prior revision and execute
+  the actual supported update path, then verify HU/EN and MCP reads.
+- After execution, revoke this run's keys/grants, unregister its test clients
+  where applicable, clean up its test accounts and restore captured configuration
+  and database state. Independently verify cleanup before closing the testcase.
+- Earlier successful combinations are diagnostic context only. Every assertion
+  here needs this testcase's own staged execution and persisted evidence.

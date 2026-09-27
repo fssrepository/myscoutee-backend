@@ -1,0 +1,435 @@
+{
+  "checkpoint": "GROUP-LIFECYCLE-001",
+  "block": 20,
+  "date": "2026-09-27",
+  "httpStatus": "PASS/CLOSED",
+  "localStatus": "NOT RUN",
+  "method": "Real UI actions and native CDP geolocation, existing managed browser; no application API substitution.",
+  "toggleOff": {
+    "before": {
+      "selected": true,
+      "tracking": null,
+      "watching": true,
+      "point": {
+        "latitude": 47.5147,
+        "longitude": 19.0354
+      },
+      "updateDisabled": false
+    },
+    "offBeforeSave": {
+      "selected": false,
+      "tracking": null,
+      "watching": true,
+      "point": {
+        "latitude": 47.5147,
+        "longitude": 19.0354
+      },
+      "updateDisabled": false
+    },
+    "saved": {
+      "selected": false,
+      "tracking": "false",
+      "watching": false,
+      "point": {
+        "latitude": 47.5147,
+        "longitude": 19.0354
+      },
+      "updateDisabled": false
+    },
+    "reopened": {
+      "selected": false,
+      "tracking": "false",
+      "watching": false,
+      "point": {
+        "latitude": 47.5147,
+        "longitude": 19.0354
+      },
+      "updateDisabled": false
+    }
+  },
+  "movement": {
+    "events": [
+      {
+        "phase": "above5km",
+        "kind": "write",
+        "path": "/api/auth/me/profile",
+        "userId": "b0971e779dbdb71f9327eabb",
+        "point": {
+          "latitude": 47.5947,
+          "longitude": 19.0354
+        }
+      },
+      {
+        "phase": "above5km",
+        "kind": "response",
+        "status": 200
+      },
+      {
+        "phase": "unsupported",
+        "kind": "write",
+        "path": "/api/auth/me/profile",
+        "userId": "b0971e779dbdb71f9327eabb",
+        "point": {
+          "latitude": 48.8566,
+          "longitude": 2.3522
+        }
+      },
+      {
+        "phase": "unsupported",
+        "kind": "response",
+        "status": 403
+      },
+      {
+        "phase": "eligibleAgain",
+        "kind": "write",
+        "path": "/api/auth/me/profile",
+        "userId": "b0971e779dbdb71f9327eabb",
+        "point": {
+          "latitude": 47.6747,
+          "longitude": 19.0354
+        }
+      },
+      {
+        "phase": "eligibleAgain",
+        "kind": "response",
+        "status": 200
+      }
+    ],
+    "samples": [
+      {
+        "phase": "enable",
+        "state": {
+          "path": "/game",
+          "sessionPresent": true,
+          "actor": "b0971e779dbdb71f9327eabb",
+          "tracking": true,
+          "watching": true,
+          "point": {
+            "latitude": 47.5147,
+            "longitude": 19.0354
+          },
+          "baseline": {
+            "latitude": 47.5147,
+            "longitude": 19.0354
+          },
+          "cache": null,
+          "setup": true,
+          "banner": null
+        }
+      },
+      {
+        "phase": "below5km",
+        "input": {
+          "latitude": 47.5247,
+          "longitude": 19.0354
+        },
+        "state": {
+          "path": "/game",
+          "sessionPresent": true,
+          "actor": "b0971e779dbdb71f9327eabb",
+          "tracking": true,
+          "watching": true,
+          "point": {
+            "latitude": 47.5147,
+            "longitude": 19.0354
+          },
+          "baseline": {
+            "latitude": 47.5147,
+            "longitude": 19.0354
+          },
+          "cache": null,
+          "setup": false,
+          "banner": null
+        },
+        "events": []
+      },
+      {
+        "phase": "above5km",
+        "input": {
+          "latitude": 47.5947,
+          "longitude": 19.0354
+        },
+        "state": {
+          "path": "/game",
+          "sessionPresent": true,
+          "actor": "b0971e779dbdb71f9327eabb",
+          "tracking": true,
+          "watching": true,
+          "point": {
+            "latitude": 47.5947,
+            "longitude": 19.0354
+          },
+          "baseline": {
+            "latitude": 47.5947,
+            "longitude": 19.0354
+          },
+          "cache": {
+            "latitude": 47.5947,
+            "longitude": 19.0354
+          },
+          "setup": false,
+          "banner": null
+        },
+        "events": [
+          {
+            "phase": "above5km",
+            "kind": "write",
+            "path": "/api/auth/me/profile",
+            "userId": "b0971e779dbdb71f9327eabb",
+            "point": {
+              "latitude": 47.5947,
+              "longitude": 19.0354
+            }
+          },
+          {
+            "phase": "above5km",
+            "kind": "response",
+            "status": 200
+          }
+        ]
+      },
+      {
+        "phase": "unsupported",
+        "input": {
+          "latitude": 48.8566,
+          "longitude": 2.3522
+        },
+        "state": {
+          "path": "/game",
+          "sessionPresent": true,
+          "actor": "b0971e779dbdb71f9327eabb",
+          "tracking": true,
+          "watching": true,
+          "point": {
+            "latitude": 47.5947,
+            "longitude": 19.0354
+          },
+          "baseline": {
+            "latitude": 47.5947,
+            "longitude": 19.0354
+          },
+          "cache": {
+            "latitude": 47.5947,
+            "longitude": 19.0354
+          },
+          "setup": false,
+          "banner": null
+        },
+        "events": [
+          {
+            "phase": "unsupported",
+            "kind": "write",
+            "path": "/api/auth/me/profile",
+            "userId": "b0971e779dbdb71f9327eabb",
+            "point": {
+              "latitude": 48.8566,
+              "longitude": 2.3522
+            }
+          },
+          {
+            "phase": "unsupported",
+            "kind": "response",
+            "status": 403
+          }
+        ]
+      },
+      {
+        "phase": "eligibleAgain",
+        "input": {
+          "latitude": 47.6747,
+          "longitude": 19.0354
+        },
+        "state": {
+          "path": "/game",
+          "sessionPresent": true,
+          "actor": "b0971e779dbdb71f9327eabb",
+          "tracking": true,
+          "watching": true,
+          "point": {
+            "latitude": 47.6747,
+            "longitude": 19.0354
+          },
+          "baseline": {
+            "latitude": 47.6747,
+            "longitude": 19.0354
+          },
+          "cache": {
+            "latitude": 47.6747,
+            "longitude": 19.0354
+          },
+          "setup": false,
+          "banner": null
+        },
+        "events": [
+          {
+            "phase": "eligibleAgain",
+            "kind": "write",
+            "path": "/api/auth/me/profile",
+            "userId": "b0971e779dbdb71f9327eabb",
+            "point": {
+              "latitude": 47.6747,
+              "longitude": 19.0354
+            }
+          },
+          {
+            "phase": "eligibleAgain",
+            "kind": "response",
+            "status": 200
+          }
+        ]
+      },
+      {
+        "phase": "nativeRevoked",
+        "state": {
+          "path": "/game",
+          "sessionPresent": true,
+          "actor": "b0971e779dbdb71f9327eabb",
+          "tracking": true,
+          "watching": false,
+          "point": {
+            "latitude": 47.6747,
+            "longitude": 19.0354
+          },
+          "baseline": {
+            "latitude": 47.6747,
+            "longitude": 19.0354
+          },
+          "cache": {
+            "latitude": 47.6747,
+            "longitude": 19.0354
+          },
+          "setup": false,
+          "banner": null
+        }
+      }
+    ]
+  },
+  "persisted": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "userId": "b0971e779dbdb71f9327eabb",
+    "name": "Zoe Turner",
+    "coordinates": {
+      "latitude": 47.6747,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu",
+    "activeSessions": 0,
+    "prepared": true,
+    "invitation": null
+  },
+  "reloadWithDeniedGPS": {
+    "before": {
+      "path": "/game",
+      "activeUser": "b0971e779dbdb71f9327eabb",
+      "sessionHash": "f53741a9",
+      "pending": [],
+      "point": {
+        "latitude": 47.6747,
+        "longitude": 19.0354
+      },
+      "load": "success",
+      "workspace": "public\nMain profile\nexpand_more\n99+",
+      "banner": null
+    },
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/api/auth/me",
+        "latitude": null,
+        "longitude": null,
+        "groupId": null,
+        "locationHeaders": []
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/me/profile-ext",
+        "latitude": null,
+        "longitude": null,
+        "groupId": null,
+        "locationHeaders": []
+      },
+      {
+        "method": "POST",
+        "path": "/api/auth/me/realtime/long-poll",
+        "latitude": null,
+        "longitude": null,
+        "groupId": null,
+        "locationHeaders": []
+      }
+    ],
+    "responses": [
+      {
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/me/profile-ext",
+        "status": 200
+      },
+      {
+        "path": "/api/auth/me/realtime/long-poll",
+        "status": 200
+      }
+    ],
+    "events": [
+      {
+        "kind": "request",
+        "path": "/api/auth/me",
+        "groupId": null
+      },
+      {
+        "kind": "response",
+        "path": "/api/auth/me",
+        "status": 200
+      },
+      {
+        "kind": "request",
+        "path": "/api/auth/me/profile-ext",
+        "groupId": null
+      },
+      {
+        "kind": "request",
+        "path": "/api/auth/me/realtime/long-poll",
+        "groupId": null
+      },
+      {
+        "kind": "response",
+        "path": "/api/auth/me/profile-ext",
+        "status": 200
+      },
+      {
+        "kind": "response",
+        "path": "/api/auth/me/realtime/long-poll",
+        "status": 200
+      }
+    ],
+    "after": {
+      "path": "/game",
+      "activeUser": "b0971e779dbdb71f9327eabb",
+      "sessionHash": "f53741a9",
+      "pending": [],
+      "point": {
+        "latitude": 47.6747,
+        "longitude": 19.0354
+      },
+      "load": "success",
+      "workspace": "public\nMain profile\nexpand_more\n99+",
+      "banner": null
+    }
+  },
+  "cleanup": {
+    "checkpointId": "GROUP-LIFECYCLE-001",
+    "userId": "b0971e779dbdb71f9327eabb",
+    "name": "Zoe Turner",
+    "coordinates": {
+      "latitude": 47.5147,
+      "longitude": 19.0354
+    },
+    "partitionKey": "country:hu",
+    "activeSessions": 0,
+    "prepared": false,
+    "invitation": null
+  },
+  "landing": "Normal logout returned /entry with no session keys; denied permission retained. Shared watcher lifecycle source supports no repeated acquisition on anonymous landing.",
+  "next": 21
+}

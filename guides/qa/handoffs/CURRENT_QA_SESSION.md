@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP block20 active;19 HTTP PASS/CLOSED after user moved Firebase/live configuration to separate deferred QA. HTTP16/48 closed; Lifecycle16/29 (1–13,17–19). Blocks14–16 partial retained.
-fixture_phase: after-contact-controls retained; older contactSnapshots/badgeSnapshots untouched.19 invitation/location controls exactly restored and QA key revoked.20 tracking-only Zoe snapshot retained, original point47.5147/19.0354 unchanged. One PENDING-BLOCK19 managed window signed out on /entry; pending values consumed by real19.2 logins.
+substage: HTTP block21 active;20 HTTP PASS/CLOSED. HTTP17/48 closed; Lifecycle17/29 (1–13,17–20). Blocks14–16 partial retained.
+fixture_phase: after-contact-controls retained; older contactSnapshots/badgeSnapshots untouched.19 and20 location/invitation controls exactly restored; QA key revoked. One PENDING-BLOCK19 managed window signed out on /entry.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
-execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign; authorization remains active. User asks to keep moving and report the current numbered step.
-next_action: Execute20 stored point/optional tracking (off/save/reopen/on, <5km/no write, >=5km/save, unsupported point rejection then valid movement). Use retained Zoe snapshot and same single managed browser. Do not replay19. Firebase/external-client configured steps moved to DEPLOY-EXTERNAL-CONFIG-001 (DEFERRED/NOT RUN). Local remains separate.
+execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign; authorization remains active. User asks to keep moving and report the current numbered step. Testcases are independent: transferred scope closes in the source; target requires its own restage/checkpoints/run/cleanup, never another case's PASS.
+next_action: Execute21 mobile sheet close controls via ordinary UI in the same managed browser: seven audited surfaces plus profile multiselect, price scope and optional checkout card. HU/EN narrow mobile, desktop X absence. Do not replay19/20. External configuration deferred to DEPLOY-EXTERNAL-CONFIG-001; Local separate. User2026-09-27: finish the current testcase, then before starting the next testcase audit all NOT RUN checks for real deployment/external configuration requirements and move those checks to DEPLOY-EXTERNAL-CONFIG-001.
 savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: HTTP Lifecycle20–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
+queue: HTTP Lifecycle21–29 with14–16 partial retained; Local Lifecycle1–29, Group Isolation1–12 and Integration API Group1–7 remain separate.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
-runtime: Existing frontend-sync owns builds; avatar-state/fallback/Setup fixes built16:17:40Z. Backend first-location selector cache eviction classes PASS and restart18:19:51 local. Backend/Mongo healthy. One versioned ENTRY-BLOCK19 browser. No separate test/build process.
+runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: Block19 HTTP PASS/CLOSED in user-approved demo scope;53/53 seed points and two-account unsupported pending-sample request/acknowledgement verified. See block19-entry-20260927.json.
+last_completed: Block20 HTTP PASS/CLOSED; native tracking threshold/rejection/recovery, denied-GPS same-session reload, independent Mongo and exact fixture restore. See block20-tracking-20260927.json.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

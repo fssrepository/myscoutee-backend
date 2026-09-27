@@ -11341,3 +11341,8 @@ section1. Group19 continues with demo admission/pending coordinates; it is not
 blocked by Firebase. No earlier PASS is reopened or external PASS inferred.
 
 2026-09-27 Group19 HTTP PASS/CLOSED after user scope separation. Real selector pending-sample controls proved stored-point admission, unsupported pending delivery only through profile-ext, successful saved-point response and account-scoped acknowledgement. HTTP16/48, Lifecycle16/29 closed;20 tracking active. Local remains NOT RUN. Older partial fixtures preserved.
+
+
+2026-09-27 block20 HTTP PASS/CLOSED: stored point with denied GPS and same-session reload; tracking OFF/save/reopen/ON; <5km zero writes, >=5km POST200; unsupported Paris POST403 retains accepted profile/cache/baseline/session and no popup; later eligible movement POST200. Independent Mongo point47.6747/19.0354 verified, normal logout then exact original47.5147/19.0354 restore, location snapshot removed. Evidence: GROUP-LIFECYCLE-001-block20-tracking-20260927.json. HTTP17/48 (35.42%), Lifecycle17/29 closed (1–13,17–20);21 active. Local NOT RUN; older contact/badge snapshots retained.
+
+User clarification 2026-09-27: testcases are independent closed execution units. Transferred checks are CLOSED BY SCOPE TRANSFER in the source, not pending dependencies. DEPLOY-EXTERNAL-CONFIG-001 requires its own fixture, restaging, entry checkpoints, execution and cleanup; prior/cross-case evidence cannot substitute. Transfer provenance stays in the ledger, not executable cross-case references. Audit the remaining NOT RUN cases only at the current testcase boundary, before advancing to another testcase.
