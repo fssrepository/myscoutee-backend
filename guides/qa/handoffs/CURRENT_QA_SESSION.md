@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP9/48 overall; Lifecycle9/29 closed/current block10. Local NOT RUN.
-fixture_phase: Main badge-writes-ready; after-chat-sharing immutable. cashHistorySnapshots active Alex/Milo; four UI receipts (12.50 deleted, 12.50 refunded, 3.25 refunded, 3.25 deleted). cashCheckoutIds controls101/102 prepared; Milo created basket101 through normal Book/Join, no payment submitted. Do not restore or replay closed blocks.
+substage: HTTP10/48 overall; Lifecycle10/29 closed/current block11. Local NOT RUN.
+fixture_phase: Main badge-writes-ready; cash fixture restored exactly, all temporary cash/card scopes restored. after-chat-sharing verified; immutable after-cash-history captured. No temporary contact fixture yet; all managed Group cash/admin windows closed.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue block10. Alex base actor0 and Milo CASH actor0 histories open, latest bundle. Cash refund/notifications/peer polling and lost DELETE response retry PASS (block10-cash JSON); short history insertion retains prior rows. Remaining normal cash checkout (requires simulator Cash Only through Admin UI), noncash/refund affiliate controls, negative authority and create replay after deletion. Checkout config/outcome cleanup must be captured in versioned harness before payment. Large-window/cursor specs added NOT RUN. Existing watchers only.
-savepoint: community-group after-chat-sharing captured 2026-09-27T02:06:58.260Z, resume10; exact prior after-membership-trash verification PASS. Earlier savepoints immutable.
-queue: HTTP Lifecycle10–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7. Keep unavailable external/native prerequisites in counted later blocks.
+next_action: Start block11 Contacts and existing chat popup. Load only checklist section11, prepare versioned snapshot scopes before UI writes, launch only necessary actors. Blocks1–10 closed; do not replay cash. Cash-only booking versus manual receipt distinction resolved from actual UI; no user question pending.
+savepoint: community-group after-cash-history captured 2026-09-27T03:24:57.100Z, resume11; exact after-chat-sharing verification PASS. Earlier savepoints immutable.
+queue: HTTP Lifecycle11–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block9 PASS/CLOSED; campaign remains IN PROGRESS. Added overlay unit specs and live Firebase NOT RUN.
+last_completed: GROUP-LIFECYCLE-001 HTTP block10 PASS/CLOSED, evidence block10-cash JSON pointStatus/cleanup. After compaction continue block11 only. Unit specs remain NOT RUN separately from existing watcher.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

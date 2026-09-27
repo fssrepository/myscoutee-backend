@@ -5,9 +5,10 @@
 (async () => {
   const recipient = 'af0436815ab38f4864dd1e24';
   const payer = 'eb1ca0b761885bb0763e2929';
+  const unrelated = 'admin-demo-ava';
   const session = JSON.parse(localStorage.getItem('myscoutee.http.session.v1') || 'null');
   if (location.hostname !== 'localhost' || session?.kind !== 'demo'
-      || ![recipient, payer].includes(session.userId) || !session.sessionId) {
+      || ![recipient, payer, unrelated].includes(session.userId) || !session.sessionId) {
     throw Error('The configured Group cash QA login is required');
   }
   const headers = { 'Content-Type': 'application/json', 'X-App-Session-Kind': 'demo',
@@ -21,7 +22,7 @@
   const before = await read();
   const receipt = before.items.find(item => item.fulfillmentKind === 'cash-receipt'
     && item.auditKind === 'payment' && item.note === 'QA block 10 cash live refund');
-  if (!receipt) throw Error('Create the configured receipt through the UI first');
+  if (!receipt && session.userId !== unrelated) throw Error('Create the configured receipt through the UI first');
   const results = [];
   const deny = async (name, method, route, expected, body) => {
     const response = await fetch(`${route}?userId=${session.userId}`, {
@@ -31,7 +32,13 @@
     if (response.status !== expected) throw Error(`${name}: expected ${expected}, got ${response.status}; retain fixture for diagnosis`);
   };
   const invalidReceipt = { requestId: crypto.randomUUID(), payerUserId: payer, amount: 1, currency: 'EUR', note: 'QA denied request' };
-  if (session.userId === recipient) {
+  if (session.userId === unrelated) {
+    // Existing, UI-created primary receipt, independently verified in
+    // GROUP-LIFECYCLE-001-block10-cash-20260927.json validAttributionReplay.
+    // A future fixture reset requires a new verified reference, never a made-up ID.
+    const retainedReceiptId = 'cash:af0436815ab38f4864dd1e24:3358188f-eb6b-4576-8cd2-10186aa4a4a9';
+    await deny('unrelated-user-cannot-delete-recipient-receipt', 'DELETE', `${path}/cash/${encodeURIComponent(retainedReceiptId)}`, 404);
+  } else if (session.userId === recipient) {
     await deny('self-payment', 'POST', `${path}/cash`, 400, { ...invalidReceipt, payerUserId: recipient });
     await deny('zero-amount', 'POST', `${path}/cash`, 400, { ...invalidReceipt, amount: 0 });
     await deny('negative-amount', 'POST', `${path}/cash`, 400, { ...invalidReceipt, amount: -1 });
@@ -57,5 +64,5 @@
   const state = page => JSON.stringify({ items: page.items, total: page.total,
     income: page.incomeTotals, spending: page.spendingTotals, pending: page.pendingRefundCount });
   if (state(before) !== state(after)) throw Error('A rejected request changed payment history or totals');
-  return { actor: session.userId === recipient ? 'recipient' : 'payer', results, historyAndTotalsUnchanged: true };
+  return { actor: session.userId === unrelated ? 'unrelated' : session.userId === recipient ? 'recipient' : 'payer', results, historyAndTotalsUnchanged: true };
 })()

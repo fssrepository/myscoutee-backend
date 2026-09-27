@@ -7,7 +7,7 @@
   Q.assertDeploymentSafety();
   const command = Q.text(process.env.MANUAL_QA_COMMAND);
   if (!["status", "verify-lists", "prepare-badges", "prepare-join", "restore-badges",
-      "capture", "restore", "verify-savepoint", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
+      "capture", "restore", "verify-savepoint", "prepare-contacts", "prepare-contact-invitees", "restore-contacts", "prepare-chat-sharing", "prepare-chat-sharing-context", "restore-chat-sharing", "prepare-cash-history", "prepare-cash-checkout", "prepare-cash-payment-methods", "restore-cash-history", "prepare-sharing", "prepare-sharing-group-event", "repair-sharing-identifiers", "reset-sharing-failed-event-claim", "prepare-sharing-attribution", "track-sharing-registration", "sharing-registrants", "restore-sharing", "prepare-list-pagination", "restore-list-pagination",
       "prepare-member-invitation", "restore-member-invitation", "prepare-admin-lifecycle", "prepare-admin-moderation", "prepare-admin-feed-event", "prepare-admin-previews", "prepare-admin-base-chat-read", "prepare-admin-base-chat-message", "prepare-admin-base-feed", "restore-admin-lifecycle",
       "prepare-invitation", "prepare-hidden-invitation", "restore-invitation", "prepare-editor", "restore-editor", "prepare-creation", "restore-creation"].includes(command)
       || Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) {
@@ -151,6 +151,67 @@
     }
     Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {chatSharingSnapshots: "", chatSharingChatId: ""}});
     Q.printObject({checkpointId, chatSharingRestored: true, generatedAssetTokensRemoved: cleanupTokenIds.length, verifiedScopes: retained.length});
+    return;
+  }
+  if (command === "prepare-contacts") {
+    if (state.contactSnapshots || state.cashHistorySnapshots || state.chatSharingSnapshots || state.sharingSnapshots)
+      Q.fail("Restore previous temporary controls before contacts preparation.");
+    if (!(state.savepoints || []).some(point => point.name === "after-cash-history"))
+      Q.fail("The closed cash boundary is required.");
+    const participantIds = [actors[0], "eb1ca0b761885bb0763e2929", actors[1], actors[2]];
+    const users = Q.collection("users").find({userId: {$in: participantIds}}).toArray();
+    if (users.length !== 4 || users.some(user => user.workspaceGroupId
+        || !Number.isFinite(user.locationCoordinates?.latitude) || !Number.isFinite(user.locationCoordinates?.longitude)))
+      Q.fail("Four existing Main profiles with stored locations are required.");
+    const chatId = "c-contact-" + Buffer.from([actors[0], participantIds[1]].sort().join("\n")).toString("base64url");
+    const related = {$or: [{sourceId: chatId}, {entityId: chatId}, {"payload.chatId": chatId},
+      {recipientUserId: {$in: participantIds}, kind: {$regex: "^contact-chat-"}}]};
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {userId: {$in: participantIds}}},
+      {collection: "navigatorContacts", selector: {userId: {$in: participantIds}}},
+      {collection: "contactChatAccess", selector: {leftUserId: {$in: participantIds}, rightUserId: {$in: participantIds}}},
+      {collection: "chats", selector: {chatId}},
+      {collection: "chatMessages", selector: {chatId}},
+      {collection: "userNotifications", selector: related},
+      {collection: "notificationOutbox", selector: related},
+      {collection: "shareTokens", selector: {ownerUserId: {$in: participantIds}}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      contactSnapshots: retained, contactChatId: chatId, contactActorIds: participantIds, resumeBlock: 11
+    }});
+    Q.printObject({checkpointId, chatId, prepared: true, productWrites: false, actors: participantIds});
+    return;
+  }
+  if (command === "prepare-contact-invitees") {
+    if (!state.contactSnapshots || state.contactInviteesPrepared) Q.fail("Prepare contact baseline once before invitees.");
+    // Existing contacts shown by the normal member picker; snapshot only, no contact outcome seeded.
+    const ids = ["f6f22ba0a6f14cfcf4585d47", "9184901a15076d32ea8b626f"];
+    const users = Q.collection("users").find({userId: {$in: ids}}).toArray();
+    if (users.length !== 2 || users.some(u => !Number.isFinite(u.locationCoordinates?.latitude)
+        || !Number.isFinite(u.locationCoordinates?.longitude))) Q.fail("Existing located invitees required.");
+    const retained = Q.snapshotSpecs([
+      {collection: "users", selector: {userId: {$in: ids}}},
+      {collection: "navigatorContacts", selector: {userId: {$in: ids}}},
+      {collection: "userNotifications", selector: {recipientUserId: {$in: ids}, kind: {$regex: "^contact-chat-"}}},
+      {collection: "notificationOutbox", selector: {recipientUserId: {$in: ids}, kind: {$regex: "^contact-chat-"}}}
+    ]);
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$push: {
+      contactSnapshots: {$each: retained}, contactActorIds: {$each: ids}
+    }, $set: {contactInviteesPrepared: true}});
+    Q.printObject({checkpointId, prepared: true, invitees: ids, productWrites: false});
+    return;
+  }
+  if (command === "restore-contacts") {
+    if (!state.contactSnapshots) Q.fail("No contacts boundary to restore.");
+    Q.restoreSnapshots(state.contactSnapshots);
+    for (const snapshot of state.contactSnapshots) {
+      if (!Q.sameJson(ordered(snapshot.documents), ordered(Q.collection(snapshot.collection).find(snapshot.selector).toArray())))
+        Q.fail(`${snapshot.collection} contact restoration differs; retain snapshots.`);
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {
+      contactSnapshots: "", contactChatId: "", contactActorIds: "", contactInviteesPrepared: ""
+    }});
+    Q.printObject({checkpointId, contactsRestored: true});
     return;
   }
   if (command === "prepare-cash-history") {
@@ -839,13 +900,13 @@
   if (["capture", "restore", "verify-savepoint"].includes(command)) {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     // Add later boundaries only with their prepared selectors and checklist oracle.
-    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7, "after-membership-trash": 8, "after-chat-sharing": 10};
+    const boundaries = {"lists-ready": 1, "block-1-complete": 2, "after-editor-checks": 4, "after-join-approval": 4, "after-invitation-checks": 5, "after-workspace-selection": 5, "after-moderation-checks": 7, "after-membership-trash": 8, "after-chat-sharing": 10, "after-cash-history": 11};
     if (!Object.hasOwn(boundaries, name)) Q.fail("Unknown Group savepoint boundary.");
-    if (state.sharingSnapshots || state.chatSharingSnapshots || state.cashHistorySnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
+    if (state.contactSnapshots || state.sharingSnapshots || state.chatSharingSnapshots || state.cashHistorySnapshots || state.adminLifecycleSnapshots || state.paginationSnapshots || state.invitationSnapshots || state.memberInvitationSnapshots || state.editorSnapshots || state.creationSnapshots) Q.fail("Restore temporary controls before a savepoint operation.");
     let savepoint = (state.savepoints || []).find(item => item.name === name);
     if (command === "capture") {
       if (savepoint) Q.fail("Savepoint already exists; retained evidence must not be overwritten.");
-      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection", "after-moderation-checks", "after-membership-trash", "after-chat-sharing"].includes(name)) {
+      if (["after-join-approval", "after-invitation-checks", "after-workspace-selection", "after-moderation-checks", "after-membership-trash", "after-chat-sharing", "after-cash-history"].includes(name)) {
         const groupId = "seed-community-neighbours";
         const membership = Q.collection("activityMembers").findOne({ownerType: "community", ownerId: groupId, userId: actors[0]});
         const profiles = Q.collection("users").find({accountUserId: actors[0], workspaceGroupId: groupId}).toArray();

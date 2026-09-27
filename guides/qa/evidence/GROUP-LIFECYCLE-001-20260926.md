@@ -1199,3 +1199,26 @@ not claimed from the demo/shared-store checks here.
 - Polling exposed a short-window truncation when a new receipt arrived after an initially short history. The payment service now reads the full loaded window through bounded adapter pages and returns an exact item-offset cursor. Final insert replay retained the prior Deleted tail. Large-window, one-row cursor and cancellation regression specs added but NOT RUN; existing frontend watcher compilation passed.
 - A fourth UI-created EUR3.25 receipt exercised lost DELETE response after HTTP200. Confirmation retained its error; retry succeeded, retained the same row with Deleted/no-menu. Independent Mongo reads before/after retry prove unchanged totals, reversal markers and receipt states: no second reversal.
 - Normal checkout/affiliate controls and remaining negative checks are still open. **HTTP9/48; Lifecycle9/29; block10 IN PROGRESS.**
+
+### Block 10 — valid attribution controls and denied commands
+
+- Initial affiliate fixture used a string `_id`; the canonical Spring lookup requires ObjectId for this identity. Exact versioned cash restore passed; corrected prerequisite and replayed accounting controls only. Earlier UI/retry proofs remain, but initial attribution absence alone is not a cash exclusion PASS. Closed blocks1–9 unchanged.
+- With the readable referral: UI cash EUR3.25 and its approved refund produce no affiliate contribution; normal Barion EUR10 produces gross1000/net1000 minor, refund produces refunded1000/net0. Exactly one noncash contribution remains. Cash received/requested/approved notifications each occur once.
+- Self-payment, zero/negative amount, foreign-workspace payer, manual-delete against card payment, create replay after deletion, payer Delete and deleted-receipt refund all reject with expected statuses; history and aggregate totals unchanged. Deleted receipt retained in same DOM row. Machine evidence: `validAttributionReplay` in block10-cash JSON.
+- Provider restored to original Barion/3DS-off. Only Milo/Alex CASH managed windows remain. Normal cash checkout currently accepts booking without a payment record; user clarification pending before changing financial semantics. Block10 remains open: **HTTP9/48; Lifecycle9/29**.
+
+### Block 10 — final outstanding boundary
+
+| Checklist point | State | Remaining work |
+| --- | --- | --- |
+| 9. Manual cash recording | PASS | None; preserve existing proof. |
+| 10. Refund and affiliate exclusion | OPEN | Normal Event cash checkout creates accepted booking but no payment record. User decision pending on whether confirmation records cash received or receipt is recorded separately. Manual cash refund and noncash affiliate controls PASS. |
+| 11. Manual cash deletion | PASS | None. Unrelated Ava also rejected404 with unchanged history/totals; managed companion closed. |
+
+Header aggregates now live in the existing PaymentMethodsPopupStore; both normal history reads/polls and successful mutation responses apply canonical totals to UserProfileStore/ActivityStore. Header never sums visible rows. Read-only browser inspection matches persisted totals for both actors (Milo EUR13.25 outgoing/incoming; Alex HUF17400/EUR13.25 outgoing, HUF8400/EUR13.25 incoming). Existing watcher compiled/synced03:17Z. Component specs updated but not run separately. No cash/refund/delete workflow replay for this store extraction. **9/48 closed remains unchanged.**
+
+### Block 10 closed — 2026-09-27
+
+- Final Cash-only Event UI confirmation accepted Milo's booking and left the valid affiliate ledger unchanged: only the EUR10 card control contribution exists, fully reversed by its refund. Confirmation explicitly says booking confirmed/no card charged; it creates no payment record. The earlier expectation of an additional receipt from booking alone was a QA interpretation error, withdrawn without a production change. Manual Record cash received independently proves cash history/totals/refund inclusion. No unresolved product-semantics question remains.
+- Original Barion/3DS-off setting restored, obsolete managed browsers closed. Versioned restore-cash-history verified exact snapshots; verify-savepoint after-chat-sharing passed. New immutable after-cash-history captured at 2026-09-27T03:24:57.100Z, resume11.
+- Points9–11 complete with retained browser/persistence/negative/retry evidence in block10-cash JSON. **HTTP10/48 closed (20.83%); Lifecycle10/29. Block11 current; Local NOT RUN.** No closed branch is replayed after compaction.

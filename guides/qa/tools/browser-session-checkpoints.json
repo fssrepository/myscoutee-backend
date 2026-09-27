@@ -14,6 +14,41 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "GROUP-LIFECYCLE-001-CONTACTS": {
+      "preserveOtherSessions": true,
+      "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Milo contact recipient",
+          "sessionKind": "demo",
+          "userId": "eb1ca0b761885bb0763e2929",
+          "expectedName": "Milo Grant",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 750,
+            "y": 30
+          }
+        },
+        {
+          "actor": "Alex contact owner",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": true,
+          "window": {
+            "width": 700,
+            "height": 900,
+            "x": 30,
+            "y": 30
+          }
+        }
+      ]
+    },
     "GROUP-LIFECYCLE-001-CASH": {
       "preserveOtherSessions": true,
       "fixtureCheckpointId": "GROUP-LIFECYCLE-001",
