@@ -1229,3 +1229,10 @@ Header aggregates now live in the existing PaymentMethodsPopupStore; both normal
 - Retained Contacts/chat/share overlays, own-contact-only and truly empty-list guards, two-way messaging, recipient chat-list entries and unread/read-reset PASS. Phone method saved and shown; no external call attempted. Final persistence read confirms four members, four messages and three approved consent pairs.
 - English desktop and Hungarian mobile checked. Existing frontend/backend watchers compiled the fixes; separate unit specs and Local remain NOT RUN. Cosmetic contact-card changes did not replay completed flows. Evidence: block11-contacts JSON completionChecks.
 - Managed contact browsers closed; versioned restore-contacts and exact after-cash-history comparison PASS. Immutable after-contacts captured 2026-09-27T04:04:51.310Z, resume12. **HTTP11/48 closed (22.92%); Lifecycle11/29. Block12 current.**
+
+### HTTP block12 closed — 2026-09-27
+
+- Retained earlier request/decision/failure and pagination proofs; completed nested mobile selection limits, mobile Requests geometry, private-method isolation, same persisted eventless chat, reload persistence and delayed group/account switch. No full-flow replay for cosmetic changes.
+- Native held Alex response released after normal logout and Milo demo login: Milo retained his own contact list and no incoming badge.
+- Versioned contacts restore and exact after-contacts verification PASS; CONTACTS windows closed. Immutable after-contact-controls captured 04:40:57Z, resume13.
+- Evidence: GROUP-LIFECYCLE-001-block12-controls-20260927.json. HTTP12/48 (25%), Lifecycle12/29 closed; block13 next. Local and separate unit specs NOT RUN.

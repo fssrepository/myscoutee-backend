@@ -88,17 +88,17 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-LIFECYCLE-001
 checklist: ../checklists/group/GROUP-LIFECYCLE-001.md
-substage: HTTP11/48 overall (22.92%); Lifecycle11/29 closed/current block12. Local NOT RUN.
-fixture_phase: after-contacts savepoint retained; fresh contactSnapshots active for block12. Alex Main profile saved Milo via UI; first request rejected, second approved via UI (version3). Current CONTACTS windows both open. Restore this scope only after remaining block12 checks; no block11 replay.
+substage: HTTP12/48 overall (25%); Lifecycle12/29 closed/current block13. Local NOT RUN.
+fixture_phase: after-contact-controls savepoint retained; contactSnapshots restored and exact after-contacts verification PASS. CONTACTS managed windows closed. No replay of blocks1–12.
 execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
 execution_authority: User explicitly delegated full-flow automated execution of the pending QA campaign on 2026-09-26; Codex operates the browser, diagnoses, fixes and retests. Closed PASS rows remain closed.
-next_action: Continue block12 only; see block12-controls-20260927.json for completed checks and remaining list. Selection max5 enforcement/unlimited/max1 PASS; HU mobile values heading red including parentheses. Request cancellation/no-resend, rejection cancellation/failure/retry, fresh request with held response, sender/recipient API denials, approval same-list removal PASS. Do not redo these. CONTACTS actor0 Milo Requests empty after approval; actor1 Alex Contacts still open, approved Milo. Scope changes, pagination/order/search and final boundaries remain.
-savepoint: community-group after-contacts captured 2026-09-27T04:04:51.310Z, resume12; exact after-cash-history verification PASS. Earlier savepoints immutable.
-queue: HTTP Lifecycle12–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
+next_action: Continue HTTP block13 only: empty calendar export. Block12 PASS proof in GROUP-LIFECYCLE-001-block12-controls-20260927.json. Do not repeat completed contact-request or selector checks.
+savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
+queue: HTTP Lifecycle13–29, then Local Lifecycle1–29, Group Isolation1–12, Integration API Group1–7.
 resume_gate: Run the versioned community-group status command before any relaunch. verify-lists checked all ten groups/27 memberships without mutation and the versioned launcher prepared all three actors on 2026-09-26. Do not reset changed records or replay a closed checkpoint. Check the current manifest and launcher result.
 runtime: Existing dev watchers own builds; no stack restart or seed replacement for this resume. Versioned launcher configuration restored after the revert.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 HTTP block11 PASS/CLOSED; block11-contacts JSON completionChecks and cleanup. After compaction continue block12 only. Separate unit specs and Local NOT RUN.
+last_completed: GROUP-LIFECYCLE-001 HTTP block12 PASS/CLOSED, exact cleanup verified. Separate unit specs and Local NOT RUN.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
