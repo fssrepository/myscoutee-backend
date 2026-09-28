@@ -54,3 +54,15 @@ groups and memberships remain intact. Normal membership writes maintain the
 counter afterward; reads consume it directly. Demo/E2E and frontend local seeds
 include it, and retained local storage initializes missing values once during
 hydration. This step participates in the same packaged ordered migration chain.
+
+## 008 — common help v3 (1.3.0)
+
+Load the new HU/EN common help from the packaged seeds on retained databases.
+Activate it when the installation still uses an unchanged packaged default;
+deactivate that older default after insertion. Preserve custom content and
+deliberately inactive selections. Add the new revision inactive when a custom
+selection exists. If an operator already owns version3, retain it and report
+that the packaged revision needs an explicit import. Privacy, Terms, explanation
+guides and user data are untouched. Interrupted insertion/deactivation retries
+are idempotent. `default-help-migration-test.py` exercises these cases in a
+temporary database on the existing QA Mongo container.
