@@ -45,7 +45,7 @@
     "actor": 1
   },
   {
-    "point": "2.1\u20132.3",
+    "point": "2.1–2.3",
     "pass": true,
     "registration": "normal entry/onboarding/save",
     "baseAccountPreserved": true,
@@ -56,5 +56,43 @@
     "defaultHomeGender": "Woman",
     "explicitlyClearedHomeGenderAfterReplay": "Any",
     "geolocation": "QA-only Budapest override; native production path unchanged"
+  },
+  {
+    "point": "3.1.pending-link",
+    "at": "2026-09-28T01:37:16.662Z",
+    "pass": true,
+    "status": 200
+  },
+  {
+    "point": "3.2.rejected-claims",
+    "at": "2026-09-28T01:47:36.902Z",
+    "pass": true,
+    "otherAccount": 409,
+    "alteredToken": 404,
+    "reusedExternalId": 409
+  },
+  {
+    "point": "3.2.revoked-administrator",
+    "at": "2026-09-28T01:49:03.834Z",
+    "pass": true,
+    "status": 403
+  },
+  {
+    "point": "4.1.links",
+    "at": "2026-09-28T01:49:50.811Z",
+    "pass": true,
+    "issuedGroups": [
+      "qa-group-api-b",
+      "qa-group-api-a"
+    ]
+  },
+  {
+    "point": "4.1.links",
+    "at": "2026-09-28T01:52:02.093Z",
+    "pass": true,
+    "issuedGroups": [
+      "qa-group-api-b",
+      "qa-group-api-a"
+    ]
   }
 ]

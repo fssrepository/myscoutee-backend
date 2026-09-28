@@ -88,8 +88,8 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: Ordered Group API blocks1–2 PASS,2/7 completed; current3.1 existing recipient.
-next_action: Continue3.1 through second saved invitation as Group API Maya. Missing-coordinate fixture staged; verify cancellation/retry and invalid/valid controls, then pending Nia. Rowan base/workspace/replay/filter checks passed.
+substage: Ordered Group API blocks1–3 PASS,3/7 completed; current4.1 workspace change.
+next_action: Milo just opened his B invitation (saved links index3), verify B then open A(index4), prove base binding;4.2 failure/retry follows. QA-only directory-cache preparation fixed; no location fallback added.
 execution_authority: User explicitly requested continuing the automatic test on 2026-09-28. Full-flow Group API testing delegated; operate managed browsers and API in checklist order, announce each point/result, repair and retest failures.
 execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
 fixture_phase: integration-api-group baseline-ready; four isolated actors and two private workspace groups. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.

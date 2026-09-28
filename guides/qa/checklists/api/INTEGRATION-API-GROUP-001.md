@@ -98,6 +98,11 @@ this testcase's own valid, missing and invalid saved-coordinate controls; verify
 consent, admission and first full profile load through that UI.
 The URL must survive Setup cancellation/retry and successful login. A failed
 entry must not claim the link or create membership/workspace/session records.
+The demo-user list remains visible underneath Setup while an existing user is
+being selected, just as it does beneath new-profile setup; pending selection
+disables the list until the child flow returns.
+Closing Setup without permission closes only that child popup: the same list
+becomes selectable again, with no registration navigation or cancellation error.
 After successful entry, verify the target group is active on the first profile
 load, after reload, and after logout/login. A valid saved coordinate remains
 usable with browser GPS denied or outside supported countries.
@@ -243,6 +248,9 @@ Revoke stays reachable at the card's top right, including tall credential rows.
 Do not repeat the unchanged successful-generation path already closed in0.1.
 
 ### 7.6 Local UI and both HU/EN help surfaces
+
+On mobile, the shared API/Affiliate popup, Advanced and affiliate revenue summary
+use the standard fullscreen popup layout.
 
 Verify local persistence/revoke UI and profile separation; browser-only local
 mode does not establish external OAuth. Check the full Help Center and API popup

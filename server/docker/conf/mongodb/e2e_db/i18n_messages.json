@@ -21603,13 +21603,13 @@
     "_id": "i18n-message-en-event-partner-invite",
     "key": "event.partner.invite",
     "lang": "en",
-    "value": "Event invitation"
+    "value": "Invitation"
   },
   {
     "_id": "i18n-message-en-event-partner-invite-failed",
     "key": "event.partner.invite.failed",
     "lang": "en",
-    "value": "The event invitation could not be opened."
+    "value": "The invitation could not be opened."
   },
   {
     "_id": "i18n-message-en-mingle-tables-close-aria",
@@ -45771,13 +45771,13 @@
     "_id": "i18n-message-hu-event-partner-invite",
     "key": "event.partner.invite",
     "lang": "hu",
-    "value": "Eseménymeghívó"
+    "value": "Meghívó"
   },
   {
     "_id": "i18n-message-hu-event-partner-invite-failed",
     "key": "event.partner.invite.failed",
     "lang": "hu",
-    "value": "Az eseménymeghívót nem sikerült megnyitni."
+    "value": "A meghívót nem sikerült megnyitni."
   },
   {
     "_id": "i18n-message-hu-mingle-tables-close-aria",

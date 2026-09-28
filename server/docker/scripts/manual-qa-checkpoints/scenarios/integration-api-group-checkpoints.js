@@ -45,6 +45,7 @@
       users: Q.collection('users').find({userId: {$in: actors}}, {userId:1,name:1}).toArray(),
       memberships: Q.collection('activityMembers').find({ownerType:'community',ownerId:{$in:groups}}, {ownerId:1,userId:1,role:1,status:1}).toArray(),
       inviteMappings: Q.collection('integrationParticipantInvites').find({ownerUserId:{$in:actors}}, {participantId:1,claimedUserId:1,ownerType:1,eventId:1}).toArray(),
+      externalBindings: Q.collection('integrationExternalIds').find({ownerUserId:{$in:actors},resourceType:'participant'}, {externalId:1,internalId:1}).toArray(),
       workspaceProfiles: Q.collection('users').find({accountUserId:{$in:actors}}, {userId:1,accountUserId:1,workspaceGroupId:1}).toArray(),
       freshUsers: Q.collection('users').find({name:{$in:freshNames}}, {userId:1,name:1,accountUserId:1,workspaceGroupId:1,activeWorkspaceGroupId:1,affiliateReferrerUserId:1}).toArray(),
       savepoints: Object.keys(state?.savepoints ?? {})});
@@ -82,14 +83,31 @@
     status();return;
   }
   const state=Q.activeState(scenario,true);
+  if (command === 'remove-issuer-admin' || command === 'restore-issuer-admin') {
+    Q.collection('activityMembers').updateOne({ownerType:'community',ownerId:groups[1],userId:actors[0]},{$set:{role:command==='remove-issuer-admin'?'Member':'Admin'}});
+    Q.printObject({checkpointId,prepared:command,group:groups[1],fixtureOnly:true});return;
+  }
+  if (command === 'restore-maya-location') {
+    const original = state.savepoints.baseline.find(s=>s.collection==='users').documents.find(u=>u.userId===actors[1]);
+    if (!original?.locationCoordinates) Q.fail('Original Maya location missing.');
+    Q.collection('users').updateMany({$or:[{userId:actors[1]},{accountUserId:actors[1]}]},{$set:{locationCoordinates:original.locationCoordinates,partitionKey:original.partitionKey}});
+    Q.printObject({checkpointId,restored:'Maya fixture location after stale-directory preparation',fixtureOnly:true});return;
+  }
   if (['prepare-entry-missing','prepare-entry-invalid','prepare-entry-valid'].includes(command)) {
-    if (Q.collection('activityMembers').countDocuments({ownerType:'community',ownerId:groups[0],userId:actors[1]})) Q.fail('Entry control must run before Maya claims the invitation.');
+    if (Q.collection('activityMembers').countDocuments({ownerType:'community',ownerId:groups[0],userId:actors[3],status:'accepted'})) Q.fail('Entry control must run before Nia claims the invitation.');
     const update = command === 'prepare-entry-missing'
       ? {$unset:{locationCoordinates:'',partitionKey:''}}
       : {$set:{locationCoordinates:command === 'prepare-entry-invalid'
         ? {latitude:999,longitude:999} : {latitude:47.4979,longitude:19.0402}},$unset:{partitionKey:''}};
-    Q.collection('users').updateOne({userId:actors[1]},update);
-    Q.printObject({checkpointId,prepared:command,actor:actors[1],fixtureOnly:true});return;
+    Q.collection('users').updateOne({userId:actors[3]},update);
+    const now=Q.nowIso();
+    Q.collection('activityMembers').updateOne({_id:`community:${groups[0]}:${actors[3]}`},{$setOnInsert:{
+      syncKey:`community:${groups[0]}:${actors[3]}`,ownerType:'community',ownerId:groups[0],userId:actors[3],
+      role:'Member',status:'pending',requestKind:'join',pendingSource:'member',organizerOnly:false,
+      actionAtIso:now,createdDate:now,updatedDate:now,createdUser:actors[3],updatedUser:actors[3]
+    }},{upsert:true});
+    Q.collection('communityGroups').updateOne({_id:groups[0]},{$set:{pendingMembers:Q.collection('activityMembers').countDocuments({ownerType:'community',ownerId:groups[0],status:'pending'})}});
+    Q.printObject({checkpointId,prepared:command,actor:actors[3],fixtureOnly:true});return;
   }
   if (command === 'reset') {
     const owned=current();
