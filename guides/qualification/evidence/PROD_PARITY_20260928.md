@@ -543,3 +543,45 @@ Before DEB upgrade: installed package1.0.0;71 production collections,
 8355 documents and995 media objects fingerprinted with the existing read-only
 retained-data tool. Full fingerprints remain privately on VMware under
 `/var/lib/myscoutee/qa-fixtures/release-1.3.0/before-deb-20260928.json`.
+
+
+### DEB installation and subsequent UI smoke — 2026-09-28
+
+The first DEB upgraded VMware from1.0.0 to1.3.0 and all managed containers became
+healthy. Host qualification then incorrectly rejected the retained GHCR digest
+for Mongo8.0.4 because the smoke script accepted only literal `mongo:8.0` tags;
+its failure handler stopped the service. The validator now checks the existing
+`io.myscoutee.upstream-reference` label for mirrored images and still verifies the
+running Mongo version and FCV. Focused packaging qualification tests passed.
+Applying that script on VMware and running host qualification completed
+successfully (`qualification-repaired.log`). Keys/TLS checksums remained equal.
+This source repair must be included in the eventual final DEB.
+
+Both current external API bundles match all4033 source messages and their bundle
+versions per language (EN/HU): zero missing, extra or changed keys. `home.filters`
+is `Szűrők` in HU. Read-only CDP inspection located the reported desktop defect at
+`http://localhost/game`, backed by the stopped host dev stack; its deployment
+requests fail and a lazy JS chunk returns503 from the offline path. This is a
+cached dev page, separate from the healthy VMware HTTPS endpoint on8443.
+
+User requested subsequent runtime testing and explicitly deferred further DEB
+builds. A candidate built before that instruction exists locally but was not
+installed and does not contain the latest Firebase transition correction.
+
+Production UI `b59ae406a87e-20260928082223` is now deployed on VMware through an
+nginx-only replacement. Transfer SHA256:
+`1cb0531b7c2fa4cf54627e06aa3d811d22281fdb54fb712b5aa24e7a37368385`.
+The public app-version endpoint returns that exact build; all ten containers are
+healthy. It includes the offline notification no-op guard and keeps the Firebase
+provider popup busy during profile loading and route activation. Required Setup
+or registration can replace it; ordinary navigation does not dismiss it early.
+Account consent waits for an internal route and ignores responses after returning
+to entry. Focused entry/consent tests:44/44 passed. Production build passed.
+
+At the user's request, the uniquely identified second Google account was reset
+for fresh registration. Its exact profile and six associated preference/session/
+consent/task documents were backed up then removed; no matching profile remained.
+Private snapshot: `release-1.3.0/registration-reset-20260928.ejson` in the VM fixture
+directory, mode0600. Audit records, media and the other account were retained.
+Any later retained-data comparison must account for this authorized reset and
+subsequent user registration separately from installer changes.

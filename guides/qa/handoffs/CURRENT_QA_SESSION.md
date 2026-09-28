@@ -88,15 +88,15 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: DEPLOY-EXTERNAL-CONFIG-001
 checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
-substage: CLOSED/PASS. Final permission timer begins only after grant with the ring;38 focused tests passed. Production frontend63e45751e41b-20260928075329 deployed. User explicitly advanced to DEB; no more phone QA.
-next_action: Finish ongoing DEB1.3.0 build (BUILD_ARTIFACTS=false; tested production images reused), verify exact package/image identities, capture retained-data fingerprints, install through existing client installer on VMware192.168.153.129 and verify health/data preservation. No Netcup or publication now. Exact deploy fixture reset complete; phone grants/notifications/screen restored and campaign-owned WebAPK removed. Restore standard runtime from packaged Compose during upgrade; original QA overlay is still active until then. SSH8443 tunnel retained for external read-only package verification.
-execution_authority: Full testcase delegated; user handles Firebase login and may operate phone alongside Codex. Coordinate to avoid simultaneous clicks. All remaining interactive checks use the phone, per latest user instruction. Keep numbered order; no desktop/phone switching.
+substage: DEPLOY-EXTERNAL-CONFIG-001 remains CLOSED/PASS. User is now doing additional runtime UI smoke; further DEB builds deferred explicitly.
+next_action: Let the user test the deployed Firebase transition and re-register the requested second account. Latest frontend is already active. Do not restart completed QA or build another DEB until the user's testing is finished.
+execution_authority: User controls current browser tests and Firebase login. CDP read-only diagnosis of reported defects is authorized; a separate browser was opened on request.
 execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
-fixture_phase: baseline-ready; firebase-entry captured. Unused email provider fixture was removed and absence verified. User selected their second Google account; Registration completed; the earlier registration-before.json query omitted firebaseUid and does not prove absence of a pre-existing application record. Phone https://localhost:8443 routes through adb reverse and SSH to VMware443.
-runtime: VMware192.168.153.129 has production1.3.0 images and migrations through009; installed DEB still1.0.0. Active Operator Firebase credentials retained. Host dev stack stopped. Android14 connected.
-last_completed: Saved-point real login and1.4 retry/stale-response/account-namespace isolation observed; exact browser/location controls restored. Queued production UI06450 deployed at user request; backend JAR matches current build. Ten containers healthy. No separate consent manual retest.
-release_sequence: Finish runtime QA; build final DEB and verify one additional VMware upgrade; release only after qualification. Netcup upgrade waits for the user's later instruction.
-resume_gate: Read-only verify VMware health/version, current Git diff and phone transport before fixture mutation. Preserve VM backup and runtime snapshots under /var/lib/myscoutee/qa-fixtures/release-1.3.0.
+fixture_phase: Original deploy fixture exactly restored. User subsequently requested second-account registration reset; private backup retained on VMware under release-1.3.0/registration-reset-20260928.ejson. Other account and media retained.
+runtime: VMware192.168.153.129 installed DEB1.3.0; Mongo qualification validator patched and host qualification passed. UI b59ae406a87e-20260928082223 deployed nginx-only. Ten containers healthy. Standard packaged Compose active. Host dev stack stopped; http://localhost/game in user's browser is a cached dev page, not VMware. VM URL is https://localhost:8443 via retained SSH tunnel; phone adb mappings were cleaned up previously.
+last_completed: Firebase popup/consent correction44 focused tests and production build passed; exact public build ID and healthy containers verified. Source EN/HU bundles match current production API with zero differences.
+release_sequence: User testing first; eventual final DEB must include Mongo validator and latest UI. The last locally built candidate predates Firebase transition repair and was not installed. No Netcup or publication without subsequent instruction.
+resume_gate: Read-only check current versions/health and Git diff. Preserve VM backups. Future retained-data comparisons must account for the user-requested second-profile reset and re-registration.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

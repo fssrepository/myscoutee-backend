@@ -90,10 +90,11 @@ checks. Continue with that created profile; do not repeat registration as a
 separate testcase block.
 
 1. **Fresh registration.** With no saved coordinate, request location through
-   Setup before opening provider login. Successful **Update** keeps Setup open;
-   **Close** then opens login. Without accepted location, **Close** only dismisses
-   Setup and never opens login. Reuse the same Update/Close behavior as demo entry,
-   without changing its selector/admission flow. Complete normal provider login:
+   Setup before opening provider login. In this entry context, the action uses
+   the same **Login / Bejelentkezés** label as the landing button; after successful
+   permission/location checks it continues login. **Close** only dismisses Setup
+   and never starts login, whether demo or Firebase. Setup opened from Settings
+   retains **Update** and stays open after saving. Complete normal provider login:
    if no application user exists, registration opens. Check Children choices,
    including non-disclosure, as part of this same onboarding and record the
    selected value. Complete registration. Verify Mongo account/active group
@@ -108,7 +109,7 @@ separate testcase block.
    language/value variant does not require registering the same account again.
 3. **Existing account login.** Snapshot and stage missing coordinates for the
    existing controlled account, then logout and sign in once with a changed avatar
-   preview. Check the required Setup Update/Close gate and enter the existing
+   preview. Check the required Setup Login/Close gate and enter the existing
    profile on the first attempt, without registration. Also verify the saved-point
    case. Real logout/account/session changes discard stale reads; a failed group
    switch unlocks the selector.
