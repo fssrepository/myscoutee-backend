@@ -1,0 +1,68 @@
+{
+  "mobile": {
+    "width": 360,
+    "label": "person_add",
+    "button": {
+      "left": 142.109375,
+      "right": 174.109375,
+      "top": 13.515625,
+      "bottom": 45.515625,
+      "width": 32
+    },
+    "header": {
+      "left": 0,
+      "right": 345,
+      "bottom": 92.28125,
+      "client": 345,
+      "scroll": 345
+    },
+    "inHeader": true,
+    "role": {
+      "left": 179.546875,
+      "top": 11.515625,
+      "bottom": 47.515625
+    },
+    "beforeRole": true,
+    "sameRow": true,
+    "icon": "person_add",
+    "iconColor": "rgb(255, 255, 255)",
+    "background": "linear-gradient(rgb(226, 73, 85) 0%, rgb(201, 50, 64) 100%)"
+  },
+  "desktop": {
+    "width": 1280,
+    "label": "person_add\nNew demo profile",
+    "button": {
+      "left": 843.78125,
+      "right": 997.453125,
+      "top": 175.609375,
+      "bottom": 211.609375,
+      "width": 153.671875
+    },
+    "header": {
+      "left": 92.5,
+      "right": 1172.5,
+      "bottom": 242.78125,
+      "client": 1080,
+      "scroll": 1080
+    },
+    "inHeader": true,
+    "role": {
+      "left": 1002.890625,
+      "top": 175.609375,
+      "bottom": 211.609375
+    },
+    "beforeRole": true,
+    "sameRow": true,
+    "icon": "person_add",
+    "iconColor": "rgb(255, 255, 255)",
+    "background": "linear-gradient(rgb(226, 73, 85) 0%, rgb(201, 50, 64) 100%)"
+  },
+  "nestedFlow": {
+    "opened": "Permissions and installation",
+    "listPresentUnderChild": true,
+    "listRetainedAfterCancel": true,
+    "listEnabledAfterCancel": true,
+    "profileFormAndSuccessfulRegistration": "NOT RUN: actual location permission prerequisite not completed"
+  },
+  "build": "frontend-sync PASS 2026-09-28T00:01:11Z"
+}

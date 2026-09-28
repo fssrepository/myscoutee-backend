@@ -183,3 +183,83 @@ selected A, exact A Event capacity2 and Alex/Eszter Members opened. Actual
 GET members ownerId=h1790547269571 returned200; same-name B target was not used.
 Independent before/after oracle: events3/members11/chats2/messages2 unchanged.
 Own after-block4 captured. Evidence GROUP-ISOLATION-001-block4-20260928.json.
+
+## Block 5 HTTP PASS
+
+Own A moderation queue1/Feed-only/delay0 and B queue2/Event+Feed/delay30 prepared
+with auto-approve off; existing accepted Event item/count preserved. Snapshot
+selectors now include group:<id> moderation-state keys as well as scoped items.
+Held actual A Feed preview HTTP response, closed A popup, selected B, opened B
+queue and settings through UI, then released the original response unchanged.
+B retained two rows, delay30 and own categories; no A gallery appeared. A
+reopen retained one row/delay0. Mongo state2/items4/groups2/posts6 unchanged.
+Own after-block5 captured. Evidence GROUP-ISOLATION-001-block5-20260928.json.
+
+## Block 6 HTTP PASS
+
+Versioned prerequisite temporarily made Eszter A owner/admin and Alex Member;
+original roles were captured. Eszter removed Alex through Members confirmation.
+Ordinary refresh selected Base without reload and removed A from the picker.
+Old A Event detail404, members403, chat/detail/messages/members404; B Events
+remained usable. Base/B relationships, impressions and exclusions unchanged;
+B domain counters unchanged. Base notification2→3 is the canonical
+community-member-removed notification for A, independently verified in snapshot.
+Captured after-block6-revoked, restored exact before-block6 and verified; own
+managed sessions relaunched. Evidence GROUP-ISOLATION-001-block6-20260928.json.
+
+Queue confirmed by user: after Isolation, INTEGRATION-API-GROUP-001 starts with
+its required development before tests. User prepares VMware for Firebase checks.
+
+## Block 7 HTTP PASS
+
+Prepared eventless App support (Base01/02) and A Group support (11/12), with45
+A history messages. Normal chat/header entry showed the correct conversation
+and two A members; pending filter empty. App support opened normally; its
+participant read200 returned the two account identities. Old A message1 was
+outside first15; authorized target read200 returned old page1–15 of45.
+B/Base/outsider each made8 private A requests (detail, messages, old target,
+members/pending, send, old edit/reaction): all403/404. No owner copy/unread or
+message mutation. Held actual A conversation load, switched through UI to B,
+released unchanged; B empty chat list and workspace remained intact. A reopened
+with retained history. All6 chat copies and48 messages unchanged.
+Initial member interception found no HTTP request because DTO members were
+already loaded; real messages-load replay supplied the delayed-response proof.
+Own after-block7 captured. Evidence GROUP-ISOLATION-001-block7-20260928.json.
+
+## Block 8 in progress — eligibility and consent
+
+User clarified: unavailable people must be absent from invitation picker;
+unapproved saved contacts request access on the contact card first. Existing
+code already implements this; no production edit required. Versioned consent
+control Maya added, own baseline before-block8-consent captured. UI Request
+created pending01→03, no new pair chat, existing conversation members01/02
+unchanged. Picker contains only approved Nia05/Lea06, not Maya03 or non-contact
+Milo04. Six focused existing ChatService Java authority tests PASS; compiled
+only the test class against watcher main output after capacity check.
+Five earlier raw HTTP denials retained as API evidence, not UI scenarios.
+Normal Lea invitation measured35.8ms/200, picker closed and header4 immediately.
+
+Late mutation replay attempts did not prove a cross-scope result: existing
+isConfirmPending guard prevents closing the picker while the request is held.
+The harness initially mistook hidden/offscreen menu nodes for available UI;
+corrected visibility inspection and exact own snapshot replays. Do not count
+these attempts as successful workspace/account-change tests. Interception was
+removed after each attempt. The intentional QA hold prolonged those intercepted calls. The user clarified
+that the slow call they meant was earlier; its cause is unproven. The ordinary
+35.8ms sample above does not establish that earlier call's duration or cause.
+Evidence GROUP-ISOLATION-001-block8-progress-20260928.json; remaining late
+picker/account and mutation boundary checks plus block9 still open.
+
+Late invite-picker response across actual UI logout/login Alex→Maya PASS: real
+contact-access response released unchanged, Maya account retained with no old
+picker or participants. Supplementary Java tests PASS: both support channel
+types and foreign conversation, no writes/unread change (7 unique authority
+tests overall). Mutation cross-scope replay remains unproven because the
+existing pending guard prevents the normal close/switch sequence.
+
+Demo selector correction: same header row before role selector, standard compact
+mobile action and labelled red desktop action; original person_add preserved.
+Removed automatic parent-selector close when opening new-profile setup. At
+360/1280px no header overflow; child permission popup retained the list and
+cancelling restored enabled rows. Actual profile form/registration not run:
+location permission prerequisite not completed. Evidence demo-selector JSON.

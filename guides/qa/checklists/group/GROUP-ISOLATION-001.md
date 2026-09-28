@@ -84,11 +84,21 @@ the first page. Use normal chat/header-member entry points.
 ## 8. Contact invitation authority and pending replies
 
 Prepare an approved account contact chat, a saved approved invitee, a
-non-contact and a foreign conversation. Snapshot chats, members and counters.
+saved contact without MyScoutee chat approval, a non-contact and a foreign
+conversation. Snapshot chats, members and counters.
 
-- Raw add-member requests for a non-contact, an outsider's chat, App support
-  or Group support must fail before creating an owner copy. An unrelated
-  profile ID cannot impersonate an account contact.
+- In the UI picker, show only eligible saved, approved contacts who are not
+  already participants. A non-contact or an unrelated workspace profile must
+  not appear at all: there must be no row the user can click to invite them.
+- Saved contacts without MyScoutee chat approval remain absent from the
+  invitation picker, including while a request is pending. Send the access
+  request first using the MyScoutee action on their contact card. Only after
+  approval may they appear as invite candidates; requesting access alone must
+  not add them to the conversation or create their chat owner copy.
+- Java tests cover add-member attempts for a non-contact, an outsider's chat,
+  App support or Group support: reject before creating an owner copy. An
+  unrelated profile ID cannot impersonate an account contact. These are backend
+  authority checks; the unavailable person is absent from the UI picker.
 - Hold the real invite-picker response and separately an invitation mutation;
   change workspace within the same account, then repeat with an account
   change. Account-owned results may update only that account; stale replies

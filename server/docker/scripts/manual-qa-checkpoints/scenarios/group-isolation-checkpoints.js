@@ -9,6 +9,11 @@
   if (Q.text(process.env.MANUAL_QA_CHECKPOINT_ID) !== checkpointId) Q.fail('Wrong Isolation checkpoint.');
   const id = n => `f0280926${String(n).padStart(16, '0')}`;
   const postId = n => `f0280926-0000-4000-8000-${String(n).padStart(12, '0')}`;
+  const javaUuid=value=>{
+    const bytes=require('crypto').createHash('md5').update(value).digest();
+    bytes[6]=(bytes[6]&15)|48;bytes[8]=(bytes[8]&63)|128;
+    return bytes.toString('hex').replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/,'$1-$2-$3-$4-$5');
+  };
   const actors = [1, 2, 3, 4].map(id);
   const profiles = [11, 12, 21, 22].map(id);
   const controlUserIds = [5, 6, 13, 14, 24].map(id);
@@ -29,7 +34,7 @@
     const selector = {$or: [
       ...identityKeys.map(key => ({[key]: own})),
       ...['workspaceGroupId', 'groupId', 'ownerId', 'eventId', 'sourceId', 'chatId'].map(key => ({[key]: {$in: references}})),
-      {_id: {$in: [...userIds, ...groups]}}
+      {_id: {$in: [...userIds, ...groups, ...groups.map(group => `group:${group}`)]}}
     ]};
     const collections = ['users', 'communityGroups', 'activityMembers', 'activityEvents', 'chats', 'chatMessages',
       'userRates', 'userFilterPreferences', 'userPageFilterPreferences', 'photoFeedPosts', 'photoFeedViews',
@@ -99,6 +104,131 @@
     verify(staged);status();return;
   }
   const state=Q.activeState(scenario,true);
+  if (command === 'prepare-chat-read-controls') {
+    if (!state.savepoints?.['before-block9']) Q.fail('Capture own pre-read snapshot first.');
+    if (Q.collection('chatMessages').countDocuments({id:/^qa-isolation-read-/})) Q.fail('Read controls already present.');
+    const now=Q.nowIso(),aEvent=Q.collection('events').findOne({sourceId:'h1790547269571'}),
+      bEvent=Q.collection('events').findOne({sourceId:'qa-isolation-same-name-b'});
+    if (!aEvent || !bEvent) Q.fail('Own A/B Event controls missing.');
+    const contactId='c-contact-'+Buffer.from(id(1)+'\n'+id(2)).toString('base64url');
+    if (!Q.collection('chats').findOne({id:contactId,ownerUserId:id(1)})) Q.fail('Own contact chat missing.');
+    if (Q.collection('chats').countDocuments({id:bEvent.sourceId})) Q.fail('B chat already present.');
+    const bMembers=[id(21),id(22)];
+    const memberKey=`event:${bEvent.sourceId}:${id(22)}`;
+    Q.collection('activityMembers').insertOne({_id:memberKey,syncKey:memberKey,ownerType:'event',
+      ownerId:bEvent.sourceId,userId:id(22),role:'Member',status:'accepted',organizerOnly:false,
+      createdDate:now,updatedDate:now,createdUser:id(21),updatedUser:id(21)});
+    Q.collection('events').updateOne({_id:bEvent._id},{$set:{acceptedMembers:2,acceptedMemberUserIds:bMembers}});
+    const template=Q.collection('chats').findOne({id:aEvent.sourceId,ownerUserId:id(11)});
+    Q.collection('chats').insertMany(bMembers.map(ownerUserId=>({...template,
+      _id:'chat-owner-copy:'+javaUuid(ownerUserId+'|'+bEvent.sourceId),id:bEvent.sourceId,
+      ownerUserId,memberIds:bMembers,ownerId:bEvent.sourceId,eventId:bEvent.sourceId,unread:0,
+      title:bEvent.title,lastMessage:'',lastSenderId:'',dateIso:now,revision:NumberLong('1')})));
+    const controls=[{chatId:contactId,viewer:id(1),sender:id(2),key:'contact',counter:'contacts'},
+      {chatId:aEvent.sourceId,viewer:id(11),sender:id(12),key:'a',counter:'event'},
+      {chatId:bEvent.sourceId,viewer:id(21),sender:id(22),key:'b',counter:'event'}];
+    for (const c of controls) {
+      const chat=Q.collection('chats').findOne({id:c.chatId,ownerUserId:c.viewer});
+      const sender=Q.ensureUser(c.sender),messageId=`qa-isolation-read-${c.key}`,
+        readIds=chat.memberIds.filter(x=>x!==c.viewer),text=`Isolation ${c.key} unread control`;
+      Q.collection('chatMessages').insertOne({_id:`chat-message:${c.chatId}:${messageId}`,
+        chatId:c.chatId,id:messageId,clientId:messageId,sender:sender.name,
+        senderAvatar:{id:c.sender,initials:sender.initials,gender:sender.gender},text,
+        time:'02:00 AM',sentAtIso:now,mine:false,
+        readBy:readIds.map(userId=>{const u=Q.ensureUser(userId);return {id:userId,initials:u.initials,gender:u.gender};}),
+        attachments:[],reactions:[],messageSenderUserIds:[c.sender],messageReadByUserIds:readIds,
+        messageReactionUserIds:[],messageAttachmentKeys:[],pollVoterUserIds:[]});
+      Q.collection('chats').updateMany({id:c.chatId},{$set:{lastMessage:text,lastSenderId:c.sender,dateIso:now},$inc:{revision:NumberLong('1')}});
+      Q.collection('chats').updateOne({id:c.chatId,ownerUserId:c.viewer},{$inc:{unread:1}});
+      Q.collection('users').updateOne({userId:c.viewer},{$inc:{'activities.chats':1,'activities.chat.all':1,[`activities.chat.${c.counter}`]:1}});
+    }
+    Q.printObject({checkpointId,prepared:'contact-and-event-unread',controls});return;
+  }
+  if (command === 'prepare-contact-controls') {
+    if (!state.savepoints?.['before-block8']) Q.fail('Capture own pre-contact snapshot first.');
+    if (Q.collection('navigatorContacts').countDocuments({userId:id(1)})) Q.fail('Contact controls already present.');
+    const now=Q.nowIso(),targets=[2,5,6].map(id);
+    const contacts=[...targets,id(3)].map(userId=>{const u=Q.ensureUser(userId);return {
+      id:userId,userId,name:u.name,initials:u.initials,gender:u.gender,city:u.city,avatarUrl:u.images?.[0],
+      headline:'',methods:[],createdAtIso:now,updatedAtIso:now};});
+    Q.collection('navigatorContacts').insertOne({_id:ObjectId(id(1)),userId:id(1),contacts,updatedAtIso:now});
+    Q.collection('users').updateOne({userId:id(1)},{$set:{contacts:contacts.length}});
+    for (const target of targets) {
+      const pair=[id(1),target].sort();
+      Q.collection('contactChatAccess').insertOne({_id:`${pair[0].length}:${pair.join('')}`,
+        leftUserId:pair[0],rightUserId:pair[1],requestedBy:pair[0],status:'approved',
+        requestedAtIso:now,decidedAtIso:now,version:NumberLong('0')});
+    }
+    const chatIds=[];
+    for (const members of [[id(1),id(2)],[id(3),id(4)]]) {
+      const chatId='c-contact-'+Buffer.from(members.join('\n')).toString('base64url');chatIds.push(chatId);
+      Q.collection('chats').insertMany(members.map(ownerUserId=>({
+        _id:'chat-owner-copy:'+javaUuid(ownerUserId+'|'+chatId),id:chatId,ownerUserId,
+        channelType:'contact',memberIds:members,title:Q.ensureUser(members.find(x=>x!==ownerUserId)).name,
+        avatar:'IS',lastMessage:'',lastSenderId:'',unread:0,revision:1,dateIso:now
+      })));
+    }
+    Q.printObject({checkpointId,prepared:'approved-account-contact-controls',chatIds,invitees:targets.slice(1),unapprovedContact:id(3),nonContact:id(4)});return;
+  }
+  if (command === 'prepare-support-controls') {
+    if (!state.savepoints?.['before-block7']) Q.fail('Capture own pre-support snapshot first.');
+    const controls=[
+      {chatId:`c-support-admin-${id(1)}`,members:[id(1),id(2)],channel:'appSupport',title:'MyScoutee Support',count:1},
+      {chatId:`c-moderation-group-${id(11)}`,members:[id(11),id(12)],channel:'groupSupport',title:'QA Isolation A',count:45}
+    ];
+    if (Q.collection('chats').countDocuments({id:{$in:controls.map(c=>c.chatId)}})) Q.fail('Support controls already present.');
+    // Retained, eventless conversations: creation/moderation is not this block's oracle.
+    const now=Q.nowIso();
+    for (const c of controls) {
+      const sender=Q.ensureUser(c.members[1]);
+      const readBy=c.members.map(userId=>{const u=Q.ensureUser(userId);return {id:userId,initials:u.initials,gender:u.gender};});
+      Q.collection('chats').insertMany(c.members.map(ownerUserId=>({
+        _id:`${c.chatId}:${ownerUserId}`,id:c.chatId,ownerUserId,avatar:sender.initials,title:c.title,
+        lastMessage:`Isolation support history ${c.count}`,lastSenderId:sender.userId,
+        memberIds:c.members,unread:0,dateIso:now,channelType:c.channel,
+        ownerId:c.channel==='appSupport'?c.chatId:null,eventId:null,revision:1,
+        supportCase:c.channel==='appSupport'?{status:'open',assignee:{userId:sender.userId,name:sender.name,initials:sender.initials},updatedAtIso:now}:null
+      })));
+      Q.collection('chatMessages').insertMany(Array.from({length:c.count},(_,index)=>{
+        const messageId=`qa-isolation-${c.channel}-${index+1}`;
+        return {_id:`chat-message:${c.chatId}:${messageId}`,chatId:c.chatId,id:messageId,clientId:messageId,
+          sender:sender.name,senderAvatar:readBy[1],text:`Isolation support history ${index+1}`,
+          time:'10:00 AM',sentAtIso:new Date(Date.parse(now)-(c.count-index)*60000).toISOString(),mine:false,
+          readBy,attachments:[],reactions:[],messageSenderUserIds:[sender.userId],
+          messageReadByUserIds:c.members,messageReactionUserIds:[],messageAttachmentKeys:[],pollVoterUserIds:[]};
+      }));
+    }
+    Q.printObject({checkpointId,prepared:'support-history',controls});return;
+  }
+  if (command === 'prepare-revocation-control') {
+    if (!state.savepoints?.['before-block6']) Q.fail('Capture own pre-revocation snapshot first.');
+    Q.collection('communityGroups').updateOne({_id:groups[0]},{$set:{ownerUserId:id(2)}});
+    Q.collection('activityMembers').updateOne({ownerType:'community',ownerId:groups[0],userId:id(1)},{$set:{role:'Member'}});
+    Q.printObject({checkpointId,prepared:'revocation',actor:id(1),admin:id(2),groupId:groups[0]});return;
+  }
+  if (command === 'prepare-moderation-controls') {
+    if (Q.collection('contentModerationItems').countDocuments({sourceId:{$in:[601,602,603].map(postId)}})) Q.fail('Moderation controls already present.');
+    const now=Q.nowIso();
+    for (const [g,creator,posts] of [[0,12,[601]],[1,22,[602,603]]]) {
+      const groupId=groups[g],owner=Q.ensureUser(id(creator)),imageUrl=owner.images[0];
+      const previous=Q.collection('contentModerationState').findOne({_id:`group:${groupId}`});
+      if (previous?.pending?.length) Q.fail('Finish existing moderation mutation before fixture preparation.');
+      const revision=Number(previous?.revision??0)+1;
+      Q.collection('contentModerationState').replaceOne({_id:`group:${groupId}`},{_id:`group:${groupId}`,revision,
+        settings:{enabled:true,autoApprove:false,delayMinutes:g===0?0:30,categories:g===0?['feed']:['event','feed']},
+        counts:{...previous?.counts,feed:{...previous?.counts?.feed,'under-review':posts.length}},pending:[]},{upsert:true});
+      for (const n of posts) {
+        const sourceId=postId(n),title=`QA Isolation ${g===0?'A':'B'} review ${n}`;
+        Q.collection('photoFeedPosts').insertOne({_id:sourceId,creatorUserId:owner.userId,creatorName:owner.name,
+          imageUrls:[imageUrl],imageDetails:{},createdAtIso:now,moderationStatus:'under-review',moderationVersion:1,workspaceGroupId:groupId});
+        Q.collection('contentModerationItems').insertOne({_id:`feed:${sourceId}`,category:'feed',sourceId,
+          ownerUserId:owner.userId,title,imageUrl,submittedAtIso:now,status:'under-review',version:1,
+          commandId:`submit:feed:${sourceId}`,reviewedBy:'',reviewedAtIso:'',publiclyVisibleOnce:false,deleted:false,workspaceGroupId:groupId});
+      }
+      Q.collection('communityGroups').updateOne({_id:groupId},{$set:{moderationPending:posts.length,moderationQueueRevision:revision}});
+    }
+    Q.printObject({checkpointId,prepared:'moderation-queues',a:1,b:2,autoApprove:false});return;
+  }
   if (command === 'prepare-notification-controls') {
     const source=Q.collection('events').findOne({workspaceGroupId:groups[0],ownerUserId:id(11)});
     const notification=Q.collection('userNotifications').findOne({recipientUserId:id(1),kind:'event-invitation-accepted',sourceId:source?.sourceId});

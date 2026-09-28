@@ -88,13 +88,13 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: GROUP-ISOLATION-001
 checklist: ../checklists/group/GROUP-ISOLATION-001.md
-substage: ACTIVE / PREPARATION. User explicitly requested full-flow automated Isolation on 2026-09-28. Nine unique blocks after duplicate audit; blocks1–4 HTTP PASS, 4/9.
+substage: ACTIVE / PREPARATION. User explicitly requested full-flow automated Isolation on 2026-09-28. Nine unique blocks after duplicate audit; blocks1–7 HTTP PASS, 7/9.
 fixture_phase: group-isolation baseline-ready; own8profiles/2groups/4memberships verified. Two managed actors Alex/Eszter ready.
 execution_log: ../evidence/GROUP-ISOLATION-001-20260928.md
 execution_authority: Full-flow automated browser and HTTP actions explicitly delegated; questions/corrections do not pause the campaign.
-next_action: Block5 preparation: distinct A/B moderation queues/settings and late queue/preview reply. Block4 HTTP PASS with actual request cancellation and exact notification target.
-savepoint: group-isolation after-block4. Managed Alex/Eszter windows retained; outsider closed.
-queue: Isolation active. Integration API Group and deployment checks separate. Full Local browser NOT RUN.
+next_action: Block8 eligibility/consent and6 Java authority checks PASS; finish late picker/account boundary. Pending mutation picker cannot close (existing busy guard); do not claim a cross-scope replay. Then block9.
+savepoint: group-isolation before-block8-consent, current Alex account contact has4members(01/02/05/06), Maya03 request pending. Alex A members/chat retained; Eszter session retained.
+queue: Finish Isolation, then INTEGRATION-API-GROUP-001 prerequisite development BEFORE testing (user confirmed2026-09-28). User will open VMware for Firebase checks. Full Local browser NOT RUN.
 resume_gate: Read-only check own fixture state and actual runtime before any mutation/relaunch. Retained old Lifecycle CDP41085 was unreachable at00:04.
 runtime: Existing frontend-sync/backend own builds; no separate compilation/server. Two Isolation windows launched through versioned launcher.
 mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
