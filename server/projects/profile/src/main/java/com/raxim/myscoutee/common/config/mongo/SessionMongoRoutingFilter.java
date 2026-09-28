@@ -39,7 +39,10 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
         String requestUri = request == null ? null : request.getRequestURI();
         String auth = request == null ? null : request.getHeader("Authorization");
         if ((requestUri != null && requestUri.matches("/(?:api/)?mcp/oauth/.*"))
-                || (auth != null && auth.startsWith("Bearer mca_"))) return MongoSessionMode.REAL;
+                || (auth != null && auth.startsWith("Bearer mca_"))) {
+            return configProperties != null && configProperties.isMcpDemoEnabled()
+                    ? MongoSessionMode.DEMO : MongoSessionMode.REAL;
+        }
         if (MediaSessionAccessService.isPrivateRead(request)) {
             return MediaSessionAccessService.sessionMode(request);
         }

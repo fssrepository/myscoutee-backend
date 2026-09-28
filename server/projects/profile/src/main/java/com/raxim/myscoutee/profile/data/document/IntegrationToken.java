@@ -18,6 +18,9 @@ public class IntegrationToken {
     private String name;
     private String scope;
     private String redirectUri;
+    private String oauthClientId;
+    public String getOauthClientId() { return oauthClientId; }
+    public void setOauthClientId(String value) { oauthClientId = value; }
     public String getRedirectUri() { return redirectUri; }
     public void setRedirectUri(String value) { redirectUri = value; }
     public String getScope() { return scope; }

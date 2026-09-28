@@ -22,7 +22,10 @@ class McpAuthorizationServiceTest {
     final IntegrationPublicEndpointResolver endpoint = mock(IntegrationPublicEndpointResolver.class);
     final IntegrationTokenService keys = spy(new IntegrationTokenService(tokens,
             mock(IntegrationWebhookSubscriptionsRepository.class), mock(MongoTemplate.class)));
-    final McpAuthorizationService service = new McpAuthorizationService(keys, tokens, grants, users, groups, endpoint);
+    final McpOAuthClientsRepository registrations = mock(McpOAuthClientsRepository.class);
+    final CommunityGroupProfilesService profiles = mock(CommunityGroupProfilesService.class);
+    final com.raxim.myscoutee.common.config.properties.ConfigProperties config = new com.raxim.myscoutee.common.config.properties.ConfigProperties();
+    final McpAuthorizationService service = new McpAuthorizationService(keys, tokens, grants, users, groups, endpoint, registrations, profiles, config);
     final String id = UUID.randomUUID().toString(), verifier = "x".repeat(43);
     IntegrationToken client;
     @BeforeEach void setup() {
@@ -51,7 +54,8 @@ class McpAuthorizationServiceTest {
         assertThat(service.metadata()).containsEntry("issuer","https://app.example")
                 .containsEntry("authorization_endpoint","https://app.example/mcp/authorize")
                 .containsEntry("code_challenge_methods_supported",List.of("S256"));
-        assertThat(service.metadata()).doesNotContainKeys("registration_endpoint","client_id_metadata_document_supported");
+        assertThat(service.metadata()).containsEntry("registration_endpoint", "https://app.example/api/mcp/oauth/register");
+        assertThat(service.metadata()).doesNotContainKey("client_id_metadata_document_supported");
         assertThat(service.resourceMetadata()).containsEntry("resource","https://app.example/mcp/private");
     }
     @Test void consentBindsHashToExactClientResourcePkceAndNeverPersistsRawCode() {
@@ -82,7 +86,7 @@ class McpAuthorizationServiceTest {
         verifyNoInteractions(grants);
     }
     @Test void exchangeConsumesCodeOnceAndSavesOnlyHashedCredentials() {
-        authenticated(); McpAuthorization code = new McpAuthorization();code.ownerUserId="owner";
+        authenticated(); McpAuthorization code = new McpAuthorization();code.ownerUserId="owner";code.clientId=id;
         when(grants.consumeCode(hash("code"),id,client.getRedirectUri(),service.resource(),hash(verifier))).thenReturn(code).thenReturn(null);
         var result=service.exchange(exchange("code"),id,"secret","ip");
         var captor=org.mockito.ArgumentCaptor.forClass(McpAuthorization.class);verify(grants).save(captor.capture());
@@ -104,7 +108,7 @@ class McpAuthorizationServiceTest {
         verifyNoInteractions(grants);
     }
     @Test void refreshRotationAndReplayRevokeTheSameClientFamily() {
-        authenticated(); var grant=new McpAuthorization();grant.expiresAt=Instant.now().plusSeconds(10000);
+        authenticated(); var grant=new McpAuthorization();grant.clientId=id;grant.ownerUserId="owner";grant.expiresAt=Instant.now().plusSeconds(10000);
         String resource = service.resource();
         when(grants.rotate(eq(hash("old-refresh")),eq(id),eq(resource),anyString(),anyString())).thenReturn(grant).thenReturn(null);
         var input=Map.of("grant_type","refresh_token","refresh_token","old-refresh","resource",service.resource());
@@ -120,6 +124,82 @@ class McpAuthorizationServiceTest {
         assertThat(service.authenticate(access).ownerUserId()).isEqualTo("owner");
         client.setRevokedAtIso(Instant.now().toString()); assertThat(service.authenticate(access)).isNull();
         assertThat(service.authenticate("msc_"+"a".repeat(43))).isNull();
+    }
+    McpDtos.Registration registration(List<String> redirects) {
+        return new McpDtos.Registration("Inspector", redirects, "none", List.of("authorization_code", "refresh_token"), List.of("code"), "myscoutee:api");
+    }
+    String publicClient() {
+        var registered = new McpOAuthClient(); registered.id = "mcp_" + UUID.randomUUID();
+        registered.name = "Inspector"; registered.redirectUris = List.of(client.getRedirectUri());
+        registered.expiresAt = Instant.now().plusSeconds(86400);
+        when(registrations.findById(registered.id)).thenReturn(Optional.of(registered));
+        return registered.id;
+    }
+    McpDtos.Authorization publicRequest(String publicId) {
+        return new McpDtos.Authorization(publicId, client.getRedirectUri(), service.resource(), "myscoutee:api", "code", hash(verifier), "S256", "state");
+    }
+    @Test void registrationCreatesOnlyClientMetadataNotUserAuthority() {
+        var result = service.register(registration(List.of("http://127.0.0.1:6274/oauth/callback")));
+        assertThat(result).containsEntry("token_endpoint_auth_method", "none").doesNotContainKey("client_secret");
+        assertThat(result.get("client_id").toString()).startsWith("mcp_");
+        verify(registrations).insert(any(McpOAuthClient.class));
+        verifyNoInteractions(tokens, grants, users);
+        verify(keys, never()).create(anyString(), any(), anyString());
+    }
+    @Test void registrationRejectsUnsafeCallbacksUnsupportedMetadataAndFlooding() {
+        for (String redirect : List.of("https://a/*", "http://evil.example/cb", "https://u@a/cb", "javascript:alert(1)"))
+            assertThatThrownBy(() -> service.register(registration(List.of(redirect)))).isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.register(new McpDtos.Registration("x", List.of("https://a/cb"), "client_secret_post", null, null, null)))
+                .hasMessageContaining("invalid_client_metadata");
+        when(registrations.countByCreatedAtAfter(any())).thenReturn(60L);
+        assertThatThrownBy(() -> service.register(registration(List.of("https://a/cb")))).hasMessageContaining("429");
+        verify(registrations, never()).insert(any(McpOAuthClient.class));
+    }
+    @Test void publicConsentRequiresExplicitDisplayedProfileAndCancelCreatesNothing() {
+        String publicId = publicClient();
+        assertThat(service.context("owner", publicRequest(publicId)).profileId()).isEqualTo("owner");
+        assertThat(service.authorize("owner", new McpDtos.Consent(publicRequest(publicId), false, "owner")).url()).contains("error=access_denied");
+        assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(publicRequest(publicId), true))).hasMessageContaining("access_denied");
+        var foreign = new Users(); foreign.setUserId("foreign");
+        when(users.findByUserId("foreign")).thenReturn(Optional.of(foreign));
+        assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(publicRequest(publicId), true, "foreign"))).hasMessageContaining("access_denied");
+        verifyNoInteractions(grants);
+        verify(keys, never()).create(anyString(), any(), anyString());
+    }
+    @Test void publicCodeUsesPkceAndOwnerConnectionWithoutASecretAndRevocationWins() {
+        String publicId = publicClient(); client.setOauthClientId(publicId);
+        var code = new McpAuthorization(); code.clientId=publicId; code.tokenId=id; code.ownerUserId="owner";
+        when(grants.consumeCode(hash("code"), publicId, client.getRedirectUri(), service.resource(), hash(verifier))).thenReturn(code).thenReturn(null);
+        var input = exchange("code");
+        assertThatThrownBy(() -> service.exchange(input, publicId, "invented", "ip")).hasMessageContaining("invalid_client");
+        var result = service.exchange(input, publicId, null, "ip");
+        var saved = org.mockito.ArgumentCaptor.forClass(McpAuthorization.class); verify(grants).save(saved.capture());
+        assertThat(saved.getValue().ownerUserId).isEqualTo("owner");
+        assertThat(saved.getValue().tokenId).isEqualTo(id);
+        when(grants.access(hash((String)result.get("access_token")), service.resource())).thenReturn(saved.getValue());
+        assertThat(service.authenticate((String)result.get("access_token")).tokenId()).isEqualTo(id);
+        client.setRevokedAtIso(Instant.now().toString());
+        assertThat(service.authenticate((String)result.get("access_token"))).isNull();
+        assertThatThrownBy(() -> service.exchange(input, publicId, null, "ip")).hasMessageContaining("invalid_grant");
+        verify(keys, never()).authenticateClient(any(), any(), any(), any());
+    }
+    @Test void reconnectReusesOnlyThisOwnersActiveConnection() {
+        String publicId = publicClient(); client.setOauthClientId(publicId);
+        when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner")).thenReturn(List.of(client));
+        service.authorize("owner", new McpDtos.Consent(publicRequest(publicId), true, "owner"));
+        var saved = org.mockito.ArgumentCaptor.forClass(McpAuthorization.class); verify(grants).save(saved.capture());
+        assertThat(saved.getValue().tokenId).isEqualTo(id);
+        verify(keys, never()).create(anyString(), any(), anyString());
+    }
+    @Test void demoConsentRequiresExplicitDevConfigurationAndCannotCrossIntoRealRealm() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        assertThatThrownBy(() -> service.context("owner", request())).hasMessageContaining("access_denied");
+        config.setMcpDemoEnabled(true);
+        assertThat(service.context("owner", request()).profileId()).isEqualTo("owner");
+        MongoSessionModeContext.set(MongoSessionMode.REAL);
+        assertThatThrownBy(() -> service.context("owner", request())).hasMessageContaining("access_denied");
+        config.setFirebaseEnabled(true);
+        assertThat(service.context("owner", request()).profileId()).isEqualTo("owner");
     }
     @Test void rejectsUnsafeCallbacksWithoutThrowingNullPointer() {
         for(String url:List.of("http:/missing","http://example.com/callback","https://x@a/cb","https://a/*","https://a/cb#f","javascript:alert(1)"))

@@ -91,8 +91,8 @@ public class WebSecurityConfig {
                     authorizeRequests.requestMatchers("/metrics").hasAuthority("A");
                     authorizeRequests.requestMatchers("/operator/**", "/api/operator/**").hasAuthority("O");
                     authorizeRequests.requestMatchers(
-                            "/mcp/oauth/metadata", "/mcp/oauth/resource", "/mcp/oauth/token",
-                            "/api/mcp/oauth/metadata", "/api/mcp/oauth/resource", "/api/mcp/oauth/token",
+                            "/mcp/oauth/metadata", "/mcp/oauth/resource", "/mcp/oauth/token", "/mcp/oauth/register",
+                            "/api/mcp/oauth/metadata", "/api/mcp/oauth/resource", "/api/mcp/oauth/token", "/api/mcp/oauth/register",
                             "/health",
                             "/error",
                             "/auth/eligibility",

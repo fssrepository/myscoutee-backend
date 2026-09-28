@@ -29,6 +29,17 @@ class SessionMongoRoutingFilterTest {
         }
     }
 
+    @Test void explicitDevOauthRealmDoesNotDependOnCallerHeaders() throws Exception {
+        var config = new ConfigProperties(); config.setMcpDemoEnabled(true);
+        var filter = new SessionMongoRoutingFilter(config);
+        var request = new MockHttpServletRequest("POST", "/api/mcp/oauth/token");
+        assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.DEMO);
+        request.addHeader(DemoSessionRequestSupport.SESSION_KIND_HEADER, "real");
+        assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.DEMO);
+        config.setFirebaseEnabled(true);
+        assertThat(modeInside(filter, request)).isEqualTo(MongoSessionMode.REAL);
+    }
+
     @Test
     void bootstrapLoginAndHeaderAlwaysRouteToRealMongo() throws Exception {
         ConfigProperties properties = new ConfigProperties();

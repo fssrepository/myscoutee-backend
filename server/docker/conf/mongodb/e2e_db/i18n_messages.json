@@ -23283,13 +23283,13 @@
     "_id": "i18n-message-en-mcp-setup",
     "key": "mcp.setup",
     "lang": "en",
-    "value": "Create one connection per AI client. Add its MCP URL, client ID and secret in the client settings, then sign in and approve access. Connections expire after 90 days."
+    "value": "Copy the MCP URL into your AI client and choose Connect. Sign in to MyScoutee, check the displayed profile and group, then approve access. Return to the client and enable the connection for your conversation. You can revoke it here; connections expire after 90 days. No client ID or secret is needed for automatic registration."
   },
   {
     "_id": "i18n-message-en-mcp-local-only",
     "key": "mcp.local.only",
     "lang": "en",
-    "value": "These settings are saved locally in demo mode. Remote AI connections require a live HTTPS installation."
+    "value": "Browser-only local mode cannot receive external OAuth requests. In dev with the backend running, the normal demo sign-in can be used; deployed installations use their configured sign-in methods."
   },
   {
     "_id": "i18n-message-en-mcp-url",
@@ -24106,6 +24106,42 @@
     "key": "payment.cash.refund.approve.message",
     "lang": "en",
     "value": "Confirm that you have returned this cash amount to the payer?"
+  },
+  {
+    "_id": "i18n-message-en-events-explore",
+    "key": "events.explore",
+    "lang": "en",
+    "value": "Explore Events"
+  },
+  {
+    "_id": "i18n-message-en-assets-explore",
+    "key": "assets.explore",
+    "lang": "en",
+    "value": "Explore Assets"
+  },
+  {
+    "_id": "i18n-message-en-mcp-advanced",
+    "key": "mcp.advanced",
+    "lang": "en",
+    "value": "Advanced"
+  },
+  {
+    "_id": "i18n-message-en-mcp-manual-create",
+    "key": "mcp.manual.create",
+    "lang": "en",
+    "value": "Register client manually"
+  },
+  {
+    "_id": "i18n-message-en-mcp-technical-details",
+    "key": "mcp.technical.details",
+    "lang": "en",
+    "value": "Connection details"
+  },
+  {
+    "_id": "i18n-message-en-mcp-manual-help",
+    "key": "mcp.manual.help",
+    "lang": "en",
+    "value": "Use Advanced → Register client manually only if the AI client specifically asks for a client ID and secret. Connection details are available beside the revoke button. Never paste a secret into chat."
   },
   {
     "_id": "i18n-message-hu-navigator-community",
@@ -47391,13 +47427,13 @@
     "_id": "i18n-message-hu-mcp-setup",
     "key": "mcp.setup",
     "lang": "hu",
-    "value": "Hozz létre külön kapcsolatot az AI-kliensekhez. A kliens beállításaiban add meg az MCP-címet, a kliensazonosítót és a titkot, majd jelentkezz be és engedélyezd a hozzáférést. A kapcsolatok 90 nap után lejárnak."
+    "value": "Másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget. Jelentkezz be a MyScoutee-ba, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést. Visszatérve a kliensbe kapcsold be a kapcsolatot a beszélgetéshez. A kapcsolatot itt vonhatod vissza; 90 nap után lejár. Automatikus regisztrációnál nem kell kliensazonosítót vagy titkot megadni."
   },
   {
     "_id": "i18n-message-hu-mcp-local-only",
     "key": "mcp.local.only",
     "lang": "hu",
-    "value": "Demó módban ezek a beállítások helyben tárolódnak. A távoli AI-kapcsolathoz működő HTTPS-telepítés szükséges."
+    "value": "A kizárólag böngészőben működő local mód nem tud külső OAuth-kérést fogadni. Futó backenddel devben a szokásos demóbelépés is használható; telepített környezetben az ott beállított belépési módok érvényesek."
   },
   {
     "_id": "i18n-message-hu-mcp-url",
@@ -48216,18 +48252,6 @@
     "value": "Megerősíted, hogy ezt az összeget készpénzben visszaadtad a fizetőnek?"
   },
   {
-    "_id": "i18n-message-en-events-explore",
-    "key": "events.explore",
-    "lang": "en",
-    "value": "Explore Events"
-  },
-  {
-    "_id": "i18n-message-en-assets-explore",
-    "key": "assets.explore",
-    "lang": "en",
-    "value": "Explore Assets"
-  },
-  {
     "_id": "i18n-message-hu-events-explore",
     "key": "events.explore",
     "lang": "hu",
@@ -48238,5 +48262,29 @@
     "key": "assets.explore",
     "lang": "hu",
     "value": "Eszközök felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-advanced",
+    "key": "mcp.advanced",
+    "lang": "hu",
+    "value": "Haladó"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-manual-create",
+    "key": "mcp.manual.create",
+    "lang": "hu",
+    "value": "Kliens kézi regisztrálása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-technical-details",
+    "key": "mcp.technical.details",
+    "lang": "hu",
+    "value": "Kapcsolat adatai"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-manual-help",
+    "key": "mcp.manual.help",
+    "lang": "hu",
+    "value": "A Haladó → Kliens kézi regisztrálása csak akkor kell, ha az AI-kliens kifejezetten kliensazonosítót és titkot kér. A kapcsolat adatait a visszavonás gomb melletti ikonnal nyithatod meg. Titkot ne másolj csevegésbe."
   }
 ]

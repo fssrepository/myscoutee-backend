@@ -19,6 +19,14 @@ public class McpOAuthController {
     public McpOAuthController(McpAuthorizationService service) { this.service = service; }
     @GetMapping("/metadata") public Map<String, Object> metadata() { return service.metadata(); }
     @GetMapping("/resource") public Map<String, Object> resource() { return service.resourceMetadata(); }
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String, Object> register(@RequestBody com.raxim.myscoutee.profile.data.dto.integration.McpDtos.Registration input,
+            HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Cache-Control", "no-store");
+        if (request.getQueryString() != null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid_request");
+        return service.register(input);
+    }
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Map<String, Object> exchange(@RequestParam MultiValueMap<String, String> values,
             HttpServletRequest request, HttpServletResponse response) {
@@ -38,7 +46,7 @@ public class McpOAuthController {
                 client = basicClient; secret = URLDecoder.decode(parts[1], StandardCharsets.UTF_8);
             } catch (IllegalArgumentException ex) { throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid_client"); }
         }
-        if (secret == null || secret.length() > 256 || client == null || client.length() > 80)
+        if ((secret != null && secret.length() > 256) || client == null || client.length() > 80)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid_client");
         return service.exchange(values.toSingleValueMap(), client, secret, request.getRemoteAddr());
     }

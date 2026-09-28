@@ -208,7 +208,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
 
     private boolean isPublicEntryBootstrapRequest(HttpServletRequest request) {
         String requestUri = request == null ? "" : request.getRequestURI();
-        return requestUri.matches("/(?:api/)?mcp/oauth/(?:metadata|resource|token)")
+        return requestUri.matches("/(?:api/)?mcp/oauth/(?:metadata|resource|token|register)")
                 || requestUri.equals("/health")
                 || requestUri.equals("/api/health")
                 || requestUri.equals("/media/public")

@@ -88,12 +88,12 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: QUEUED / prerequisite development before API testing. Group Isolation HTTP9/9 closed2026-09-28; full Local NOT RUN.
-next_action: API block7 prerequisite development: evaluate existing MCP Inspector/OAuth client for reuse before implementing URL-first Connect. Checklist folders now match matrix QA domain; no API fixture or simulator started.
+substage: IN PROGRESS / block7 OAuth Connect prerequisite development. Isolation remains closed HTTP9/9; full Local NOT RUN.
+next_action: Finish URL-first Connect verification with the pinned official Inspector under myscoutee-mcp/tools/oauth-client; show API popup technical-details UI. Then move browser ChatGPT acceptance out of QA to a standalone deployment smoke guide.
 execution_authority: User delegated full-flow Isolation; after it, API testcase development before execution. User will open VMware for Firebase.
-execution_log: ../evidence/GROUP-ISOLATION-001-20260928.md
+execution_log: ../evidence/INTEGRATION-API-GROUP-001-oauth-development-20260928.md
 fixture_phase: Isolation reset-complete; original records and pre-launch active-session snapshots restored exactly. No API fixture staged.
-runtime: Isolation managed windows closed. Existing frontend-sync/backend still own builds; no duplicate processes.
+runtime: Existing frontend-sync/backend own builds. Optional Inspector listening on loopback 6274, managed by its separate launch.mjs; no new API browser or fixture yet.
 last_completed: Isolation blocks1–9 HTTP scope PASS. Pending-write picker is non-closable by the existing save contract; attempted bypass is not cross-scope mutation evidence. Contact/account read and A/B Event unread isolation verified. Demo selector compact red action/retained parent and general mobile menu bell hiding verified.
 mutation_contract: Await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through existing stores to retained lists/cards/badges. Failure retains dialog/error. Keep underlying popups open. No reload to obtain a mutation result.
 resume_gate: Before any new fixture or browser launch, read the queued testcase and inspect current runtime; Isolation has no live fixture to resume.

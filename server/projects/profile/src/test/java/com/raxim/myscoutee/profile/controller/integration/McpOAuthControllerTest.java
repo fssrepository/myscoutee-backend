@@ -25,6 +25,20 @@ class McpOAuthControllerTest {
                 .andExpect(status().isOk());
         verify(service,times(2)).exchange(anyMap(),eq("client"),eq("secret+value"),anyString());
     }
+    @Test void acceptsPublicClientPkceExchangeWithoutClientSecret() throws Exception {
+        when(service.exchange(anyMap(), eq("mcp_public"), isNull(), anyString())).thenReturn(Map.of("token_type", "Bearer"));
+        mvc.perform(post("/mcp/oauth/token").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("client_id", "mcp_public").param("grant_type", "authorization_code"))
+                .andExpect(status().isOk()).andExpect(header().string("Cache-Control", "no-store"));
+        verify(service).exchange(anyMap(), eq("mcp_public"), isNull(), anyString());
+    }
+    @Test void registrationIsNoStoreAndReturnsCreated() throws Exception {
+        when(service.register(any())).thenReturn(Map.of("client_id", "mcp_new", "token_endpoint_auth_method", "none"));
+        mvc.perform(post("/mcp/oauth/register").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"client_name\":\"Inspector\",\"redirect_uris\":[\"http://127.0.0.1:6274/oauth/callback\"],\"token_endpoint_auth_method\":\"none\"}"))
+                .andExpect(status().isCreated()).andExpect(header().string("Cache-Control", "no-store"))
+                .andExpect(jsonPath("$.client_secret").doesNotExist());
+    }
     @Test void rejectsAmbiguousOrMalformedCredentialsAndQueryStringSecrets() throws Exception {
         mvc.perform(post("/mcp/oauth/token").contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("client_id","a","b")).andExpect(status().isBadRequest()).andExpect(jsonPath("$.error").value("invalid_request"));

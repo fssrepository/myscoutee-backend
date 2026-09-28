@@ -14,6 +14,10 @@ public class ConfigProperties {
     private boolean operatorBootstrapAllowInsecure;
     private String firebaseServiceAccountPath;
     private boolean firebaseEnabled = false;
+    private boolean mcpDemoEnabled = false;
+    /** Explicit dev-only OAuth realm; caller headers never choose the token database. */
+    public boolean isMcpDemoEnabled() { return mcpDemoEnabled && !isFirebaseEnabled(); }
+    public void setMcpDemoEnabled(boolean value) { mcpDemoEnabled = value; }
     private volatile boolean deploymentFirebaseEnabled = false;
     private boolean chatOnlyMode = false;
     private String memberUser = "member1@myscoutee.local";

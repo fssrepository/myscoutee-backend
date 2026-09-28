@@ -12,6 +12,7 @@ public class McpAuthorization {
     @Id public String id;
     public String kind;
     @Indexed public String clientId;
+    public String tokenId;
     public String ownerUserId;
     public String resource;
     public String redirectUri;
