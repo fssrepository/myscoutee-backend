@@ -230,6 +230,18 @@ check_http_or_internal() {
   fail "${label} did not match expected response"
 }
 
+check_configured_mongo_image() {
+  local configured_image="$1"
+  local upstream_image="${configured_image}"
+  if [[ "${upstream_image}" != mongo:${EXPECTED_MONGO_MINOR}.* && "${upstream_image}" != "mongo:${EXPECTED_MONGO_MINOR}" ]]; then
+    upstream_image="$(docker image inspect --format '{{index .Config.Labels "io.myscoutee.upstream-reference"}}' "${configured_image}" 2>/dev/null || true)"
+  fi
+  if [[ "${upstream_image}" != mongo:${EXPECTED_MONGO_MINOR}.* && "${upstream_image}" != "mongo:${EXPECTED_MONGO_MINOR}" ]]; then
+    fail "configured Mongo image must use upstream mongo:${EXPECTED_MONGO_MINOR}; got ${configured_image:-unset}"
+  fi
+  status_line ok "configured Mongo image: ${configured_image} (upstream ${upstream_image})"
+}
+
 main() {
   require_command docker
   require_command curl
@@ -239,10 +251,7 @@ main() {
 
   local configured_image
   configured_image="$(read_env_file_value MONGO_IMAGE "${ENV_FILE}" || true)"
-  if [[ "${configured_image}" != mongo:${EXPECTED_MONGO_MINOR}* ]]; then
-    fail "MONGO_IMAGE must start with mongo:${EXPECTED_MONGO_MINOR}; got ${configured_image:-unset}"
-  fi
-  status_line ok "configured Mongo image: ${configured_image}"
+  check_configured_mongo_image "${configured_image}"
 
   if is_truthy "${START_STACK}"; then
     docker_compose up -d
