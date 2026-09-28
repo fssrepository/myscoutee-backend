@@ -15,6 +15,10 @@ public class ConfigProperties {
     private String firebaseServiceAccountPath;
     private boolean firebaseEnabled = false;
     private boolean mcpDemoEnabled = false;
+    private List<String> mcpManualRedirectUris = List.of();
+    /** Exact deployment-approved callbacks for generated predefined clients; never caller-selected. */
+    public List<String> getMcpManualRedirectUris() { return mcpManualRedirectUris; }
+    public void setMcpManualRedirectUris(List<String> value) { mcpManualRedirectUris = value == null ? List.of() : List.copyOf(value); }
     /** Explicit dev-only OAuth realm; caller headers never choose the token database. */
     public boolean isMcpDemoEnabled() { return mcpDemoEnabled && !isFirebaseEnabled(); }
     public void setMcpDemoEnabled(boolean value) { mcpDemoEnabled = value; }

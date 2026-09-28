@@ -17,10 +17,14 @@ Status: IN PROGRESS. This is development evidence, not a completed API QA row.
 - Includes public registration without authority, callback validation, PKCE/one-use code, owner binding, cancel, explicit displayed profile, reconnect reuse, revocation, refresh replay, and dev/real realm controls.
 - Nginx syntax check PASS and existing process reloaded for bounded `/api/mcp/oauth/register` route.
 - Inspector startup succeeded. Browser Connect / callback / actual private-tool full flow: NOT RUN yet.
-- Isolated API fixture not staged yet; original Isolation data stays reset.
+- Minimal `mcp-oauth` block7 development fixture staged for OAuth Demo Alex; two managed browsers launched through the versioned launcher. It does not stage blocks1–6. Original Isolation data stays reset.
+- Real dev HTTP checks **12/12 PASS**, recorded in `INTEGRATION-API-GROUP-001-oauth-http-20260928.json`: registration/context/consent, PKCE, code replay, actual MCP initialization/discovery/help call, refresh replay and revocation. This did not exercise browser callback or a private business-data read.
+- API popup now separates manual MCP keys under Advanced (same retained store, manual count badge) from OAuth permissions in the main popup. Base URL reuses the personal invitation copy-link layout. User accepted Advanced layout and requested the visible Generate label on mobile; compact mode removed.
+- HU/EN i18n seed audit PASS (8056 messages); all42 system seed baselines PASS. Frontend watcher build PASS; final label-only rebuild recorded below when complete.
+- Unexecuted real-host ChatGPT/Claude/Codex acceptance moved out of QA to `guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md`; deployment QA retains configured-provider OAuth, independently runnable with Inspector. No completed result moved.
 
 ## Remaining
 
 - Verify actual external Connect, normal app sign-in/consent, callback and private tool access; negative paths and cleanup.
-- Show API popup advanced/details implementation; HU/EN Help Center + `?` seed parity.
-- Move actual browser ChatGPT acceptance to standalone post-deployment smoke documentation; keep VMware/local checks in QA.
+- Verify browser help entry points and full OAuth flow; source/seed parity already verified.
+- Retained development fixture and Inspector require scoped cleanup after the pending browser development verification. Do not close the independent API testcase from development-only evidence.

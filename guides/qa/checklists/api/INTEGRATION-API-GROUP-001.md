@@ -116,7 +116,7 @@ when the application's other demo routes use local data.
 These are additional microsteps of this existing NOT RUN case, not new QA IDs
 and not updates to any closed Affiliate/Event/API PASS evidence.
 
-## 7. MCP discovery, help and client packages — NOT RUN
+## 7. MCP discovery, help and client packages
 
 ### Local/dev execution scope
 
@@ -133,9 +133,9 @@ An actual browser-based ChatGPT connection is a separate, user-operated manual
 deployment acceptance test; it is not a prerequisite or a substitute for this
 local API block.
 
-### API development required before this MCP flow is tested
+### External client and application contract
 
-The complete URL-first MCP connection flow is **NOT IMPLEMENTED**. Implement
+The URL-first MCP connection flow must satisfy the following contract. Verify
 it in the API/MCP domain first, then execute this block from its own staged
 baseline. This is API feature work, not deployment configuration.
 
@@ -143,8 +143,8 @@ Required behavior: the user enters the MCP URL in a supported client such as
 ChatGPT or Codex and starts Connect there. The client opens the application's
 sign-in and profile/group approval flow, completes its callback and gains the
 approved private tools. Ordinary users must not manually copy a client secret.
-The current manual client-ID/secret registration and consent page are partial
-implementation only; they do not satisfy this complete connection flow.
+Manual client-ID/secret registration and a consent page alone do not satisfy
+this complete connection flow.
 
 Extend the existing MCP authorization and connection owners. The external client
 initiates Connect; determine any additional application-side action from that
@@ -196,7 +196,7 @@ After the connection flow is implemented, extend both existing HU/EN help
 surfaces and verify each from its own UI entry:
 
 - Full Help Center: the AI integration chapter owned by
-  `frontend/src/app/shared/core/local/seed/builders/help-center-content-seed.builder.ts`
+  `frontend/src/app/shared/app-static-data.ts` through the existing Help Center seed builder
   and the Mongo `helpCenterRevisions.json` seeds. Explain URL, client-side
   Connect, MyScoutee sign-in/profile approval, return to the client, conversation
   use and revocation.
@@ -216,7 +216,7 @@ Make the complete flow runnable in local/dev during development. Provide a
 versioned test MCP/OAuth client with its own callback receiver and isolated
 identities through the existing QA harness. Keep this simulator in the existing
 `myscoutee-mcp` repository as a separately invoked command (for example,
-`cmd/myscoutee-mcp-simulator`), reusing its MCP SDK and build conventions. A new
+`tools/oauth-client` via `make oauth-client`), reusing the pinned official Inspector and existing Makefile. A new
 GitHub repository is unnecessary. Give it an explicit development/test target;
 starting the production MCP service must not start the simulator.
 This is an optional QA client, not an application runtime dependency. Its
@@ -276,3 +276,14 @@ session; browser logout does not revoke it, while explicit key revocation does.
 - Keep Revoke at the top right of every API-key/MCP connection card, including
   tall cards with a one-time credential, wrapped callback and last-used text.
   Verify narrow mobile and desktop layouts; the action remains reachable.
+
+- The main API popup retains the copyable MCP URL and URL-based OAuth permission
+  rows with per-connection revocation. Advanced opens the existing profile-owned
+  manual MCP key table with Generate and Revoke; its badge counts those manual
+  keys only. Opening Advanced performs no independent reload. Verify both
+  collections remain separate after create/revoke and profile changes.
+- Base URL uses the same heading plus copy-link-row layout as the personal
+  invitation link. Setup instructions stay in the `?` popup.
+- Real ChatGPT/Claude/Codex conversation acceptance is a standalone
+  [post-deployment smoke](../../../qualification/MCP-CLIENT-CONNECT-SMOKE.md),
+  outside this API QA case.

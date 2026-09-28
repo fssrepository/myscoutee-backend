@@ -12,9 +12,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import com.raxim.myscoutee.profile.data.document.McpOAuthClient;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -83,7 +83,7 @@ public class McpAuthorizationService {
     public McpDtos.Created create(String owner, McpDtos.ClientRequest input) {
         if (input == null || input.name() == null || input.name().isBlank() || input.name().length() > 80)
             throw error("invalid_request");
-        String redirect = redirectUri(input.redirectUri());
+        String redirect = input.redirectUri() == null || input.redirectUri().isEmpty() ? "" : redirectUri(input.redirectUri());
         var created = keys.create(owner, new IntegrationTokenCreateRequestDto(input.name(), 90), MCP_SCOPE);
         var token = tokens.findByIdAndOwnerUserId(created.token().id(), owner).orElseThrow();
         token.setRedirectUri(redirect);
@@ -211,7 +211,7 @@ public class McpAuthorizationService {
     }
     private ClientIdentity validate(McpDtos.Authorization r) {
         if (!realmMatches()) throw error("access_denied");
-        if (r == null || !"code".equals(r.responseType()) || !"S256".equals(r.codeChallengeMethod())
+        if (r == null || r.redirectUri() == null || !"code".equals(r.responseType()) || !"S256".equals(r.codeChallengeMethod())
                 || r.codeChallenge() == null || !r.codeChallenge().matches("[A-Za-z0-9_-]{43}")
                 || (r.state() != null && r.state().length() > 1024)) throw error("invalid_request");
         var client = clientIdentity(r.clientId());
@@ -233,7 +233,10 @@ public class McpAuthorizationService {
         }
         var key = requireClient(id);
         if (key.getOauthClientId() != null) throw error("invalid_client");
-        return new ClientIdentity(id, key.getName(), key.getOwnerUserId(), List.of(key.getRedirectUri()));
+        var redirects = key.getRedirectUri() == null || key.getRedirectUri().isBlank()
+                ? config.getMcpManualRedirectUris().stream().map(McpAuthorizationService::redirectUri).distinct().toList()
+                : List.of(key.getRedirectUri());
+        return new ClientIdentity(id, key.getName(), key.getOwnerUserId(), redirects);
     }
     private IntegrationToken grantConnection(McpAuthorization grant) {
         String id = grant.tokenId == null ? grant.clientId : grant.tokenId;
@@ -257,7 +260,7 @@ public class McpAuthorizationService {
         return tokens.findById(id).filter(this::isClient).orElseThrow(() -> error("invalid_client"));
     }
     private boolean isClient(IntegrationToken t) {
-        return keys.isActive(t) && MCP_SCOPE.equals(t.getScope()) && t.getRedirectUri() != null;
+        return keys.isActive(t) && MCP_SCOPE.equals(t.getScope());
     }
     private void requireAccount(String actor, String owner) {
         var a = users.findByUserId(actor).orElseThrow(() -> error("access_denied"));

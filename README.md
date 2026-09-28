@@ -60,6 +60,8 @@ and [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md) (9/9).
 Isolation fixtures and pre-launch sessions were restored exactly; managed windows
 are closed. Full Local remains NOT RUN. External/configured/device acceptance
 belongs to independent [deployment QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
+Real ChatGPT/Claude/Codex connection and conversation acceptance is a separate
+[post-deployment smoke](guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md), outside the QA matrix.
 Next is the [participant-link API](guides/qa/checklists/api/INTEGRATION-API-GROUP-001.md),
 with its MCP client development required before testing; it belongs to API test.
 See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
@@ -84,4 +86,4 @@ is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
 committed deltas, failed-save retry, immediate list removal and stored-state poll.
 Its isolated fixture and browser sessions are cleaned.
 
-Firebase and externally configured MCP/client checks are tracked separately as **DEFERRED / NOT RUN** in [deployment integration QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md); they do not block the active Group campaign.
+Firebase and configured-provider OAuth checks are tracked separately as **DEFERRED / NOT RUN** in [deployment integration QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md); they do not block the active Group campaign.
