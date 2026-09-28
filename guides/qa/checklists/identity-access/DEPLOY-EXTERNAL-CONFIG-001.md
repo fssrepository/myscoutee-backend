@@ -16,7 +16,72 @@ Execution status and evidence belong in the QA ledger, not this checklist.
 - Reuse the existing fixture harness and browser launcher. Real authentication
   must use the normal UI; injected demo sessions cannot prove these checks.
 
-## 1. Firebase entry, registration, profile fields and location
+## 1. Machine-run checks — no physical phone required
+
+Run these checks from the workstation against the configured deployment. Reuse
+this checkpoint's verified non-demo session where authentication is required;
+preparing a session does not prove provider login. No phone interaction is part
+of this block. If a prerequisite requires fresh provider login, retain that
+assertion for block2 rather than operating the phone out of order.
+
+1. **Help initialization/update.** On a separately initialized disposable
+   deployment, verify fresh initialization and the supported help update/import
+   path for HU/EN against the canonical revision. Never reseed live production
+   as a QA shortcut. Verify configured HTTP and MCP reads separately.
+2. **Private invitation denial.** Using verified non-demo identities, reject an
+   unauthorized direct/deep link to a pending invitation's private actions and
+   resources. Prepare the private event, pending recipient and unrelated account
+   within this checkpoint.
+
+3. **OAuth protocol checks.** Verify discovery, issuer/resource and callback
+   configuration from the workstation. With this run's client/grant when
+   available, reject invalid client/redirect/PKCE/resource, expired or reused
+   codes, refresh replay and revoked grants. Grant-dependent checks follow
+   block2's provider authorization; unauthenticated rejection alone cannot
+   prove them.
+4. **Report templates.** Verify the frontend repository's actual issue chooser
+   and concise Bug, Feature and Question templates without submitting an issue.
+   Authenticated chooser interaction, if needed, can use a desktop browser.
+
+## 2. Configured OAuth — phone browser with the external client
+
+Keep the browser on the phone throughout the remaining interactive checks.
+Run the Inspector service on the workstation and forward its callback port to
+the phone, alongside the deployment HTTPS port. Use the separately launched
+official Inspector wrapper in
+`myscoutee-mcp/tools/oauth-client` against this checkpoint's configured test
+installation. A VMware deployment is sufficient when the client can reach its
+HTTPS endpoint and the configured provider/callbacks. This branch verifies
+application configuration and real provider login; it does not require ChatGPT.
+
+1. Connect by MCP URL. Complete normal Firebase/Google/email sign-in as configured,
+   approve the displayed profile/group, return to Inspector and call an allowed
+   private read operation through that same OAuth connection.
+2. Repeat with an existing signed-in session, cancellation and reconnect. Check
+   the installation's issuer, resource, callbacks and public-client registration.
+   Deny invalid client/redirect/PKCE/resource, expired or reused code, refresh
+   replay and revoked grants without exposing private data.
+3. Verify that browser logout does not revoke an independently issued OAuth
+   grant or API key; explicit permission/key revocation does. Ordinary app
+   requests still require their browser session.
+4. Revoke this run's grants and restore its identities/configuration/checkpoint.
+
+A separate [post-deployment external-client smoke guide](../../../qualification/MCP-CLIENT-CONNECT-SMOKE.md)
+owns real ChatGPT/Claude/Codex installation and conversation acceptance.
+Those checks are outside this QA case and do not block its completion.
+A prior dev/Inspector result cannot substitute for this configured-provider run.
+
+## 3. Mobile checks — one final device block
+
+Finish the machine-run work before requesting the phone. Use this run's origin,
+account and frontend revision; snapshot browser/OS permissions and pre-install
+state. Record the expected deployed runtime version.
+
+### 3.1. Firebase entry, registration, profile fields and location
+
+Reuse the recorded Firebase results. Skip completed assertions when reaching
+this block; do not repeat them because the checklist order changed. Provider
+login is performed by the user only when a remaining assertion requires it.
 
 Use one registration journey for authentication, location and registration-field
 checks. Continue with that created profile; do not repeat registration as a
@@ -50,82 +115,23 @@ separate testcase block.
    profile request: no cached-success acknowledgement and no loss of the pending
    point; retry sends it again. Switching accounts must not send the other
    account's point, and an older reply must not clear a newer staged point.
-5. **Private invitation denial.** Using verified non-demo identities, reject an
-   unauthorized direct/deep link to a pending invitation's private actions and
-   resources. Prepare the private event, pending recipient and unrelated account
-   within this checkpoint.
 
-## 2. Configured OAuth with the external development client
+### 3.2 Installed-app version
 
-Use the separately launched official Inspector wrapper in
-`myscoutee-mcp/tools/oauth-client` against this checkpoint's configured test
-installation. A VMware deployment is sufficient when the client can reach its
-HTTPS endpoint and the configured provider/callbacks. This branch verifies
-application configuration and real provider login; it does not require ChatGPT.
-
-1. Connect by MCP URL. Complete normal Firebase/Google/email sign-in as configured,
-   approve the displayed profile/group, return to Inspector and call an allowed
-   private read operation through that same OAuth connection.
-2. Repeat with an existing signed-in session, cancellation and reconnect. Check
-   the installation's issuer, resource, callbacks and public-client registration.
-   Deny invalid client/redirect/PKCE/resource, expired or reused code, refresh
-   replay and revoked grants without exposing private data.
-3. Verify that browser logout does not revoke an independently issued OAuth
-   grant or API key; explicit permission/key revocation does. Ordinary app
-   requests still require their browser session.
-4. Revoke this run's grants and restore its identities/configuration/checkpoint.
-
-A separate [post-deployment external-client smoke guide](../../../qualification/MCP-CLIENT-CONNECT-SMOKE.md)
-owns real ChatGPT/Claude/Codex installation and conversation acceptance.
-Those checks are outside this QA case and do not block its completion.
-A prior dev/Inspector result cannot substitute for this configured-provider run.
-
-## 3. Configured deployment help initialization/update
-
-On this testcase's separately configured deployment,
-verify fresh initialization and the supported help update/import path for both
-languages against the canonical help revision. Never reseed live production as
-a QA shortcut.
-
-## 4. External reporting and installed-app version
-
-Prepare this run's frontend origin/revision, a controlled authenticated GitHub
-session and a supported installable browser/device. Capture the pre-install
-state and the expected runtime version; do not use another testcase's session.
-
-1. Open Report an issue and the frontend repository's actual issue chooser.
-   Verify concise Bug, Feature and Question templates without submitting an issue.
-2. Install the tested app through the normal supported flow, then open it.
-   Verify that the runtime version remains at the right of Settings when the
+1. Install the tested app through the normal supported browser/device flow,
+   then open it.
+2. Verify that the runtime version remains at the right of Settings when the
    installation action is hidden. It must match the deployed revision.
-3. Remove only this run's installation/session and restore captured settings.
 
-## 5. Android physical-device permission recovery
-
-Prepare a controlled Android device for this test origin, with this run's account
-and an explicit snapshot of browser/OS permission settings.
+### 3.3 Permission recovery and cleanup
 
 1. Deny the applicable permission in browser/OS settings, then open Setup.
    Change the external setting as described by the platform guidance, return
    to MyScoutee and retry through the normal UI.
 2. Verify the actual Android permission outcome; retain the observed denied and
    successful retry states.
-3. Restore the recorded permissions, account state and test installation.
-
-## 6. iOS physical-device permission recovery — IGNORED
-
-Ignored at the user's request: no iOS device is available. This block does not
-gate completion of blocks1–5 and has no PASS evidence.
-
-For a future explicitly resumed iOS run, prepare a controlled iPhone or iPad for this test origin, with this run's
-account and an explicit snapshot of Safari/OS permission settings.
-
-1. Deny the applicable permission in Safari/OS settings, then open Setup.
-   Follow the iOS guidance to change the external setting, return to MyScoutee
-   and retry through the normal UI.
-2. Verify the actual iOS permission outcome and retain the observed denied and
-   successful retry states.
-3. Restore the recorded permissions, account state and test installation.
+3. Remove only this run's installation/session and restore captured permissions
+   and account state.
 
 ## Restaging, checkpoints and cleanup
 

@@ -11331,37 +11331,37 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
 
-### DEPLOY-EXTERNAL-CONFIG-001 — merged block1 in progress2026-09-28
+### DEPLOY-EXTERNAL-CONFIG-001 — machine checks in progress2026-09-28
 
 [Dedicated checklist](../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
-Former block4 registration/profile-field coverage is now part of block1. User
-completed normal Google registration on the phone; no registration replay is
-required. Backend verification found the completed public profile, three images, exact
-agreement between the sent and stored coordinates, a successful profile read and
-cleared pending browser coordinates. The HTTP IndexedDB user table store was empty.
+Firebase is retained under final mobile3.1; preserve observed registration, Children HU/sample
+filters, existing missing/saved-point login and location retry results. User
+explicitly prohibited replay of completed checks. Fresh-record absence baseline
+and full EN Children editor/view variants remain unproven; do not invent PASS.
+Browser pending-location and database Children/location controls are restored.
 
-Firebase Setup→Update→Close→provider ordering was repaired and verified on the
-phone;63 focused tests passed, including unchanged demo admission. Children “Van”
-was incorrectly translated a second time as the vehicle “Furgon”; its UI repair
-passed20 menu tests, was deployed as production build050359 and was confirmed
-fixed by the user on the phone. Finish1.2 profile-field checks,
-then the user-requested missing-location existing-account login, retry/isolation
-and private denial. Later blocks remain NOT RUN. Renumbered iOS block6 is IGNORED
-at the user's explicit request and does not gate closure.
+Final user-confirmed order:1 machine checks,2 interactive phone OAuth,3 one
+mobile block (Firebase3.1 retained/skipped, installed-app3.2, Android recovery3.3). iOS removed from active checklist at user
+request; no iOS PASS. Historical1.5 private denial is now1.2; help3 is1.1.
 
-2026-09-28 follow-up: profile-editor catalogs/icons/colors reused for every game
-filter, with grouped long lists and no short-list search. Production054954 and
-API deployed;27 frontend/21 Java tests PASS. Android sample confirms12 zodiac
-choices,8 traits, language groups and saved No excluding the Yes control. User
-requested sampled filter testing; exhaustive UI coverage is not claimed. User
-currently inspecting phone; retain Children/location controls until handback.
+Queued consent/spinner production UI06450 activated on VMware after user
+approval; ten containers healthy. Running backend JAR matches latest production
+build. Consent focused4 tests PASS, separate manual replay waived.
 
-1.3 update: user confirmed raxim.uk login; existing profile and pending point
-HTTP200/Mongo persistence verified. Children positive/negative filter sample
-completed and exact Children control restored. Saved-point sign-in is next.
-Consent hydration race repaired with4 focused tests PASS; source/build pending
-deployment at user's request, separate manual consent retest waived. EN Children
-editor/view variants remain unproven. Active UI055516; details in parity record.
+Machine1.1: installed importer on disposable VMware Mongo DB matches canonical
+HU/ENv3, no users, exact cleanup. Existing migration test PASS including update,
+repeat/interruption and custom/disabled preservation. Configured HTTP HU/ENv3
+reads200 and all canonical content fields match; MCP returns the same17 topics
+for both languages. Full standalone deployment initialization is not claimed.
+Private outsider requests403/404 with unchanged DB and exact fixture restore.
+OAuth discovery/initial negative probes PASS; grant-dependent checks await
+Inspector. Actual GitHub chooser redirects to sign-in; authenticated check
+remains. This is not yet full testcase PASS.
+
+OAuth2.1 now PASS on physical phone Inspector: real existing Firebase session,
+normal OAuth permission and successful account-owned event read. No injected
+grant. User requires remaining browser checks on phone in order.2.2 reconnect/
+cancellation active; new client tracked for normal revocation and scoped cleanup.
 
 Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
 

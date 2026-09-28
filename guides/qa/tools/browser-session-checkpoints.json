@@ -2614,6 +2614,22 @@
           "sessionKind": "anonymous"
         }
       ]
+    },
+    "DEPLOY-EXTERNAL-CONFIG-001-DESKTOP": {
+      "fixtureCheckpointId": "DEPLOY-EXTERNAL-CONFIG-001",
+      "preserveOtherSessions": true,
+      "entryUrl": "https://localhost:8443/entry",
+      "targetUrl": "https://localhost:8443/game",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "geolocationPermission": "prompt",
+      "sessions": [
+        {
+          "actor": "Configured deployment OAuth desktop",
+          "sessionKind": "anonymous"
+        }
+      ],
+      "geolocation": false
     }
   }
 }

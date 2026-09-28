@@ -280,3 +280,119 @@ saved profile-view semantics or Hungarian filter assertions.
   landing/Setup behavior unchanged after discussion; no location/landing code
   was edited. The phone is currently signed out at entry; saved-point Firebase
   sign-in remains pending. Do not label this branch PASS before completion.
+
+
+### Firebase completion evidence and revised execution order
+
+- User confirmed the saved-point raxim.uk sign-in at06:12UTC. Normal login,
+  account read and profile-ext returned200; the existing identity reached/game
+  with no registration. Setup behavior was retained by explicit user decision.
+- Location retry runtime06:15–06:16UTC: normal application reloads retained the
+  pending point after a transport failure, retried it successfully, and cleared
+  only its account's acknowledged sample. A held older200 response did not clear
+  a newer staged sample. The other real identity's pending sample was neither
+  sent nor consumed. This was namespace isolation with the current real session,
+  not a fresh provider account-switch test. Browser fixtures were exactly
+  restored; independent Mongo read matched the sent point, then the versioned
+  location control restored the original database coordinates.
+- User requested no replay of completed checks. Firebase remains block1 with
+  existing evidence and limitations; do not rerun registration/login/retry.
+  Block2 now holds remaining machine checks, block3 interactive desktop OAuth,
+  block4 final physical Android installation/permission checks. iOS was removed
+  from the active checklist by explicit user request; no iOS PASS is claimed.
+  Former1.5 is now2.2, former help3 is2.1, reporting4.1 is2.4.
+
+### Authorized pending-artifact deployment and machine help checks
+
+- User authorized deployment of queued fixes. Loaded and activated production
+  nginx build313df4a1d342-20260928060450; HTTPS/app-version.json verifies1.3.0
+  and that exact build. Archive SHA256:
+  3f8508e8b0e0c78f2dff8bc7eee65770b608355c96b15d13a69e63e1c41a3033.
+  Prior image retained as myscoutee-nginx:qa-before-consent-055516.
+  All ten containers healthy. Consent and spinner fixes are now deployed;
+  separate manual consent retest remains waived.
+- No backend update was missing: running and local production JAR hashes match:
+  2e01b4df46ad1beb83f1e48b5afa3589bc3fa6b19d81e25a4b482d1e167dbff7.
+  No DEB/tag/registry release or Netcup operation performed.
+- Versioned deploy-help-initialization.sh exercised the installed Mongo importer
+  on a uniquely named disposable database on VMware:36 documents imported,
+  HU/EN activev3 exactly matched canonical seeds, no users; DB/users removed and
+  cleanup verified. This proves fresh importer initialization, not a separately
+  booted complete application deployment.
+- Existing default-help-migration-test.py ran on VMware Mongo: HU/EN upgrade,
+  fresh state, repeat/interrupted retry, custom/disabled preservation, version
+  conflict and retained privacy/users PASS. Its disposable database was dropped.
+- Configured HTTP/help/active returned200 with v3 for HU/EN. Full canonical
+  payload comparison and MCP read are tracked separately; do not infer a full
+  block2.1 PASS from importer/migration checks alone.
+
+
+### Final ordering clarification and remaining machine results
+
+The user's final clarification supersedes intermediate numbering above: machine1,
+interactive OAuth2, one mobile3 block with Firebase3.1 retained, installed-app3.2
+and Android3.3. Skip completed Firebase assertions when reaching mobile3.1.
+
+- HU/EN HTTP active-help content fields and all17 sections match canonical seeds.
+  Additional DTO presentation defaults (panelSpan, optional, imageUrls) are normal
+  service projections, not seed content differences. Anonymous MCP resources/read
+  returns the same v3/language/title and17 section IDs/titles/summaries with content.
+- Versioned private invitation fixture used two existing Firebase identities as
+  pending recipient and unrelated actor. Its owner was a fixture-only account.
+  Existing real outsider session reused from workstation; no provider-login claim.
+  Event detail404, members403, unpublish403, member removal403. Existing private
+  chat/message controls then verified: chat/messages/member-page404, send403.
+  Initial absent-chat responses were not used as proof of private-content denial.
+  Scoped database snapshots remained identical; exact fixture cleanup verified.
+  No visual deep-link navigation claim; direct resource requests were exercised.
+- Configured OAuth well-known discovery200 exposes VMware8443 issuer, endpoints,
+  S256 and matching private resource. Invalid remote HTTP redirect400, unsupported
+  client auth400, implicit grant400, nonexistent client400, missing client401.
+  No client/grant created by these negative probes. Valid grant/PKCE/replay/
+  revocation cases remain for the official Inspector flow.
+- Actual GitHub issue chooser redirects to sign-in. Local Bug/Feature/Question
+  templates are concise; authenticated deployed chooser is not yet proven.
+- Official Inspector2.8.0 started against https://localhost:8443/mcp/private with
+  the local QA certificate scoped through NODE_EXTRA_CA_CERTS. Existing versioned
+  browser launcher opened a separate anonymous desktop session; phone unchanged.
+  Private runtime log and real-session request credentials stay under /tmp only.
+
+
+### Desktop OAuth prerequisite correction
+
+The initial desktop launcher inherited the global Austin geolocation fixture,
+causing the user's observed unsupported-region Setup message. This was a QA
+preparation error. Stopped only that managed browser's geolocation holder and
+restarted the same versioned holder with the previously observed native phone
+sample, without reloading or dropping the OAuth URL. Browser geolocation matched
+the retained sample. The desktop checkpoint now explicitly disables inherited
+geolocation emulation by default; future emulation must be scoped intentionally.
+The flow reached normal Google sign-in; provider credentials remain user-owned.
+
+Inspector's newly registered public client is retained in the deployment harness
+via capture-oauth-client. Revoke its permission normally, then run
+restore-oauth-client before final cleanup. The temporary workstation copy of
+Firebase request credentials was deleted after the direct-request checks.
+
+
+### OAuth2.1 — physical phone Inspector connection and private read
+
+User required moving OAuth to the phone because desktop CDP provider login is
+unreliable, then required all remaining browser checks on the phone in order.
+Added only adb reverse6274→workstation6274 (existing mappings snapshotted), opened
+the official Inspector UI on the phone and retained the normal Firebase session.
+Removed the unused desktop DCR record via the scoped harness. Inspector initially
+reused its cached old registration; cleared it through Settings → Clear stored
+OAuth state and restarted normal Connect. The new phone client is captured by
+the harness; no approval/grant was injected. Inspector reached Connected and
+advertised the correct base-profile identity and private read tools.
+
+Executed Inspector's advertised event read for an existing account-owned Event.
+Normal tools/call returned its source ID, title, DR status and Casual mode in both
+content and structured output. No Event was created or edited. This closes2.1's
+configured-provider existing-session authorization/private-read boundary; it does
+not claim a new provider sign-in on this attempt. Current phone client:
+mcp_370eafab-15dc-43df-ae7f-a353a0e5f7d2. Permission token record:
+aa4cd241-dc12-4c4f-9858-4e98100c1a47 (identifier only, not a credential).
+Desktop managed browser closed; Inspector service retained.2.2 disconnect/
+reconnect started; cancellation and grant-negative/revocation checks remain.

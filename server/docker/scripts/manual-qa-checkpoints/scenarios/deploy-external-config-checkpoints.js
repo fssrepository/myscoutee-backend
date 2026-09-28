@@ -47,6 +47,105 @@
     Q.printObject(status()); return;
   }
   if (!state) Q.fail('Stage the independent deployment checkpoint first.');
+  if (command === 'capture-oauth-client') {
+    const id = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    const client = Q.collection('mcpOAuthClients').findOne({_id: id});
+    const retained = state.oauthClients || (state.oauthClient ? [state.oauthClient] : []);
+    if (!client || client.name !== 'MCP Inspector' || retained.some(row => row.id === id)
+        || new Date(client.createdAt) < new Date(state.stagedAtIso)) {
+      Q.fail('Provide this run\'s newly registered Inspector client.');
+    }
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {
+      $set: {oauthClients: [...retained, {id, client}]}, $unset: {oauthClient: ''}});
+    Q.printObject({checkpointId, phase: 'oauth-client-captured', clientId: id}); return;
+  }
+  if (command === 'restore-oauth-client') {
+    const ids = (state.oauthClients || (state.oauthClient ? [state.oauthClient] : [])).map(row => row.id);
+    if (!ids.length) Q.fail('No retained Inspector client.');
+    if (Q.collection('integrationTokens').countDocuments({oauthClientId: {$in: ids},
+      $or: [{revokedAtIso: null}, {revokedAtIso: ''}]})) Q.fail('Revoke this run\'s OAuth permission through the application first.');
+    const specs = [{collection: 'mcpOAuthClients', selector: {_id: {$in: ids}}},
+      {collection: 'mcpAuthorizations', selector: {clientId: {$in: ids}}},
+      {collection: 'integrationTokens', selector: {oauthClientId: {$in: ids}}}];
+    Q.restoreSnapshots(specs.map(spec => ({...spec, documents: []})));
+    if (specs.some(spec => Q.collection(spec.collection).countDocuments(spec.selector))) Q.fail('OAuth cleanup incomplete.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {oauthClient: '', oauthClients: ''}});
+    Q.printObject({checkpointId, phase: 'oauth-client-restored', exactScope: true}); return;
+  }
+  const privateEventId = 'qa-deploy-private-invitation-v1';
+  const privateOwner = actors.find(actor => actor.key === 'private').userId;
+  const privateSpecs = () => [
+    {collection: 'users', selector: {userId: privateOwner}},
+    ...['events', 'activityMembers', 'chats', 'chatMessages', 'activityResources',
+      'eventTickets', 'userNotifications', 'notificationOutbox', 'accessGrants'].map(collection => ({collection,
+      selector: {$or: ['sourceId', 'ownerId', 'eventId', 'chatId', 'id', '_id']
+        .map(key => ({[key]: privateEventId}))}}))
+  ];
+  if (command === 'prepare-private-invitation') {
+    if (state.privateInvitation) Q.fail('Restore the retained private invitation first.');
+    const ids = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID).split(',');
+    if (ids.length !== 2 || ids[0] === ids[1]) Q.fail('Provide pending recipient,unrelated account IDs.');
+    const accounts = ids.map(userId => Q.collection('users').findOne({userId}));
+    if (accounts.some(user => !user?.firebaseUid || user.accountUserId || user.workspaceGroupId)) {
+      Q.fail('Two existing Firebase base profiles are required.');
+    }
+    const before = Q.snapshotSpecs(privateSpecs());
+    if (before.some(row => row.documents.length)) Q.fail('Private invitation namespace occupied.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      privateInvitation: {before, recipient: ids[0], outsider: ids[1], eventId: privateEventId}
+    }});
+    const now = Q.nowIso();
+    Q.collection('users').insertOne({_id: privateOwner, userId: privateOwner, syncKey: privateOwner,
+      name: 'QA private invitation owner', initials: 'QA', profileStatus: 'public',
+      email: 'deploy-external-private@qa.myscoutee.test', operator: false});
+    Q.collection('events').insertOne({_id: privateEventId, sourceId: privateEventId, syncKey: privateEventId,
+      ownerUserId: privateOwner, creatorUserId: privateOwner, admins: [privateOwner],
+      status: 'A', visibility: 'Invitation only', title: 'QA deployment private invitation',
+      description: 'QA_DEPLOY_PRIVATE_CONTENT', startAtIso: '2027-02-11T17:15:00.000Z',
+      endAtIso: '2027-02-11T20:15:00.000Z', eventType: 'main', mode: 'Casual',
+      acceptedMembers: 1, pendingMembers: 1, acceptedMemberUserIds: [privateOwner],
+      pendingMemberUserIds: [ids[0]], invitedMemberUserIds: [ids[0]], pendingRequestMemberUserIds: [],
+      capacityMin: 1, capacityMax: 5, capacityTotal: 5, autoInviter: false,
+      ticketing: false, slotsEnabled: false, createdDate: now, updatedDate: now,
+      createdUser: privateOwner, updatedUser: privateOwner});
+    Q.collection('activityMembers').insertMany([privateOwner, ids[0]].map((userId, index) => ({
+      _id: `event:${privateEventId}:${userId}`, syncKey: `event:${privateEventId}:${userId}`,
+      ownerType: 'event', ownerId: privateEventId, userId,
+      role: index === 0 ? 'Admin' : 'Member', status: index === 0 ? 'accepted' : 'pending',
+      requestKind: index === 0 ? null : 'invite', invitedByUserId: index === 0 ? null : privateOwner,
+      organizerOnly: false, createdDate: now, updatedDate: now, createdUser: privateOwner, updatedUser: privateOwner
+    })));
+    Q.collection('chats').insertOne({_id: `chat-owner-copy:${privateEventId}`, id: privateEventId,
+      channelType: 'event', ownerId: privateEventId, eventId: privateEventId,
+      ownerUserId: privateOwner, memberIds: [privateOwner], title: 'QA private chat',
+      lastMessage: 'QA_DEPLOY_PRIVATE_CONTENT', lastSenderId: privateOwner,
+      dateIso: now, unread: 0, revision: NumberLong('1')});
+    Q.collection('chatMessages').insertOne({_id: `chat-message:${privateEventId}:control`,
+      id: 'control', chatId: privateEventId, sender: 'QA owner',
+      senderAvatar: {id: privateOwner, initials: 'QA'}, text: 'QA_DEPLOY_PRIVATE_CONTENT',
+      sentAtIso: now, messageSenderUserIds: [privateOwner], messageReadByUserIds: [privateOwner],
+      readBy: [], reactions: [], attachments: []});
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {
+      'privateInvitation.staged': Q.snapshotSpecs(privateSpecs())
+    }});
+    Q.printObject({checkpointId, phase: 'private-invitation-ready', eventId: privateEventId,
+      recipient: ids[0], outsider: ids[1], ownerIsFixtureOnly: true}); return;
+  }
+  if (command === 'verify-private-invitation' || command === 'restore-private-invitation') {
+    const saved = state.privateInvitation;
+    if (!saved) Q.fail('Private invitation not staged.');
+    if (command === 'restore-private-invitation') Q.restoreSnapshots(saved.before);
+    const expected = command === 'restore-private-invitation' ? saved.before : saved.staged;
+    for (const snapshot of expected) {
+      const actual = Q.collection(snapshot.collection).find(snapshot.selector).toArray();
+      const order = rows => rows.sort((a,b) => String(a._id).localeCompare(String(b._id)));
+      if (!Q.sameJson(order(actual), order(snapshot.documents))) Q.fail(`Private invitation changed: ${snapshot.collection}`);
+    }
+    if (command === 'restore-private-invitation') {
+      Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {privateInvitation: ''}});
+    }
+    Q.printObject({checkpointId, phase: command, exactMatch: true}); return;
+  }
   if (command === 'prepare-children-control') {
     const userId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     if (!/^[a-f0-9]{8}-[a-f0-9-]{27}$/.test(userId) || state.childrenControl) Q.fail('Provide one new Children profile control.');
@@ -119,6 +218,8 @@
     Q.printObject({checkpointId, captured: name}); return;
   }
   if (command === 'reset') {
+    if (state.oauthClient || state.oauthClients?.length) Q.fail('Restore Inspector clients before cleanup.');
+    if (state.privateInvitation) Q.fail('Restore private invitation before cleanup.');
     if (state.childrenControl) Q.fail('Restore the Children profile control before cleanup.');
     if (state.locationControl) Q.fail('Restore the existing-account location control before cleanup.');
     if (!Q.sameJson(config(), state.configurationBefore)) Q.fail('Deployment configuration changed; restore its owned changes before actor cleanup.');
