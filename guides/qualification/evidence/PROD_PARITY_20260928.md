@@ -520,3 +520,26 @@ grant, success after a long permission decision, focus without timer reset,
 denial, close, native watch cancellation and unchanged background behavior.
 Runtime acceptance of this corrected repair and3.3 cleanup remain pending.
 Raw temporary diagnosis logs contain no GPS data.
+
+
+### Closure and DEB transition — 2026-09-28
+
+DEPLOY-EXTERNAL-CONFIG-001: **CLOSED / PASS**. CSV/XLSX, pack, README and
+handoff synchronized. Next operation is the separate VMware DEB upgrade.
+
+Corrected production frontend63e45751e41b-20260928075329 activated; nginx-only
+archive SHA25611c05b8c6a8de61f9550186fbf934b2e673ac9ac8b1ef5f00cbf270ac66c10ad
+matched before/after transfer. All10 containers healthy.
+
+Captured location control restored; exact fixture reset returned
+`reset-complete/exactRestore:true`. Chrome fine/coarse grants restored to
+true/false; notification grant false and captured screen settings restored.
+Android retains its selected-precision flag from the native grant UI. Campaign
+WebAPK removed: absent in the original campaign package baseline (the later3.2
+snapshot already included this campaign installation). Real profiles/media
+retained. SSH8443 transport retained for external package verification.
+
+Before DEB upgrade: installed package1.0.0;71 production collections,
+8355 documents and995 media objects fingerprinted with the existing read-only
+retained-data tool. Full fingerprints remain privately on VMware under
+`/var/lib/myscoutee/qa-fixtures/release-1.3.0/before-deb-20260928.json`.
