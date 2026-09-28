@@ -466,3 +466,19 @@ authenticated actual GitHub chooser remains unverified. Overall QA remains open.
 
 
 Checklist duplication corrected:1.3 owns discovery/configuration only;2.1 owns connection/public-client registration;2.2 owns session/cancellation/reconnect and protocol negatives;2.3 owns logout independence/explicit revocation;2.4 owns cleanup. Existing evidence retained; this documentation repair authorizes no replay.
+
+
+### Profile retention/spinner production activation — 2026-09-28
+
+Production frontend build5f8ec73f0d7f-20260928071508 built through build:prod and
+the existing nginx production Dockerfile, transferred with matching SHA256
+0b4e992159f490da05dd0bbd5c124f663e97f34901099c3f5afd2015f9b1bc0d.
+Only VMware nginx recreated; all10 containers healthy. HTTPS app-version.json
+confirms exact build/version1.3.0. Previous image retained as
+myscoutee-nginx:qa-before-profile-loader-071508. Phone app reloaded only after
+read-only inspection confirmed no open editor/dialog; session retained.
+
+3.2 started on physical Android with normal Settings→Install→Setup Install.
+Native Chrome Install app dialog showed MyScoutee/localhost:8443; normal Install
+selected after package baseline captured. Installation completion/version
+verification pending. No previous Firebase/registration test replay.
