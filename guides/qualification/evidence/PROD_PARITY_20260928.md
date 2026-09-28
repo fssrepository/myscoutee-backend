@@ -482,3 +482,36 @@ read-only inspection confirmed no open editor/dialog; session retained.
 Native Chrome Install app dialog showed MyScoutee/localhost:8443; normal Install
 selected after package baseline captured. Installation completion/version
 verification pending. No previous Firebase/registration test replay.
+
+
+### Block3.2 completion and3.3 observed timing defect — 2026-09-28
+
+The installed Android WebAPK (`org.chromium.webapk.aa6357a1183d07d82_v2`)
+opened standalone at the same localhost8443 origin. Settings retained runtime
+version1.3.0 at the right; the actual Install action was absent. The Settings
+entry remains available because it also opens permissions. No side-menu repair
+was required. This completes3.2; retain the pre-install package snapshot for
+scoped cleanup.
+
+On3.3, revoking Chrome OS location permission and granting it again during Update
+produced an error while the visible ring still had time remaining. The earlier
+speculative retry was reverted by the user and was never deployed. Read-only
+CDP breakpoints on the deployed native callbacks then captured:
+
+-07:38:29 UTC: Android location provider started after native grant.
+-07:38:35.658 UTC: actual GeolocationPositionError, code3, `Timeout expired`.
+-A second measured user attempt: native request07:41:37.957, native grant
+07:41:41.723, ring first observed07:41:42.443 (83ms into a10000ms animation),
+native coordinate success07:41:47.013. No coordinates were logged.
+
+These observations establish different starts for the native timeout and visible
+acquisition ring in this Android OS permission recovery path. The fix retains
+one acquisition deadline from the existing permission-granted handler. Only an
+early native TIMEOUT after that grant may consume the remaining part of that
+same deadline, once; denial, position-unavailable, expired budgets and closed
+Setup do not trigger it. Already-granted requests retain their normal limit.
+Focused Setup/location tests:36/36 PASS. An initial test invocation omitted
+runner include filters and failed on unrelated files outside the narrowed
+TypeScript scope; the corrected focused invocation passed. Runtime acceptance
+of the repair and3.3 cleanup remain pending; successful second clicks on the old
+build do not close this defect. Raw temporary diagnosis logs contain no GPS data.
