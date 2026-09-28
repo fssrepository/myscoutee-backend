@@ -505,13 +505,18 @@ CDP breakpoints on the deployed native callbacks then captured:
 native coordinate success07:41:47.013. No coordinates were logged.
 
 These observations establish different starts for the native timeout and visible
-acquisition ring in this Android OS permission recovery path. The fix retains
-one acquisition deadline from the existing permission-granted handler. Only an
-early native TIMEOUT after that grant may consume the remaining part of that
-same deadline, once; denial, position-unavailable, expired budgets and closed
-Setup do not trigger it. Already-granted requests retain their normal limit.
-Focused Setup/location tests:36/36 PASS. An initial test invocation omitted
-runner include filters and failed on unrelated files outside the narrowed
-TypeScript scope; the corrected focused invocation passed. Runtime acceptance
-of the repair and3.3 cleanup remain pending; successful second clicks on the old
-build do not close this defect. Raw temporary diagnosis logs contain no GPS data.
+acquisition ring in this Android OS permission recovery path. The first repair
+used an early-timeout retry and was rejected by the user: the required behavior
+is one timer starting only after permission is accepted. That rejected frontend
+was briefly deployed as `cac33cf3ff52-20260928074627`; it is not accepted QA evidence.
+
+The corrected implementation starts the ring and one10000ms cancellation timer
+from the existing permission-granted handler. Setup uses a cancellable one-shot
+native watch without a pre-grant native timeout; it stops on first coordinates,
+native error, close or that post-grant deadline. There is no automatic retry.
+Other callers retain the existing native one-shot request. Focused Setup/location
+tests:38/38 PASS, including60seconds before grant with no timer, all10000ms after
+grant, success after a long permission decision, focus without timer reset,
+denial, close, native watch cancellation and unchanged background behavior.
+Runtime acceptance of this corrected repair and3.3 cleanup remain pending.
+Raw temporary diagnosis logs contain no GPS data.
