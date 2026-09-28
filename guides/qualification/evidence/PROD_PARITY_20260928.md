@@ -430,3 +430,9 @@ reconnect started; cancellation and grant-negative/revocation checks remain.
   records before normal revocation verification. API control ID:
   1170f5a5-fbc5-4df4-b107-a2ed267df1c2. All client/key ownership metadata remains
   in the deployment harness; credential material stays in private /tmp files.
+
+
+### OAuth2 final revocation and cleanup — 2026-09-28
+
+OAuth2.1–2.4 PASS/CLOSED: normal phone logout retained independent OAuth/API access200 and rejected old browser401; explicit ordinary endpoint revocations then rejected both credentials401. Three captured clients and one QA key exactly restored, zero remaining. Inspector stopped, owned tabs/callback6274 and private credentials removed; original8443 transport and real account/Event retained. Next: finish audit of1.1–1.4 before3, per user.
+Revocation used normal authenticated phone-browser API requests; no visual revoke-button claim. Expired-code evidence retains the previously documented scoped fixture deadline boundary. Main checkpoint stays staged for remaining checks.

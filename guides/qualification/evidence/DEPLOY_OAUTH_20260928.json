@@ -135,11 +135,24 @@
         "status": 401,
         "passed": true
       }
+    ],
+    "revoked": [
+      {
+        "case": "independent-oauth-read",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "case": "independent-api-key-read",
+        "status": 401,
+        "passed": true
+      }
     ]
   },
-  "pending": [
-    "normal permission/key revocation",
-    "exact cleanup"
-  ],
-  "expiryBoundary": "one owned code expired through versioned fixture; not wall-clock measurement"
+  "pending": [],
+  "expiryBoundary": "one owned code expired through versioned fixture; not wall-clock measurement",
+  "cleanup": {
+    "status": "PASS",
+    "scope": "Three captured Inspector clients/grants and one logout-control API key normally revoked, then exact harness restoration; counts zero. Inspector stopped, owned tabs closed, callback reverse6274 removed, private credential files deleted. Original8443 transport and real account/Event retained."
+  }
 }

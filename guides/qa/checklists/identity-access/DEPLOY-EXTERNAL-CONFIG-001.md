@@ -41,7 +41,7 @@ assertion for block2 rather than operating the phone out of order.
    prove them.
 4. **Report templates.** Verify the frontend repository's actual issue chooser
    and concise Bug, Feature and Question templates without submitting an issue.
-   Authenticated chooser interaction, if needed, can use a desktop browser.
+   Authenticated chooser interaction, if needed, uses the same phone.
 
 ## 2. Configured OAuth — phone browser with the external client
 
@@ -73,7 +73,7 @@ A prior dev/Inspector result cannot substitute for this configured-provider run.
 
 ## 3. Mobile checks — one final device block
 
-Finish the machine-run work before requesting the phone. Use this run's origin,
+Continue on the same phone after the machine-run work. Use this run's origin,
 account and frontend revision; snapshot browser/OS permissions and pre-install
 state. Record the expected deployed runtime version.
 

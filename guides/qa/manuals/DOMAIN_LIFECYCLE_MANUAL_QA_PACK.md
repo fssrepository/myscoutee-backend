@@ -11366,7 +11366,7 @@ cancellation active; new client tracked for normal revocation and scoped cleanup
 OAuth2.2: reconnect and normal cancellation/re-authentication verified on phone;
 protocol negatives/refresh replay PASS. Expired code used an explicitly recorded
 fixture deadline.2.3 normal phone logout leaves OAuth/API reads200 and old browser
-session401. Awaiting user sign-in for normal revocation and exact cleanup.
+session401. OAuth2.1–2.4 PASS/CLOSED: normal phone logout retained independent OAuth/API access200 and rejected old browser401; explicit ordinary endpoint revocations then rejected both credentials401. Three captured clients and one QA key exactly restored, zero remaining. Inspector stopped, owned tabs/callback6274 and private credentials removed; original8443 transport and real account/Event retained. Next: finish audit of1.1–1.4 before3, per user.
 
 Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
 
