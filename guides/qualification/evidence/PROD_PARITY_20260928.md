@@ -213,3 +213,63 @@ saved profile-view semantics or Hungarian filter assertions.
   empty/custom/renamed rows preserved, production unchanged, repeat exact.
   Seed synchronization check passes for both50-profile baselines;42 seed audit
   passes. Updated application artifacts are not yet deployed at this entry.
+
+### Block1.2 — full filter catalog repair and sampled production verification
+
+- Deployed production UI `313df4a1d342-20260928054954` and rebuilt API on VMware;
+  all ten containers healthy. Installed DEB remains1.0.0, final upgrade pending.
+  Migration009 was applied earlier: production unchanged;49 missing demo profile
+  details initialized, one existing row retained.
+- Filters now reuse profile-editor option menus, including labels/icons/palettes,
+  and adapt single selections to uncapped multiple selections. Interests/values
+  retain editor groups; languages use two alphabetic tabs. Search remains only
+  for these long lists. Horoscope metadata is shared with the date input; all12
+  signs are available. Main trait uses all8 impression catalog entries.
+- Empty results no longer empty the choices. Existing custom selections remain
+  removable; matching ignores letter case. Stored gender and existing impression
+  aliases are handled through the shared data/resolver in local and HTTP paths.
+- Focused verification:27 frontend tests PASS;21 Java game service tests PASS.
+  Production frontend build and API bootJar/image build PASS.
+- Actual Android HU sample:12 horoscope choices,8 translated/color-coded traits,
+  grouped language tabs and all three Children choices. Children has no search
+  box and retains profile-editor blue/green/orange colors. Saving No returned
+  HTTP200 and excluded the Yes comparison profile (zero visible cards).
+- User requested sampled filter checks to conserve quota. No exhaustive UI
+  sweep is claimed. User currently inspects the phone; wait for handback before
+  restoring the test filter and Children control and continuing1.3.
+
+- Follow-up requested by user: filter popup now reuses the profile editor's
+  FormFlow loading surface and shared after-paint scheduler before rendering
+  its fields. Menu models are cached by each selected-value array, avoiding
+  rebuilding every option on unrelated change detection; canceled popups cancel
+  pending preparation. Production build055516 deployed; ten containers healthy.
+  Phone observation of this final loading change awaits user handback/reload.
+
+### Block1.3 — existing Firebase login and consent defect
+
+- Android Children sample completed: No excludes the Yes control; Yes returns
+  exactly that profile. Test Children filter cleared through normal UI and
+  saved HTTP200. Versioned `restore-children-control` restored the exact original
+  empty/Private row. The independent location snapshot remains retained.
+- User completed raxim.uk login at06:01UTC and confirmed entry. Eligibility200,
+  Firebase login200 and profile-ext200 carrying the pending point were observed;
+  no location X-header. Mongo verifies the same existing canonical profile ID
+  with saved coordinates/public status/form version2; no registration replay.
+- Reported unexpected privacy popup: initial consent GET used Firebase UID,
+  returned empty; anonymous-consent POST403. Hydration then resolved the canonical
+  profile ID and its existing consent200, but the already opened forced popup
+  remained without approval buttons. Source now gates consent on the hydrated
+  profile and dismisses only a stale required privacy popup, preserving voluntary
+  document reading. Four focused regression tests PASS; production build06450
+  (full ID313df4a1d342-20260928060450) built, not activated on VMware.
+- Separate EN/HU entry prompts were caused by the language probe: revision IDs
+  differ by language and anonymous storage retains one revision. Acceptance
+  records were not reset. Browser language override is restored. Full EN Children
+  editor/view variants were not completed; no PASS is claimed for that boundary.
+- User explicitly requested no separate manual consent retest and deferred
+  deployment of fixes. Spinner rotation now starts at twelve o'clock in source,
+  also pending activation. Active VMware UI remains055516. The image archive
+  transfer had already completed when deployment was deferred; no docker load
+  or container recreation was performed for06450.
+- Normal logout completed; user prompted for the existing account's saved-point
+  sign-in to finish1.3. Remaining1.4/1.5 and blocks2–5 are not yet executed.

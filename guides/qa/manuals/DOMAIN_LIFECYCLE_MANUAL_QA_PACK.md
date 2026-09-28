@@ -11349,6 +11349,20 @@ then the user-requested missing-location existing-account login, retry/isolation
 and private denial. Later blocks remain NOT RUN. Renumbered iOS block6 is IGNORED
 at the user's explicit request and does not gate closure.
 
+2026-09-28 follow-up: profile-editor catalogs/icons/colors reused for every game
+filter, with grouped long lists and no short-list search. Production054954 and
+API deployed;27 frontend/21 Java tests PASS. Android sample confirms12 zodiac
+choices,8 traits, language groups and saved No excluding the Yes control. User
+requested sampled filter testing; exhaustive UI coverage is not claimed. User
+currently inspecting phone; retain Children/location controls until handback.
+
+1.3 update: user confirmed raxim.uk login; existing profile and pending point
+HTTP200/Mongo persistence verified. Children positive/negative filter sample
+completed and exact Children control restored. Saved-point sign-in is next.
+Consent hydration race repaired with4 focused tests PASS; source/build pending
+deployment at user's request, separate manual consent retest waived. EN Children
+editor/view variants remain unproven. Active UI055516; details in parity record.
+
 Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
 
 Historical scope transfer2026-09-27:

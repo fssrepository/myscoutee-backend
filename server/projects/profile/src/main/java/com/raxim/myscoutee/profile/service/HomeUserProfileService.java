@@ -3741,7 +3741,7 @@ public class HomeUserProfileService {
         return Math.min(500L, Math.max(1L, value.longValue()));
     }
 
-    private static String normalizeId(String value) {
+    private String normalizeId(String value) {
         return value == null ? "" : value.trim();
     }
 
@@ -3751,7 +3751,7 @@ public class HomeUserProfileService {
     }
 
     private static String normalizeToken(String value) {
-        return normalizeId(value).toLowerCase();
+        return value == null ? "" : value.trim().toLowerCase();
     }
 
     private String reportSyncKey(
