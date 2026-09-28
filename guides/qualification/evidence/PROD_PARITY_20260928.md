@@ -600,3 +600,14 @@ Production UI `1b49c3be9ba8-20260928082718` activated nginx-only on VMware;
 public app-version matches and nginx is healthy. Transferred image SHA256:
 `d5e19e4170965bb7335241f34a403265878a883aa20274572207dca4e57f5ae1`.
 No additional DEB was built for either of these later UI corrections.
+
+
+### Release1.3.0 publication — 2026-09-28
+
+At the user's subsequent instruction, final production and local-data GitHub
+Pages outputs were rebuilt separately, and the seven-image DEB rebuilt/signed.
+Artifact preflight passed. Seven annotated repository tags and GitHub releases
+are published; nine GHCR images verified by digest. Pages and the admin release
+workflow succeeded. Main DEB upload is reserved for the owner. Full identities:
+[RELEASE_1.3.0_20260928.json](RELEASE_1.3.0_20260928.json).
+Netcup was not modified.
