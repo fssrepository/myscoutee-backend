@@ -24129,7 +24129,7 @@
     "_id": "i18n-message-en-mcp-manual-help",
     "key": "mcp.manual.help",
     "lang": "en",
-    "value": "Advanced contains manually generated MCP client keys. Generate a client with its exact callback URL, then copy the client ID and the one-time secret into your client’s configuration. URL-based OAuth connections are listed separately under OAuth permissions; revoke them there. The settings icon beside Revoke shows connection details. Never paste secrets into chat."
+    "value": "Advanced contains manually generated MCP client keys. Generate adds a row with a client ID and a one-time secret; copy them into your client’s configuration. The Advanced badge counts these keys. URL-based OAuth connections appear separately under OAuth permissions; revoke them there. Never paste secrets into chat."
   },
   {
     "_id": "i18n-message-en-mcp-copy-url",
@@ -48297,7 +48297,7 @@
     "_id": "i18n-message-hu-mcp-manual-help",
     "key": "mcp.manual.help",
     "lang": "hu",
-    "value": "A Haladó ablakban kezelheted a kézzel generált MCP-klienskulcsokat. Add meg a kliens pontos visszahívási URL-jét, majd másold a kliensazonosítót és az egyszer megjelenő titkot a kliens beállításaiba. Az URL-en keresztüli OAuth-kapcsolatok külön, az OAuth-engedélyek között jelennek meg; ott vonhatod vissza őket. A kuka melletti beállításikon mutatja a kapcsolat részleteit. Titkot ne másolj beszélgetésbe."
+    "value": "A Haladó ablakban kezelheted a kézzel generált MCP-klienskulcsokat. A Generálás új sort hoz létre kliensazonosítóval és egyszer megjelenő titokkal; ezeket másold a kliens beállításaiba. A Haladó gomb számlálója ezeket a kulcsokat mutatja. Az URL-en keresztüli OAuth-kapcsolatok külön, az OAuth-engedélyek között jelennek meg; ott vonhatod vissza őket. Titkot ne másolj beszélgetésbe."
   },
   {
     "_id": "i18n-message-hu-mcp-copy-url",

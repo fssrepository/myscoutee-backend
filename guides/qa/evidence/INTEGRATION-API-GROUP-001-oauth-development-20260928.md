@@ -28,3 +28,32 @@ Status: IN PROGRESS. This is development evidence, not a completed API QA row.
 - Verify actual external Connect, normal app sign-in/consent, callback and private tool access; negative paths and cleanup.
 - Verify browser help entry points and full OAuth flow; source/seed parity already verified.
 - Retained development fixture and Inspector require scoped cleanup after the pending browser development verification. Do not close the independent API testcase from development-only evidence.
+
+## Ordered QA handoff — 2026-09-28
+
+User requested recording this work in the Group API checklist and proceeding
+from block1 in order, announcing every point and result. The added Advanced/OAuth
+microsteps belong to block7; development checks below are not the full-case PASS.
+
+- UI on managed OAuth Demo Alex: Advanced opens without a settings request;
+  Generate directly adds a real ID/secret row, no form; pre-existing key retained;
+  count changes1→2; close/reopen preserves rows without requests; reload preserves
+  IDs and hides the one-time secret; revoke returns2→1 without list reload.
+- Base URL copy row is below its label. Updated EN bundle `.3` returns the short
+  OAuth permissions heading and translated copy labels, confirmed in browser.
+- Generated key usage:11/11 checks PASS in
+  `INTEGRATION-API-GROUP-001-generated-keys-20260928.json`. Real UI generation,
+  configured callback validation, profile consent, client-ID/secret PKCE token
+  exchange, actual MCP initialization/private discovery, UI revoke, rejected old
+  bearer and refresh. Pre-existing key preserved during these probes. No private
+  business read or external-client browser callback claimed.
+- Java27/27 PASS, including generation without callback inputs and exact trusted
+  deployment callbacks; existing saved callbacks retain their restrictions.
+- Focused local repository file:10/11 PASS. MCP persistence/scope/reload/revoke
+  test PASS with callback-free generation. Unrelated cash-receipt test expects
+  `canRequestRefund:false`, receives true (line83); code not changed by this work.
+  Record for block6 diagnosis against its stable cash rules; do not silently alter
+  the expected refund rule or claim this entire test file passed.
+- New predefined keys use `config.mcp-manual-redirect-uris`; dev permits only
+  Inspector loopback callbacks. No arbitrary redirect is accepted when the UI
+  omits callback entry. Public registration unchanged.

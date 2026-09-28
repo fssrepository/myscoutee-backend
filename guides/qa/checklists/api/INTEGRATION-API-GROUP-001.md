@@ -3,6 +3,14 @@
 Domain: API test. Independently execute the application's normal API-key/client
 and sign-in/registration paths from this testcase's own staged baseline.
 
+## Execution order
+
+Execute blocks1–7 in order from this testcase's own baseline. Before each
+numbered point, announce its block/point number and concrete check. Afterwards
+record PASS/FAIL/BLOCKED and the observed evidence; repair and retest failures
+before claiming the point complete. Development probes and earlier cases do
+not replace this run. Status/evidence stay in the run log and ledger.
+
 ## Baseline
 
 Prepare an administrator-owned invitation-only group, a second group, a fresh
@@ -280,10 +288,49 @@ session; browser logout does not revoke it, while explicit key revocation does.
 - The main API popup retains the copyable MCP URL and URL-based OAuth permission
   rows with per-connection revocation. Advanced opens the existing profile-owned
   manual MCP key table with Generate and Revoke; its badge counts those manual
-  keys only. Opening Advanced performs no independent reload. Verify both
+  keys only. Generate immediately creates a client-ID/one-time-secret row without
+  a name or callback form. Opening Advanced performs no independent reload. Verify both
   collections remain separate after create/revoke and profile changes.
 - Base URL uses the same heading plus copy-link-row layout as the personal
   invitation link. Setup instructions stay in the `?` popup.
 - Real ChatGPT/Claude/Codex conversation acceptance is a standalone
   [post-deployment smoke](../../../qualification/MCP-CLIENT-CONNECT-SMOKE.md),
   outside this API QA case.
+
+### Advanced keys and URL-based OAuth permissions
+
+Run in both HTTP mode and frontend-local mode where applicable. Local mode
+persists and revokes settings only; it cannot prove an external OAuth exchange.
+
+1. In this checkpoint, retain an existing manual MCP key, then open the profile's
+   API/Affiliate popup and Advanced. The existing key keeps its ID and permissions;
+   opening Advanced reads the already loaded profile store without another load.
+2. Choose **Generate token** (label visible beside the key icon on mobile too).
+   It immediately generates a key and adds its client ID and one-time client
+   secret to the table. There is no New connection/name/callback form. API keys
+   and another profile's MCP keys remain unchanged.
+3. Close and reopen Advanced: the same rows remain and its badge equals the
+   active manual-key count. After reloading the profile, IDs remain stable and
+   the one-time secret is no longer exposed. Changing profiles must not carry
+   a previous profile's rows or a delayed generation secret into the new profile.
+4. Revoke one manual key using its row's action and confirmation. Its row and
+   Advanced badge update from the successful response, without reloading the
+   collection. Its previously issued access/refresh tokens stop working. Other
+   keys and URL-based OAuth grants remain valid. Failed revocation retains the
+   row and offers retry through the existing confirmation flow.
+5. The main popup retains a copyable MCP URL even with no keys. Connect with the
+   external client by URL and complete sign-in/approval: the resulting connection
+   appears under **OAuth permissions** at the bottom of the main popup, separate
+   from the manual Advanced table and its badge. Cancellation adds no permission.
+6. Revoke that OAuth row. Its access/refresh tokens fail; manual keys remain.
+   The MCP URL itself stays available for a later connection. Verify reload and
+   persistence, exact profile ownership and no cross-profile permission removal.
+7. Verify the deployment-approved exact callback restriction for predefined
+   clients at the API boundary. Arbitrary or unconfigured callback destinations
+   must fail; removing callback inputs from the UI never authorizes arbitrary
+   redirects. Public dynamic registration retains its existing validation.
+
+Use only this checkpoint's disposable keys/grants and restore them at cleanup.
+Never save plaintext secrets in QA logs or screenshots. Record the UI, persisted
+state and authenticated API results separately; unit tests alone do not close
+these user-flow checks.

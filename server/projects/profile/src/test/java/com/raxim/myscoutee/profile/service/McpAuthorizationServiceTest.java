@@ -201,6 +201,33 @@ class McpAuthorizationServiceTest {
         config.setFirebaseEnabled(true);
         assertThat(service.context("owner", request()).profileId()).isEqualTo("owner");
     }
+    @Test void generatesManualCredentialsWithoutNameOrCallbackForm() {
+        var stored = new java.util.concurrent.atomic.AtomicReference<IntegrationToken>();
+        when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner")).thenReturn(List.of());
+        when(tokens.save(any())).thenAnswer(invocation -> { var token = invocation.<IntegrationToken>getArgument(0); stored.set(token); return token; });
+        when(tokens.findByIdAndOwnerUserId(anyString(), eq("owner"))).thenAnswer(invocation -> Optional.ofNullable(stored.get()));
+        var created = service.create("owner", new McpDtos.ClientRequest("Client 1", null));
+        assertThat(created.client().manual()).isTrue();
+        assertThat(created.client().clientId()).isEqualTo(stored.get().getId());
+        assertThat(created.client().redirectUri()).isEmpty();
+        assertThat(created.secret()).startsWith("msc_");
+        assertThat(stored.get().getTokenHash()).isEqualTo(hash(created.secret()));
+        when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner")).thenReturn(List.of(stored.get()));
+        assertThat(service.settings("owner").clients()).hasSize(1);
+    }
+    @Test void generatedManualClientUsesOnlyExactDeploymentCallbacks() {
+        client.setRedirectUri("");
+        config.setMcpManualRedirectUris(List.of("https://client.example/callback"));
+        var allowed = request("https://client.example/callback", service.resource(), hash(verifier));
+        assertThat(service.context("owner", allowed).profileId()).isEqualTo("owner");
+        assertThatThrownBy(() -> service.context("owner", request("https://attacker.example/callback", service.resource(), hash(verifier))))
+                .hasMessageContaining("invalid_request");
+        assertThatThrownBy(() -> service.context("owner", request("https://client.example/callback?other=1", service.resource(), hash(verifier))))
+                .hasMessageContaining("invalid_request");
+        config.setMcpManualRedirectUris(List.of());
+        assertThatThrownBy(() -> service.context("owner", allowed)).hasMessageContaining("invalid_request");
+        verifyNoInteractions(grants);
+    }
     @Test void rejectsUnsafeCallbacksWithoutThrowingNullPointer() {
         for(String url:List.of("http:/missing","http://example.com/callback","https://x@a/cb","https://a/*","https://a/cb#f","javascript:alert(1)"))
             assertThatThrownBy(()->McpAuthorizationService.redirectUri(url)).isInstanceOf(ResponseStatusException.class);
