@@ -585,3 +585,18 @@ Private snapshot: `release-1.3.0/registration-reset-20260928.ejson` in the VM fi
 directory, mode0600. Audit records, media and the other account were retained.
 Any later retained-data comparison must account for this authorized reset and
 subsequent user registration separately from installer changes.
+
+
+### Setup entry action clarified by user — 2026-09-28
+
+Entry Setup uses the landing button's existing `login` key (HU: Bejelentkezés).
+A successful action completes its pending login immediately. Close always cancels
+that continuation, for demo and Firebase alike. Settings Setup retains Update
+and save feedback. The permission-grant timer is unchanged. Focused Setup store
+and popup tests:18/18 passed; production build passed. Stable checklist wording
+now matches this explicit user change, without reopening completed QA.
+
+Production UI `1b49c3be9ba8-20260928082718` activated nginx-only on VMware;
+public app-version matches and nginx is healthy. Transferred image SHA256:
+`d5e19e4170965bb7335241f34a403265878a883aa20274572207dca4e57f5ae1`.
+No additional DEB was built for either of these later UI corrections.
