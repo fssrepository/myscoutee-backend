@@ -233,6 +233,9 @@ try {
       input.once('close', resolve);
     });
     input.close();
+  } else if (action === 'location-retry') {
+    const { runLocationRetry } = await import('./deploy-location-retry.mjs');
+    await runLocationRetry({ send, evaluate, socket, origin, runtimeDirectory, fixturePath: args[0] });
   } else if (action === 'eval') console.log(JSON.stringify(await evaluate(readFileSync(0, 'utf8')), null, 2));
   else if (action === 'click') {
     await tap(args[0], args[1] || 0);

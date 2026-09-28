@@ -273,3 +273,10 @@ saved profile-view semantics or Hungarian filter assertions.
   or container recreation was performed for06450.
 - Normal logout completed; user prompted for the existing account's saved-point
   sign-in to finish1.3. Remaining1.4/1.5 and blocks2–5 are not yet executed.
+
+- Saved-point login reached Setup while native geolocation was granted and
+  notification permission remained default. The current gate can open Setup for
+  pending notification permission. The user explicitly chose to leave the
+  landing/Setup behavior unchanged after discussion; no location/landing code
+  was edited. The phone is currently signed out at entry; saved-point Firebase
+  sign-in remains pending. Do not label this branch PASS before completion.

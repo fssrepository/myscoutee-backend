@@ -88,7 +88,7 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: DEPLOY-EXTERNAL-CONFIG-001
 checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
-substage: Block1.3 — user confirmed existing raxim.uk missing-location login; saved-point login requested and awaiting user Firebase action. Sampled filter checks finished; Children control restored.
+substage: Block1.3 — user confirmed existing raxim.uk missing-location login; saved-point login reached Setup (geolocation granted, notifications default); user chose to retain this behavior. Phone signed out at entry, awaiting user Firebase sign-in. Sampled filter checks finished; Children control restored.
 next_action: Observe saved-point raxim.uk sign-in, then1.4 retry/isolation and1.5 private denial. No separate consent manual retest per user. Consent race fix and spinner start-angle fix built06450 but deployment deferred at user request; active UI055516. Remaining EN Children editor/view variants are unproven, not PASS. No registration replay; sampled filters only. iOS block6 IGNORED.
 execution_authority: Full testcase delegated; user handles Firebase login and may operate phone alongside Codex. Coordinate to avoid simultaneous clicks. Blocks1–3 can use desktop against same VM;4–5 physical Android. Keep numbered order.
 execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
