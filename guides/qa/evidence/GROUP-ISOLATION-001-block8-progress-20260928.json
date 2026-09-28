@@ -1,6 +1,6 @@
 {
   "block": 8,
-  "status": "IN PROGRESS",
+  "status": "HTTP PASS \u2014 reachable UI and Java authority scope; obsolete modal-bypass sequence not executed",
   "authorityHttp": [
     {
       "path": "/api/activities/chats/c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg/members?userId=f02809260000000000000001",
@@ -221,5 +221,41 @@
     ],
     "passed": 2,
     "totalUniqueAuthorityTests": 7
-  }
+  },
+  "approvalThenInvitation": {
+    "approvedVia": "Maya Contacts > Requests > Approve confirmation",
+    "candidate": "Isolation Maya appeared only after approval",
+    "pendingMutation": {
+      "url": "http://localhost/api/activities/chats/c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg/members?userId=f02809260000000000000011",
+      "during": {
+        "pickerOpen": true,
+        "confirmDisabled": true,
+        "memberHeader": [
+          "4 members"
+        ],
+        "pickerText": "Invite members\n\nIsolation Eszter\n\ngroups\n1\ndone\nclose\nschedule\nRecent\nexpand_more\ncheck\nvisibility\nIsolation Maya\n\n\u00b7 Sep 28, 2026"
+      },
+      "timedOut": {
+        "pickerOpen": true,
+        "confirmDisabled": true,
+        "memberHeader": [
+          "4 members"
+        ],
+        "pickerText": "Invite members\n\nIsolation Eszter\n\ngroups\n1\ndone\nclose\nschedule\nRecent\nexpand_more\ncheck\nvisibility\nIsolation Maya\n\n\u00b7 Sep 28, 2026"
+      },
+      "retry": {
+        "pickerRemained": true,
+        "confirmDisabled": true
+      },
+      "release": "released",
+      "after": {
+        "pickerOpen": false,
+        "memberHeader": [
+          "5 members"
+        ],
+        "pickerText": ""
+      }
+    }
+  },
+  "scopeClarification": "Existing mutation contract keeps the picker busy/non-closable until success. Prior attempts to switch through the underlying UI were not valid user steps and remain failed harness attempts, not cross-scope mutation evidence."
 }

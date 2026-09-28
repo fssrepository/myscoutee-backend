@@ -79758,5 +79758,4369 @@
         }
       ]
     }
+  },
+  {
+    "at": "2026-09-28T00:06:19.645Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Close chat popup",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n17\nhistory\nRatings\n\nName · Sophia Lane\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Iris Bloom\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Zoe Turner\n\nCity · Austin\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\npublic\nMain profile\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat",
+      "buttons": [
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Zoe Turner",
+          "disabled": false
+        },
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:20.691Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Close contacts",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n17\nhistory\nRatings\n\nName · Sophia Lane\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Iris Bloom\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Zoe Turner\n\nCity · Austin\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\npublic\nMain profile\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters\n17",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Sophia Lane",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Iris Bloom",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Zoe Turner",
+          "disabled": false
+        },
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:21.725Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Choose workspace",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n17\nhistory\nRatings\n\nName · Sophia Lane\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Iris Bloom\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Zoe Turner\n\nCity · Austin\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\npublic\nMain profile\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters\n17",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Sophia Lane",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Iris Bloom",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Zoe Turner",
+          "disabled": false
+        },
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:28.196Z",
+    "actor": "0",
+    "action": "inspect",
+    "value": "",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n17\nhistory\nRatings\n\nName · Sophia Lane\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Iris Bloom\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Zoe Turner\n\nCity · Austin\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\npublic\nMain profile\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters\n17",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Sophia Lane",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Iris Bloom",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Zoe Turner",
+          "disabled": false
+        },
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:35.440Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Choose workspace",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n17\nhistory\nRatings\n\nName · Sophia Lane\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Iris Bloom\n\nCity · Miami\n\nActive recently\nvisibility\n\nName · Zoe Turner\n\nCity · Austin\n\nActive recently\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\npublic\nMain profile\nexpand_more\n7\npublic\nMain profile\ndone\nQI\nQA Isolation A\n3\nQI\nQA Isolation B\n4\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\nmail\nInvitations\nevent\nEvents\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters\n17",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Sophia Lane",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Iris Bloom",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "",
+          "aria": "Select profile image",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Zoe Turner",
+          "disabled": false
+        },
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile\ndone",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\n3",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation B\n4",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:42.602Z",
+    "actor": "0",
+    "action": "click",
+    "value": "QA Isolation A",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:43.618Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Contacts",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:44.712Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Open MyScoutee - Chat",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "add",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:45.758Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Open chat tools",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nclose\nimage\nUpload image\nmic\nSend a voice clip\npoll\nCreate a poll\nevent\nShare Event\ninventory_2\nShare asset\nsend",
+      "buttons": [
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "image\nUpload image",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "mic\nSend a voice clip",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "poll\nCreate a poll",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "event\nShare Event",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nShare asset",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:06:53.213Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Share Event",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nEvent Explore\nfilter_alt\nevent_upcoming\ntoday\ndone\nclose\nTue, 29 Sept 2026\nimage_not_supported\nIE\nchevron_right\ngroups\n1 / 5\nchevron_right\nadd\npublic\nQA Isolation Following A\n\nEvent · Public · 0 km\n\nmore_vert\n\nIsolation group A event control.\n\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt",
+          "aria": "Event filters",
+          "disabled": false
+        },
+        {
+          "text": "event_upcoming",
+          "aria": "Open event explore order",
+          "disabled": false
+        },
+        {
+          "text": "today",
+          "aria": "Open event explore view",
+          "disabled": false
+        },
+        {
+          "text": "done",
+          "aria": "Apply chat shares",
+          "disabled": true
+        },
+        {
+          "text": "close",
+          "aria": "Close event explore",
+          "disabled": false
+        },
+        {
+          "text": "IE\nchevron_right",
+          "aria": "View Isolation Eszter profile",
+          "disabled": false
+        },
+        {
+          "text": "groups\n1 / 5\nchevron_right",
+          "aria": "Open event members",
+          "disabled": false
+        },
+        {
+          "text": "add",
+          "aria": "Add to shared items",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open card actions",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "add",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:07:28.264Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Close event explore",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "add",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:07:29.275Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Close chat popup",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:07:30.276Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Close contacts",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "at": "2026-09-28T00:07:31.302Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Choose workspace",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\npublic\nMain profile\nQI\nQA Isolation A\ndone\n3\nQI\nQA Isolation B\n4\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\ndone\n3",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation B\n4",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "at": "2026-09-28T00:07:54.460Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Choose workspace",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "at": "2026-09-28T00:08:02.455Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Choose workspace",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\nhistory\nRatings\nNo items\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\nNo matching profiles\n\nAdjust age or profile traits in filter settings.\n\n7\nnotifications_active\n3\nedit\n29%\nIsolation Alex, 27\nlocation_on\nSeattle\nQI\nQA Isolation A\nexpand_more\n7\npublic\nMain profile\nQI\nQA Isolation A\ndone\n3\nQI\nQA Isolation B\n4\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\n1\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "public\nMain profile",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation A\ndone\n3",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation B\n4",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed\n1",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "at": "2026-09-28T00:08:25.610Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Contacts",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n1\nhistory\nRatings\n\nName · Isolation Milo\n\nCity · Phoenix\n\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\nQI\nQA Isolation B\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat",
+      "buttons": [
+        {
+          "text": "person\nPreferences\nexpand_more",
+          "aria": "Select game mode",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt\nFilters\n1",
+          "aria": "Open profile filters",
+          "disabled": false
+        },
+        {
+          "text": "history\nRatings",
+          "aria": "Open game history",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View Isolation Milo",
+          "disabled": false
+        },
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation B\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:08:26.649Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Open MyScoutee - Chat",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n1\nhistory\nRatings\n\nName · Isolation Milo\n\nCity · Phoenix\n\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\nQI\nQA Isolation B\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "text": "Go\narrow_forward",
+          "aria": "Go",
+          "disabled": false
+        },
+        {
+          "text": "7",
+          "aria": "Close user menu",
+          "disabled": false
+        },
+        {
+          "text": "notifications_active\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "edit",
+          "aria": "Open profile editor",
+          "disabled": false
+        },
+        {
+          "text": "QI\nQA Isolation B\nexpand_more\n7",
+          "aria": "Choose workspace",
+          "disabled": false
+        },
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "add",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:08:27.683Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Open chat tools",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n1\nhistory\nRatings\n\nName · Isolation Milo\n\nCity · Phoenix\n\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\nQI\nQA Isolation B\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nclose\nimage\nUpload image\nmic\nSend a voice clip\npoll\nCreate a poll\nevent\nShare Event\ninventory_2\nShare asset\nsend",
+      "buttons": [
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "image\nUpload image",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "mic\nSend a voice clip",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "poll\nCreate a poll",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "event\nShare Event",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nShare asset",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-09-28T00:08:28.734Z",
+    "actor": "0",
+    "action": "click",
+    "value": "Share Event",
+    "scope": "body",
+    "result": {
+      "text": "yScoutee\nperson\nPreferences\nexpand_more\nfilter_alt\nFilters\n1\nhistory\nRatings\n\nName · Isolation Milo\n\nCity · Phoenix\n\nvisibility\nAffinity\n:\n1\nGo\narrow_forward\n7\nnotifications_active\n3\nedit\n61%\nIsolation Alex, 31\nlocation_on\nSeattle\nQI\nQA Isolation B\nexpand_more\n7\nnotifications\n3\ntips_and_updates\nshare\nsettings\nclose\ndiversity_2\nCOMMUNITY\nphoto_library\nFeed\nrss_feed\nFollowed\ngroups\nGroups\n7\npsychology\nIMPRESSIONS\nworkspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE\nrate_review\nFeedback\nlocal_activity\nACTIVITIES\nstar\nRates\nchat\nChats\n1\nmail\nInvitations\nevent\nEvents\n1\nreceipt_long\nPayments\ninventory_2\nMY ASSETS\ndirections_car\nTransport\napartment\nAccommodation\ninventory_2\nSupplies\nqr_code_2\nTicket\ncontacts\nContacts\nContacts\n\n4 saved contacts\n\nperson_add\nclose\nsearch\ncontacts\nContacts\nexpand_more\nI\nI\nIsolation Eszter\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Lea\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Maya\n\nlocation_on\nSan Diego\n\nvisibility\nmore_vert\nMyScoutee - Chat\nIsolation Nia\n\nlocation_on\nSeattle\n\nvisibility\nmore_vert\nMyScoutee - Chat\nEvent Explore\nfilter_alt\nevent_upcoming\ntoday\ndone\nclose\nNo items\nNo visible events right now.\n\nTry another filter or check back later.\n\nIsolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+      "buttons": [
+        {
+          "text": "notifications\n3",
+          "aria": "Open notifications, 3 new",
+          "disabled": false
+        },
+        {
+          "text": "tips_and_updates",
+          "aria": "Turn explanations off",
+          "disabled": false
+        },
+        {
+          "text": "share",
+          "aria": "Share MyScoutee",
+          "disabled": false
+        },
+        {
+          "text": "settings",
+          "aria": "Open settings menu",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close menu",
+          "disabled": false
+        },
+        {
+          "text": "photo_library\nFeed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "rss_feed\nFollowed",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "groups\nGroups\n7",
+          "aria": null,
+          "disabled": false
+        },
+        {
+          "text": "workspace_premium\nHOST\nauto_awesome\nAttendee\nATTENDEE",
+          "aria": "Open impressions",
+          "disabled": false
+        },
+        {
+          "text": "rate_review\nFeedback",
+          "aria": "Open feedback",
+          "disabled": false
+        },
+        {
+          "text": "star\nRates",
+          "aria": "Open rates",
+          "disabled": false
+        },
+        {
+          "text": "chat\nChats\n1",
+          "aria": "Open chat",
+          "disabled": false
+        },
+        {
+          "text": "mail\nInvitations",
+          "aria": "Open invitations",
+          "disabled": false
+        },
+        {
+          "text": "event\nEvents\n1",
+          "aria": "Open events",
+          "disabled": false
+        },
+        {
+          "text": "receipt_long\nPayments",
+          "aria": "Open payment history",
+          "disabled": false
+        },
+        {
+          "text": "directions_car\nTransport",
+          "aria": "Transport",
+          "disabled": false
+        },
+        {
+          "text": "apartment\nAccommodation",
+          "aria": "Accommodation",
+          "disabled": false
+        },
+        {
+          "text": "inventory_2\nSupplies",
+          "aria": "Supplies",
+          "disabled": false
+        },
+        {
+          "text": "qr_code_2\nTicket",
+          "aria": "Ticket",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts",
+          "aria": "Contacts",
+          "disabled": false
+        },
+        {
+          "text": "person_add",
+          "aria": "Create contact",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close contacts",
+          "disabled": false
+        },
+        {
+          "text": "contacts\nContacts\nexpand_more",
+          "aria": "Open Contacts",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "visibility",
+          "aria": "View profile",
+          "disabled": false
+        },
+        {
+          "text": "more_vert",
+          "aria": "Open contact actions",
+          "disabled": false
+        },
+        {
+          "text": "MyScoutee - Chat",
+          "aria": "Open MyScoutee - Chat",
+          "disabled": false
+        },
+        {
+          "text": "filter_alt",
+          "aria": "Event filters",
+          "disabled": false
+        },
+        {
+          "text": "event_upcoming",
+          "aria": "Open event explore order",
+          "disabled": false
+        },
+        {
+          "text": "today",
+          "aria": "Open event explore view",
+          "disabled": false
+        },
+        {
+          "text": "done",
+          "aria": "Apply chat shares",
+          "disabled": true
+        },
+        {
+          "text": "close",
+          "aria": "Close event explore",
+          "disabled": false
+        },
+        {
+          "text": "close",
+          "aria": "Close chat popup",
+          "disabled": false
+        },
+        {
+          "text": "chevron_right\n+1",
+          "aria": "5 members",
+          "disabled": false
+        },
+        {
+          "text": "push_pin",
+          "aria": "Open pinned messages",
+          "disabled": false
+        },
+        {
+          "text": "add",
+          "aria": "Open chat tools",
+          "disabled": false
+        },
+        {
+          "text": "send",
+          "aria": "Send message",
+          "disabled": false
+        }
+      ],
+      "inputs": [
+        {
+          "tag": "INPUT",
+          "type": "range",
+          "value": "1",
+          "placeholder": "",
+          "aria": "Affinity"
+        },
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "value": "",
+          "placeholder": "Filter contacts A-Z",
+          "aria": "Filter contacts"
+        },
+        {
+          "tag": "TEXTAREA",
+          "type": "textarea",
+          "value": "",
+          "placeholder": "Write message",
+          "aria": null
+        }
+      ]
+    }
   }
 ]

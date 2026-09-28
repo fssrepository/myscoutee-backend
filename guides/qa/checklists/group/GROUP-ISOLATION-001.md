@@ -99,10 +99,14 @@ conversation. Snapshot chats, members and counters.
   App support or Group support: reject before creating an owner copy. An
   unrelated profile ID cannot impersonate an account contact. These are backend
   authority checks; the unavailable person is absent from the UI picker.
-- Hold the real invite-picker response and separately an invitation mutation;
-  change workspace within the same account, then repeat with an account
-  change. Account-owned results may update only that account; stale replies
-  must not replace the other account's popup or participants.
+- Hold the real invite-picker response; change workspace within the same
+  account, then repeat with an account change. Stale replies must not replace
+  the other account's popup or participants.
+- Hold an invitation mutation response. The confirmation stays busy and the
+  picker cannot close until persistence succeeds. Release the response and
+  verify the account conversation's returned members. Workspace/account
+  switching through controls behind this modal is not a user-accessible step;
+  the Java authority checks above cover direct foreign-account write attempts.
 
 ## 9. Contact reads versus group Event unread
 

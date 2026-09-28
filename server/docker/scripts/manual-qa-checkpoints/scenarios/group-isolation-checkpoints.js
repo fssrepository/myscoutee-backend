@@ -107,7 +107,7 @@
   if (command === 'prepare-chat-read-controls') {
     if (!state.savepoints?.['before-block9']) Q.fail('Capture own pre-read snapshot first.');
     if (Q.collection('chatMessages').countDocuments({id:/^qa-isolation-read-/})) Q.fail('Read controls already present.');
-    const now=Q.nowIso(),aEvent=Q.collection('events').findOne({sourceId:'h1790547269571'}),
+    const now=Q.nowIso(),aEvent=Q.collection('events').findOne({workspaceGroupId:groups[0],ownerUserId:id(11)}),
       bEvent=Q.collection('events').findOne({sourceId:'qa-isolation-same-name-b'});
     if (!aEvent || !bEvent) Q.fail('Own A/B Event controls missing.');
     const contactId='c-contact-'+Buffer.from(id(1)+'\n'+id(2)).toString('base64url');
