@@ -216,24 +216,25 @@ class HomeGameCardsServiceTest {
         "pets,pets,Dog-friendly", "familyPlans,familyPlans,Wants children",
         "loveStyles,loveStyle,Long-term partnership", "communicationStyles,communicationStyle,Direct + warm",
         "sexualOrientations,sexualOrientation,Prefer not to say", "religions,religion,Atheist",
-        "interests,interest,#Travel", "values,values,Family-first"
+        "interests,interest,#Travel", "values,values,Family-first",
+        "genders,gender,Non-binary", "genders,gender,Prefer not to say"
     })
     void filtersPersistedProfileDetailsBeforeCountingAndPaging(String filter, String field, String value) {
         HomeGameCardsService service = new HomeGameCardsService(homeUserProfileService);
         Users matching = user("matching");
         String stored = (filter.equals("interests") || filter.equals("values")) ? value + ", Another value" : value;
         matching.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Details", List.of(
-                new Users.ProfileDetailRowRecord("profile.details." + field, stored, "Public", List.of())))));
+                new Users.ProfileDetailRowRecord((field.equals("gender") ? "profile.gender" : "profile.details." + field), stored, "Public", List.of())))));
         Users different = user("different");
         different.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Details", List.of(
-                new Users.ProfileDetailRowRecord("profile.details." + field, "Other", "Public", List.of())))));
+                new Users.ProfileDetailRowRecord((field.equals("gender") ? "profile.gender" : "profile.details." + field), "Other", "Public", List.of())))));
         Users missing = user("missing");
         when(homeUserProfileService.resolveSelectedUserId("active")).thenReturn("active");
         when(homeUserProfileService.queryGameStackUserRecords("active")).thenReturn(List.of(different, missing, matching));
         when(homeUserProfileService.toGameCardUserDto(matching)).thenReturn(userDto("matching"));
         var selected = Map.of(filter, List.of(value.toLowerCase()));
         var preferences = new UserGameFilterPreferencesDto(null, null, null, null,
-                selected.get("interests"), selected.get("values"), null, null, null, null, null,
+                selected.get("interests"), selected.get("values"), null, null, selected.get("genders"), null, null,
                 selected.get("smoking"), selected.get("drinking"), selected.get("workout"),
                 selected.get("pets"), selected.get("familyPlans"), selected.get("children"),
                 selected.get("loveStyles"), selected.get("communicationStyles"),

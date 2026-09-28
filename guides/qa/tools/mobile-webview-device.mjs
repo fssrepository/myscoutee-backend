@@ -194,6 +194,28 @@ try {
       text:document.body.innerText.slice(0,16000),
       controls:[...document.querySelectorAll('button,input,textarea,[role="button"]')].filter(e=>{const r=e.getBoundingClientRect();return r.width&&r.height&&r.top<innerHeight&&r.bottom>0}).map(e=>({tag:e.tagName,text:(e.innerText||e.getAttribute('aria-label')||'').slice(0,110),aria:e.getAttribute('aria-label'),placeholder:e.getAttribute('placeholder'),class:e.className}))
     }))()`), null, 2));
+  } else if (action === 'language') {
+    const language = args[0];
+    if (!['en', 'hu'].includes(language)) throw Error('Use language en|hu');
+    // Browser-level language configuration for this QA target; no injected
+    // application state, translation bundles or navigator property replacement.
+    const original = await evaluate('({userAgent:navigator.userAgent,platform:navigator.platform,acceptLanguage:navigator.languages.join(",")})');
+    const input = createInterface({input: process.stdin});
+    try {
+      await send('Network.setUserAgentOverride', {...original, acceptLanguage: language === 'en' ? 'en-US,en' : 'hu-HU,hu'});
+      await send('Page.reload');
+      console.log(JSON.stringify({action, language, restoreOnStop: true}));
+      await new Promise(resolve => {
+        process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+        input.once('close', resolve);
+        input.on('line', line => {if (line.trim() === 'stop') resolve();});
+      });
+    } finally {
+      input.close();
+      await send('Network.setUserAgentOverride', original);
+      await send('Page.reload');
+      console.log('Restored the original browser language and reloaded the QA target.');
+    }
   } else if (action === 'permission') {
     const [name, setting] = args;
     if (!['geolocation', 'clipboard-read'].includes(name) || !['granted', 'denied', 'prompt'].includes(setting)) {
