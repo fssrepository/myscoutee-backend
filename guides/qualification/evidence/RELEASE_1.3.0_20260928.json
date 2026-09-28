@@ -127,5 +127,97 @@
       "sha256": "sha256:f71b88d8eb65fc6f527dd442cf0f2cc6eeb9a57335bc19f38fea9588be0baf09",
       "signature": "ErYxBrzDsgTihmLoTcaAUHS7wiMokq/WQGB19qYobFhSiBMsfaFJWy+tg319yG4GR36Dhoy1NebH8XBuk2kNBw=="
     }
-  ]
+  ],
+  "sources": {
+    "myscoutee": {
+      "commit": "c55d826f17d73e6dfc6c7c3fd42e40703269b6cd",
+      "tag": "v1.3.0"
+    },
+    "myscoutee-backend": {
+      "commit": "18f1a20f62be384efe15f91f073fc1a2b43e9fa7",
+      "tag": "v1.3.0"
+    },
+    "myscoutee-registry": {
+      "commit": "54974234c72a804da60dda830001a53cab65b755",
+      "tag": "v1.3.0"
+    },
+    "myscoutee-payment-simulator": {
+      "commit": "c456fd6e5b3c7b59c33db71b4b9c8aaaf36072a2",
+      "tag": "v1.3.0"
+    },
+    "myscoutee-client": {
+      "commit": "771fd60867d290c000af0e0282e6e60cfdfd603d",
+      "tag": "v1.3.0"
+    },
+    "myscoutee-client-admin": {
+      "commit": "010d2f16b24e7326287ee3a5e10a84fa87196bfa",
+      "tag": "v1.3.0"
+    },
+    "myscoutee-mcp": {
+      "commit": "634ef950df62c19e564c6efcbc0d36c6766a9f37",
+      "tag": "v1.3.0"
+    }
+  },
+  "githubReleases": [
+    {
+      "repository": "myscoutee",
+      "url": "https://github.com/fssrepository/myscoutee/releases/tag/v1.3.0",
+      "assets": [
+        "container-images.json",
+        "myscoutee-client-tools_1.3.0.tar.gz",
+        "myscoutee-client-tools_1.3.0.tar.gz.sha256",
+        "myscoutee-release_1.3.0.json",
+        "myscoutee_1.3.0_amd64.deb.sha256",
+        "release-sources.json"
+      ]
+    },
+    {
+      "repository": "myscoutee-backend",
+      "url": "https://github.com/fssrepository/myscoutee-backend/releases/tag/v1.3.0",
+      "assets": []
+    },
+    {
+      "repository": "myscoutee-registry",
+      "url": "https://github.com/fssrepository/myscoutee-registry/releases/tag/v1.3.0",
+      "assets": []
+    },
+    {
+      "repository": "myscoutee-payment-simulator",
+      "url": "https://github.com/fssrepository/myscoutee-payment-simulator/releases/tag/v1.3.0",
+      "assets": []
+    },
+    {
+      "repository": "myscoutee-client",
+      "url": "https://github.com/fssrepository/myscoutee-client/releases/tag/v1.3.0",
+      "assets": [
+        "myscoutee-client-1.3.0-sources.jar",
+        "myscoutee-client-1.3.0.jar",
+        "myscoutee-client-1.3.0.tar",
+        "myscoutee-client-1.3.0.zip",
+        "openapi.yaml"
+      ]
+    },
+    {
+      "repository": "myscoutee-client-admin",
+      "url": "https://github.com/fssrepository/myscoutee-client-admin/releases/tag/v1.3.0",
+      "assets": [
+        "admin-client-api.pdf",
+        "myscoutee-client-admin_1.3.0_all.deb"
+      ]
+    },
+    {
+      "repository": "myscoutee-mcp",
+      "url": "https://github.com/fssrepository/myscoutee-mcp/releases/tag/v1.3.0",
+      "assets": []
+    }
+  ],
+  "githubPages": {
+    "status": "built",
+    "commit": "c55d826f17d73e6dfc6c7c3fd42e40703269b6cd",
+    "url": "https://fssrepository.github.io/myscoutee/"
+  },
+  "adminWorkflow": {
+    "runId": 36398839297,
+    "conclusion": "success"
+  }
 }

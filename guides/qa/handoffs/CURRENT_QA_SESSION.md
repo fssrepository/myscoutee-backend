@@ -88,14 +88,14 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: DEPLOY-EXTERNAL-CONFIG-001
 checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
-substage: DEPLOY-EXTERNAL-CONFIG-001 remains CLOSED/PASS. User is now doing additional runtime UI smoke; further DEB builds deferred explicitly.
-next_action: Let the user test the deployed Firebase transition and re-register the requested second account. Latest frontend including Setup Login/Close behavior is already active. Do not restart completed QA or build another DEB until the user's testing is finished.
+substage: DEPLOY-EXTERNAL-CONFIG-001 remains CLOSED/PASS. User subsequently authorized final DEB rebuild and GitHub/GHCR publication; completed.
+next_action: Release1.3.0 is published across seven repository tags/releases and nine GHCR images. GitHub Pages local-data deployment succeeded. Signed final main DEB is local for owner upload at packaging/dist/myscoutee_1.3.0_amd64.deb (SHA25604f93c705149d7195287a3575056a0d3c03f22cdb661ca9c97eab2eb79def051). No further QA replay; Netcup awaits user instruction. Release record: ../../qualification/evidence/RELEASE_1.3.0_20260928.json.
 execution_authority: User controls current browser tests and Firebase login. CDP read-only diagnosis of reported defects is authorized; a separate browser was opened on request.
 execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
 fixture_phase: Original deploy fixture exactly restored. User subsequently requested second-account registration reset; private backup retained on VMware under release-1.3.0/registration-reset-20260928.ejson. Other account and media retained.
 runtime: VMware192.168.153.129 installed DEB1.3.0; Mongo qualification validator patched and host qualification passed. UI1b49c3be9ba8-20260928082718 deployed nginx-only; Setup uses Bejelentkezés for entry, and Close only cancels. Ten containers healthy. Standard packaged Compose active. Host dev stack stopped; http://localhost/game in user's browser is a cached dev page, not VMware. VM URL is https://localhost:8443 via retained SSH tunnel; phone adb mappings were cleaned up previously.
 last_completed: Firebase popup/consent correction44 and Setup action18 focused tests passed, production frontend deployed; exact public build ID and healthy containers verified. Source EN/HU bundles match current production API with zero differences.
-release_sequence: User testing first; eventual final DEB must include Mongo validator and latest UI. The last locally built candidate predates Firebase transition repair and was not installed. No Netcup or publication without subsequent instruction.
+release_sequence: Final production images and DEB rebuilt with Mongo validator and latest UI. Signed artifact preflight passed. Tags/releases/GHCR/Pages published. Owner uploads the main DEB; later Netcup deployment still requires the user instruction.
 resume_gate: Read-only check current versions/health and Git diff. Preserve VM backups. Future retained-data comparisons must account for the user-requested second-profile reset and re-registration.
 ```
 
