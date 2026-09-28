@@ -1,5 +1,9 @@
 # GROUP-ISOLATION-001 — 2026-09-28 execution
 
+Current result: **CLOSED / HTTP9/9 scope PASS**. Exact fixture/session cleanup
+complete. Full frontend-local browser execution NOT RUN. Dated intermediate
+entries below retain the actual failed attempts and their later resolution.
+
 ## Authorization and start
 
 User explicitly requested automated full-flow Isolation QA like Lifecycle.
@@ -263,3 +267,37 @@ Removed automatic parent-selector close when opening new-profile setup. At
 360/1280px no header overflow; child permission popup retained the list and
 cancelling restored enabled rows. Actual profile form/registration not run:
 location permission prerequisite not completed. Evidence demo-selector JSON.
+
+## Blocks 8–9 HTTP scope PASS / closure
+
+Maya approved the request through Contacts/Requests/Approve. Only then Maya
+appeared as an invite candidate. Held the real member mutation response: the
+confirm remained disabled and Close retained the picker; after unchanged
+release it closed with5members. Prior modal-bypass attempts are not successful
+cross-scope mutation tests. The stable checklist now reflects the already
+recorded blocking-save contract; Java covers foreign write authority.
+
+Block9 versioned fixture staged one unread contact message and one unread
+message in each A/B Event chat. Base and A opened the same account conversation;
+the read receipt added01, never the group alias11. A/B chat documents4, messages4
+and their unread counters1/1 remained byte-for-byte unchanged. Share Event in A
+showed its public Following control; B had no visible candidate and no A leak.
+No share was submitted. Evidence block9 JSON.
+
+Mobile menu follow-up: floating bell visible before, hidden during any open
+shared mobile menu (including one without a close heading), visible after close;
+real360px browser proof. Existing frontend-sync built/synced the shared fix.
+
+Cleanup: versioned launcher closed only Isolation sessions. Versioned reset
+restored pre-launch active sessions for own01/02/03, then exact pre-stage fixture
+records. Harness returned reset-complete/exactRestore:true; follow-up status
+not-staged with no own profiles/groups/memberships. Full Local NOT RUN.
+User queue: align checklist folders to matrix QA domain, then API prerequisite
+development and testcase. User prepares VMware for Firebase.
+
+Checklist organization completed after closure: matrix API test guides moved
+from integration/ to api/; configured deployment authentication guide moved
+from deployment/ to identity-access/. Updated references and complete domain
+index;43 matrix-matched guides aligned, checked local links valid, no old
+paths remaining, CSV/XLSX synchronized. API prerequisite development queued;
+no API fixture, client simulator or additional server started.

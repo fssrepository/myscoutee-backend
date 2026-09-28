@@ -1,6 +1,6 @@
 # DEPLOY-EXTERNAL-CONFIG-001 — Externally configured authentication and integrations
 
-Domain: deployment integration. This is an independent testcase.
+Domain: Identity & access. This is an independent testcase.
 This checklist covers the existing checks requiring provider configuration or
 external client registration, configured registration and installed/device
 acceptance. Use an isolated configured test deployment and

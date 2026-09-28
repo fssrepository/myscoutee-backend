@@ -11279,7 +11279,7 @@ Event/Asset/API rows remain closed and are not evidence for group isolation.
 | --- | --- | --- | --- |
 | GROUP-LIFECYCLE-001 | Group | [Lifecycle](../checklists/group/GROUP-LIFECYCLE-001.md) | Editor, rules, membership, workspace selector, reporting and group-admin moderation |
 | GROUP-ISOLATION-001 | Group | [Isolation](../checklists/group/GROUP-ISOLATION-001.md) | Base/A/B boundary; Asset and Event samples plus ratings, chat, Feed, counters and notification exceptions |
-| INTEGRATION-API-GROUP-001 | API test | [Participant links](../checklists/integration/INTEGRATION-API-GROUP-001.md) | Shared Event invite mechanism, registration/admission, active group, replay and authority |
+| INTEGRATION-API-GROUP-001 | API test | [Participant links](../checklists/api/INTEGRATION-API-GROUP-001.md) | Shared Event invite mechanism, registration/admission, active group, replay and authority |
 
 Group is placed directly after Asset in the domain priority table. The
 checklists define the required fixture baseline; no new fixture, managed
@@ -11333,7 +11333,7 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 ### DEPLOY-EXTERNAL-CONFIG-001 — deferred by user2026-09-27
 
-[Dedicated checklist](../checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+[Dedicated checklist](../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
 Real Firebase entry/location and externally configured MCP OAuth/client callbacks
 moved out of the Group campaign. DEFERRED / NOT RUN; configure later. The existing
 DEPLOY-FIREBASE-LIFECYCLE-001 pending-invitation-policy assertion is retained in
@@ -11429,3 +11429,12 @@ NEXT: GROUP-ISOLATION-001 — NOT STARTED. On a later explicit continuation,
 first remove exact evidence-proven duplicates while preserving unique combinations
 and its independent fixture/restage/checkpoint contract. No Isolation fixture,
 launcher, browser action or test is authorized by this closure request.
+
+### 2026-09-28 Group Isolation closure
+
+[GROUP-ISOLATION-001](../checklists/group/GROUP-ISOLATION-001.md): HTTP9/9 scope
+PASS; exact own fixture/pre-launch-session restoration and managed-browser
+cleanup complete. [Execution and boundaries](../evidence/GROUP-ISOLATION-001-20260928.md).
+Pending mutation modal cannot close under the established save contract; prior
+underlying-control switch attempts are not cross-scope mutation evidence.
+Full Local NOT RUN. Next API journey requires its own development and execution.
