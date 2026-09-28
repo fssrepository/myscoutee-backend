@@ -801,8 +801,17 @@ PY
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
     ;;
-  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:restore-maya-location|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|integration-api-group:remove-issuer-admin|integration-api-group:restore-issuer-admin|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
+  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:restore-maya-location|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|integration-api-group:remove-issuer-admin|integration-api-group:restore-issuer-admin|integration-api-group:prepare-paid-event|integration-api-group:prepare-private-controls|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
     [ "$#" -eq 3 ] && [ "$3" = "INTEGRATION-API-GROUP-001" ] || { usage >&2; exit 2; }
+    if [ "${scenario}:${command}" = "integration-api-group:reset" ]; then
+      api_media_owners="$(run_scenario media-owners "${scenario}" 30 "$3" | python3 -c 'import json,sys; print("\n".join(json.load(sys.stdin)["users"]))')"
+      while IFS= read -r api_media_owner; do
+        [ -n "${api_media_owner}" ] || continue
+        [[ "${api_media_owner}" =~ ^demo-profile-[a-f0-9-]{36}$ ]] || fail "Invalid Group API media owner."
+        # Same exact-owner cleanup as community-group:restore-sharing.
+        docker exec minio sh -c 'export MC_HOST_qa="http://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@localhost:9000"; mc rm --recursive --force "qa/myscoutee-media/public/demo/images/$1/"' group-api-media-reset "${api_media_owner}" >/dev/null
+      done <<<"${api_media_owners}"
+    fi
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   integration-api:stage|integration-api:status|integration-api:reset)

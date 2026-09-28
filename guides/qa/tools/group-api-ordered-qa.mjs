@@ -10,7 +10,62 @@ const [command,actorText='0',itemText='0']=process.argv.slice(2),actor=Number(ac
 const credentialsPath=`${root}/api-${actor}.json`;
 const evidencePath='guides/qa/evidence/INTEGRATION-API-GROUP-001-ordered-20260928.json';
 async function evidence(point,result){let records=[];try{records=JSON.parse(await readFile(evidencePath,'utf8'));}catch{}records.push({point,at:new Date().toISOString(),...result});await writeFile(evidencePath,JSON.stringify(records,null,2)+'\n');console.log(JSON.stringify({point,...result}));}
-if(command==='reject-claims'||command==='revoked-admin-claim'){
+if(command==='revoked-key'){
+ const c=JSON.parse(await readFile(credentialsPath,'utf8'));
+ const r=await fetch('http://localhost/api/integrations/v1/groups/qa-group-api-a/invites',{method:'POST',
+  headers:{'Content-Type':'application/json',Authorization:'Bearer '+c.token,'X-MyScoutee-Client-Id':c.clientId,'X-App-Session-Kind':'demo'},
+  body:JSON.stringify({participantIds:['must-not-be-created-revoked-key']})});
+ assert.equal(r.status,401);await evidence('5.3.revoked-api-key',{pass:true,status:r.status});
+}else if(command==='private-controls'){
+ const scope=itemText;assert.ok(['base','a','b'].includes(scope));
+ const b=await attach(checkpoint,actor);
+ try{
+  const state=await b.evaluate(`({session:JSON.parse(localStorage.getItem('myscoutee.http.session.v1')),workspace:document.querySelector('button[aria-label="Choose workspace"]')?.innerText})`);
+  assert.equal(state.session.userId,'f03009260000000000000003');
+  assert.ok(state.workspace.includes(scope==='base'?'Main profile':'QA Group API '+scope.toUpperCase()));
+  const headers={'X-App-Session-Kind':'demo','X-Demo-User-Id':state.session.userId,'X-App-Session-Id':state.session.sessionId};
+  const results=[];
+  for(const [target,eventId] of [['base','a3d925e9-f74b-404d-872b-a2b970dd43b7'],['a','qa-group-api-private-a'],['b','qa-group-api-private-b']]){
+   const r=await fetch(`http://localhost/api/activities/events/detail?userId=${state.session.userId}&eventId=${eventId}`,{headers});
+   const payload=await r.json();
+   // ActivitiesEventsController deliberately conceals inaccessible details as 404.
+   assert.equal(r.status,target===scope?200:404,`${scope} -> ${target}`);
+   if(r.ok)assert.ok(JSON.stringify(payload).includes('QA Group API'));
+   results.push({target,eventId,status:r.status});
+  }
+  await evidence('5.2.private-events.'+scope,{pass:true,results});
+ }finally{b.close();}
+}else if(command==='event-controls'){
+ const c=JSON.parse(await readFile(`${root}/api-0.json`,'utf8'));
+ const headers={'Content-Type':'application/json',Authorization:'Bearer '+c.token,'X-MyScoutee-Client-Id':c.clientId,'X-App-Session-Kind':'demo'};
+ const items=['free','paid','ended'].map((kind,index)=>({id:`f0300926-0000-4000-8000-00000000000${index+1}`,title:'QA Group API '+kind+' Event',subtitle:'Independent event admission control',startAt:kind==='ended'?'2026-09-20T10:00:00Z':'2026-10-05T10:00:00Z',endAt:kind==='ended'?'2026-09-20T12:00:00Z':'2026-10-05T12:00:00Z',location:'Budapest',capacityMin:1,capacityMax:10,visibility:'Private',status:'active',topics:['QA'],mode:'Casual'}));
+ const r=await fetch('http://localhost/api/integrations/v1/events',{method:'POST',headers,body:JSON.stringify({items})});assert.equal(r.status,200);const created=await r.json();
+ assert.equal(created.items.length,3);assert.ok(created.items.every(i=>i.id&&i.externalId&&!i.error),JSON.stringify(created));
+ const controls=[];
+ for(const event of created.items){const response=await fetch(`http://localhost/api/integrations/v1/events/${event.externalId}/invites`,{method:'POST',headers,body:JSON.stringify({participantIds:['group-api-milo-b']})});assert.equal(response.status,200);const body=await response.json();controls.push({...event,kind:['free','paid','ended'][created.items.indexOf(event)],inviteUrl:body.items[0].inviteUrl});}
+ await writeFile(`${root}/event-controls.json`,JSON.stringify(controls),{mode:0o600});await evidence('5.1.event-controls-issued',{pass:true,events:controls.map(({id,externalId})=>({id,externalId}))});
+}else if(command==='open-event'){
+ const events=JSON.parse(await readFile(`${root}/event-controls.json`,'utf8'));const event=events.find(e=>e.kind===itemText);assert.ok(event);const b=await attach(checkpoint,actor);
+ try{await b.send('Page.navigate',{url:event.inviteUrl});console.log(JSON.stringify({opened:event.externalId,actor}));}finally{b.close();}
+}else if(command==='claim-transport-retry'){
+ const links=JSON.parse(await readFile(`${root}/links.json`,'utf8'));const b=await attach(checkpoint,1);
+ const state=()=>b.evaluate(`({group:document.querySelector('button[aria-label="Choose workspace"]')?.innerText,retained:new URLSearchParams(location.search).has('partnerInvite'),error:document.body.innerText.includes('The invitation could not be opened.')})`);
+ try{
+  assert.ok((await state()).group?.includes('QA Group API B'));
+  await b.send('Network.enable');
+  await b.send('Network.setBlockedURLs',{urls:['*auth/me/partner-invite/claim']});
+  await b.send('Page.navigate',{url:links.items[4].inviteUrl});
+  let failed;
+  for(let i=0;i<100;i++){failed=await state();if(failed.error&&failed.group)break;await new Promise(r=>setTimeout(r,100));}
+  assert.ok(failed.error,'Expected failed invitation dialog');assert.ok(failed.retained,'Invitation must remain for retry');assert.ok(failed.group?.includes('QA Group API B'),'Prior selected workspace must remain');
+  await b.send('Network.setBlockedURLs',{urls:[]});
+  await b.send('Page.reload');
+  let retried;
+  for(let i=0;i<100;i++){retried=await state();if(retried.group?.includes('QA Group API A')&&!retried.retained)break;await new Promise(r=>setTimeout(r,100));}
+  assert.ok(retried.group?.includes('QA Group API A')&&!retried.retained);
+  await evidence('4.2.claim-transport-retry',{pass:true,failed:{priorWorkspace:'B',invitationRetained:failed.retained,errorShown:failed.error},retry:{selectedWorkspace:'A',invitationConsumed:!retried.retained}});
+ }finally{await b.send('Network.setBlockedURLs',{urls:[]});b.close();}
+}else if(command==='reject-claims'||command==='revoked-admin-claim'){
  const b=await attach(checkpoint,1);let session;
  try{session=await b.evaluate(`JSON.parse(localStorage.getItem('myscoutee.http.session.v1'))`);}finally{b.close();}
  assert.equal(session?.userId,'f03009260000000000000003');assert.ok(session.sessionId);

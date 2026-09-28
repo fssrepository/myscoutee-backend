@@ -94,5 +94,139 @@
       "qa-group-api-b",
       "qa-group-api-a"
     ]
+  },
+  {
+    "point": "4.2.claim-transport-retry",
+    "at": "2026-09-28T01:54:06.000Z",
+    "pass": true,
+    "failed": {
+      "priorWorkspace": "B",
+      "invitationRetained": true,
+      "errorShown": true
+    },
+    "retry": {
+      "selectedWorkspace": "A",
+      "invitationConsumed": true
+    }
+  },
+  {
+    "point": "3.1.entry-and-pending",
+    "pass": true,
+    "missingCoordinates": "Setup; cancellation retains link and pending membership, no workspace",
+    "invalidCoordinatesDeniedGPS": "Setup error, no login",
+    "validCoordinatesDeniedGPS": "accepted membership and one linked profile",
+    "outsideRegionRelogin": "saved eligible location accepted; active group A",
+    "selectorRetention": {
+      "rowsBefore": 58,
+      "rowsAfterCancel": 58,
+      "newOnboarding": false
+    }
+  },
+  {
+    "point": "4.1.workspace-binding",
+    "pass": true,
+    "accountUserId": "f03009260000000000000003",
+    "baseBoundAcrossGroups": true,
+    "membershipsAfterRetry": 2,
+    "profilesAfterRetry": 2
+  },
+  {
+    "point": "5.1.event-controls-issued",
+    "at": "2026-09-28T01:56:44.816Z",
+    "pass": true,
+    "events": [
+      {
+        "id": "f0300926-0000-4000-8000-000000000001",
+        "externalId": "a3d925e9-f74b-404d-872b-a2b970dd43b7"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000002",
+        "externalId": "efa7c90e-fb27-4f98-b4a1-e978725f56e9"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000003",
+        "externalId": "b621eb95-8890-467f-bd39-dc9ed5ac50f6"
+      }
+    ]
+  },
+  {
+    "point": "5.2.private-events.a",
+    "at": "2026-09-28T02:08:52.802Z",
+    "pass": true,
+    "results": [
+      {
+        "target": "base",
+        "eventId": "a3d925e9-f74b-404d-872b-a2b970dd43b7",
+        "status": 404
+      },
+      {
+        "target": "a",
+        "eventId": "qa-group-api-private-a",
+        "status": 200
+      },
+      {
+        "target": "b",
+        "eventId": "qa-group-api-private-b",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "point": "5.2.private-events.b",
+    "at": "2026-09-28T02:09:12.889Z",
+    "pass": true,
+    "results": [
+      {
+        "target": "base",
+        "eventId": "a3d925e9-f74b-404d-872b-a2b970dd43b7",
+        "status": 404
+      },
+      {
+        "target": "a",
+        "eventId": "qa-group-api-private-a",
+        "status": 404
+      },
+      {
+        "target": "b",
+        "eventId": "qa-group-api-private-b",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "point": "5.2.private-events.base",
+    "at": "2026-09-28T02:09:31.077Z",
+    "pass": true,
+    "results": [
+      {
+        "target": "base",
+        "eventId": "a3d925e9-f74b-404d-872b-a2b970dd43b7",
+        "status": 200
+      },
+      {
+        "target": "a",
+        "eventId": "qa-group-api-private-a",
+        "status": 404
+      },
+      {
+        "target": "b",
+        "eventId": "qa-group-api-private-b",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "point": "5.3.revoked-api-key",
+    "at": "2026-09-28T02:10:29.828Z",
+    "pass": true,
+    "status": 401
+  },
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T02:13:09.928Z",
+    "pass": true,
+    "actor": 0,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
   }
 ]

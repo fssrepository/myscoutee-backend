@@ -26,10 +26,12 @@
     const selector = {$or: [
       ...['userId', 'accountUserId', 'ownerUserId', 'creatorUserId', 'organizerUserId', 'recipientUserId', 'senderUserId',
         'targetUserId', 'requesterUserId', 'claimedUserId', 'memberIds', 'participantIds', 'inviterUserId'].map(k => ({[k]: own})),
-      ...['workspaceGroupId', 'groupId', 'ownerId', 'eventId', 'sourceId'].map(k => ({[k]: {$in: refs}})),
+      ...['workspaceGroupId', 'groupId', 'ownerId', 'eventId', 'sourceId', 'targetId'].map(k => ({[k]: {$in: refs}})),
       {_id: {$in: [...userIds, ...userIds.filter(x => /^[0-9a-f]{24}$/.test(x)).map(x => ObjectId(x)), ...groups]}}
     ]};
+    const paymentIds = Q.collection('payments').find(selector, {_id:1}).toArray().map(p => String(p._id));
     const collections = ['users', 'communityGroups', 'activityMembers', 'activityEvents', 'events', 'eventTickets',
+      'eventCheckoutBasketItems', 'payments', 'savedPaymentMethods', 'eventTicketAudit', 'scheduledMessageTasks',
       'eventWatchSubscriptions', 'activityEventRuntimeItems', 'activitySubEventGroups', 'activitySubEventStageRuntime',
       'activityResources', 'integrationTokens', 'integrationParticipantInvites', 'integrationExternalIds',
       'integrationWebhookSubscriptions', 'integrationWebhookDeliveries', 'mcpAuthorizations', 'userSessionStates',
@@ -37,6 +39,7 @@
       'userFilterPreferences', 'userPageFilterPreferences', 'userExperienceProfiles', 'affinityRecomputeTasks',
       'groupAttention', 'groupInvitations', 'groupMemberships', 'accessGrants', 'chats', 'chatMessages'];
     return Q.snapshotSpecs([...collections.map(collection => ({collection, selector})),
+      {collection: 'payment_gateway_operations', selector: {paymentId: {$in: paymentIds}}},
       {collection: 'mcpOAuthClients', selector: {redirectUris: {$in: callbacks}}}]);
   }
   function status() {
@@ -46,6 +49,10 @@
       memberships: Q.collection('activityMembers').find({ownerType:'community',ownerId:{$in:groups}}, {ownerId:1,userId:1,role:1,status:1}).toArray(),
       inviteMappings: Q.collection('integrationParticipantInvites').find({ownerUserId:{$in:actors}}, {participantId:1,claimedUserId:1,ownerType:1,eventId:1}).toArray(),
       externalBindings: Q.collection('integrationExternalIds').find({ownerUserId:{$in:actors},resourceType:'participant'}, {externalId:1,internalId:1}).toArray(),
+      events: Q.collection('events').find({ownerUserId:{$in:actors}}, {sourceId:1,title:1,workspaceGroupId:1,pricing:1,approvalRequired:1,status:1}).toArray(),
+      eventMembers: Q.collection('activityMembers').find({ownerType:'event',ownerId:{$in:Q.collection('events').distinct('sourceId',{ownerUserId:{$in:actors}})}}, {ownerId:1,userId:1,status:1,role:1,requestKind:1,eventVipInvitation:1}).toArray(),
+      checkoutItems: Q.collection('eventCheckoutBasketItems').find({userId:{$in:actors}}, {sourceId:1,userId:1,status:1,resultState:1,amount:1}).toArray(),
+      payments: Q.collection('payments').find({userId:{$in:actors}}, {sourceId:1,userId:1,status:1,amount:1,provider:1}).toArray(),
       workspaceProfiles: Q.collection('users').find({accountUserId:{$in:actors}}, {userId:1,accountUserId:1,workspaceGroupId:1}).toArray(),
       freshUsers: Q.collection('users').find({name:{$in:freshNames}}, {userId:1,name:1,accountUserId:1,workspaceGroupId:1,activeWorkspaceGroupId:1,affiliateReferrerUserId:1}).toArray(),
       savepoints: Object.keys(state?.savepoints ?? {})});
@@ -83,6 +90,40 @@
     status();return;
   }
   const state=Q.activeState(scenario,true);
+  if (command === 'media-owners') {
+    Q.printObject({users:Q.collection('users').find({name:{$in:freshNames},accountUserId:{$exists:false}}).toArray()
+      .map(u=>u.userId).filter(u=>/^demo-profile-[a-f0-9-]{36}$/.test(u))});return;
+  }
+  if (command === 'prepare-private-controls') {
+    const template=Q.collection('events').findOne({ownerUserId:actors[0],title:'QA Group API free Event'});
+    if (!template) Q.fail('Own API-created free Event missing.');
+    const member=Q.collection('activityMembers').findOne({ownerType:'event',ownerId:template.sourceId,userId:actors[0]});
+    const controls=groups.map((group,index)=>{
+      const owner=Q.collection('users').findOne({accountUserId:actors[2],workspaceGroupId:group});
+      if (!owner) Q.fail('Claimed Milo workspace profile missing.');
+      return {sourceId:`qa-group-api-private-${index ? 'b' : 'a'}`,group,owner:owner.userId,index};
+    });
+    if (Q.collection('events').countDocuments({sourceId:{$in:controls.map(c=>c.sourceId)}})) Q.fail('Private controls already staged.');
+    controls.forEach(c=>{
+      Q.collection('events').insertOne({...template,_id:ObjectId(id(501+c.index)),syncKey:c.sourceId,sourceId:c.sourceId,
+        ownerUserId:c.owner,creatorUserId:c.owner,admins:[c.owner],workspaceGroupId:c.group,
+        title:`QA Group API private ${c.index ? 'B' : 'A'}`,visibility:'Private',
+        acceptedMembers:1,acceptedMemberUserIds:[c.owner],createdUser:c.owner,updatedUser:c.owner});
+      const key=`event:${c.sourceId}:${c.owner}`;
+      Q.collection('activityMembers').insertOne({...member,_id:key,syncKey:key,ownerId:c.sourceId,userId:c.owner,createdUser:c.owner,updatedUser:c.owner});
+    });
+    Q.printObject({checkpointId,prepared:command,controls,baseEventId:template.sourceId,fixtureOnly:true});return;
+  }
+  if (command === 'prepare-paid-event') {
+    const event=Q.collection('events').findOne({ownerUserId:actors[0],title:'QA Group API paid Event'});
+    if (!event) Q.fail('API-created paid Event control missing.');
+    Q.collection('events').updateMany({sourceId:event.sourceId},{$set:{approvalRequired:true,
+      pricing:{enabled:true,mode:'fixed',basePrice:10,currency:'EUR',taxMode:'included',chargeType:'per_attendee',
+        quantityRulesEnabled:false,quantityRules:[],rounding:'none',demandRulesEnabled:false,demandRules:[],timeRulesEnabled:false,timeRules:[],
+        cancellationPolicy:{enabled:false,rules:[]},slotPricingEnabled:false,slotOverrides:[],audience:{enabled:true,memberPrice:10,vipPrice:5,promoCodes:[]}}
+    }});
+    Q.printObject({checkpointId,prepared:command,eventId:event.sourceId,basePrice:10,vipPrice:5,approvalRequired:true,fixtureOnly:true});return;
+  }
   if (command === 'remove-issuer-admin' || command === 'restore-issuer-admin') {
     Q.collection('activityMembers').updateOne({ownerType:'community',ownerId:groups[1],userId:actors[0]},{$set:{role:command==='remove-issuer-admin'?'Member':'Admin'}});
     Q.printObject({checkpointId,prepared:command,group:groups[1],fixtureOnly:true});return;

@@ -1,7 +1,7 @@
 # INTEGRATION-API-GROUP-001 — ordered execution, 2026-09-28
 
-Status: blocks1–3 PASS; 3/7 blocks completed in this independent run.
-Current point:4.1, switch between group workspaces.
+Status: blocks1–5 PASS; 5/7 blocks completed in this independent run.
+Current point:6.1, API/UI attribution links on a fresh independent baseline.
 
 ## Execution contract
 
@@ -37,9 +37,9 @@ case; this supersedes the initial user-controlled startup handoff.
 | 1 | PASS | UI-created Alex and outsider keys; ordered two links; unchanged on replay; blank/duplicate/1001-ID batches400; outsider403; only two unclaimed mappings, no recipient memberships/profiles. |
 | 2 | PASS | Fresh account, linked group profile, reload/login, replay and explicit base filter preservation. |
 | 3 | PASS | Existing/pending recipients, entry controls, rejection statuses409/404/403; Milo gained no membership/profile on denied claims. |
-| 4 | IN PROGRESS | Milo B→A workspace claims, then transport retry. |
-| 5 | NOT RUN | Event control/isolation and scoped cleanup checkpoint. |
-| 6 | NOT RUN | Attribution and cash exclusion; diagnose the supporting cash-refund test expectation recorded in development evidence. |
+| 4 | PASS | B→A base binding and blocked-claim transport retry; exact membership/profile counts. |
+| 5 | PASS | Event free/paid/ended controls; private-profile 3×3 matrix; revoked key401; exact fixture/media/session cleanup. |
+| 6 | IN PROGRESS | Attribution and cash exclusion; diagnose the supporting cash-refund test expectation recorded in development evidence. |
 | 7 | NOT RUN | Ordered Advanced/manual-key, URL OAuth, callback/tool and help checks; development probes do not replace this run. |
 
 The application and frontend watchers own compilation. No additional stack,
@@ -132,3 +132,62 @@ Corrected misleading Event-only error wording in the shared group/Event claim
 UI to Invitation / Meghívó in EN/HU, using the existing keys. Affiliate revenue
 button now uses account_balance_wallet. I18n8056-message audit and42 seed parity
 checks PASS; existing frontend build passed at2026-09-28T01:49:00.228Z.
+
+## 4.1–4.2 — B→A claim and transport retry PASS
+
+Milo entered B, then A through normal browser invitation URLs. Both claims bind
+to the same base account; one workspace profile and accepted membership per
+group. Initial runner incorrectly allocated a second external ID for the same
+person; the existing unique owner/resource/internal-ID rule rejected it409.
+Corrected the runner to use the same participant ID across groups; no product
+rule changed. The rejected extra link remains unclaimed and cleanup-owned.
+
+An initial profile-load interception during a full page navigation was not a
+valid prior-resident-B oracle: the invitation claim had already activated A
+server-side, and the independent initial profile load could return A. Do not
+count that attempt as a verified resident workspace-selection failure.
+The explicit4.2 claim-transport branch blocked the actual claim HTTP request:
+error shown, B remained selected, invitation URL retained. Removing the network
+block and reloading that URL completed A and consumed the parameters. Persisted
+counts remained exactly two memberships and two profiles for Milo.
+
+## 5.1 — Event admission control PASS
+
+API-created own controls: free `a3d925e9-f74b-404d-872b-a2b970dd43b7`,
+paid `efa7c90e-fb27-4f98-b4a1-e978725f56e9`, ended
+`b621eb95-8890-467f-bd39-dc9ed5ac50f6`.
+Milo's free invitation stayed pending until normal Accept plus confirmation;
+then the persisted membership became accepted. Paid invitation opened the normal
+price review (regular EUR10, organizer VIP EUR5, approvalRequired=true). Join plus
+confirmation advanced to card/payment review with a persisted EUR5 confirmed
+basket, pending/join membership and zero payments. Organizer invitation retains
+its normal organizer preapproval; it does not bypass payment. No card/provider
+payment was submitted in this admission control.
+
+Ended URL was consumed without a participant membership: the only ended-event
+member remains its owner/admin. Earlier apparent no-op Join was a harness
+inspection mistake: the shared confirmation dialog is `app-dialog`, outside the
+`[role=dialog]` selector used by the initial reader. Normal scoped confirmation
+completed; no checkout product change was required.
+
+## 5.2 — Private Event profile isolation PASS
+
+Own baseline extension `prepare-private-controls` cloned the run's free Event
+into `qa-group-api-private-a` / `qa-group-api-private-b`, each owned by Milo's
+already-created corresponding workspace profile and with its own Admin member.
+No unrelated case fixture was used. UI workspace selection Base/A/B followed by
+actual detail HTTP reads produced the full 3×3 matrix: same-scope200, all six
+cross-scope404. The controller intentionally hides unavailable Event details as
+404; the runner's initial403 expectation was corrected against that contract.
+These private IDs and all related membership records remain reset-owned.
+
+## 5.3 — API-key revocation and branch cleanup PASS
+
+Alex revoked Client1 through the retained Affiliate popup and confirmation. Its
+previous token returned401 on an invitation write; no mapping was created.
+Managed browsers closed. Common pre-launch sessions restored, exact scoped
+fixture reset completed, and status reports no users, memberships, profiles,
+Events, checkout items, payments or invitation mappings. Fresh Rowan
+Minio upload prefix independently lists zero objects after exact-owner cleanup.
+Additional checkout/payment/audit selectors are now owned by this fixture reset.
+Blocks6–7 use a fresh independent baseline, preserving this evidence.

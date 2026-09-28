@@ -88,11 +88,11 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: Ordered Group API blocks1–3 PASS,3/7 completed; current4.1 workspace change.
-next_action: Milo just opened his B invitation (saved links index3), verify B then open A(index4), prove base binding;4.2 failure/retry follows. QA-only directory-cache preparation fixed; no location fallback added.
+substage: Ordered Group API blocks1–5 PASS,5/7 completed; current6.1 attribution links.
+next_action: Stage a fresh integration-api-group baseline and use versioned browser launcher. Prior branch reset-complete with media/session cleanup; retained credential files are revoked/stale and must be archived before new generation.
 execution_authority: User explicitly requested continuing the automatic test on 2026-09-28. Full-flow Group API testing delegated; operate managed browsers and API in checklist order, announce each point/result, repair and retest failures.
 execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
-fixture_phase: integration-api-group baseline-ready; four isolated actors and two private workspace groups. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
+fixture_phase: integration-api-group not-staged after block5.3 exact reset. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
 runtime: Existing frontend-sync/backend own builds. Optional Inspector stopped. Versioned launcher prepared Group API Alex plus signed-out recipient; manifest INTEGRATION-API-GROUP-001.json.
 last_completed: Isolation blocks1–9 HTTP scope PASS. Pending-write picker is non-closable by the existing save contract; attempted bypass is not cross-scope mutation evidence. Contact/account read and A/B Event unread isolation verified. Demo selector compact red action/retained parent and general mobile menu bell hiding verified.
 mutation_contract: Await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through existing stores to retained lists/cards/badges. Failure retains dialog/error. Keep underlying popups open. No reload to obtain a mutation result.
