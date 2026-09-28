@@ -11331,9 +11331,14 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
 
-### DEPLOY-EXTERNAL-CONFIG-001 — machine checks in progress2026-09-28
+### DEPLOY-EXTERNAL-CONFIG-001 — CLOSED / PASS2026-09-28
 
 [Dedicated checklist](../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
+
+Final status: **CLOSED / PASS**,2026-09-28. Exact fixture cleanup complete.
+Next work: production DEB1.3.0 upgrade on VMware.
+The following paragraphs retain the execution history.
+
 Firebase is retained under final mobile3.1; preserve observed registration, Children HU/sample
 filters, existing missing/saved-point login and location retry results. User
 explicitly prohibited replay of completed checks. Fresh-record absence baseline
