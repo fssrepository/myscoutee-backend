@@ -88,12 +88,12 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: Ordered Group API blocks1–5 PASS,5/7 completed; current6.1 attribution links.
-next_action: Stage a fresh integration-api-group baseline and use versioned browser launcher. Prior branch reset-complete with media/session cleanup; retained credential files are revoked/stale and must be archived before new generation.
+substage: Ordered Group API blocks1–6 PASS,6/7 completed; current7.2 cancellation/reconnect and OAuth permissions;7.1 PASS.
+next_action: Execute7.2 cancellation, fresh sign-in/reconnect, OAuth-row revocation versus manual keys. Actor0 navigated from connected Inspector to localhost/game; Alex Base session retained. Actor1 Fresh Event Base. Inspector session6994 remains running, private log in /tmp/myscoutee-group-api-20260928/inspector.log. Actual private Event read PASS; responsive client and new consent UI fixes need retained verification. Continue7.3–7.8 including exact final cleanup.
 execution_authority: User explicitly requested continuing the automatic test on 2026-09-28. Full-flow Group API testing delegated; operate managed browsers and API in checklist order, announce each point/result, repair and retest failures.
 execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
-fixture_phase: integration-api-group not-staged after block5.3 exact reset. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
-runtime: Existing frontend-sync/backend own builds. Optional Inspector stopped. Versioned launcher prepared Group API Alex plus signed-out recipient; manifest INTEGRATION-API-GROUP-001.json.
+fixture_phase: integration-api-group baseline-ready for block6 after verified extended affiliate/media/session reset. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
+runtime: Existing frontend-sync/backend own builds. Optional Inspector stopped. Fresh versioned launcher prepared Alex plus signed-out recipient for block6; manifest INTEGRATION-API-GROUP-001.json.
 last_completed: Isolation blocks1–9 HTTP scope PASS. Pending-write picker is non-closable by the existing save contract; attempted bypass is not cross-scope mutation evidence. Contact/account read and A/B Event unread isolation verified. Demo selector compact red action/retained parent and general mobile menu bell hiding verified.
 mutation_contract: Await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through existing stores to retained lists/cards/badges. Failure retains dialog/error. Keep underlying popups open. No reload to obtain a mutation result.
 resume_gate: Before any new fixture or browser launch, read the queued testcase and inspect current runtime; Isolation has no live fixture. Current integration-api-group fixture and managed browser manifest must be checked before mutation.

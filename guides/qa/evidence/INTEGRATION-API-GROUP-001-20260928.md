@@ -1,7 +1,7 @@
 # INTEGRATION-API-GROUP-001 — ordered execution, 2026-09-28
 
-Status: blocks1–5 PASS; 5/7 blocks completed in this independent run.
-Current point:6.1, API/UI attribution links on a fresh independent baseline.
+Status: blocks1–6 PASS; 6/7 blocks completed in this independent run.
+Current point:7.2, cancellation/reconnect and separate OAuth permissions;7.1 PASS.
 
 ## Execution contract
 
@@ -39,8 +39,8 @@ case; this supersedes the initial user-controlled startup handoff.
 | 3 | PASS | Existing/pending recipients, entry controls, rejection statuses409/404/403; Milo gained no membership/profile on denied claims. |
 | 4 | PASS | B→A base binding and blocked-claim transport retry; exact membership/profile counts. |
 | 5 | PASS | Event free/paid/ended controls; private-profile 3×3 matrix; revoked key401; exact fixture/media/session cleanup. |
-| 6 | IN PROGRESS | Attribution and cash exclusion; diagnose the supporting cash-refund test expectation recorded in development evidence. |
-| 7 | NOT RUN | Ordered Advanced/manual-key, URL OAuth, callback/tool and help checks; development probes do not replace this run. |
+| 6 | PASS | Attribution, paid invitation EUR5 and cash EUR7 exclusion; replay and persisted counters verified. |
+| 7 | IN PROGRESS | Current7.1 external Inspector OAuth; subsequent checks and final cleanup remain. |
 
 The application and frontend watchers own compilation. No additional stack,
 server or main build was started. Latest UI build and seed parity passed.
@@ -191,3 +191,144 @@ Events, checkout items, payments or invitation mappings. Fresh Rowan
 Minio upload prefix independently lists zero objects after exact-owner cleanup.
 Additional checkout/payment/audit selectors are now owned by this fixture reset.
 Blocks6–7 use a fresh independent baseline, preserving this evidence.
+
+Cleanup correction before6: the initial generic selector omitted
+`affiliateRegistrations.referrerUserId`; Rowan's immutable audit survived the
+first reset. No new attribution checks were accepted on that baseline.
+Extended the owning scenario with affiliate collections/referrer scope, reset
+the short-lived restage again, and independently verified zero owned affiliate
+registrations/links and actors/memberships. This completed reset supersedes the
+initial incomplete cleanup claim above. No product behavior changed.
+
+## 6.1 — API and UI sharing links PASS
+
+On the clean block6 baseline, Alex generated a new API key through Profile.
+Normal Groups card → Share link and free Event card → Share Event produced
+URLs with the same affiliate identity as the API group/Event invitations.
+Complete secret URLs are held only in0600 temporary files. Both UI mappings are
+reusable with no participant ID or claimed user; five API mappings represent
+three distinct participants. Actual `/integrations/settings` reports imported3,
+registered0, affiliate registrations0 and no revenue: UI shares add no imported
+participant. The requested wallet icon was also observed in the refreshed UI.
+
+## 6.2–6.3 — Fresh group recipient, partial PASS
+
+Fresh UI registration `demo-profile-9fe42c09-e4b1-4bf5-952b-f6f5fe7f032e`
+(Group API Fresh Rowan) used the retained API group URL, native browser location,
+normal required onboarding fields and three actual image uploads. Persisted base
+profile affiliateRegistration and one affiliateRegistrations audit both refer to
+Alex. One accepted A membership, one linked A profile and activeWorkspaceGroupId=A.
+Reopening the claimed URL preserves one affiliate registration and registered
+participant1 (actual settings summary1/3). Existing source branch evidence is
+unchanged. Event recipient and different-inviter replay remain under execution.
+
+Fresh Event recipient `demo-profile-b7b37f25-8acf-44b1-8e3e-93e25fef07ea`
+registered through its own API URL and the same normal onboarding. Base profile
+and immutable registration audit both retain Alex. Target free Event
+`ac34664b-46d5-43a3-bc97-31ccd383a835` has one pending/invite member for this user;
+claim did not bypass normal acceptance. Reopening the URL leaves aggregate
+registered2 and participants2/4. No payment/revenue exists yet.
+
+## 6.2–6.3 — Attribution/replay and target association PASS
+
+Milo logged in normally and copied his personal invitation from Profile →
+Affiliate. After logout, that different-inviter URL was opened and the existing
+Fresh Event account selected through Login. Both its embedded attribution and
+immutable audit still refer to Alex with the original timestamp; Alex summary
+remains registrations2, participants2/4. Neither API replay creates a duplicate.
+Group target is accepted/active as recorded above; Event target is a real
+pending invitation, preserving acceptance/payment rules. Paid end-to-end
+settlement is explicitly required in6.5 following the user's clarification.
+
+## 6.4 — Authority, tampering and foreign target PASS
+
+Fresh Event account: Rowan's already-bound URL409, altered token404, own B URL
+after Alex loses B Admin403. Alex's Base API key cannot invite into Rowan's
+private A-workspace Event (`qa-group-api-attribution-private`):404, matching
+requireOwnedEvent's deliberate concealment contract (initial runner403 corrected
+against source). Restored Alex's original B Admin role. Fresh Event then opened
+an ended-event URL bound to its own external participant ID: no ended membership.
+Oracle: registrations remain2, Fresh Event has no community memberships or group
+profile, foreign target participant mapping absent, ended Event only its owner.
+
+Fixture correction entering6.5: the private denial Event had copied its source
+Event's pending-recipient arrays even though its own membership contained only
+Rowan/Admin. Cleared all pending/invited projections in the existing fixture
+preparation and made restaging conditional on unchanged own ownership/no extra
+members. This was malformed copied QA data; no application fallback or access
+rule was changed. The API owner denial remains the source-scoped404 contract.
+
+
+### 6.5 Paid invitation and cash exclusion PASS after repairs
+
+Normal UI Barion card registration completed with the payment simulator. The
+first payment failed before provider I/O: optional checkout detail was passed
+as null to Map.of. Barion requires Description; the adapter now uses the item
+label when no additional detail exists (https://docs.barion.com/Item).
+Checkout ignores Spring's "No message available" placeholder and retains its
+existing meaningful operation failure message.
+
+Retry captured EUR5 once, then exposed loss of organizer preapproval between
+invitation acceptance and payment finalization. requestJoin now preserves the
+stored accepted organizer invitation while its inviter still has Admin role,
+using the already-loaded membership snapshot. Retrying reused the captured
+payment: recipient membership accepted, one captured EUR5 payment and one
+failed pre-provider attempt; no duplicate charge or contribution. Reload kept
+accepted membership, two accepted members and the pending free control intact.
+Affiliate totals EUR5 gross/net, purchases1, bookings1.
+
+Cash control: ordinary authenticated receipt endpoint recorded EUR7 from Fresh
+Event to Alex. Same request replay returned the same receipt; owner income and
+payer expense each contain one row. Affiliate totals unchanged at EUR5/1/1.
+Versioned runner: group-api-ordered-qa.mjs cash-control.
+
+Verification: existing backend/frontend watchers compiled the product changes.
+Focused JUnit reused watcher-built main classes and compiled only tests:
+Barion optional description4 cases, retained organizer approval2 cases including
+removed inviter Admin, existing member-invitation approval1 =7/7 PASS. The first
+new-test run had an incorrectly populated accepted-members snapshot (5/6); fixed
+only that test setup before the successful run. Focused Vitest checkout errors3
+and integration repository11 =14/14 PASS. Cash refund assertion corrected to the
+existing active-cash refund-request contract (GROUP-LIFECYCLE-001); no cash
+product behavior changed.
+
+Concurrent reported card layout defect repaired in the existing SmartList grid:
+projected template hosts now stretch through flex shells. Actual cards before:
+257.734/218.578px; after normal page reload:257.734/257.734px. Content retained.
+
+
+### 7.1 External Inspector OAuth and private operation PASS
+
+Official Inspector2.8.0 launched from the sibling MCP repository, target
+http://localhost/mcp/private. Initial Connect reached authorization but failed
+invalid_target: the running dev MCP advertised https://myscoutee.com resource
+metadata because Compose reused DOMAIN. Dev/E2E now default the existing
+MYSCOUTEE_PUBLIC_API_BASE_URL explicitly to http://localhost/api (override
+supported); production unchanged. Stopped/recreated only MCP, without build or
+dependencies. Its401 challenge now points to the correct local metadata.
+
+Fresh Inspector state: normal Connect/discovery/DCR/S256 PKCE reached MyScoutee
+consent displaying Group API Alex/Base. User approval returned to the same
+Inspector; connected MCP2025-11-25,9 tools including the authorized private set.
+Actual event tool returned the paid Event using API-returned Event externalId
+553b598f-bbf2-4327-8224-f7d7e2333af4. The initially supplied submitted request UUID
+returned404; corrected to the identifier in the creation response, no access
+rule changed. Raw client transcript stays private under the run's0700 temp
+root; no tokens, authorization parameters or organizer URLs in committed logs.
+Reload/reconnect reused credentials successfully. Fresh signed-out login,
+cancellation/revocation and profile separation remain7.2–7.5.
+
+User-requested external-client presentation repair: official client retained;
+versioned launcher applies responsive.css to pinned Inspector2.8.0 assets with
+content-based CSS cache busting. Removed1280px root minimum; at<=760px header,
+tool selection/detail and monitoring panels stack. Logs have an opaque surface.
+Search is a full-width row beneath Logs/Protocol/Network at all sizes.
+Measured viewport390/760/1280: document widths375/760/1280, no horizontal
+overflow; search/tab widths296/681/256px respectively and12px vertical gap.
+MCP README includes a short make oauth-client/open printed URL/Connect/Ctrl+C
+section. No custom OAuth protocol or second client implementation introduced.
+
+Authorization consent redesigned with shared Popup/Menu styles, client identity,
+profile panel, concise HU/EN permission text, optional callback disclosure and
+right-aligned actions. Source+3Mongo seed audit8056keys PASS; watcher build PASS.
+Actual new-consent rendering still to verify during7.2.

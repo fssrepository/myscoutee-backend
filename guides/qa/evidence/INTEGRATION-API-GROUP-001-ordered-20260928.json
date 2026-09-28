@@ -228,5 +228,308 @@
     "actor": 0,
     "source": "normal-profile-ui",
     "secretRecorded": false
+  },
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T02:14:46.236Z",
+    "pass": true,
+    "actor": 0,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.1.links",
+    "at": "2026-09-28T02:15:09.565Z",
+    "pass": true,
+    "status": 200,
+    "orderedIds": [
+      "group-api-fresh-rowan",
+      "group-api-existing-maya"
+    ],
+    "count": 2
+  },
+  {
+    "point": "5.1.event-controls-issued",
+    "at": "2026-09-28T02:15:10.231Z",
+    "pass": true,
+    "events": [
+      {
+        "id": "f0300926-0000-4000-8000-000000000001",
+        "externalId": "ac34664b-46d5-43a3-bc97-31ccd383a835"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000002",
+        "externalId": "553b598f-bbf2-4327-8224-f7d7e2333af4"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000003",
+        "externalId": "d1fae842-cf78-4bd7-a093-bdc5714b068d"
+      }
+    ]
+  },
+  {
+    "point": "6.1.ui-share.group",
+    "at": "2026-09-28T02:16:46.516Z",
+    "pass": true,
+    "origin": "http://localhost",
+    "path": "/game",
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "sameInviter": true
+  },
+  {
+    "point": "6.1.ui-share.event",
+    "at": "2026-09-28T02:17:38.456Z",
+    "pass": true,
+    "origin": "http://localhost",
+    "path": "/game",
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "sameInviter": true
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:19:00.365Z",
+    "registered": 0,
+    "participants": {
+      "registered": 0,
+      "imported": 3
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:20:48.896Z",
+    "registered": 1,
+    "participants": {
+      "registered": 1,
+      "imported": 3
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.2.fresh-event-link",
+    "at": "2026-09-28T02:21:12.839Z",
+    "pass": true,
+    "eventId": "ac34664b-46d5-43a3-bc97-31ccd383a835",
+    "issued": 1
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:23:03.489Z",
+    "registered": 2,
+    "participants": {
+      "registered": 2,
+      "imported": 4
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:23:40.125Z",
+    "registered": 2,
+    "participants": {
+      "registered": 2,
+      "imported": 4
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:25:08.286Z",
+    "registered": 2,
+    "participants": {
+      "registered": 2,
+      "imported": 4
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.4.attribution-denials",
+    "at": "2026-09-28T02:26:58.215Z",
+    "pass": true,
+    "otherAccount": 409,
+    "tampered": 404,
+    "removedAdmin": 403,
+    "foreignEvent": 404
+  },
+  {
+    "point": "6.fresh-event-link",
+    "at": "2026-09-28T02:27:23.579Z",
+    "pass": true,
+    "kind": "ended",
+    "eventId": "d1fae842-cf78-4bd7-a093-bdc5714b068d",
+    "issued": 1
+  },
+  {
+    "point": "6.fresh-event-link",
+    "at": "2026-09-28T02:28:06.216Z",
+    "pass": true,
+    "kind": "paid",
+    "eventId": "553b598f-bbf2-4327-8224-f7d7e2333af4",
+    "issued": 1
+  },
+  {
+    "point": "6.5.cash-exclusion",
+    "at": "2026-09-28T02:44:44.659Z",
+    "pass": true,
+    "replaySameReceipt": true,
+    "histories": [
+      {
+        "userId": "f03009260000000000000001",
+        "cashRows": 1,
+        "direction": "income",
+        "amount": 7
+      },
+      {
+        "userId": "demo-profile-b7b37f25-8acf-44b1-8e3e-93e25fef07ea",
+        "cashRows": 1,
+        "direction": "expense",
+        "amount": 7
+      }
+    ],
+    "revenueUnchanged": {
+      "currencies": {
+        "EUR": {
+          "gross": 5,
+          "refunded": 0,
+          "net": 5
+        }
+      },
+      "purchases": 1,
+      "eventBookings": 1,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 5,
+        "gross": 5,
+        "refunded": 0,
+        "net": 5,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
   }
 ]

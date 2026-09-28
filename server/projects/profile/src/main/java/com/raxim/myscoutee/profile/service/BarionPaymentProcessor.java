@@ -103,7 +103,8 @@ public class BarionPaymentProcessor implements PaymentProcessor {
         List<Map<String, Object>> items = request.lineItems().stream()
                 .map(item -> Map.<String, Object>of(
                         "Name", item.label(),
-                        "Description", item.detail(),
+                        // Checkout detail is optional; Barion requires a description.
+                        "Description", StringUtils.hasText(item.detail()) ? item.detail() : item.label(),
                         "Quantity", 1,
                         "Unit", "pcs",
                         "UnitPrice", BigDecimal.valueOf(item.amount()),

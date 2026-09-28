@@ -23373,7 +23373,7 @@
     "_id": "i18n-message-en-mcp-consent-message",
     "key": "mcp.consent.message",
     "lang": "en",
-    "value": "This connection can use the API operations allowed for this profile and group. It cannot switch profiles. You can revoke access under Profile editor → Affiliate → Client keys."
+    "value": "This client can use the API actions allowed for this profile only. Revoke access under API → OAuth permissions."
   },
   {
     "_id": "i18n-message-en-mcp-authorization-failed",
@@ -47541,7 +47541,7 @@
     "_id": "i18n-message-hu-mcp-consent-message",
     "key": "mcp.consent.message",
     "lang": "hu",
-    "value": "Ez a kapcsolat a profil és csoport számára engedélyezett API-műveleteket használhatja. Másik profilra nem válthat. A hozzáférést a Profilszerkesztő → Affiliate → Klienskulcsok alatt vonhatod vissza."
+    "value": "A kliens csak ehhez a profilhoz engedélyezett API-műveleteket használhatja. A hozzáférés az API → OAuth-engedélyek alatt visszavonható."
   },
   {
     "_id": "i18n-message-hu-mcp-authorization-failed",

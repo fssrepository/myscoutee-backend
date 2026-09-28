@@ -3124,7 +3124,14 @@ public class ActivitiesEventsService {
         }
         syncCheckoutBasketForJoin(request);
         boolean acceptingInvitation = activitiesMembersService.hasPendingInvitation(sourceId, viewer.userId());
-        boolean approvalRequested = !paymentAwaitingMember && (acceptingInvitation
+        // Accepting an organizer invitation precedes payment. Its stored acceptance
+        // remains valid when checkout changes the pending request from invite to join.
+        boolean acceptedOrganizerInvitation = beforeSnapshot.members().stream().anyMatch(member ->
+                viewer.userId().equals(member.getUserId()) && "pending".equals(member.getStatus())
+                        && Boolean.TRUE.equals(member.getEventVipInvitation())
+                        && StringUtils.hasText(member.getEventVipAcceptedAtIso())
+                        && beforeSnapshot.hasAcceptedAdminRole(member.getInvitedByUserId()));
+        boolean approvalRequested = !paymentAwaitingMember && !acceptedOrganizerInvitation && (acceptingInvitation
                 ? activitiesMembersService.pendingInvitationRequiresAdminApproval(sourceId, viewer.userId())
                 : isApprovalRequested(request)
                         || (Boolean.TRUE.equals(preferred.getApprovalRequired()) && !alreadyAccepted));

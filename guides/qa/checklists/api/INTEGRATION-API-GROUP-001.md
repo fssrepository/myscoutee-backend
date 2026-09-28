@@ -190,6 +190,10 @@ Revoke the inviter's required role, tamper with the target/token and attempt
 Compare cash and non-cash payments by the registered recipients: only the
   latter enter affiliate revenue/commission. Ordinary cash payment history
   remains available. Capture persisted counters and replay outcomes separately.
+For a paid Event invitation, complete the normal checkout through the test
+payment provider. The invitation itself never makes a chargeable place free:
+before successful payment participation remains pending; after successful
+payment verify the accepted participation and its persisted payment together.
 
 These are additional microsteps of this existing NOT RUN case, not new QA IDs
 and not updates to any closed Affiliate/Event/API PASS evidence.

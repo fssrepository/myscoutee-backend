@@ -1332,6 +1332,42 @@ class ActivitiesEventsServiceTest {
         assertThat(result.counterDelta().event().invitations()).isEqualTo(-1);
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = { true, false })
+    void acceptedOrganizerInvitationRetainsApprovalThroughCheckoutOnlyWhileInviterIsAdmin(boolean inviterAdmin) {
+        Users viewer = new Users();
+        viewer.setId("viewer");
+        ActivityEvent event = event("event-1", "host", 0d);
+        event.setApprovalRequired(true);
+        ActivityMember invitation = new ActivityMember();
+        invitation.setUserId("viewer");
+        invitation.setStatus("pending");
+        invitation.setRequestKind("join");
+        invitation.setEventVipInvitation(true);
+        invitation.setEventVipAcceptedAtIso("2026-09-28T02:00:00Z");
+        invitation.setInvitedByUserId("inviter");
+        Set<String> admins = inviterAdmin ? Set.of("host", "inviter") : Set.of("host");
+        var before = new ActivitiesMembersService.OwnerMembersSnapshot(
+                "event", "event-1", List.of(invitation), List.of("host"), List.of("host"),
+                List.of("viewer"), List.of(), List.of("viewer"), admins, 8);
+        var after = new ActivitiesMembersService.OwnerMembersSnapshot(
+                "event", "event-1", List.of(), inviterAdmin ? List.of("host", "viewer") : List.of("host"),
+                inviterAdmin ? List.of("host", "viewer") : List.of("host"),
+                inviterAdmin ? List.of() : List.of("viewer"), List.of(),
+                inviterAdmin ? List.of() : List.of("viewer"), admins, 8, true);
+        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(activityEventsRepository.findBySourceIdIn(List.of("event-1"))).thenReturn(List.of(event));
+        when(activitiesMembersService.queryOwnerSnapshot("event", "event-1")).thenReturn(before);
+        when(activitiesMembersService.requestJoin(eq("event-1"), eq(viewer), any(ActivityEvent.class),
+                eq(inviterAdmin), eq(false), eq(!inviterAdmin))).thenReturn(after);
+
+        var result = service.requestJoin(new EventActionRequestDto(
+                "viewer", "event-1", null, List.of(), List.of(), List.of(), "paid-session", true, null));
+
+        assertThat(result.membershipStatus()).isEqualTo(inviterAdmin ? "accepted" : "pending");
+        assertThat(result.pendingReason()).isEqualTo(inviterAdmin ? null : "approval");
+    }
+
     @Test
     void stageActionStopsBeforeLoadWhenPolicyDenies() {
         Users host = new Users();

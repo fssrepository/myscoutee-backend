@@ -10,7 +10,83 @@ const [command,actorText='0',itemText='0']=process.argv.slice(2),actor=Number(ac
 const credentialsPath=`${root}/api-${actor}.json`;
 const evidencePath='guides/qa/evidence/INTEGRATION-API-GROUP-001-ordered-20260928.json';
 async function evidence(point,result){let records=[];try{records=JSON.parse(await readFile(evidencePath,'utf8'));}catch{}records.push({point,at:new Date().toISOString(),...result});await writeFile(evidencePath,JSON.stringify(records,null,2)+'\n');console.log(JSON.stringify({point,...result}));}
-if(command==='revoked-key'){
+if(command==='cash-control'){
+ const manifest=JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`,'utf8'));
+ const owner=manifest.sessions[0],b=await attach(checkpoint,1);let payer;
+ try{payer=await b.evaluate(`JSON.parse(localStorage.getItem('myscoutee.http.session.v1'))`);}finally{b.close();}
+ assert.equal(owner.userId,'f03009260000000000000001');assert.ok(payer.userId.startsWith('demo-profile-'));
+ const headers=s=>({'Content-Type':'application/json','X-App-Session-Kind':'demo','X-Demo-User-Id':s.userId,'X-App-Session-Id':s.sessionId});
+ const get=async(path,s)=>{const r=await fetch('http://localhost/api'+path,{headers:headers(s)});assert.equal(r.status,200);return r.json();};
+ const before=(await get('/integrations/settings',owner)).affiliate.revenue;
+ const body={requestId:'f0300926-0000-4000-8000-000000000065',payerUserId:payer.userId,amount:7,currency:'EUR',note:'QA Group API cash exclusion control'};
+ const ids=[];
+ for(let n=0;n<2;n++){const r=await fetch('http://localhost/api/payment-methods/history/cash',{method:'POST',headers:headers(owner),body:JSON.stringify(body)});assert.equal(r.status,200);const m=await r.json();assert.equal(m.item.provider,'cash');ids.push(m.item.id);}
+ assert.equal(ids[0],ids[1]);
+ const after=(await get('/integrations/settings',owner)).affiliate.revenue;assert.deepEqual(after,before);
+ const histories=[];
+ for(const s of [owner,payer]){const h=await get('/payment-methods/history?size=100',s);const cash=h.items.filter(i=>i.id===ids[0]);assert.equal(cash.length,1);assert.equal(cash[0].amount,7);histories.push({userId:s.userId,cashRows:cash.length,direction:cash[0].direction,amount:cash[0].amount});}
+ await evidence('6.5.cash-exclusion',{pass:true,replaySameReceipt:true,histories,revenueUnchanged:after});
+}else if(command==='attribution-denial-link'){
+ const c=JSON.parse(await readFile(`${root}/api-0.json`,'utf8'));
+ const r=await fetch('http://localhost/api/integrations/v1/groups/qa-group-api-b/invites',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+c.token,'X-MyScoutee-Client-Id':c.clientId,'X-App-Session-Kind':'demo'},body:JSON.stringify({participantIds:['group-api-fresh-event']})});assert.equal(r.status,200);
+ await writeFile(`${root}/attribution-denial-link.json`,JSON.stringify((await r.json()).items[0]),{mode:0o600});
+ console.log(JSON.stringify({issued:'B denial control'}));
+}else if(command==='attribution-denials'){
+ const b=await attach(checkpoint,1);let session;
+ try{session=await b.evaluate(`JSON.parse(localStorage.getItem('myscoutee.http.session.v1'))`);}finally{b.close();}
+ assert.ok(session?.userId?.startsWith('demo-profile-'));
+ const headers={'Content-Type':'application/json','X-App-Session-Kind':'demo','X-Demo-User-Id':session.userId,'X-App-Session-Id':session.sessionId};
+ const claim=async token=>(await fetch('http://localhost/api/auth/me/partner-invite/claim',{method:'POST',headers,body:JSON.stringify({userId:session.userId,token})})).status;
+ const rowan=JSON.parse(await readFile(`${root}/links.json`,'utf8')).items[0];const token=new URL(rowan.inviteUrl).searchParams.get('partnerInvite');
+ const otherAccount=await claim(token);assert.equal(otherAccount,409);
+ const tampered=await claim((token[0]==='A'?'B':'A')+token.slice(1));assert.equal(tampered,404);
+ const revoked=JSON.parse(await readFile(`${root}/attribution-denial-link.json`,'utf8'));
+ const removedAdmin=await claim(new URL(revoked.inviteUrl).searchParams.get('partnerInvite'));assert.equal(removedAdmin,403);
+ const c=JSON.parse(await readFile(`${root}/api-0.json`,'utf8'));
+ const foreign=await fetch('http://localhost/api/integrations/v1/events/qa-group-api-attribution-private/invites',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+c.token,'X-MyScoutee-Client-Id':c.clientId,'X-App-Session-Kind':'demo'},body:JSON.stringify({participantIds:['must-not-bind-foreign-event']})});
+ // requireOwnedEvent conceals events outside the API owner's source records.
+ assert.equal(foreign.status,404);
+ await evidence('6.4.attribution-denials',{pass:true,otherAccount,tampered,removedAdmin,foreignEvent:foreign.status});
+}else if(command==='capture-personal'){
+ const b=await attach(checkpoint,actor);
+ try{
+  const value=await b.evaluate(`({url:document.querySelector('app-integration-settings-popup app-copy-link input')?.value,userId:JSON.parse(localStorage.getItem('myscoutee.http.session.v1'))?.userId})`);
+  assert.equal(value.userId,'f03009260000000000000003');assert.ok(value.url?.includes('affiliate='));
+  await writeFile(`${root}/other-inviter.json`,JSON.stringify(value),{mode:0o600});
+  console.log(JSON.stringify({captured:'Milo personal invitation',secretRecorded:false}));
+ }finally{b.close();}
+}else if(command==='open-personal'){
+ const link=JSON.parse(await readFile(`${root}/other-inviter.json`,'utf8')),b=await attach(checkpoint,actor);
+ try{await b.send('Page.navigate',{url:link.url});console.log(JSON.stringify({opened:'other-inviter-personal-link',actor}));}finally{b.close();}
+}else if(command==='fresh-event-link'){
+ const kind=['free','paid','ended'].includes(itemText)?itemText:'free';
+ const events=JSON.parse(await readFile(`${root}/event-controls.json`,'utf8')),event=events.find(e=>e.kind===kind);
+ const c=JSON.parse(await readFile(`${root}/api-0.json`,'utf8'));
+ const r=await fetch(`http://localhost/api/integrations/v1/events/${event.externalId}/invites`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+c.token,'X-MyScoutee-Client-Id':c.clientId,'X-App-Session-Kind':'demo'},body:JSON.stringify({participantIds:['group-api-fresh-event']})});assert.equal(r.status,200);
+ const body=await r.json();await writeFile(`${root}/fresh-${kind==='free'?'event':kind}-link.json`,JSON.stringify(body.items[0]),{mode:0o600});
+ await evidence('6.fresh-event-link',{pass:true,kind,eventId:event.externalId,issued:1});
+}else if(command==='open-fresh-event'){
+ const kind=['paid','ended'].includes(itemText)?itemText:'event';
+ const link=JSON.parse(await readFile(`${root}/fresh-${kind}-link.json`,'utf8')),b=await attach(checkpoint,actor);
+ try{await b.send('Page.navigate',{url:link.inviteUrl});console.log(JSON.stringify({opened:'fresh-event-invitation',actor}));}finally{b.close();}
+}else if(command==='attribution-summary'){
+ const manifest=JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`,'utf8'));
+ const owner=manifest.sessions[0];const r=await fetch('http://localhost/api/integrations/settings',{headers:{'X-App-Session-Kind':'demo','X-Demo-User-Id':owner.userId,'X-App-Session-Id':owner.sessionId}});
+ assert.equal(r.status,200);const s=await r.json();
+ await evidence('6.attribution-summary',{registered:s.affiliate.registered,participants:s.participants,revenue:s.affiliate.revenue});
+}else if(command==='capture-share'){
+ assert.ok(['group','event'].includes(itemText));const b=await attach(checkpoint,actor);
+ try{
+  const url=await b.evaluate(`document.querySelector('app-external-invite-popup input')?.value`);
+  assert.ok(url?.includes('partnerInvite='),'Visible share URL missing');
+  const parsed=new URL(url),links=JSON.parse(await readFile(`${root}/links.json`,'utf8'));
+  const api=new URL(links.items[0].inviteUrl);
+  assert.equal(parsed.searchParams.get('affiliate'),api.searchParams.get('affiliate'));
+  assert.ok(parsed.searchParams.get('partnerInvite'));
+  await writeFile(`${root}/ui-share-${itemText}.json`,JSON.stringify({url}),{mode:0o600});
+  await evidence('6.1.ui-share.'+itemText,{pass:true,origin:parsed.origin,path:parsed.pathname,queryKeys:[...parsed.searchParams.keys()],sameInviter:true});
+ }finally{b.close();}
+}else if(command==='revoked-key'){
  const c=JSON.parse(await readFile(credentialsPath,'utf8'));
  const r=await fetch('http://localhost/api/integrations/v1/groups/qa-group-api-a/invites',{method:'POST',
   headers:{'Content-Type':'application/json',Authorization:'Bearer '+c.token,'X-MyScoutee-Client-Id':c.clientId,'X-App-Session-Kind':'demo'},
