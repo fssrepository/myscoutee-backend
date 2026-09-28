@@ -1,0 +1,14 @@
+{
+  "checkpointId": "GROUP-ISOLATION-001",
+  "phase": "not-staged",
+  "actors": [
+    "f02809260000000000000001",
+    "f02809260000000000000002",
+    "f02809260000000000000003",
+    "f02809260000000000000004"
+  ],
+  "profiles": [],
+  "groups": [],
+  "memberships": [],
+  "savepoints": []
+}

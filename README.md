@@ -54,23 +54,25 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
-Group lifecycle QA is **CLOSED for the agreed HTTP scope**: **29/29** blocks
-closed (26 full-block closures plus3 scope-transfer closures), **29/48** across
-the three Group journeys. External/configured/device acceptance belongs to the
-independent [deployment QA](guides/qa/checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md)
-and has no pending dependency back to Group Lifecycle. Full Local remains NOT RUN.
-**Next: [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md),
-explicitly NOT STARTED at the user's request.**
-[Group lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) and
-[participant-link API](guides/qa/checklists/integration/INTEGRATION-API-GROUP-001.md)
-retain their separate evidence and scope.
+Group QA is **CLOSED for the agreed HTTP scope**: **38/38** blocks across
+[Group Lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) (29/29)
+and [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md) (9/9).
+Isolation fixtures and pre-launch sessions were restored exactly; managed windows
+are closed. Full Local remains NOT RUN. External/configured/device acceptance
+belongs to independent [deployment QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
+Real ChatGPT/Claude/Codex connection and conversation acceptance is a separate
+[post-deployment smoke](guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md), outside the QA matrix.
+The [participant-link API](guides/qa/checklists/api/INTEGRATION-API-GROUP-001.md)
+is **CLOSED / PASS:7/7 blocks** in the recorded dev HTTP/simulator scope, including
+real Inspector OAuth and private reads. Local key/help checks passed; exact fixture,
+session and media cleanup is complete. See the [execution evidence](guides/qa/evidence/INTEGRATION-API-GROUP-001-20260928.md) for boundaries.
 See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
-domain order; participant-link coverage belongs to API test. Existing lifecycle evidence does not close the separate Isolation or API journey.
+domain order; participant-link coverage belongs to API test. Group evidence does not close the separate API journey.
 
 The five new delegated cases are tracked in the matrix. [Gallery/Feed/Moderation](guides/qa/evidence/EVENT-GALLERY-FEED-001-20260923-progress.md) is PASS on the user-started dev stack (2026-09-23), with fixture reset complete. [Email QA](guides/qa/evidence/OPERATOR-EMAIL-WARNING-001-20260923-progress.md), including durable retries and the [public unsubscribe/branding supplement](guides/qa/evidence/EMAIL-UNSUBSCRIBE-001-20260923.md), is PASS on the dev stack with cleanup complete. [Admin client QA](guides/qa/evidence/ADMIN-CLIENT-API-001-20260923-progress.md) is PASS in the recorded dev scope, with platform boundaries explicitly NOT RUN and fixture reset. [Affiliate revenue](guides/qa/evidence/AFFILIATE-REVENUE-001-20260923-progress.md) is PASS in the recorded dev HTTP/simulator and frontend-local scope (2026-09-24); production-installation and provider hold-only UI boundaries remain explicit in the evidence. [Calendar export QA](guides/qa/evidence/EVENT-CALENDAR-EXPORT-001-20260924.md) is PASS/CLOSED (2026-09-24), including One-time/Daily/Weekly occurrences, physical imports and an offline native reminder. Importer update/deletion/alarm limitations are recorded; fixture cleanup is complete. Earlier closed cases remain unchanged.
 
 The delegated [Event Mode regression](guides/qa/checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md)
-and [Integration API extension](guides/qa/checklists/integration/INTEGRATION-API-001.md#extension-result--2026-09-22)
+and [Integration API extension](guides/qa/checklists/api/INTEGRATION-API-001.md#extension-result--2026-09-22)
 are closed on 2026-09-22, with evidence boundaries recorded in their results.
 The separate [activity-rating comparison](guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
 is also closed on 2026-09-22: corrected numbered expectations, retained user observations, automatic continuation through save/reload and feedback checks, and scoped cleanup. The [QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
@@ -86,4 +88,4 @@ is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
 committed deltas, failed-save retry, immediate list removal and stored-state poll.
 Its isolated fixture and browser sessions are cleaned.
 
-Firebase and externally configured MCP/client checks are tracked separately as **DEFERRED / NOT RUN** in [deployment integration QA](guides/qa/checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md); they do not block the active Group campaign.
+Configured Firebase/OAuth and external configuration QA is **CLOSED / PASS** (2026-09-28): [checklist](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md), [evidence](guides/qualification/evidence/PROD_PARITY_20260928.md). The separate production DEB1.3.0 VMware upgrade is next.

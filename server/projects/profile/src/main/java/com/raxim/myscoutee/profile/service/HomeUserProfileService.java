@@ -3576,7 +3576,7 @@ public class HomeUserProfileService {
                 .toList();
     }
 
-    private String resolvePersonalityTraitId(String id, String label) {
+    static String resolvePersonalityTraitId(String id, String label) {
         String normalizedId = normalizeToken(id);
         if (PERSONALITY_TRAIT_DEFINITION_BY_ID.containsKey(normalizedId)) {
             return normalizedId;
@@ -3584,7 +3584,7 @@ public class HomeUserProfileService {
         return resolvePersonalityTraitIdFromLabel(label);
     }
 
-    private String resolvePersonalityTraitIdFromLabel(String label) {
+    private static String resolvePersonalityTraitIdFromLabel(String label) {
         String normalizedLabel = normalizeToken(label);
         if (!StringUtils.hasText(normalizedLabel)) {
             return null;
@@ -3750,8 +3750,8 @@ public class HomeUserProfileService {
         return StringUtils.hasText(normalized) ? normalized : null;
     }
 
-    private String normalizeToken(String value) {
-        return normalizeId(value).toLowerCase();
+    private static String normalizeToken(String value) {
+        return value == null ? "" : value.trim().toLowerCase();
     }
 
     private String reportSyncKey(

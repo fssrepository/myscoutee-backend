@@ -487,6 +487,45 @@ class AccessControlServiceTest {
     }
 
     @Test
+    void demoEventMemberViewUsesAuthenticatedProfileAuthority() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        authenticateAs("group-b-profile");
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-a", "group-b-profile"))
+                .thenReturn(Optional.empty());
+        when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId("event", "event-a", "group-a-profile"))
+                .thenReturn(Optional.of(member("event-a", "group-a-profile", "accepted", "Member")));
+
+        assertThat(service.canCurrentActorViewEventMembers("event-a")).isFalse();
+
+        authenticateAs("group-a-profile");
+        assertThat(service.canCurrentActorViewEventMembers("event-a")).isTrue();
+    }
+
+    @Test
+    void demoEventMemberViewRejectsAnonymousActor() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        SecurityContextHolder.clearContext();
+
+        assertThat(service.canCurrentActorViewEventMembers("event-a")).isFalse();
+        verifyNoInteractions(activityMembersRepository, activityEventsRepository);
+    }
+
+    @Test
+    void demoEventLifecycleUsesAuthenticatedProfileAuthority() {
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        when(usersRepository.findByUserId("group-a-profile")).thenReturn(Optional.of(user("group-a-profile")));
+        when(usersRepository.findByUserId("group-b-profile")).thenReturn(Optional.of(user("group-b-profile")));
+        when(activityEventsRepository.findBySourceId("event-a"))
+                .thenReturn(List.of(event("event-a", "group-a-profile", "group-a-profile")));
+        authenticateAs("group-b-profile");
+        assertThat(service.canCurrentActorPublishEvent("event-a")).isFalse();
+        assertThat(service.canCurrentActorUnpublishEvent("event-a")).isFalse();
+        authenticateAs("group-a-profile");
+        assertThat(service.canCurrentActorPublishEvent("event-a")).isTrue();
+        assertThat(service.canCurrentActorUnpublishEvent("event-a")).isTrue();
+    }
+
+    @Test
     void eventMemberAcceptAllowsManagerForPendingNonProtectedMember() {
         when(activityEventsRepository.findBySourceId("event-1"))
                 .thenReturn(List.of(event("event-1", "creator", "admin")));

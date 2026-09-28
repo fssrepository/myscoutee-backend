@@ -38,7 +38,7 @@ services:
       MYSCOUTEE_MCP_TRANSPORT: http
       MYSCOUTEE_MCP_LISTEN: 0.0.0.0:8080
       MYSCOUTEE_API_BASE_URL: http://profilemanagement:8080
-      MYSCOUTEE_PUBLIC_API_BASE_URL: https://${DOMAIN:-localhost}/api
+      MYSCOUTEE_PUBLIC_API_BASE_URL: ${MYSCOUTEE_PUBLIC_API_BASE_URL:-http://localhost/api}
     networks:
       - e2e
     read_only: true

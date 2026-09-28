@@ -1,0 +1,131 @@
+{
+  "version": "1.3.0",
+  "date": "2026-09-28",
+  "productionBuild": {
+    "version": "1.3.0",
+    "buildId": "a26735a73f23-20260928083403",
+    "builtAt": "2026-09-28T08:34:03.091Z",
+    "gitSha": "a26735a73f23"
+  },
+  "pagesBuild": {
+    "version": "1.3.0",
+    "buildId": "a26735a73f23-20260928083538",
+    "builtAt": "2026-09-28T08:35:38.961Z",
+    "gitSha": "a26735a73f23"
+  },
+  "pagesDataSource": "local",
+  "productionDataSource": "http",
+  "artifactPreflight": "PASS",
+  "credentialAudit": "PASS",
+  "signatures": "verified",
+  "debianUpload": "reserved for owner",
+  "netcup": "not deployed",
+  "images": [
+    {
+      "service": "nginx-base",
+      "source": "myscoutee-nginx:1.3.0-base",
+      "sourceId": "sha256:575672ae330d397ae3df9475c3d204a80c837040dce3dac9eaa87e893ba9e0a6",
+      "image": "ghcr.io/fssrepository/myscoutee-nginx-base:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-nginx-base@sha256:3df04ee03ba57894e7fd32071c7d429fcd14f1ca75f1860e7074ef3ff7fd13bd",
+      "imageId": "sha256:f06e3d0e4a97aa1bc5fd1a8fbb1949b3fa26564efc450990a41f8d289403350e",
+      "repository": "myscoutee",
+      "sourceCommit": "c55d826f17d73e6dfc6c7c3fd42e40703269b6cd"
+    },
+    {
+      "service": "profilemanagement",
+      "source": "myscoutee-api:1.3.0-prod",
+      "sourceId": "sha256:f9f1482b5e12fae26bb8da4237da61fe2f12cac5dc4f790fc5f7bfa926720feb",
+      "image": "ghcr.io/fssrepository/myscoutee-api:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-api@sha256:a423d17245678330ffa64fc9fee6ff41fc532e8498f348205e4e6118e3226150",
+      "imageId": "sha256:33220035e760287719120b97dc3b9e3b7440f4355bc10b5f9125a4d992484f9b",
+      "repository": "myscoutee-backend",
+      "sourceCommit": "4265826fbab49baedc0ae13109738c6438506a75"
+    },
+    {
+      "service": "minio",
+      "source": "myscoutee-minio:1.3.0-prod",
+      "sourceId": "sha256:2c64cce9a40975432d4f69d300d0c00c3a7e3c6622262597f68a1d2855ce7b3d",
+      "image": "ghcr.io/fssrepository/myscoutee-minio:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-minio@sha256:e16f5fc4ca4bee53ffbff923ca8c10ef804f4fffdecfb73d84ab6a97bcba7a5f",
+      "imageId": "sha256:0fb6762ac041b316bda810cfb0433418464f0fde06bcf2186b132225d6c3de96",
+      "repository": "myscoutee-backend",
+      "sourceCommit": "23f6d25555a6f44a4fe2270587d571bb829a9c15"
+    },
+    {
+      "service": "registry-demo",
+      "source": "myscoutee-registry:1.3.0-prod",
+      "sourceId": "sha256:30acd16c7288938c8562d436ee3c9c0b1408f2d9d41ba57af9202a39ab7d5dac",
+      "image": "ghcr.io/fssrepository/myscoutee-registry:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-registry@sha256:829ad5cfeafa3feddff14e92cab4c78d5783e2c6b73043206ceddab91420d1ba",
+      "imageId": "sha256:569a876611751f7b089f01875e1f21678c807935a9e06a4af4c82d2925ed45e7",
+      "repository": "myscoutee-registry",
+      "sourceCommit": "54974234c72a804da60dda830001a53cab65b755"
+    },
+    {
+      "service": "payment-simulator",
+      "source": "myscoutee-payment-simulator:1.3.0-prod",
+      "sourceId": "sha256:3c27d1ee129e0fedacbe8a08b6065b22302721aa6c476e9d023f3528ef9f9aff",
+      "image": "ghcr.io/fssrepository/myscoutee-payment-simulator:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-payment-simulator@sha256:8460712d2a0c270510e16f81308c74a3cfb4d39bd960555736a89d6d206bc781",
+      "imageId": "sha256:5ddb5a1b2ea127b57675c474021cd7c74c8fd52492fa4f384e6aa4fbae66fdc9",
+      "repository": "myscoutee-payment-simulator",
+      "sourceCommit": "c456fd6e5b3c7b59c33db71b4b9c8aaaf36072a2"
+    },
+    {
+      "service": "mongodb",
+      "source": "mongo:8.0.4",
+      "sourceId": "sha256:6fe2220a3a52775d0ddfc59d6ca8140c80e5169c5c374f048b8a76f2f11820e7",
+      "image": "ghcr.io/fssrepository/myscoutee-mongodb:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-mongodb@sha256:b80ec89d6c9000d70e467cbed37fbbe45acd60b7237d6c4a76b207cd1a4054ff",
+      "imageId": "sha256:57e5df6b87cd7dd008561dcbc8004a70b0f93095085473c4c423f595d851d566",
+      "repository": "myscoutee-backend",
+      "sourceCommit": "23f6d25555a6f44a4fe2270587d571bb829a9c15"
+    },
+    {
+      "service": "redis",
+      "source": "redis:8.6.1-alpine",
+      "sourceId": "sha256:47ee395bd02d37907b34c2d503d6a5e8de1d2704cbe9b4db54c75d9757410311",
+      "image": "ghcr.io/fssrepository/myscoutee-redis:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-redis@sha256:b26a4351d07c156fe9e5733f8a461ed0dc0a1a53ed11e6a38f45dbd946914990",
+      "imageId": "sha256:76215cbf1cbc76cf9b5dd5d44e64228f31015b7446fb3521993eebd4daceded8",
+      "repository": "myscoutee-backend",
+      "sourceCommit": "23f6d25555a6f44a4fe2270587d571bb829a9c15"
+    },
+    {
+      "service": "mcp",
+      "source": "myscoutee-mcp:1.3.0-prod",
+      "image": "ghcr.io/fssrepository/myscoutee-mcp:1.3.0",
+      "repository": "myscoutee-mcp",
+      "sourceId": "sha256:e8df3ee7feda1bae2b5674d9f00238ff5793e338579686ca635002ca1f73e051",
+      "imageId": "sha256:dbffafcf7875acc28dd8e96e3540328390c491f02b335402b335c3065b108550",
+      "digest": "ghcr.io/fssrepository/myscoutee-mcp@sha256:c10c2867a16aefa2b4c4e75dd8d5779e22f2e9511827f940ac7754e107bbfe19",
+      "sourceCommit": "634ef950df62c19e564c6efcbc0d36c6766a9f37"
+    },
+    {
+      "service": "nginx",
+      "source": "myscoutee-nginx:1.3.0-prod",
+      "sourceId": "sha256:b7589906769e73f01cd8a84d16aa7728f4d2d905a969c826dd5431fbbcb2c480",
+      "image": "ghcr.io/fssrepository/myscoutee-nginx:1.3.0",
+      "digest": "ghcr.io/fssrepository/myscoutee-nginx@sha256:9a9028d2539d75de289dbdb100ed46e0b85c6453514173dba23d6fffbbc719f3",
+      "imageId": "sha256:bdb93bba6901e24553234b6e14626d604570d21440f0a800deb8ff423af439eb",
+      "repository": "myscoutee",
+      "sourceCommit": "c55d826f17d73e6dfc6c7c3fd42e40703269b6cd"
+    }
+  ],
+  "artifacts": [
+    {
+      "purpose": "debian-package",
+      "filename": "myscoutee_1.3.0_amd64.deb",
+      "sizeBytes": 339098050,
+      "sha256": "sha256:04f93c705149d7195287a3575056a0d3c03f22cdb661ca9c97eab2eb79def051",
+      "signature": "pEDjlOcaRMnAOQYIrrJ8OAejsEYUnPo8JBzwkETXgqAQTngKsfba1+7/3cjHS4wGC1vMaNGyL9uP/DUCeI0KAA=="
+    },
+    {
+      "purpose": "client-tools",
+      "filename": "myscoutee-client-tools_1.3.0.tar.gz",
+      "sizeBytes": 40328,
+      "sha256": "sha256:f71b88d8eb65fc6f527dd442cf0f2cc6eeb9a57335bc19f38fea9588be0baf09",
+      "signature": "ErYxBrzDsgTihmLoTcaAUHS7wiMokq/WQGB19qYobFhSiBMsfaFJWy+tg319yG4GR36Dhoy1NebH8XBuk2kNBw=="
+    }
+  ]
+}

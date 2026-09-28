@@ -3,7 +3,7 @@
 This directory keeps QA execution material separate from project plans.
 
 Event-format follow-up: [EVENT-MODE-REGRESSION-001](checklists/event/EVENT-MODE-REGRESSION-001.md).
-Partner invitation/encounter extension: [INTEGRATION-API-001](checklists/integration/INTEGRATION-API-001.md).
+Partner invitation/encounter extension: [INTEGRATION-API-001](checklists/api/INTEGRATION-API-001.md).
 Both support explicitly delegated CDP execution using the versioned managed
 browser launcher; their dated results remain separate from the stable guides.
 

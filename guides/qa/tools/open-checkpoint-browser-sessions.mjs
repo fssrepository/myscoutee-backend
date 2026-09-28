@@ -73,6 +73,36 @@ const manifestPath = path.join(runtimeRoot, `${safeCheckpointId}.json`);
 
 await mkdir(runtimeRoot, { recursive: true, mode: 0o700 });
 await chmod(runtimeRoot, 0o700);
+if (checkpoint.device === 'android') {
+  if (checkpoint.sessions.length !== 1 || checkpoint.sessions[0].sessionKind !== 'anonymous') {
+    fail('Physical-provider startup requires one anonymous session; login must happen through the UI.');
+  }
+  const statusPath = process.env.QA_DEPLOY_FIXTURE_STATUS;
+  if (!statusPath) fail('Verify the configured deployment fixture and provide QA_DEPLOY_FIXTURE_STATUS.');
+  const baseline = JSON.parse(await readFile(statusPath, 'utf8'));
+  if (baseline.checkpointId !== checkpointId || baseline.phase !== 'baseline-ready'
+      || baseline.firebaseActive !== true || Date.now() - Date.parse(baseline.checkedAt) > 300000
+      || !Number.isFinite(Date.parse(baseline.checkedAt))) {
+    fail('A current verified configured-deployment baseline is required.');
+  }
+  if (closeOnly || reopenActor !== undefined || dismissGuidesOnly) {
+    fail('Android session cleanup/reopen uses the physical-device helper and its recorded state.');
+  }
+  if (verifyExistingOnly) {
+    const retained = JSON.parse(await readFile(manifestPath, 'utf8'));
+    if (retained.device !== 'android' || retained.checkpointId !== checkpointId) fail('Wrong retained device checkpoint.');
+    process.stdout.write('Verified Android checkpoint manifest; device acceptance remains separate.\n');
+    process.exit(0);
+  }
+  const url = new URL(defaultEntryUrl);
+  await runAttachedCommand(process.execPath, [path.join(scriptDirectory, 'mobile-webview-device.mjs'),
+    'launch-browser', url.pathname + url.search], {...process.env, QA_PHONE_ORIGIN: url.origin});
+  await writeFile(manifestPath, JSON.stringify({checkpointId, device: 'android', createdAt: new Date().toISOString(),
+    origin: url.origin, fixtureCheckedAt: baseline.checkedAt,
+    sessions: [{actor: checkpoint.sessions[0].actor, sessionKind: 'anonymous'}]}, null, 2), {mode: 0o600});
+  process.stdout.write('Configured Android entry opened; no login, consent, location override or checklist action injected.\n');
+  process.exit(0);
+}
 if (reopenActor !== undefined) {
   await reopenManagedActor(reopenActor);
   process.exit(0);

@@ -38,7 +38,8 @@ public class McpAuthorizationRepository {
                 .and("usedRefreshHashes").is(hash)), new Update().set("revoked", true), McpAuthorization.class);
     }
     public void revokeClient(String clientId) {
-        mongo.updateMulti(Query.query(Criteria.where("clientId").is(clientId)),
+        mongo.updateMulti(Query.query(new Criteria().orOperator(Criteria.where("tokenId").is(clientId),
+                        Criteria.where("clientId").is(clientId))),
                 new Update().set("revoked", true), McpAuthorization.class);
     }
 }

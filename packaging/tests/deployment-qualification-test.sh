@@ -20,6 +20,24 @@ fail() {
   exit 1
 }
 
+check_mongo_reference() {
+  MYSCOUTEE_SMOKE_LIBRARY_ONLY=true bash -c '
+    source "$1"
+    docker() { printf "%s" "$TEST_UPSTREAM"; }
+    check_configured_mongo_image "$2"
+  ' _ "${MONGO_SMOKE}" "$1"
+}
+TEST_UPSTREAM='' check_mongo_reference mongo:8.0.4 >/dev/null \
+  || fail 'official Mongo reference rejected'
+TEST_UPSTREAM='mongo:8.0.4' check_mongo_reference 'ghcr.io/fssrepository/myscoutee-mongodb@sha256:0123' >/dev/null \
+  || fail 'retained digest with supported upstream rejected'
+if TEST_UPSTREAM='mongo:7.0.4' check_mongo_reference 'ghcr.io/fssrepository/myscoutee-mongodb@sha256:0123' >/dev/null 2>&1; then
+  fail 'unsupported Mongo upstream accepted'
+fi
+if TEST_UPSTREAM='' check_mongo_reference 'ghcr.io/fssrepository/myscoutee-mongodb@sha256:0123' >/dev/null 2>&1; then
+  fail 'unidentified Mongo upstream accepted'
+fi
+
 SMOKE_FALLBACK_OUTPUT="$(
   MYSCOUTEE_SMOKE_LIBRARY_ONLY=true \
     bash -c '

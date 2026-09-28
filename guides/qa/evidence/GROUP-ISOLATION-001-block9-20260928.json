@@ -1,0 +1,406 @@
+{
+  "block": 9,
+  "status": "HTTP PASS",
+  "baseline": "before-block9-reads",
+  "baseRead": {
+    "eventScopes": [
+      {
+        "collection": "chats",
+        "count": 4,
+        "unchanged": true
+      },
+      {
+        "collection": "chatMessages",
+        "count": 4,
+        "unchanged": true
+      }
+    ],
+    "unreads": [
+      {
+        "_id": "chat-owner-copy:8e23c360-f61f-35c8-93c0-628984329ccf",
+        "id": "c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg",
+        "ownerUserId": "f02809260000000000000001",
+        "unread": 0
+      },
+      {
+        "_id": "c-support-admin-f02809260000000000000001:f02809260000000000000001",
+        "id": "c-support-admin-f02809260000000000000001",
+        "ownerUserId": "f02809260000000000000001",
+        "unread": 0
+      },
+      {
+        "_id": "c-moderation-group-f02809260000000000000011:f02809260000000000000011",
+        "id": "c-moderation-group-f02809260000000000000011",
+        "ownerUserId": "f02809260000000000000011",
+        "unread": 0
+      },
+      {
+        "_id": "chat-owner-copy:1f49acf8-2976-3554-9c29-01dd0ccc77d9",
+        "id": "h1790547269571",
+        "ownerUserId": "f02809260000000000000011",
+        "unread": 1
+      },
+      {
+        "_id": "chat-owner-copy:b4f83e21-3358-3941-9218-849956d96953",
+        "id": "qa-isolation-same-name-b",
+        "ownerUserId": "f02809260000000000000021",
+        "unread": 1
+      }
+    ],
+    "contactMessages": [
+      {
+        "_id": "chat-message:c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg:qa-isolation-read-contact",
+        "id": "qa-isolation-read-contact",
+        "senderAvatar": {
+          "id": "f02809260000000000000002",
+          "initials": "IE",
+          "gender": "woman"
+        },
+        "text": "Isolation contact unread control",
+        "readBy": [
+          {
+            "id": "f02809260000000000000002",
+            "initials": "IE",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000005",
+            "initials": "IN",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000006",
+            "initials": "IL",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000003",
+            "initials": "IM",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000001",
+            "initials": "IA",
+            "gender": "man"
+          }
+        ],
+        "messageReadByUserIds": [
+          "f02809260000000000000002",
+          "f02809260000000000000005",
+          "f02809260000000000000006",
+          "f02809260000000000000003",
+          "f02809260000000000000001"
+        ]
+      }
+    ],
+    "contactMembers": {
+      "_id": "chat-owner-copy:8e23c360-f61f-35c8-93c0-628984329ccf",
+      "memberIds": [
+        "f02809260000000000000001",
+        "f02809260000000000000002",
+        "f02809260000000000000005",
+        "f02809260000000000000006",
+        "f02809260000000000000003"
+      ]
+    },
+    "counters": [
+      {
+        "userId": "f02809260000000000000011",
+        "before": {
+          "all": 1,
+          "event": 1
+        },
+        "after": {
+          "all": 1,
+          "event": 1
+        },
+        "unchanged": true
+      },
+      {
+        "userId": "f02809260000000000000021",
+        "before": {
+          "all": 1,
+          "event": 1
+        },
+        "after": {
+          "all": 1,
+          "event": 1
+        },
+        "unchanged": true
+      }
+    ]
+  },
+  "aRead": {
+    "eventScopes": [
+      {
+        "collection": "chats",
+        "count": 4,
+        "unchanged": true
+      },
+      {
+        "collection": "chatMessages",
+        "count": 4,
+        "unchanged": true
+      }
+    ],
+    "unreads": [
+      {
+        "_id": "chat-owner-copy:8e23c360-f61f-35c8-93c0-628984329ccf",
+        "id": "c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg",
+        "ownerUserId": "f02809260000000000000001",
+        "unread": 0
+      },
+      {
+        "_id": "c-support-admin-f02809260000000000000001:f02809260000000000000001",
+        "id": "c-support-admin-f02809260000000000000001",
+        "ownerUserId": "f02809260000000000000001",
+        "unread": 0
+      },
+      {
+        "_id": "c-moderation-group-f02809260000000000000011:f02809260000000000000011",
+        "id": "c-moderation-group-f02809260000000000000011",
+        "ownerUserId": "f02809260000000000000011",
+        "unread": 0
+      },
+      {
+        "_id": "chat-owner-copy:1f49acf8-2976-3554-9c29-01dd0ccc77d9",
+        "id": "h1790547269571",
+        "ownerUserId": "f02809260000000000000011",
+        "unread": 1
+      },
+      {
+        "_id": "chat-owner-copy:b4f83e21-3358-3941-9218-849956d96953",
+        "id": "qa-isolation-same-name-b",
+        "ownerUserId": "f02809260000000000000021",
+        "unread": 1
+      }
+    ],
+    "contactMessages": [
+      {
+        "_id": "chat-message:c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg:qa-isolation-read-contact",
+        "id": "qa-isolation-read-contact",
+        "senderAvatar": {
+          "id": "f02809260000000000000002",
+          "initials": "IE",
+          "gender": "woman"
+        },
+        "text": "Isolation contact unread control",
+        "readBy": [
+          {
+            "id": "f02809260000000000000002",
+            "initials": "IE",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000005",
+            "initials": "IN",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000006",
+            "initials": "IL",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000003",
+            "initials": "IM",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000001",
+            "initials": "IA",
+            "gender": "man"
+          }
+        ],
+        "messageReadByUserIds": [
+          "f02809260000000000000002",
+          "f02809260000000000000005",
+          "f02809260000000000000006",
+          "f02809260000000000000003",
+          "f02809260000000000000001"
+        ]
+      }
+    ],
+    "contactMembers": {
+      "_id": "chat-owner-copy:8e23c360-f61f-35c8-93c0-628984329ccf",
+      "memberIds": [
+        "f02809260000000000000001",
+        "f02809260000000000000002",
+        "f02809260000000000000005",
+        "f02809260000000000000006",
+        "f02809260000000000000003"
+      ]
+    },
+    "counters": [
+      {
+        "userId": "f02809260000000000000011",
+        "before": {
+          "all": 1,
+          "event": 1
+        },
+        "after": {
+          "all": 1,
+          "event": 1
+        },
+        "unchanged": true
+      },
+      {
+        "userId": "f02809260000000000000021",
+        "before": {
+          "all": 1,
+          "event": 1
+        },
+        "after": {
+          "all": 1,
+          "event": 1
+        },
+        "unchanged": true
+      }
+    ]
+  },
+  "final": {
+    "eventScopes": [
+      {
+        "collection": "chats",
+        "count": 4,
+        "unchanged": true
+      },
+      {
+        "collection": "chatMessages",
+        "count": 4,
+        "unchanged": true
+      }
+    ],
+    "unreads": [
+      {
+        "_id": "chat-owner-copy:8e23c360-f61f-35c8-93c0-628984329ccf",
+        "id": "c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg",
+        "ownerUserId": "f02809260000000000000001",
+        "unread": 0
+      },
+      {
+        "_id": "c-support-admin-f02809260000000000000001:f02809260000000000000001",
+        "id": "c-support-admin-f02809260000000000000001",
+        "ownerUserId": "f02809260000000000000001",
+        "unread": 0
+      },
+      {
+        "_id": "c-moderation-group-f02809260000000000000011:f02809260000000000000011",
+        "id": "c-moderation-group-f02809260000000000000011",
+        "ownerUserId": "f02809260000000000000011",
+        "unread": 0
+      },
+      {
+        "_id": "chat-owner-copy:1f49acf8-2976-3554-9c29-01dd0ccc77d9",
+        "id": "h1790547269571",
+        "ownerUserId": "f02809260000000000000011",
+        "unread": 1
+      },
+      {
+        "_id": "chat-owner-copy:b4f83e21-3358-3941-9218-849956d96953",
+        "id": "qa-isolation-same-name-b",
+        "ownerUserId": "f02809260000000000000021",
+        "unread": 1
+      }
+    ],
+    "contactMessages": [
+      {
+        "_id": "chat-message:c-contact-ZjAyODA5MjYwMDAwMDAwMDAwMDAwMDAxCmYwMjgwOTI2MDAwMDAwMDAwMDAwMDAwMg:qa-isolation-read-contact",
+        "id": "qa-isolation-read-contact",
+        "senderAvatar": {
+          "id": "f02809260000000000000002",
+          "initials": "IE",
+          "gender": "woman"
+        },
+        "text": "Isolation contact unread control",
+        "readBy": [
+          {
+            "id": "f02809260000000000000002",
+            "initials": "IE",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000005",
+            "initials": "IN",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000006",
+            "initials": "IL",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000003",
+            "initials": "IM",
+            "gender": "woman"
+          },
+          {
+            "id": "f02809260000000000000001",
+            "initials": "IA",
+            "gender": "man"
+          }
+        ],
+        "messageReadByUserIds": [
+          "f02809260000000000000002",
+          "f02809260000000000000005",
+          "f02809260000000000000006",
+          "f02809260000000000000003",
+          "f02809260000000000000001"
+        ]
+      }
+    ],
+    "contactMembers": {
+      "_id": "chat-owner-copy:8e23c360-f61f-35c8-93c0-628984329ccf",
+      "memberIds": [
+        "f02809260000000000000001",
+        "f02809260000000000000002",
+        "f02809260000000000000005",
+        "f02809260000000000000006",
+        "f02809260000000000000003"
+      ]
+    },
+    "counters": [
+      {
+        "userId": "f02809260000000000000011",
+        "before": {
+          "all": 1,
+          "event": 1
+        },
+        "after": {
+          "all": 1,
+          "event": 1
+        },
+        "unchanged": true
+      },
+      {
+        "userId": "f02809260000000000000021",
+        "before": {
+          "all": 1,
+          "event": 1
+        },
+        "after": {
+          "all": 1,
+          "event": 1
+        },
+        "unchanged": true
+      }
+    ]
+  },
+  "aUi": {
+    "workspace": "QI\nQA Isolation A\nexpand_more\n7",
+    "chat": "Isolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+    "share": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\ndone\nclose\nTue, 29 Sept 2026\nimage_not_supported\nIE\nchevron_right\ngroups\n1 / 5\nchevron_right\nadd\npublic\nQA Isolation Following A\n\nEvent \u00b7 Public \u00b7 0 km\n\nmore_vert\n\nIsolation group A event control."
+  },
+  "bUi": {
+    "workspace": "QI\nQA Isolation B\nexpand_more\n7",
+    "chat": "Isolation Eszter\nclose\nchevron_right\n+1\npush_pin\nIsolation Eszter\n2:05 AM\n\nIsolation contact unread control\n\nToday\nadd\nsend",
+    "share": "Event Explore\nfilter_alt\nevent_upcoming\ntoday\ndone\nclose\nNo items\nNo visible events right now.\n\nTry another filter or check back later."
+  },
+  "shareCandidates": {
+    "A": [
+      "QA Isolation Following A"
+    ],
+    "B": []
+  },
+  "scope": "Same account channel/members and account read receipt in Base/A; Event chat records/messages/counters unchanged. B private owned Event is not an Explore candidate; no A public control leaked into B. No share was submitted."
+}

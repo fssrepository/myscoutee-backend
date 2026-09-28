@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-27
+Updated: 2026-09-28
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -86,19 +86,17 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: GROUP-ISOLATION-001
-checklist: ../checklists/group/GROUP-ISOLATION-001.md
-substage: QUEUED / NOT STARTED. User explicitly said to close Lifecycle and not start Isolation.
-fixture_phase: All27–29 temporary Admin/role/distance-event scopes exactly restored. One managed PENDING-BLOCK19 browser, Alex EN. Mobile rule controls single-column; category/member toggle remains one row with ellipsis. SmartList sticky date updates after reordered patch. No active temporary Admin fixture.
-execution_log: ../evidence/GROUP-LIFECYCLE-001-20260926.md
-execution_authority: User explicitly delegated full-flow automated QA; questions do not pause it. Testcases are independent closed units with their own restage/checkpoints/execution/cleanup.
-next_action: WAIT FOR EXPLICIT USER CONTINUATION. Lifecycle current HTTP scope CLOSED29/29; transferred external branches belong solely to deployment QA. Before future Isolation staging, remove exact evidence-proven duplicates, preserve unique combinations and independent fixture/restage/checkpoints. Do not launch, stage or test now.
-savepoint: community-group after-contact-controls captured 2026-09-27T04:40:57.723Z, resume13. Earlier savepoints immutable.
-queue: Group Isolation next NOT STARTED; Integration API Group separate NOT RUN. Deployment external checks own independent scope. Full Local run remains unexecuted, not an active Lifecycle continuation.
-resume_gate: Do not execute now. On explicit continuation, read queued checklist, reconcile duplicate scope, verify its own versioned baseline before managed launcher. Never reuse another testcase fixture as an execution prerequisite.
-runtime: Existing frontend-sync/backend own builds; no separate test/build process. One managed PENDING-BLOCK19 browser.
-mutation_contract: Application-wide, await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through the existing stores to retained lists/cards/badges; failure retains the dialog/error and does not fake success. Keep underlying popups open. No reload to obtain a mutation result; the user identifies only the existing subevents flow as an exception.
-last_completed: GROUP-LIFECYCLE-001 CLOSED by user2026-09-27; accepted round compact-chevron badges. HTTP29/29 scope-adjusted closures; Group29/48. See scope-closure JSON.
+checkpoint: DEPLOY-EXTERNAL-CONFIG-001
+checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
+substage: DEPLOY-EXTERNAL-CONFIG-001 remains CLOSED/PASS. User is now doing additional runtime UI smoke; further DEB builds deferred explicitly.
+next_action: Let the user test the deployed Firebase transition and re-register the requested second account. Latest frontend including Setup Login/Close behavior is already active. Do not restart completed QA or build another DEB until the user's testing is finished.
+execution_authority: User controls current browser tests and Firebase login. CDP read-only diagnosis of reported defects is authorized; a separate browser was opened on request.
+execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
+fixture_phase: Original deploy fixture exactly restored. User subsequently requested second-account registration reset; private backup retained on VMware under release-1.3.0/registration-reset-20260928.ejson. Other account and media retained.
+runtime: VMware192.168.153.129 installed DEB1.3.0; Mongo qualification validator patched and host qualification passed. UI1b49c3be9ba8-20260928082718 deployed nginx-only; Setup uses Bejelentkezés for entry, and Close only cancels. Ten containers healthy. Standard packaged Compose active. Host dev stack stopped; http://localhost/game in user's browser is a cached dev page, not VMware. VM URL is https://localhost:8443 via retained SSH tunnel; phone adb mappings were cleaned up previously.
+last_completed: Firebase popup/consent correction44 and Setup action18 focused tests passed, production frontend deployed; exact public build ID and healthy containers verified. Source EN/HU bundles match current production API with zero differences.
+release_sequence: User testing first; eventual final DEB must include Mongo validator and latest UI. The last locally built candidate predates Firebase transition repair and was not installed. No Netcup or publication without subsequent instruction.
+resume_gate: Read-only check current versions/health and Git diff. Preserve VM backups. Future retained-data comparisons must account for the user-requested second-profile reset and re-registration.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17
@@ -136,13 +134,13 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: PASS/CLOSED 2026-09-17 by explicit user acceptance. Organizer-only-off final-state variation documented; no further toggle or replay required.
-fixture_phase: Retained server marker borrow-paid-accepted-participant-verified/startBlock=4. Two accepted one-item Paid requests and two captured HUF 6400 payments; Nova Manager/organizerOnly=false, Paid participants 2, Group A Transport accepted 3/pending 0. Free controls and Group B unchanged. The strict terminal-on oracle was not passed or forged; closure is recorded in the QA ledger.
-next_action: Pair QA is complete. No further Borrow actions or reset for this closure; retain evidence and live fixture. Previously requested release/deployment work remains separately queued.
+substage: CLOSED / PASS —7/7 ordered Group API blocks; dev HTTP/simulator and recorded local key/help scope.
+fixture_phase: not-staged; exact integration-api-group restore, pre-launch sessions and fresh-user media cleanup verified.
+next_action: No active test or fixture. Group API execution and scoped cleanup complete; next independent testcase not started. Real vendor connection remains standalone post-deployment smoke.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
 queued_work: Previously requested stable app/Registry release and retained-control verification remain separate from this completed pair-QA campaign. No release action taken as part of marking Borrow PASS.
-last_completed: ASSET-BORROW-001 PASS/CLOSED 2026-09-17 by user acceptance after saved-state review, with final Organizer-only-off variation retained. Pricing also closed.
-runtime: Existing dev watchers running. Shared action-ring now measures untransformed fractional layout dimensions and caps corner radius to both axes; frontend watcher build/sync passed 2026-09-17T11:15:40Z. Visual ring confirmation after user reload remains pending; no browser actions or reset. Payment history duration check retained from Block 6 user report.
+last_completed: INTEGRATION-API-GROUP-001 blocks1–7 PASS in recorded scope; transactional evidence/ledger own details. Earlier Isolation remains closed.
+runtime: Existing frontend-sync/backend owners unchanged; original HTTP environment.dev.ts restored. Optional Inspector stopped; checkpoint managed browsers closed and isolated storage removed.
 ledger_status: 104/104 PASS. Pair-QA campaign complete; CSV/XLSX/README synchronized.
 
 ```

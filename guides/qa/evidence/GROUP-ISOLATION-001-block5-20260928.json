@@ -1,0 +1,80 @@
+{
+  "block": 5,
+  "status": "HTTP PASS",
+  "heldRealPreview": {
+    "url": "http://localhost/api/groups/qa-isolation-a/content-moderation/feed%3Af0280926-0000-4000-8000-000000000601/detail?adminUserId=f02809260000000000000011",
+    "during": {
+      "selected": "QI\nQA Isolation A\nexpand_more\n5",
+      "moderation": "Content moderation \u00b7 QA Isolation A\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-27\nQA Isolation A review 601\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert",
+      "gallery": false,
+      "cards": [
+        "IA\nchevron_right\ngroups\n4\nchevron_right\ndiversity_3\nQA Isolation A\n\nFriends\n\n0 km\n\nmore_vert\n1",
+        "IA\nchevron_right\ngroups\n3\nchevron_right\ndiversity_3\nQA Isolation B\n\nFriends\n\n0 km\n\nmore_vert\n2"
+      ]
+    },
+    "timedOut": {
+      "selected": "QI\nQA Isolation A\nexpand_more\n5",
+      "moderation": "Content moderation \u00b7 QA Isolation A\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-27\nQA Isolation A review 601\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert",
+      "gallery": false,
+      "cards": [
+        "IA\nchevron_right\ngroups\n4\nchevron_right\ndiversity_3\nQA Isolation A\n\nFriends\n\n0 km\n\nmore_vert\n1",
+        "IA\nchevron_right\ngroups\n3\nchevron_right\ndiversity_3\nQA Isolation B\n\nFriends\n\n0 km\n\nmore_vert\n2"
+      ]
+    },
+    "retry": {
+      "selected": "QI\nQA Isolation B\nexpand_more\n5",
+      "moderation": "Content moderation \u00b7 QA Isolation B\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n2\napps\nAll\nexpand_more\n2026-09-27\nQA Isolation B review 602\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert\nQA Isolation B review 603\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert\nModeration settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\nCategories\ncategory\nEvent, Photo Feed\nexpand_more"
+    },
+    "release": "released",
+    "after": {
+      "selected": "QI\nQA Isolation B\nexpand_more\n5",
+      "moderation": "Content moderation \u00b7 QA Isolation B\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n2\napps\nAll\nexpand_more\n2026-09-27\nQA Isolation B review 602\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert\nQA Isolation B review 603\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert\nModeration settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\nCategories\ncategory\nEvent, Photo Feed\nexpand_more",
+      "delay": "30",
+      "gallery": false,
+      "cards": [
+        "IA\nchevron_right\ngroups\n4\nchevron_right\ndiversity_3\nQA Isolation A\n\nFriends\n\n0 km\n\nmore_vert\n1",
+        "IA\nchevron_right\ngroups\n3\nchevron_right\ndiversity_3\nQA Isolation B\n\nFriends\n\n0 km\n\nmore_vert\n2"
+      ]
+    }
+  },
+  "reopenA": {
+    "selected": "QI\nQA Isolation A\nexpand_more\n5",
+    "moderation": "Content moderation \u00b7 QA Isolation A\nsettings\nclose\nfact_check\nUnder moderation\nexpand_more\n1\napps\nAll\nexpand_more\n2026-09-27\nQA Isolation A review 601\nPhoto Feed\n2026-09-27T23:14:11.837Z\nmore_vert\nModeration settings\ncheck\nclose\nfact_check\nContent moderation\nverified\nAuto approve\nDelay (minutes)\nCategories\ncategory\nPhoto Feed\nexpand_more",
+    "delay": "0",
+    "gallery": false,
+    "cards": [
+      "IA\nchevron_right\ngroups\n4\nchevron_right\ndiversity_3\nQA Isolation A\n\nFriends\n\n0 km\n\nmore_vert\n1",
+      "IA\nchevron_right\ngroups\n3\nchevron_right\ndiversity_3\nQA Isolation B\n\nFriends\n\n0 km\n\nmore_vert\n2"
+    ]
+  },
+  "persisted": {
+    "domains": [
+      {
+        "collection": "contentModerationState",
+        "count": 2,
+        "unchanged": true
+      },
+      {
+        "collection": "contentModerationItems",
+        "count": 4,
+        "unchanged": true
+      },
+      {
+        "collection": "communityGroups",
+        "count": 2,
+        "unchanged": true
+      },
+      {
+        "collection": "photoFeedPosts",
+        "count": 6,
+        "unchanged": true
+      }
+    ],
+    "selected": {
+      "_id": "f02809260000000000000001",
+      "activeWorkspaceGroupId": "qa-isolation-a"
+    }
+  },
+  "local": "NOT RUN",
+  "savepoint": "after-block5"
+}

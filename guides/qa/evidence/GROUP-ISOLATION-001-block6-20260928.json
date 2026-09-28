@@ -1,0 +1,118 @@
+{
+  "block": 6,
+  "status": "HTTP PASS",
+  "at": "2026-09-28",
+  "preparation": "Versioned temporary owner Eszter/admin and Alex member; original roles retained in before-block6.",
+  "browser": "Eszter Remove Member confirmed; ordinary refresh selected Base without reload; workspace picker only Base/B; B Events still usable.",
+  "privateRequests": {
+    "at": "2026-09-27T23:18:39.806Z",
+    "actor": "f02809260000000000000001",
+    "results": [
+      {
+        "path": "/api/activities/events/detail?userId=f02809260000000000000001&eventId=h1790547269571",
+        "status": 404,
+        "body": {
+          "status": 404,
+          "error": "Not Found",
+          "message": "Event not found."
+        }
+      },
+      {
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571",
+        "status": 403,
+        "body": {
+          "status": 403,
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to read members for this event."
+        }
+      },
+      {
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000001",
+        "status": 404,
+        "body": {
+          "status": 404,
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000001&limit=10",
+        "status": 404,
+        "body": {
+          "status": 404,
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000001&limit=10",
+        "status": 404,
+        "body": {
+          "status": 404,
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      }
+    ]
+  },
+  "controls": {
+    "controls": [
+      {
+        "userId": "f02809260000000000000001",
+        "impressionsUnchanged": true,
+        "exclusionsUnchanged": true,
+        "followingUnchanged": true,
+        "countersBefore": {
+          "notifications": 2
+        },
+        "countersAfter": {
+          "notifications": 3
+        }
+      },
+      {
+        "userId": "f02809260000000000000021",
+        "impressionsUnchanged": true,
+        "exclusionsUnchanged": true,
+        "followingUnchanged": true,
+        "countersBefore": {
+          "hosting": 1,
+          "event.all": 1,
+          "event.hosting": 1
+        },
+        "countersAfter": {
+          "hosting": 1,
+          "event.all": 1,
+          "event.hosting": 1
+        }
+      }
+    ],
+    "views": [
+      {
+        "_id": "f02809260000000000000011:f0280926-0000-4000-8000-000000000301",
+        "postId": "f0280926-0000-4000-8000-000000000301",
+        "seenAtIso": "2026-09-27T23:02:00.049504947Z",
+        "userId": "f02809260000000000000011"
+      },
+      {
+        "_id": "f02809260000000000000021:f0280926-0000-4000-8000-000000000302",
+        "postId": "f0280926-0000-4000-8000-000000000302",
+        "seenAtIso": "2026-09-27T23:02:47.038835904Z",
+        "userId": "f02809260000000000000021"
+      },
+      {
+        "_id": "f02809260000000000000001:f0280926-0000-4000-8000-000000000303",
+        "postId": "f0280926-0000-4000-8000-000000000303",
+        "seenAtIso": "2026-09-27T23:04:33.629799989Z",
+        "userId": "f02809260000000000000001"
+      }
+    ]
+  },
+  "notificationDelta": {
+    "kind": "community-member-removed",
+    "recipientUserId": "f02809260000000000000001",
+    "sourceId": "qa-isolation-a",
+    "delta": 1
+  },
+  "restore": "before-block6 exact verified, managed sessions relaunched",
+  "local": "NOT RUN"
+}

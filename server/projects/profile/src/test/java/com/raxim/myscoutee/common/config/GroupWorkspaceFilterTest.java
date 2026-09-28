@@ -90,6 +90,28 @@ class GroupWorkspaceFilterTest {
         }
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
     }
+    @Test void sharedProfileViewUsesSavedWorkspaceAndIgnoresForgedGroup() throws Exception {
+        for (String path : List.of("/navigator/contacts/peer/profile", "/api/navigator/contacts/peer/profile")) {
+            var request = request("GET", path);
+            request.addParameter("groupId", "foreign");
+            request.addHeader("X-MyScoutee-Group-Id", "foreign");
+            filter.doFilter(request, new MockHttpServletResponse(), (req, res) ->
+                    assertThat(principal().getUserId()).isEqualTo("group-profile"));
+        }
+        verify(profiles, times(2)).current(account);
+        verify(profiles, never()).select(any(), any());
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
+    }
+    @Test void contactReadsAndChatAccessKeepAccountIdentity() throws Exception {
+        for (String path : List.of("/navigator/contacts", "/navigator/contacts/chat-access",
+                "/api/navigator/contacts", "/api/navigator/contacts/chat-access")) {
+            filter.doFilter(request("GET", path), new MockHttpServletResponse(), (req, res) ->
+                    assertThat(principal().getUserId()).isEqualTo("account"));
+        }
+        filter.doFilter(request("PUT", "/navigator/contacts/peer/chat-access"), new MockHttpServletResponse(),
+                (req, res) -> assertThat(principal().getUserId()).isEqualTo("account"));
+        verifyNoInteractions(profiles);
+    }
     @Test void eventLinkedAssetActionsRetainTheSelectedEventProfile() throws Exception {
         for (String path : List.of("/assets/members/action", "/assets/requests", "/assets/tickets/validate")) {
             filter.doFilter(request("POST", path), new MockHttpServletResponse(), (req, res) ->

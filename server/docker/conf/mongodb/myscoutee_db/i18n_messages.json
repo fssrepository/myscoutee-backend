@@ -21603,13 +21603,13 @@
     "_id": "i18n-message-en-event-partner-invite",
     "key": "event.partner.invite",
     "lang": "en",
-    "value": "Event invitation"
+    "value": "Invitation"
   },
   {
     "_id": "i18n-message-en-event-partner-invite-failed",
     "key": "event.partner.invite.failed",
     "lang": "en",
-    "value": "The event invitation could not be opened."
+    "value": "The invitation could not be opened."
   },
   {
     "_id": "i18n-message-en-mingle-tables-close-aria",
@@ -21663,7 +21663,7 @@
     "_id": "i18n-message-en-affiliate-help",
     "key": "affiliate.help",
     "lang": "en",
-    "value": "Your personal link records who invited a newly registered member. Existing accounts do not count as new referrals. The client ratio counts distinct imported participant IDs linked to registered accounts; repeat imports do not increase it."
+    "value": "Your personal link records new registrations you referred. Existing accounts do not count."
   },
   {
     "_id": "i18n-message-en-landing-partners-role-affiliate-label",
@@ -23283,13 +23283,13 @@
     "_id": "i18n-message-en-mcp-setup",
     "key": "mcp.setup",
     "lang": "en",
-    "value": "Create one connection per AI client. Add its MCP URL, client ID and secret in the client settings, then sign in and approve access. Connections expire after 90 days."
+    "value": "Copy the MCP URL into your AI client and choose Connect. No manual client ID or secret is needed."
   },
   {
     "_id": "i18n-message-en-mcp-local-only",
     "key": "mcp.local.only",
     "lang": "en",
-    "value": "These settings are saved locally in demo mode. Remote AI connections require a live HTTPS installation."
+    "value": "Browser-only local mode cannot receive external OAuth requests. In dev with the backend running, the normal demo sign-in can be used; deployed installations use their configured sign-in methods."
   },
   {
     "_id": "i18n-message-en-mcp-url",
@@ -23373,7 +23373,7 @@
     "_id": "i18n-message-en-mcp-consent-message",
     "key": "mcp.consent.message",
     "lang": "en",
-    "value": "This connection can use the API operations allowed for this profile and group. It cannot switch profiles. You can revoke access under Profile editor → Affiliate → Client keys."
+    "value": "This client can use the API actions allowed for this profile only. Revoke access under API → OAuth permissions."
   },
   {
     "_id": "i18n-message-en-mcp-authorization-failed",
@@ -24106,6 +24106,66 @@
     "key": "payment.cash.refund.approve.message",
     "lang": "en",
     "value": "Confirm that you have returned this cash amount to the payer?"
+  },
+  {
+    "_id": "i18n-message-en-events-explore",
+    "key": "events.explore",
+    "lang": "en",
+    "value": "Explore Events"
+  },
+  {
+    "_id": "i18n-message-en-assets-explore",
+    "key": "assets.explore",
+    "lang": "en",
+    "value": "Explore Assets"
+  },
+  {
+    "_id": "i18n-message-en-mcp-technical-details",
+    "key": "mcp.technical.details",
+    "lang": "en",
+    "value": "Connection details"
+  },
+  {
+    "_id": "i18n-message-en-mcp-manual-help",
+    "key": "mcp.manual.help",
+    "lang": "en",
+    "value": "Generate creates a client ID and a one-time secret. Copy them into your client’s settings, never into chat."
+  },
+  {
+    "_id": "i18n-message-en-mcp-copy-url",
+    "key": "mcp.copy.url",
+    "lang": "en",
+    "value": "Copy MCP URL"
+  },
+  {
+    "_id": "i18n-message-en-mcp-copy-client",
+    "key": "mcp.copy.client",
+    "lang": "en",
+    "value": "Copy client ID"
+  },
+  {
+    "_id": "i18n-message-en-mcp-copy-callback",
+    "key": "mcp.copy.callback",
+    "lang": "en",
+    "value": "Copy callback URL"
+  },
+  {
+    "_id": "i18n-message-en-mcp-copy-secret",
+    "key": "mcp.copy.secret",
+    "lang": "en",
+    "value": "Copy client secret"
+  },
+  {
+    "_id": "i18n-message-en-mcp-advanced",
+    "key": "mcp.advanced",
+    "lang": "en",
+    "value": "MCP Advanced"
+  },
+  {
+    "_id": "i18n-message-en-mcp-oauth-permissions",
+    "key": "mcp.oauth.permissions",
+    "lang": "en",
+    "value": "OAuth permissions"
   },
   {
     "_id": "i18n-message-hu-navigator-community",
@@ -45711,13 +45771,13 @@
     "_id": "i18n-message-hu-event-partner-invite",
     "key": "event.partner.invite",
     "lang": "hu",
-    "value": "Eseménymeghívó"
+    "value": "Meghívó"
   },
   {
     "_id": "i18n-message-hu-event-partner-invite-failed",
     "key": "event.partner.invite.failed",
     "lang": "hu",
-    "value": "Az eseménymeghívót nem sikerült megnyitni."
+    "value": "A meghívót nem sikerült megnyitni."
   },
   {
     "_id": "i18n-message-hu-mingle-tables-close-aria",
@@ -45771,7 +45831,7 @@
     "_id": "i18n-message-hu-affiliate-help",
     "key": "affiliate.help",
     "lang": "hu",
-    "value": "A személyes linked rögzíti, ki hívta meg az újonnan regisztrált tagot. Meglévő fiók nem számít új meghívásnak. A kliens aránya a regisztrált fiókhoz kapcsolt, különböző külső résztvevőazonosítókat mutatja; az ismételt betöltés nem növeli."
+    "value": "A személyes linked a meghívásodból érkező új regisztrációkat rögzíti. Meglévő fiók nem számít új meghívásnak."
   },
   {
     "_id": "i18n-message-hu-landing-partners-role-affiliate-label",
@@ -47391,13 +47451,13 @@
     "_id": "i18n-message-hu-mcp-setup",
     "key": "mcp.setup",
     "lang": "hu",
-    "value": "Hozz létre külön kapcsolatot az AI-kliensekhez. A kliens beállításaiban add meg az MCP-címet, a kliensazonosítót és a titkot, majd jelentkezz be és engedélyezd a hozzáférést. A kapcsolatok 90 nap után lejárnak."
+    "value": "Másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget. Nem kell kézzel kliensazonosítót vagy titkot megadni."
   },
   {
     "_id": "i18n-message-hu-mcp-local-only",
     "key": "mcp.local.only",
     "lang": "hu",
-    "value": "Demó módban ezek a beállítások helyben tárolódnak. A távoli AI-kapcsolathoz működő HTTPS-telepítés szükséges."
+    "value": "A kizárólag böngészőben működő local mód nem tud külső OAuth-kérést fogadni. Futó backenddel devben a szokásos demóbelépés is használható; telepített környezetben az ott beállított belépési módok érvényesek."
   },
   {
     "_id": "i18n-message-hu-mcp-url",
@@ -47481,7 +47541,7 @@
     "_id": "i18n-message-hu-mcp-consent-message",
     "key": "mcp.consent.message",
     "lang": "hu",
-    "value": "Ez a kapcsolat a profil és csoport számára engedélyezett API-műveleteket használhatja. Másik profilra nem válthat. A hozzáférést a Profilszerkesztő → Affiliate → Klienskulcsok alatt vonhatod vissza."
+    "value": "A kliens csak ehhez a profilhoz engedélyezett API-műveleteket használhatja. A hozzáférés az API → OAuth-engedélyek alatt visszavonható."
   },
   {
     "_id": "i18n-message-hu-mcp-authorization-failed",
@@ -48214,5 +48274,125 @@
     "key": "payment.cash.refund.approve.message",
     "lang": "hu",
     "value": "Megerősíted, hogy ezt az összeget készpénzben visszaadtad a fizetőnek?"
+  },
+  {
+    "_id": "i18n-message-hu-events-explore",
+    "key": "events.explore",
+    "lang": "hu",
+    "value": "Események felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-assets-explore",
+    "key": "assets.explore",
+    "lang": "hu",
+    "value": "Eszközök felfedezése"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-technical-details",
+    "key": "mcp.technical.details",
+    "lang": "hu",
+    "value": "Kapcsolat adatai"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-manual-help",
+    "key": "mcp.manual.help",
+    "lang": "hu",
+    "value": "A Generálás kliensazonosítót és egyszer megjelenő titkot készít. A kliens beállításaiba másold őket, ne a csevegésbe."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-copy-url",
+    "key": "mcp.copy.url",
+    "lang": "hu",
+    "value": "MCP URL másolása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-copy-client",
+    "key": "mcp.copy.client",
+    "lang": "hu",
+    "value": "Kliensazonosító másolása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-copy-callback",
+    "key": "mcp.copy.callback",
+    "lang": "hu",
+    "value": "Visszahívási cím másolása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-copy-secret",
+    "key": "mcp.copy.secret",
+    "lang": "hu",
+    "value": "Kliens titkának másolása"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-advanced",
+    "key": "mcp.advanced",
+    "lang": "hu",
+    "value": "MCP Haladó"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-oauth-permissions",
+    "key": "mcp.oauth.permissions",
+    "lang": "hu",
+    "value": "OAuth-engedélyek"
+  },
+  {
+    "_id": "i18n-message-en-affiliate-help-participants",
+    "key": "affiliate.help.participants",
+    "lang": "en",
+    "value": "The client ratio counts distinct imported participants linked to registered accounts. Repeat imports do not increase it."
+  },
+  {
+    "_id": "i18n-message-en-mcp-setup-approve",
+    "key": "mcp.setup.approve",
+    "lang": "en",
+    "value": "Sign in to MyScoutee, check the displayed profile and group, then approve access."
+  },
+  {
+    "_id": "i18n-message-en-mcp-setup-return",
+    "key": "mcp.setup.return",
+    "lang": "en",
+    "value": "Return to your AI client and enable the connection for the conversation."
+  },
+  {
+    "_id": "i18n-message-en-mcp-setup-revoke",
+    "key": "mcp.setup.revoke",
+    "lang": "en",
+    "value": "Revoke access under OAuth permissions. Connections expire after 90 days."
+  },
+  {
+    "_id": "i18n-message-en-mcp-manual-help-badge",
+    "key": "mcp.manual.help.badge",
+    "lang": "en",
+    "value": "The badge counts manual keys. Manage or revoke them here; URL-based connections remain under OAuth permissions."
+  },
+  {
+    "_id": "i18n-message-hu-affiliate-help-participants",
+    "key": "affiliate.help.participants",
+    "lang": "hu",
+    "value": "A kliens aránya a regisztrált fiókhoz kapcsolt különböző importált résztvevőket számolja. Az ismételt import nem növeli."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-setup-approve",
+    "key": "mcp.setup.approve",
+    "lang": "hu",
+    "value": "Jelentkezz be a MyScoutee-ba, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-setup-return",
+    "key": "mcp.setup.return",
+    "lang": "hu",
+    "value": "Térj vissza az AI-kliensbe, és kapcsold be a kapcsolatot a beszélgetéshez."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-setup-revoke",
+    "key": "mcp.setup.revoke",
+    "lang": "hu",
+    "value": "Az OAuth-engedélyeknél vonhatod vissza a hozzáférést. A kapcsolatok 90 nap után lejárnak."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-manual-help-badge",
+    "key": "mcp.manual.help.badge",
+    "lang": "hu",
+    "value": "A számláló a kézi kulcsokat mutatja. Itt kezelheted vagy vonhatod vissza őket; az URL-es kapcsolatok az OAuth-engedélyeknél maradnak."
   }
 ]

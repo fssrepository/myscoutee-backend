@@ -188,11 +188,31 @@ class ChatServiceTest {
     @Test
     void contactMemberCommandCannotAddPeopleToSupportChats() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(chatsRepository.findByChatId("support")).thenReturn(List.of(chat("support", "viewer", 0,
-                "2026-09-25T10:00:00Z", "appSupport")));
-        assertThatThrownBy(() -> service.addContactChatMembers("support", "viewer", List.of("target")))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        for (String channel : List.of("appSupport", "groupSupport")) {
+            when(chatsRepository.findByChatId(channel)).thenReturn(List.of(chat(channel, "viewer", 0,
+                    "2026-09-25T10:00:00Z", channel)));
+            assertThatThrownBy(() -> service.addContactChatMembers(channel, "viewer", List.of("target")))
+                    .isInstanceOf(org.springframework.web.server.ResponseStatusException.class)
+                    .hasMessageContaining("403");
+        }
         verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+    }
+
+    @Test
+    void contactInvitationCannotWriteIntoAnotherAccountsConversation() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        Chat foreign = chat("foreign", "other", 7, "2026-09-25T10:00:00Z", "contact");
+        foreign.setMemberIds(List.of("other", "peer"));
+        when(chatsRepository.findByChatId("foreign")).thenReturn(List.of(foreign));
+
+        assertThatThrownBy(() -> service.addContactChatMembers("foreign", "viewer", List.of("target")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class)
+                .hasMessageContaining("404");
+        verify(mongoTemplate, never()).updateMulti(any(Query.class), any(Update.class), eq(Chat.class));
+        verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
+        assertThat(foreign.getUnread()).isEqualTo(7);
+        assertThat(foreign.getMemberIds()).containsExactly("other", "peer");
     }
 
     @Test

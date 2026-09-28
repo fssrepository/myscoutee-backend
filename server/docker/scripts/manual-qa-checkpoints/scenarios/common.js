@@ -31,6 +31,16 @@
     if (currentDb !== requestedDb) {
       fail(`mongosh selected '${currentDb}', but MANUAL_QA_DB requested '${requestedDb}'.`);
     }
+    if (currentDb === 'production_db'
+        && process.env.MANUAL_QA_DEPLOYMENT_KIND === 'vmware'
+        && process.env.MANUAL_QA_CHECKPOINT_ID === 'DEPLOY-EXTERNAL-CONFIG-001'
+        && ['deploy-external-config', 'browser-sessions'].includes(process.env.MANUAL_QA_SCENARIO)) {
+      const marker = collection('deploymentConfigurations').findOne({_id: 'deployment-configuration'});
+      if (Number(marker?.schemaVersion) !== 5 || marker?.firebase?.active !== true) {
+        fail('Configured VMware Firebase baseline is unavailable.');
+      }
+      return;
+    }
     const expected = {
       demo_db: ["MyScoutee Demo Operator", "privacy@demo.myscoutee.test"],
       e2e_db: ["MyScoutee E2E Operator", "privacy@e2e.myscoutee.test"]

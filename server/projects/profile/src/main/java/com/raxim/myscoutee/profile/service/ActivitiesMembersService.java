@@ -239,7 +239,7 @@ public class ActivitiesMembersService {
                 .toList();
     }
 
-    private boolean canViewEventOwnerMembers(String ownerId, String parentEventId, String subEventId) {
+    public boolean canViewEventOwnerMembers(String ownerId, String parentEventId, String subEventId) {
         if (accessControlService.canCurrentActorViewEventMembers(ownerId)) {
             return true;
         }
@@ -1158,7 +1158,8 @@ public class ActivitiesMembersService {
                 return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId, request.assetRequestId());
             }
             if (!canApplyEventMemberAction(ownerId, actorUserId, targetUserId, action)) {
-                return queryMembers(ownerType, ownerId, false, scopedEventId, scopedSubEventId, request.assetRequestId());
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "Authenticated user is not allowed to perform this event member action.");
             }
         }
         List<ActivityMember> existing = scopedAssetAction

@@ -1,0 +1,676 @@
+[
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T01:11:26.587Z",
+    "pass": true,
+    "actor": 0,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.1.links",
+    "at": "2026-09-28T01:12:07.303Z",
+    "pass": true,
+    "status": 200,
+    "orderedIds": [
+      "group-api-fresh-rowan",
+      "group-api-existing-maya"
+    ],
+    "count": 2
+  },
+  {
+    "point": "1.2.repeat-validation",
+    "at": "2026-09-28T01:12:16.688Z",
+    "pass": true,
+    "stableUrls": true,
+    "blankDuplicateOversizedStatuses": [
+      400,
+      400,
+      400
+    ]
+  },
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T01:12:53.688Z",
+    "pass": true,
+    "actor": 1,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.2.foreign-owner",
+    "at": "2026-09-28T01:13:21.440Z",
+    "pass": true,
+    "status": 403,
+    "actor": 1
+  },
+  {
+    "point": "2.1–2.3",
+    "pass": true,
+    "registration": "normal entry/onboarding/save",
+    "baseAccountPreserved": true,
+    "workspaceProfiles": 1,
+    "acceptedMemberships": 1,
+    "reloadAndNormalRelogin": "QA Group API A",
+    "replayNoDuplicates": true,
+    "defaultHomeGender": "Woman",
+    "explicitlyClearedHomeGenderAfterReplay": "Any",
+    "geolocation": "QA-only Budapest override; native production path unchanged"
+  },
+  {
+    "point": "3.1.pending-link",
+    "at": "2026-09-28T01:37:16.662Z",
+    "pass": true,
+    "status": 200
+  },
+  {
+    "point": "3.2.rejected-claims",
+    "at": "2026-09-28T01:47:36.902Z",
+    "pass": true,
+    "otherAccount": 409,
+    "alteredToken": 404,
+    "reusedExternalId": 409
+  },
+  {
+    "point": "3.2.revoked-administrator",
+    "at": "2026-09-28T01:49:03.834Z",
+    "pass": true,
+    "status": 403
+  },
+  {
+    "point": "4.1.links",
+    "at": "2026-09-28T01:49:50.811Z",
+    "pass": true,
+    "issuedGroups": [
+      "qa-group-api-b",
+      "qa-group-api-a"
+    ]
+  },
+  {
+    "point": "4.1.links",
+    "at": "2026-09-28T01:52:02.093Z",
+    "pass": true,
+    "issuedGroups": [
+      "qa-group-api-b",
+      "qa-group-api-a"
+    ]
+  },
+  {
+    "point": "4.2.claim-transport-retry",
+    "at": "2026-09-28T01:54:06.000Z",
+    "pass": true,
+    "failed": {
+      "priorWorkspace": "B",
+      "invitationRetained": true,
+      "errorShown": true
+    },
+    "retry": {
+      "selectedWorkspace": "A",
+      "invitationConsumed": true
+    }
+  },
+  {
+    "point": "3.1.entry-and-pending",
+    "pass": true,
+    "missingCoordinates": "Setup; cancellation retains link and pending membership, no workspace",
+    "invalidCoordinatesDeniedGPS": "Setup error, no login",
+    "validCoordinatesDeniedGPS": "accepted membership and one linked profile",
+    "outsideRegionRelogin": "saved eligible location accepted; active group A",
+    "selectorRetention": {
+      "rowsBefore": 58,
+      "rowsAfterCancel": 58,
+      "newOnboarding": false
+    }
+  },
+  {
+    "point": "4.1.workspace-binding",
+    "pass": true,
+    "accountUserId": "f03009260000000000000003",
+    "baseBoundAcrossGroups": true,
+    "membershipsAfterRetry": 2,
+    "profilesAfterRetry": 2
+  },
+  {
+    "point": "5.1.event-controls-issued",
+    "at": "2026-09-28T01:56:44.816Z",
+    "pass": true,
+    "events": [
+      {
+        "id": "f0300926-0000-4000-8000-000000000001",
+        "externalId": "a3d925e9-f74b-404d-872b-a2b970dd43b7"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000002",
+        "externalId": "efa7c90e-fb27-4f98-b4a1-e978725f56e9"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000003",
+        "externalId": "b621eb95-8890-467f-bd39-dc9ed5ac50f6"
+      }
+    ]
+  },
+  {
+    "point": "5.2.private-events.a",
+    "at": "2026-09-28T02:08:52.802Z",
+    "pass": true,
+    "results": [
+      {
+        "target": "base",
+        "eventId": "a3d925e9-f74b-404d-872b-a2b970dd43b7",
+        "status": 404
+      },
+      {
+        "target": "a",
+        "eventId": "qa-group-api-private-a",
+        "status": 200
+      },
+      {
+        "target": "b",
+        "eventId": "qa-group-api-private-b",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "point": "5.2.private-events.b",
+    "at": "2026-09-28T02:09:12.889Z",
+    "pass": true,
+    "results": [
+      {
+        "target": "base",
+        "eventId": "a3d925e9-f74b-404d-872b-a2b970dd43b7",
+        "status": 404
+      },
+      {
+        "target": "a",
+        "eventId": "qa-group-api-private-a",
+        "status": 404
+      },
+      {
+        "target": "b",
+        "eventId": "qa-group-api-private-b",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "point": "5.2.private-events.base",
+    "at": "2026-09-28T02:09:31.077Z",
+    "pass": true,
+    "results": [
+      {
+        "target": "base",
+        "eventId": "a3d925e9-f74b-404d-872b-a2b970dd43b7",
+        "status": 200
+      },
+      {
+        "target": "a",
+        "eventId": "qa-group-api-private-a",
+        "status": 404
+      },
+      {
+        "target": "b",
+        "eventId": "qa-group-api-private-b",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "point": "5.3.revoked-api-key",
+    "at": "2026-09-28T02:10:29.828Z",
+    "pass": true,
+    "status": 401
+  },
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T02:13:09.928Z",
+    "pass": true,
+    "actor": 0,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T02:14:46.236Z",
+    "pass": true,
+    "actor": 0,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.1.links",
+    "at": "2026-09-28T02:15:09.565Z",
+    "pass": true,
+    "status": 200,
+    "orderedIds": [
+      "group-api-fresh-rowan",
+      "group-api-existing-maya"
+    ],
+    "count": 2
+  },
+  {
+    "point": "5.1.event-controls-issued",
+    "at": "2026-09-28T02:15:10.231Z",
+    "pass": true,
+    "events": [
+      {
+        "id": "f0300926-0000-4000-8000-000000000001",
+        "externalId": "ac34664b-46d5-43a3-bc97-31ccd383a835"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000002",
+        "externalId": "553b598f-bbf2-4327-8224-f7d7e2333af4"
+      },
+      {
+        "id": "f0300926-0000-4000-8000-000000000003",
+        "externalId": "d1fae842-cf78-4bd7-a093-bdc5714b068d"
+      }
+    ]
+  },
+  {
+    "point": "6.1.ui-share.group",
+    "at": "2026-09-28T02:16:46.516Z",
+    "pass": true,
+    "origin": "http://localhost",
+    "path": "/game",
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "sameInviter": true
+  },
+  {
+    "point": "6.1.ui-share.event",
+    "at": "2026-09-28T02:17:38.456Z",
+    "pass": true,
+    "origin": "http://localhost",
+    "path": "/game",
+    "queryKeys": [
+      "affiliate",
+      "partnerInvite"
+    ],
+    "sameInviter": true
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:19:00.365Z",
+    "registered": 0,
+    "participants": {
+      "registered": 0,
+      "imported": 3
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:20:48.896Z",
+    "registered": 1,
+    "participants": {
+      "registered": 1,
+      "imported": 3
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.2.fresh-event-link",
+    "at": "2026-09-28T02:21:12.839Z",
+    "pass": true,
+    "eventId": "ac34664b-46d5-43a3-bc97-31ccd383a835",
+    "issued": 1
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:23:03.489Z",
+    "registered": 2,
+    "participants": {
+      "registered": 2,
+      "imported": 4
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:23:40.125Z",
+    "registered": 2,
+    "participants": {
+      "registered": 2,
+      "imported": 4
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.attribution-summary",
+    "at": "2026-09-28T02:25:08.286Z",
+    "registered": 2,
+    "participants": {
+      "registered": 2,
+      "imported": 4
+    },
+    "revenue": {
+      "currencies": {},
+      "purchases": 0,
+      "eventBookings": 0,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 0,
+        "gross": 0,
+        "refunded": 0,
+        "net": 0,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "6.4.attribution-denials",
+    "at": "2026-09-28T02:26:58.215Z",
+    "pass": true,
+    "otherAccount": 409,
+    "tampered": 404,
+    "removedAdmin": 403,
+    "foreignEvent": 404
+  },
+  {
+    "point": "6.fresh-event-link",
+    "at": "2026-09-28T02:27:23.579Z",
+    "pass": true,
+    "kind": "ended",
+    "eventId": "d1fae842-cf78-4bd7-a093-bdc5714b068d",
+    "issued": 1
+  },
+  {
+    "point": "6.fresh-event-link",
+    "at": "2026-09-28T02:28:06.216Z",
+    "pass": true,
+    "kind": "paid",
+    "eventId": "553b598f-bbf2-4327-8224-f7d7e2333af4",
+    "issued": 1
+  },
+  {
+    "point": "6.5.cash-exclusion",
+    "at": "2026-09-28T02:44:44.659Z",
+    "pass": true,
+    "replaySameReceipt": true,
+    "histories": [
+      {
+        "userId": "f03009260000000000000001",
+        "cashRows": 1,
+        "direction": "income",
+        "amount": 7
+      },
+      {
+        "userId": "demo-profile-b7b37f25-8acf-44b1-8e3e-93e25fef07ea",
+        "cashRows": 1,
+        "direction": "expense",
+        "amount": 7
+      }
+    ],
+    "revenueUnchanged": {
+      "currencies": {
+        "EUR": {
+          "gross": 5,
+          "refunded": 0,
+          "net": 5
+        }
+      },
+      "purchases": 1,
+      "eventBookings": 1,
+      "euroSummary": {
+        "outgoing": 0,
+        "incoming": 5,
+        "gross": 5,
+        "refunded": 0,
+        "net": 5,
+        "missingRates": 0,
+        "currency": "EUR",
+        "currencies": [
+          "CHF",
+          "CZK",
+          "EUR",
+          "GBP",
+          "HUF",
+          "PLN",
+          "USD"
+        ]
+      }
+    }
+  },
+  {
+    "point": "7.2",
+    "pass": true,
+    "cancelPreservedSettings": true,
+    "normalDemoLogin": true,
+    "inspectorReconnect": true,
+    "manualKeyPrivateRead": true,
+    "logoutKeepsCredentials": true,
+    "remaining": "7.3–7.8"
+  },
+  {
+    "point": "7.3",
+    "pass": true,
+    "realPkce": true,
+    "baseAndGroupCapabilities": true,
+    "sameMcpSessionAdminRevocation": true,
+    "staleWriteDenied": true,
+    "adminRestored": true
+  },
+  {
+    "point": "7.4",
+    "pass": true,
+    "boundary": "unchanged protocol development evidence retained; foreign Base Event read denied again"
+  },
+  {
+    "point": "7.5",
+    "pass": true,
+    "delayedGroupKeyResponseAfterBaseSwitch": "no secret leak",
+    "secondIdentity": "empty",
+    "failedRevokeRetry": "PASS in7.2",
+    "mobileWidth": 390
+  },
+  {
+    "point": "7.6",
+    "pass": true,
+    "modes": [
+      "http",
+      "local"
+    ],
+    "languages": [
+      "en",
+      "hu"
+    ],
+    "popupHelp": "4 numbered steps /4 bullets",
+    "fullHelpOrder": "after Getting started",
+    "anonymousMcpHelpTools": 3,
+    "manualLocalGenerateReloadOtherIdentityRevoke": true,
+    "httpEnvironmentRestored": true
+  },
+  {
+    "point": "7.7",
+    "pass": true,
+    "boundary": "structural only; no vendor validator/install/model call",
+    "packages": [
+      {
+        "target": "openai",
+        "variant": "local",
+        "files": 6,
+        "sha256": "6997b6e334ee2d86e3b5a188d756a7cd0bf4adedd2f4f15f2abc7cf2e6ff5fe2",
+        "result": "PASS"
+      },
+      {
+        "target": "openai",
+        "variant": "remote-help",
+        "files": 6,
+        "sha256": "ae3aede4224883a1eb9021baf6f6607dafe47c30480719d876e3908704b84c51",
+        "result": "PASS"
+      },
+      {
+        "target": "openai",
+        "variant": "remote-private",
+        "files": 6,
+        "sha256": "e57bba463cff80cc02edb306f2b84f0ff36e10da4a07a58290d443f48c637572",
+        "result": "PASS"
+      },
+      {
+        "target": "claude",
+        "variant": "local",
+        "files": 4,
+        "sha256": "4d88b2313c65f23c69dacecc16d5bc1399d225ef4134f2f92bc04bad3e354bf4",
+        "result": "PASS"
+      },
+      {
+        "target": "claude",
+        "variant": "remote-help",
+        "files": 4,
+        "sha256": "2159ed79f9314a5520917b2ba5c505750adcdf86eb6a1a9065be7b0973691c5e",
+        "result": "PASS"
+      },
+      {
+        "target": "claude",
+        "variant": "remote-private",
+        "files": 4,
+        "sha256": "351c976a79f1c0f57e5afcb64aae6324fd94568be1ce7bafb47a611cb0d2298e",
+        "result": "PASS"
+      }
+    ]
+  },
+  {
+    "point": "7.8",
+    "pass": true,
+    "keysRevokedInUi": true,
+    "savedCardDeletedInUi": true,
+    "inspectorStopped": true,
+    "managedBrowsersClosed": true,
+    "exactRestore": true,
+    "sessionSnapshotRestored": true,
+    "freshMediaRemoved": true,
+    "postReset": {
+      "checkpointId": "INTEGRATION-API-GROUP-001",
+      "scenario": "integration-api-group",
+      "phase": "not-staged",
+      "actors": [
+        "f03009260000000000000001",
+        "f03009260000000000000002",
+        "f03009260000000000000003",
+        "f03009260000000000000004"
+      ],
+      "groups": [
+        "qa-group-api-a",
+        "qa-group-api-b"
+      ],
+      "users": [],
+      "memberships": [],
+      "inviteMappings": [],
+      "externalBindings": [],
+      "events": [],
+      "eventMembers": [],
+      "checkoutItems": [],
+      "payments": [],
+      "cards": [],
+      "cardRegistrations": [],
+      "affiliatePartners": [],
+      "affiliateContributions": [],
+      "affiliateRegistrations": [],
+      "affiliateLinkCount": 0,
+      "workspaceProfiles": [],
+      "freshUsers": [],
+      "savepoints": []
+    }
+  }
+]

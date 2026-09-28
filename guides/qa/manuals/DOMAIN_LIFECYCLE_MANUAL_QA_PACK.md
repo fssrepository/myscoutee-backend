@@ -11279,7 +11279,7 @@ Event/Asset/API rows remain closed and are not evidence for group isolation.
 | --- | --- | --- | --- |
 | GROUP-LIFECYCLE-001 | Group | [Lifecycle](../checklists/group/GROUP-LIFECYCLE-001.md) | Editor, rules, membership, workspace selector, reporting and group-admin moderation |
 | GROUP-ISOLATION-001 | Group | [Isolation](../checklists/group/GROUP-ISOLATION-001.md) | Base/A/B boundary; Asset and Event samples plus ratings, chat, Feed, counters and notification exceptions |
-| INTEGRATION-API-GROUP-001 | API test | [Participant links](../checklists/integration/INTEGRATION-API-GROUP-001.md) | Shared Event invite mechanism, registration/admission, active group, replay and authority |
+| INTEGRATION-API-GROUP-001 | API test | [Participant links](../checklists/api/INTEGRATION-API-GROUP-001.md) | Shared Event invite mechanism, registration/admission, active group, replay and authority |
 
 Group is placed directly after Asset in the domain priority table. The
 checklists define the required fixture baseline; no new fixture, managed
@@ -11331,9 +11331,61 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
 
-### DEPLOY-EXTERNAL-CONFIG-001 — deferred by user2026-09-27
+### DEPLOY-EXTERNAL-CONFIG-001 — CLOSED / PASS2026-09-28
 
-[Dedicated checklist](../checklists/deployment/DEPLOY-EXTERNAL-CONFIG-001.md).
+[Dedicated checklist](../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
+
+Final status: **CLOSED / PASS**,2026-09-28. Exact fixture cleanup complete.
+Next work: production DEB1.3.0 upgrade on VMware.
+The following paragraphs retain the execution history.
+
+Firebase is retained under final mobile3.1; preserve observed registration, Children HU/sample
+filters, existing missing/saved-point login and location retry results. User
+explicitly prohibited replay of completed checks. Fresh-record absence baseline
+and full EN Children editor/view variants remain unproven; do not invent PASS.
+Browser pending-location and database Children/location controls are restored.
+
+Final user-confirmed order:1 machine checks,2 interactive phone OAuth,3 one
+mobile block (Firebase3.1 retained/skipped, installed-app3.2, Android recovery3.3). iOS removed from active checklist at user
+request; no iOS PASS. Historical1.5 private denial is now1.2; help3 is1.1.
+
+Queued consent/spinner production UI06450 activated on VMware after user
+approval; ten containers healthy. Running backend JAR matches latest production
+build. Consent focused4 tests PASS, separate manual replay waived.
+
+Machine1.1: installed importer on disposable VMware Mongo DB matches canonical
+HU/ENv3, no users, exact cleanup. Existing migration test PASS including update,
+repeat/interruption and custom/disabled preservation. Configured HTTP HU/ENv3
+reads200 and all canonical content fields match; MCP returns the same17 topics
+for both languages. Full standalone deployment initialization is not claimed.
+Private outsider requests403/404 with unchanged DB and exact fixture restore.
+OAuth discovery/initial negative probes PASS; grant-dependent checks await
+Inspector. Actual GitHub chooser redirects to sign-in; authenticated check
+remains. This is not yet full testcase PASS.
+
+OAuth2.1 now PASS on physical phone Inspector: real existing Firebase session,
+normal OAuth permission and successful account-owned event read. No injected
+grant. User requires remaining browser checks on phone in order.2.2 reconnect/
+cancellation active; new client tracked for normal revocation and scoped cleanup.
+
+OAuth2.2: reconnect and normal cancellation/re-authentication verified on phone;
+protocol negatives/refresh replay PASS. Expired code used an explicitly recorded
+fixture deadline.2.3 normal phone logout leaves OAuth/API reads200 and old browser
+session401. OAuth2.1–2.4 PASS/CLOSED: normal phone logout retained independent OAuth/API access200 and rejected old browser401; explicit ordinary endpoint revocations then rejected both credentials401. Three captured clients and one QA key exactly restored, zero remaining. Inspector stopped, owned tabs/callback6274 and private credentials removed; original8443 transport and real account/Event retained. Next: finish audit of1.1–1.4 before3, per user.
+
+Current block1 evidence audit (no replay):
+
+| Item | Retained result / remaining boundary |
+| --- | --- |
+|1.1 Help|Fresh isolated DB importer, supported migration/update and HU/EN HTTP/MCP comparisons passed. Separately booted full deployment is not proven; no new installation run, per user.|
+|1.2 Private invitation|Completed: real outsider direct requests denied, existing private resources withheld, exact fixture cleanup passed.|
+|1.3 OAuth discovery/configuration|Completed: discovery metadata and issuer/resource/callback configuration. Client/grant negatives, expiry/reuse and refresh replay are recorded once under2.2; explicit revocation under2.3.|
+|1.4 Report templates|PASS: authenticated actual phone chooser and all three forms match the concise templates. No issue submitted. See DEPLOY_GITHUB_20260928.json.|
+
+Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
+
+Historical scope transfer2026-09-27:
+
 Real Firebase entry/location and externally configured MCP OAuth/client callbacks
 moved out of the Group campaign. DEFERRED / NOT RUN; configure later. The existing
 DEPLOY-FIREBASE-LIFECYCLE-001 pending-invitation-policy assertion is retained in
@@ -11429,3 +11481,30 @@ NEXT: GROUP-ISOLATION-001 — NOT STARTED. On a later explicit continuation,
 first remove exact evidence-proven duplicates while preserving unique combinations
 and its independent fixture/restage/checkpoint contract. No Isolation fixture,
 launcher, browser action or test is authorized by this closure request.
+
+### 2026-09-28 Group Isolation closure
+
+[GROUP-ISOLATION-001](../checklists/group/GROUP-ISOLATION-001.md): HTTP9/9 scope
+PASS; exact own fixture/pre-launch-session restoration and managed-browser
+cleanup complete. [Execution and boundaries](../evidence/GROUP-ISOLATION-001-20260928.md).
+Pending mutation modal cannot close under the established save contract; prior
+underlying-control switch attempts are not cross-scope mutation evidence.
+Full Local NOT RUN. Next API journey requires its own development and execution.
+
+## Group participant API closure — 2026-09-28
+
+INTEGRATION-API-GROUP-001 is **CLOSED / PASS: 7/7 ordered blocks** in the recorded
+dev HTTP/simulator scope. Normal registration and existing-account admission,
+workspace isolation, paid invitation checkout/affiliate attribution, real external
+Inspector OAuth/private reads, manual MCP keys and denial/retry controls passed.
+Local key persistence/profile isolation and both EN/HU help surfaces also passed.
+Six unpublished OpenAI/Claude package variants passed structural validation;
+this does not claim vendor installation or model-selected tool execution.
+
+The saved provider card and remaining keys/grants were revoked, optional Inspector
+and managed browsers stopped, and exact fixture/pre-launch-session/media cleanup
+verified. Earlier planning NOT RUN entries above are historical. The detailed
+[execution evidence](../evidence/INTEGRATION-API-GROUP-001-20260928.md) and
+[ordered JSON](../evidence/INTEGRATION-API-GROUP-001-ordered-20260928.json) retain
+individual boundaries. Actual ChatGPT/Claude/Codex acceptance remains the separate
+[post-deployment smoke](../../qualification/MCP-CLIENT-CONNECT-SMOKE.md).

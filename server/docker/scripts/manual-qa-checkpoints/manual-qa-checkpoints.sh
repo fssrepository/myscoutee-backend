@@ -25,6 +25,8 @@ Usage:
   bash manual-qa-checkpoints.sh prepare|restore browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage|status|ready|repair-rate-counters|reset event-rating EVENT-ACTIVITY-RATING-001 [before-meeting|all|standard|tournament|speed-meeting]
   bash manual-qa-checkpoints.sh stage|status|reset integration-api INTEGRATION-API-001
+  bash manual-qa-checkpoints.sh stage|status|reset integration-api-group INTEGRATION-API-GROUP-001
+  bash manual-qa-checkpoints.sh stage|status|reset mcp-oauth INTEGRATION-API-GROUP-001
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
   bash manual-qa-checkpoints.sh reset base-stat
@@ -537,6 +539,10 @@ run_scenario() {
   fi
 
   case "${scenario}" in
+    deploy-external-config) scenario_script="${SCRIPT_DIR}/scenarios/deploy-external-config-checkpoints.js" ;;
+    integration-api-group) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-group-checkpoints.js" ;;
+    mcp-oauth) scenario_script="${SCRIPT_DIR}/scenarios/mcp-oauth-checkpoints.js" ;;
+    group-isolation) scenario_script="${SCRIPT_DIR}/scenarios/group-isolation-checkpoints.js" ;;
     community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
     event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
@@ -620,6 +626,12 @@ run_scenario() {
 
   case "${target_db}" in
     demo_db|e2e_db) ;;
+    production_db)
+      [[ "${checkpoint_id}" == DEPLOY-EXTERNAL-CONFIG-001 \
+        && ( "${scenario}" == deploy-external-config || "${scenario}" == browser-sessions ) \
+        && "$(systemd-detect-virt 2>/dev/null)" == vmware ]] \
+        || fail "Configured production QA requires the exact deployment checkpoint on a VMware guest."
+      ;;
     *) fail "MANUAL_QA_DB must be exactly demo_db or e2e_db (got '${target_db}')." ;;
   esac
   case "${mongo_mode}" in
@@ -651,6 +663,7 @@ run_scenario() {
       -e "MANUAL_QA_COMMAND=${command}" \
       -e "MANUAL_QA_SCENARIO=${scenario}" \
       -e "MANUAL_QA_DB=${target_db}" \
+      -e "MANUAL_QA_DEPLOYMENT_KIND=$([[ "${target_db}" == production_db ]] && printf vmware || true)" \
       -e "MANUAL_QA_DELAY_SECONDS=${delay_seconds}" \
       -e "MANUAL_QA_CREATOR_USER_ID=${MANUAL_QA_CREATOR_USER_ID:-}" \
       -e "MANUAL_QA_INVITEE_USER_ID=${MANUAL_QA_INVITEE_USER_ID:-}" \
@@ -795,6 +808,23 @@ PY
   event-rating:stage|event-rating:status|event-rating:ready|event-rating:repair-rate-counters|event-rating:reset)
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
+    ;;
+  deploy-external-config:capture-api-key|deploy-external-config:restore-api-key|deploy-external-config:expire-oauth-code|deploy-external-config:capture-oauth-client|deploy-external-config:restore-oauth-client|deploy-external-config:prepare-private-invitation|deploy-external-config:verify-private-invitation|deploy-external-config:restore-private-invitation|deploy-external-config:stage|deploy-external-config:status|deploy-external-config:capture|deploy-external-config:prepare-children-control|deploy-external-config:set-children-control|deploy-external-config:restore-children-control|deploy-external-config:prepare-location-control|deploy-external-config:restore-location-control|deploy-external-config:reset)
+    { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = DEPLOY-EXTERNAL-CONFIG-001 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "${4:-}"
+    ;;
+  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:restore-maya-location|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|integration-api-group:prepare-issuer-workspaces|integration-api-group:remove-issuer-admin|integration-api-group:restore-issuer-admin|integration-api-group:prepare-paid-event|integration-api-group:prepare-private-controls|integration-api-group:prepare-attribution-denials|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
+    [ "$#" -eq 3 ] && [ "$3" = "INTEGRATION-API-GROUP-001" ] || { usage >&2; exit 2; }
+    if [ "${scenario}:${command}" = "integration-api-group:reset" ]; then
+      api_media_owners="$(run_scenario media-owners "${scenario}" 30 "$3" | python3 -c 'import json,sys; print("\n".join(json.load(sys.stdin)["users"]))')"
+      while IFS= read -r api_media_owner; do
+        [ -n "${api_media_owner}" ] || continue
+        [[ "${api_media_owner}" =~ ^demo-profile-[a-f0-9-]{36}$ ]] || fail "Invalid Group API media owner."
+        # Same exact-owner cleanup as community-group:restore-sharing.
+        docker exec minio sh -c 'export MC_HOST_qa="http://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@localhost:9000"; mc rm --recursive --force "qa/myscoutee-media/public/demo/images/$1/"' group-api-media-reset "${api_media_owner}" >/dev/null
+      done <<<"${api_media_owners}"
+    fi
+    run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   integration-api:stage|integration-api:status|integration-api:reset)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
@@ -962,6 +992,14 @@ PY
         set_payment_simulator_cash_only
       fi
     fi
+    ;;
+  group-isolation:stage|group-isolation:status|group-isolation:reset|group-isolation:prepare-invite-control|group-isolation:prepare-home-controls|group-isolation:prepare-notification-controls|group-isolation:prepare-moderation-controls|group-isolation:prepare-revocation-control|group-isolation:prepare-support-controls|group-isolation:prepare-contact-controls|group-isolation:prepare-chat-read-controls)
+    [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  group-isolation:capture|group-isolation:restore|group-isolation:verify-savepoint)
+    [ "$#" -eq 4 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "$4"
     ;;
   community-group:restore-sharing)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }

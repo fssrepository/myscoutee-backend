@@ -130,19 +130,39 @@ public class HomeGameCardsService {
         if (!includesNormalized(preferences.horoscopes(), user.getHoroscope())) {
             return false;
         }
-        if (!includesNormalized(preferences.traitLabels(), user.getTraitLabel())) {
+        if (!includesNormalized(preferences.traitLabels() == null ? null : preferences.traitLabels().stream().map(this::traitFilterKey).toList(), traitFilterKey(user.getTraitLabel()))) {
             return false;
         }
-        if (preferences.genders() != null && !preferences.genders().isEmpty()) {
-            Set<String> normalizedGenders = preferences.genders().stream()
-                    .filter(Objects::nonNull)
-                    .map(value -> value.trim().toLowerCase())
-                    .collect(Collectors.toSet());
-            if (!normalizedGenders.contains(normalize(user.getGender()))) {
-                return false;
+        Map<String, String> details = new LinkedHashMap<>();
+        for (var group : user.getProfileDetails() == null ? List.<Users.ProfileDetailGroupRecord>of() : user.getProfileDetails()) {
+            if (group == null || group.rows() == null) continue;
+            for (var row : group.rows()) {
+                if (row != null) details.putIfAbsent(normalize(row.labelKey()), row.value() == null ? "" : row.value().trim());
             }
         }
-        return true;
+        return includesNormalized(preferences.genders(), details.getOrDefault("profile.gender", user.getGender()))
+                && intersectsNormalized(preferences.interests(), detailList(details, "interest"))
+                && intersectsNormalized(preferences.values(), detailList(details, "values"))
+                && includesNormalized(preferences.smoking(), details.get("profile.details.smoking"))
+                && includesNormalized(preferences.drinking(), details.get("profile.details.drinking"))
+                && includesNormalized(preferences.workout(), details.get("profile.details.workout"))
+                && includesNormalized(preferences.pets(), details.get("profile.details.pets"))
+                && includesNormalized(preferences.familyPlans(), details.get("profile.details.familyplans"))
+                && includesNormalized(preferences.children(), details.get("profile.details.children"))
+                && includesNormalized(preferences.loveStyles(), details.get("profile.details.lovestyle"))
+                && includesNormalized(preferences.communicationStyles(), details.get("profile.details.communicationstyle"))
+                && includesNormalized(preferences.sexualOrientations(), details.get("profile.details.sexualorientation"))
+                && includesNormalized(preferences.religions(), details.get("profile.details.religion"));
+    }
+
+    private String traitFilterKey(String value) {
+        String traitId = HomeUserProfileService.resolvePersonalityTraitId(value, value);
+        return traitId == null ? normalize(value) : traitId;
+    }
+
+    private List<String> detailList(Map<String, String> details, String field) {
+        return Stream.of(details.getOrDefault("profile.details." + field, "").split(","))
+                .map(String::trim).filter(StringUtils::hasText).toList();
     }
 
     private Integer parseHeightCm(String value) {

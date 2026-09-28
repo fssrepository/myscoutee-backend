@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -2113,26 +2114,15 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
-    void acceptPendingMemberReturnsCurrentMembersWhenPolicyDenies() {
-        ActivityMember member = member("member-sync", "event-1", "target", "Member", "pending");
-
+    void acceptPendingMemberThrowsForbiddenWithoutWritesWhenPolicyDenies() {
         when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canAcceptEventMember("event-1", "admin", "target")).thenReturn(false);
-        when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
-                .thenReturn(List.of(member));
 
-        var result = service.applyAction(new ActivityMemberActionRequestDto(
+        assertThatThrownBy(() -> service.applyAction(new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"),
-                "admin",
-                "target",
-                "accept",
-                null));
-
-        assertThat(result)
-                .filteredOn(entry -> "target".equals(entry.userId()))
-                .singleElement()
-                .extracting(ActivityMemberEntryDto::status)
-                .isEqualTo("pending");
+                "admin", "target", "accept", null)))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(error -> assertThat(((ResponseStatusException) error).getStatusCode().value()).isEqualTo(403));
         verify(activityMembersRepository, never()).save(any(ActivityMember.class));
     }
 

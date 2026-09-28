@@ -2,6 +2,8 @@ package com.raxim.myscoutee.profile.controller.activities;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,11 @@ public class ActivitiesMembersController {
             @RequestParam(value = "subEventId", required = false) String subEventId,
             @RequestParam(value = "assetRequestId", required = false) String assetRequestId) {
         if (community(ownerType)) return groups.roster(groups.actor(null), ownerId, Boolean.TRUE.equals(pendingOnly));
+        if ("event".equalsIgnoreCase(ownerType.trim())
+                && !activitiesMembersService.canViewEventOwnerMembers(ownerId, eventId, subEventId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Authenticated user is not allowed to read members for this event.");
+        }
         return activitiesMembersService.queryMembers(ownerType, ownerId, pendingOnly, eventId, subEventId, assetRequestId);
     }
 

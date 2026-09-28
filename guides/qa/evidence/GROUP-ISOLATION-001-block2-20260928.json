@@ -1,0 +1,1626 @@
+{
+  "checkpoint": "GROUP-ISOLATION-001",
+  "block": 2,
+  "adapter": "HTTP",
+  "status": "PASS",
+  "initialFailure": {
+    "at": "2026-09-27T22:29:10.156Z",
+    "actor": "f02809260000000000000001",
+    "results": [
+      {
+        "path": "/api/activities/events/detail?userId=f02809260000000000000001&eventId=h1790547269571",
+        "status": 200,
+        "body": ""
+      },
+      {
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571",
+        "status": 200,
+        "body": [
+          {
+            "id": "c3a146ba-e67b-4bf9-b69a-eb4459e84766",
+            "userId": "f02809260000000000000011",
+            "name": "Isolation Alex",
+            "initials": "IA",
+            "gender": "man",
+            "city": "Seattle",
+            "statusText": "Recently Active",
+            "role": "Admin",
+            "status": "accepted",
+            "pendingSource": null,
+            "requestKind": null,
+            "invitedByUserId": "",
+            "invitedByActiveUser": false,
+            "metAtIso": "2026-09-29T16:00:00Z",
+            "actionAtIso": "2026-09-29T16:00:00Z",
+            "metWhere": "",
+            "avatarUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp",
+            "profile": {
+              "id": "f02809260000000000000011",
+              "name": "Isolation Alex",
+              "age": 31,
+              "birthday": "1999-08-04",
+              "city": "Seattle",
+              "height": "180 cm",
+              "physique": "Average",
+              "languages": [
+                "English",
+                "French"
+              ],
+              "horoscope": "Capricorn",
+              "initials": "IA",
+              "gender": "man",
+              "statusText": "",
+              "hostTier": "",
+              "traitLabel": "",
+              "completion": 61,
+              "profileFormVersion": 2,
+              "headline": "",
+              "about": "",
+              "affinity": null,
+              "locationCoordinates": {
+                "latitude": 47.4811,
+                "longitude": 19.0366
+              },
+              "partitionKey": "country:hu",
+              "images": [
+                "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+              ],
+              "profileDetails": [],
+              "impressions": null,
+              "profileStatus": "friends only",
+              "previousProfileStatus": "",
+              "deletedAtIso": "",
+              "admin": false,
+              "operator": false,
+              "activities": {
+                "game": 0,
+                "chats": 0,
+                "invitations": 0,
+                "events": 0,
+                "hosting": 1,
+                "cars": 0,
+                "accommodation": 0,
+                "supplies": 0,
+                "tickets": 0,
+                "contacts": 0,
+                "feedback": 0,
+                "chat": {
+                  "all": 0,
+                  "event": 0,
+                  "subEvent": 0,
+                  "group": 0,
+                  "service": 0,
+                  "appSupport": 0,
+                  "supportCases": {
+                    "pending": 0,
+                    "warned": 0,
+                    "picked": 0,
+                    "solved": 0,
+                    "blocked": 0,
+                    "all": 0
+                  },
+                  "groupSupport": 0,
+                  "contacts": 0
+                },
+                "event": {
+                  "all": 1,
+                  "active": 0,
+                  "pending": 0,
+                  "invitations": 0,
+                  "hosting": 1,
+                  "drafts": 0,
+                  "trash": 0,
+                  "watchlist": 0
+                },
+                "asset": {
+                  "cars": 0,
+                  "accommodation": 0,
+                  "supplies": 0,
+                  "tickets": 0,
+                  "carsPending": 0,
+                  "accommodationPending": 0,
+                  "suppliesPending": 0
+                },
+                "eventFeedback": {
+                  "ownEvents": 0,
+                  "pending": 0,
+                  "feedbacked": 0,
+                  "removed": 0
+                },
+                "adminJobs": 0,
+                "adminMetrics": 0,
+                "paymentRefundsPending": 0,
+                "contactRequestsPending": 0,
+                "notifications": 0
+              },
+              "notificationPreferences": null
+            },
+            "involvements": [
+              {
+                "id": "event:h1790547269571",
+                "ownerType": "event",
+                "ownerId": "h1790547269571",
+                "label": "Event",
+                "detail": "Event \u00b7 Accepted \u00b7 Admin",
+                "status": "accepted",
+                "role": "Admin",
+                "actionAtIso": "2026-09-29T16:00:00Z"
+              }
+            ],
+            "revision": "2026-09-27T22:15:05.579734048Z",
+            "attendanceStatus": null,
+            "checkedInAtIso": null,
+            "checkedInByUserId": null,
+            "checkedInTicketId": null,
+            "managerGrantedByUserId": null,
+            "organizerOnly": false
+          },
+          {
+            "id": "da2c1f68-caf1-41e2-80ba-0bbf10c735f7",
+            "userId": "f02809260000000000000012",
+            "name": "Isolation Eszter",
+            "initials": "IE",
+            "gender": "woman",
+            "city": "Seattle",
+            "statusText": "Recently Active",
+            "role": "Member",
+            "status": "accepted",
+            "pendingSource": null,
+            "requestKind": null,
+            "invitedByUserId": "f02809260000000000000011",
+            "invitedByActiveUser": false,
+            "metAtIso": "2026-09-27T22:17:21.382143284Z",
+            "actionAtIso": "2026-09-27T22:18:23.946610091Z",
+            "metWhere": "",
+            "avatarUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+            "profile": {
+              "id": "f02809260000000000000012",
+              "name": "Isolation Eszter",
+              "age": 30,
+              "birthday": "1995-07-19",
+              "city": "Seattle",
+              "height": "168 cm",
+              "physique": "Fit",
+              "languages": [
+                "English",
+                "Hungarian"
+              ],
+              "horoscope": "Cancer",
+              "initials": "IE",
+              "gender": "woman",
+              "statusText": "",
+              "hostTier": "",
+              "traitLabel": "",
+              "completion": 58,
+              "profileFormVersion": 2,
+              "headline": "",
+              "about": "",
+              "affinity": null,
+              "locationCoordinates": {
+                "latitude": 47.5099,
+                "longitude": 19.0354
+              },
+              "partitionKey": "country:hu",
+              "images": [
+                "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+                "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
+              ],
+              "profileDetails": [],
+              "impressions": null,
+              "profileStatus": "public",
+              "previousProfileStatus": "",
+              "deletedAtIso": "",
+              "admin": false,
+              "operator": false,
+              "activities": {
+                "game": 0,
+                "chats": 0,
+                "invitations": 0,
+                "events": 1,
+                "hosting": 0,
+                "cars": 0,
+                "accommodation": 0,
+                "supplies": 0,
+                "tickets": 0,
+                "contacts": 0,
+                "feedback": 0,
+                "chat": {
+                  "all": 0,
+                  "event": 0,
+                  "subEvent": 0,
+                  "group": 0,
+                  "service": 0,
+                  "appSupport": 0,
+                  "supportCases": {
+                    "pending": 0,
+                    "warned": 0,
+                    "picked": 0,
+                    "solved": 0,
+                    "blocked": 0,
+                    "all": 0
+                  },
+                  "groupSupport": 0,
+                  "contacts": 0
+                },
+                "event": {
+                  "all": 1,
+                  "active": 1,
+                  "pending": 0,
+                  "invitations": 0,
+                  "hosting": 0,
+                  "drafts": 0,
+                  "trash": 0,
+                  "watchlist": 0
+                },
+                "asset": {
+                  "cars": 0,
+                  "accommodation": 0,
+                  "supplies": 0,
+                  "tickets": 0,
+                  "carsPending": 0,
+                  "accommodationPending": 0,
+                  "suppliesPending": 0
+                },
+                "eventFeedback": {
+                  "ownEvents": 0,
+                  "pending": 0,
+                  "feedbacked": 0,
+                  "removed": 0
+                },
+                "adminJobs": 0,
+                "adminMetrics": 0,
+                "paymentRefundsPending": 0,
+                "contactRequestsPending": 0,
+                "notifications": 0
+              },
+              "notificationPreferences": null
+            },
+            "involvements": [
+              {
+                "id": "event:h1790547269571",
+                "ownerType": "event",
+                "ownerId": "h1790547269571",
+                "label": "Event",
+                "detail": "Event \u00b7 Accepted \u00b7 Member",
+                "status": "accepted",
+                "role": "Member",
+                "actionAtIso": "2026-09-27T22:18:23.946610091Z"
+              }
+            ],
+            "revision": "2026-09-27T22:18:23.946610091Z",
+            "attendanceStatus": null,
+            "checkedInAtIso": null,
+            "checkedInByUserId": null,
+            "checkedInTicketId": null,
+            "managerGrantedByUserId": null,
+            "organizerOnly": false
+          }
+        ]
+      },
+      {
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000001",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000001&limit=10",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000001&limit=10",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      }
+    ]
+  },
+  "b": {
+    "at": "2026-09-27T22:37:24.158Z",
+    "actor": "f02809260000000000000001",
+    "event": "h1790547269571",
+    "results": [
+      {
+        "name": "detail",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/events/detail?userId=f02809260000000000000001&eventId=h1790547269571",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Event not found."
+        }
+      },
+      {
+        "name": "event-members",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to read members for this event."
+        }
+      },
+      {
+        "name": "chat",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000001",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "messages",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000001&limit=10",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "chat-members",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000001&limit=10",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "unpublish-event",
+        "forged": false,
+        "method": "POST",
+        "path": "/api/activities/events/unpublish?probe=isolation",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Policy authorization denied."
+        }
+      },
+      {
+        "name": "remove-member",
+        "forged": false,
+        "method": "POST",
+        "path": "/api/activities/events/members/action?probe=isolation",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to perform this event member action."
+        }
+      },
+      {
+        "name": "send-message",
+        "forged": false,
+        "method": "POST",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000001",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "detail",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/events/detail?userId=f02809260000000000000011&eventId=h1790547269571&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Event not found."
+        }
+      },
+      {
+        "name": "event-members",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to read members for this event."
+        }
+      },
+      {
+        "name": "chat",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000011&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "messages",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000011&limit=10&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "chat-members",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000011&limit=10&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "unpublish-event",
+        "forged": true,
+        "method": "POST",
+        "path": "/api/activities/events/unpublish?probe=isolation&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Policy authorization denied."
+        }
+      },
+      {
+        "name": "remove-member",
+        "forged": true,
+        "method": "POST",
+        "path": "/api/activities/events/members/action?probe=isolation&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to perform this event member action."
+        }
+      },
+      {
+        "name": "send-message",
+        "forged": true,
+        "method": "POST",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000011&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      }
+    ]
+  },
+  "outsider": {
+    "at": "2026-09-27T22:37:24.591Z",
+    "actor": "f02809260000000000000003",
+    "event": "h1790547269571",
+    "results": [
+      {
+        "name": "detail",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/events/detail?userId=f02809260000000000000003&eventId=h1790547269571",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Event not found."
+        }
+      },
+      {
+        "name": "event-members",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to read members for this event."
+        }
+      },
+      {
+        "name": "chat",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000003",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "messages",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000003&limit=10",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "chat-members",
+        "forged": false,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000003&limit=10",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "unpublish-event",
+        "forged": false,
+        "method": "POST",
+        "path": "/api/activities/events/unpublish?probe=isolation",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Policy authorization denied."
+        }
+      },
+      {
+        "name": "remove-member",
+        "forged": false,
+        "method": "POST",
+        "path": "/api/activities/events/members/action?probe=isolation",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to perform this event member action."
+        }
+      },
+      {
+        "name": "send-message",
+        "forged": false,
+        "method": "POST",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000003",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "detail",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/events/detail?userId=f02809260000000000000011&eventId=h1790547269571&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Event not found."
+        }
+      },
+      {
+        "name": "event-members",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to read members for this event."
+        }
+      },
+      {
+        "name": "chat",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000011&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "messages",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000011&limit=10&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "chat-members",
+        "forged": true,
+        "method": "GET",
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000011&limit=10&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      },
+      {
+        "name": "unpublish-event",
+        "forged": true,
+        "method": "POST",
+        "path": "/api/activities/events/unpublish?probe=isolation&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Policy authorization denied."
+        }
+      },
+      {
+        "name": "remove-member",
+        "forged": true,
+        "method": "POST",
+        "path": "/api/activities/events/members/action?probe=isolation&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 403,
+        "body": {
+          "error": "Forbidden",
+          "message": "Authenticated user is not allowed to perform this event member action."
+        }
+      },
+      {
+        "name": "send-message",
+        "forged": true,
+        "method": "POST",
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000011&groupId=qa-isolation-a&workspaceGroupId=qa-isolation-a",
+        "status": 404,
+        "body": {
+          "error": "Not Found",
+          "message": "Chat not found."
+        }
+      }
+    ]
+  },
+  "authorizedRead": {
+    "at": "2026-09-27T22:37:37.377Z",
+    "actor": "f02809260000000000000001",
+    "results": [
+      {
+        "path": "/api/activities/events/detail?userId=f02809260000000000000001&eventId=h1790547269571",
+        "status": 200,
+        "body": {
+          "syncKey": "7dac4882-8d5a-41b2-9268-4b7222c15246",
+          "id": "h1790547269571",
+          "userId": "f02809260000000000000011",
+          "type": "hosting",
+          "status": "A",
+          "statusBeforeSuppression": "",
+          "adminIds": [
+            "f02809260000000000000011"
+          ],
+          "avatar": "IA",
+          "title": "QA Isolation Event A",
+          "subtitle": "Isolation group A event control.",
+          "timeframe": "",
+          "inviter": null,
+          "unread": 0,
+          "activity": 0,
+          "trashedAtIso": null,
+          "creatorUserId": "f02809260000000000000011",
+          "creatorName": "Isolation Alex",
+          "creatorInitials": "IA",
+          "creatorGender": "man",
+          "creatorCity": "Seattle",
+          "visibility": "Invitation only",
+          "blindMode": "Open Event",
+          "startAtIso": "2026-09-29T16:00:00Z",
+          "endAtIso": "2026-09-29T18:00:00Z",
+          "distanceKm": null,
+          "imageUrl": "",
+          "sourceLink": "",
+          "location": "",
+          "locationCoordinates": {
+            "latitude": 47.4811,
+            "longitude": 19.0366
+          },
+          "capacityMin": 1,
+          "capacityMax": 5,
+          "capacityTotal": 5,
+          "capacityTotalActual": 5,
+          "full": false,
+          "autoInviter": false,
+          "frequency": "One-time",
+          "ticketing": false,
+          "approvalRequired": false,
+          "pricing": {
+            "mode": "fixed",
+            "basePrice": 0,
+            "currency": "USD",
+            "taxMode": "excluded",
+            "chargeType": "per_attendee",
+            "quantityRulesEnabled": false,
+            "quantityRules": [],
+            "minPrice": null,
+            "maxPrice": null,
+            "rounding": "none",
+            "demandRulesEnabled": false,
+            "demandRules": [],
+            "timeRulesEnabled": false,
+            "timeRules": [],
+            "cancellationPolicy": {
+              "enabled": false,
+              "rules": []
+            },
+            "slotPricingEnabled": false,
+            "slotOverrides": [],
+            "audience": {
+              "enabled": false,
+              "memberPrice": null,
+              "vipPrice": null,
+              "inviteOnlyDiscountPercent": null,
+              "promoCodes": [],
+              "soldOutLabel": "Show \"Sold Out\""
+            },
+            "enabled": false
+          },
+          "policiesEnabled": false,
+          "policies": [],
+          "slotsEnabled": false,
+          "slotTemplates": [],
+          "parentEventId": "",
+          "slotTemplateId": "",
+          "generated": false,
+          "eventType": "main",
+          "nextSlot": null,
+          "upcomingSlots": [],
+          "acceptedMembers": 2,
+          "pendingMembers": 0,
+          "acceptedMemberUserIds": [
+            "f02809260000000000000011",
+            "f02809260000000000000012"
+          ],
+          "pendingMemberUserIds": [],
+          "invitedMemberUserIds": [],
+          "pendingRequestMemberUserIds": [],
+          "pendingReason": null,
+          "topics": [],
+          "subEventsEnabled": false,
+          "subEventDefinitions": [],
+          "subEvents": [],
+          "mode": "Casual",
+          "mingleConfiguration": null,
+          "currentStage": null,
+          "rating": 0,
+          "boost": 554,
+          "affinity": 690848.5,
+          "paymentSessionId": null,
+          "imageUrls": [],
+          "imageDetails": {},
+          "paymentDeadlineHours": 4,
+          "paymentDeadlineEnabled": true
+        }
+      },
+      {
+        "path": "/api/activities/events/members?ownerType=event&ownerId=h1790547269571",
+        "status": 200,
+        "body": [
+          {
+            "id": "c3a146ba-e67b-4bf9-b69a-eb4459e84766",
+            "userId": "f02809260000000000000011",
+            "name": "Isolation Alex",
+            "initials": "IA",
+            "gender": "man",
+            "city": "Seattle",
+            "statusText": "Recently Active",
+            "role": "Admin",
+            "status": "accepted",
+            "pendingSource": null,
+            "requestKind": null,
+            "invitedByUserId": "",
+            "invitedByActiveUser": false,
+            "metAtIso": "2026-09-29T16:00:00Z",
+            "actionAtIso": "2026-09-29T16:00:00Z",
+            "metWhere": "",
+            "avatarUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp",
+            "profile": {
+              "id": "f02809260000000000000011",
+              "name": "Isolation Alex",
+              "age": 31,
+              "birthday": "1999-08-04",
+              "city": "Seattle",
+              "height": "180 cm",
+              "physique": "Average",
+              "languages": [
+                "English",
+                "French"
+              ],
+              "horoscope": "Capricorn",
+              "initials": "IA",
+              "gender": "man",
+              "statusText": "",
+              "hostTier": "",
+              "traitLabel": "",
+              "completion": 61,
+              "profileFormVersion": 2,
+              "headline": "",
+              "about": "",
+              "affinity": null,
+              "locationCoordinates": {
+                "latitude": 47.4811,
+                "longitude": 19.0366
+              },
+              "partitionKey": "country:hu",
+              "images": [
+                "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+              ],
+              "profileDetails": [],
+              "impressions": null,
+              "profileStatus": "friends only",
+              "previousProfileStatus": "",
+              "deletedAtIso": "",
+              "admin": false,
+              "operator": false,
+              "activities": {
+                "game": 0,
+                "chats": 0,
+                "invitations": 0,
+                "events": 0,
+                "hosting": 1,
+                "cars": 0,
+                "accommodation": 0,
+                "supplies": 0,
+                "tickets": 0,
+                "contacts": 0,
+                "feedback": 0,
+                "chat": {
+                  "all": 0,
+                  "event": 0,
+                  "subEvent": 0,
+                  "group": 0,
+                  "service": 0,
+                  "appSupport": 0,
+                  "supportCases": {
+                    "pending": 0,
+                    "warned": 0,
+                    "picked": 0,
+                    "solved": 0,
+                    "blocked": 0,
+                    "all": 0
+                  },
+                  "groupSupport": 0,
+                  "contacts": 0
+                },
+                "event": {
+                  "all": 1,
+                  "active": 0,
+                  "pending": 0,
+                  "invitations": 0,
+                  "hosting": 1,
+                  "drafts": 0,
+                  "trash": 0,
+                  "watchlist": 0
+                },
+                "asset": {
+                  "cars": 0,
+                  "accommodation": 0,
+                  "supplies": 0,
+                  "tickets": 0,
+                  "carsPending": 0,
+                  "accommodationPending": 0,
+                  "suppliesPending": 0
+                },
+                "eventFeedback": {
+                  "ownEvents": 0,
+                  "pending": 0,
+                  "feedbacked": 0,
+                  "removed": 0
+                },
+                "adminJobs": 0,
+                "adminMetrics": 0,
+                "paymentRefundsPending": 0,
+                "contactRequestsPending": 0,
+                "notifications": 0
+              },
+              "notificationPreferences": null
+            },
+            "involvements": [
+              {
+                "id": "event:h1790547269571",
+                "ownerType": "event",
+                "ownerId": "h1790547269571",
+                "label": "Event",
+                "detail": "Event \u00b7 Accepted \u00b7 Admin",
+                "status": "accepted",
+                "role": "Admin",
+                "actionAtIso": "2026-09-29T16:00:00Z"
+              }
+            ],
+            "revision": "2026-09-27T22:15:05.579734048Z",
+            "attendanceStatus": null,
+            "checkedInAtIso": null,
+            "checkedInByUserId": null,
+            "checkedInTicketId": null,
+            "managerGrantedByUserId": null,
+            "organizerOnly": false
+          },
+          {
+            "id": "da2c1f68-caf1-41e2-80ba-0bbf10c735f7",
+            "userId": "f02809260000000000000012",
+            "name": "Isolation Eszter",
+            "initials": "IE",
+            "gender": "woman",
+            "city": "Seattle",
+            "statusText": "Recently Active",
+            "role": "Member",
+            "status": "accepted",
+            "pendingSource": null,
+            "requestKind": null,
+            "invitedByUserId": "f02809260000000000000011",
+            "invitedByActiveUser": true,
+            "metAtIso": "2026-09-27T22:17:21.382143284Z",
+            "actionAtIso": "2026-09-27T22:18:23.946610091Z",
+            "metWhere": "",
+            "avatarUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+            "profile": {
+              "id": "f02809260000000000000012",
+              "name": "Isolation Eszter",
+              "age": 30,
+              "birthday": "1995-07-19",
+              "city": "Seattle",
+              "height": "168 cm",
+              "physique": "Fit",
+              "languages": [
+                "English",
+                "Hungarian"
+              ],
+              "horoscope": "Cancer",
+              "initials": "IE",
+              "gender": "woman",
+              "statusText": "",
+              "hostTier": "",
+              "traitLabel": "",
+              "completion": 58,
+              "profileFormVersion": 2,
+              "headline": "",
+              "about": "",
+              "affinity": null,
+              "locationCoordinates": {
+                "latitude": 47.5099,
+                "longitude": 19.0354
+              },
+              "partitionKey": "country:hu",
+              "images": [
+                "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+                "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-02/large.webp"
+              ],
+              "profileDetails": [],
+              "impressions": null,
+              "profileStatus": "public",
+              "previousProfileStatus": "",
+              "deletedAtIso": "",
+              "admin": false,
+              "operator": false,
+              "activities": {
+                "game": 0,
+                "chats": 0,
+                "invitations": 0,
+                "events": 1,
+                "hosting": 0,
+                "cars": 0,
+                "accommodation": 0,
+                "supplies": 0,
+                "tickets": 0,
+                "contacts": 0,
+                "feedback": 0,
+                "chat": {
+                  "all": 0,
+                  "event": 0,
+                  "subEvent": 0,
+                  "group": 0,
+                  "service": 0,
+                  "appSupport": 0,
+                  "supportCases": {
+                    "pending": 0,
+                    "warned": 0,
+                    "picked": 0,
+                    "solved": 0,
+                    "blocked": 0,
+                    "all": 0
+                  },
+                  "groupSupport": 0,
+                  "contacts": 0
+                },
+                "event": {
+                  "all": 1,
+                  "active": 1,
+                  "pending": 0,
+                  "invitations": 0,
+                  "hosting": 0,
+                  "drafts": 0,
+                  "trash": 0,
+                  "watchlist": 0
+                },
+                "asset": {
+                  "cars": 0,
+                  "accommodation": 0,
+                  "supplies": 0,
+                  "tickets": 0,
+                  "carsPending": 0,
+                  "accommodationPending": 0,
+                  "suppliesPending": 0
+                },
+                "eventFeedback": {
+                  "ownEvents": 0,
+                  "pending": 0,
+                  "feedbacked": 0,
+                  "removed": 0
+                },
+                "adminJobs": 0,
+                "adminMetrics": 0,
+                "paymentRefundsPending": 0,
+                "contactRequestsPending": 0,
+                "notifications": 0
+              },
+              "notificationPreferences": null
+            },
+            "involvements": [
+              {
+                "id": "event:h1790547269571",
+                "ownerType": "event",
+                "ownerId": "h1790547269571",
+                "label": "Event",
+                "detail": "Event \u00b7 Accepted \u00b7 Member",
+                "status": "accepted",
+                "role": "Member",
+                "actionAtIso": "2026-09-27T22:18:23.946610091Z"
+              }
+            ],
+            "revision": "2026-09-27T22:18:23.946610091Z",
+            "attendanceStatus": null,
+            "checkedInAtIso": null,
+            "checkedInByUserId": null,
+            "checkedInTicketId": null,
+            "managerGrantedByUserId": null,
+            "organizerOnly": false
+          }
+        ]
+      },
+      {
+        "path": "/api/activities/chats/by-id/h1790547269571?userId=f02809260000000000000001",
+        "status": 200,
+        "body": {
+          "id": "h1790547269571",
+          "avatar": "IA",
+          "title": "QA Isolation Event A",
+          "lastMessage": "Isolation A: accepted participant chat check.",
+          "lastSenderId": "f02809260000000000000012",
+          "memberIds": [
+            "f02809260000000000000011",
+            "f02809260000000000000012"
+          ],
+          "members": [
+            {
+              "id": "f02809260000000000000011",
+              "name": "Isolation Alex",
+              "initials": "IA",
+              "gender": "man",
+              "imageUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp",
+              "status": "accepted"
+            },
+            {
+              "id": "f02809260000000000000012",
+              "name": "Isolation Eszter",
+              "initials": "IE",
+              "gender": "woman",
+              "imageUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+              "status": "accepted"
+            }
+          ],
+          "unread": 0,
+          "dateIso": "2026-09-27T22:19:31.971477249Z",
+          "contextStartAtIso": "2026-09-29T16:00:00Z",
+          "contextEndAtIso": "2026-09-29T18:00:00Z",
+          "channelType": "mainEvent",
+          "ownerId": "h1790547269571",
+          "distanceKm": null,
+          "distanceMetersExact": null,
+          "metrics": null,
+          "supportCase": null,
+          "eventId": "h1790547269571",
+          "subEventId": "",
+          "groupId": "",
+          "ownerStatus": "A",
+          "revision": 4,
+          "navigationContext": null
+        }
+      },
+      {
+        "path": "/api/activities/chats/h1790547269571/messages?userId=f02809260000000000000001&limit=10",
+        "status": 200,
+        "body": {
+          "items": [
+            {
+              "id": "63523601-5033-39cc-860f-9ea74830436b",
+              "clientId": "pending:f02809260000000000000012:1790547571952:1",
+              "senderId": "f02809260000000000000012",
+              "senderName": "Isolation Eszter",
+              "senderInitials": "IE",
+              "senderGender": "woman",
+              "senderImageUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+              "text": "Isolation A: accepted participant chat check.",
+              "sentAtIso": "2026-09-27T22:19:31.971477249Z",
+              "mine": false,
+              "readBy": [
+                {
+                  "id": "f02809260000000000000011",
+                  "initials": "IA",
+                  "gender": "man",
+                  "imageUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+                }
+              ],
+              "deletedAtIso": "",
+              "deletedByUserId": "",
+              "deletedByName": "",
+              "editedAtIso": "",
+              "pinnedAtIso": "",
+              "pinnedByUserId": "",
+              "replyTo": null,
+              "reactions": [],
+              "attachments": []
+            },
+            {
+              "id": "18c747ef-941a-4905-9d5c-7fb44451ec4a",
+              "clientId": "member-joined",
+              "senderId": "",
+              "senderName": "System",
+              "senderInitials": "MS",
+              "senderGender": "system",
+              "senderImageUrl": "",
+              "text": "Isolation Eszter joined the event.",
+              "sentAtIso": "2026-09-27T22:18:24.007979866Z",
+              "mine": false,
+              "readBy": [
+                {
+                  "id": "f02809260000000000000012",
+                  "initials": "IE",
+                  "gender": "woman",
+                  "imageUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp"
+                },
+                {
+                  "id": "f02809260000000000000011",
+                  "initials": "IA",
+                  "gender": "man",
+                  "imageUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp"
+                }
+              ],
+              "deletedAtIso": "",
+              "deletedByUserId": "",
+              "deletedByName": "",
+              "editedAtIso": "",
+              "pinnedAtIso": "",
+              "pinnedByUserId": "",
+              "replyTo": null,
+              "reactions": [],
+              "attachments": []
+            }
+          ],
+          "total": 2,
+          "nextCursor": null,
+          "read": null,
+          "notificationUnread": 0
+        }
+      },
+      {
+        "path": "/api/activities/chats/h1790547269571/members/page?userId=f02809260000000000000001&limit=10",
+        "status": 200,
+        "body": {
+          "items": [
+            {
+              "id": "f02809260000000000000011",
+              "name": "Isolation Alex",
+              "initials": "IA",
+              "gender": "man",
+              "imageUrl": "/media/public?key=images/demo-profiles/af0436815ab38f4864dd1e24/photo-01/large.webp",
+              "status": "accepted"
+            },
+            {
+              "id": "f02809260000000000000012",
+              "name": "Isolation Eszter",
+              "initials": "IE",
+              "gender": "woman",
+              "imageUrl": "/media/public?key=images/demo-profiles/9f3b3f085e23af6c89dbc432/photo-01/large.webp",
+              "status": "accepted"
+            }
+          ],
+          "total": 2,
+          "nextCursor": null
+        }
+      }
+    ]
+  },
+  "authorizedMutation": [
+    {
+      "action": "unpublish",
+      "status": 200,
+      "body": {
+        "sourceId": "h1790547269571",
+        "slotSourceId": null,
+        "action": "unpublish",
+        "membershipStatus": "dr",
+        "pendingReason": null,
+        "acceptedMembers": 2,
+        "pendingMembers": 0,
+        "capacityTotal": 5,
+        "full": false,
+        "paymentSessionId": null,
+        "changed": true,
+        "reason": null,
+        "counterDelta": null,
+        "paymentStatus": null,
+        "paymentUrl": null
+      }
+    },
+    {
+      "action": "publish",
+      "status": 200,
+      "body": {
+        "sourceId": "h1790547269571",
+        "slotSourceId": null,
+        "action": "publish",
+        "membershipStatus": "a",
+        "pendingReason": null,
+        "acceptedMembers": 2,
+        "pendingMembers": 0,
+        "capacityTotal": 5,
+        "full": false,
+        "paymentSessionId": null,
+        "changed": true,
+        "reason": null,
+        "counterDelta": null,
+        "paymentStatus": null,
+        "paymentUrl": null
+      }
+    }
+  ],
+  "noWriteOracle": {
+    "at": "2026-09-27T22:37:25.034Z",
+    "result": [
+      {
+        "collection": "events",
+        "beforeCount": 1,
+        "afterCount": 1,
+        "unchanged": true
+      },
+      {
+        "collection": "activityMembers",
+        "beforeCount": 6,
+        "afterCount": 6,
+        "unchanged": true
+      },
+      {
+        "collection": "chats",
+        "beforeCount": 2,
+        "afterCount": 2,
+        "unchanged": true
+      },
+      {
+        "collection": "chatMessages",
+        "beforeCount": 2,
+        "afterCount": 2,
+        "unchanged": true
+      },
+      {
+        "collection": "eventTickets",
+        "beforeCount": 0,
+        "afterCount": 0,
+        "unchanged": true
+      },
+      {
+        "collection": "activityResources",
+        "beforeCount": 0,
+        "afterCount": 0,
+        "unchanged": true
+      },
+      {
+        "collection": "userNotifications",
+        "beforeCount": 4,
+        "afterCount": 4,
+        "unchanged": true
+      }
+    ],
+    "counters": [
+      {
+        "userId": "f02809260000000000000001",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 0,
+            "all": 0,
+            "drafts": 0,
+            "hosting": 0,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "notifications": 1
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 0,
+            "all": 0,
+            "drafts": 0,
+            "hosting": 0,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "notifications": 1
+        }
+      },
+      {
+        "userId": "f02809260000000000000002",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 0,
+            "all": 0,
+            "drafts": 0,
+            "hosting": 0,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "notifications": 0
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 0,
+            "all": 0,
+            "drafts": 0,
+            "hosting": 0,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "notifications": 0
+        }
+      },
+      {
+        "userId": "f02809260000000000000003",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        }
+      },
+      {
+        "userId": "f02809260000000000000004",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        }
+      },
+      {
+        "userId": "f02809260000000000000011",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 1,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 0,
+            "all": 1,
+            "drafts": 0,
+            "hosting": 1,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "chat": {
+            "all": 0,
+            "event": 0
+          }
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 1,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 0,
+            "all": 1,
+            "drafts": 0,
+            "hosting": 1,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "chat": {
+            "all": 0,
+            "event": 0
+          }
+        }
+      },
+      {
+        "userId": "f02809260000000000000012",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 1,
+          "hosting": 0,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 1,
+            "all": 1,
+            "drafts": 0,
+            "hosting": 0,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "chat": {
+            "all": 0,
+            "event": 0
+          }
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 1,
+          "hosting": 0,
+          "asset": {
+            "tickets": 0
+          },
+          "event": {
+            "active": 1,
+            "all": 1,
+            "drafts": 0,
+            "hosting": 0,
+            "invitations": 0,
+            "pending": 0,
+            "trash": 0,
+            "watchlist": 0
+          },
+          "tickets": 0,
+          "chat": {
+            "all": 0,
+            "event": 0
+          }
+        }
+      },
+      {
+        "userId": "f02809260000000000000021",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        }
+      },
+      {
+        "userId": "f02809260000000000000022",
+        "unchanged": true,
+        "before": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        },
+        "after": {
+          "game": 0,
+          "chats": 0,
+          "invitations": 0,
+          "events": 0,
+          "hosting": 0
+        }
+      }
+    ],
+    "unchanged": true
+  },
+  "cleanup": "Own block2-authorized-control exactly restored; outsider browser closed.",
+  "java": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "method": "Existing watcher main classes; test-only javac and cached JUnit Launcher. Initial new-test mock stubs corrected, rerun10/10."
+  }
+}

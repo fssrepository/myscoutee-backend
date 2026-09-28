@@ -17,6 +17,10 @@ config:
   operator-bootstrap-password-sha256: ${OPERATOR_BOOTSTRAP_PASSWORD_SHA256:}
   operator-bootstrap-allow-insecure: ${OPERATOR_BOOTSTRAP_ALLOW_INSECURE:true}
   firebase-enabled: ${FIREBASE_ENABLED:false}
+  mcp-demo-enabled: true
+  mcp-manual-redirect-uris:
+    - http://127.0.0.1:6274/oauth/callback
+    - http://localhost:6274/oauth/callback
   firebase-service-account-path: ${FIREBASE_SERVICE_ACCOUNT_PATH:./secrets/firebase-service-account.json}
   chat-only-mode: ${CHAT_ONLY_MODE:false}
   member-user: ${MEMBER_USER:member1@myscoutee.local}

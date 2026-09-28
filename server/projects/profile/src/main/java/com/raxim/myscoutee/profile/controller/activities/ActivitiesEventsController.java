@@ -125,7 +125,12 @@ public class ActivitiesEventsController {
     public EventDetailDto detail(
             @RequestParam("userId") String userId,
             @RequestParam("eventId") String eventId) {
-        return activitiesEventsService.loadEventDetailById(userId, eventId);
+        EventDetailDto detail = activitiesEventsService.loadEventDetailById(userId, eventId);
+        if (detail == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.NOT_FOUND, "Event not found.");
+        }
+        return detail;
     }
 
     @GetMapping("/invitation-context")
@@ -162,8 +167,7 @@ public class ActivitiesEventsController {
     @RequiresPolicy(
             key = AccessPolicyKeys.EVENT_PUBLISH,
             subject = "#actorUserId",
-            resourceId = "#request?.sourceId()",
-            skipWhenAuthenticationOptional = true)
+            resourceId = "#request?.sourceId()")
     public EventParticipationActionResultDto publish(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.publish(request);
     }
@@ -177,8 +181,7 @@ public class ActivitiesEventsController {
     @RequiresPolicy(
             key = AccessPolicyKeys.EVENT_UNPUBLISH,
             subject = "#actorUserId",
-            resourceId = "#request?.sourceId()",
-            skipWhenAuthenticationOptional = true)
+            resourceId = "#request?.sourceId()")
     public EventParticipationActionResultDto unpublish(@RequestBody EventActionRequestDto request) {
         return activitiesEventsService.unpublish(request);
     }
