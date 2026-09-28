@@ -43,6 +43,9 @@ Observation: repeated user corrections reject hiding the avatar or a parent
 popup when another popup opens. Keep the underlying surface mounted and visible;
 reuse the shared popup layers and translucent backdrop for coverage and pointer
 blocking. Do not add popup-specific opacity, visibility or parent-close rules.
+The side menu is a navigation surface: the user explicitly requires it to close
+when a popup or confirmation opens. This must not hide the avatar or close other
+popups underneath.
 
 Promotion evidence needed: verify nested popup state and backdrop behavior across
 additional independent flows.
