@@ -1,6 +1,9 @@
 # MyScoutee Packaging
 
-The next release is **1.3.0** (`v1.3.0`). Production packaging includes the MCP
+The current Debian package release is **1.3.0** (`v1.3.0`). The
+[1.3.1 frontend patch](../guides/releases/v1.3.1.md) publishes only an nginx image
+compatible with that package; it does not build or install a new DEB.
+Production packaging includes the MCP
 image as the seventh managed image and publishes its anonymous help endpoint at
 `/mcp` through nginx. See [release preparation](../guides/releases/v1.3.0.md)
 for the older-updater compatibility boundary and remaining qualification gates.
