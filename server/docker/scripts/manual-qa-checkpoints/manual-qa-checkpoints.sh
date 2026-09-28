@@ -539,6 +539,7 @@ run_scenario() {
   fi
 
   case "${scenario}" in
+    deploy-external-config) scenario_script="${SCRIPT_DIR}/scenarios/deploy-external-config-checkpoints.js" ;;
     integration-api-group) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-group-checkpoints.js" ;;
     mcp-oauth) scenario_script="${SCRIPT_DIR}/scenarios/mcp-oauth-checkpoints.js" ;;
     group-isolation) scenario_script="${SCRIPT_DIR}/scenarios/group-isolation-checkpoints.js" ;;
@@ -625,6 +626,12 @@ run_scenario() {
 
   case "${target_db}" in
     demo_db|e2e_db) ;;
+    production_db)
+      [[ "${checkpoint_id}" == DEPLOY-EXTERNAL-CONFIG-001 \
+        && ( "${scenario}" == deploy-external-config || "${scenario}" == browser-sessions ) \
+        && "$(systemd-detect-virt 2>/dev/null)" == vmware ]] \
+        || fail "Configured production QA requires the exact deployment checkpoint on a VMware guest."
+      ;;
     *) fail "MANUAL_QA_DB must be exactly demo_db or e2e_db (got '${target_db}')." ;;
   esac
   case "${mongo_mode}" in
@@ -656,6 +663,7 @@ run_scenario() {
       -e "MANUAL_QA_COMMAND=${command}" \
       -e "MANUAL_QA_SCENARIO=${scenario}" \
       -e "MANUAL_QA_DB=${target_db}" \
+      -e "MANUAL_QA_DEPLOYMENT_KIND=$([[ "${target_db}" == production_db ]] && printf vmware || true)" \
       -e "MANUAL_QA_DELAY_SECONDS=${delay_seconds}" \
       -e "MANUAL_QA_CREATOR_USER_ID=${MANUAL_QA_CREATOR_USER_ID:-}" \
       -e "MANUAL_QA_INVITEE_USER_ID=${MANUAL_QA_INVITEE_USER_ID:-}" \
@@ -800,6 +808,10 @@ PY
   event-rating:stage|event-rating:status|event-rating:ready|event-rating:repair-rate-counters|event-rating:reset)
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
+    ;;
+  deploy-external-config:stage|deploy-external-config:status|deploy-external-config:capture|deploy-external-config:reset)
+    { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = DEPLOY-EXTERNAL-CONFIG-001 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3" "${4:-}"
     ;;
   integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:restore-maya-location|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|integration-api-group:prepare-issuer-workspaces|integration-api-group:remove-issuer-admin|integration-api-group:restore-issuer-admin|integration-api-group:prepare-paid-event|integration-api-group:prepare-private-controls|integration-api-group:prepare-attribution-denials|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
     [ "$#" -eq 3 ] && [ "$3" = "INTEGRATION-API-GROUP-001" ] || { usage >&2; exit 2; }

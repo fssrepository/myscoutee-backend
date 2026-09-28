@@ -1,0 +1,264 @@
+{
+  "recordedAt": "2026-09-28T04:22:24.100321+00:00",
+  "scope": "VMware runtime patch; final DEB and device QA not yet qualified",
+  "version": "1.3.0",
+  "installedDebVersion": "1.0.0",
+  "seedCatalogsClassified": 42,
+  "productionSeedCollections": [
+    {
+      "collection": "accessPolicyDefinitions",
+      "seed": 50,
+      "live": 50,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "adminMonitoring",
+      "seed": 1,
+      "live": 1,
+      "missing": 0,
+      "changed": 1,
+      "fields": {
+        "generatedAtIso": 1,
+        "lastTelemetryStreamId": 1,
+        "counters": 1,
+        "categoryCounters": 1,
+        "nodeCounters": 1
+      }
+    },
+    {
+      "collection": "adminStats",
+      "seed": 1,
+      "live": 1,
+      "missing": 0,
+      "changed": 1,
+      "fields": {
+        "generatedAtIso": 1,
+        "healthScore": 1,
+        "lastTelemetryStreamId": 1,
+        "counters": 1,
+        "topCities": 1,
+        "topTopics": 1,
+        "eventTypes": 1,
+        "dailyActivity": 1,
+        "dailyActiveUsers": 1,
+        "activeUsers": 1,
+        "userFirstSeen": 1,
+        "userActivityCounts": 1,
+        "profileFillRates": 1,
+        "knownEvents": 1,
+        "activeEvents": 1,
+        "knownAssets": 1,
+        "activeAssets": 1,
+        "profileStatusCounts": 1,
+        "profileVisibilityCounts": 1,
+        "activeProfileUsers": 1,
+        "graphHealthScore": 1,
+        "graphHealthLabelKey": 1,
+        "graphInsightKey": 1,
+        "graphMetrics": 1,
+        "graphSignals": 1,
+        "dailyGraphActivity": 1,
+        "revenueMetrics": 1,
+        "revenueAssetCategories": 1,
+        "dailyRevenueActivity": 1
+      }
+    },
+    {
+      "collection": "affinityConfigs",
+      "seed": 1,
+      "live": 1,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "appSettings",
+      "seed": 1,
+      "live": 1,
+      "missing": 0,
+      "changed": 1,
+      "fields": {
+        "updatedDate": 1
+      }
+    },
+    {
+      "collection": "communityProviders",
+      "seed": 2,
+      "live": 2,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "countryPartitions",
+      "seed": 4,
+      "live": 4,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "deploymentConfigurations",
+      "seed": 1,
+      "live": 1,
+      "missing": 0,
+      "changed": 1,
+      "fields": {
+        "version": 1,
+        "branding": 1,
+        "payment": 1,
+        "firebase": 1,
+        "updatedAt": 1
+      }
+    },
+    {
+      "collection": "emailCampaignRules",
+      "seed": 3,
+      "live": 3,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "emailTemplates",
+      "seed": 5,
+      "live": 5,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "exchangeRates",
+      "seed": 1,
+      "live": 66,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "helpCenterRevisions",
+      "seed": 36,
+      "live": 36,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "i18n_bundles",
+      "seed": 2,
+      "live": 2,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "i18n_messages",
+      "seed": 8066,
+      "live": 8066,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "ideaPosts",
+      "seed": 10,
+      "live": 10,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "notificationRuleConfigs",
+      "seed": 14,
+      "live": 14,
+      "missing": 0,
+      "changed": 14,
+      "fields": {
+        "runState": 14,
+        "runHistory": 14,
+        "updatedDate": 14,
+        "updatedUser": 14
+      }
+    },
+    {
+      "collection": "notificationTemplates",
+      "seed": 5,
+      "live": 5,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "operatorRegistryEndpoints",
+      "seed": 0,
+      "live": 0,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "paymentProviders",
+      "seed": 2,
+      "live": 2,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    },
+    {
+      "collection": "scheduledMessageTasks",
+      "seed": 1,
+      "live": 4,
+      "missing": 0,
+      "changed": 0,
+      "fields": {}
+    }
+  ],
+  "frontend": {
+    "filesChecked": 420,
+    "missing": 0,
+    "changed": 0,
+    "extraRuntimeFiles": [
+      "50x.html"
+    ],
+    "gitSha": "0f723f2d23a0"
+  },
+  "translations": {
+    "en": {
+      "sourceMessages": 4033,
+      "runtimeMessages": 4033,
+      "missing": 0,
+      "changed": 0,
+      "extra": 0,
+      "version": "2026.09.28.en.8"
+    },
+    "hu": {
+      "sourceMessages": 4033,
+      "runtimeMessages": 4033,
+      "missing": 0,
+      "changed": 0,
+      "extra": 0,
+      "version": "2026.09.28.hu.8"
+    }
+  },
+  "backend": {
+    "jarSha256": "92d9e838cab2cef2f8a555d9e06ae91628ee48d2c0987961bdb3771a42996baa",
+    "sourceResourceFiles": 4,
+    "missing": 0,
+    "changed": 0,
+    "devtoolsPackaged": false
+  },
+  "checks": {
+    "composeDefaultsAndExplicitOverrides": "PASS",
+    "helpMigrationRealMongo": "PASS",
+    "orderedMigrationChainRealMongo": "PASS",
+    "nginxTransportPolicy": "PASS",
+    "productionQaIsolation": "PASS"
+  },
+  "limitations": [
+    "No device checklist assertion executed yet",
+    "No final DEB built/installed",
+    "No Netcup mutation or release publication"
+  ]
+}

@@ -11331,9 +11331,13 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
 
-### DEPLOY-EXTERNAL-CONFIG-001 — deferred by user2026-09-27
+### DEPLOY-EXTERNAL-CONFIG-001 — VMware/Android preparation2026-09-28
 
 [Dedicated checklist](../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
+2026-09-28: full-flow testing delegated on the physical Android phone. Production runtime/parity preparation is recorded in [the audit](../../qualification/evidence/PROD_PARITY_20260928.md); blocks1–6 remain NOT RUN. iOS is isolated as block7 and **IGNORED** at the user's explicit request because no device is available. It does not gate QA closure and is not a PASS or an unsupported-platform claim.
+
+Historical scope transfer2026-09-27:
+
 Real Firebase entry/location and externally configured MCP OAuth/client callbacks
 moved out of the Group campaign. DEFERRED / NOT RUN; configure later. The existing
 DEPLOY-FIREBASE-LIFECYCLE-001 pending-invitation-policy assertion is retained in

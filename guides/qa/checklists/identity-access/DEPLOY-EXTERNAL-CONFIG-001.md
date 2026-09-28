@@ -95,16 +95,31 @@ state and the expected runtime version; do not use another testcase's session.
    installation action is hidden. It must match the deployed revision.
 3. Remove only this run's installation/session and restore captured settings.
 
-## 6. Physical-device permission recovery
+## 6. Android physical-device permission recovery
 
-Prepare separate controlled Android and iOS devices for this test origin, with
-this run's account and an explicit snapshot of browser/OS permission settings.
+Prepare a controlled Android device for this test origin, with this run's account
+and an explicit snapshot of browser/OS permission settings.
 
 1. Deny the applicable permission in browser/OS settings, then open Setup.
    Change the external setting as described by the platform guidance, return
    to MyScoutee and retry through the normal UI.
-2. Verify the actual permission outcome on each device, separately for Android
-   and iOS; retain the observed denied and successful retry states.
+2. Verify the actual Android permission outcome; retain the observed denied and
+   successful retry states.
+3. Restore the recorded permissions, account state and test installation.
+
+## 7. iOS physical-device permission recovery — IGNORED
+
+Ignored at the user's request: no iOS device is available. This block does not
+gate completion of blocks1–6 and has no PASS evidence.
+
+For a future explicitly resumed iOS run, prepare a controlled iPhone or iPad for this test origin, with this run's
+account and an explicit snapshot of Safari/OS permission settings.
+
+1. Deny the applicable permission in Safari/OS settings, then open Setup.
+   Follow the iOS guidance to change the external setting, return to MyScoutee
+   and retry through the normal UI.
+2. Verify the actual iOS permission outcome and retain the observed denied and
+   successful retry states.
 3. Restore the recorded permissions, account state and test installation.
 
 ## Restaging, checkpoints and cleanup

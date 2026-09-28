@@ -8,6 +8,13 @@ import { once } from 'node:events';
 import { createInterface } from 'node:readline';
 const [action, ...args] = process.argv.slice(2);
 const port = Number(process.env.QA_PHONE_CDP_PORT || 36087);
+const origin = new URL(process.env.QA_PHONE_ORIGIN || 'http://localhost:8080').origin;
+if (!['localhost', '127.0.0.1'].includes(new URL(origin).hostname)) throw Error('Phone QA requires an explicitly forwarded loopback origin');
+const devicePort = Number(new URL(origin).port || (origin.startsWith('https:') ? 443 : 80));
+const hostPort = Number(process.env.QA_PHONE_HOST_PORT || 80);
+if (!Number.isInteger(hostPort) || hostPort < 1 || hostPort > 65535) throw Error('Invalid phone transport port');
+const deviceMapping = `tcp:${devicePort}`, hostMapping = `tcp:${hostPort}`;
+const mappingSuffix = `${deviceMapping} ${hostMapping}`;
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
 const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
@@ -64,12 +71,12 @@ if (action === 'keep-screen-awake' || action === 'restore-screen') {
 if (action === 'prepare-transport') {
   if (existsSync(transportSnapshot)) throw Error('Restore the retained offline boundary before preparing transport');
   const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
-  if (mappings.some(line => !line.endsWith('tcp:8080 tcp:80'))) throw Error('Unexpected reverse mapping; preserve existing transport');
+  if (mappings.some(line => !line.endsWith(mappingSuffix))) throw Error('Unexpected reverse mapping; preserve existing transport');
   const forwards = execFileSync('adb', ['forward', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   if (forwards.some(line => line.includes(` tcp:${port} `) && !line.endsWith('localabstract:chrome_devtools_remote'))) {
     throw Error('QA CDP port is owned by another forward');
   }
-  execFileSync('adb', ['reverse', 'tcp:8080', 'tcp:80']);
+  execFileSync('adb', ['reverse', deviceMapping, hostMapping]);
   execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
   console.log('Prepared the configured QA reverse tunnel and Chrome inspection forward; device data/radios unchanged.');
   process.exit(0);
@@ -78,8 +85,8 @@ if (action === 'transport-offline') {
   if (existsSync(transportSnapshot)) throw Error('QA transport already has a retained restore point');
   const mappings = execFileSync('adb', ['reverse', '--list'], { encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   if (mappings.length !== 1 || !mappings[0].endsWith('tcp:8080 tcp:80')) throw Error('Expected only the configured QA reverse mapping');
-  writeFileSync(transportSnapshot, JSON.stringify({ local: 'tcp:8080', remote: 'tcp:80', cdpPort: port }));
-  execFileSync('adb', ['reverse', '--remove', 'tcp:8080']);
+  writeFileSync(transportSnapshot, JSON.stringify({ local: deviceMapping, remote: hostMapping, cdpPort: port }));
+  execFileSync('adb', ['reverse', '--remove', deviceMapping]);
   // Close retained HTTP sockets; the phone radios and Chrome data stay intact.
   execFileSync('adb', ['reconnect'], { stdio: 'pipe' });
   execFileSync('adb', ['wait-for-device'], { timeout: 15000 });
@@ -88,7 +95,7 @@ if (action === 'transport-offline') {
 }
 if (action === 'transport-online') {
   const saved = JSON.parse(readFileSync(transportSnapshot, 'utf8'));
-  if (saved.local !== 'tcp:8080' || saved.remote !== 'tcp:80' || saved.cdpPort !== port) throw Error('Unexpected QA restore point');
+  if (saved.local !== deviceMapping || saved.remote !== hostMapping || saved.cdpPort !== port) throw Error('Unexpected QA restore point');
   execFileSync('adb', ['reverse', saved.local, saved.remote]);
   execFileSync('adb', ['forward', `tcp:${port}`, 'localabstract:chrome_devtools_remote']);
   unlinkSync(transportSnapshot);
@@ -98,7 +105,7 @@ if (action === 'launch-browser') {
   const route = args[0] || '/entry';
   if (!route.startsWith('/') || route.startsWith('//')) throw Error('Only QA-relative paths allowed');
   execFileSync('adb', ['shell', 'am', 'start', '-a', 'android.intent.action.VIEW',
-    '-d', `http://localhost:8080${route}`, 'com.android.chrome'], { stdio: 'pipe' });
+    '-d', `${origin}${route}`, 'com.android.chrome'], { stdio: 'pipe' });
   console.log('Opened the local QA origin in Chrome; existing browser storage retained.');
   process.exit(0);
 }
@@ -109,7 +116,7 @@ if (action === 'launch' || action === 'cold-launch') {
   console.log('Launched the installed local QA PWA.'); process.exit(0);
 }
 const targets = await fetch(`http://127.0.0.1:${port}/json/list`).then(r => r.json());
-const pages = targets.filter(p => p.type === 'page' && p.url.startsWith('http://localhost:8080/'));
+const pages = targets.filter(p => p.type === 'page' && p.url.startsWith(`${origin}/`));
 const target = args.includes('--target') ? pages.find(p => p.id === args[args.indexOf('--target') + 1]) : pages[0];
 if (!target) throw Error('No existing local QA page');
 if (action === 'close-qa-page') {
@@ -160,8 +167,8 @@ try {
     }
     const before = await evaluate(`navigator.permissions.query({name:${JSON.stringify(name)}}).then(p=>p.state)`);
     const permission = name === 'clipboard-read' ? { name: 'clipboard-read', allowWithoutSanitization: true } : { name };
-    await send('Browser.setPermission', { permission, setting, origin: 'http://localhost:8080' });
-    console.log(JSON.stringify({ origin: 'http://localhost:8080', name, before, setting }));
+    await send('Browser.setPermission', { permission, setting, origin });
+    console.log(JSON.stringify({ origin, name, before, setting }));
     console.log('Permission override retained. Send stop to detach and restore the native setting.');
     const input = createInterface({ input: process.stdin });
     await new Promise(resolve => {

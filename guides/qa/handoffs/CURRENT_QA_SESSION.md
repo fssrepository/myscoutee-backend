@@ -86,18 +86,17 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: INTEGRATION-API-GROUP-001
-checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: CLOSED / PASS —7/7 ordered Group API blocks; dev HTTP/simulator and recorded local key/help scope.
-next_action: No active test or fixture. Group API execution and scoped cleanup complete; next independent testcase not started. Real vendor connection remains standalone post-deployment smoke.
-execution_authority: User explicitly requested continuing the automatic test on 2026-09-28. Full-flow Group API testing delegated; operate managed browsers and API in checklist order, announce each point/result, repair and retest failures.
-execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
-fixture_phase: not-staged; exact integration-api-group restore, pre-launch sessions and fresh-user media cleanup verified.
-runtime: Existing frontend-sync/backend owners unchanged; original HTTP environment.dev.ts restored. Optional Inspector stopped; checkpoint managed browsers closed and isolated storage removed.
-last_completed: INTEGRATION-API-GROUP-001 blocks1–7 PASS in recorded scope; transactional evidence/ledger own details. Earlier Isolation remains closed.
-mutation_contract: Await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through existing stores to retained lists/cards/badges. Failure retains dialog/error. Keep underlying popups open. No reload to obtain a mutation result.
-resume_gate: No Group API fixture or managed session remains. Start any next independent testcase only through its own versioned fixture/launcher after confirming scope.
-
+checkpoint: DEPLOY-EXTERNAL-CONFIG-001
+checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
+substage: PREPARATION — VMware production runtime1.3.0 patched; own phone fixture not staged.
+next_action: Prepare the independent configured VMware fixture and Android launcher, then execute blocks1–6 in order with real Firebase login and Inspector. Block7 iOS is IGNORED at user request and does not gate closure.
+execution_authority: User explicitly delegated the complete testcase on their Android phone on 2026-09-28. Browser/device actions and in-scope fixes/retests are authorized.
+execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
+fixture_phase: not-staged; no provider test identities or phone transport created yet.
+runtime: VMware192.168.153.129 has production1.3.0 images and migrations through008; installed DEB still1.0.0. Active Operator Firebase credentials retained. Host dev stack stopped. Android14 connected.
+last_completed: Production source/runtime parity and focused migration tests PASS; no device checklist step PASS yet. Prior Group API case remains closed.
+release_sequence: Finish runtime QA; build final DEB and verify one additional VMware upgrade; release only after qualification. Netcup upgrade waits for the user's later instruction.
+resume_gate: Read-only verify VMware health/version, current Git diff and phone transport before fixture mutation. Preserve VM backup and runtime snapshots under /var/lib/myscoutee/qa-fixtures/release-1.3.0.
 ```
 
 ## Archived pair-QA resume point — 2026-09-17

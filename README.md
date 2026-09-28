@@ -88,4 +88,4 @@ is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
 committed deltas, failed-save retry, immediate list removal and stored-state poll.
 Its isolated fixture and browser sessions are cleaned.
 
-Firebase and configured-provider OAuth checks are tracked separately as **DEFERRED / NOT RUN** in [deployment integration QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md); they do not block the active Group campaign.
+Firebase and configured-provider OAuth checks are **IN PROGRESS — VMware/Android preparation** in [deployment integration QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md). Checklist blocks1–6 remain NOT RUN; iOS block7 is **IGNORED** at user request and does not gate closure.
