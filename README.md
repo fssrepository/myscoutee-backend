@@ -63,8 +63,9 @@ belongs to independent [deployment QA](guides/qa/checklists/identity-access/DEPL
 Real ChatGPT/Claude/Codex connection and conversation acceptance is a separate
 [post-deployment smoke](guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md), outside the QA matrix.
 The [participant-link API](guides/qa/checklists/api/INTEGRATION-API-GROUP-001.md)
-baseline is ready for ordered execution from block1 (0/7 completed). MCP key/OAuth
-checks are included in block7; supporting development probes do not close that case.
+is **CLOSED / PASS:7/7 blocks** in the recorded dev HTTP/simulator scope, including
+real Inspector OAuth and private reads. Local key/help checks passed; exact fixture,
+session and media cleanup is complete. See the [execution evidence](guides/qa/evidence/INTEGRATION-API-GROUP-001-20260928.md) for boundaries.
 See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
 domain order; participant-link coverage belongs to API test. Group evidence does not close the separate API journey.
 

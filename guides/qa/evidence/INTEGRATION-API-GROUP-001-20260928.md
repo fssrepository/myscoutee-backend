@@ -1,7 +1,7 @@
 # INTEGRATION-API-GROUP-001 — ordered execution, 2026-09-28
 
-Status: blocks1–6 PASS; 6/7 blocks completed in this independent run.
-Current point:7.2, cancellation/reconnect and separate OAuth permissions;7.1 PASS.
+Status: CLOSED / PASS in the recorded dev HTTP/simulator and local UI scope.
+All 7/7 ordered blocks completed; final fixture/session/media cleanup verified.
 
 ## Execution contract
 
@@ -40,7 +40,7 @@ case; this supersedes the initial user-controlled startup handoff.
 | 4 | PASS | B→A base binding and blocked-claim transport retry; exact membership/profile counts. |
 | 5 | PASS | Event free/paid/ended controls; private-profile 3×3 matrix; revoked key401; exact fixture/media/session cleanup. |
 | 6 | PASS | Attribution, paid invitation EUR5 and cash EUR7 exclusion; replay and persisted counters verified. |
-| 7 | IN PROGRESS | Current7.1 external Inspector OAuth; subsequent checks and final cleanup remain. |
+| 7 | PASS | Real Inspector OAuth/private read, profile-bound capabilities, retained UI, local/HTTP EN/HU help, six unpublished packages and exact cleanup. |
 
 The application and frontend watchers own compilation. No additional stack,
 server or main build was started. Latest UI build and seed parity passed.
@@ -424,3 +424,48 @@ MCP Advanced / MCP Haladó was verified in the browser. i18n source+all3Mongo
 seeds audit PASS:8066messages. Existing seed watcher imported the changed bundles;
 no live transaction collections were replaced. Original fresh-seed/update checks
 remain in0.3; this run verifies hot-import and browser cache-version refresh.
+
+### Avatar loading and affiliate action corrections
+
+Actual local reload reproduced the avatar circle beginning on its left side even
+with normalized dash offset100. Scaled SVG plus non-scaling-stroke caused the
+incorrect dash rendering. The shared Indicator now reuses its existing size
+observer for circular rings, matches the SVG geometry to the measured control and
+keeps the 3px stroke without vector-effect. Actual local reload/screenshot verified
+the initial arc starts at 12 o'clock clockwise. Existing frontend-sync compiled
+successfully. Exact original HTTP environment.dev.ts restored and watcher synced
+at05:37:27; no local-mode fallback remains in runtime configuration.
+
+Affiliate revenue action reuses the green menu palette (wallet icon retained).
+Actual HTTP browser computed style confirmed green class/background/text after
+owner watcher sync at05:40:18. No action semantics changed.
+
+### 7.7 Unpublished packages PASS (structural validation)
+
+Ran existing make plugin for local, remote-help and remote-private URLs; each
+produced separate OpenAI/Claude 1.3.0 ZIPs. All six archives passed integrity,
+safe relative paths, JSON parsing, exact shared skill/original logo bytes, expected
+transport URL and OpenAI help-only Read capability checks. Credentials are not
+bundled; local configuration forwards environment variable names only. Artifact
+hashes are retained in the ordered JSON. No vendor validator, installation,
+publication or model-selected tool call is claimed. Those live-client boundaries
+remain in the standalone post-deployment smoke.
+
+### 7.8 Final cleanup PASS
+
+Normal browser confirmations revoked the remaining Base API key, Base manual MCP
+key/two OAuth permissions and two A manual MCP keys. Fresh Event's saved Barion
+card ending 4444 was deleted through the normal provider-backed UI; retained list
+showed No saved cards and persisted status was deleted before fixture cleanup.
+Stopped only this run's optional Inspector; ports 6274/6277 have no listeners.
+Versioned launcher closed both managed browsers and removed their isolated storage.
+Versioned reset restored the pre-launch session snapshot before exact fixture
+restore, and removed exact fresh-user media paths. Reset reported exactRestore=true.
+Post-reset status is not-staged with zero owned users, memberships, invitations,
+bindings, events, checkout items, payments/cards/registrations, affiliate records
+and workspace profiles. The reset also asserts no owned records in each captured
+collection, including MCP authorizations/registrations; unrelated namespaces are
+outside its selectors. Private run credentials and temporary captures removed.
+
+No independent deployment/Firebase/device or real ChatGPT/Claude acceptance was
+performed by this checkpoint; earlier closed evidence remains unchanged.

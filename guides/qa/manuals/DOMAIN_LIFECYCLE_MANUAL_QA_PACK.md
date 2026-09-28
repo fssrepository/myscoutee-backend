@@ -11438,3 +11438,21 @@ cleanup complete. [Execution and boundaries](../evidence/GROUP-ISOLATION-001-202
 Pending mutation modal cannot close under the established save contract; prior
 underlying-control switch attempts are not cross-scope mutation evidence.
 Full Local NOT RUN. Next API journey requires its own development and execution.
+
+## Group participant API closure — 2026-09-28
+
+INTEGRATION-API-GROUP-001 is **CLOSED / PASS: 7/7 ordered blocks** in the recorded
+dev HTTP/simulator scope. Normal registration and existing-account admission,
+workspace isolation, paid invitation checkout/affiliate attribution, real external
+Inspector OAuth/private reads, manual MCP keys and denial/retry controls passed.
+Local key persistence/profile isolation and both EN/HU help surfaces also passed.
+Six unpublished OpenAI/Claude package variants passed structural validation;
+this does not claim vendor installation or model-selected tool execution.
+
+The saved provider card and remaining keys/grants were revoked, optional Inspector
+and managed browsers stopped, and exact fixture/pre-launch-session/media cleanup
+verified. Earlier planning NOT RUN entries above are historical. The detailed
+[execution evidence](../evidence/INTEGRATION-API-GROUP-001-20260928.md) and
+[ordered JSON](../evidence/INTEGRATION-API-GROUP-001-ordered-20260928.json) retain
+individual boundaries. Actual ChatGPT/Claude/Codex acceptance remains the separate
+[post-deployment smoke](../../qualification/MCP-CLIENT-CONNECT-SMOKE.md).

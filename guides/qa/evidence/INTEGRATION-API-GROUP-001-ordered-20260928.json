@@ -45,7 +45,7 @@
     "actor": 1
   },
   {
-    "point": "2.1\u20132.3",
+    "point": "2.1–2.3",
     "pass": true,
     "registration": "normal entry/onboarding/save",
     "baseAccountPreserved": true,
@@ -540,6 +540,137 @@
     "inspectorReconnect": true,
     "manualKeyPrivateRead": true,
     "logoutKeepsCredentials": true,
-    "remaining": "7.3\u20137.8"
+    "remaining": "7.3–7.8"
+  },
+  {
+    "point": "7.3",
+    "pass": true,
+    "realPkce": true,
+    "baseAndGroupCapabilities": true,
+    "sameMcpSessionAdminRevocation": true,
+    "staleWriteDenied": true,
+    "adminRestored": true
+  },
+  {
+    "point": "7.4",
+    "pass": true,
+    "boundary": "unchanged protocol development evidence retained; foreign Base Event read denied again"
+  },
+  {
+    "point": "7.5",
+    "pass": true,
+    "delayedGroupKeyResponseAfterBaseSwitch": "no secret leak",
+    "secondIdentity": "empty",
+    "failedRevokeRetry": "PASS in7.2",
+    "mobileWidth": 390
+  },
+  {
+    "point": "7.6",
+    "pass": true,
+    "modes": [
+      "http",
+      "local"
+    ],
+    "languages": [
+      "en",
+      "hu"
+    ],
+    "popupHelp": "4 numbered steps /4 bullets",
+    "fullHelpOrder": "after Getting started",
+    "anonymousMcpHelpTools": 3,
+    "manualLocalGenerateReloadOtherIdentityRevoke": true,
+    "httpEnvironmentRestored": true
+  },
+  {
+    "point": "7.7",
+    "pass": true,
+    "boundary": "structural only; no vendor validator/install/model call",
+    "packages": [
+      {
+        "target": "openai",
+        "variant": "local",
+        "files": 6,
+        "sha256": "6997b6e334ee2d86e3b5a188d756a7cd0bf4adedd2f4f15f2abc7cf2e6ff5fe2",
+        "result": "PASS"
+      },
+      {
+        "target": "openai",
+        "variant": "remote-help",
+        "files": 6,
+        "sha256": "ae3aede4224883a1eb9021baf6f6607dafe47c30480719d876e3908704b84c51",
+        "result": "PASS"
+      },
+      {
+        "target": "openai",
+        "variant": "remote-private",
+        "files": 6,
+        "sha256": "e57bba463cff80cc02edb306f2b84f0ff36e10da4a07a58290d443f48c637572",
+        "result": "PASS"
+      },
+      {
+        "target": "claude",
+        "variant": "local",
+        "files": 4,
+        "sha256": "4d88b2313c65f23c69dacecc16d5bc1399d225ef4134f2f92bc04bad3e354bf4",
+        "result": "PASS"
+      },
+      {
+        "target": "claude",
+        "variant": "remote-help",
+        "files": 4,
+        "sha256": "2159ed79f9314a5520917b2ba5c505750adcdf86eb6a1a9065be7b0973691c5e",
+        "result": "PASS"
+      },
+      {
+        "target": "claude",
+        "variant": "remote-private",
+        "files": 4,
+        "sha256": "351c976a79f1c0f57e5afcb64aae6324fd94568be1ce7bafb47a611cb0d2298e",
+        "result": "PASS"
+      }
+    ]
+  },
+  {
+    "point": "7.8",
+    "pass": true,
+    "keysRevokedInUi": true,
+    "savedCardDeletedInUi": true,
+    "inspectorStopped": true,
+    "managedBrowsersClosed": true,
+    "exactRestore": true,
+    "sessionSnapshotRestored": true,
+    "freshMediaRemoved": true,
+    "postReset": {
+      "checkpointId": "INTEGRATION-API-GROUP-001",
+      "scenario": "integration-api-group",
+      "phase": "not-staged",
+      "actors": [
+        "f03009260000000000000001",
+        "f03009260000000000000002",
+        "f03009260000000000000003",
+        "f03009260000000000000004"
+      ],
+      "groups": [
+        "qa-group-api-a",
+        "qa-group-api-b"
+      ],
+      "users": [],
+      "memberships": [],
+      "inviteMappings": [],
+      "externalBindings": [],
+      "events": [],
+      "eventMembers": [],
+      "checkoutItems": [],
+      "payments": [],
+      "cards": [],
+      "cardRegistrations": [],
+      "affiliatePartners": [],
+      "affiliateContributions": [],
+      "affiliateRegistrations": [],
+      "affiliateLinkCount": 0,
+      "workspaceProfiles": [],
+      "freshUsers": [],
+      "savepoints": []
+    }
   }
 ]

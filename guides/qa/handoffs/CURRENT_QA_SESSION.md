@@ -88,15 +88,15 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: Ordered Group API blocks1–6 PASS,6/7 completed;7.1 and7.2 PASS; current7.3 profile capabilities/admin-role change.
-next_action: Current7.6 local checks PASS; user-reported local avatar ring diagnosis. TEMPORARY environment.dev.ts uses canonical local environment through existing frontend-sync watcher; MUST restore exact /tmp/myscoutee-group-api-20260928/environment.dev.original.ts before HTTP cleanup. Actor0 browser Alex Base (HTTP session retained), actor1 Fresh Event saved card needs normal delete after restore. Current owner session private current-owner.json. Inspector6994 running. Base MCP manual1/OAuth2; A manual2.7.3–7.5 evidence PASS. Continue local UI/help then7.7 packages and7.8 cleanup.
+substage: CLOSED / PASS —7/7 ordered Group API blocks; dev HTTP/simulator and recorded local key/help scope.
+next_action: No active test or fixture. Group API execution and scoped cleanup complete; next independent testcase not started. Real vendor connection remains standalone post-deployment smoke.
 execution_authority: User explicitly requested continuing the automatic test on 2026-09-28. Full-flow Group API testing delegated; operate managed browsers and API in checklist order, announce each point/result, repair and retest failures.
 execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
-fixture_phase: integration-api-group baseline-ready for block6 after verified extended affiliate/media/session reset. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
-runtime: Existing frontend-sync/backend own builds. Optional Inspector session6994 running. Fresh versioned launcher prepared Alex plus signed-out recipient for block6; manifest INTEGRATION-API-GROUP-001.json.
-last_completed: Isolation blocks1–9 HTTP scope PASS. Pending-write picker is non-closable by the existing save contract; attempted bypass is not cross-scope mutation evidence. Contact/account read and A/B Event unread isolation verified. Demo selector compact red action/retained parent and general mobile menu bell hiding verified.
+fixture_phase: not-staged; exact integration-api-group restore, pre-launch sessions and fresh-user media cleanup verified.
+runtime: Existing frontend-sync/backend owners unchanged; original HTTP environment.dev.ts restored. Optional Inspector stopped; checkpoint managed browsers closed and isolated storage removed.
+last_completed: INTEGRATION-API-GROUP-001 blocks1–7 PASS in recorded scope; transactional evidence/ledger own details. Earlier Isolation remains closed.
 mutation_contract: Await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through existing stores to retained lists/cards/badges. Failure retains dialog/error. Keep underlying popups open. No reload to obtain a mutation result.
-resume_gate: Before any new fixture or browser launch, read the queued testcase and inspect current runtime; Isolation has no live fixture. Current integration-api-group fixture and managed browser manifest must be checked before mutation.
+resume_gate: No Group API fixture or managed session remains. Start any next independent testcase only through its own versioned fixture/launcher after confirming scope.
 
 ```
 
@@ -135,13 +135,13 @@ when shaping only its route to the QA application.
 ```yaml
 checkpoint: ASSET-BORROW-001
 checklist: ../checklists/asset/ASSET-BORROW-001.md
-substage: PASS/CLOSED 2026-09-17 by explicit user acceptance. Organizer-only-off final-state variation documented; no further toggle or replay required.
-fixture_phase: Retained server marker borrow-paid-accepted-participant-verified/startBlock=4. Two accepted one-item Paid requests and two captured HUF 6400 payments; Nova Manager/organizerOnly=false, Paid participants 2, Group A Transport accepted 3/pending 0. Free controls and Group B unchanged. The strict terminal-on oracle was not passed or forged; closure is recorded in the QA ledger.
-next_action: Pair QA is complete. No further Borrow actions or reset for this closure; retain evidence and live fixture. Previously requested release/deployment work remains separately queued.
+substage: CLOSED / PASS —7/7 ordered Group API blocks; dev HTTP/simulator and recorded local key/help scope.
+fixture_phase: not-staged; exact integration-api-group restore, pre-launch sessions and fresh-user media cleanup verified.
+next_action: No active test or fixture. Group API execution and scoped cleanup complete; next independent testcase not started. Real vendor connection remains standalone post-deployment smoke.
 confirmed_rules: Every Borrow submits one independently identified item. Stage menus are member-only; main Event Members follows existing Open/Closed rules. Pricing has no Asset VIP. Restage uses normal reset then stage. The user explicitly requested a versioned Block 4 restart; earlier results are archived, not simulated or marked PASS.
 queued_work: Previously requested stable app/Registry release and retained-control verification remain separate from this completed pair-QA campaign. No release action taken as part of marking Borrow PASS.
-last_completed: ASSET-BORROW-001 PASS/CLOSED 2026-09-17 by user acceptance after saved-state review, with final Organizer-only-off variation retained. Pricing also closed.
-runtime: Existing dev watchers running. Shared action-ring now measures untransformed fractional layout dimensions and caps corner radius to both axes; frontend watcher build/sync passed 2026-09-17T11:15:40Z. Visual ring confirmation after user reload remains pending; no browser actions or reset. Payment history duration check retained from Block 6 user report.
+last_completed: INTEGRATION-API-GROUP-001 blocks1–7 PASS in recorded scope; transactional evidence/ledger own details. Earlier Isolation remains closed.
+runtime: Existing frontend-sync/backend owners unchanged; original HTTP environment.dev.ts restored. Optional Inspector stopped; checkpoint managed browsers closed and isolated storage removed.
 ledger_status: 104/104 PASS. Pair-QA campaign complete; CSV/XLSX/README synchronized.
 
 ```
