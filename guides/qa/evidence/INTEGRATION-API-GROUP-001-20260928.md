@@ -399,3 +399,28 @@ was visible before closing (not the delayed response). Failed revoke/retry was
 already exercised in7.2. At390px Base Revoke remained inside viewport at its
 row top (9.8px inset), no document overflow. API-key and MCP storage remain
 separate; MCP URL grants/manual rows retained their separate sections.
+
+### 7.6 Local/HTTP UI and help PASS in recorded dev boundary
+
+HTTP and local: normal API popup ? and full Help Center independently opened in
+EN/HU. Browser language was changed through native CDP acceptLanguage and restored,
+not by replacing navigator or injecting app state. API help now uses three short
+headings, four numbered connection steps and four bullets. Both languages render
+resolved text. Full Help Center places integrations immediately after Getting
+started. Anonymous /mcp lists only3help tools and reads integrations from current
+published help-default-v3 / help-default-hu-v3, version3, without authentication.
+
+The existing frontend-sync owner temporarily compiled canonical local environment
+settings (no second watcher/build/server). Ordinary local demo login as Alex:
+Generate -> manual1/one-time secret; full reload -> manual1/no secret. Normal
+logout/login as Ava -> manual0/OAuth0; back to Alex -> retained manual1. Revoke
+removed the row, and a second reload retained manual0. Isolated local browser
+storage is run-owned and external OAuth was not claimed for local mode. Exact
+original environment.dev.ts restored after these checks, awaiting owner sync.
+
+MCP Advanced heading is now unambiguous in both languages. Initial centered-dot
+label triggered composite source translation and duplicated MCP; final plain
+MCP Advanced / MCP Haladó was verified in the browser. i18n source+all3Mongo
+seeds audit PASS:8066messages. Existing seed watcher imported the changed bundles;
+no live transaction collections were replaced. Original fresh-seed/update checks
+remain in0.3; this run verifies hot-import and browser cache-version refresh.
