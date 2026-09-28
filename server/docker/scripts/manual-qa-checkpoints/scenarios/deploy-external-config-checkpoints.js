@@ -47,6 +47,33 @@
     Q.printObject(status()); return;
   }
   if (!state) Q.fail('Stage the independent deployment checkpoint first.');
+  if (command === 'capture-api-key') {
+    const id = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    const token = Q.collection('integrationTokens').findOne({_id: id});
+    if (state.apiKey || !token || token.name !== 'DEPLOY-EXTERNAL-CONFIG-001 logout control'
+        || new Date(token.createdAtIso) < new Date(state.stagedAtIso)) Q.fail('Expected this run\'s new logout control key.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {apiKey: {id, owner: token.ownerUserId}}});
+    Q.printObject({checkpointId, phase: 'api-key-captured'}); return;
+  }
+  if (command === 'restore-api-key') {
+    if (!state.apiKey) Q.fail('No retained API key.');
+    const selector = {_id: state.apiKey.id, ownerUserId: state.apiKey.owner};
+    const token = Q.collection('integrationTokens').findOne(selector);
+    if (token && !token.revokedAtIso) Q.fail('Revoke the API key normally first.');
+    Q.collection('integrationTokens').deleteOne(selector);
+    if (Q.collection('integrationTokens').countDocuments(selector)) Q.fail('API key cleanup incomplete.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {apiKey: ''}});
+    Q.printObject({checkpointId, phase: 'api-key-restored'}); return;
+  }
+  if (command === 'expire-oauth-code') {
+    const hash = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    const ids = (state.oauthClients || (state.oauthClient ? [state.oauthClient] : [])).map(row => row.id);
+    if (!/^[A-Za-z0-9_-]{43}$/.test(hash) || !ids.length) Q.fail('A captured client and exact code digest are required.');
+    const result = Q.collection('mcpAuthorizations').updateOne({_id: hash, kind: 'code', clientId: {$in: ids}},
+      {$set: {expiresAt: new Date(Date.now() - 1000)}});
+    if (result.matchedCount !== 1) Q.fail('Owned authorization code missing.');
+    Q.printObject({checkpointId, phase: 'owned-code-expired', preparationOnly: true}); return;
+  }
   if (command === 'capture-oauth-client') {
     const id = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     const client = Q.collection('mcpOAuthClients').findOne({_id: id});
@@ -218,6 +245,7 @@
     Q.printObject({checkpointId, captured: name}); return;
   }
   if (command === 'reset') {
+    if (state.apiKey) Q.fail('Restore API key before cleanup.');
     if (state.oauthClient || state.oauthClients?.length) Q.fail('Restore Inspector clients before cleanup.');
     if (state.privateInvitation) Q.fail('Restore private invitation before cleanup.');
     if (state.childrenControl) Q.fail('Restore the Children profile control before cleanup.');

@@ -396,3 +396,37 @@ mcp_370eafab-15dc-43df-ae7f-a353a0e5f7d2. Permission token record:
 aa4cd241-dc12-4c4f-9858-4e98100c1a47 (identifier only, not a credential).
 Desktop managed browser closed; Inspector service retained.2.2 disconnect/
 reconnect started; cancellation and grant-negative/revocation checks remain.
+
+
+### OAuth2.2 and2.3 — ordered phone continuation
+
+- Normal Inspector Disconnect/Connect returned Connected using its existing
+  connection. Two further fresh authorization attempts used Inspector's own
+  Clear OAuth state action. All three actual phone DCR clients are retained in
+  the versioned deployment harness for exact cleanup.
+- Cancelled the third client's normal MyScoutee consent with Mégse. Inspector
+  displayed access_denied and Failed; independent Mongo counts were zero
+  connections and zero grants for that client. Re-authenticate returned the
+  correct existing base profile; normal approval returned Connected.
+- Protocol probes used the third registered client and the real browser session
+  against normal configured endpoints, after the actual Inspector UI flow.
+  Wrong redirect/resource/client/plain PKCE400; valid context200 with correct
+  profile; wrong verifier/resource400; valid exchange/private read200; reused
+  code400; refresh rotation/read200; refresh replay400 and revoked access401,
+  revoked refresh400. These API-generated code/grant prerequisites are recorded
+  separately from the observed Inspector UI result.
+- Expired-code case: one normally issued code had only its expiresAt moved into
+  the past by the versioned expire-oauth-code fixture, guarded by the captured
+  client IDs and exact code digest. Token exchange returned400. This is fixture
+  time preparation, not a measured five-minute wall-clock expiry.
+-2.3 prerequisites: created one day-long API key via the ordinary authenticated
+  API, named DEPLOY-EXTERNAL-CONFIG-001 logout control; captured its ID in the
+  harness. Before logout, API-key/OAuth private reads and browser auth/me all200.
+  Normal phone menu Logout and confirmation completed, session storage cleared
+  and entry displayed. Afterward OAuth/API-key reads remained200; the retained
+  browser session returned401. Thus browser logout did not revoke either grant.
+- User was asked to sign in again on the phone for normal revocation.2.3 explicit
+  revocation and2.4 cleanup are pending. Do not reset the fixture or delete token
+  records before normal revocation verification. API control ID:
+  1170f5a5-fbc5-4df4-b107-a2ed267df1c2. All client/key ownership metadata remains
+  in the deployment harness; credential material stays in private /tmp files.

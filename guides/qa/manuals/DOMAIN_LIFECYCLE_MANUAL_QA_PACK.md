@@ -11363,6 +11363,11 @@ normal OAuth permission and successful account-owned event read. No injected
 grant. User requires remaining browser checks on phone in order.2.2 reconnect/
 cancellation active; new client tracked for normal revocation and scoped cleanup.
 
+OAuth2.2: reconnect and normal cancellation/re-authentication verified on phone;
+protocol negatives/refresh replay PASS. Expired code used an explicitly recorded
+fixture deadline.2.3 normal phone logout leaves OAuth/API reads200 and old browser
+session401. Awaiting user sign-in for normal revocation and exact cleanup.
+
 Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
 
 Historical scope transfer2026-09-27:
