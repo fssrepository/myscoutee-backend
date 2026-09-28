@@ -1,0 +1,47 @@
+{
+  "checkpoint": "DEPLOY-EXTERNAL-CONFIG-001",
+  "block": "1.4",
+  "browser": "physical Android Chrome, authenticated GitHub",
+  "chooser": "https://github.com/fssrepository/myscoutee/issues/new/choose",
+  "forms": [
+    {
+      "template": "bug_report",
+      "url": "https://github.com/fssrepository/myscoutee/issues/new?template=bug_report.yml",
+      "labels": [
+        "Add a title\n*",
+        "What went wrong?\n*",
+        "How can we reproduce it?\n*",
+        "Device and browser",
+        "Screenshot or recording",
+        "Create more"
+      ],
+      "passed": true
+    },
+    {
+      "template": "feature_request",
+      "url": "https://github.com/fssrepository/myscoutee/issues/new?template=feature_request.yml",
+      "labels": [
+        "Add a title\n*",
+        "What would you like?\n*",
+        "How would it help?\n*",
+        "Example or screenshot",
+        "Create more"
+      ],
+      "passed": true
+    },
+    {
+      "template": "question",
+      "url": "https://github.com/fssrepository/myscoutee/issues/new?template=question.yml",
+      "labels": [
+        "Add a title\n*",
+        "What do you need help with?\n*",
+        "Additional details",
+        "Create more"
+      ],
+      "passed": true
+    }
+  ],
+  "submitted": false,
+  "status": "PASS",
+  "scope": "Actual authenticated GitHub chooser and all three forms opened on physical phone. No input submitted."
+}

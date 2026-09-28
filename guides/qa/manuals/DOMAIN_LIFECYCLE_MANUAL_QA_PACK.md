@@ -11368,6 +11368,15 @@ protocol negatives/refresh replay PASS. Expired code used an explicitly recorded
 fixture deadline.2.3 normal phone logout leaves OAuth/API reads200 and old browser
 session401. OAuth2.1–2.4 PASS/CLOSED: normal phone logout retained independent OAuth/API access200 and rejected old browser401; explicit ordinary endpoint revocations then rejected both credentials401. Three captured clients and one QA key exactly restored, zero remaining. Inspector stopped, owned tabs/callback6274 and private credentials removed; original8443 transport and real account/Event retained. Next: finish audit of1.1–1.4 before3, per user.
 
+Current block1 evidence audit (no replay):
+
+| Item | Retained result / remaining boundary |
+| --- | --- |
+|1.1 Help|Fresh isolated DB importer, supported migration/update and HU/EN HTTP/MCP comparisons passed. Separately booted full deployment is not proven; no new installation run, per user.|
+|1.2 Private invitation|Completed: real outsider direct requests denied, existing private resources withheld, exact fixture cleanup passed.|
+|1.3 OAuth discovery/configuration|Completed: discovery metadata and issuer/resource/callback configuration. Client/grant negatives, expiry/reuse and refresh replay are recorded once under2.2; explicit revocation under2.3.|
+|1.4 Report templates|PASS: authenticated actual phone chooser and all three forms match the concise templates. No issue submitted. See DEPLOY_GITHUB_20260928.json.|
+
 Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
 
 Historical scope transfer2026-09-27:

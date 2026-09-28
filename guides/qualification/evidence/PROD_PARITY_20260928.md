@@ -436,3 +436,33 @@ reconnect started; cancellation and grant-negative/revocation checks remain.
 
 OAuth2.1–2.4 PASS/CLOSED: normal phone logout retained independent OAuth/API access200 and rejected old browser401; explicit ordinary endpoint revocations then rejected both credentials401. Three captured clients and one QA key exactly restored, zero remaining. Inspector stopped, owned tabs/callback6274 and private credentials removed; original8443 transport and real account/Event retained. Next: finish audit of1.1–1.4 before3, per user.
 Revocation used normal authenticated phone-browser API requests; no visual revoke-button claim. Expired-code evidence retains the previously documented scoped fixture deadline boundary. Main checkpoint stays staged for remaining checks.
+
+
+### Retained profile editor / loading feedback repair and no-replay boundary
+
+User reported profile destruction below the image editor and frozen profile/filter
+loading feedback. Profile image/experience editors now use the existing Popup
+stack above the retained profile; closing the nested editor preserves its form
+instance, unsaved draft and scroll position. Shared spinner rotation moved from
+the filtered SVG to a compositor-hinted HTML layer, retaining the twelve-o’clock
+start. No new loader or data flow.
+
+Focused Angular profile suite:5/5 PASS, including real parent-template retention
+and logout/account isolation; existing FormFlow/filter suites:23/23 PASS in the
+same repair run. Initial broad test TypeScript scope encountered unrelated existing
+spec errors; narrowed tsconfig used. Spinner smoothness is not yet device-proven.
+Patch is local only; VMware still serves06450. No phone popup was closed for this
+repair and no deployment/init reset was run.
+
+Latest user direction: preserve all existing results; do not restart QA or fresh
+installation.1.1 importer/migration/HTTP/MCP evidence retained with its previously
+recorded standalone-deployment boundary;1.2 and1.3 have completed evidence.1.4
+authenticated actual GitHub chooser remains unverified. Overall QA remains open.
+
+
+### Block1.4 actual GitHub forms — complete
+
+1.4 PASS: authenticated actual GitHub chooser and all three Bug/Feature/Question forms opened on physical Android; concise fields match versioned templates. No issue submitted. See DEPLOY_GITHUB_20260928.json. Blocks1.2/1.3 and2 remain complete;1.1 retains verified importer/migration/HTTP/MCP scope and documented standalone-deployment limitation, with no restart per user.
+
+
+Checklist duplication corrected:1.3 owns discovery/configuration only;2.1 owns connection/public-client registration;2.2 owns session/cancellation/reconnect and protocol negatives;2.3 owns logout independence/explicit revocation;2.4 owns cleanup. Existing evidence retained; this documentation repair authorizes no replay.

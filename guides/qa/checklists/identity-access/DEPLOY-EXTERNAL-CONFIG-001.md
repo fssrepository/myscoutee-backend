@@ -16,13 +16,13 @@ Execution status and evidence belong in the QA ledger, not this checklist.
 - Reuse the existing fixture harness and browser launcher. Real authentication
   must use the normal UI; injected demo sessions cannot prove these checks.
 
-## 1. Machine-run checks — no physical phone required
+## 1. Deployment checks — workstation checks and reporting
 
 Run these checks from the workstation against the configured deployment. Reuse
 this checkpoint's verified non-demo session where authentication is required;
-preparing a session does not prove provider login. No phone interaction is part
-of this block. If a prerequisite requires fresh provider login, retain that
-assertion for block2 rather than operating the phone out of order.
+preparing a session does not prove provider login. Browser interactions use the
+same phone. Reuse this checkpoint’s completed provider authorization and recorded
+results; do not repeat them because the checklist order changed.
 
 1. **Help initialization/update.** On a separately initialized disposable
    deployment, verify fresh initialization and the supported help update/import
@@ -33,12 +33,10 @@ assertion for block2 rather than operating the phone out of order.
    resources. Prepare the private event, pending recipient and unrelated account
    within this checkpoint.
 
-3. **OAuth protocol checks.** Verify discovery, issuer/resource and callback
-   configuration from the workstation. With this run's client/grant when
-   available, reject invalid client/redirect/PKCE/resource, expired or reused
-   codes, refresh replay and revoked grants. Grant-dependent checks follow
-   block2's provider authorization; unauthenticated rejection alone cannot
-   prove them.
+3. **OAuth discovery and configuration.** Verify discovery metadata,
+   issuer/resource and callback configuration from the workstation. This step
+   requires no provider login or grant. Execute client/grant protocol checks
+   only in block2; they are not a second execution of this step.
 4. **Report templates.** Verify the frontend repository's actual issue chooser
    and concise Bug, Feature and Question templates without submitting an issue.
    Authenticated chooser interaction, if needed, uses the same phone.
@@ -56,15 +54,19 @@ application configuration and real provider login; it does not require ChatGPT.
 
 1. Connect by MCP URL. Complete normal Firebase/Google/email sign-in as configured,
    approve the displayed profile/group, return to Inspector and call an allowed
-   private read operation through that same OAuth connection.
-2. Repeat with an existing signed-in session, cancellation and reconnect. Check
-   the installation's issuer, resource, callbacks and public-client registration.
-   Deny invalid client/redirect/PKCE/resource, expired or reused code, refresh
-   replay and revoked grants without exposing private data.
+   private read operation through that same OAuth connection. Verify the client's
+   public-client registration against the configuration recorded in1.3.
+2. Exercise existing-session authorization, cancellation and reconnect. Using
+   this run's client/grant, deny invalid client/redirect/PKCE/resource, expired
+   or reused code and refresh replay without exposing private data. Each
+   assertion is executed once; reuse this run's recorded results from the
+   connection sequence. Discovery/configuration checks belong only to1.3.
 3. Verify that browser logout does not revoke an independently issued OAuth
    grant or API key; explicit permission/key revocation does. Ordinary app
    requests still require their browser session.
-4. Revoke this run's grants and restore its identities/configuration/checkpoint.
+4. Restore this run's identities/configuration/checkpoint and remove its test
+   client records. Reuse the revocation evidence from2.3; revoke only any
+   remaining grants created by this run, then verify scoped cleanup.
 
 A separate [post-deployment external-client smoke guide](../../../qualification/MCP-CLIENT-CONNECT-SMOKE.md)
 owns real ChatGPT/Claude/Codex installation and conversation acceptance.
