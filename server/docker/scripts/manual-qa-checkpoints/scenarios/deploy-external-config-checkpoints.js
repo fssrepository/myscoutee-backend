@@ -47,6 +47,43 @@
     Q.printObject(status()); return;
   }
   if (!state) Q.fail('Stage the independent deployment checkpoint first.');
+  if (command === 'prepare-children-control') {
+    const userId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    if (!/^[a-f0-9]{8}-[a-f0-9-]{27}$/.test(userId) || state.childrenControl) Q.fail('Provide one new Children profile control.');
+    const user = Q.collection('users').findOne({userId});
+    const rows = (user?.profileDetails || []).flatMap(section => section?.rows || [])
+      .filter(row => row?.labelKey === 'profile.details.children');
+    if (!user?.firebaseUid || user.accountUserId || user.workspaceGroupId || rows.length !== 1) Q.fail('One existing Firebase base-profile Children row is required.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {childrenControl: {
+      userId, firebaseUid: user.firebaseUid, rowBefore: rows[0], preparedAt: Q.nowIso()
+    }}});
+    Q.printObject({checkpointId, phase: 'children-snapshotted', originalRetained: true}); return;
+  }
+  if (command === 'set-children-control' || command === 'restore-children-control') {
+    const saved = state.childrenControl;
+    if (!saved) Q.fail('Snapshot the Children control first.');
+    const user = Q.collection('users').findOne({userId: saved.userId, firebaseUid: saved.firebaseUid});
+    const matches = (user?.profileDetails || []).flatMap(section => section?.rows || [])
+      .filter(row => row?.labelKey === 'profile.details.children');
+    if (!user || matches.length !== 1) Q.fail('The original Children control is missing or ambiguous.');
+    const values = {no: 'No', yes: 'Yes', private: 'Prefer not to say'};
+    const key = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    const restoring = command === 'restore-children-control';
+    if (!restoring && !Object.hasOwn(values, key)) Q.fail('Use no, yes or private.');
+    const row = restoring ? saved.rowBefore : {...saved.rowBefore, value: values[key], privacy: 'Public'};
+    Q.collection('users').updateOne({_id: user._id}, {$set: {
+      'profileDetails.$[].rows.$[row]': row
+    }}, {arrayFilters: [{'row.labelKey': 'profile.details.children'}]});
+    const actual = Q.collection('users').findOne({_id: user._id}).profileDetails
+      .flatMap(section => section?.rows || []).find(item => item?.labelKey === 'profile.details.children');
+    // Rows constructed in the scenario and returned by mongosh can have different
+    // object realms; compare sorted entries without relying on constructor identity.
+    const entries = value => Object.keys(value).sort().map(key => [key, value[key]]);
+    if (!Q.sameJson(entries(actual), entries(row))) Q.fail('Children control write/read mismatch.');
+    if (restoring) Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {childrenControl: ''}});
+    Q.printObject({checkpointId, phase: restoring ? 'children-restored' : 'children-staged', value: row.value,
+      privacy: row.privacy, fixturePreparationOnly: !restoring}); return;
+  }
   if (command === 'prepare-location-control') {
     const userId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     if (!/^[a-f0-9]{8}-[a-f0-9-]{27}$/.test(userId) || state.locationControl) Q.fail('Provide one new existing-account location control.');
@@ -82,6 +119,7 @@
     Q.printObject({checkpointId, captured: name}); return;
   }
   if (command === 'reset') {
+    if (state.childrenControl) Q.fail('Restore the Children profile control before cleanup.');
     if (state.locationControl) Q.fail('Restore the existing-account location control before cleanup.');
     if (!Q.sameJson(config(), state.configurationBefore)) Q.fail('Deployment configuration changed; restore its owned changes before actor cleanup.');
     const ids = profileIds();

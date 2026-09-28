@@ -12,12 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.profile.data.document.Users;
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
+import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserGameFilterPreferencesDto;
 import com.raxim.myscoutee.profile.data.dto.game.GameDtos.UserGameCardsQueryRequestDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -204,6 +207,41 @@ class HomeGameCardsServiceTest {
         assertThat(secondPage.socialCards()).extracting(card -> card.id())
                 .containsExactly("outside-network:active:21:22", "outside-network:active:23:24");
         assertThat(secondPage.nextCursor()).isNull();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "children,children,No", "children,children,Yes", "children,children,Prefer not to say",
+        "smoking,smoking,Occasionally", "drinking,drinking,Socially", "workout,workout,Daily",
+        "pets,pets,Dog-friendly", "familyPlans,familyPlans,Wants children",
+        "loveStyles,loveStyle,Long-term partnership", "communicationStyles,communicationStyle,Direct + warm",
+        "sexualOrientations,sexualOrientation,Prefer not to say", "religions,religion,Atheist",
+        "interests,interest,#Travel", "values,values,Family-first"
+    })
+    void filtersPersistedProfileDetailsBeforeCountingAndPaging(String filter, String field, String value) {
+        HomeGameCardsService service = new HomeGameCardsService(homeUserProfileService);
+        Users matching = user("matching");
+        String stored = (filter.equals("interests") || filter.equals("values")) ? value + ", Another value" : value;
+        matching.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Details", List.of(
+                new Users.ProfileDetailRowRecord("profile.details." + field, stored, "Public", List.of())))));
+        Users different = user("different");
+        different.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Details", List.of(
+                new Users.ProfileDetailRowRecord("profile.details." + field, "Other", "Public", List.of())))));
+        Users missing = user("missing");
+        when(homeUserProfileService.resolveSelectedUserId("active")).thenReturn("active");
+        when(homeUserProfileService.queryGameStackUserRecords("active")).thenReturn(List.of(different, missing, matching));
+        when(homeUserProfileService.toGameCardUserDto(matching)).thenReturn(userDto("matching"));
+        var selected = Map.of(filter, List.of(value.toLowerCase()));
+        var preferences = new UserGameFilterPreferencesDto(null, null, null, null,
+                selected.get("interests"), selected.get("values"), null, null, null, null, null,
+                selected.get("smoking"), selected.get("drinking"), selected.get("workout"),
+                selected.get("pets"), selected.get("familyPlans"), selected.get("children"),
+                selected.get("loveStyles"), selected.get("communicationStyles"),
+                selected.get("sexualOrientations"), selected.get("religions"));
+        var response = service.queryPage(new UserGameCardsQueryRequestDto("active", "single", null, null, preferences, null, 1));
+        assertThat(response.cardUserIds()).containsExactly("matching");
+        assertThat(response.filterCount()).isEqualTo(1);
+        assertThat(response.nextCursor()).isNull();
     }
 
     private HomeUserProfileService.GameSocialCardCandidate socialCandidate(int index) {

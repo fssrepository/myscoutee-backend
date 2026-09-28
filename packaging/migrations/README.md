@@ -66,3 +66,13 @@ that the packaged revision needs an explicit import. Privacy, Terms, explanation
 guides and user data are untouched. Interrupted insertion/deactivation retries
 are idempotent. `default-help-migration-test.py` exercises these cases in a
 temporary database on the existing QA Mongo container.
+
+## 009 — stored demo profile details (1.3.0)
+
+Only in `demo_db`, initialize missing `profileDetails` on the 50 exact canonical
+base demo identities (matching `_id`, `userId` and name). Values come from the
+packaged demo seed, synchronized with the frontend local seed builder by
+`tools/seeds/synchronize-demo-profile-details.mjs`. Retain existing details,
+including an explicitly empty array, custom/renamed profiles and group profiles.
+Do not insert users. The production database is a no-op. This replaces runtime
+static filter defaults with repository data; repeated execution is idempotent.

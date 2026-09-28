@@ -184,3 +184,32 @@ The user confirmed on the phone that the Children label repair is correct
 (“jó lett a gyerek”). Record the reported label defect as verified fixed.
 This confirmation alone does not close the remaining HU/EN value variants,
 saved profile-view semantics or Hungarian filter assertions.
+
+
+### Block1.2 — profile-field persistence and filter defect
+
+- Through normal phone UI, saved Children Yes and Prefer not to say, reopened
+  the editor and independently read the exact Mongo values. Restored the
+  registration account's original No/Private value. HU labels were Van and
+  Nem szeretné megadni; initial No displayed Nincs.
+- Versioned Children control snapshots only the existing comparison account's
+  Children row, stages explicit values/Public visibility, and restores the exact
+  original row. Its separate missing-location control remains retained for1.3.
+  The harness initially reported a cross-realm object comparison mismatch even
+  though the write succeeded; sorted-entry verification repaired this fixture
+  assertion. The original snapshot was retained throughout.
+- A public Yes control displayed Van in the profile view, while the game filter
+  offered Nincs and retained that Yes profile after applying No. This exposed
+  static frontend facet data and missing server profile-detail predicates.
+- User requested removing the unnecessary search textbox specifically from the
+  Children choice menu; existing filterable configuration now disables it there.
+- User clarified all modes must read seeded repository data. Runtime static
+  facet fallbacks are being removed; the existing local seed builder now stores
+  the prior 50 demo users' values, and demo/e2e Mongo seeds are synchronized from
+  that builder. Real profiles receive no fabricated defaults. Existing/cleared
+  saved details are preserved during missing-field seed initialization.
+-19 server game service tests passed, including14 saved-detail filtering cases.
+  Demo migration009 test passed on disposable Mongo:47 missing rows initialized,
+  empty/custom/renamed rows preserved, production unchanged, repeat exact.
+  Seed synchronization check passes for both50-profile baselines;42 seed audit
+  passes. Updated application artifacts are not yet deployed at this entry.

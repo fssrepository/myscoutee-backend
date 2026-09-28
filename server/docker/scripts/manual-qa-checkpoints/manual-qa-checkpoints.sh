@@ -809,7 +809,7 @@ PY
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
     ;;
-  deploy-external-config:stage|deploy-external-config:status|deploy-external-config:capture|deploy-external-config:prepare-location-control|deploy-external-config:restore-location-control|deploy-external-config:reset)
+  deploy-external-config:stage|deploy-external-config:status|deploy-external-config:capture|deploy-external-config:prepare-children-control|deploy-external-config:set-children-control|deploy-external-config:restore-children-control|deploy-external-config:prepare-location-control|deploy-external-config:restore-location-control|deploy-external-config:reset)
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = DEPLOY-EXTERNAL-CONFIG-001 ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-}"
     ;;
