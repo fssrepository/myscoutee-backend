@@ -45,7 +45,7 @@
     "actor": 1
   },
   {
-    "point": "2.1–2.3",
+    "point": "2.1\u20132.3",
     "pass": true,
     "registration": "normal entry/onboarding/save",
     "baseAccountPreserved": true,
@@ -531,5 +531,15 @@
         ]
       }
     }
+  },
+  {
+    "point": "7.2",
+    "pass": true,
+    "cancelPreservedSettings": true,
+    "normalDemoLogin": true,
+    "inspectorReconnect": true,
+    "manualKeyPrivateRead": true,
+    "logoutKeepsCredentials": true,
+    "remaining": "7.3\u20137.8"
   }
 ]

@@ -801,7 +801,7 @@ PY
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
     ;;
-  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:restore-maya-location|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|integration-api-group:remove-issuer-admin|integration-api-group:restore-issuer-admin|integration-api-group:prepare-paid-event|integration-api-group:prepare-private-controls|integration-api-group:prepare-attribution-denials|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
+  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:restore-maya-location|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|integration-api-group:prepare-issuer-workspaces|integration-api-group:remove-issuer-admin|integration-api-group:restore-issuer-admin|integration-api-group:prepare-paid-event|integration-api-group:prepare-private-controls|integration-api-group:prepare-attribution-denials|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
     [ "$#" -eq 3 ] && [ "$3" = "INTEGRATION-API-GROUP-001" ] || { usage >&2; exit 2; }
     if [ "${scenario}:${command}" = "integration-api-group:reset" ]; then
       api_media_owners="$(run_scenario media-owners "${scenario}" 30 "$3" | python3 -c 'import json,sys; print("\n".join(json.load(sys.stdin)["users"]))')"

@@ -147,6 +147,24 @@
     }});
     Q.printObject({checkpointId,prepared:command,eventId:event.sourceId,basePrice:10,vipPrice:5,approvalRequired:true,fixtureOnly:true});return;
   }
+  if (command === 'prepare-issuer-workspaces') {
+    // Block7 capability prerequisites, not evidence of admission/profile copying.
+    // Match CommunityGroupProfileMapper's personal-field boundary; current()
+    // already owns these account-linked profiles for exact final reset.
+    const source = Q.ensureUser(actors[0]);
+    const fields = ['name','initials','age','birthday','gender','city','height','physique','languages',
+      'horoscope','headline','about','images','locationCoordinates','partitionKey','profileDetails',
+      'profileStatus','status','statusText','completion','profileFormVersion','_class'];
+    for (const groupId of groups) {
+      if (!Q.collection('activityMembers').findOne({ownerType:'community',ownerId:groupId,userId:actors[0],status:'accepted'}))
+        Q.fail('Issuer must already be an accepted member.');
+      if (Q.collection('users').findOne({accountUserId:actors[0],workspaceGroupId:groupId})) continue;
+      const userId = `qa-group-api-alex-${groupId.endsWith('-a') ? 'a' : 'b'}`;
+      Q.collection('users').insertOne({...Object.fromEntries(fields.filter(k=>source[k]!==undefined).map(k=>[k,source[k]])),
+        userId,syncKey:userId,accountUserId:actors[0],workspaceGroupId:groupId,operator:false});
+    }
+    Q.printObject({checkpointId,prepared:command,fixtureOnly:true});return;
+  }
   if (command === 'remove-issuer-admin' || command === 'restore-issuer-admin') {
     Q.collection('activityMembers').updateOne({ownerType:'community',ownerId:groups[1],userId:actors[0]},{$set:{role:command==='remove-issuer-admin'?'Member':'Admin'}});
     Q.printObject({checkpointId,prepared:command,group:groups[1],fixtureOnly:true});return;

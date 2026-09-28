@@ -332,3 +332,70 @@ Authorization consent redesigned with shared Popup/Menu styles, client identity,
 profile panel, concise HU/EN permission text, optional callback disclosure and
 right-aligned actions. Source+3Mongo seed audit8056keys PASS; watcher build PASS.
 Actual new-consent rendering still to verify during7.2.
+
+### 7.2 Partial evidence — revocation, reconnect and common consent actions
+
+OAuth-row failed DELETE retained the row, Advanced badge1 and retryable error
+confirmation. Successful normal retry removed the OAuth row while retaining the
+manual Client1 key and copyable MCP URL. Inspector's old credentials required
+reauthorization. Cancel returned access_denied to the real Inspector. Subsequent
+normal approval reconnected using MCP2025-11-25. Fresh signed-out login and
+logout independence remain pending; this is not a full7.2 PASS.
+
+The UI-generated manual client_id/secret also completed a real S256 code/token
+exchange through HTTP and authenticated private MCP discovery (9tools) plus
+paid Event read. This separate protocol probe is not claimed as an Inspector
+manual-credentials UI test. First probe incorrectly used eventId; the advertised
+externalId field corrected that harness error and the read passed. Secrets and
+raw Event payload retained only in the private run directory.
+
+Connection details uses grouped labels/copy rows:243.44px popup height,
+9.27px label-to-input gap, no overflow. Consent uses existing app-popup and
+app-menu; action layout/slate+blue match common confirmation buttons, and
+loading uses shape=button instead of the incorrect circle on a labelled pill.
+390px viewport: shared fullscreen popup390x844, document width390; both action
+buttons36px tall. Held consent response verified disabled actions and stable
+button geometry; release completed the real callback. Current short consent
+translation loaded. Callback URL disclosure removed from consent at user request;
+it remains available in connection details and OAuth validation is unchanged.
+Existing frontend-sync watcher compiled/synced the changes successfully.
+
+7.2 completed: normal browser Logout left manual bearer discovery/private Event
+read usable, and Inspector reconnect reused its independent OAuth credentials.
+Cleared client-stored OAuth state with token revocation disabled via Inspector
+settings, then Connect redirected the signed-out browser to normal entry.
+Accepted privacy, selected Group API Alex from the normal demo list; returned to
+/mcp/authorize with the correct Base identity. No injected login was used.
+Cancel preserved the exact server settings snapshot (manual1/OAuth1); actual
+Inspector displayed access_denied. Re-authenticate plus Allow access returned
+Connected/MCP2025-11-25. This second registered client adds a separate OAuth row;
+all run-owned rows remain scheduled for7.8 cleanup.7.2 PASS.
+Latest consent rendered without callback URL; shared action buttons retained.
+
+### 7.3 Profile capabilities PASS;7.4 unchanged development boundary retained
+
+Versioned prepare-issuer-workspaces adds Alex's missing account-linked A/B
+personal-profile prerequisites only. Original fixture had accepted Admin
+memberships but no owner group-profile copies, so normal picker correctly hid
+those choices. This preparation is not claimed as admission/profile-copy proof.
+Normal UI selection of A and Advanced generation produced a group-bound key.
+Real PKCE exchange/discovery identified qa-group-api-alex-a / QA Group API A;
+createAssets absent, Base key still advertised it and kept its Base ownership
+while the app displayed A. Both authorized invitation groups initially listed.
+Versioned removal of B administrator role followed by discovery in the SAME MCP
+session removed B; a stale inviteGroupParticipants(B) call failed. A remained.
+Foreign Base paid Event read from A failed. Finally restored Admin using the
+versioned harness. No write operation was used to discover permissions.
+7.4 unchanged0.2–0.3 protocol proofs retained; foreign ownership replay passed.
+
+### 7.5 Retained UI/profile race PASS at exercised boundary
+
+Held the HTTP response to a second A manual-key generation. Closed ordinary
+popups and selected Main profile normally before releasing the response.
+After release no A secret was visible in Base. Reopened Base Advanced: manual1,
+OAuth2, no secret; independent Fresh Event identity Advanced remained empty.
+The delayed key exists only under A for final cleanup. Existing first A secret
+was visible before closing (not the delayed response). Failed revoke/retry was
+already exercised in7.2. At390px Base Revoke remained inside viewport at its
+row top (9.8px inset), no document overflow. API-key and MCP storage remain
+separate; MCP URL grants/manual rows retained their separate sections.
