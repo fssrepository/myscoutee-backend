@@ -88,13 +88,13 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: DEPLOY-EXTERNAL-CONFIG-001
 checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
-substage: PREPARATION — VMware production runtime1.3.0 patched; own phone fixture not staged.
-next_action: Prepare the independent configured VMware fixture and Android launcher, then execute blocks1–6 in order with real Firebase login and Inspector. Block7 iOS is IGNORED at user request and does not gate closure.
-execution_authority: User explicitly delegated the complete testcase on their Android phone on 2026-09-28. Browser/device actions and in-scope fixes/retests are authorized.
+substage: Block1 IN PROGRESS — fresh registration complete; Children label repair and profile-field checks next, then existing raxim.uk account login.
+next_action: Continue merged block1 without repeating registration: Children label repair confirmed by user; finish saved profile, HU/EN value variants and Hungarian filter (1.2), then use the already staged missing-location raxim.uk control (1.3), followed by retry/isolation and private denial. User operates phone alongside Codex backend checks. Block6 iOS is IGNORED at user request and does not gate closure.
+execution_authority: Full testcase delegated; user currently operates phone UI while Codex handles backend/evidence. Blocks1–3 may continue on desktop against this same configured VM; block4 remains on phone and block5 requires physical Android. Preserve numbered order.
 execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
-fixture_phase: not-staged; no provider test identities or phone transport created yet.
+fixture_phase: baseline-ready; firebase-entry captured. Unused email provider fixture was removed and absence verified. User selected their second Google account; Registration completed; the earlier registration-before.json query omitted firebaseUid and does not prove absence of a pre-existing application record. Phone https://localhost:8443 routes through adb reverse and SSH to VMware443.
 runtime: VMware192.168.153.129 has production1.3.0 images and migrations through008; installed DEB still1.0.0. Active Operator Firebase credentials retained. Host dev stack stopped. Android14 connected.
-last_completed: Production source/runtime parity and focused migration tests PASS; no device checklist step PASS yet. Prior Group API case remains closed.
+last_completed: Firebase entry ordering defect fixed;63 focused tests PASS, including demo entry and Setup Update/Close. Production frontend build0f723f2d23a0-20260928050359 deployed and verified over the SSH endpoint; user confirmed the Children label repair on phone; remaining1.2 assertions are still open. Physical Setup→Update→Close→provider login observed; new Google identity completed registration; Mongo coordinates match the observed successful request and pending storage cleared. Former block4 is merged into block1; no registration replay.
 release_sequence: Finish runtime QA; build final DEB and verify one additional VMware upgrade; release only after qualification. Netcup upgrade waits for the user's later instruction.
 resume_gate: Read-only verify VMware health/version, current Git diff and phone transport before fixture mutation. Preserve VM backup and runtime snapshots under /var/lib/myscoutee/qa-fixtures/release-1.3.0.
 ```

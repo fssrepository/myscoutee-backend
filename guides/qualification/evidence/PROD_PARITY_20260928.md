@@ -75,12 +75,112 @@ disable that active configuration; runtime availability includes the Operator
 configuration. No credential was copied or replaced during this audit.
 
 The phone is Android14. It reaches the host over USB tethering; direct VMware
-subnet reachability was not established. Local phone transport, the independent
-fixture/actors and real provider login still need preparation. The VM reached
-Google HTTPS; public inbound reachability is separate. OAuth currently advertises
-`https://localhost`, matching the local installation configuration.
+subnet reachability was not established. The independent fixture is staged and its `firebase-entry` snapshot captured.
+The unused email provider actor `no` was removed after the user selected normal
+Google accounts; provider absence and local secret removal were verified. The VM reached
+Google HTTPS; public inbound reachability is separate. A temporary QA Compose overlay advertises
+`https://localhost:8443` for OAuth and allows that WebSocket origin. Restore the
+standard Compose runtime before final package qualification; the installed env
+file and Operator provider configuration were not changed.
 
 After configured phone/Inspector QA, build the final DEB and perform the requested
 additional VMware upgrade. Do not infer that a patched runtime proves packaging.
 Release tags/publication and the later user-requested Netcup upgrade follow their
 recorded release gates. No release/tag/Netcup action has occurred here.
+
+## Android transport preparation
+
+- Phone `https://localhost:8443` → USB `adb reverse` → host loopback8443
+  → SSH local forwarding → VMware loopback443. The earlier temporary nginx
+  transport container was stopped and removed.
+- Direct VMware443 and the SSH-forwarded endpoint return identical TLS
+  certificate SHA-256: `1ef56e502a758940d73c56e55dc4ee5ff672977c2315efa3c859526e1fb56e94`.
+  The phone loaded the expected1.3.0 frontend through this route.
+- Android rejected binding reverse port443; device8443 is retained.
+- The user certificate store was inspected and empty; no certificate was
+  installed. A copy of the public VM certificate remains in Downloads for
+  cleanup. Certificate settings preparation was abandoned before any change.
+- Chrome notification permission and display settings have private restore
+  snapshots under `/tmp/myscoutee-deploy-qa-transport`. USB keep-awake was enabled;
+  tethering and location settings were preserved.
+- Versioned launcher opened the anonymous entry after a fresh fixture status
+  check. Privacy consent was accepted through the UI and Login selected.
+  This is progress evidence, not a registration or installed-app PASS.
+
+## Block1.1 — Firebase entry order repair and registration in progress
+
+The physical phone exposed a product defect: provider login opened before the
+required Setup flow; after successful Google authentication, its overlay at
+z-index2850 covered the Setup popup. This was observed through the actual
+rendered hit-test stack. The SSH endpoint returned the same certificate as
+direct VMware443, and the browser reported a secure context. No certificate
+installation was used to repair this UI defect.
+
+User-confirmed order: missing location → Setup → successful Update (popup stays
+open) → Close → provider login. Close without accepted location only dismisses
+Setup. Firebase with no application user opens registration. Demo uses its
+existing selector/admission flow. The repaired Firebase branch reuses the same
+Setup promise and binds an anonymous accepted point to the resulting account
+before its profile read; optional notification opt-out does not open Setup again.
+
+- Focused Angular tests:63/63 PASS across entry, Setup and location service;
+  includes existing demo admission, cancellation/retry and account-scoped pending
+  coordinate tests. The first unrestricted test compile was blocked by unrelated
+  existing spec type errors; the existing focused tsconfig was reused.
+- Actual production frontend rebuilt and nginx image transferred/recreated alone.
+  VMware nginx healthy; phone and HTTP app-version report
+  `0f723f2d23a0-20260928044638`. The earlier420-file audit describes the preceding
+  artifact; the final release still needs its final artifact qualification.
+- Previous incomplete Google session ended through normal Settings→Logout.
+  Anonymous entry with browser geolocation `prompt` opened Setup alone; Update
+  stayed disabled until Location selection. Android's precise location permission
+  was granted with “Allow this time”. After successful Update, Setup stayed open;
+  Close opened provider choices with no application session present.
+- User selected their other Google account and reached Registration.
+  The initial `registration-before.json` query omitted `firebaseUid`; its zero-row result does not establish absence of an application user. Do not use it as a fresh-record baseline.
+  The account-scoped pending-login location exists in browser storage. The
+  request trace started after the initial provider/profile request, so that
+  first request's parameters are not claimed as captured evidence.
+- User now controls registration; Codex observes network/Mongo/IndexedDB in
+  parallel. Three repository test images were copied to Android Downloads as
+  `MyScoutee-QA-1.png`, `MyScoutee-QA-2.png`, `MyScoutee-QA-3.png`. Remove these
+  exact copies during device cleanup. No personal gallery images were selected.
+- Entry network trace is private under
+  `/tmp/myscoutee-deploy-qa-transport/entry-network.jsonl`; authorization headers
+  and tokens are excluded. Keep this and the VM baseline until verification.
+
+The following continuation supersedes the registration-in-progress pointer above.
+No final DEB upgrade or release has occurred.
+
+
+## Registration completed; block1.2 reload verification pending
+
+- User completed registration; no registration replay is planned. The observed
+  registration write and authoritative profile read returned HTTP200. Mongo
+  records a public profile, form version2 and three images; the saved point
+  matches the observed latitude/longitude request, with no location X-header.
+  Pending browser coordinates cleared after the successful authoritative read.
+  IndexedDB user tables were inspected separately and empty in this HTTP flow.
+- Baseline limitation: the initial identity query was incomplete (see above).
+  Completion of registration does not establish creation of a previously absent
+  database record. Retain that distinction when closing individual assertions.
+- Children translation defect was a second DOM translation of the correct HU
+  label “Van” into the vehicle label “Furgon”. Existing translation-ignore
+  markers now protect menu labels and profile detail values;20 focused menu
+  tests passed. Canonical translation seeds were already correct.
+- Production nginx build `0f723f2d23a0-20260928050359` was loaded/recreated on
+  VMware; the SSH HTTPS endpoint returns this exact build ID. User may reload
+  for block1.2; physical label/profile/filter verification remains pending.
+- Former registration block4 is merged into block1. Current blocks4/5 cover
+  reporting/installed version and Android recovery; block6 iOS is IGNORED.
+  Blocks1–3 may run on desktop against this configured VM, with normal provider
+  authentication; no dev-stack result substitutes for deployment evidence.
+- Existing raxim.uk account location control is already staged through the
+  versioned harness for1.3. Restore its exact saved point after that check.
+
+### Block1.2 — user confirmation
+
+The user confirmed on the phone that the Children label repair is correct
+(“jó lett a gyerek”). Record the reported label defect as verified fixed.
+This confirmation alone does not close the remaining HU/EN value variants,
+saved profile-view semantics or Hungarian filter assertions.

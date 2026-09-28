@@ -47,6 +47,31 @@
     Q.printObject(status()); return;
   }
   if (!state) Q.fail('Stage the independent deployment checkpoint first.');
+  if (command === 'prepare-location-control') {
+    const userId = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
+    if (!/^[a-f0-9]{8}-[a-f0-9-]{27}$/.test(userId) || state.locationControl) Q.fail('Provide one new existing-account location control.');
+    const user = Q.collection('users').findOne({userId});
+    if (!user?.firebaseUid || user.accountUserId || user.workspaceGroupId
+        || !Number.isFinite(user.locationCoordinates?.latitude)
+        || !Number.isFinite(user.locationCoordinates?.longitude)) Q.fail('A located Firebase account profile is required.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$set: {locationControl: {
+      userId, firebaseUid: user.firebaseUid, coordinatesBefore: user.locationCoordinates,
+      preparedAt: Q.nowIso()
+    }}});
+    Q.collection('users').updateOne({_id: user._id, firebaseUid: user.firebaseUid}, {$unset: {locationCoordinates: ''}});
+    if (Q.collection('users').findOne({_id: user._id})?.locationCoordinates) Q.fail('Location control preparation failed.');
+    Q.printObject({checkpointId, userId, phase: 'missing-location', originalLocationRetained: true}); return;
+  }
+  if (command === 'restore-location-control') {
+    const saved = state.locationControl;
+    if (!saved) Q.fail('No location control to restore.');
+    const user = Q.collection('users').findOne({userId: saved.userId, firebaseUid: saved.firebaseUid});
+    if (!user) Q.fail('The original location-control account is missing.');
+    Q.collection('users').updateOne({_id: user._id}, {$set: {locationCoordinates: saved.coordinatesBefore}});
+    if (!Q.sameJson(Q.collection('users').findOne({_id: user._id}).locationCoordinates, saved.coordinatesBefore)) Q.fail('Location restore mismatch.');
+    Q.collection(Q.STATE_COLLECTION).updateOne({_id: state._id}, {$unset: {locationControl: ''}});
+    Q.printObject({checkpointId, userId: saved.userId, phase: 'location-restored'}); return;
+  }
   if (command === 'capture') {
     const name = Q.text(process.env.MANUAL_QA_SOURCE_CHECKPOINT_ID);
     if (!/^[a-z0-9-]{1,60}$/.test(name) || state.captures.some(capture => capture.name === name)) {
@@ -57,6 +82,7 @@
     Q.printObject({checkpointId, captured: name}); return;
   }
   if (command === 'reset') {
+    if (state.locationControl) Q.fail('Restore the existing-account location control before cleanup.');
     if (!Q.sameJson(config(), state.configurationBefore)) Q.fail('Deployment configuration changed; restore its owned changes before actor cleanup.');
     const ids = profileIds();
     for (const name of ['events', 'assets', 'communityGroups']) {

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // User-delegated physical-device execution; only the local QA origin is targeted.
 import WebSocket from '../../../frontend/node_modules/ws/index.js';
-import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, unlinkSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { once } from 'node:events';
 import { createInterface } from 'node:readline';
@@ -17,9 +18,11 @@ const deviceMapping = `tcp:${devicePort}`, hostMapping = `tcp:${hostPort}`;
 const mappingSuffix = `${deviceMapping} ${hostMapping}`;
 const packageName = process.env.QA_PHONE_PACKAGE || 'org.chromium.webapk.af8b7eef107d7742f_v2';
 if (!/^org\.chromium\.webapk\.[a-z0-9_]+$/.test(packageName)) throw Error('Invalid QA WebAPK package');
-const transportSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-transport.before.json', import.meta.url));
-const screenSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/device-screen.before.json', import.meta.url));
-const chromePermissionSnapshot = fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/chrome-notifications.before.json', import.meta.url));
+const runtimeDirectory = process.env.QA_PHONE_RUNTIME_DIR || fileURLToPath(new URL('../../../server/docker/.qa-mobile-runtime/', import.meta.url));
+mkdirSync(runtimeDirectory, {recursive: true, mode: 0o700});
+const transportSnapshot = path.join(runtimeDirectory, 'device-transport.before.json');
+const screenSnapshot = path.join(runtimeDirectory, 'device-screen.before.json');
+const chromePermissionSnapshot = path.join(runtimeDirectory, 'chrome-notifications.before.json');
 if (action === 'snapshot-chrome-notifications' || action === 'restore-chrome-notifications') {
   const serial = execFileSync('adb', ['get-serialno'], { encoding: 'utf8' }).trim();
   if (action === 'snapshot-chrome-notifications') {
@@ -151,7 +154,38 @@ const tap = async (selector, index = 0) => {
   await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
 };
 try {
-  if (action === 'inspect') {
+  if (action === 'trace-entry') {
+    // Observe only this origin's entry requests; never log auth headers/tokens.
+    socket.on('message', data => {
+      const message = JSON.parse(data);
+      if (message.method === 'Network.requestWillBeSent') {
+        const {request, requestId} = message.params;
+        const url = new URL(request.url);
+        if (url.origin !== origin || !/^\/api\/(auth\/|.*location.*eligibility)/.test(url.pathname)) return;
+        console.log(JSON.stringify({event: 'request', at: new Date().toISOString(), requestId,
+          path: url.pathname, method: request.method,
+          query: Object.fromEntries([...url.searchParams].filter(([key]) => ['latitude', 'longitude', 'groupId'].includes(key))),
+          locationHeaders: Object.keys(request.headers).filter(key => /^x-.*(location|latitude|longitude)/i.test(key))}));
+      } else if (message.method === 'Network.responseReceived') {
+        const {response, requestId} = message.params;
+        const url = new URL(response.url);
+        if (url.origin === origin && url.pathname.startsWith('/api/auth/')) {
+          console.log(JSON.stringify({event: 'response', at: new Date().toISOString(), requestId,
+            path: url.pathname, status: response.status}));
+        }
+      }
+    });
+    await send('Network.enable');
+    console.log(JSON.stringify({event: 'ready', origin}));
+    const input = createInterface({input: process.stdin});
+    await new Promise(resolve => {
+      process.once('SIGINT', resolve); process.once('SIGTERM', resolve);
+      input.on('line', line => {if (line.trim() === 'stop') resolve();});
+      input.once('close', resolve);
+    });
+    input.close();
+    await send('Network.disable');
+  } else if (action === 'inspect') {
     console.log(JSON.stringify(await evaluate(`(async()=>({
       path:location.pathname,visible:document.visibilityState,standalone:matchMedia('(display-mode: standalone)').matches,
       identity:JSON.parse(localStorage.getItem('myscoutee.http.session.v1')||'null')?.userId||null,

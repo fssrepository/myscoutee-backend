@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare/reset exactly one disposable Firebase identity for the Push fixture.
+"""Prepare/reset one disposable Firebase identity for a verified phone fixture.
 
 Uses Google's documented accounts.signUp admin API. Never prints credentials.
 This is fixture setup, not registration/login acceptance evidence.
@@ -27,10 +27,30 @@ NAME = 'MyScoutee QA Push Riley'
 ACTION = sys.argv[1] if len(sys.argv) > 1 else 'status'
 if ACTION not in ('stage', 'status', 'reset'):
     raise SystemExit('Use stage|status|reset')
-oracle = json.loads(subprocess.check_output([
-    'bash', str(ROOT / 'server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'),
-    'status', 'mobile-push', 'MOBILE-PUSH-LIFECYCLE-001'
-], text=True))
+deployment_status = os.environ.get('QA_PROVIDER_DEPLOY_STATUS')
+if deployment_status:
+    from datetime import datetime, timezone
+    oracle = json.loads(Path(deployment_status).read_text())
+    actor_key = os.environ.get('QA_PROVIDER_ACTOR', '')
+    if (oracle.get('checkpointId') != 'DEPLOY-EXTERNAL-CONFIG-001'
+            or actor_key not in ('no', 'yes', 'private', 'outsider')
+            or oracle.get('firebaseActive') is not True):
+        raise SystemExit('A verified configured-deployment fixture is required')
+    if ACTION == 'stage' and (datetime.now(timezone.utc) - datetime.fromisoformat(
+            oracle['checkedAt'].replace('Z', '+00:00'))).total_seconds() > 300:
+        raise SystemExit('Refresh the deployment fixture status before provider creation')
+    actor = next(row for row in oracle['actors'] if row['key'] == actor_key)
+    UID = f'deploy-external-{actor_key}-v1'
+    EMAIL = f'deploy-external-{actor_key}@qa.myscoutee.test'
+    NAME = f'QA Deploy {actor_key}'
+    if (actor['uid'], actor['email'], actor['name']) != (UID, EMAIL, NAME):
+        raise SystemExit('Unexpected deployment actor identity')
+    STATE = SECRET_DIR / f'deploy-external-{actor_key}-provider-user.local.json'
+else:
+    oracle = json.loads(subprocess.check_output([
+        'bash', str(ROOT / 'server/docker/scripts/manual-qa-checkpoints/manual-qa-checkpoints-docker.sh'),
+        'status', 'mobile-push', 'MOBILE-PUSH-LIFECYCLE-001'
+    ], text=True))
 if oracle['phase'] == 'not-staged' and ACTION == 'stage':
     raise SystemExit('Stage the guarded Mongo Push fixture first')
 account = json.loads((SECRET_DIR / 'firebase-service-account.json').read_text())

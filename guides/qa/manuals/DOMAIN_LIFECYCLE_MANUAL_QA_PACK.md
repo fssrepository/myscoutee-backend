@@ -11331,10 +11331,25 @@ evidence remains in the dated Group log; closed PASS rows are unchanged.
 
 2026-09-27 18:22 Group continuation:19.1 HTTP entry/invitation branch complete, with real claim/profile order, persistence/replay, denied-GPS relogin and exact scoped cleanup. User-reported avatar flash and Setup disabled action repaired/verified.19.2 active:53/53 selector seed points accepted; runtime Firebase configuration404 blocks real Firebase sign-in. Pending-coordinate controls and Local remain. Counts unchanged; see block19 evidence.
 
-### DEPLOY-EXTERNAL-CONFIG-001 — VMware/Android preparation2026-09-28
+### DEPLOY-EXTERNAL-CONFIG-001 — merged block1 in progress2026-09-28
 
 [Dedicated checklist](../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
-2026-09-28: full-flow testing delegated on the physical Android phone. Production runtime/parity preparation is recorded in [the audit](../../qualification/evidence/PROD_PARITY_20260928.md); blocks1–6 remain NOT RUN. iOS is isolated as block7 and **IGNORED** at the user's explicit request because no device is available. It does not gate QA closure and is not a PASS or an unsupported-platform claim.
+Former block4 registration/profile-field coverage is now part of block1. User
+completed normal Google registration on the phone; no registration replay is
+required. Backend verification found the completed public profile, three images, exact
+agreement between the sent and stored coordinates, a successful profile read and
+cleared pending browser coordinates. The HTTP IndexedDB user table store was empty.
+
+Firebase Setup→Update→Close→provider ordering was repaired and verified on the
+phone;63 focused tests passed, including unchanged demo admission. Children “Van”
+was incorrectly translated a second time as the vehicle “Furgon”; its UI repair
+passed20 menu tests, was deployed as production build050359 and was confirmed
+fixed by the user on the phone. Finish1.2 profile-field checks,
+then the user-requested missing-location existing-account login, retry/isolation
+and private denial. Later blocks remain NOT RUN. Renumbered iOS block6 is IGNORED
+at the user's explicit request and does not gate closure.
+
+Detailed evidence: [production parity record](../../qualification/evidence/PROD_PARITY_20260928.md).
 
 Historical scope transfer2026-09-27:
 

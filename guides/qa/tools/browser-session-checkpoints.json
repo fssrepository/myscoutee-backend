@@ -2604,8 +2604,8 @@
     "DEPLOY-EXTERNAL-CONFIG-001": {
       "device": "android",
       "preserveOtherSessions": true,
-      "entryUrl": "https://localhost/entry",
-      "targetUrl": "https://localhost/game",
+      "entryUrl": "https://localhost:8443/entry",
+      "targetUrl": "https://localhost:8443/game",
       "storageScope": "http",
       "bootstrapEntryConsent": false,
       "sessions": [
