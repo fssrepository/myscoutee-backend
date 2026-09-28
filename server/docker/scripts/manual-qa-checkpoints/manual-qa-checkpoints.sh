@@ -25,6 +25,7 @@ Usage:
   bash manual-qa-checkpoints.sh prepare|restore browser-sessions <checkpoint-id>
   bash manual-qa-checkpoints.sh stage|status|ready|repair-rate-counters|reset event-rating EVENT-ACTIVITY-RATING-001 [before-meeting|all|standard|tournament|speed-meeting]
   bash manual-qa-checkpoints.sh stage|status|reset integration-api INTEGRATION-API-001
+  bash manual-qa-checkpoints.sh stage|status|reset integration-api-group INTEGRATION-API-GROUP-001
   bash manual-qa-checkpoints.sh stage|status|reset mcp-oauth INTEGRATION-API-GROUP-001
   bash manual-qa-checkpoints.sh stage base-stat
   bash manual-qa-checkpoints.sh status base-stat
@@ -538,6 +539,7 @@ run_scenario() {
   fi
 
   case "${scenario}" in
+    integration-api-group) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-group-checkpoints.js" ;;
     mcp-oauth) scenario_script="${SCRIPT_DIR}/scenarios/mcp-oauth-checkpoints.js" ;;
     group-isolation) scenario_script="${SCRIPT_DIR}/scenarios/group-isolation-checkpoints.js" ;;
     community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
@@ -799,7 +801,7 @@ PY
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
     ;;
-  mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
+  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
     [ "$#" -eq 3 ] && [ "$3" = "INTEGRATION-API-GROUP-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

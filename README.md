@@ -62,8 +62,9 @@ are closed. Full Local remains NOT RUN. External/configured/device acceptance
 belongs to independent [deployment QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
 Real ChatGPT/Claude/Codex connection and conversation acceptance is a separate
 [post-deployment smoke](guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md), outside the QA matrix.
-Next is the [participant-link API](guides/qa/checklists/api/INTEGRATION-API-GROUP-001.md),
-with its MCP client development required before testing; it belongs to API test.
+The [participant-link API](guides/qa/checklists/api/INTEGRATION-API-GROUP-001.md)
+baseline is ready for ordered execution from block1 (0/7 completed). MCP key/OAuth
+checks are included in block7; supporting development probes do not close that case.
 See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
 domain order; participant-link coverage belongs to API test. Group evidence does not close the separate API journey.
 

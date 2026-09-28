@@ -88,15 +88,15 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: IN PROGRESS / block7 OAuth Connect prerequisite development. Isolation remains closed HTTP9/9; full Local NOT RUN.
-next_action: Finish URL-first Connect verification with the pinned official Inspector under myscoutee-mcp/tools/oauth-client; show API popup technical-details UI. Real-host ChatGPT smoke is now outside QA in guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md.
-execution_authority: User delegated full-flow Isolation; after it, API testcase development before execution. User will open VMware for Firebase.
-execution_log: ../evidence/INTEGRATION-API-GROUP-001-oauth-development-20260928.md
-fixture_phase: Isolation reset-complete; original records and pre-launch active-session snapshots restored exactly. Minimal mcp-oauth block7 development fixture staged for OAuth Demo Alex; other API blocks not staged.
-runtime: Existing frontend-sync/backend own builds. Optional Inspector listening on loopback 6274, managed by its separate launch.mjs; managed API browsers retained (demo actor and signed-out client); do not relaunch/reset before inspecting current state.
+substage: Ordered Group API campaign baseline ready, block1 prerequisite UI key; 0/7 completed.
+next_action: Announce block1.1 and use Group API Alex's profile API UI to generate the ordinary API key, then issue two participant links. Follow points in order with visible results. MCP checks are in block7; real-host ChatGPT smoke is outside QA.
+execution_authority: User requested ordered point-by-point Group API QA. Current managed-browser startup is complete; default user-controlled manual QA applies unless explicit whole-case delegation follows. Prior delegated MCP credential-development probes are completed.
+execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
+fixture_phase: integration-api-group baseline-ready; four isolated actors and two private workspace groups. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
+runtime: Existing frontend-sync/backend own builds. Optional Inspector stopped. Versioned launcher prepared Group API Alex plus signed-out recipient; manifest INTEGRATION-API-GROUP-001.json.
 last_completed: Isolation blocks1–9 HTTP scope PASS. Pending-write picker is non-closable by the existing save contract; attempted bypass is not cross-scope mutation evidence. Contact/account read and A/B Event unread isolation verified. Demo selector compact red action/retained parent and general mobile menu bell hiding verified.
 mutation_contract: Await persistence inside the busy confirmation dialog. Only after success apply canonical returned state through existing stores to retained lists/cards/badges. Failure retains dialog/error. Keep underlying popups open. No reload to obtain a mutation result.
-resume_gate: Before any new fixture or browser launch, read the queued testcase and inspect current runtime; Isolation has no live fixture. Current mcp-oauth development fixture and managed browser manifest must be checked before mutation.
+resume_gate: Before any new fixture or browser launch, read the queued testcase and inspect current runtime; Isolation has no live fixture. Current integration-api-group fixture and managed browser manifest must be checked before mutation.
 
 ```
 

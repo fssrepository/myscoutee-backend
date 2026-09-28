@@ -2583,14 +2583,14 @@
       },
       "sessions": [
         {
-          "actor": "OAuth Demo Alex",
+          "actor": "Group API Alex",
           "sessionKind": "demo",
-          "userId": "f02909260000000000000001",
-          "expectedName": "OAuth Demo Alex",
+          "userId": "f03009260000000000000001",
+          "expectedName": "Group API Alex",
           "autoDismissExplanationGuide": true
         },
         {
-          "actor": "OAuth signed-out client",
+          "actor": "Group API signed-out recipient",
           "sessionKind": "anonymous",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame"
         }
