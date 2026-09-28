@@ -1,0 +1,60 @@
+[
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T01:11:26.587Z",
+    "pass": true,
+    "actor": 0,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.1.links",
+    "at": "2026-09-28T01:12:07.303Z",
+    "pass": true,
+    "status": 200,
+    "orderedIds": [
+      "group-api-fresh-rowan",
+      "group-api-existing-maya"
+    ],
+    "count": 2
+  },
+  {
+    "point": "1.2.repeat-validation",
+    "at": "2026-09-28T01:12:16.688Z",
+    "pass": true,
+    "stableUrls": true,
+    "blankDuplicateOversizedStatuses": [
+      400,
+      400,
+      400
+    ]
+  },
+  {
+    "point": "1.1.key",
+    "at": "2026-09-28T01:12:53.688Z",
+    "pass": true,
+    "actor": 1,
+    "source": "normal-profile-ui",
+    "secretRecorded": false
+  },
+  {
+    "point": "1.2.foreign-owner",
+    "at": "2026-09-28T01:13:21.440Z",
+    "pass": true,
+    "status": 403,
+    "actor": 1
+  },
+  {
+    "point": "2.1\u20132.3",
+    "pass": true,
+    "registration": "normal entry/onboarding/save",
+    "baseAccountPreserved": true,
+    "workspaceProfiles": 1,
+    "acceptedMemberships": 1,
+    "reloadAndNormalRelogin": "QA Group API A",
+    "replayNoDuplicates": true,
+    "defaultHomeGender": "Woman",
+    "explicitlyClearedHomeGenderAfterReplay": "Any",
+    "geolocation": "QA-only Budapest override; native production path unchanged"
+  }
+]

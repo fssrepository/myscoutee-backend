@@ -801,7 +801,7 @@ PY
     { [ "$#" -eq 3 ] || [ "$#" -eq 4 ]; } && [ "$3" = "EVENT-ACTIVITY-RATING-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3" "${4:-all}"
     ;;
-  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
+  integration-api-group:stage|integration-api-group:status|integration-api-group:reset|integration-api-group:prepare-entry-missing|integration-api-group:prepare-entry-invalid|integration-api-group:prepare-entry-valid|mcp-oauth:stage|mcp-oauth:status|mcp-oauth:reset)
     [ "$#" -eq 3 ] && [ "$3" = "INTEGRATION-API-GROUP-001" ] || { usage >&2; exit 2; }
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;

@@ -2594,7 +2594,12 @@
           "sessionKind": "anonymous",
           "entryUrl": "http://localhost/entry?redirect=%2Fgame"
         }
-      ]
+      ],
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      }
     }
   }
 }

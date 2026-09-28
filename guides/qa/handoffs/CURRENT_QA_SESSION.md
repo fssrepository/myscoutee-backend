@@ -88,9 +88,9 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: INTEGRATION-API-GROUP-001
 checklist: ../checklists/api/INTEGRATION-API-GROUP-001.md
-substage: Ordered Group API campaign baseline ready, block1 prerequisite UI key; 0/7 completed.
-next_action: Announce block1.1 and use Group API Alex's profile API UI to generate the ordinary API key, then issue two participant links. Follow points in order with visible results. MCP checks are in block7; real-host ChatGPT smoke is outside QA.
-execution_authority: User requested ordered point-by-point Group API QA. Current managed-browser startup is complete; default user-controlled manual QA applies unless explicit whole-case delegation follows. Prior delegated MCP credential-development probes are completed.
+substage: Ordered Group API blocks1–2 PASS,2/7 completed; current3.1 existing recipient.
+next_action: Continue3.1 through second saved invitation as Group API Maya. Missing-coordinate fixture staged; verify cancellation/retry and invalid/valid controls, then pending Nia. Rowan base/workspace/replay/filter checks passed.
+execution_authority: User explicitly requested continuing the automatic test on 2026-09-28. Full-flow Group API testing delegated; operate managed browsers and API in checklist order, announce each point/result, repair and retest failures.
 execution_log: ../evidence/INTEGRATION-API-GROUP-001-20260928.md
 fixture_phase: integration-api-group baseline-ready; four isolated actors and two private workspace groups. Previous mcp-oauth fixture reset exactly; prior Isolation remains reset.
 runtime: Existing frontend-sync/backend own builds. Optional Inspector stopped. Versioned launcher prepared Group API Alex plus signed-out recipient; manifest INTEGRATION-API-GROUP-001.json.

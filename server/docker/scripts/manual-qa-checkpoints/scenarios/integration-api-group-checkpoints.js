@@ -44,6 +44,9 @@
     Q.printObject({checkpointId, scenario, phase: state?.phase ?? 'not-staged', actors, groups,
       users: Q.collection('users').find({userId: {$in: actors}}, {userId:1,name:1}).toArray(),
       memberships: Q.collection('activityMembers').find({ownerType:'community',ownerId:{$in:groups}}, {ownerId:1,userId:1,role:1,status:1}).toArray(),
+      inviteMappings: Q.collection('integrationParticipantInvites').find({ownerUserId:{$in:actors}}, {participantId:1,claimedUserId:1,ownerType:1,eventId:1}).toArray(),
+      workspaceProfiles: Q.collection('users').find({accountUserId:{$in:actors}}, {userId:1,accountUserId:1,workspaceGroupId:1}).toArray(),
+      freshUsers: Q.collection('users').find({name:{$in:freshNames}}, {userId:1,name:1,accountUserId:1,workspaceGroupId:1,activeWorkspaceGroupId:1,affiliateReferrerUserId:1}).toArray(),
       savepoints: Object.keys(state?.savepoints ?? {})});
   }
   if (command === 'status') {status(); return;}
@@ -79,6 +82,15 @@
     status();return;
   }
   const state=Q.activeState(scenario,true);
+  if (['prepare-entry-missing','prepare-entry-invalid','prepare-entry-valid'].includes(command)) {
+    if (Q.collection('activityMembers').countDocuments({ownerType:'community',ownerId:groups[0],userId:actors[1]})) Q.fail('Entry control must run before Maya claims the invitation.');
+    const update = command === 'prepare-entry-missing'
+      ? {$unset:{locationCoordinates:'',partitionKey:''}}
+      : {$set:{locationCoordinates:command === 'prepare-entry-invalid'
+        ? {latitude:999,longitude:999} : {latitude:47.4979,longitude:19.0402}},$unset:{partitionKey:''}};
+    Q.collection('users').updateOne({userId:actors[1]},update);
+    Q.printObject({checkpointId,prepared:command,actor:actors[1],fixtureOnly:true});return;
+  }
   if (command === 'reset') {
     const owned=current();
     Q.restoreSnapshots(owned.map(s=>({...s,documents:[]})));
