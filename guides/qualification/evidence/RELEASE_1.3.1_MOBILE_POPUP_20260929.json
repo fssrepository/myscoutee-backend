@@ -1,0 +1,39 @@
+{
+  "version": "1.3.1",
+  "date": "2026-09-29",
+  "scope": "Ad hoc mobile popup fix; nginx image partial update only",
+  "source": {
+    "frontendCommit": "4f61bedad882617d8c72602b0254776da34aef6d",
+    "backendCommit": "4ee3ce5bca174e369b950f3d0faab2dab067a523",
+    "frontendTag": "v1.3.1",
+    "backendTag": "v1.3.1"
+  },
+  "productionBuild": {
+    "version": "1.3.1",
+    "buildId": "4f61bedad882-20260929005138",
+    "builtAt": "2026-09-29T00:51:38.682Z",
+    "gitSha": "4f61bedad882",
+    "result": "PASS"
+  },
+  "image": {
+    "tag": "ghcr.io/fssrepository/myscoutee-nginx:1.3.1",
+    "reference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:bbcd1e92c893f83671e95c9acc33a57f4c52393a4a6abd87995dcb5a727e046a",
+    "previousReference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:dfdf6cd50a72b635a71b5a1ae4f6d32d653c0f3cd3455ac05e2ff4ea200056cf",
+    "compatibleInstalledPackageVersions": ["1.3.0"],
+    "registryManifestVerified": true
+  },
+  "netcup": {
+    "helper": "/root/myscoutee-partial-1.3.1-20260928/install-temporary-image.sh",
+    "installedDebianPackageVersion": "1.3.0",
+    "recreatedContainers": ["nginx"],
+    "healthyContainers": 8,
+    "persistentSelectionMatches": true,
+    "publicFrontendBuildId": "4f61bedad882-20260929005138",
+    "publicHttpVerification": {"passed": 13, "failed": 0, "skipped": 0, "timeoutMs": 30000},
+    "dataMigrationOrResetRun": false
+  },
+  "localRuntime": {
+    "frontendWatcher": "Stopped for the production build, then restarted; dev build and nginx sync passed."
+  },
+  "browserInteraction": "NOT RUN"
+}
