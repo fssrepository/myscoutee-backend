@@ -26,7 +26,10 @@ input.
 
 ## Current release
 
-The next release is **1.3.0**, tagged `v1.3.0`. Package/image versions and
+The current Debian package release is **1.3.0**, tagged `v1.3.0`. The
+[1.3.1 frontend patch](../../guides/releases/v1.3.1.md) publishes only a compatible
+nginx/frontend image; no DEB or automatic-update catalog is produced.
+Package/image versions and
 release qualification boundaries are recorded in
 [the release notes](../../guides/releases/v1.3.0.md). Existing tags remain unchanged.
 

@@ -4,7 +4,28 @@ Operator procedure, verified on 2026-09-18. Run local commands from the
 repository root; run server commands after connecting over SSH.
 Connection details: [SSH access](NETCUP_SSH_ACCESS.md).
 
-## Current deployment: 1.0.2 partial update (2026-09-24)
+## Current deployment: 1.3.1 frontend patch (2026-09-29)
+
+The installed Debian package is **1.3.0**, upgraded on 2026-09-28. The
+[1.3.1 frontend patch](releases/v1.3.1.md) replaces only the nginx image with
+`ghcr.io/fssrepository/myscoutee-nginx@sha256:dfdf6cd50a72b635a71b5a1ae4f6d32d653c0f3cd3455ac05e2ff4ea200056cf`.
+Public HTTPS serves frontend version **1.3.1**, build
+`9b350bf02162-20260928233206`. The landing and Settings → Install labels both
+read this frontend version from `app-version.json`.
+
+All eight containers are healthy; the other seven containers retain their
+IDs, images and start times. Mounts, secrets, Compose configuration and all
+environment settings except `NGINX_PRODUCTION_IMAGE` are unchanged. The partial
+image selection is persistent, and all 13 external HTTP verification checks
+passed. No DEB was built or installed and no data migration/reset was run.
+See [release evidence](qualification/evidence/RELEASE_1.3.1_20260929.json).
+
+The reviewed partial-image helper is already present at
+`/root/myscoutee-partial-1.3.1-20260928/install-temporary-image.sh`. Its current
+nginx operation state under `/var/lib/myscoutee/temporary-frontend/state.json`
+retains the previous image for explicit rollback.
+
+## Previous deployment: 1.0.2 partial update (2026-09-24)
 
 The installed DEB remains **1.0.0**. All seven application containers now use
 [the 1.0.2 release image digests](releases/v1.0.2.md#published-image-identities).

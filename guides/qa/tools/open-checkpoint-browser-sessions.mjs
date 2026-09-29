@@ -118,7 +118,7 @@ if (verifyExistingOnly) {
 if (dismissGuidesOnly) {
   const existing = JSON.parse(await readFile(manifestPath, 'utf8'));
   for (const session of existing.sessions ?? []) {
-    await dismissExplanationGuide(Number(session.devToolsPort), storageScope);
+    await dismissExplanationGuide(Number(session.devToolsPort));
     process.stdout.write(`${session.actor}: explanation guide dismissed.\n`);
   }
   process.exit(0);
@@ -250,7 +250,7 @@ try {
         ?? checkpoint.autoDismissExplanationGuide
         ?? true;
       if (autoDismissExplanationGuide) {
-        await dismissExplanationGuide(port, storageScope);
+        await dismissExplanationGuide(port);
       }
     }
     await persistManifest();
@@ -373,7 +373,7 @@ async function reopenManagedActor(actor) {
   if (bootstrapEntryConsent) await acceptEntryConsent(port, storageScope, targetUrl);
   await waitForConfiguredSession(port, storageScope, retained.userId, retained.sessionId, targetUrl);
   if (configured.autoDismissExplanationGuide ?? checkpoint.autoDismissExplanationGuide ?? true) {
-    await dismissExplanationGuide(port, storageScope);
+    await dismissExplanationGuide(port);
   }
   retained.readinessVerifiedAt = new Date().toISOString();
   await save();
@@ -888,17 +888,13 @@ async function acceptEntryConsentOnCurrentEntry(port, scope) {
   }, 30000, `persisted entry consent on DevTools port ${port}`);
 }
 
-async function dismissExplanationGuide(port, scope) {
-  const dismissedContextsKey = `myscoutee.${scope}.explanation-guide.dismissed-contexts.v1`;
+async function dismissExplanationGuide(port) {
   await waitUntil(async () => {
     try {
       return await evaluateInOnlyPage(port, `(() => {
-        const raw = localStorage.getItem(${JSON.stringify(dismissedContextsKey)});
-        const dismissed = raw ? JSON.parse(raw) : [];
-        if (Array.isArray(dismissed) && dismissed.includes('home.game')) return true;
-        const guide = document.querySelector('app-explanation-popup');
-        if (!guide) return false;
-        const button = Array.from(guide.querySelectorAll('button:not([disabled])')).at(-1);
+        const guide = document.querySelector('app-explanation-popup .ui-popup');
+        if (!guide) return true;
+        const button = guide.querySelector('button.ui-popup__close:not([disabled])');
         if (!button) return false;
         button.click();
         return false;

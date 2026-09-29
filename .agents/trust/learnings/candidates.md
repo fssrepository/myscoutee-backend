@@ -37,3 +37,23 @@ before every process-changing command.
 Promotion evidence needed: validate that this does not retain obsolete
 constraints across clearly new tasks.
 
+## C004 — Preserve underlying surfaces when stacking popups
+
+Observation: repeated user corrections reject hiding the avatar or a parent
+popup when another popup opens. Keep the underlying surface mounted and visible;
+reuse the shared popup layers and translucent backdrop for coverage and pointer
+blocking. Do not add popup-specific opacity, visibility or parent-close rules.
+The side menu is a navigation surface: the user explicitly requires it to close
+when a popup or confirmation opens. This must not hide the avatar or close other
+popups underneath.
+
+Promotion evidence needed: verify nested popup state and backdrop behavior across
+additional independent flows.
+
+## C005 — Opening a popup must not wait for data it can load inside
+
+Observation: setup waited for browser permissions and forcibly reloaded deployment
+configuration before becoming visible. Reuse already loaded shared state, open
+synchronously and show pending state only on controls requiring asynchronous data.
+
+Promotion evidence needed: apply and verify the same boundary in another popup.
