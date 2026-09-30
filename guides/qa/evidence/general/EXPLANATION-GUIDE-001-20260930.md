@@ -151,7 +151,11 @@ populated mobile selector (local screenshot; excluded from Git),
 mobile drag X (local screenshot; excluded from Git),
 desktop selector (local screenshot; excluded from Git).
 
-## Separate Past/badge follow-up — still open
+## Separate Past/badge follow-up — subsequently closed
+
+The investigation below is historical. The requested server regression was
+subsequently verified and closed in
+[the focused expiry evidence](../event/EVENT-PAST-BADGES-001-20260930.md).
 
 The popup's first Events dropdown now binds to All. The side-menu binding was
 not changed. The normal Event mutation counter refresh previously included
@@ -706,5 +710,6 @@ results. There is no remaining manual oracle for that accepted scope. The
 canonical CSV, regenerated XLSX, README and resume pointer record this closure.
 Local PARTIAL retains the untested persistence boundary; native WebView and
 universal production performance are not claimed. The separate
-`EVENT-PAST-BADGES-001` remains PARTIAL. No new runtime test was performed for
-this bookkeeping correction.
+`EVENT-PAST-BADGES-001` was still PARTIAL at this bookkeeping correction. It was
+subsequently verified and closed in the linked focused expiry evidence. No new
+runtime test was performed for the earlier guide bookkeeping correction.

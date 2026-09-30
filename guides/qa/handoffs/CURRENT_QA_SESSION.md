@@ -95,11 +95,11 @@ fixture_phase: event-rating EVENT-ACTIVITY-RATING-001 before-meeting ready; main
 runtime: Existing frontend-sync and myscoutee own compilation. Focused i18n13/13 and image/pagination15/15 passed with the frontend watcher stopped serially and restarted. Android Chrome available via ADB reverse tcp:8080 to host tcp:80. No profiler, HUD or passive meter remains.
 last_completed: Landing 64 steps per viewport; feedback 39 per viewport; arrow-only Rates; shared double-pane image/profile highlights and mobile drag; editable list badge. 45 contexts / 963 fields, EN/HU and local/demo/e2e/prod seed parity. Existing General UI CSV/XLSX row updated, no new row.
 next_action: Recorded guide scope is closed. Release1.3.2 evidence is guides/qualification/evidence/RELEASE_1.3.2_20260930.json; guide commits consolidated and merged into both masters. Do not reopen accepted Rates tuning or the full guide inventory without a new request.
-resume_gate: Read git and frontend-submodule status, retaining user commits. Do not reopen the older full guide inventory. EVENT-PAST-BADGES-001 remains PARTIAL; expiry service/test retain their batch implementation. No separate Past job was added. Do not reset unrelated fixture markers or claim full lifecycle/local-persistence/native-WebView coverage.
+resume_gate: Read git and frontend-submodule status, retaining user commits. Do not reopen the older full guide inventory. EVENT-PAST-BADGES-001 is PASS/CLOSED for the requested server expiry/recount regression; see ../evidence/event/EVENT-PAST-BADGES-001-20260930.md. Expiry service/test retain their batch implementation. No separate Past job was added. Do not reset unrelated fixture markers or claim full lifecycle/local-persistence/native-WebView coverage.
 
 ```
 
-The guide QA and release 1.3.2 are closed in the recorded scope, including the accepted launcher follow-up. The CSV/XLSX row explicitly records PASS / CLOSED; its earlier in-progress notes are superseded by the accepted results. No release continuation remains pending. EVENT-PAST-BADGES-001 and unproven local-persistence/native-WebView boundaries remain separate.
+The guide QA and release 1.3.2 are closed in the recorded scope, including the accepted launcher follow-up. The CSV/XLSX row explicitly records PASS / CLOSED; its earlier in-progress notes are superseded by the accepted results. No release continuation remains pending. The subsequent EVENT-PAST-BADGES-001 server regression is also closed: real worker/HTTP checks and 20/20 Java tests passed, with exact fixture reset. CSV/XLSX totals are121/121 PASS,0 pending. Unproven local-persistence/native-WebView boundaries remain separate.
 
 
 ## Archived pair-QA resume point — 2026-09-17

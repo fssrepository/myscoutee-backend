@@ -16,6 +16,8 @@ import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -135,8 +137,9 @@ class UserActivityCountersServiceTest {
         assertThat(fields.getInteger("activities.asset.tickets")).isEqualTo(2);
     }
 
-    @Test
-    void refreshExcludesPastBeforeExpiryAndDeduplicatesPendingHostingInAll() {
+    @ParameterizedTest
+    @ValueSource(booleans = { false, true })
+    void refreshExcludesPastBeforeAndAfterExpiryAndDeduplicatesPendingHostingInAll(boolean expired) {
         Users viewer = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
         Instant now = Instant.now();
         ActivityEvent pastHost = event("past-host", "viewer", "A");
@@ -148,7 +151,7 @@ class UserActivityCountersServiceTest {
         for (ActivityEvent past : List.of(pastHost, pastInvite, pastPending, pastMember)) {
             past.setStartAtIso(now.minusSeconds(7200).toString());
             past.setEndAtIso(now.minusSeconds(3600).toString());
-            past.setIsExpired(false);
+            past.setIsExpired(expired);
         }
         ActivityEvent ongoing = event("ongoing", "host", "A");
         ongoing.setAcceptedMemberUserIds(List.of("viewer"));

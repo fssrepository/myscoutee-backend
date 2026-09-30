@@ -6,11 +6,31 @@
   const eventId = F.fixtureId(job, "event");
   const controlEventId = F.fixtureId(job, "future-control");
   const userId = F.fixtureId(job, "user");
+  const watchEventId = F.fixtureId(job, "watch-control");
+  const watchOwnerId = F.fixtureId(job, "watch-owner");
+
+  function domainFingerprint(event, controlEvent, user) {
+    return JSON.stringify({
+      event: event && {
+        expired: event.expired,
+        updatedDate: event.updatedDate,
+        updatedUser: event.updatedUser
+      },
+      controlEvent: controlEvent && {
+        expired: controlEvent.expired,
+        startAtIso: controlEvent.startAtIso,
+        endAtIso: controlEvent.endAtIso,
+        updatedDate: controlEvent.updatedDate,
+        updatedUser: controlEvent.updatedUser
+      },
+      activities: user && user.activities
+    });
+  }
 
   F.run({
     job,
     ruleKey: job,
-    variations: ["event", "ticket-only", "start-fallback-future-control"],
+    variations: ["event", "ticket-only", "start-fallback-future-control", "end-boundary"],
     build(variation) {
       const now = F.nowIso();
       const isolatedEventIds = F.collection("events")
@@ -47,24 +67,32 @@
           ? "The fixture event becomes expired=true and the rule reports one due source."
           : variation === "ticket-only"
             ? "The ticket record becomes expired=true; the rule source count remains zero because ticket-only rows are tracked separately."
-            : "The active event with no endAtIso expires through its past startAtIso fallback, while the otherwise identical future control remains active and unmodified. Only one due source is reported and the owner's nested event counters retain exactly the future hosted event.",
+            : variation === "end-boundary"
+              ? "The event initially ends 90 seconds after preparation. A normal HTTP counter refresh must include both hosted events before that boundary; the real expiry worker later removes only the ended event. Recount and repeated expiry must retain exactly the future control."
+              : "The active event with no endAtIso expires through its past startAtIso fallback, while the otherwise identical future control remains active and unmodified. Only one due source is reported and the owner's nested event counters retain exactly the future hosted event.",
         context: {
           eventId,
           controlEventId,
+          watchEventId,
           userId,
           isolatedEventIds,
           variation,
-          startFallback: variation === "start-fallback-future-control",
-          expectedFirstRunCount: variation === "ticket-only" ? 0 : 1
+          startFallback: variation === "start-fallback-future-control" || variation === "end-boundary",
+          // A real end time also makes the existing friendship projection due.
+          expectedFirstRunCount: variation === "ticket-only" ? 0 : variation === "end-boundary" ? 2 : 1
         },
         specs: [
           {
             collection: "events",
             selector: {
-              _id: { $in: [...isolatedEventIds, eventId, controlEventId] }
+              _id: { $in: [...isolatedEventIds, eventId, controlEventId, watchEventId] }
             }
           },
-          { collection: "users", selector: { _id: userId } }
+          { collection: "users", selector: { _id: { $in: [userId, watchOwnerId] } } },
+          { collection: "eventWatchSubscriptions", selector: { userId } },
+          { collection: "userSessionStates", selector: { userId } },
+          { collection: "userLoginAudits", selector: { userId } },
+          { collection: "userNotifications", selector: { recipientUserId: userId } }
         ]
       };
     },
@@ -116,14 +144,16 @@
         startAtIso: F.pastIso(120),
         ...(variation === "start-fallback-future-control"
           ? { status: "A", published: true }
-          : { endAtIso: F.pastIso(60) }),
+          : variation === "end-boundary"
+            ? { status: "A", published: true, endAtIso: new Date(Date.now() + 90_000).toISOString() }
+            : { endAtIso: F.pastIso(60) }),
         createdDate: now,
         createdUser: F.FIXTURE_ACTOR,
         updatedDate: now,
         updatedUser: F.FIXTURE_ACTOR
       };
       F.collection("events").insertOne(fixtureEvent);
-      if (variation === "start-fallback-future-control") {
+      if (variation === "start-fallback-future-control" || variation === "end-boundary") {
         F.collection("events").insertOne({
           _id: controlEventId,
           sourceId: controlEventId,
@@ -143,6 +173,31 @@
           updatedUser: F.FIXTURE_ACTOR
         });
       }
+      if (variation === "end-boundary") {
+        F.collection("users").insertOne({
+          _id: watchOwnerId, userId: watchOwnerId, syncKey: watchOwnerId,
+          name: "Counter QA watch control owner", status: "A", profileStatus: "public",
+          createdDate: now, createdUser: F.FIXTURE_ACTOR
+        });
+        F.collection("events").insertOne({
+          _id: watchEventId, sourceId: watchEventId, syncKey: watchEventId,
+          title: "Counter QA public watch control", status: "A", published: true,
+          expired: false, ownerUserId: watchOwnerId, creatorUserId: watchOwnerId,
+          startAtIso: F.futureIso(120), endAtIso: F.futureIso(180),
+          createdDate: now, createdUser: F.FIXTURE_ACTOR
+        });
+      }
+    },
+    trigger(context, snapshot) {
+      if (context.variation !== "end-boundary" || !context.expiryBaseline) return;
+      // The explicit HTTP recount includes a fresh login notification. Compare
+      // the repeat worker with its own pre-run state, after those user actions.
+      const event = F.collection("events").findOne({ _id: context.eventId });
+      const control = F.collection("events").findOne({ _id: context.controlEventId });
+      const user = F.collection("users").findOne({ _id: context.userId });
+      F.collection(F.SNAPSHOT_COLLECTION).updateOne({ _id: snapshot._id }, {
+        $set: { "context.repeatFingerprint": domainFingerprint(event, control, user) }
+      });
     },
     status(context, snapshot) {
       const event = F.collection("events").findOne({ _id: context.eventId || eventId });
@@ -207,21 +262,7 @@
             && eventCounters
             && eventCounters.all === 0
           );
-      const currentFingerprint = JSON.stringify({
-        event: event && {
-          expired: event.expired,
-          updatedDate: event.updatedDate,
-          updatedUser: event.updatedUser
-        },
-        controlEvent: controlEvent && {
-          expired: controlEvent.expired,
-          startAtIso: controlEvent.startAtIso,
-          endAtIso: controlEvent.endAtIso,
-          updatedDate: controlEvent.updatedDate,
-          updatedUser: controlEvent.updatedUser
-        },
-        activities: user && user.activities
-      });
+      const currentFingerprint = domainFingerprint(event, controlEvent, user);
       const firstPassComplete = dueEventExpired
         && futureControlUnchanged
         && ownerCountersValid
@@ -279,7 +320,7 @@
           repeatedPassChangedZeroSources: repeatedPassObserved,
           eventControlAndCountersUnchanged:
             repeatedPassObserved
-            && baseline.fingerprint === currentFingerprint
+            && (context.repeatFingerprint || baseline.fingerprint) === currentFingerprint
         }
       };
     }
