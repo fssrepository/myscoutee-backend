@@ -99,7 +99,7 @@ resume_gate: Read git and frontend-submodule status, retaining user commits. Do 
 
 ```
 
-The previous deploy/release checkpoint remains closed. The user previously authorized the new 1.3.2 guide release, then explicitly paused it with “meg ne”. The user has now requested continuing the remaining work toward release.
+The guide QA and release 1.3.2 are closed in the recorded scope, including the accepted launcher follow-up. The CSV/XLSX row explicitly records PASS / CLOSED; its earlier in-progress notes are superseded by the accepted results. No release continuation remains pending. EVENT-PAST-BADGES-001 and unproven local-persistence/native-WebView boundaries remain separate.
 
 
 ## Archived pair-QA resume point — 2026-09-17

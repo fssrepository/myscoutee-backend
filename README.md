@@ -55,14 +55,14 @@ for adding signed local packages and simulating interrupted downloads.
 ## QA status
 
 The delegated [explanation-guide review](guides/qa/evidence/general/EXPLANATION-GUIDE-001-20260930.md)
-is PASS in its recorded scope:40 contexts /896 conditional fields, EN/HU defaults,
-desktop/mobile and physical Chrome/PWA Back. The approved feedback seed correction
-is imported. Follow-up step-selector samples pass; the mobile header and topmost
-red drag-dismiss X are fixed. Guide documents and its matrix row use General UI.
-The populated mobile selector remains open for user inspection. The separate
-Past/badge lifecycle investigation remains PARTIAL; the original expiry batch
-job is unchanged. The matrix has121 testcase rows:120 PASS and1 PARTIAL, plus
-four legend rows.
+is **PASS / CLOSED in its recorded scope**: 45 contexts / 963 conditional fields,
+EN/HU defaults, desktop/mobile and physical Chrome/PWA checks. The accepted
+Rates, image-scroll and launcher menu/layer follow-ups are closed. Release 1.3.2
+and its nginx-only follow-up are deployed; the final public HTTP checks passed
+13/13. Full local persistence and native WebView coverage remain unproven.
+The separate Past/badge lifecycle investigation remains PARTIAL; the original
+expiry batch job is unchanged. The synchronized CSV/XLSX matrix has 121 testcase
+rows: 120 PASS and 1 PARTIAL, plus four legend rows.
 
 Group QA is **CLOSED for the agreed HTTP scope**: **38/38** blocks across
 [Group Lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) (29/29)

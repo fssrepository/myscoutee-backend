@@ -1,8 +1,9 @@
 # Explanation guide QA — 2026-09-30
 
-Status: **PASS in the recorded guide scope, including the requested overlay follow-up**.
+Status: **PASS / CLOSED in the recorded guide scope, including the accepted mobile and launcher follow-ups**.
 The user delegated full-flow guide testing, fixes and desktop/mobile checks.
-Inventory: **40 contexts, 896 conditional fields, English and Hungarian**.
+Final inventory: **45 contexts, 963 conditional fields, English and Hungarian**.
+The chronological initial runs below covered 40 contexts / 896 fields.
 These are catalog counts, not a claim that every conditional role/state branch
 was present in the fixture. Runtime progress uses available targets.
 
@@ -694,3 +695,16 @@ The accepted launcher fix was republished as1.3.2, frontend source
 `d4414ae8158c-20260930074116`. Netcup nginx-only replacement passed13/13
 public checks; all8 containers healthy and the other7 unchanged.
 See release evidence for immutable image and backup receipts.
+
+
+## Final ledger closure — 2026-09-30
+
+The accepted guide scope and all its recorded mobile/launcher follow-ups are
+PASS / CLOSED. Earlier in-progress statements above are chronological evidence
+and are superseded by the accepted retained-panel, image-scroll and launcher
+results. There is no remaining manual oracle for that accepted scope. The
+canonical CSV, regenerated XLSX, README and resume pointer record this closure.
+Local PARTIAL retains the untested persistence boundary; native WebView and
+universal production performance are not claimed. The separate
+`EVENT-PAST-BADGES-001` remains PARTIAL. No new runtime test was performed for
+this bookkeeping correction.
