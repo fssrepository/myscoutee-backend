@@ -45,6 +45,41 @@ Editable manual sources and PDF build instructions are in
 | MyScoutee Product | 1.0.0 | [PDF](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pdf) | [PPTX](guides/pitches/product-output/MyScoutee_Product_Pitch_v1.0.0_EN.pptx) |
 
 
+## Registry and MCP Compose environments
+
+The backend starts its own Registry and MCP services in the selected stack;
+the sibling repositories' standalone `compose.yaml` files are not launched
+implicitly. Select exactly one backend model for an invocation:
+
+| Mode | Compose file | Registry / MCP image suffix | Automatic restart |
+| --- | --- | --- | --- |
+| Dev | `server/docker-compose-dev.yml` | `-dev` | Disabled |
+| E2E | `server/docker-compose.e2e.yml` | `-e2e` | Disabled |
+| Prod | `server/docker-compose-prod.yml` | `-prod` | `unless-stopped` |
+
+Dev MCP uses `MCP_DEV_IMAGE`, E2E uses `MCP_E2E_IMAGE`, and production retains
+`MCP_IMAGE` for the release tooling. Registry uses `LOCAL_REGISTRY_IMAGE`,
+`REGISTRY_E2E_IMAGE`, and `REGISTRY_DEMO_IMAGE`, respectively. These independent
+selectors prevent an exported production image setting from changing the dev
+or E2E service. MCP always connects to `profilemanagement` on its own stack's
+network. Registry data volumes and deployment-client key/state paths are
+separate across the three environments.
+
+The source production model uses the `myscoutee-prod` project; dev retains
+`server` and E2E uses `myscoutee-e2e`. Registry container names are `registry`,
+`registry-e2e`, and `registry-demo`; MCP names are `mcp-dev`, `mcp-e2e`, and `mcp`.
+Use Compose service names (`docker compose -f ... logs mcp`, for example) for
+mode-specific lifecycle commands. Changes to existing container names take
+effect on the next explicit Compose recreation.
+
+The production application's Registry serves its isolated Explore/demo data
+using a production image. The independent central Registry uses the sibling
+repository's production model with demo seeding disabled. Installed backend
+releases continue to use `packaging/compose/docker-compose.production.yml`
+and their existing deployment tooling. Other legacy backend services still
+have fixed container names and shared published ports; this separation does
+not make whole dev/E2E/prod stacks concurrently runnable on one Docker host.
+
 ## Development release source
 
 The dev Compose stack includes a local HTTPS `release-simulator` for release

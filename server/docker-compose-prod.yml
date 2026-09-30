@@ -1,3 +1,5 @@
+name: myscoutee-prod
+
 # Production stack.
 # Build the frontend production bundle before building this stack. The nginx
 # image bakes frontend/prod into /usr/share/nginx/html.
