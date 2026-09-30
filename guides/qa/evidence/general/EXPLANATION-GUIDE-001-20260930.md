@@ -671,3 +671,26 @@ visible while either pane remains visible. Native Android swipe checks sampled
 metadata stayed visible. User accepted the result. Existing shared card CSS only;
 no additional list state or DOM rebuild. Evidence is included in
 `phone-image-scroll.json`.
+
+## Launcher menu/layer follow-up — 2026-09-30
+
+Desktop menus retain both floating launchers. The embedded guide launcher now
+creates its intended positioned layer above its own tour shade; notification
+layering remains unchanged at the user's final request. Mobile menus hide both
+launchers even during a tour, while the sibling guide panel stays mounted and
+steps through the menu. Closing the menu restores both launchers.
+
+Managed browser regression at1280px and390px passed: guide-triggered Preferences
+opening, Next while the menu is open, dismissal by shade click, and menu closing
+with restored launchers. The user accepted desktop behavior and the final fix.
+Evidence:`launcher-menu-layer-checks.json`.
+
+A separate local502 was traced to nginx retaining the backend's old Docker IP
+after the production-build restart. Reloading existing nginx restored API health
+UP and landing HTTP200; no application/data change was needed.
+
+The accepted launcher fix was republished as1.3.2, frontend source
+`d4414ae8158ce752eb75c9217ecb2057430b04cf`, build
+`d4414ae8158c-20260930074116`. Netcup nginx-only replacement passed13/13
+public checks; all8 containers healthy and the other7 unchanged.
+See release evidence for immutable image and backup receipts.

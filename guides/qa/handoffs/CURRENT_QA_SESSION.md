@@ -88,7 +88,7 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: EXPLANATION-GUIDE-001
 checklist: ../checklists/general/EXPLANATION-GUIDE-001.md
-substage: Guide/mobile Rates scope accepted;1.3.2 images published and Netcup partial deployment verified.
+substage: Guide/mobile Rates scope and launcher menu/layer follow-up accepted;1.3.2 republished and nginx-only Netcup follow-up verified (13/13 HTTP checks).
 execution_authority: User delegated guide browser testing, landing/feedback/rating pagination, shared double-panel highlights, and subsequent squash/master/tag/images/Netcup partial release. Preserve the no-refactor instruction for EventCounterExpiryService.
 execution_log: ../evidence/general/EXPLANATION-GUIDE-001-20260930.md
 fixture_phase: event-rating EVENT-ACTIVITY-RATING-001 before-meeting ready; main, anonymous landing and Alex feedback companion sessions prepared by the versioned launcher.

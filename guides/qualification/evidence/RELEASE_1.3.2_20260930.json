@@ -3,15 +3,15 @@
   "date": "2026-09-30",
   "scope": "Frontend/backend partial image release and retained-data compact-guide migration; installed DEB remains1.3.0",
   "source": {
-    "frontendCommit": "618ff4c0455c8c16bcba6b8f7215ad3f2ca000b8",
+    "frontendCommit": "d4414ae8158ce752eb75c9217ecb2057430b04cf",
     "backendRuntimeCommit": "1c5fca096b1776b653c2e597706fec8fd94e40e4",
     "releaseTags": "v1.3.2 in frontend and backend; backend tag includes final documentation"
   },
   "productionBuild": {
     "version": "1.3.2",
-    "buildId": "618ff4c0455c-20260930070844",
-    "builtAt": "2026-09-30T07:08:44.812Z",
-    "gitSha": "618ff4c0455c"
+    "buildId": "d4414ae8158c-20260930074116",
+    "builtAt": "2026-09-30T07:41:16.368Z",
+    "gitSha": "d4414ae8158c"
   },
   "images": {
     "api": {
@@ -22,10 +22,10 @@
       "registryManifestVerified": true
     },
     "nginx": {
-      "reference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:0e7a28cfafa5cc01a9efa8d9a5310e7e4e9af6ea3c6b86b901ab7a3ab25de0bf",
+      "reference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:519d0673455b894eac6e0c34b765c5570fcc43edb8a00e7ce3511dd3ba57ca2a",
       "persistentSelectionMatches": true,
       "matchesSelectedImage": true,
-      "rollbackImage": "sha256:bbcd1e92c893f83671e95c9acc33a57f4c52393a4a6abd87995dcb5a727e046a",
+      "rollbackImage": "sha256:0e7a28cfafa5cc01a9efa8d9a5310e7e4e9af6ea3c6b86b901ab7a3ab25de0bf",
       "registryManifestVerified": true
     }
   },
@@ -208,5 +208,67 @@
     "Not full DEB/upgrade/restore qualification; no DEB, signed package or update catalog published",
     "No full local-persistence/native-WebView qualification claim"
   ],
-  "localRuntime": "Existing myscoutee and frontend-sync restored healthy; no concurrent alternate compilation"
+  "localRuntime": "Existing myscoutee and frontend-sync restored healthy; no concurrent alternate compilation",
+  "launcherFollowup": {
+    "date": "2026-09-30",
+    "previousFrontendCommit": "618ff4c0455c8c16bcba6b8f7215ad3f2ca000b8",
+    "previousProductionBuild": {
+      "version": "1.3.2",
+      "buildId": "618ff4c0455c-20260930070844",
+      "builtAt": "2026-09-30T07:08:44.812Z",
+      "gitSha": "618ff4c0455c"
+    },
+    "previousFrontendImage": {
+      "reference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:0e7a28cfafa5cc01a9efa8d9a5310e7e4e9af6ea3c6b86b901ab7a3ab25de0bf",
+      "persistentSelectionMatches": true,
+      "matchesSelectedImage": true,
+      "rollbackImage": "sha256:bbcd1e92c893f83671e95c9acc33a57f4c52393a4a6abd87995dcb5a727e046a",
+      "registryManifestVerified": true
+    },
+    "scope": "Frontend-only accepted menu/layer correction; backend and data unchanged",
+    "browserChecks": "PASS 1280px desktop and390px mobile; menu-triggered guide progression, shade dismissal and launcher restoration",
+    "publicHttp": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "containers": {
+      "recreated": [
+        "nginx"
+      ],
+      "retained": [
+        "mcp",
+        "minio",
+        "mongodb",
+        "myscoutee",
+        "payment-simulator",
+        "redis",
+        "registry-demo"
+      ],
+      "healthy": [
+        "mcp",
+        "minio",
+        "mongodb",
+        "myscoutee",
+        "nginx",
+        "payment-simulator",
+        "redis",
+        "registry-demo"
+      ],
+      "nginx": {
+        "phase": "applied",
+        "version": "1.3.0",
+        "reference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:519d0673455b894eac6e0c34b765c5570fcc43edb8a00e7ce3511dd3ba57ca2a",
+        "previousId": "sha256:0e7a28cfafa5cc01a9efa8d9a5310e7e4e9af6ea3c6b86b901ab7a3ab25de0bf",
+        "targetId": "sha256:519d0673455b894eac6e0c34b765c5570fcc43edb8a00e7ce3511dd3ba57ca2a",
+        "currentId": "sha256:519d0673455b894eac6e0c34b765c5570fcc43edb8a00e7ce3511dd3ba57ca2a",
+        "matchesSelectedImage": true,
+        "persistentSelectionMatches": true,
+        "matchesPreviousImage": false
+      }
+    },
+    "backup": "/var/backups/myscoutee/myscoutee-backup-20260930-094127.tar.gz",
+    "backupSha256": "77eb7d870e6ffd70accfc01d644eb108ab065cb89b9dcae2731674ea2c3227e7",
+    "receiptDirectory": "/root/myscoutee-partial-1.3.2-launchers-20260930"
+  }
 }
