@@ -10,7 +10,7 @@ mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates}"
 
 json_file_has_documents() {
   local jsonfile="$1"
@@ -92,7 +92,7 @@ clear_collection() {
   local collection_name="$2"
   local clear_command="db.getCollection('${collection_name}').deleteMany({})"
 
-  if [ "${collection_name}" = "helpCenterRevisions" ]; then
+  if [ "${collection_name}" = "helpCenterRevisions" ] || [ "${collection_name}" = "helpCenterGuideFields" ]; then
     clear_command="db.getCollection('${collection_name}').drop()"
   fi
 
@@ -116,7 +116,9 @@ collection_should_replace_on_import() {
     return 1
   fi
 
-  [ "${replace_collections}" = "true" ] || [ "${collection_name}" = "helpCenterRevisions" ]
+  [ "${replace_collections}" = "true" ] \
+    || [ "${collection_name}" = "helpCenterRevisions" ] \
+    || [ "${collection_name}" = "helpCenterGuideFields" ]
 }
 
 target_collection_name() {
@@ -1064,6 +1066,20 @@ db.getCollection('helpCenterRevisions').createIndex({ documentType: 1 }, { name:
 db.getCollection('helpCenterRevisions').createIndex({ lang: 1 }, { name: 'help_revision_lang' });
 db.getCollection('helpCenterRevisions').createIndex({ contextKey: 1 }, { name: 'help_revision_context_key' });
 db.getCollection('helpCenterRevisions').createIndex({ active: 1 }, { name: 'help_revision_active' });
+" >/dev/null
+      ;;
+    helpCenterGuideFields)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "
+db.getCollection('helpCenterGuideFields').createIndex({ screenKey: 1, id: 1 }, { name: 'help_guide_field_screen_id', unique: true });
+db.getCollection('helpCenterGuideFields').createIndex({ screenKey: 1, order: 1 }, { name: 'help_guide_field_screen_order' });
 " >/dev/null
       ;;
   esac

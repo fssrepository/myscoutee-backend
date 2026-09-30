@@ -1,0 +1,725 @@
+{
+  "wasEmpty": true,
+  "rows": [
+    {
+      "key": "activities.rates",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 35,
+      "expected": 35,
+      "translated": true
+    },
+    {
+      "key": "activities.rates",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 35,
+      "expected": 35,
+      "translated": true
+    },
+    {
+      "key": "home.game",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 13,
+      "expected": 13,
+      "translated": true
+    },
+    {
+      "key": "home.game",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 13,
+      "expected": 13,
+      "translated": true
+    },
+    {
+      "key": "chats",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 9,
+      "expected": 9,
+      "translated": true
+    },
+    {
+      "key": "chats",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 9,
+      "expected": 9,
+      "translated": true
+    },
+    {
+      "key": "profile.editor",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 40,
+      "expected": 40,
+      "translated": true
+    },
+    {
+      "key": "profile.editor",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 40,
+      "expected": 40,
+      "translated": true
+    },
+    {
+      "key": "profile.view",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 9,
+      "expected": 9,
+      "translated": true
+    },
+    {
+      "key": "profile.view",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 9,
+      "expected": 9,
+      "translated": true
+    },
+    {
+      "key": "contacts",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 10,
+      "expected": 10,
+      "translated": true
+    },
+    {
+      "key": "contacts",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 10,
+      "expected": 10,
+      "translated": true
+    },
+    {
+      "key": "assets",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 43,
+      "expected": 43,
+      "translated": true
+    },
+    {
+      "key": "assets",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 43,
+      "expected": 43,
+      "translated": true
+    },
+    {
+      "key": "assets.transport",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.transport",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.accommodation",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.accommodation",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.supplies",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.supplies",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.tickets",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.tickets",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "events",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 43,
+      "expected": 43,
+      "translated": true
+    },
+    {
+      "key": "events",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 43,
+      "expected": 43,
+      "translated": true
+    },
+    {
+      "key": "event.editor",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 78,
+      "expected": 78,
+      "translated": true
+    },
+    {
+      "key": "event.editor",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 78,
+      "expected": 78,
+      "translated": true
+    },
+    {
+      "key": "event.feedback",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 13,
+      "expected": 13,
+      "translated": true
+    },
+    {
+      "key": "event.feedback",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 13,
+      "expected": 13,
+      "translated": true
+    },
+    {
+      "key": "notifications",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 6,
+      "expected": 6,
+      "translated": true
+    },
+    {
+      "key": "notifications",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 6,
+      "expected": 6,
+      "translated": true
+    },
+    {
+      "key": "payment.history",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 26,
+      "expected": 26,
+      "translated": true
+    },
+    {
+      "key": "payment.history",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 26,
+      "expected": 26,
+      "translated": true
+    },
+    {
+      "key": "profile.impressions",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 4,
+      "expected": 4,
+      "translated": true
+    },
+    {
+      "key": "profile.impressions",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 4,
+      "expected": 4,
+      "translated": true
+    },
+    {
+      "key": "community.groups",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "community.groups",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "community.groups.explore",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "community.groups.explore",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "community.feed",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "community.feed",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "events.followed",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 19,
+      "expected": 19,
+      "translated": true
+    },
+    {
+      "key": "events.followed",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 19,
+      "expected": 19,
+      "translated": true
+    },
+    {
+      "key": "event.explore",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 40,
+      "expected": 40,
+      "translated": true
+    },
+    {
+      "key": "event.explore",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 40,
+      "expected": 40,
+      "translated": true
+    },
+    {
+      "key": "event.chat",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 7,
+      "expected": 7,
+      "translated": true
+    },
+    {
+      "key": "event.chat",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 7,
+      "expected": 7,
+      "translated": true
+    },
+    {
+      "key": "event.members",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 19,
+      "expected": 19,
+      "translated": true
+    },
+    {
+      "key": "event.members",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 19,
+      "expected": 19,
+      "translated": true
+    },
+    {
+      "key": "event.checkout",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 31,
+      "expected": 31,
+      "translated": true
+    },
+    {
+      "key": "event.checkout",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 31,
+      "expected": 31,
+      "translated": true
+    },
+    {
+      "key": "event.resources",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 30,
+      "expected": 30,
+      "translated": true
+    },
+    {
+      "key": "event.resources",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 30,
+      "expected": 30,
+      "translated": true
+    },
+    {
+      "key": "event.subevents",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "event.subevents",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "event.feedback.detail",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 4,
+      "expected": 4,
+      "translated": true
+    },
+    {
+      "key": "event.feedback.detail",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 4,
+      "expected": 4,
+      "translated": true
+    },
+    {
+      "key": "home.filters",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 20,
+      "expected": 20,
+      "translated": true
+    },
+    {
+      "key": "home.filters",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 20,
+      "expected": 20,
+      "translated": true
+    },
+    {
+      "key": "community.group.editor",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 24,
+      "expected": 24,
+      "translated": true
+    },
+    {
+      "key": "community.group.editor",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 24,
+      "expected": 24,
+      "translated": true
+    },
+    {
+      "key": "community.group.policy",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 3,
+      "expected": 3,
+      "translated": true
+    },
+    {
+      "key": "community.group.policy",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 3,
+      "expected": 3,
+      "translated": true
+    },
+    {
+      "key": "event.tournament.groups",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "event.tournament.groups",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 22,
+      "expected": 22,
+      "translated": true
+    },
+    {
+      "key": "event.mingle.configuration",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 7,
+      "expected": 7,
+      "translated": true
+    },
+    {
+      "key": "event.mingle.configuration",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 7,
+      "expected": 7,
+      "translated": true
+    },
+    {
+      "key": "assets.checkout",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 20,
+      "expected": 20,
+      "translated": true
+    },
+    {
+      "key": "assets.checkout",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 20,
+      "expected": 20,
+      "translated": true
+    },
+    {
+      "key": "profile.integrations",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 23,
+      "expected": 23,
+      "translated": true
+    },
+    {
+      "key": "profile.integrations",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 23,
+      "expected": 23,
+      "translated": true
+    },
+    {
+      "key": "payment.cash.receipt",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 6,
+      "expected": 6,
+      "translated": true
+    },
+    {
+      "key": "payment.cash.receipt",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 6,
+      "expected": 6,
+      "translated": true
+    },
+    {
+      "key": "navigation.menu",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 30,
+      "expected": 30,
+      "translated": true
+    },
+    {
+      "key": "navigation.menu",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 30,
+      "expected": 30,
+      "translated": true
+    },
+    {
+      "key": "members",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 19,
+      "expected": 19,
+      "translated": true
+    },
+    {
+      "key": "members",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 19,
+      "expected": 19,
+      "translated": true
+    },
+    {
+      "key": "assets.availability",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 15,
+      "expected": 15,
+      "translated": true
+    },
+    {
+      "key": "assets.availability",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 15,
+      "expected": 15,
+      "translated": true
+    },
+    {
+      "key": "assets.explore",
+      "lang": "en",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    },
+    {
+      "key": "assets.explore",
+      "lang": "hu",
+      "version": 4,
+      "presentation": "tour",
+      "count": 27,
+      "expected": 27,
+      "translated": true
+    }
+  ]
+}

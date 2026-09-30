@@ -77,13 +77,25 @@ if (checkpoint.device === 'android') {
   if (checkpoint.sessions.length !== 1 || checkpoint.sessions[0].sessionKind !== 'anonymous') {
     fail('Physical-provider startup requires one anonymous session; login must happen through the UI.');
   }
-  const statusPath = process.env.QA_DEPLOY_FIXTURE_STATUS;
-  if (!statusPath) fail('Verify the configured deployment fixture and provide QA_DEPLOY_FIXTURE_STATUS.');
-  const baseline = JSON.parse(await readFile(statusPath, 'utf8'));
-  if (baseline.checkpointId !== checkpointId || baseline.phase !== 'baseline-ready'
+  let baseline;
+  if (checkpoint.fixtureScenario) {
+    if (!checkpoint.fixtureCheckpointId || !checkpoint.fixtureReadyPhase) fail('Configure the fixture checkpoint and ready phase.');
+    const result = await runAttachedCommand('bash', [browserSessionCheckpointHarnessPath,
+      'ready', checkpoint.fixtureScenario, checkpoint.fixtureCheckpointId], process.env);
+    baseline = JSON.parse(result.stdout);
+    if (baseline.checkpointId !== checkpoint.fixtureCheckpointId || baseline.phase !== checkpoint.fixtureReadyPhase) {
+      fail('The configured phone fixture is not ready.');
+    }
+    baseline.checkedAt = new Date().toISOString();
+  } else {
+    const statusPath = process.env.QA_DEPLOY_FIXTURE_STATUS;
+    if (!statusPath) fail('Verify the configured deployment fixture and provide QA_DEPLOY_FIXTURE_STATUS.');
+    baseline = JSON.parse(await readFile(statusPath, 'utf8'));
+    if (baseline.checkpointId !== checkpointId || baseline.phase !== 'baseline-ready'
       || baseline.firebaseActive !== true || Date.now() - Date.parse(baseline.checkedAt) > 300000
       || !Number.isFinite(Date.parse(baseline.checkedAt))) {
-    fail('A current verified configured-deployment baseline is required.');
+      fail('A current verified configured-deployment baseline is required.');
+    }
   }
   if (closeOnly || reopenActor !== undefined || dismissGuidesOnly) {
     fail('Android session cleanup/reopen uses the physical-device helper and its recorded state.');

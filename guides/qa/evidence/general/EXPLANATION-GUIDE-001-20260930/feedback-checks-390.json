@@ -1,0 +1,203 @@
+{
+  "width": 390,
+  "checks": [
+    {
+      "name": "event-empty",
+      "steps": [
+        "feedback-primary",
+        "feedback-secondary",
+        "feedback-traits",
+        "feedback-comment",
+        "form-progress",
+        "form-navigation",
+        "close"
+      ]
+    },
+    {
+      "name": "valid-card-slide-closes-guide-without-jump",
+      "frames": [
+        {
+          "t": 12,
+          "x": 46,
+          "y": 58.96875
+        },
+        {
+          "t": 28,
+          "x": 46,
+          "y": 58.96875
+        },
+        {
+          "t": 45,
+          "x": 46,
+          "y": 58.96875
+        },
+        {
+          "t": 63,
+          "x": 46,
+          "y": 58.96875
+        },
+        {
+          "t": 82
+        },
+        {
+          "t": 96
+        },
+        {
+          "t": 111
+        },
+        {
+          "t": 128
+        },
+        {
+          "t": 145
+        },
+        {
+          "t": 160
+        },
+        {
+          "t": 178
+        },
+        {
+          "t": 195
+        },
+        {
+          "t": 212
+        },
+        {
+          "t": 228
+        },
+        {
+          "t": 245
+        },
+        {
+          "t": 262
+        },
+        {
+          "t": 279
+        },
+        {
+          "t": 294
+        },
+        {
+          "t": 312
+        },
+        {
+          "t": 327
+        },
+        {
+          "t": 345
+        },
+        {
+          "t": 361
+        },
+        {
+          "t": 378
+        },
+        {
+          "t": 394
+        },
+        {
+          "t": 411
+        },
+        {
+          "t": 428
+        },
+        {
+          "t": 445
+        },
+        {
+          "t": 462
+        },
+        {
+          "t": 479
+        },
+        {
+          "t": 495
+        },
+        {
+          "t": 517
+        },
+        {
+          "t": 528
+        },
+        {
+          "t": 545
+        },
+        {
+          "t": 562
+        },
+        {
+          "t": 578
+        },
+        {
+          "t": 596
+        },
+        {
+          "t": 612
+        }
+      ]
+    },
+    {
+      "name": "participant-1",
+      "steps": [
+        "card-status",
+        "feedback-primary",
+        "feedback-secondary",
+        "feedback-traits",
+        "form-progress",
+        "form-navigation",
+        "close"
+      ]
+    },
+    {
+      "name": "participant-2",
+      "steps": [
+        "card-status",
+        "feedback-primary",
+        "feedback-secondary",
+        "feedback-traits",
+        "form-progress",
+        "form-navigation",
+        "close"
+      ]
+    },
+    {
+      "name": "participant-3",
+      "steps": [
+        "card-status",
+        "feedback-primary",
+        "feedback-secondary",
+        "feedback-traits",
+        "form-progress",
+        "form-navigation",
+        "close"
+      ]
+    },
+    {
+      "name": "participant-4",
+      "steps": [
+        "card-status",
+        "feedback-primary",
+        "feedback-secondary",
+        "feedback-traits",
+        "form-progress",
+        "form-navigation",
+        "close"
+      ]
+    },
+    {
+      "name": "overview",
+      "steps": [
+        "form-progress",
+        "form-save",
+        "form-navigation",
+        "close"
+      ]
+    },
+    {
+      "name": "all-five-cards-filled-overview-submit-enabled-not-clicked",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

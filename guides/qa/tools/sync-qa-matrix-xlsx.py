@@ -73,6 +73,7 @@ DOMAIN_METADATA = (
     ("Content", 7, "FFFFF2CC", "ARTICLE"),
     ("Notifications", 6, "FFE2F0D9", "BELL"),
     ("Administration", 5, "FFEAD1DC", "ADMIN"),
+    ("General UI", 4, "FFD9EAD3", "GUIDE"),
     ("Operator", 3, "FF7FC8C8", "OPERATOR"),
 )
 DOMAIN_PRIORITY = {domain: priority for domain, priority, _, _ in DOMAIN_METADATA}
@@ -96,6 +97,7 @@ EXACT_DOMAIN_OVERRIDES = {
     "ADMIN-CLIENT-API-001": "API test",
     "BASE-STAT": "Administration",
     "CONTENT-ADMIN-LIFECYCLE-001": "Content",
+    "EXPLANATION-GUIDE-001": "General UI",
     "NOTIFICATION-ADMIN-LIFECYCLE-001": "Notifications",
     "STAT-011": "Chat",
     "STAT-012": "Event",

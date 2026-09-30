@@ -54,6 +54,7 @@ event-counter-expiry
   event           one expired active event source
   ticket-only     one due ticket record that is not an active event
   start-fallback-future-control  missing end time uses start; future control remains active
+  end-boundary    real 90-second end boundary, future control and HTTP recount control
 event-checkout-basket-purge
   mixed           one expired and one future checkout draft
   expired         two expired checkout drafts

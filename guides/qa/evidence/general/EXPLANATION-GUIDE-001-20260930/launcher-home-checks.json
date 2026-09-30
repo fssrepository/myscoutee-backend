@@ -1,0 +1,237 @@
+{
+  "checks": [
+    {
+      "width": 390,
+      "label": "fullscreen",
+      "launchers": [
+        {
+          "name": "Explanations",
+          "x": 332,
+          "y": 586,
+          "w": 42,
+          "h": 42
+        },
+        {
+          "name": "Open notifications, 35 new",
+          "x": 332,
+          "y": 636,
+          "w": 42,
+          "h": 42
+        }
+      ],
+      "actions": [
+        {
+          "name": "View Luca Hale",
+          "x": 321.953125,
+          "y": 685.546875,
+          "w": 35.515625,
+          "h": 35.515625
+        },
+        {
+          "name": "Go",
+          "x": 281.234375,
+          "y": 743.5,
+          "w": 78,
+          "h": 30
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "label": "dragged",
+      "launchers": [
+        {
+          "name": "Explanations",
+          "x": 232,
+          "y": 486,
+          "w": 42,
+          "h": 42
+        },
+        {
+          "name": "Open notifications, 35 new",
+          "x": 332,
+          "y": 636,
+          "w": 42,
+          "h": 42
+        }
+      ],
+      "actions": [
+        {
+          "name": "View Luca Hale",
+          "x": 321.953125,
+          "y": 685.546875,
+          "w": 35.515625,
+          "h": 35.515625
+        },
+        {
+          "name": "Go",
+          "x": 281.234375,
+          "y": 743.5,
+          "w": 78,
+          "h": 30
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "label": "restored",
+      "launchers": [
+        {
+          "name": "Explanations",
+          "x": 332,
+          "y": 586,
+          "w": 42,
+          "h": 42
+        },
+        {
+          "name": "Open notifications, 35 new",
+          "x": 332,
+          "y": 636,
+          "w": 42,
+          "h": 42
+        }
+      ],
+      "actions": [
+        {
+          "name": "View Luca Hale",
+          "x": 321.953125,
+          "y": 685.546875,
+          "w": 35.515625,
+          "h": 35.515625
+        },
+        {
+          "name": "Go",
+          "x": 281.234375,
+          "y": 743.5,
+          "w": 78,
+          "h": 30
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "label": "stationary-input",
+      "hover": true,
+      "mousePress": true,
+      "longPress": true,
+      "touchHold": true
+    },
+    {
+      "width": 1280,
+      "label": "fullscreen",
+      "launchers": [
+        {
+          "name": "Explanations",
+          "x": 1215.609375,
+          "y": 777.609375,
+          "w": 42,
+          "h": 42
+        },
+        {
+          "name": "Open notifications, 35 new",
+          "x": 1215.609375,
+          "y": 835.609375,
+          "w": 42,
+          "h": 42
+        }
+      ],
+      "actions": [
+        {
+          "name": "View Luca Hale",
+          "x": 857.40625,
+          "y": 737.1875,
+          "w": 35.515625,
+          "h": 35.515625
+        },
+        {
+          "name": "Go",
+          "x": 1114.421875,
+          "y": 794.65625,
+          "w": 82,
+          "h": 31
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "label": "dragged",
+      "launchers": [
+        {
+          "name": "Explanations",
+          "x": 1115.609375,
+          "y": 677.609375,
+          "w": 42,
+          "h": 42
+        },
+        {
+          "name": "Open notifications, 35 new",
+          "x": 1215.609375,
+          "y": 835.609375,
+          "w": 42,
+          "h": 42
+        }
+      ],
+      "actions": [
+        {
+          "name": "View Luca Hale",
+          "x": 857.40625,
+          "y": 737.1875,
+          "w": 35.515625,
+          "h": 35.515625
+        },
+        {
+          "name": "Go",
+          "x": 1114.421875,
+          "y": 794.65625,
+          "w": 82,
+          "h": 31
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "label": "restored",
+      "launchers": [
+        {
+          "name": "Explanations",
+          "x": 1215.609375,
+          "y": 777.609375,
+          "w": 42,
+          "h": 42
+        },
+        {
+          "name": "Open notifications, 35 new",
+          "x": 1215.609375,
+          "y": 835.609375,
+          "w": 42,
+          "h": 42
+        }
+      ],
+      "actions": [
+        {
+          "name": "View Luca Hale",
+          "x": 857.40625,
+          "y": 737.1875,
+          "w": 35.515625,
+          "h": 35.515625
+        },
+        {
+          "name": "Go",
+          "x": 1114.421875,
+          "y": 794.65625,
+          "w": 82,
+          "h": 31
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "label": "stationary-input",
+      "hover": true,
+      "mousePress": true,
+      "longPress": true,
+      "touchHold": false
+    }
+  ],
+  "errors": []
+}

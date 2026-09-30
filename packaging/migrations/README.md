@@ -76,3 +76,15 @@ packaged demo seed, synchronized with the frontend local seed builder by
 including an explicitly empty array, custom/renamed profiles and group profiles.
 Do not insert users. The production database is a no-op. This replaces runtime
 static filter defaults with repository data; repeated execution is idempotent.
+
+
+## 010 — compact explanation guides (1.3.2)
+
+Install package-owned EN/HU version4 compact tours and guide-field metadata through
+the existing ordered chain. Activate unchanged packaged defaults, preserving custom
+revisions, explicitly inactive selections, version collisions and all user preferences.
+New contexts start active. Retrying interrupted insertion/deactivation is idempotent.
+No user, Privacy or Terms collection is rewritten. The matching seed directory is
+required for production/Explore. `compact-guide-migration-test.py` runs the actual
+migration with uniquely prefixed disposable collections in the existing dev database
+using the configured application credentials, then drops only those collections.

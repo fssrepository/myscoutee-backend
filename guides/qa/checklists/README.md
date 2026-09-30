@@ -22,6 +22,7 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 | Content | [content](content/) |
 | Notifications | [notifications](notifications/) |
 | Administration | [administration](administration/) |
+| General UI | [general](general/) |
 | Operator | [operator](operator/) |
 
 ## API test
@@ -84,6 +85,10 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 - [ADMIN-AFFINITY-GRAPH-001](administration/ADMIN-AFFINITY-GRAPH-001.md) — Graph exploration, loading and materialization.
 - [ADMIN-MONITORING-001](administration/ADMIN-MONITORING-001.md) — Monitoring, task lifecycle and configuration counters.
 - [ADMIN-PARAMETERS-001](administration/ADMIN-PARAMETERS-001.md) — Section-specific persistence, effects and validation.
+
+## General UI
+
+- [EXPLANATION-GUIDE-001](general/EXPLANATION-GUIDE-001.md) — Application-wide compact explanations, guide navigation and floating controls.
 
 ## Operator
 

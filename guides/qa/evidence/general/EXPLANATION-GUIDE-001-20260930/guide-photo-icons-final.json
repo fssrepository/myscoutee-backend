@@ -1,0 +1,60 @@
+[
+  {
+    "width": 390,
+    "icons": [
+      {
+        "id": "image-copy",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      },
+      {
+        "id": "image-remove",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      },
+      {
+        "id": "image-copy",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      },
+      {
+        "id": "image-remove",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      }
+    ]
+  },
+  {
+    "width": 1280,
+    "icons": [
+      {
+        "id": "image-copy",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      },
+      {
+        "id": "image-remove",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      },
+      {
+        "id": "image-copy",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      },
+      {
+        "id": "image-remove",
+        "dx": 0,
+        "dy": 0,
+        "size": 16
+      }
+    ]
+  }
+]

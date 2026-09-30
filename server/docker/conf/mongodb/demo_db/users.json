@@ -25,7 +25,7 @@
         "appSupport": 0
       },
       "event": {
-        "all": 29,
+        "all": 28,
         "active": 3,
         "pending": 6,
         "invitations": 6,
@@ -345,7 +345,7 @@
       "game": 154,
       "chats": 30,
       "invitations": 8,
-      "events": 5,
+      "events": 3,
       "hosting": 13,
       "cars": 0,
       "accommodation": 1,
@@ -362,9 +362,9 @@
         "appSupport": 0
       },
       "event": {
-        "all": 30,
-        "active": 5,
-        "pending": 4,
+        "all": 26,
+        "active": 3,
+        "pending": 3,
         "invitations": 8,
         "hosting": 13,
         "drafts": 0,
@@ -578,8 +578,8 @@
       "game": 109,
       "chats": 24,
       "invitations": 5,
-      "events": 8,
-      "hosting": 13,
+      "events": 6,
+      "hosting": 12,
       "cars": 1,
       "accommodation": 0,
       "supplies": 1,
@@ -595,11 +595,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 28,
-        "active": 8,
+        "all": 25,
+        "active": 6,
         "pending": 2,
         "invitations": 5,
-        "hosting": 13,
+        "hosting": 12,
         "drafts": 0,
         "trash": 0
       },
@@ -611,7 +611,7 @@
       },
       "eventFeedback": {
         "ownEvents": 1,
-        "pending": 1,
+        "pending": 0,
         "feedbacked": 2,
         "removed": 0
       },
@@ -908,7 +908,7 @@
       "game": 118,
       "chats": 9,
       "invitations": 1,
-      "events": 6,
+      "events": 4,
       "hosting": 14,
       "cars": 1,
       "accommodation": 0,
@@ -925,8 +925,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 26,
-        "active": 6,
+        "all": 24,
+        "active": 4,
         "pending": 5,
         "invitations": 1,
         "hosting": 14,
@@ -2169,7 +2169,7 @@
       "game": 104,
       "chats": 0,
       "invitations": 0,
-      "events": 13,
+      "events": 12,
       "hosting": 1,
       "cars": 0,
       "accommodation": 0,
@@ -2186,8 +2186,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 13,
+        "all": 13,
+        "active": 12,
         "pending": 0,
         "invitations": 0,
         "hosting": 1,
@@ -2637,7 +2637,7 @@
       "chats": 15,
       "invitations": 0,
       "events": 13,
-      "hosting": 2,
+      "hosting": 1,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -2653,11 +2653,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 15,
+        "all": 14,
         "active": 13,
         "pending": 0,
         "invitations": 0,
-        "hosting": 2,
+        "hosting": 1,
         "drafts": 0,
         "trash": 0
       },
@@ -2870,7 +2870,7 @@
       "game": 118,
       "chats": 15,
       "invitations": 1,
-      "events": 14,
+      "events": 13,
       "hosting": 9,
       "cars": 1,
       "accommodation": 0,
@@ -2887,8 +2887,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 25,
-        "active": 14,
+        "all": 24,
+        "active": 13,
         "pending": 1,
         "invitations": 1,
         "hosting": 9,
@@ -3103,7 +3103,7 @@
       "game": 150,
       "chats": 18,
       "invitations": 1,
-      "events": 19,
+      "events": 18,
       "hosting": 1,
       "cars": 0,
       "accommodation": 0,
@@ -3120,8 +3120,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 21,
-        "active": 19,
+        "all": 20,
+        "active": 18,
         "pending": 0,
         "invitations": 1,
         "hosting": 1,
@@ -3571,7 +3571,7 @@
       "game": 111,
       "chats": 15,
       "invitations": 1,
-      "events": 8,
+      "events": 7,
       "hosting": 0,
       "cars": 0,
       "accommodation": 1,
@@ -3588,8 +3588,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 10,
-        "active": 8,
+        "all": 9,
+        "active": 7,
         "pending": 1,
         "invitations": 1,
         "hosting": 0,
@@ -4039,7 +4039,7 @@
       "game": 139,
       "chats": 11,
       "invitations": 0,
-      "events": 30,
+      "events": 29,
       "hosting": 0,
       "cars": 1,
       "accommodation": 2,
@@ -4056,8 +4056,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 32,
-        "active": 30,
+        "all": 31,
+        "active": 29,
         "pending": 2,
         "invitations": 0,
         "hosting": 0,
@@ -7550,7 +7550,7 @@
       "game": 121,
       "chats": 5,
       "invitations": 0,
-      "events": 19,
+      "events": 20,
       "hosting": 0,
       "cars": 0,
       "accommodation": 0,
@@ -7567,8 +7567,8 @@
         "appSupport": 0
       },
       "event": {
-        "all": 19,
-        "active": 19,
+        "all": 20,
+        "active": 20,
         "pending": 0,
         "invitations": 0,
         "hosting": 0,
@@ -9896,8 +9896,8 @@
       "game": 104,
       "chats": 8,
       "invitations": 1,
-      "events": 11,
-      "hosting": 1,
+      "events": 10,
+      "hosting": 0,
       "cars": 1,
       "accommodation": 0,
       "supplies": 0,
@@ -9913,11 +9913,11 @@
         "appSupport": 0
       },
       "event": {
-        "all": 14,
-        "active": 11,
+        "all": 12,
+        "active": 10,
         "pending": 1,
         "invitations": 1,
-        "hosting": 1,
+        "hosting": 0,
         "drafts": 0,
         "trash": 0
       },
@@ -12486,7 +12486,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12529,7 +12538,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12571,7 +12589,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12614,7 +12641,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12657,7 +12693,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12699,7 +12744,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12743,7 +12797,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12785,7 +12848,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12827,7 +12899,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12870,7 +12951,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12912,7 +13002,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12955,7 +13054,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -12996,7 +13104,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13039,7 +13156,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13081,7 +13207,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13122,7 +13257,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13165,7 +13309,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13207,7 +13360,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13251,7 +13413,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13293,7 +13464,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13335,7 +13515,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   },
   {
@@ -13377,7 +13566,16 @@
       "chats": 0,
       "invitations": 0,
       "events": 0,
-      "hosting": 0
+      "hosting": 0,
+      "event": {
+        "all": 0,
+        "active": 0,
+        "pending": 0,
+        "invitations": 0,
+        "hosting": 0,
+        "drafts": 0,
+        "trash": 0
+      }
     }
   }
 ]

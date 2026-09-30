@@ -1,0 +1,209 @@
+{
+  "samples": [
+    {
+      "direction": "fullscreen",
+      "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "cardMs": 103.60000038146973,
+      "affinityReady": true,
+      "upperBoundMs": 146.10000038146973,
+      "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "retainedNodes": true,
+      "layers": [
+        {
+          "z": "1",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        },
+        {
+          "z": "4",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        }
+      ],
+      "listScrollDelta": 0,
+      "rebuilds": [],
+      "scans": [
+        {
+          "ms": 0.5,
+          "full": false,
+          "roots": 1
+        }
+      ]
+    },
+    {
+      "direction": "list",
+      "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "cardMs": 91.69999980926514,
+      "affinityReady": true,
+      "upperBoundMs": 129.09999990463257,
+      "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "retainedNodes": true,
+      "layers": [
+        {
+          "z": "1",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        },
+        {
+          "z": "0",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        }
+      ],
+      "listScrollDelta": 0,
+      "rebuilds": [],
+      "scans": [
+        {
+          "ms": 0.39999961853027344,
+          "full": false,
+          "roots": 2
+        }
+      ]
+    },
+    {
+      "direction": "fullscreen",
+      "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "cardMs": 93.80000019073486,
+      "affinityReady": true,
+      "upperBoundMs": 126,
+      "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "retainedNodes": true,
+      "layers": [
+        {
+          "z": "1",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        },
+        {
+          "z": "4",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        }
+      ],
+      "listScrollDelta": 0,
+      "rebuilds": [],
+      "scans": [
+        {
+          "ms": 0.3000001907348633,
+          "full": false,
+          "roots": 1
+        }
+      ]
+    },
+    {
+      "direction": "list",
+      "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "cardMs": 89.5,
+      "affinityReady": true,
+      "upperBoundMs": 125.59999990463257,
+      "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "retainedNodes": true,
+      "layers": [
+        {
+          "z": "1",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        },
+        {
+          "z": "0",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        }
+      ],
+      "listScrollDelta": 0,
+      "rebuilds": [],
+      "scans": [
+        {
+          "ms": 0.40000009536743164,
+          "full": false,
+          "roots": 2
+        }
+      ]
+    },
+    {
+      "direction": "fullscreen",
+      "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "cardMs": 96.5,
+      "affinityReady": true,
+      "upperBoundMs": 127.7000002861023,
+      "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "retainedNodes": true,
+      "layers": [
+        {
+          "z": "1",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        },
+        {
+          "z": "4",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        }
+      ],
+      "listScrollDelta": 0,
+      "rebuilds": [],
+      "scans": [
+        {
+          "ms": 0.2999997138977051,
+          "full": false,
+          "roots": 1
+        }
+      ]
+    },
+    {
+      "direction": "list",
+      "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "cardMs": 90.2000002861023,
+      "affinityReady": true,
+      "upperBoundMs": 128.09999990463257,
+      "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+      "retainedNodes": true,
+      "layers": [
+        {
+          "z": "1",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        },
+        {
+          "z": "0",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 347,
+          "height": 579
+        }
+      ],
+      "listScrollDelta": 0,
+      "rebuilds": [],
+      "scans": [
+        {
+          "ms": 0.40000009536743164,
+          "full": false,
+          "roots": 2
+        }
+      ]
+    }
+  ],
+  "note": "Physical Android Chrome, native ADB taps, running dev build. Two RAF callbacks are a paint upper-bound proxy, not hardware display timestamps. No CPU profiler or HUD. Rebuild instrumentation delegates unchanged to the original method."
+}

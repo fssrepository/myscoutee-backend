@@ -418,6 +418,7 @@ public class UserActivityCountersService {
     }
 
     private EventCounters resolveEventCounters(String userId) {
+        Instant now = Instant.now();
         Set<String> sourceIds = new LinkedHashSet<>();
         Set<String> watchedSourceIds = eventWatchSubscriptionsRepository
                 .findByUserIdOrderByUpdatedDateDesc(userId).stream()
@@ -482,6 +483,12 @@ public class UserActivityCountersService {
                 if (isHostingRecordForUser(event, userId)) {
                     trash += 1;
                 }
+                continue;
+            }
+            // Past belongs to history even before the scheduled pass marks expired.
+            Instant end = parseInstant(StringUtils.hasText(event.getEndAtIso())
+                    ? event.getEndAtIso() : event.getStartAtIso());
+            if (end != null && !end.isAfter(now)) {
                 continue;
             }
             if (isInvitationForUser(event, userId)) {

@@ -1,0 +1,146 @@
+{
+  "scenario": "Physical Android Chrome, Rates individual-mutual list, native vertical swipe; same prepared actor; scroll starts differ.",
+  "before": {
+    "initialScroll": 5037.5,
+    "finalScroll": 5618.5,
+    "samples": 100,
+    "delta": [
+      48,
+      56
+    ]
+  },
+  "after": {
+    "initialScroll": 39,
+    "finalScroll": 310.5,
+    "samples": 100,
+    "delta": [
+      0,
+      0
+    ]
+  },
+  "anchor": "Rates panel bottom: list inset56px (raised40px to clear the final eye), fullscreen inset96px. No Save/eye geometry queries; user drag offset retained.",
+  "switchCheck": [
+    {
+      "fullscreen": false,
+      "bottom": 691.1015625,
+      "launchers": [
+        {
+          "x": 302,
+          "y": 534.90625,
+          "width": 42,
+          "height": 42,
+          "top": 534.90625,
+          "right": 344,
+          "bottom": 576.90625,
+          "left": 302
+        },
+        {
+          "x": 302,
+          "y": 592.90625,
+          "width": 42,
+          "height": 42,
+          "top": 592.90625,
+          "right": 344,
+          "bottom": 634.90625,
+          "left": 302
+        }
+      ],
+      "previews": 0,
+      "retained": true
+    },
+    {
+      "fullscreen": true,
+      "bottom": 691.1015625,
+      "launchers": [
+        {
+          "x": 302,
+          "y": 494.90625,
+          "width": 42,
+          "height": 42,
+          "top": 494.90625,
+          "right": 344,
+          "bottom": 536.90625,
+          "left": 302
+        },
+        {
+          "x": 302,
+          "y": 552.90625,
+          "width": 42,
+          "height": 42,
+          "top": 552.90625,
+          "right": 344,
+          "bottom": 594.90625,
+          "left": 302
+        }
+      ],
+      "previews": 0,
+      "retained": true
+    },
+    {
+      "fullscreen": false,
+      "bottom": 691.1015625,
+      "launchers": [
+        {
+          "x": 302,
+          "y": 534.90625,
+          "width": 42,
+          "height": 42,
+          "top": 534.90625,
+          "right": 344,
+          "bottom": 576.90625,
+          "left": 302
+        },
+        {
+          "x": 302,
+          "y": 592.90625,
+          "width": 42,
+          "height": 42,
+          "top": 592.90625,
+          "right": 344,
+          "bottom": 634.90625,
+          "left": 302
+        }
+      ],
+      "previews": 0,
+      "retained": true
+    }
+  ],
+  "lastRowCheck": {
+    "remainingScroll": -0.5,
+    "hasMore": false,
+    "eye": {
+      "x": 308.1328125,
+      "y": 645.5546875,
+      "width": 35.515625,
+      "height": 35.515625,
+      "top": 645.5546875,
+      "right": 343.6484375,
+      "bottom": 681.0703125,
+      "left": 308.1328125
+    },
+    "buttons": [
+      {
+        "x": 302,
+        "y": 534.90625,
+        "width": 42,
+        "height": 42,
+        "top": 534.90625,
+        "right": 344,
+        "bottom": 576.90625,
+        "left": 302
+      },
+      {
+        "x": 302,
+        "y": 592.90625,
+        "width": 42,
+        "height": 42,
+        "top": 592.90625,
+        "right": 344,
+        "bottom": 634.90625,
+        "left": 302
+      }
+    ],
+    "gap": 10.6484375,
+    "overlap": false
+  }
+}

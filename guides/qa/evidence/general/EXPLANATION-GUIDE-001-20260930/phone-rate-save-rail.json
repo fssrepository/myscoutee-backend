@@ -1,0 +1,29 @@
+{
+  "before": [
+    {
+      "kind": "explanation-guide-menu",
+      "x": 302,
+      "y": 455.90625,
+      "visible": "visible"
+    },
+    {
+      "kind": "notification-attention-menu",
+      "x": 302,
+      "y": 513.90625,
+      "visible": "visible"
+    }
+  ],
+  "original": {
+    "id": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+    "score": 4,
+    "slider": 4
+  },
+  "selectedAfter": "93e83941-5735-5d1c-97f1-7a8e7902afce",
+  "scoreAfter": 4,
+  "anchored": [
+    true,
+    true
+  ],
+  "maxDeltaPx": 0,
+  "status": "PASS"
+}

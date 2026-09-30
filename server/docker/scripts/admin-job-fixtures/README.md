@@ -320,6 +320,11 @@ Variations:
 - `ticket-only`: one due ticket record that is not an active event.
 - `start-fallback-future-control`: one active event has no `endAtIso` and a past
   `startAtIso`; a second active control has `endAtIso:null` and a future start.
+- `end-boundary`: the hosted event ends 90 seconds after preparation. A second
+  hosted event stays in the future; a public event owned by another isolated
+  fixture actor supports real watch/unwatch writes without changing either
+  hosted event. The fixture snapshots the resulting subscriptions, login/session
+  state and recipient notifications as well as the original event/user/rule state.
 
 Expected:
 
@@ -332,6 +337,18 @@ Expected:
 - Repeating any variation produces no additional due row.
 
 Any pre-existing due event/ticket rows are snapshotted and temporarily marked expired so the pass remains fixture-only; reset restores them exactly.
+
+For the scoped Past badge regression, prepare `end-boundary`, then run
+`python3 guides/qa/tools/verify-event-past-badges-http.py before` from the repository
+root within its 90-second window: stored All/Hosting must be 2. After the actual
+end boundary, `trigger event-counter-expiry` makes the existing scheduler due;
+wait for `status` to report `firstPassComplete`. Run the HTTP helper with `after`:
+both counters must stay 1 after genuine watch/unwatch mutations. Trigger again
+and require `repeatedPassChangedZeroSources` and `eventControlAndCountersUnchanged`
+before `reset event-counter-expiry`. This is server HTTP/worker evidence; it does
+not execute a browser checklist or qualify frontend-local persistence.
+For this variation the first job total is exactly 2: one expired source plus one
+completed-event friendship projection. It does not mean that two events expired.
 
 ### `event-checkout-basket-purge`
 

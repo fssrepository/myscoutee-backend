@@ -1,6 +1,11 @@
 package com.raxim.myscoutee.profile.controller.landing;
 
+import java.util.Set;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.GetMapping;
+import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateDto;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,6 +58,19 @@ public class LandingContentController {
                 countryPartitionService.supportedCountries().stream()
                         .map(country -> new SupportedCountryDto(country.getCountryCode(), country.getCountryName()))
                         .toList());
+    }
+
+    @GetMapping("/explanation")
+    public HelpCenterStateDto explanation(
+            @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
+            @RequestParam String contextKey,
+            @RequestParam(value = "lang", required = false) String lang) {
+        // Only public entry surfaces are exposed; authenticated guides keep their existing route.
+        if (!Set.of("landing.home", "landing.setup",
+                "landing.demo", "landing.auth", "landing.registration").contains(contextKey)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return helpCenterService.activeState("explanation", lang, acceptLanguage, contextKey);
     }
 
     @GetMapping("/articles")

@@ -1,0 +1,18 @@
+{
+  "checks": [
+    {
+      "width": 390,
+      "visibleOnArrival": true,
+      "hiddenAcrossPopups": true,
+      "noPersistentWrite": true,
+      "visibleOnReload": true
+    },
+    {
+      "width": 1280,
+      "visibleOnArrival": true,
+      "hiddenAcrossPopups": true,
+      "noPersistentWrite": true,
+      "visibleOnReload": true
+    }
+  ]
+}

@@ -54,6 +54,18 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
+The delegated [explanation-guide review](guides/qa/evidence/general/EXPLANATION-GUIDE-001-20260930.md)
+is **PASS / CLOSED in its recorded scope**: 45 contexts / 963 conditional fields,
+EN/HU defaults, desktop/mobile and physical Chrome/PWA checks. The accepted
+Rates, image-scroll and launcher menu/layer follow-ups are closed. Release 1.3.2
+and its nginx-only follow-up are deployed; the final public HTTP checks passed
+13/13. Full local persistence and native WebView coverage remain unproven.
+The [Past/badge server regression](guides/qa/evidence/event/EVENT-PAST-BADGES-001-20260930.md)
+is also **PASS / CLOSED**: real expiry, subsequent HTTP recount and repeated
+worker passed, alongside 20/20 focused Java tests. The original expiry batch job
+is unchanged. The synchronized CSV/XLSX matrix has **121 testcase rows: 121 PASS,
+0 pending**, plus four legend rows; each row retains its environment/scope limits.
+
 Group QA is **CLOSED for the agreed HTTP scope**: **38/38** blocks across
 [Group Lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) (29/29)
 and [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md) (9/9).

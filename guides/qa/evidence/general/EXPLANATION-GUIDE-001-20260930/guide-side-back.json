@@ -1,0 +1,46 @@
+[
+  {
+    "v": {
+      "width": 390,
+      "height": 844
+    },
+    "before": {
+      "side": true,
+      "settings": "true",
+      "url": "/game"
+    },
+    "first": {
+      "side": true,
+      "settings": "false",
+      "url": "/game"
+    },
+    "second": {
+      "side": false,
+      "settings": "false",
+      "url": "/game"
+    },
+    "pass": true
+  },
+  {
+    "v": {
+      "width": 1280,
+      "height": 900
+    },
+    "before": {
+      "side": true,
+      "settings": "true",
+      "url": "/game"
+    },
+    "first": {
+      "side": true,
+      "settings": "false",
+      "url": "/game"
+    },
+    "second": {
+      "side": false,
+      "settings": "false",
+      "url": "/game"
+    },
+    "pass": true
+  }
+]

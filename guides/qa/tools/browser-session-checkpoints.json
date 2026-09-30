@@ -2166,6 +2166,36 @@
         }
       ]
     },
+    "EXPLANATION-GUIDE-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "Nagy Eszter guide coverage",
+          "sessionKind": "demo",
+          "userId": "9f3b3f085e23af6c89dbc432",
+          "expectedName": "Nagy Eszter",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Casey no-event guide coverage",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a1",
+          "expectedName": "Casey Rating QA",
+          "autoDismissExplanationGuide": true
+        },
+        {
+          "actor": "Nova no-event guide coverage",
+          "sessionKind": "demo",
+          "userId": "6a00000000000000000000a2",
+          "expectedName": "Nova Rating QA",
+          "autoDismissExplanationGuide": true
+        }
+      ]
+    },
     "AFFILIATE-INVITATION-001": {
       "preserveOtherSessions": true,
       "layout": {
@@ -2630,6 +2660,93 @@
         }
       ],
       "geolocation": false
+    },
+    "EXPLANATION-GUIDE-ADMIN-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-PHONE-001": {
+      "device": "android",
+      "fixtureScenario": "event-rating",
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "fixtureReadyPhase": "ready-for-manual-rating",
+      "preserveOtherSessions": true,
+      "entryUrl": "http://localhost:8080/entry",
+      "targetUrl": "http://localhost:8080/game",
+      "storageScope": "http",
+      "bootstrapEntryConsent": false,
+      "sessions": [
+        {
+          "actor": "Phone guide Back check",
+          "sessionKind": "anonymous"
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-PAYMENT-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "Alex",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": false
+        }
+      ]
+    },
+    "EXPLANATION-GUIDE-LANDING-001": {
+      "fixtureScenario": "event-rating",
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "fixtureReadyPhase": "ready-for-manual-rating",
+      "preserveOtherSessions": true,
+      "entryUrl": "http://localhost/entry",
+      "targetUrl": "http://localhost/entry",
+      "bootstrapEntryConsent": true,
+      "sessions": [
+        {
+          "actor": "Landing guide anonymous coverage",
+          "sessionKind": "anonymous",
+          "autoDismissExplanationGuide": false
+        }
+      ],
+      "geolocation": {
+        "latitude": 47.4979,
+        "longitude": 19.0402,
+        "accuracy": 10
+      }
+    },
+    "EXPLANATION-GUIDE-FEEDBACK-001": {
+      "fixtureCheckpointId": "EVENT-ACTIVITY-RATING-001",
+      "preserveOtherSessions": true,
+      "sessions": [
+        {
+          "actor": "Alex Turner feedback guide edge",
+          "sessionKind": "demo",
+          "userId": "af0436815ab38f4864dd1e24",
+          "expectedName": "Alex Turner",
+          "autoDismissExplanationGuide": false
+        }
+      ]
     }
   }
 }
