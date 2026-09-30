@@ -1,0 +1,11 @@
+--- a/server/docker/conf/mongodb/demo_db/users.json
++++ b/server/docker/conf/mongodb/demo_db/users.json
+@@ -611,7 +611,7 @@
+       },
+       "eventFeedback": {
+         "ownEvents": 1,
+-        "pending": 1,
++        "pending": 0,
+         "feedbacked": 2,
+         "removed": 0
+       },

@@ -46,6 +46,29 @@ class UserPageFilterPreferencesServiceTest {
         assertThat(service.load("viewer", "event-explore")).isEqualTo(new EventExploreFilters(false, false, "", ""));
     }
 
+    @Test void readsPreferencesSavedBeforeFollowingAndPreservesExplicitFollowing() throws Exception {
+        var context = new org.springframework.data.mongodb.core.mapping.MongoMappingContext();
+        context.afterPropertiesSet();
+        var converter = new org.springframework.data.mongodb.core.convert.MappingMongoConverter(
+                org.springframework.data.mongodb.core.convert.NoOpDbRefResolver.INSTANCE, context);
+        converter.afterPropertiesSet();
+        var filters = new org.bson.Document("friendsOnly", true).append("openSpotsOnly", true)
+                .append("topic", "Music").append("mode", "Mingle");
+        var document = new org.bson.Document("_id", "viewer:event-explore")
+                .append("userId", "viewer").append("pageKey", "event-explore").append("filters", filters);
+        for (Boolean followed : new Boolean[] { null, false, true }) {
+            if (followed != null) filters.put("followedOnly", followed);
+            var restored = converter.read(UserPageFilterPreferences.class, document);
+            assertThat(restored.filters().followedOnly()).isEqualTo(Boolean.TRUE.equals(followed));
+            assertThat(restored.filters().topic()).isEqualTo("Music");
+            assertThat(restored.filters().friendsOnly()).isTrue();
+            var written = new org.bson.Document();
+            converter.write(restored, written);
+            assertThat(written.get("filters", org.bson.Document.class).getBoolean("followedOnly"))
+                    .isEqualTo(Boolean.TRUE.equals(followed));
+        }
+    }
+
     @Test void rejectsUnknownPageAndModeAndUnauthenticatedAccess() {
         assertThatThrownBy(() -> service.load("viewer", "$bad.key"))
                 .isInstanceOf(ResponseStatusException.class);

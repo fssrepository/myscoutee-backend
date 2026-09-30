@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-28
+Updated: 2026-09-30
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -86,18 +86,21 @@ resume pointer and reusable working method.
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
-checkpoint: DEPLOY-EXTERNAL-CONFIG-001
-checklist: ../checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md
-substage: DEPLOY-EXTERNAL-CONFIG-001 remains CLOSED/PASS. User subsequently authorized final DEB rebuild and GitHub/GHCR publication; completed.
-next_action: Release1.3.0 is published across seven repository tags/releases and nine GHCR images. GitHub Pages local-data deployment succeeded. Signed final main DEB is local for owner upload at packaging/dist/myscoutee_1.3.0_amd64.deb (SHA25604f93c705149d7195287a3575056a0d3c03f22cdb661ca9c97eab2eb79def051). Netcup signed DEB1.0.0→1.3.0 completed on explicit user instruction: host qualification PASS, eight healthy containers, all13 public checks passed; production documents/media and TLS/secrets retained. No further QA replay. Release record: ../../qualification/evidence/RELEASE_1.3.0_20260928.json.
-execution_authority: User controls current browser tests and Firebase login. CDP read-only diagnosis of reported defects is authorized; a separate browser was opened on request.
-execution_log: ../../qualification/evidence/PROD_PARITY_20260928.md
-fixture_phase: Original deploy fixture exactly restored. User subsequently requested second-account registration reset; private backup retained on VMware under release-1.3.0/registration-reset-20260928.ejson. Other account and media retained.
-runtime: VMware192.168.153.129 installed DEB1.3.0; Mongo qualification validator patched and host qualification passed. UI1b49c3be9ba8-20260928082718 deployed nginx-only; Setup uses Bejelentkezés for entry, and Close only cancels. Ten containers healthy. Standard packaged Compose active. Host dev stack stopped; http://localhost/game in user's browser is a cached dev page, not VMware. VM URL is https://localhost:8443 via retained SSH tunnel; phone adb mappings were cleaned up previously.
-last_completed: Firebase popup/consent correction44 and Setup action18 focused tests passed, production frontend deployed; exact public build ID and healthy containers verified. Source EN/HU bundles match current production API with zero differences.
-release_sequence: Final production images and DEB rebuilt with Mongo validator and latest UI. Signed artifact preflight passed. Tags/releases/GHCR/Pages published. Owner uploads the main DEB. Netcup deployment completed after explicit instruction; backup and retained-data evidence recorded in the release JSON.
-resume_gate: Read-only check current versions/health and Git diff. Preserve VM backups. Future retained-data comparisons must account for the user-requested second-profile reset and re-registration.
+checkpoint: EXPLANATION-GUIDE-001
+checklist: ../checklists/general/EXPLANATION-GUIDE-001.md
+substage: Physical Android retained Rates panels accepted by user; release1.3.2 preparation active.
+execution_authority: User delegated guide browser testing, landing/feedback/rating pagination, shared double-panel highlights, and subsequent squash/master/tag/images/Netcup partial release. Preserve the no-refactor instruction for EventCounterExpiryService.
+execution_log: ../evidence/general/EXPLANATION-GUIDE-001-20260930.md
+fixture_phase: event-rating EVENT-ACTIVITY-RATING-001 before-meeting ready; main, anonymous landing and Alex feedback companion sessions prepared by the versioned launcher.
+runtime: Existing frontend-sync and myscoutee own compilation. Focused i18n13/13 and image/pagination15/15 passed with the frontend watcher stopped serially and restarted. Android Chrome available via ADB reverse tcp:8080 to host tcp:80. No profiler, HUD or passive meter remains.
+last_completed: Landing 64 steps per viewport; feedback 39 per viewport; arrow-only Rates; shared double-pane image/profile highlights and mobile drag; editable list badge. 45 contexts / 963 fields, EN/HU and local/demo/e2e/prod seed parity. Existing General UI CSV/XLSX row updated, no new row.
+next_action: Finish release compatibility and migration validation; consolidate guide commits in both repositories, merge master, publish/tag1.3.2 and deploy only changed Netcup images plus retained-data guide migration. Do not reopen accepted Rates tuning or the full guide inventory.
+resume_gate: Read git and frontend-submodule status, retaining user commits. Do not reopen the older full guide inventory. EVENT-PAST-BADGES-001 remains PARTIAL; expiry service/test retain their batch implementation. No separate Past job was added. Do not reset unrelated fixture markers or claim full lifecycle/local-persistence/native-WebView coverage.
+
 ```
+
+The previous deploy/release checkpoint remains closed. The user previously authorized the new 1.3.2 guide release, then explicitly paused it with “meg ne”. The user has now requested continuing the remaining work toward release.
+
 
 ## Archived pair-QA resume point — 2026-09-17
 

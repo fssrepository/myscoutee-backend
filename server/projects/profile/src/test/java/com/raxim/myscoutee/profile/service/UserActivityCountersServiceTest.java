@@ -136,6 +136,43 @@ class UserActivityCountersServiceTest {
     }
 
     @Test
+    void refreshExcludesPastBeforeExpiryAndDeduplicatesPendingHostingInAll() {
+        Users viewer = user("viewer", activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0));
+        Instant now = Instant.now();
+        ActivityEvent pastHost = event("past-host", "viewer", "A");
+        ActivityEvent pastInvite = event("past-invite", "host", "A");
+        pastInvite.setInvitedMemberUserIds(List.of("viewer"));
+        ActivityEvent pastPending = event("past-pending", "viewer", "UR");
+        ActivityEvent pastMember = event("past-member", "host", "A");
+        pastMember.setAcceptedMemberUserIds(List.of("viewer"));
+        for (ActivityEvent past : List.of(pastHost, pastInvite, pastPending, pastMember)) {
+            past.setStartAtIso(now.minusSeconds(7200).toString());
+            past.setEndAtIso(now.minusSeconds(3600).toString());
+            past.setIsExpired(false);
+        }
+        ActivityEvent ongoing = event("ongoing", "host", "A");
+        ongoing.setAcceptedMemberUserIds(List.of("viewer"));
+        ongoing.setStartAtIso(now.minusSeconds(3600).toString());
+        ongoing.setEndAtIso(now.plusSeconds(3600).toString());
+        ActivityEvent futureReview = event("future-review", "viewer", "UR");
+        futureReview.setEndAtIso(now.plusSeconds(7200).toString());
+        List<ActivityEvent> records = List.of(pastHost, pastInvite, pastPending, pastMember, ongoing, futureReview);
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
+        when(activityEventsRepository.findDirectOwnerEvents("viewer")).thenReturn(records);
+        when(activityEventsRepository.findBySourceIdIn(any())).thenReturn(records);
+
+        service.refreshEventCountersForUsers(List.of("viewer"));
+
+        Document fields = updatedFields();
+        assertThat(fields.getInteger("activities.event.all")).isEqualTo(2);
+        assertThat(fields.getInteger("activities.event.active")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.event.hosting")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.event.pending")).isEqualTo(1);
+        assertThat(fields.getInteger("activities.event.invitations")).isZero();
+        assertThat(fields).doesNotContainKey("activities.feedback");
+    }
+
+    @Test
     void readStoredEventCountersReturnsTheCompleteWriteSideSnapshot() {
         Users.UserActivitiesRecord base = activitiesWithAssetAndFeedback(0, 0, 0, 0, 0, 0, 0, 0);
         Users user = user("viewer", new Users.UserActivitiesRecord(

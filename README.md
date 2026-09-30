@@ -54,6 +54,16 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## QA status
 
+The delegated [explanation-guide review](guides/qa/evidence/general/EXPLANATION-GUIDE-001-20260930.md)
+is PASS in its recorded scope:40 contexts /896 conditional fields, EN/HU defaults,
+desktop/mobile and physical Chrome/PWA Back. The approved feedback seed correction
+is imported. Follow-up step-selector samples pass; the mobile header and topmost
+red drag-dismiss X are fixed. Guide documents and its matrix row use General UI.
+The populated mobile selector remains open for user inspection. The separate
+Past/badge lifecycle investigation remains PARTIAL; the original expiry batch
+job is unchanged. The matrix has121 testcase rows:120 PASS and1 PARTIAL, plus
+four legend rows.
+
 Group QA is **CLOSED for the agreed HTTP scope**: **38/38** blocks across
 [Group Lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) (29/29)
 and [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md) (9/9).

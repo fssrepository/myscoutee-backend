@@ -1,0 +1,1 @@
+import {p,browser,menu,tour,pause} from './session.mjs';for(const width of [390,1280]){await p.setViewportSize({width,height:844});await menu('Open payment history');await p.getByRole('button',{name:'EUR −43.50 ›',exact:true}).click();await pause(350);await tour('payment summary currency fixed '+width);}await browser.close();

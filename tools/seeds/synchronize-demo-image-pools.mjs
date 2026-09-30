@@ -27,8 +27,20 @@ const args = new Set(process.argv.slice(2));
 const writeMode = args.has('--write');
 const checkMode = args.has('--check');
 const missingMode = args.has('--print-missing-prompts');
-if ([writeMode, checkMode, missingMode].filter(Boolean).length !== 1) {
-  throw new Error('Use exactly one of --write, --check, or --print-missing-prompts.');
+const countersOnlyMode = args.has('--refresh-event-counters');
+if ([writeMode, checkMode, missingMode, countersOnlyMode].filter(Boolean).length !== 1) {
+  throw new Error('Use exactly one of --write, --check, --print-missing-prompts, or --refresh-event-counters.');
+}
+
+// Reuse the canonical counter projection without rewriting image/content fixtures.
+if (countersOnlyMode) {
+  const [users, events, members] = await Promise.all(
+    [USERS_PATH, EVENTS_PATH, ACTIVITY_MEMBERS_PATH].map(async file => JSON.parse(await readFile(file, 'utf8')))
+  );
+  refreshUserEventCounters(users, events, members);
+  await writeFile(USERS_PATH, `${JSON.stringify(users, null, 2)}\n`);
+  console.log(`Refreshed Event counters for ${users.length} demo users.`);
+  process.exit(0);
 }
 
 const ASSET_PICSUM_IDS = [
@@ -1363,6 +1375,7 @@ function replaceTextDeep(value, oldText, newText) {
 }
 
 function refreshUserEventCounters(users, events, activityMembers) {
+  const now = Date.now();
   const membershipsByEventAndUser = new Map(
     activityMembers
       .filter(member => member.ownerType === 'event')
@@ -1371,6 +1384,7 @@ function refreshUserEventCounters(users, events, activityMembers) {
   for (const user of users) {
     const userId = user.userId;
     const counters = { active: 0, pending: 0, invitations: 0, hosting: 0, drafts: 0, trash: 0 };
+    const allSources = new Set();
     for (const event of events) {
       const eventId = eventKey(event);
       const member = membershipsByEventAndUser.get(`${eventId}\u0000${userId}`);
@@ -1385,7 +1399,11 @@ function refreshUserEventCounters(users, events, activityMembers) {
       const status = `${event.status ?? ''}`.trim().toUpperCase();
       if (status === 'T' || event.isTrashed === true || deleted) {
         counters.trash += 1;
-      } else if (invited) {
+        continue;
+      }
+      const end = Date.parse(event.endAtIso || event.startAtIso || '');
+      if (Number.isFinite(end) && end <= now) continue;
+      if (invited) {
         counters.invitations += 1;
       } else if (hosting) {
         counters.hosting += 1;
@@ -1395,9 +1413,12 @@ function refreshUserEventCounters(users, events, activityMembers) {
         counters.pending += 1;
       } else if (accepted || status === 'A' || !status) {
         counters.active += 1;
+      } else {
+        continue;
       }
+      allSources.add(eventId);
     }
-    const all = counters.active + counters.pending + counters.invitations + counters.hosting;
+    const all = allSources.size;
     user.activities ??= {};
     user.activities.event ??= {};
     user.activities.events = counters.active;

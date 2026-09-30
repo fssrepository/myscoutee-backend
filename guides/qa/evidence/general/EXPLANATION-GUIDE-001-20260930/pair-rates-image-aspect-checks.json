@@ -1,0 +1,40 @@
+[
+  {
+    "natural": {
+      "width": 960,
+      "height": 1280,
+      "ratio": 0.75
+    },
+    "canvas": {
+      "width": 341.406,
+      "height": 628.297
+    },
+    "fit": "cover",
+    "rendered": {
+      "width": 471.22275,
+      "height": 628.297,
+      "ratio": 0.75
+    },
+    "transform": "matrix(1, 0, 0, 1, -170.703, 0)",
+    "url": "/media/public"
+  },
+  {
+    "natural": {
+      "width": 960,
+      "height": 1280,
+      "ratio": 0.75
+    },
+    "canvas": {
+      "width": 341.406,
+      "height": 628.297
+    },
+    "fit": "cover",
+    "rendered": {
+      "width": 471.22275,
+      "height": 628.297,
+      "ratio": 0.75
+    },
+    "transform": "matrix(1, 0, 0, 1, -170.703, 0)",
+    "url": "/media/public"
+  }
+]

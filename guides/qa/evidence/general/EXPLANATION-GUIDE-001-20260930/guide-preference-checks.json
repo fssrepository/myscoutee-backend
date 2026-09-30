@@ -1,0 +1,17 @@
+{
+  "checks": [
+    {
+      "defaultWithNoSavedChoice": "ON"
+    },
+    {
+      "savedOffAfterReload": "OFF"
+    },
+    {
+      "landingVisibleDespiteInternalOff": true,
+      "internalChoicePreserved": true
+    },
+    {
+      "savedOnAfterReload": "ON"
+    }
+  ]
+}

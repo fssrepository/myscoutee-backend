@@ -1,0 +1,461 @@
+{
+  "checkedAt": "2026-09-30T06:23:44.748Z",
+  "samples": [
+    {
+      "fullscreen": false,
+      "items": 33,
+      "cursor": 18,
+      "views": [
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": false
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": false
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": false
+        }
+      ],
+      "visibleSpinners": 0
+    },
+    {
+      "fullscreen": true,
+      "items": 33,
+      "cursor": 18,
+      "views": [
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "list",
+          "imagesEnabled": false
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": true
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": true
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": true
+        }
+      ],
+      "visibleSpinners": 0
+    },
+    {
+      "fullscreen": false,
+      "items": 33,
+      "cursor": 18,
+      "views": [
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "list",
+          "imagesEnabled": true
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": false
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": false
+        },
+        {
+          "view": "fullscreen",
+          "imagesEnabled": false
+        }
+      ],
+      "visibleSpinners": 0
+    }
+  ]
+}

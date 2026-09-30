@@ -31,6 +31,7 @@ const requiredCollections = [
   'adminStats',
   'adminMonitoring',
   'helpCenterRevisions',
+  'helpCenterGuideFields',
   'helpCenterAudit',
   'privacyConsents',
   'userExperienceProfiles',

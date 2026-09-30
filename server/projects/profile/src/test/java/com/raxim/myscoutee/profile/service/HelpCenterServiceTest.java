@@ -30,6 +30,7 @@ import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisi
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterSectionDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.HelpCenterAuditRepository;
+import com.raxim.myscoutee.profile.repository.HelpCenterGuideFieldsRepository;
 import com.raxim.myscoutee.profile.repository.HelpCenterRevisionsRepository;
 import com.raxim.myscoutee.profile.repository.PrivacyConsentsRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
@@ -40,6 +41,8 @@ class HelpCenterServiceTest {
     private HelpCenterRevisionsRepository revisionsRepository;
     @Mock
     private HelpCenterAuditRepository auditRepository;
+    @Mock
+    private HelpCenterGuideFieldsRepository guideFieldsRepository;
     @Mock
     private PrivacyConsentsRepository privacyConsentsRepository;
     @Mock
@@ -58,6 +61,7 @@ class HelpCenterServiceTest {
                 new ConfigProperties(),
                 revisionsRepository,
                 auditRepository,
+                guideFieldsRepository,
                 privacyConsentsRepository,
                 adminTelemetryService,
                 appSettingsService,
@@ -73,7 +77,10 @@ class HelpCenterServiceTest {
     void saveRevisionRetriesVersionWhenConcurrentInsertWins() {
         HelpCenterRevision versionOne = revision("one", 1);
         HelpCenterRevision concurrentVersionTwo = revision("two", 2);
+        versionOne.setContextKey("profile.impressions");
+        concurrentVersionTwo.setContextKey("profile.impressions");
         AtomicInteger revisionReads = new AtomicInteger();
+        when(guideFieldsRepository.existsByScreenKey("profile.impressions")).thenReturn(true);
         when(revisionsRepository.findAllByOrderByVersionDesc())
                 .thenAnswer(invocation -> revisionReads.getAndIncrement() == 0
                         ? List.of(versionOne)
@@ -92,12 +99,13 @@ class HelpCenterServiceTest {
         service.saveRevision(new HelpCenterRevisionSaveRequestDto(
                 "admin",
                 null,
-                "home.game",
+                "profile.impressions",
                 "en",
                 "Concurrent explanation",
                 "summary",
                 "description",
                 "blue",
+                "tour",
                 List.of(new HelpCenterSectionDto(
                         "section",
                         "info",
@@ -106,7 +114,8 @@ class HelpCenterServiceTest {
                         "<p>Body</p>",
                         List.of(),
                         "single",
-                        false))),
+                        false,
+                        "rate-social"))),
                 "explanation");
 
         ArgumentCaptor<HelpCenterRevision> revisionCaptor = ArgumentCaptor.forClass(HelpCenterRevision.class);

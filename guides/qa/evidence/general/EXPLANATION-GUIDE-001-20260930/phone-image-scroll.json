@@ -1,0 +1,43 @@
+{
+  "environment": "Physical Android Chrome, prepared individual-mutual Rates fixture, existing dev build; native ADB swipe. No persistent profiler/HUD.",
+  "baseline": "Four offscreen pending images had four running spinner animations before the image-loader fix.",
+  "final": {
+    "startTop": 39,
+    "endTop": 1124.5,
+    "fastFrames": 8,
+    "visibleImageFlickers": 0,
+    "visibleImageSamples": 26,
+    "offscreenSuspended": 2,
+    "readyPaintRestored": true,
+    "maxFastSpinners": 0,
+    "requestCount": 3,
+    "fastRequests": 0,
+    "offscreenRequests": 0,
+    "readyRetained": true,
+    "nodesRetained": true,
+    "remainingSkeletons": 0,
+    "remainingAnimations": 0
+  },
+  "unitChecks": "11 image lifecycle/scroll/cache tests plus4 existing pagination tests PASS; watcher stopped and restarted serially.",
+  "scope": "Only the image loader/photo paint/spinner handling. SmartList preview and adaptive prefetch removed. Visible loaded photos remain; offscreen/passed photos suspend and restore once from cache.",
+  "photoControls": [
+    {
+      "samples": 90,
+      "hidden": 4626,
+      "shown": 684,
+      "text": 1722,
+      "errors": [],
+      "done": true,
+      "bucket": "individual-given"
+    },
+    {
+      "samples": 90,
+      "hidden": 1468,
+      "shown": 692,
+      "text": 734,
+      "errors": [],
+      "done": true,
+      "bucket": "pair-given"
+    }
+  ]
+}

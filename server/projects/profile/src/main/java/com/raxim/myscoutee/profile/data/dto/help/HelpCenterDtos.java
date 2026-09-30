@@ -15,7 +15,8 @@ public final class HelpCenterDtos {
             String contentHtml,
             List<String> imageUrls,
             String panelSpan,
-            Boolean optional) {}
+            Boolean optional,
+            String guideStepId) {}
 
     public record HelpCenterRevisionDto(
             String id,
@@ -28,6 +29,7 @@ public final class HelpCenterDtos {
             String summary,
             String description,
             String headerColor,
+            String presentation,
             List<HelpCenterSectionDto> sections,
             Boolean active,
             String createdAtIso,
@@ -47,11 +49,19 @@ public final class HelpCenterDtos {
             String createdAtIso,
             String message) {}
 
+    public record HelpCenterGuideFieldDto(
+            String id,
+            String screenKey,
+            String group,
+            String i18nKey,
+            Integer order) {}
+
     public record HelpCenterStateDto(
             HelpCenterRevisionDto activeRevision,
             List<HelpCenterRevisionDto> revisions,
             List<HelpCenterAuditEntryDto> auditTrail,
-            List<ContentLanguageDto> availableLanguages) {}
+            List<ContentLanguageDto> availableLanguages,
+            List<HelpCenterGuideFieldDto> guideFields) {}
 
     public record HelpCenterRevisionSaveRequestDto(
             String actorUserId,
@@ -62,6 +72,7 @@ public final class HelpCenterDtos {
             String summary,
             String description,
             String headerColor,
+            String presentation,
             List<HelpCenterSectionDto> sections) {}
 
     public record PrivacyConsentDto(

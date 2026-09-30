@@ -1,0 +1,180 @@
+{
+  "width": 390,
+  "evidence": [
+    {
+      "name": "version-clearance",
+      "gap": 10
+    },
+    {
+      "name": "home",
+      "steps": 3,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "demo",
+      "steps": 6,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "setup",
+      "steps": 5,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "registration-empty",
+      "steps": 13,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "registration-photos-empty",
+      "steps": 5,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "registration-photos-filled",
+      "steps": 8,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "registration-lifestyle",
+      "steps": 14,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "guide-slide-exit",
+      "frames": [
+        {
+          "t": 1,
+          "x": 46,
+          "y": 201.140625
+        },
+        {
+          "t": 17,
+          "x": 46,
+          "y": 201.140625
+        },
+        {
+          "t": 34,
+          "x": 46,
+          "y": 201.140625
+        },
+        {
+          "t": 50,
+          "x": 46,
+          "y": 201.140625
+        },
+        {
+          "t": 67
+        },
+        {
+          "t": 84
+        },
+        {
+          "t": 99
+        },
+        {
+          "t": 117
+        },
+        {
+          "t": 134
+        },
+        {
+          "t": 151
+        },
+        {
+          "t": 168
+        },
+        {
+          "t": 183
+        },
+        {
+          "t": 201
+        },
+        {
+          "t": 217
+        },
+        {
+          "t": 233
+        },
+        {
+          "t": 250
+        },
+        {
+          "t": 267
+        },
+        {
+          "t": 285
+        },
+        {
+          "t": 301
+        },
+        {
+          "t": 317
+        },
+        {
+          "t": 334
+        },
+        {
+          "t": 351
+        },
+        {
+          "t": 368
+        },
+        {
+          "t": 384
+        },
+        {
+          "t": 401
+        },
+        {
+          "t": 418
+        },
+        {
+          "t": 434
+        },
+        {
+          "t": 454
+        },
+        {
+          "t": 470
+        },
+        {
+          "t": 488
+        },
+        {
+          "t": 503
+        }
+      ]
+    },
+    {
+      "name": "registration-review",
+      "steps": 3,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "auth-providers",
+      "steps": 1,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "auth-create",
+      "steps": 6,
+      "long": [],
+      "occluded": []
+    },
+    {
+      "name": "escape-preserves-auth-popup-and-drag-dismiss",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

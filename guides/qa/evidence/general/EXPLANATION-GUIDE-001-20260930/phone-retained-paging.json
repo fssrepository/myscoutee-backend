@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-09-30T06:20:12.898Z",
+  "note": "Existing score 4 resaved unchanged via UI, then switch to list and back.",
+  "before": {
+    "id": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+    "score": 4,
+    "cursor": 0
+  },
+  "next": {
+    "id": "93e83941-5735-5d1c-97f1-7a8e7902afce",
+    "cursor": 1,
+    "scroll": 348,
+    "retained": true
+  },
+  "list": {
+    "id": "93e83941-5735-5d1c-97f1-7a8e7902afce",
+    "cursor": 1,
+    "scroll": 348
+  },
+  "reopened": {
+    "id": "93e83941-5735-5d1c-97f1-7a8e7902afce",
+    "cursor": 1
+  }
+}

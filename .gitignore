@@ -95,3 +95,8 @@ Thumbs.db
 # local target deploy configs
 /packaging/client-tools/*.env
 /server/docker/.qa-mobile-runtime/
+
+# Guide QA screenshots are temporary local diagnostics, not versioned evidence.
+/guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.png
+/guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.jpg
+/guides/qa/evidence/general/EXPLANATION-GUIDE-*/**/*.webp

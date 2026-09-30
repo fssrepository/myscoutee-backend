@@ -1,0 +1,1 @@
+import {p,browser,menu,tour,home} from './session.mjs';for(const v of [{width:390,height:844},{width:1280,height:900}]){await p.setViewportSize(v);await menu('Open rates');await tour('activities.rates hidden list fix '+v.width);await home();await tour('home hidden list fix '+v.width)}await browser.close();

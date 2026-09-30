@@ -38,6 +38,7 @@ public class HelpCenterRevision {
     private String summary;
     private String description;
     private String headerColor;
+    private String presentation;
     private List<HelpCenterSection> sections = new ArrayList<>();
     private String createdDate;
     private String createdUser;
@@ -54,6 +55,10 @@ public class HelpCenterRevision {
         private List<String> imageUrls = new ArrayList<>();
         private String panelSpan;
         private Boolean optional;
+        private String guideStepId;
+
+        public String getGuideStepId() { return guideStepId; }
+        public void setGuideStepId(String guideStepId) { this.guideStepId = guideStepId; }
 
         public String getId() {
             return id;
@@ -207,6 +212,9 @@ public class HelpCenterRevision {
     public void setHeaderColor(String headerColor) {
         this.headerColor = headerColor;
     }
+
+    public String getPresentation() { return presentation; }
+    public void setPresentation(String presentation) { this.presentation = presentation; }
 
     public List<HelpCenterSection> getSections() {
         return sections;

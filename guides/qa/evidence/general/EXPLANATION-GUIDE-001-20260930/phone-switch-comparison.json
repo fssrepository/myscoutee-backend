@@ -1,0 +1,265 @@
+{
+  "environment": "Retained physical Android Chrome, 360x697 CSS px, DPR 2, existing dev build, native ADB taps, no CPU profile or HUD during comparison. Tiny sample, not a release-performance PASS. First run was warm; post-reload stages include cold-first-switch overhead. RAF upper bound is not hardware paint latency.",
+  "stages": [
+    {
+      "stage": "before",
+      "samples": [
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 147.2999997138977,
+          "affinityReady": false,
+          "upperBoundMs": 290,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 6,
+          "allRebuilds": 6
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 288.80000019073486,
+          "affinityReady": true,
+          "upperBoundMs": 288.80000019073486,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 6,
+          "allRebuilds": 9
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 107.90000009536743,
+          "affinityReady": false,
+          "upperBoundMs": 160.60000038146973,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 6,
+          "allRebuilds": 6
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 199.09999990463257,
+          "affinityReady": true,
+          "upperBoundMs": 303.2999997138977,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 6,
+          "allRebuilds": 9
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 97.19999980926514,
+          "affinityReady": false,
+          "upperBoundMs": 144.7999997138977,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 6,
+          "allRebuilds": 6
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 191.19999980926514,
+          "affinityReady": true,
+          "upperBoundMs": 292.59999990463257,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 6,
+          "allRebuilds": 9
+        }
+      ]
+    },
+    {
+      "stage": "row-specific",
+      "samples": [
+        {
+          "direction": "fullscreen",
+          "selectedBefore": null,
+          "cardMs": 361.40000009536743,
+          "affinityReady": true,
+          "upperBoundMs": 361.5,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 145.30000019073486,
+          "affinityReady": false,
+          "upperBoundMs": 223.80000019073486,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 245.69999980926514,
+          "affinityReady": true,
+          "upperBoundMs": 245.89999961853027,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 87.39999961853027,
+          "affinityReady": false,
+          "upperBoundMs": 87.39999961853027,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 186.09999990463257,
+          "affinityReady": true,
+          "upperBoundMs": 299.69999980926514,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 101.19999980926514,
+          "affinityReady": false,
+          "upperBoundMs": 101.19999980926514,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        }
+      ]
+    },
+    {
+      "stage": "visible-surfaces",
+      "samples": [
+        {
+          "direction": "fullscreen",
+          "selectedBefore": null,
+          "cardMs": 318.59999990463257,
+          "affinityReady": true,
+          "upperBoundMs": 318.69999980926514,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 174.10000038146973,
+          "affinityReady": false,
+          "upperBoundMs": 231.10000038146973,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 224.5,
+          "affinityReady": true,
+          "upperBoundMs": 224.59999990463257,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 68.5,
+          "affinityReady": false,
+          "upperBoundMs": 125.7999997138977,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 198.40000009536743,
+          "affinityReady": true,
+          "upperBoundMs": 312,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 63.5,
+          "affinityReady": false,
+          "upperBoundMs": 109.30000019073486,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        }
+      ]
+    },
+    {
+      "stage": "single-snapshot-warm",
+      "samples": [
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 67.5,
+          "affinityReady": false,
+          "upperBoundMs": 141.7000002861023,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 146.30000019073486,
+          "affinityReady": true,
+          "upperBoundMs": 258.80000019073486,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 97.2000002861023,
+          "affinityReady": false,
+          "upperBoundMs": 97.2000002861023,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 227,
+          "affinityReady": true,
+          "upperBoundMs": 227,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        },
+        {
+          "direction": "list",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 59.90000009536743,
+          "affinityReady": false,
+          "upperBoundMs": 108.30000019073486,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 1
+        },
+        {
+          "direction": "fullscreen",
+          "selectedBefore": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "cardMs": 141.7999997138977,
+          "affinityReady": true,
+          "upperBoundMs": 253.59999990463257,
+          "selectedAfter": "272e337c-7f6a-5ad5-9f0b-c3daed05fded",
+          "listRebuilds": 1,
+          "allRebuilds": 4
+        }
+      ]
+    }
+  ]
+}

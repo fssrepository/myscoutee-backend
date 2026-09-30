@@ -24,11 +24,13 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
 import com.raxim.myscoutee.profile.data.document.HelpCenterAuditEntry;
+import com.raxim.myscoutee.profile.data.document.HelpCenterGuideField;
 import com.raxim.myscoutee.profile.data.document.HelpCenterRevision;
 import com.raxim.myscoutee.profile.data.document.HelpCenterRevision.HelpCenterSection;
 import com.raxim.myscoutee.profile.data.document.PrivacyConsent;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAuditEntryDto;
+import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterGuideFieldDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterSectionDto;
@@ -36,6 +38,7 @@ import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterStateD
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentDto;
 import com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 import com.raxim.myscoutee.profile.repository.HelpCenterAuditRepository;
+import com.raxim.myscoutee.profile.repository.HelpCenterGuideFieldsRepository;
 import com.raxim.myscoutee.profile.repository.HelpCenterRevisionsRepository;
 import com.raxim.myscoutee.profile.repository.PrivacyConsentsRepository;
 import com.raxim.myscoutee.profile.security.AccessControlService;
@@ -48,30 +51,6 @@ public class HelpCenterService {
     private static final String DOCUMENT_EXPLANATION = "explanation";
     private static final String DEFAULT_LANG = "en";
     private static final int REVISION_SAVE_MAX_ATTEMPTS = 5;
-    private static final String EXPLANATION_CHATS_CONTEXT = "chats";
-    private static final String EXPLANATION_CONTACTS_CONTEXT = "contacts";
-    private static final String EXPLANATION_ASSETS_CONTEXT = "assets";
-    private static final String EXPLANATION_ASSETS_TRANSPORT_CONTEXT = "assets.transport";
-    private static final String EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT = "assets.accommodation";
-    private static final String EXPLANATION_ASSETS_SUPPLIES_CONTEXT = "assets.supplies";
-    private static final String EXPLANATION_ASSETS_TICKETS_CONTEXT = "assets.tickets";
-    private static final String EXPLANATION_EVENTS_CONTEXT = "events";
-    private static final String EXPLANATION_EVENT_EDITOR_CONTEXT = "event.editor";
-    private static final Set<String> EXPLANATION_CONTEXT_KEYS = Set.of(
-            "home.game",
-            "activities.rates",
-            EXPLANATION_CHATS_CONTEXT,
-            EXPLANATION_CONTACTS_CONTEXT,
-            "profile.editor",
-            "profile.view",
-            EXPLANATION_ASSETS_CONTEXT,
-            EXPLANATION_ASSETS_TRANSPORT_CONTEXT,
-            EXPLANATION_ASSETS_ACCOMMODATION_CONTEXT,
-            EXPLANATION_ASSETS_SUPPLIES_CONTEXT,
-            EXPLANATION_ASSETS_TICKETS_CONTEXT,
-            EXPLANATION_EVENTS_CONTEXT,
-            EXPLANATION_EVENT_EDITOR_CONTEXT,
-            "event.feedback");
     private static final Safelist HELP_HTML_SAFELIST = Safelist.relaxed()
             .addTags("section", "article", "figure", "figcaption", "h3", "h4")
             .addAttributes(":all", "class")
@@ -84,6 +63,7 @@ public class HelpCenterService {
     private final ConfigProperties configProperties;
     private final HelpCenterRevisionsRepository revisionsRepository;
     private final HelpCenterAuditRepository auditRepository;
+    private final HelpCenterGuideFieldsRepository guideFieldsRepository;
     private final PrivacyConsentsRepository privacyConsentsRepository;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
@@ -93,6 +73,7 @@ public class HelpCenterService {
             ConfigProperties configProperties,
             HelpCenterRevisionsRepository revisionsRepository,
             HelpCenterAuditRepository auditRepository,
+            HelpCenterGuideFieldsRepository guideFieldsRepository,
             PrivacyConsentsRepository privacyConsentsRepository,
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService,
@@ -100,6 +81,7 @@ public class HelpCenterService {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
+        this.guideFieldsRepository = guideFieldsRepository;
         this.privacyConsentsRepository = privacyConsentsRepository;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
@@ -127,7 +109,7 @@ public class HelpCenterService {
         String language = requestContentLang(lang, acceptLanguage);
         String context = contextKey(kind, contextKey, false);
         if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
-            return new HelpCenterStateDto(null, List.of(), List.of(), List.of());
+            return new HelpCenterStateDto(null, List.of(), List.of(), List.of(), List.of());
         }
         HelpCenterRevision active = revisionsForKind(
                     revisionsRepository.findAllByOrderByVersionDesc(),
@@ -142,7 +124,8 @@ public class HelpCenterService {
                 active == null ? null : toRevisionDto(active),
                 active == null ? List.of() : List.of(toRevisionDto(active)),
                 List.of(),
-                List.of());
+                List.of(),
+                guideFields(kind, context));
     }
 
     public HelpCenterStateDto adminState(String adminUserId) {
@@ -215,6 +198,7 @@ public class HelpCenterService {
             revision.setSummary(normalize(request == null ? null : request.summary()));
             revision.setDescription(normalize(request == null ? null : request.description()));
             revision.setHeaderColor(headerColor(request == null ? null : request.headerColor()));
+            revision.setPresentation(DOCUMENT_EXPLANATION.equals(kind) && request != null && "tour".equals(request.presentation()) ? "tour" : "document");
             revision.setSections(sections);
             revision.setCreatedDate(nowIso);
             revision.setCreatedUser(actorUserId);
@@ -361,7 +345,26 @@ public class HelpCenterService {
                 active == null ? null : toRevisionDto(active),
                 revisions.stream().map(this::toRevisionDto).toList(),
                 auditTrail.stream().map(this::toAuditDto).toList(),
-                List.of());
+                List.of(),
+                guideFields(kind, context));
+    }
+
+    private List<HelpCenterGuideFieldDto> guideFields(String kind, String contextKey) {
+        if (!DOCUMENT_EXPLANATION.equals(kind) || !StringUtils.hasText(contextKey)) {
+            return List.of();
+        }
+        return guideFieldsRepository.findAllByScreenKeyOrderByOrderAsc(contextKey).stream()
+                .map(this::toGuideFieldDto)
+                .toList();
+    }
+
+    private HelpCenterGuideFieldDto toGuideFieldDto(HelpCenterGuideField field) {
+        return new HelpCenterGuideFieldDto(
+                field.getId(),
+                field.getScreenKey(),
+                field.getGroup(),
+                field.getI18nKey(),
+                field.getOrder());
     }
 
     private List<HelpCenterSection> normalizeSections(List<HelpCenterSectionDto> sections, String kind) {
@@ -394,6 +397,7 @@ public class HelpCenterService {
             section.setImageUrls(normalizeImageUrls(source == null ? null : source.imageUrls()));
             section.setPanelSpan(normalizePanelSpan(source == null ? null : source.panelSpan(), id));
             section.setOptional(DOCUMENT_PRIVACY.equals(kind) && source != null && Boolean.TRUE.equals(source.optional()));
+            section.setGuideStepId(DOCUMENT_EXPLANATION.equals(kind) && source != null ? normalize(source.guideStepId()) : null);
             normalized.add(section);
         }
         return normalized;
@@ -431,6 +435,7 @@ public class HelpCenterService {
                 normalize(revision.getSummary()),
                 normalize(revision.getDescription()),
                 headerColor(revision.getHeaderColor()),
+                DOCUMENT_EXPLANATION.equals(kind) && "tour".equals(revision.getPresentation()) ? "tour" : "document",
                 revision.getSections() == null
                         ? List.of()
                         : revision.getSections().stream().map(section -> toSectionDto(section, kind)).toList(),
@@ -450,7 +455,8 @@ public class HelpCenterService {
                 normalize(section.getContentHtml()),
                 normalizeImageUrls(section.getImageUrls()),
                 normalizePanelSpan(section.getPanelSpan(), section.getId()),
-                DOCUMENT_PRIVACY.equals(kind) && Boolean.TRUE.equals(section.getOptional()));
+                DOCUMENT_PRIVACY.equals(kind) && Boolean.TRUE.equals(section.getOptional()),
+                DOCUMENT_EXPLANATION.equals(kind) ? normalize(section.getGuideStepId()) : null);
     }
 
     private String normalizePanelSpan(String panelSpan, String sectionId) {
@@ -614,7 +620,7 @@ public class HelpCenterService {
         if (!StringUtils.hasText(normalized)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Explanation context is required.");
         }
-        if (!EXPLANATION_CONTEXT_KEYS.contains(normalized)) {
+        if (required && !guideFieldsRepository.existsByScreenKey(normalized)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown explanation context.");
         }
         return normalized;
