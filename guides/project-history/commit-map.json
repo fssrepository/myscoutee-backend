@@ -1,0 +1,1045 @@
+[
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "d4f00f9d819994ef38bd57ac880aa974fcb44344",
+    "task_commit": "3ff26eac53b599c492bafb385c89642ffb8a5160",
+    "task_ids": [
+      "MSC-7"
+    ],
+    "original_source_tree": "05998156b8e01d48d6c4ce12011b22a36bc1bebc",
+    "original_execution_start": "2026-03-11T09:45:20+01:00",
+    "original_execution_end": "2026-03-25T15:54:03+01:00",
+    "original_commit_count": 43
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "b1b1e01014141dcf3bdf30b8ad8d090929073f1f",
+    "task_commit": "0f5a0dedab7a2cf0089c050fd8e50c53cfd2d033",
+    "task_ids": [
+      "MSC-9"
+    ],
+    "original_source_tree": "03bac0a4cefb3e1ab3afde09c2dd0feda46f5acd",
+    "original_execution_start": "2026-03-30T02:12:14+02:00",
+    "original_execution_end": "2026-03-31T15:11:53+02:00",
+    "original_commit_count": 24
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "619f9ec13c6893aa8e0d7c7e514800155d6d90a2",
+    "task_commit": "5be73284e1a437a6c95b8ccd9367b643d055e67f",
+    "task_ids": [
+      "MSC-10"
+    ],
+    "original_source_tree": "57c14da3086178e8ee256dca62dcd85a005f5308",
+    "original_execution_start": "2026-04-01T18:48:30+02:00",
+    "original_execution_end": "2026-04-03T08:20:14+02:00",
+    "original_commit_count": 7
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "b430ac9f1e69ae4625b66500f75e3c7341ea00e9",
+    "task_commit": "75cf681dc80dd18ade27ce3798df4da53c56da68",
+    "task_ids": [
+      "MSC-11"
+    ],
+    "original_source_tree": "bbea33082f87e5f09fe5a870449c92f327735af1",
+    "original_execution_start": "2026-04-11T04:15:58+02:00",
+    "original_execution_end": "2026-04-12T13:26:03+02:00",
+    "original_commit_count": 18
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "2e415322d7f4140bf467b760b874a44c7d0ba9ec",
+    "task_commit": "d6e407b7a367d79064ab2ca6073cb4ee80dc87b6",
+    "task_ids": [
+      "MSC-12"
+    ],
+    "original_source_tree": "e4aec3d9bd6ae5746b548b59dc8ecb83f7694e9f",
+    "original_execution_start": "2026-04-13T03:57:10+02:00",
+    "original_execution_end": "2026-04-14T22:19:21+02:00",
+    "original_commit_count": 21
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "2afbcb3c2a6128e1e5a4b758f530e9bb53791bbd",
+    "task_commit": "3e2bc54e2aa2d70b576832f19f2bb91ed6d12efd",
+    "task_ids": [
+      "MSC-13"
+    ],
+    "original_source_tree": "a9995d91fb430127bea1df2c25b0b7b19488b93b",
+    "original_execution_start": "2026-04-19T05:42:15+02:00",
+    "original_execution_end": "2026-04-21T22:15:38+02:00",
+    "original_commit_count": 31
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "b63024aa28229fcf6c33ff0dfc336fb528c29d5f",
+    "task_commit": "40f5e2e7d9e65f1f7e7e5cb708a821fca54fcfe3",
+    "task_ids": [
+      "MSC-14"
+    ],
+    "original_source_tree": "cfe1625abb19db56c5ce8fb9790700da95373787",
+    "original_execution_start": "2026-04-22T05:30:50+02:00",
+    "original_execution_end": "2026-04-23T14:41:29+02:00",
+    "original_commit_count": 32
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "d43c10f5039ddd4fdcc110467cddd821d115a005",
+    "task_commit": "0888cfe564f200be12714c128b9f3b0317fcddd3",
+    "task_ids": [
+      "MSC-15"
+    ],
+    "original_source_tree": "cd71c6bedf264d5739224d6172549a6f47f45330",
+    "original_execution_start": "2026-04-26T19:47:23+02:00",
+    "original_execution_end": "2026-04-28T21:11:17+02:00",
+    "original_commit_count": 25
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "9f6cc953fa1d6d7a1777df73c2f25addea5998e1",
+    "task_commit": "f3a3aa128c2c25a91d130c8d4f5bbc742594321e",
+    "task_ids": [
+      "MSC-16"
+    ],
+    "original_source_tree": "e1919f6a26f8a9d188db8090bd55041de21033ac",
+    "original_execution_start": "2026-04-29T13:57:43+02:00",
+    "original_execution_end": "2026-04-30T23:10:52+02:00",
+    "original_commit_count": 45
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "884713540fdd533f36931c9ee4b1ce3f4a8c90ae",
+    "task_commit": "f494241f5db30389325d30f437119030dcb2d5d0",
+    "task_ids": [
+      "MSC-17"
+    ],
+    "original_source_tree": "af9f0891f99366d2d39e5d6a0165f28d7f71fc42",
+    "original_execution_start": "2026-05-01T01:46:57+02:00",
+    "original_execution_end": "2026-05-02T22:14:38+02:00",
+    "original_commit_count": 38
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "d1e15c30144ac46fcbd3e60317a19237e03d3938",
+    "task_commit": "448e760079d596b0526344c1bc438a6d327945a3",
+    "task_ids": [
+      "MSC-18"
+    ],
+    "original_source_tree": "af63bfd3f7c6d826fb0a0acb2c248dcf4f55981d",
+    "original_execution_start": "2026-05-04T14:47:00+02:00",
+    "original_execution_end": "2026-05-06T23:23:14+02:00",
+    "original_commit_count": 47
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "53b275f8d22044bda4e6f7f3156f70436745d6cf",
+    "task_commit": "54174bfd1986a72e5fa5510cc48f9b7c9781c46c",
+    "task_ids": [
+      "MSC-19"
+    ],
+    "original_source_tree": "70fb85160350929ae1290dffda65118e29721705",
+    "original_execution_start": "2026-05-07T17:58:35+02:00",
+    "original_execution_end": "2026-05-10T19:01:00+02:00",
+    "original_commit_count": 19
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "80cd48a764fd55e960c1806ebd37da28115a8835",
+    "task_commit": "ff23893381d7efebf8a94319a1214fbcae9888bd",
+    "task_ids": [
+      "MSC-20"
+    ],
+    "original_source_tree": "2ac0c0e07ef8b836f4c3814ba9cc30cfca8a1942",
+    "original_execution_start": "2026-05-11T04:18:51+02:00",
+    "original_execution_end": "2026-05-14T03:01:54+02:00",
+    "original_commit_count": 28
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "efac8b646d13be1ef82bbe8ffd97426363eecdab",
+    "task_commit": "d1fb714c26818b528addd812e419fc939987faef",
+    "task_ids": [
+      "MSC-21"
+    ],
+    "original_source_tree": "b37c266cbababac6d4ce5a471d0e7c3e0ce7a199",
+    "original_execution_start": "2026-05-22T05:51:16+02:00",
+    "original_execution_end": "2026-05-22T14:07:38+02:00",
+    "original_commit_count": 7
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "307ed6e77186d551393073b7558b58035cb71612",
+    "task_commit": "3ddb1a1dfba7cd58058f6a64d0c8d25ae942c6dd",
+    "task_ids": [
+      "MSC-22"
+    ],
+    "original_source_tree": "638afb5330f8b7e6fb9ac757ef9a5a2b3b1c7453",
+    "original_execution_start": "2026-05-23T04:34:35+02:00",
+    "original_execution_end": "2026-05-24T17:39:42+02:00",
+    "original_commit_count": 35
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "341525740f8bcaf049ea9beabd9b20d8004f2663",
+    "task_commit": "bc0334785f264425edd82eaa3417e09a68345ad3",
+    "task_ids": [
+      "MSC-23"
+    ],
+    "original_source_tree": "616705733d64c8b6478d2a2bde22265c75069377",
+    "original_execution_start": "2026-05-25T02:02:32+02:00",
+    "original_execution_end": "2026-05-27T16:29:16+02:00",
+    "original_commit_count": 32
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "211724d4e8689e3397d1a16fb79b25c5cc0dbbe8",
+    "task_commit": "611d6ee80905d37cb3f63b48788c3c83f66a52e3",
+    "task_ids": [
+      "MSC-24"
+    ],
+    "original_source_tree": "beea6d2b047d87d0388fba5c88a4a271ac002c9d",
+    "original_execution_start": "2026-05-31T07:47:43+02:00",
+    "original_execution_end": "2026-05-31T23:04:47+02:00",
+    "original_commit_count": 27
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "cf7ca6177d3e7266df1d244300f06c61375a01fa",
+    "task_commit": "7628ee06b2f6bb439b6f81c1dd7390f796132f8a",
+    "task_ids": [
+      "MSC-25"
+    ],
+    "original_source_tree": "1750e52f8a2213b6bb7e2e266e1c599ab905bfb3",
+    "original_execution_start": "2026-06-01T08:08:13+02:00",
+    "original_execution_end": "2026-06-01T23:43:27+02:00",
+    "original_commit_count": 25
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "62fd5f3da961caaab598a13ba3a1094c410ef98b",
+    "task_commit": "8afb076b383bbadf3aea41acee2d976cce56d582",
+    "task_ids": [
+      "MSC-26"
+    ],
+    "original_source_tree": "2bda890a2e12a33f27a0612cbebf27ebf4597cbe",
+    "original_execution_start": "2026-06-02T10:25:38+02:00",
+    "original_execution_end": "2026-06-02T22:52:21+02:00",
+    "original_commit_count": 19
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "e0b1427e3be60c0aa84852323c1b95b45ab42d12",
+    "task_commit": "226d0489d1feaf662e83d9d149c602e25327bf06",
+    "task_ids": [
+      "MSC-27"
+    ],
+    "original_source_tree": "4cdd5af5f506021a9936303bab502bc9806fea9f",
+    "original_execution_start": "2026-06-03T09:09:46+02:00",
+    "original_execution_end": "2026-06-04T21:14:11+02:00",
+    "original_commit_count": 29
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "36d9d3d83a20da67a260ddb4b4215f17afac1977",
+    "task_commit": "ca336e25d6300de5f522d13ca91c177c952dbb27",
+    "task_ids": [
+      "MSC-28"
+    ],
+    "original_source_tree": "3ec80b7c6251985fdc5256604e490a4a729796d8",
+    "original_execution_start": "2026-06-05T00:24:12+02:00",
+    "original_execution_end": "2026-06-05T22:19:55+02:00",
+    "original_commit_count": 28
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "7d36f51d3993185b7213e94981e7f8d7354c0a6a",
+    "task_commit": "815d8894538edcaa10b157bbc27cdf1e3cc107f2",
+    "task_ids": [
+      "MSC-29"
+    ],
+    "original_source_tree": "8ead113e83129f8ece2f8273a9fea39555f7f42f",
+    "original_execution_start": "2026-06-07T14:49:00+02:00",
+    "original_execution_end": "2026-06-13T20:08:14+02:00",
+    "original_commit_count": 24
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "6796251aefca944a28cd7b925239e834404655a4",
+    "task_commit": "efd3b0e9d3edd8e2294917f7283dd1b51774204b",
+    "task_ids": [
+      "MSC-30"
+    ],
+    "original_source_tree": "778db9ba81568997058514607cd3e3c32022c122",
+    "original_execution_start": "2026-06-14T19:51:12+02:00",
+    "original_execution_end": "2026-06-16T21:00:58+02:00",
+    "original_commit_count": 10
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "604276239888b78e5f8013c8768722bd80f0cb34",
+    "task_commit": "fb2b815d28f07e9afb4048132daa7618e536e60e",
+    "task_ids": [
+      "MSC-31"
+    ],
+    "original_source_tree": "bb2546b94b7300a2fbb1cc469fadafd935969f72",
+    "original_execution_start": "2026-06-17T00:37:18+02:00",
+    "original_execution_end": "2026-06-18T20:25:05+02:00",
+    "original_commit_count": 7
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "3e4011636dedba9781ab404a2335c17408d0eafd",
+    "task_commit": "58ecf575b53bcf263043abb8fa125c1f512364d2",
+    "task_ids": [
+      "MSC-32"
+    ],
+    "original_source_tree": "57c0e786ca893426edb83cb08c3070d2638bdc18",
+    "original_execution_start": "2026-06-19T04:25:40+02:00",
+    "original_execution_end": "2026-06-23T10:47:54+02:00",
+    "original_commit_count": 35
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "320a2fde14561d16917546c0ae2a79306f24ba1c",
+    "task_commit": "1ef92b4561279edfcc01ecd917043d7066b9f796",
+    "task_ids": [
+      "MSC-33"
+    ],
+    "original_source_tree": "2e70cf27c45ad3aac65765740254874d6a2cf84a",
+    "original_execution_start": "2026-06-24T03:35:07+02:00",
+    "original_execution_end": "2026-06-25T23:10:26+02:00",
+    "original_commit_count": 25
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "47067b8daf322343f78b7841ac1ca778b4ea1bd4",
+    "task_commit": "4e1001397ceb21c3e6da76cb95108e5f3728bb6c",
+    "task_ids": [
+      "MSC-34"
+    ],
+    "original_source_tree": "8292195db3569b42d27ec0a9e39c24d48e48d7a9",
+    "original_execution_start": "2026-06-26T00:31:49+02:00",
+    "original_execution_end": "2026-06-28T18:23:47+02:00",
+    "original_commit_count": 28
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "3ea8e427e3de2d547401696487c6c474abee154f",
+    "task_commit": "3da8af48503c10f1af5b0a1aa8bd98aa14134876",
+    "task_ids": [
+      "MSC-35"
+    ],
+    "original_source_tree": "9376f98bc201744bf506b2ebc356e9d2d2749583",
+    "original_execution_start": "2026-06-29T17:17:11+02:00",
+    "original_execution_end": "2026-06-30T19:24:27+02:00",
+    "original_commit_count": 22
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "f3a39193d99136559047b4d6f2f709e0381be555",
+    "task_commit": "dce3bf83f4f102ed70bdd397851530978037ea7c",
+    "task_ids": [
+      "MSC-36"
+    ],
+    "original_source_tree": "117c1dd99ee079ab9c199337a378779d9eccff02",
+    "original_execution_start": "2026-07-01T14:48:45+02:00",
+    "original_execution_end": "2026-07-02T21:48:13+02:00",
+    "original_commit_count": 17
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "9f526ec92d1f128928e76791f359903cd28bdfeb",
+    "task_commit": "bab203b542fdf1933c8905c75b7f78b91ad99637",
+    "task_ids": [
+      "MSC-37"
+    ],
+    "original_source_tree": "a0b7c75e9cff2f5b8827ac2989bd0d2d974623fb",
+    "original_execution_start": "2026-07-03T15:23:47+02:00",
+    "original_execution_end": "2026-07-05T20:16:58+02:00",
+    "original_commit_count": 39
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "24321a9313f3f6455a44846f010b3433dc990c96",
+    "task_commit": "36c4cf6c61303961894ea3ec65e0fff14d915424",
+    "task_ids": [
+      "MSC-38"
+    ],
+    "original_source_tree": "d90c5e55cf8add2006b0138908d12156c53c0775",
+    "original_execution_start": "2026-07-06T00:00:00+02:00",
+    "original_execution_end": "2026-07-07T10:25:31+02:00",
+    "original_commit_count": 4
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "1033affa9354a1ff1b6806243ad30b524f73102d",
+    "task_commit": "c403d14303ae3499f3fd7feff609aabf12d0f3c4",
+    "task_ids": [
+      "MSC-39"
+    ],
+    "original_source_tree": "c67a8bbfad4b67811bb33c43c4abb599c1789cb5",
+    "original_execution_start": "2026-07-09T15:38:25+02:00",
+    "original_execution_end": "2026-07-10T20:47:28+02:00",
+    "original_commit_count": 47
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "21f17de1436d88acbfbdf07f33ecbbc5c1793117",
+    "task_commit": "efaff771ebe22403e589360e25d84429e9c4a638",
+    "task_ids": [
+      "MSC-40"
+    ],
+    "original_source_tree": "7d26752627dc815c55c9075db8eef798f30e731d",
+    "original_execution_start": "2026-07-11T02:11:59+02:00",
+    "original_execution_end": "2026-07-15T01:27:56+02:00",
+    "original_commit_count": 15
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "7db9e251a50c00c8501aa9e5203ba127399c2ac9",
+    "task_commit": "815d856223ec8cc45d20b5374a1ba5f64f70f2a6",
+    "task_ids": [
+      "MSC-41"
+    ],
+    "original_source_tree": "a78a4997f2d1663a228c21954aa1dda81311a037",
+    "original_execution_start": "2026-07-20T15:24:55+02:00",
+    "original_execution_end": "2026-07-21T22:40:53+02:00",
+    "original_commit_count": 21
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "f1c2320fc8b279f12016d4d17af6e1c5c17cf585",
+    "task_commit": "b367334614e850b5982de5fffb31cd593b4e1e89",
+    "task_ids": [
+      "MSC-42"
+    ],
+    "original_source_tree": "ef2a9f7046f08d4fd5e74326c5a0cfd610ef8014",
+    "original_execution_start": "2026-07-22T00:21:19+02:00",
+    "original_execution_end": "2026-07-24T23:44:29+02:00",
+    "original_commit_count": 55
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "0cf2f17d103fe56c9d22c0a48786c8494a190db1",
+    "task_commit": "1ef20b4214354b197486e1adb196af08a2464c4e",
+    "task_ids": [
+      "MSC-43"
+    ],
+    "original_source_tree": "fa31c3443bf0d2d9a7b7989b4c81059a2bfaf467",
+    "original_execution_start": "2026-07-25T00:32:08+02:00",
+    "original_execution_end": "2026-07-25T19:42:20+02:00",
+    "original_commit_count": 19
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "d44b5d2bb468ac4093d2537bd0b8eaa40d3f720d",
+    "task_commit": "0f255b0327c40483d2828c6b159b66f1ee32ceb9",
+    "task_ids": [
+      "MSC-44"
+    ],
+    "original_source_tree": "c7cda9e147e4296f89172dd1f7aaead3b9383dd4",
+    "original_execution_start": "2026-07-26T02:14:46+02:00",
+    "original_execution_end": "2026-07-26T03:35:24+02:00",
+    "original_commit_count": 6
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "ee7ef47b1560567e4fab428518a78bf1098a6cdb",
+    "task_commit": "f9f1e02907a7dc7cb781e55f4c0307dc80a863c0",
+    "task_ids": [
+      "MSC-45"
+    ],
+    "original_source_tree": "30ba67469f2cb0ef542fba26d686dae873fb7991",
+    "original_execution_start": "2026-07-27T20:11:26+02:00",
+    "original_execution_end": "2026-07-28T23:57:40+02:00",
+    "original_commit_count": 24
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "875f3b60a76728462e35ef9c9647b8c190a63003",
+    "task_commit": "a40bdf385523c51d47d303a4e0e8e79734cf1b5f",
+    "task_ids": [
+      "MSC-46"
+    ],
+    "original_source_tree": "4339e17e15b23ed5b675df53c9ed6554d8557db1",
+    "original_execution_start": "2026-07-29T00:03:08+02:00",
+    "original_execution_end": "2026-07-29T16:26:08+02:00",
+    "original_commit_count": 56
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "cd23ab2bb9a5e58e64b5df9e06062d683d4ff183",
+    "task_commit": "95d7e6a0968ec2d0deb18c380e5d921314a5c977",
+    "task_ids": [
+      "MSC-48"
+    ],
+    "original_source_tree": "c2d3f7bcb456f3d7d06afd1996f8aeb64ca5aca5",
+    "original_execution_start": "2026-07-30T00:41:48+02:00",
+    "original_execution_end": "2026-07-30T18:06:48+02:00",
+    "original_commit_count": 36
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "7455f1cc47e7bc65b90b060f66e4d8e2199d151c",
+    "task_commit": "73ba6e398e3fdac769c3f9535a5d9f925621f288",
+    "task_ids": [
+      "MSC-49"
+    ],
+    "original_source_tree": "bb35ab5106f842803296a4bef7f427830fa44935",
+    "original_execution_start": "2026-07-31T02:59:28+02:00",
+    "original_execution_end": "2026-08-01T11:34:29+02:00",
+    "original_commit_count": 33
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "e100ad08ae4c95c9f8a51f4b49147dbc23f9b7f4",
+    "task_commit": "d3413bc53a1e6bbfba9cfc787ec80bf9e8e14de2",
+    "task_ids": [
+      "MSC-50"
+    ],
+    "original_source_tree": "d13b7953110f47485fabe6c6a2d24e5c24086c0c",
+    "original_execution_start": "2026-08-03T06:33:55+02:00",
+    "original_execution_end": "2026-08-03T08:18:00+02:00",
+    "original_commit_count": 6
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "89001037caefa61019c0f2d3b7f76bf8b1a9e9b9",
+    "task_commit": "9dd59260e12e2ee24d60f05838e795493fe92396",
+    "task_ids": [
+      "MSC-52"
+    ],
+    "original_source_tree": "3bf8dbd4b457ecad4eb8799bac848c349dc3977e",
+    "original_execution_start": "2026-08-04T05:30:48+02:00",
+    "original_execution_end": "2026-08-04T22:53:46+02:00",
+    "original_commit_count": 25
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "3154c408f2fda8acf799c2e5447dcb77bcb95dd9",
+    "task_commit": "3ddb6ebf5c680f80b03fc248486f737d2cb1e9ce",
+    "task_ids": [
+      "MSC-53"
+    ],
+    "original_source_tree": "074d361f058e703ba6a4708b55fc3af9da4548a5",
+    "original_execution_start": "2026-08-05T05:37:25+02:00",
+    "original_execution_end": "2026-08-06T15:34:42+02:00",
+    "original_commit_count": 47
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "eadf1a4c64fe24510f221271683da176ffea3141",
+    "task_commit": "450390e9eac70139d3b2dc0cbab124debf1b9845",
+    "task_ids": [
+      "MSC-56",
+      "MSC-60",
+      "MSC-51",
+      "MSC-55"
+    ],
+    "original_source_tree": "51041d63313cf8fe663ab34523a655eb674bccd3",
+    "original_execution_start": "2026-08-07T08:55:22+02:00",
+    "original_execution_end": "2026-08-09T23:34:09+02:00",
+    "original_commit_count": 98
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "8382c9ecda521cda99b74f24cbd197cca699353d",
+    "task_commit": "6565a762c013658e6ab0ab11f0f786b351fd308d",
+    "task_ids": [
+      "MSC-58",
+      "MSC-60"
+    ],
+    "original_source_tree": "127fab009fea906ddb0604e552e332b36e4da0c9",
+    "original_execution_start": "2026-08-10T00:22:21+02:00",
+    "original_execution_end": "2026-08-11T23:49:57+02:00",
+    "original_commit_count": 58
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "9490c6b50e21c4984ac73b76db5164d99c04a2c7",
+    "task_commit": "e02995af1385b2eef093b310ab9788099bc7e717",
+    "task_ids": [
+      "MSC-59",
+      "MSC-58"
+    ],
+    "original_source_tree": "0d0396db479dc92a3e93596c0d88700a23982ebf",
+    "original_execution_start": "2026-08-12T00:19:47+02:00",
+    "original_execution_end": "2026-08-12T23:07:56+02:00",
+    "original_commit_count": 51
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "d19c344077134be274e90c745e02323a9933c133",
+    "task_commit": "acedba521231670857cff3cedbc9ceeaac5784b2",
+    "task_ids": [
+      "MSC-57",
+      "MSC-62"
+    ],
+    "original_source_tree": "f7722454df783d4c680e368611b4d3c8cf720194",
+    "original_execution_start": "2026-08-13T00:44:28+02:00",
+    "original_execution_end": "2026-08-14T23:16:19+02:00",
+    "original_commit_count": 64
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "3cd52860fe2e59b52c44d727b973ba911eb0a123",
+    "task_commit": "74552473f06bc2d83e3898f3580bc7b631626deb",
+    "task_ids": [
+      "MSC-64"
+    ],
+    "original_source_tree": "43323148aca7cedca629c3396ccb642c3dd5f071",
+    "original_execution_start": "2026-08-15T00:13:11+02:00",
+    "original_execution_end": "2026-08-15T06:30:44+02:00",
+    "original_commit_count": 13
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "73460a63ef19babaec76089b5284c3a62a050cfb",
+    "task_commit": "c5817696a94457479f27e5719ab3537ae9c6a84d",
+    "task_ids": [
+      "MSC-65"
+    ],
+    "original_source_tree": "4a48d49cf87293d971bd8220d2125d145cafaec9",
+    "original_execution_start": "2026-08-15T07:02:42+02:00",
+    "original_execution_end": "2026-08-17T23:23:15+02:00",
+    "original_commit_count": 52
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "7d4f39144046d7c2cc9914a3ea6e16bc1316b89e",
+    "task_commit": "dbdb5a46bb0d9fe10aaba617547f242a4b42651c",
+    "task_ids": [
+      "MSC-67",
+      "MSC-60",
+      "MSC-63",
+      "MSC-68"
+    ],
+    "original_source_tree": "d112d2a654a0d6847f5d18c9c0fb89fde54b9329",
+    "original_execution_start": "2026-08-18T14:52:34+02:00",
+    "original_execution_end": "2026-08-20T06:52:04+02:00",
+    "original_commit_count": 17
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "43f746ce1a05cafa224d5d26c42e039756515c12",
+    "task_commit": "16aa4852a47510ee84ffa1229018144105694a30",
+    "task_ids": [
+      "MSC-66"
+    ],
+    "original_source_tree": "e89c481e0ff048e62f543dd051f9d367281896a2",
+    "original_execution_start": "2026-08-25T19:12:19+02:00",
+    "original_execution_end": "2026-08-25T21:53:31+02:00",
+    "original_commit_count": 13
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "8785eaf5f5c5483eda6ef6327ffdffa284eebf42",
+    "task_commit": "bb153906053fafbc8e131f6582a2eab72e1c3da9",
+    "task_ids": [
+      "MSC-69"
+    ],
+    "original_source_tree": "6cf17e892f3afcccee64f90485c1144531ac4e0f",
+    "original_execution_start": "2026-08-26T01:57:48+02:00",
+    "original_execution_end": "2026-08-27T06:16:51+02:00",
+    "original_commit_count": 22
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "f6601f242077d2a88aca497455971f8e2d9ec38d",
+    "task_commit": "6f9c252ffd755b4aaad8497425b883fde837c18c",
+    "task_ids": [
+      "MSC-70"
+    ],
+    "original_source_tree": "ffb0d20f9cece3c6e1c1b00aaef77a3869d96f02",
+    "original_execution_start": "2026-08-30T01:55:27+02:00",
+    "original_execution_end": "2026-08-30T13:24:57+02:00",
+    "original_commit_count": 40
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "56343443e1db907df7e8ae107c7ebe81bdf13cb4",
+    "task_commit": "2d8ef971fb9f1ac63353cb790e1c51e472931aac",
+    "task_ids": [
+      "MSC-71"
+    ],
+    "original_source_tree": "80e11bfbd7e4505f2d93af61d3b66efc0b24d69f",
+    "original_execution_start": "2026-08-31T06:57:58+02:00",
+    "original_execution_end": "2026-08-31T14:21:55+02:00",
+    "original_commit_count": 26
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "53b4806240afab0dc17fed590e22c79327f851fa",
+    "task_commit": "147b4256ba62817e3f10a6d0347e8e10f295d23f",
+    "task_ids": [
+      "MSC-72"
+    ],
+    "original_source_tree": "50dddbc7d776f0ba22c7124d7a7a13185d850661",
+    "original_execution_start": "2026-09-01T05:40:53+02:00",
+    "original_execution_end": "2026-09-02T13:49:04+02:00",
+    "original_commit_count": 51
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "66de2f284ff0685b0c9a9fa1930bafe20833be61",
+    "task_commit": "d193ddaabc17ea72675015ac5f61deaa779d1747",
+    "task_ids": [
+      "MSC-73"
+    ],
+    "original_source_tree": "32984f5a1fc603181e55c6d735fb035d460ec9ce",
+    "original_execution_start": "2026-09-03T03:31:53+02:00",
+    "original_execution_end": "2026-09-04T13:09:12+02:00",
+    "original_commit_count": 67
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "831a4bee580d63d4f249cd266f5a494952c4cea7",
+    "task_commit": "3ac9432089f8fce4fdfa64cb38473db50b0af6d5",
+    "task_ids": [
+      "MSC-74"
+    ],
+    "original_source_tree": "3520eb940aacce0c90fef57961bea47a58b38e9f",
+    "original_execution_start": "2026-09-05T05:19:30+02:00",
+    "original_execution_end": "2026-09-05T15:23:49+02:00",
+    "original_commit_count": 53
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "49b7a93788914da1821c1d1b526e0dfe5c17e7a3",
+    "task_commit": "6dd2ebfc50860c910cd9bee751bb3d9d23e1f294",
+    "task_ids": [
+      "MSC-75"
+    ],
+    "original_source_tree": "6d96e167f770564cc50b1f6673ebe9124fd18d0b",
+    "original_execution_start": "2026-09-05T15:28:34+02:00",
+    "original_execution_end": "2026-09-06T16:58:45+02:00",
+    "original_commit_count": 81
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "87ed0f6cc14867a22947dafaa4d30d184985ca6b",
+    "task_commit": "d95c62b7189f6d0f788295b3ec61416f84d8bd67",
+    "task_ids": [
+      "MSC-76"
+    ],
+    "original_source_tree": "6d1142f277c8c1cded2e744cd65a5f12dc533964",
+    "original_execution_start": "2026-09-07T04:41:59+02:00",
+    "original_execution_end": "2026-09-07T22:03:57+02:00",
+    "original_commit_count": 85
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "ad8a548a264da532c9935a998a87ef1dcaee3989",
+    "task_commit": "7ed0ec93d4125920ffacfa06c485df2de89f0724",
+    "task_ids": [
+      "MSC-77"
+    ],
+    "original_source_tree": "755b4cfcd639ec0296325ba33d2cb468a81bdb9f",
+    "original_execution_start": "2026-09-08T03:53:34+02:00",
+    "original_execution_end": "2026-09-08T21:42:48+02:00",
+    "original_commit_count": 36
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "0c7db8c6eb8bdcb866c74ddce7083d19c827ca58",
+    "task_commit": "f4f87a6cd9c3e5cb8d19db3407ee191f1489bafd",
+    "task_ids": [
+      "MSC-79",
+      "MSC-78"
+    ],
+    "original_source_tree": "a5641fa07e74bcfe45f35e47a412289a0dbc7b74",
+    "original_execution_start": "2026-09-09T09:37:15+02:00",
+    "original_execution_end": "2026-09-10T20:48:23+02:00",
+    "original_commit_count": 126
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "8d39c314c5797942b602bf5c160cb4ab4e001d8d",
+    "task_commit": "c33e59707946daeaed3434a9f2149b1488033811",
+    "task_ids": [
+      "MSC-80"
+    ],
+    "original_source_tree": "58515046c2433faad2639ecbd7661514c6712190",
+    "original_execution_start": "2026-09-11T07:50:10+02:00",
+    "original_execution_end": "2026-09-11T23:16:42+02:00",
+    "original_commit_count": 54
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "e61d2835ab4371d8d36bb73c5e8c43308279ad59",
+    "task_commit": "fe5d9fa1d612185f86bceeeb8d0e2c9d21c5f950",
+    "task_ids": [
+      "MSC-81",
+      "MSC-82"
+    ],
+    "original_source_tree": "efc6d3bedcd0a168f56b9fe256d5f09bf05b5cdb",
+    "original_execution_start": "2026-09-12T08:23:37+02:00",
+    "original_execution_end": "2026-09-12T21:29:29+02:00",
+    "original_commit_count": 49
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "c46f981242bd8904d106a2d9bbd3360152a801a6",
+    "task_commit": "5bb0b0d355d704826d75bf4985dd5c65370d101f",
+    "task_ids": [
+      "MSC-84"
+    ],
+    "original_source_tree": "e6a34475372a28f043a5d7d9378596e3f6e81516",
+    "original_execution_start": "2026-09-14T09:34:37+02:00",
+    "original_execution_end": "2026-09-14T22:49:58+02:00",
+    "original_commit_count": 16
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "326d71689dfd45eda63088e61ba5c53c71b75bf8",
+    "task_commit": "d0aa1e56e790f0eab3185be77eb5ebb84e16be01",
+    "task_ids": [
+      "MSC-83"
+    ],
+    "original_source_tree": "f49e9a6011fa6d636be5ce2c338dfa9a194c29d5",
+    "original_execution_start": "2026-09-15T00:02:56+02:00",
+    "original_execution_end": "2026-09-15T22:10:54+02:00",
+    "original_commit_count": 39
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "4d991a0599f95fce37643387639a4693adf4abb3",
+    "task_commit": "8e4d991b3804a5513f2a22063390a5cb36cdbe47",
+    "task_ids": [
+      "MSC-85"
+    ],
+    "original_source_tree": "2d8a30c34dccb8b408f35ad6bffb5022b381b7ec",
+    "original_execution_start": "2026-09-16T08:09:02+02:00",
+    "original_execution_end": "2026-09-16T23:59:24+02:00",
+    "original_commit_count": 60
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "ceecf19fb009b1f085ea017bd923d489bcdf7d67",
+    "task_commit": "a3e1344433e4474753dbcc2b629f8f179ceab122",
+    "task_ids": [
+      "MSC-86"
+    ],
+    "original_source_tree": "7394efe4279c1758517f5a2425ce82ebefc153e5",
+    "original_execution_start": "2026-09-17T08:15:32+02:00",
+    "original_execution_end": "2026-09-17T15:07:17+02:00",
+    "original_commit_count": 29
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "8a2f5b26bd0950686d1423e87f16f0368910b0a8",
+    "task_commit": "867f54024334e78280658ddf124b1feb5bfd8ce7",
+    "task_ids": [
+      "MSC-87"
+    ],
+    "original_source_tree": "ac4e48f34715eef8e5d055913d84937010810acc",
+    "original_execution_start": "2026-09-17T15:11:01+02:00",
+    "original_execution_end": "2026-09-18T22:53:12+02:00",
+    "original_commit_count": 34
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "0e018b117f18ed5bcaa242e019587a7f895eb90d",
+    "task_commit": "e2609125b9f07bc84b8eed8e0d2cf69f6dd3eab0",
+    "task_ids": [
+      "MSC-89"
+    ],
+    "original_source_tree": "e7528dd7e3bbe814d02b855d2cb8d2493d07c510",
+    "original_execution_start": "2026-09-19T00:35:53+02:00",
+    "original_execution_end": "2026-09-19T23:12:22+02:00",
+    "original_commit_count": 21
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "9ce906ccf632b4f0ce534f09f79df2b94e68b8f9",
+    "task_commit": "c6bc6eec0987e609b028de5dac41db511aa13558",
+    "task_ids": [
+      "MSC-90"
+    ],
+    "original_source_tree": "d3608c9b7d9d171acf8d8912f526a59a8535b7f9",
+    "original_execution_start": "2026-09-20T00:31:55+02:00",
+    "original_execution_end": "2026-09-20T00:59:05+02:00",
+    "original_commit_count": 6
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "a01c6b4fd64fcdd69801072041de90becafd192c",
+    "task_commit": "fd20e64abeff670e7f47f7a3377d6e3eccf96d23",
+    "task_ids": [
+      "MSC-91"
+    ],
+    "original_source_tree": "72426b002a4d4b7034651c6df4efbf756463c5d2",
+    "original_execution_start": "2026-09-20T01:03:42+02:00",
+    "original_execution_end": "2026-09-20T01:16:36+02:00",
+    "original_commit_count": 4
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "ca2a36a2b73bd8660208e730803875f74670ba40",
+    "task_commit": "7459b0a50735d11f001148ceda73c253660680fe",
+    "task_ids": [
+      "MSC-92"
+    ],
+    "original_source_tree": "308de1e63f53d0df6c3fbc924fbed9cbd07d1f4e",
+    "original_execution_start": "2026-09-21T00:19:22+02:00",
+    "original_execution_end": "2026-09-21T23:59:42+02:00",
+    "original_commit_count": 39
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "7fda1e28ea764fd2083b39d3a31f5322c93b5257",
+    "task_commit": "6f3a223122878c1f495105c6b382cbf0eb79d680",
+    "task_ids": [
+      "MSC-93"
+    ],
+    "original_source_tree": "ea6fc0f6e04cbd8cb15a27c8532b328e008b3b17",
+    "original_execution_start": "2026-09-22T00:02:14+02:00",
+    "original_execution_end": "2026-09-22T17:42:15+02:00",
+    "original_commit_count": 40
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "377d03f03add69c57638223c8b95816f164e096b",
+    "task_commit": "043eb7a7ede37004372fe3318c4a5e0597fb5bc7",
+    "task_ids": [
+      "MSC-95"
+    ],
+    "original_source_tree": "87e352ee610e6f0a5a6913f786d73840560e36f1",
+    "original_execution_start": "2026-09-23T00:12:10+02:00",
+    "original_execution_end": "2026-09-23T22:36:10+02:00",
+    "original_commit_count": 23
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "f00d8b6d4b0b36717e8448892e1bfb8951743b73",
+    "task_commit": "966ebd395db900beb20935c8a66fc24ecec41e6e",
+    "task_ids": [
+      "MSC-97"
+    ],
+    "original_source_tree": "fe231243029b879d4a68b31cbc58ec53eae8a438",
+    "original_execution_start": "2026-09-24T00:09:29+02:00",
+    "original_execution_end": "2026-09-24T17:33:23+02:00",
+    "original_commit_count": 33
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "36c52c20f332dae28f9db794d81ba5411237508e",
+    "task_commit": "dacd90de9d0ce0938094006e966debe9614da3e3",
+    "task_ids": [
+      "MSC-98"
+    ],
+    "original_source_tree": "bef92f377da930b8f4e30fb0a11c5a9b5a39f45e",
+    "original_execution_start": "2026-09-24T20:35:19+02:00",
+    "original_execution_end": "2026-09-25T17:40:06+02:00",
+    "original_commit_count": 33
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "8a9aae2376dd5cab6e61f1904773f58a4fc030c6",
+    "task_commit": "66d90fb6f0965d60657f0b73f037e8db0e506518",
+    "task_ids": [
+      "MSC-100"
+    ],
+    "original_source_tree": "9df49af1d6d676c45be272247839507da34597ec",
+    "original_execution_start": "2026-09-26T02:30:09+02:00",
+    "original_execution_end": "2026-09-26T23:18:24+02:00",
+    "original_commit_count": 27
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "db93d8abf85dfbe75e575f2d2dddf05e787f2aae",
+    "task_commit": "0ed9c17056e56d92db34a6c47b056547df161afd",
+    "task_ids": [
+      "MSC-102"
+    ],
+    "original_source_tree": "9884f3ff3c4c11e1e46540df64907285a2154f2d",
+    "original_execution_start": "2026-09-27T00:29:16+02:00",
+    "original_execution_end": "2026-09-27T23:56:44+02:00",
+    "original_commit_count": 59
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "7ea1ff2c1d3f4a178e18515835b51c12312b5781",
+    "task_commit": "c02e54982e48a1f4d048ba3cc2a844cb7721944f",
+    "task_ids": [
+      "MSC-103"
+    ],
+    "original_source_tree": "15a227c316dd8dd5bde697d7f00870dd3751e110",
+    "original_execution_start": "2026-09-28T00:10:35+02:00",
+    "original_execution_end": "2026-09-28T10:40:58+02:00",
+    "original_commit_count": 44
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "e9d499b4ff2df9bf23a3031c48e559daaead2cad",
+    "task_commit": "5af141a241c5ac89623d5f3f767176f9576e1720",
+    "task_ids": [
+      "MSC-104"
+    ],
+    "original_source_tree": "772d95d973de04f964678ab84d1fd1bb7d314001",
+    "original_execution_start": "2026-09-28T10:42:59+02:00",
+    "original_execution_end": "2026-09-28T10:57:11+02:00",
+    "original_commit_count": 2
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "465d3c600ce0962fc57ec98d9347dbbf9463ad1d",
+    "task_commit": "07b75d27f7c794b741d5c1d4eec273b11fef264a",
+    "task_ids": [
+      "MSC-105"
+    ],
+    "original_source_tree": "1157ededa2e08a0ebbf04c11e9ff0441a8a56f26",
+    "original_execution_start": "2026-09-29T00:52:01+02:00",
+    "original_execution_end": "2026-09-29T02:47:41+02:00",
+    "original_commit_count": 8
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "ff672a8af584dd429f7a97ae4ba69fb3245b8176",
+    "task_commit": "88172c34b11f39584b0f3a559d52f906f948d0bd",
+    "task_ids": [
+      "MSC-106"
+    ],
+    "original_source_tree": "b66878c7b56999331cbf7141206dabcddb4e3e2b",
+    "original_execution_start": "2026-09-29T02:57:20+02:00",
+    "original_execution_end": "2026-09-29T02:58:21+02:00",
+    "original_commit_count": 2
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "8600961de3e21a3c44122ec141febc2310485de0",
+    "task_commit": "01547f7dd8922f4ea8fd6e2b332865e4f43be866",
+    "task_ids": [
+      "MSC-107"
+    ],
+    "original_source_tree": "6bd49d1aa33f7d27ae7bc43a1524a66bb2a288ee",
+    "original_execution_start": "2026-09-30T09:09:53+02:00",
+    "original_execution_end": "2026-09-30T11:50:43+02:00",
+    "original_commit_count": 7
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "0b0997371422c087087d9dc15a43815ed265fb3a",
+    "task_commit": "e8d4db863d11c63401a60bd35f9b4636775d3551",
+    "task_ids": [
+      "MSC-108"
+    ],
+    "original_source_tree": "32a97bf77e4a2635409721b9598a85e21cb42e5f",
+    "original_execution_start": "2026-09-30T22:11:06+02:00",
+    "original_execution_end": "2026-09-30T22:11:06+02:00",
+    "original_commit_count": 1
+  },
+  {
+    "repository": "myscoutee-backend",
+    "original_commit": "ee017c92c7fddb4a4883a8730aac103461c0d8eb",
+    "task_commit": "ab8265a22d5599eae45b74879d998745b3694bac",
+    "task_ids": [
+      "MSC-109"
+    ],
+    "original_source_tree": "10d1df4ce0397fb148de137953b2c400a885d8c3",
+    "original_execution_start": "2026-09-30T23:49:39+02:00",
+    "original_execution_end": "2026-09-30T23:49:39+02:00",
+    "original_commit_count": 1
+  }
+]
