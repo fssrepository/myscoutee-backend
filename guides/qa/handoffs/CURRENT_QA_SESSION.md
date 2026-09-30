@@ -88,13 +88,13 @@ Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 rem
 ```yaml
 checkpoint: EXPLANATION-GUIDE-001
 checklist: ../checklists/general/EXPLANATION-GUIDE-001.md
-substage: Physical Android retained Rates panels accepted by user; release1.3.2 preparation active.
+substage: Guide/mobile Rates scope accepted;1.3.2 images published and Netcup partial deployment verified.
 execution_authority: User delegated guide browser testing, landing/feedback/rating pagination, shared double-panel highlights, and subsequent squash/master/tag/images/Netcup partial release. Preserve the no-refactor instruction for EventCounterExpiryService.
 execution_log: ../evidence/general/EXPLANATION-GUIDE-001-20260930.md
 fixture_phase: event-rating EVENT-ACTIVITY-RATING-001 before-meeting ready; main, anonymous landing and Alex feedback companion sessions prepared by the versioned launcher.
 runtime: Existing frontend-sync and myscoutee own compilation. Focused i18n13/13 and image/pagination15/15 passed with the frontend watcher stopped serially and restarted. Android Chrome available via ADB reverse tcp:8080 to host tcp:80. No profiler, HUD or passive meter remains.
 last_completed: Landing 64 steps per viewport; feedback 39 per viewport; arrow-only Rates; shared double-pane image/profile highlights and mobile drag; editable list badge. 45 contexts / 963 fields, EN/HU and local/demo/e2e/prod seed parity. Existing General UI CSV/XLSX row updated, no new row.
-next_action: Finish release compatibility and migration validation; consolidate guide commits in both repositories, merge master, publish/tag1.3.2 and deploy only changed Netcup images plus retained-data guide migration. Do not reopen accepted Rates tuning or the full guide inventory.
+next_action: Recorded guide scope is closed. Release1.3.2 evidence is guides/qualification/evidence/RELEASE_1.3.2_20260930.json; guide commits consolidated and merged into both masters. Do not reopen accepted Rates tuning or the full guide inventory without a new request.
 resume_gate: Read git and frontend-submodule status, retaining user commits. Do not reopen the older full guide inventory. EVENT-PAST-BADGES-001 remains PARTIAL; expiry service/test retain their batch implementation. No separate Past job was added. Do not reset unrelated fixture markers or claim full lifecycle/local-persistence/native-WebView coverage.
 
 ```

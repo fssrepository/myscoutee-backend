@@ -4,7 +4,26 @@ Operator procedure, verified on 2026-09-18. Run local commands from the
 repository root; run server commands after connecting over SSH.
 Connection details: [SSH access](NETCUP_SSH_ACCESS.md).
 
-## Current deployment: 1.3.1 mobile popup hotfix (2026-09-29)
+## Current deployment: 1.3.2 guides and mobile ratings (2026-09-30)
+
+The installed Debian package remains **1.3.0**. The
+[1.3.2 release](releases/v1.3.2.md) updates only nginx and profilemanagement,
+using the digest-pinned images recorded in the
+[release evidence](qualification/evidence/RELEASE_1.3.2_20260930.json).
+Public HTTPS serves version **1.3.2**, build `618ff4c0455c-20260930070844`.
+All eight containers are healthy; the other six retain their images, container
+IDs and start times. All 13 external HTTP checks passed.
+
+Migration010 installed 90 active EN/HU guide revisions and 963 fields in both
+production_db and demo_db without resetting users or business data. Full backup:
+`/var/backups/myscoutee/myscoutee-backup-20260930-091154.tar.gz`.
+Explore backup, prior package inputs and deployment receipts:
+`/root/myscoutee-partial-1.3.2-20260930`.
+The existing partial-image helper under that directory's
+`inputs/packaging/client-tools/install-temporary-image.sh` retains the immediately
+previous backend and frontend selections for explicit rollback.
+
+## Previous deployment: 1.3.1 mobile popup hotfix (2026-09-29)
 
 The installed Debian package is **1.3.0**, upgraded on 2026-09-28. The
 [1.3.1 frontend patch](releases/v1.3.1.md) replaces only the nginx image with
