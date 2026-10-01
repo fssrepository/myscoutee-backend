@@ -87,56 +87,11 @@ discovery and actual package downloads. Existing configuration selects it in
 development; production keeps GitHub. See the [local release fixture guide](guides/qa/tools/OPERATOR-UPDATE-LOCAL-RELEASE.md#persistent-dev-compose-service)
 for adding signed local packages and simulating interrupted downloads.
 
-## QA status
+## Verification and project history
 
-The delegated [explanation-guide review](guides/qa/evidence/general/EXPLANATION-GUIDE-001-20260930.md)
-is **PASS / CLOSED in its recorded scope**: 45 contexts / 963 conditional fields,
-EN/HU defaults, desktop/mobile and physical Chrome/PWA checks. The accepted
-Rates, image-scroll and launcher menu/layer follow-ups are closed. Release 1.3.2
-and its nginx-only follow-up passed their recorded 13/13 public checks.
-[MSC-113 / release 1.3.3](guides/releases/v1.3.3.md) adds granular ratings and
-fractional affinity, two guide fields (965 total), verified sync/save/reload
-and a two-image Netcup deployment. Its public HTTP result and exact asset
-verification are recorded separately. Full local persistence and native
-WebView coverage remain unproven.
-The [Past/badge server regression](guides/qa/evidence/event/EVENT-PAST-BADGES-001-20260930.md)
-is also **PASS / CLOSED**: real expiry, subsequent HTTP recount and repeated
-worker passed, alongside 20/20 focused Java tests. The original expiry batch job
-is unchanged. The synchronized CSV/XLSX matrix has **121 testcase rows: 121 PASS,
-0 pending**, plus four legend rows; each row retains its environment/scope limits.
+The [QA matrix (XLSX)](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+record test results, evidence and the scope of each case.
 
-Group QA is **CLOSED for the agreed HTTP scope**: **38/38** blocks across
-[Group Lifecycle](guides/qa/checklists/group/GROUP-LIFECYCLE-001.md) (29/29)
-and [Group Isolation](guides/qa/checklists/group/GROUP-ISOLATION-001.md) (9/9).
-Isolation fixtures and pre-launch sessions were restored exactly; managed windows
-are closed. Full Local remains NOT RUN. External/configured/device acceptance
-belongs to independent [deployment QA](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md).
-Real ChatGPT/Claude/Codex connection and conversation acceptance is a separate
-[post-deployment smoke](guides/qualification/MCP-CLIENT-CONNECT-SMOKE.md), outside the QA matrix.
-The [participant-link API](guides/qa/checklists/api/INTEGRATION-API-GROUP-001.md)
-is **CLOSED / PASS:7/7 blocks** in the recorded dev HTTP/simulator scope, including
-real Inspector OAuth and private reads. Local key/help checks passed; exact fixture,
-session and media cleanup is complete. See the [execution evidence](guides/qa/evidence/INTEGRATION-API-GROUP-001-20260928.md) for boundaries.
-See the [current matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx) for case totals and execution states. Group follows Asset in
-domain order; participant-link coverage belongs to API test. Group evidence does not close the separate API journey.
-
-The five new delegated cases are tracked in the matrix. [Gallery/Feed/Moderation](guides/qa/evidence/EVENT-GALLERY-FEED-001-20260923-progress.md) is PASS on the user-started dev stack (2026-09-23), with fixture reset complete. [Email QA](guides/qa/evidence/OPERATOR-EMAIL-WARNING-001-20260923-progress.md), including durable retries and the [public unsubscribe/branding supplement](guides/qa/evidence/EMAIL-UNSUBSCRIBE-001-20260923.md), is PASS on the dev stack with cleanup complete. [Admin client QA](guides/qa/evidence/ADMIN-CLIENT-API-001-20260923-progress.md) is PASS in the recorded dev scope, with platform boundaries explicitly NOT RUN and fixture reset. [Affiliate revenue](guides/qa/evidence/AFFILIATE-REVENUE-001-20260923-progress.md) is PASS in the recorded dev HTTP/simulator and frontend-local scope (2026-09-24); production-installation and provider hold-only UI boundaries remain explicit in the evidence. [Calendar export QA](guides/qa/evidence/EVENT-CALENDAR-EXPORT-001-20260924.md) is PASS/CLOSED (2026-09-24), including One-time/Daily/Weekly occurrences, physical imports and an offline native reminder. Importer update/deletion/alarm limitations are recorded; fixture cleanup is complete. Earlier closed cases remain unchanged.
-
-The delegated [Event Mode regression](guides/qa/checklists/event/EVENT-MODE-REGRESSION-001-20260921-progress.md)
-and [Integration API extension](guides/qa/checklists/api/INTEGRATION-API-001.md#extension-result--2026-09-22)
-are closed on 2026-09-22, with evidence boundaries recorded in their results.
-The separate [activity-rating comparison](guides/qa/checklists/event/EVENT-ACTIVITY-RATING-001.md)
-is also closed on 2026-09-22: corrected numbered expectations, retained user observations, automatic continuation through save/reload and feedback checks, and scoped cleanup. The [QA matrix](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
-and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv) own current status.
-
-[Followed organizers QA](guides/qa/evidence/EVENT-FOLLOWING-001-20260922-progress.md)
-is closed on 2026-09-22 in the dev HTTP scope: follow/unfollow, independent
-counters, filters, lifecycle/expiry, and compact desktop layout verified;
-fixture and managed windows cleaned. Platform limits are recorded in the evidence.
-
-The separate [following menu and confirmation QA](guides/qa/evidence/EVENT-FOLLOWING-002-20260922-progress.md)
-is closed on 2026-09-22: all 8 numbered dev HTTP checks passed, including
-committed deltas, failed-save retry, immediate list removal and stored-state poll.
-Its isolated fixture and browser sessions are cleaned.
-
-Configured Firebase/OAuth and external configuration QA is **CLOSED / PASS** (2026-09-28): [checklist](guides/qa/checklists/identity-access/DEPLOY-EXTERNAL-CONFIG-001.md), [evidence](guides/qualification/evidence/PROD_PARITY_20260928.md). The separate production DEB1.3.0 VMware upgrade is next.
+The [MyScoutee roadmap](https://github.com/fssrepository/myscoutee-roadmap/tree/master/guides/project-history/myscoutee)
+contains the task history, workstream effort and measurement method.
