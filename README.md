@@ -93,8 +93,12 @@ The delegated [explanation-guide review](guides/qa/evidence/general/EXPLANATION-
 is **PASS / CLOSED in its recorded scope**: 45 contexts / 963 conditional fields,
 EN/HU defaults, desktop/mobile and physical Chrome/PWA checks. The accepted
 Rates, image-scroll and launcher menu/layer follow-ups are closed. Release 1.3.2
-and its nginx-only follow-up are deployed; the final public HTTP checks passed
-13/13. Full local persistence and native WebView coverage remain unproven.
+and its nginx-only follow-up passed their recorded 13/13 public checks.
+[MSC-113 / release 1.3.3](guides/releases/v1.3.3.md) adds granular ratings and
+fractional affinity, two guide fields (965 total), verified sync/save/reload
+and a two-image Netcup deployment. Its public HTTP result and exact asset
+verification are recorded separately. Full local persistence and native
+WebView coverage remain unproven.
 The [Past/badge server regression](guides/qa/evidence/event/EVENT-PAST-BADGES-001-20260930.md)
 is also **PASS / CLOSED**: real expiry, subsequent HTTP recount and repeated
 worker passed, alongside 20/20 focused Java tests. The original expiry batch job

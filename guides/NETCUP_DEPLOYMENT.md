@@ -1,10 +1,27 @@
 # Netcup deployment
 
+## Current partial release: 1.3.3 (2026-10-01)
+
+[MSC-113 release](releases/v1.3.3.md) updates only the nginx and backend images,
+pinned by digest. Installed DEB remains 1.3.0; no DEB was built. All eight
+containers are healthy, with the other six unchanged. Compose and secrets are
+unchanged. Migration011 and the shared seed sync installed the two rating guide
+steps and EN/HU labels through the normal retained-data migration chain.
+
+Public build: `a56699c5de2f-20261001022457`. Full backup:
+`/var/backups/myscoutee/myscoutee-backup-20261001-042737.tar.gz`; receipts:
+`/root/myscoutee-partial-1.3.3-20261001`. Public HTTP checks now pass **13/13** after the MSC-113 verifier
+connection-reuse fix, against the same deployed images. The initial12/13 result
+and separate289/289 exact asset-content verification remain in release evidence.
+The saved Netcup GHCR credential returned 401; root's persistent Docker login
+was repaired at the owner's request and both pulls passed in a fresh SSH session.
+
+
 Operator procedure, verified on 2026-09-18. Run local commands from the
 repository root; run server commands after connecting over SSH.
 Connection details: [SSH access](NETCUP_SSH_ACCESS.md).
 
-## Current deployment: 1.3.2 guides and mobile ratings (2026-09-30)
+## Previous deployment: 1.3.2 guides and mobile ratings (2026-09-30)
 
 The installed Debian package remains **1.3.0**. The
 [1.3.2 release](releases/v1.3.2.md) updates only nginx and profilemanagement,

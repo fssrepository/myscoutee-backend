@@ -1,5 +1,12 @@
 // Read-only HTTP transport for deployment verification.
+import { Agent as HttpAgent, request as httpRequest } from 'node:http';
+import { Agent as HttpsAgent, request as httpsRequest } from 'node:https';
+
 const DEFAULT_MAX_BODY_BYTES = 8 * 1024 * 1024;
+const HEAD_AGENTS = {
+  'http:': new HttpAgent({ keepAlive: true, maxSockets: 12 }),
+  'https:': new HttpsAgent({ keepAlive: true, maxSockets: 12 })
+};
 
 export class SmokeRequestError extends Error {
   constructor(message, details = undefined) {
@@ -204,7 +211,7 @@ async function fetchWithSafeRedirects(initialUrl, init, redirectMode) {
   }
   if (redirectMode === 'manual') {
     return {
-      response: await fetch(initialUrl, { ...init, redirect: 'manual' }),
+      response: await fetchHop(initialUrl, init),
       redirects: []
     };
   }
@@ -217,7 +224,7 @@ async function fetchWithSafeRedirects(initialUrl, init, redirectMode) {
   const redirects = [];
 
   while (true) {
-    const response = await fetch(current, { ...init, redirect: 'manual' });
+    const response = await fetchHop(current, init);
     if (![301, 302, 303, 307, 308].includes(response.status)) {
       return { response, redirects };
     }
@@ -265,6 +272,39 @@ async function fetchWithSafeRedirects(initialUrl, init, redirectMode) {
     }
     current = next;
   }
+}
+
+function fetchHop(url, init) {
+  if (init.method !== 'HEAD') {
+    return fetch(url, { ...init, redirect: 'manual' });
+  }
+
+  // Undici fetch deliberately closes HTTP/1.1 connections after HEAD. A full
+  // precache probe would therefore create hundreds of TCP/TLS connections.
+  // Native HEAD requests reuse a bounded pool; the shared redirect policy,
+  // abort deadline and normal TLS verification still apply. No retry is added.
+  const target = new URL(url);
+  const request = target.protocol === 'https:' ? httpsRequest : httpRequest;
+  return new Promise((resolve, reject) => {
+    const outgoing = request(target, {
+      method: 'HEAD',
+      headers: init.headers,
+      signal: init.signal,
+      agent: HEAD_AGENTS[target.protocol]
+    }, incoming => {
+      incoming.on('error', reject);
+      incoming.on('end', () => {
+        const headers = new Headers();
+        for (let i = 0; i < incoming.rawHeaders.length; i += 2) {
+          headers.append(incoming.rawHeaders[i], incoming.rawHeaders[i + 1]);
+        }
+        resolve({ status: incoming.statusCode, headers, url: target.toString(), body: null });
+      });
+      incoming.resume();
+    });
+    outgoing.on('error', reject);
+    outgoing.end();
+  });
 }
 
 function validateRedirectHop(options) {
