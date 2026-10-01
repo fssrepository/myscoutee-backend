@@ -88,3 +88,8 @@ No user, Privacy or Terms collection is rewritten. The matching seed directory i
 required for production/Explore. `compact-guide-migration-test.py` runs the actual
 migration with uniquely prefixed disposable collections in the existing dev database
 using the configured application credentials, then drops only those collections.
+
+Migration011 refreshes package-owned fields for `home.game` and
+`activities.rates`, including the granular-rating steps and ordering. It leaves
+other screens, custom field IDs, help revisions and user data unchanged. The
+shared release seed sync installs matching EN/HU messages and bundle versions.

@@ -637,7 +637,7 @@ public class AffinityMaintenanceService {
     private record RateAffinitySnapshot(
             Double affinityScore,
             Double evidenceConfidence,
-            Integer scoreReceived,
+            Double scoreReceived,
             Boolean mutuallyRated) {
 
         private static RateAffinitySnapshot of(UserRate rate) {
@@ -651,7 +651,7 @@ public class AffinityMaintenanceService {
         private boolean matches(UserRate rate) {
             return sameDouble(affinityScore, rate == null ? null : rate.getAffinityScore())
                     && sameDouble(evidenceConfidence, rate == null ? null : rate.getEvidenceConfidence())
-                    && sameInteger(scoreReceived, rate == null ? null : rate.getScoreReceived())
+                    && sameDouble(scoreReceived, rate == null ? null : rate.getScoreReceived())
                     && sameBoolean(mutuallyRated, rate == null ? null : rate.getMutuallyRated());
         }
 
@@ -660,10 +660,6 @@ public class AffinityMaintenanceService {
                 return left == right;
             }
             return Math.abs(left.doubleValue() - right.doubleValue()) <= 0.000001d;
-        }
-
-        private static boolean sameInteger(Integer left, Integer right) {
-            return left == null ? right == null : left.equals(right);
         }
 
         private static boolean sameBoolean(Boolean left, Boolean right) {

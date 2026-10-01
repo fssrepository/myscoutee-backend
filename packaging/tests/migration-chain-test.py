@@ -8,6 +8,7 @@ runner=(root/'scripts/run-data-migrations.js').read_text()
 print('const sources='+json.dumps(sources)+';')
 print('const runner='+json.dumps(runner)+';')
 print('const helpSeeds='+json.dumps(json.loads((root.parent/'server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json').read_text()))+';')
+print('const guideFields='+json.dumps(json.loads((root.parent/'server/docker/conf/mongodb/myscoutee_db/helpCenterGuideFields.json').read_text()))+';')
 print(r'''
 const fs=require('fs');
 const root=fs.mkdtempSync('/tmp/qa-migration-chain-');
@@ -15,6 +16,7 @@ fs.mkdirSync(root+'/migrations');fs.mkdirSync(root+'/seeds');
 fs.writeFileSync(root+'/runner.js',runner);
 fs.writeFileSync(root+'/seeds/deploymentConfigurations.json',JSON.stringify([{_id:'deployment-configuration',payment:{exchangeRateUrl:'https://rates.example/daily'}}]));
 fs.writeFileSync(root+'/seeds/helpCenterRevisions.json',JSON.stringify(helpSeeds));
+fs.writeFileSync(root+'/seeds/helpCenterGuideFields.json',JSON.stringify(guideFields));
 process.env.MYSCOUTEE_MIGRATION_DIRECTORY=root+'/migrations';
 process.env.MYSCOUTEE_MIGRATION_SEED_DIRECTORY=root+'/seeds';
 function run(database){

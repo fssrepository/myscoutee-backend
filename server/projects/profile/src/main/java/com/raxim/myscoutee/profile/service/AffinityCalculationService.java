@@ -79,10 +79,10 @@ public class AffinityCalculationService {
         Users related = usersById.get(relatedUserId);
         Users secondary = usersById.get(secondaryRelatedUserId);
 
-        int scoreGiven = normalizeScore(rate.getScoreGiven());
-        int scoreReceived = normalizeScore(rate.getScoreReceived());
+        double scoreGiven = normalizeScore(rate.getScoreGiven());
+        double scoreReceived = normalizeScore(rate.getScoreReceived());
         if (MODE_SINGLE.equals(mode)) {
-            Integer reciprocalScore = resolveReciprocalScore(rate, contextRates);
+            Double reciprocalScore = resolveReciprocalScore(rate, contextRates);
             if (reciprocalScore != null && reciprocalScore > 0) {
                 scoreReceived = reciprocalScore;
                 rate.setScoreReceived(scoreReceived);
@@ -109,8 +109,8 @@ public class AffinityCalculationService {
             List<Signal> signals,
             UserRate rate,
             String mode,
-            int scoreGiven,
-            int scoreReceived,
+            double scoreGiven,
+            double scoreReceived,
             boolean mutuallyRated,
             AffinityConfig config) {
         if (scoreGiven <= 0) {
@@ -233,12 +233,12 @@ public class AffinityCalculationService {
             return clamp01(rate.getAffinityScore());
         }
 
-        int scoreGiven = normalizeScore(rate.getScoreGiven());
-        int scoreReceived = normalizeScore(rate.getScoreReceived());
+        double scoreGiven = normalizeScore(rate.getScoreGiven());
+        double scoreReceived = normalizeScore(rate.getScoreReceived());
         if (scoreGiven > 0 && scoreReceived > 0) {
             return harmonic(List.of(normalizeScoreSignal(scoreGiven), normalizeScoreSignal(scoreReceived)));
         }
-        int oneSidedScore = Math.max(scoreGiven, scoreReceived);
+        double oneSidedScore = Math.max(scoreGiven, scoreReceived);
         return oneSidedScore > 0 ? normalizeScoreSignal(oneSidedScore) * 0.5d : null;
     }
 
@@ -582,7 +582,7 @@ public class AffinityCalculationService {
         return user.getImpressions().member();
     }
 
-    private Integer resolveReciprocalScore(UserRate rate, List<UserRate> contextRates) {
+    private Double resolveReciprocalScore(UserRate rate, List<UserRate> contextRates) {
         String ownerUserId = normalize(rate.getOwnerUserId());
         String relatedUserId = normalize(rate.getRelatedUserId());
         if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(relatedUserId)) {
@@ -821,15 +821,15 @@ public class AffinityCalculationService {
         return count == 0 ? null : total / count;
     }
 
-    private double normalizeScoreSignal(int score) {
+    private double normalizeScoreSignal(double score) {
         return clamp01(normalizeScore(score) / 10d);
     }
 
-    private int normalizeScore(Integer value) {
-        if (value == null) {
+    private double normalizeScore(Number value) {
+        if (value == null || !Double.isFinite(value.doubleValue())) {
             return 0;
         }
-        return Math.max(0, Math.min(10, value));
+        return Math.max(0, Math.min(10, value.doubleValue()));
     }
 
     private boolean isInsideNetwork(UserRate rate) {

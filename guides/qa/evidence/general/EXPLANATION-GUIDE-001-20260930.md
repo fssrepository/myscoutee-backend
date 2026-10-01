@@ -713,3 +713,63 @@ universal production performance are not claimed. The separate
 `EVENT-PAST-BADGES-001` was still PARTIAL at this bookkeeping correction. It was
 subsequently verified and closed in the linked focused expiry evidence. No new
 runtime test was performed for the earlier guide bookkeeping correction.
+
+
+## 2026-10-01 — scoped granular-rating addendum
+
+**PASS; the guide campaign remains CLOSED.** This user-delegated follow-up
+covers the shared Home / Activities rating control, without replaying or
+reopening the broader campaign.
+
+- Home, Activity list and Activity fullscreen passed at **1280×900 and
+  390×844** in the existing managed CDP session. The number/chevron button is
+  immediately before Go/Save, with equal height and vertical alignment. The
+  detail popup matches the base panel width and gradient slider style, has no
+  backdrop or redundant average, and keeps the base control visible. Only on
+  mobile, it uses the same floating-launcher hiding rule as an open menu;
+  closing it restores both launchers. No browser console errors were recorded.
+- Detail sliders use **whole numbers**. The main slider step is **1 / criterion
+  count**, supplied by the profile criteria definition. The live component's
+  step getter was checked with 1, 2, 3, 4, 5, 6, 7 and 10 criteria; 8,000
+  bounded-shift cases preserve integer details and the nearest achievable
+  mean. Successive fractional main-slider ticks retain the original group
+  shape, so a complete +1 shift moves every unsaturated criterion by +1.
+- The rating stays on the **1–10 scale** throughout JSON, the existing outbox,
+  Mongo and affinity calculations. The compiled Java probe verified exact
+  fractional single/pair signals and reciprocal harmonic affinity, legacy
+  integer Mongo reads and decimal JSON/Mongo round trips. Criteria remain an
+  actor-owned snapshot; affinity consumes their scalar mean. No ×100 scale or
+  additional persistence query was introduced.
+- CDP Save → HTTP acknowledgement → reload preserves **6.75** with detail
+  values **3, 8, 8, 8**. A mismatched snapshot average is rejected. The test
+  restores the captured pre-test rating and snapshot through the same API.
+  List badges retain fractional values, formatted to at most two decimals;
+  the editor and stored values retain their precision.
+- Home's new guide step was opened through the guide picker. Home/Activities
+  guide keys and criterion labels are translated in EN/HU; the i18n audit
+  passed **11,602 messages**, two source bundles and all three Mongo seeds.
+  A use-site audit found the functional rate bar only in Home and Activity
+  Rates (list/fullscreen). The explanation popup also has a static illustration.
+
+Evidence: [browser layout and persistence](EXPLANATION-GUIDE-001-20260930/granular-rating-checks.json),
+[criterion-count and precision checks](EXPLANATION-GUIDE-001-20260930/rating-step-checks.json).
+Reproduction uses the prepared `EXPLANATION-GUIDE-FEEDBACK-001` managed session:
+
+```sh
+node guides/qa/tools/explanation-guide/granular-rating-smoke.mjs
+node guides/qa/tools/explanation-guide/rating-step-checks.mjs
+node frontend/scripts/audit-i18n-mongo-seed.js
+```
+
+[`RatingPrecisionProbe.java`](../../../../server/docker/scripts/manual-qa-checkpoints/RatingPrecisionProbe.java)
+uses the existing dev application's compiled classpath with the same source
+launcher invocation as `run-finance-version-probe.sh`, substituting the source
+filename. It starts neither Gradle nor Spring and performs no database writes.
+Only the already-running frontend/backend watchers built application sources;
+full Angular/JUnit suites and full local-storage reload were not run.
+
+The first persistence attempt sampled the editor identity before it mounted.
+The corrected harness waits for the control and uses the actor's canonical
+record, avoiding the separate reciprocal fixture row. These were harness/data
+selection corrections; no rating identity or fixture normalization was added
+to the product.

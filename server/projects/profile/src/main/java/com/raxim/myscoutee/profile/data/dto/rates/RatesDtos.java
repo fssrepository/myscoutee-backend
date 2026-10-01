@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.rates;
 
 import java.util.List;
+import java.util.Map;
 
 import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 
@@ -17,12 +18,13 @@ public final class RatesDtos {
             String socialContext,
             String bridgeUserId,
             Integer bridgeCount,
-            Integer scoreGiven,
-            Integer scoreReceived,
+            Double scoreGiven,
+            Double scoreReceived,
             String eventName,
             String happenedAt,
             Integer distanceMetersExact,
-            Boolean met) {
+            Boolean met,
+            RatingSnapshotDto ratingSnapshot) {
     }
 
     public record ActivityRatePageResponseDto(
@@ -37,7 +39,7 @@ public final class RatesDtos {
             String id,
             String fromUserId,
             String toUserId,
-            Integer rate,
+            Number rate,
             String mode,
             String createdAtIso,
             String updatedAtIso,
@@ -47,11 +49,19 @@ public final class RatesDtos {
             String socialContext,
             String bridgeUserId,
             Integer bridgeCount,
-            Integer scoreGiven,
-            Integer scoreReceived,
+            Number scoreGiven,
+            Number scoreReceived,
             String eventName,
             String happenedAtIso,
-            Integer distanceMetersExact) {
+            Integer distanceMetersExact,
+            RatingSnapshotDto ratingSnapshot) {
+    }
+
+    public record RatingSnapshotDto(
+            Integer version,
+            String profileType,
+            Map<String, Double> criteria,
+            Double average) {
     }
 
     public record UserRatesSyncRequestDto(

@@ -7,7 +7,7 @@ root = Path(__file__).resolve().parents[1]
 seed_dir = root.parent / 'server/docker/conf/mongodb/myscoutee_db'
 revisions = json.loads((seed_dir / 'helpCenterRevisions.json').read_text())
 fields = json.loads((seed_dir / 'helpCenterGuideFields.json').read_text())
-source = (root / 'migrations/010-compact-explanation-guides.js').read_text()
+source = '{\n' + (root / 'migrations/010-compact-explanation-guides.js').read_text() + '\n}\n{\n' + (root / 'migrations/011-granular-rating-guides.js').read_text() + '\n}'
 script = 'const packagedRevisions=' + json.dumps(revisions) + '; const packagedFields=' + json.dumps(fields) + ';\n' + r'''
 const prefix = 'qa_compact_guide_' + new ObjectId().toHexString() + '_';
 const testDb = Object.fromEntries(['helpCenterRevisions','helpCenterGuideFields','users'].map(name => [name,db.getCollection(prefix + name)]));
@@ -31,8 +31,9 @@ try {
     const usersBefore=EJSON.stringify(testDb.users.find().sort({_id:1}).toArray());
     baseline(); migrate(testDb);
     check(testDb.helpCenterRevisions.countDocuments({documentType:'explanation',version:4,active:true})===90,'compact defaults missing');
-    check(testDb.helpCenterGuideFields.countDocuments({})===963,'guide fields missing');
+    check(testDb.helpCenterGuideFields.countDocuments({})===packagedFields.length,'guide fields missing');
     check(testDb.helpCenterRevisions.findOne({_id:old._id}).active===false,'old active default retained');
+    check(testDb.helpCenterGuideFields.countDocuments({id:'rating-details'})===2,'rating guide steps missing');
     const before=EJSON.stringify(testDb.helpCenterRevisions.find().sort({_id:1}).toArray());
     migrate(testDb);check(EJSON.stringify(testDb.helpCenterRevisions.find().sort({_id:1}).toArray())===before,'repeat changed revisions');
     baseline();testDb.helpCenterRevisions.updateOne({_id:old._id},{$set:{title:'Operator custom'}});migrate(testDb);

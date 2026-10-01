@@ -69490,5 +69490,125 @@
     "key": "guide.common.pair-score-summary.description",
     "lang": "hu",
     "value": "A középső jelölő a pár jelenlegi pontszámát mutatja. Teljes képernyőn összesítő: a lenti csúszkával és Mentés gombbal módosíthatod. Listanézetben a jelölő nyitja a szerkesztőt."
+  },
+  {
+    "_id": "i18n-message-en-rating-details",
+    "key": "rating.details",
+    "lang": "en",
+    "value": "Detailed rating"
+  },
+  {
+    "_id": "i18n-message-en-rating-average",
+    "key": "rating.average",
+    "lang": "en",
+    "value": "Average"
+  },
+  {
+    "_id": "i18n-message-en-rating-criteria-attraction",
+    "key": "rating.criteria.attraction",
+    "lang": "en",
+    "value": "Attraction"
+  },
+  {
+    "_id": "i18n-message-en-rating-criteria-personality",
+    "key": "rating.criteria.personality",
+    "lang": "en",
+    "value": "Personality"
+  },
+  {
+    "_id": "i18n-message-en-rating-criteria-interests",
+    "key": "rating.criteria.interests",
+    "lang": "en",
+    "value": "Shared interests"
+  },
+  {
+    "_id": "i18n-message-en-rating-criteria-values",
+    "key": "rating.criteria.values",
+    "lang": "en",
+    "value": "Shared values"
+  },
+  {
+    "_id": "i18n-message-en-guide-home-game-rating-details-label",
+    "key": "guide.home.game.rating-details.label",
+    "lang": "en",
+    "value": "Fine-tune the rating"
+  },
+  {
+    "_id": "i18n-message-en-guide-home-game-rating-details-description",
+    "key": "guide.home.game.rating-details.description",
+    "lang": "en",
+    "value": "Open the number and arrow button beside Go. Adjust the individual criteria; their average sets your rating. The main slider moves them together. Close the panel, then confirm with Go."
+  },
+  {
+    "_id": "i18n-message-en-guide-activities-rates-rating-details-label",
+    "key": "guide.activities.rates.rating-details.label",
+    "lang": "en",
+    "value": "Fine-tune the rating"
+  },
+  {
+    "_id": "i18n-message-en-guide-activities-rates-rating-details-description",
+    "key": "guide.activities.rates.rating-details.description",
+    "lang": "en",
+    "value": "Open the number and arrow button beside Save. Adjust the individual criteria; their average sets your rating. The main slider moves them together. Close the panel, then confirm with Save."
+  },
+  {
+    "_id": "i18n-message-hu-rating-details",
+    "key": "rating.details",
+    "lang": "hu",
+    "value": "Részletes értékelés"
+  },
+  {
+    "_id": "i18n-message-hu-rating-average",
+    "key": "rating.average",
+    "lang": "hu",
+    "value": "Átlag"
+  },
+  {
+    "_id": "i18n-message-hu-rating-criteria-attraction",
+    "key": "rating.criteria.attraction",
+    "lang": "hu",
+    "value": "Vonzalom"
+  },
+  {
+    "_id": "i18n-message-hu-rating-criteria-personality",
+    "key": "rating.criteria.personality",
+    "lang": "hu",
+    "value": "Személyiség"
+  },
+  {
+    "_id": "i18n-message-hu-rating-criteria-interests",
+    "key": "rating.criteria.interests",
+    "lang": "hu",
+    "value": "Közös érdeklődés"
+  },
+  {
+    "_id": "i18n-message-hu-rating-criteria-values",
+    "key": "rating.criteria.values",
+    "lang": "hu",
+    "value": "Közös értékrend"
+  },
+  {
+    "_id": "i18n-message-hu-guide-home-game-rating-details-label",
+    "key": "guide.home.game.rating-details.label",
+    "lang": "hu",
+    "value": "Az értékelés finomhangolása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-home-game-rating-details-description",
+    "key": "guide.home.game.rating-details.description",
+    "lang": "hu",
+    "value": "A Go előtti szám és nyíl gomb nyitja a részértékeket. A részcsúszkák átlaga adja az értékelést; a főcsúszka együtt mozgatja őket. Zárd be a panelt, majd a Go gombbal rögzítsd."
+  },
+  {
+    "_id": "i18n-message-hu-guide-activities-rates-rating-details-label",
+    "key": "guide.activities.rates.rating-details.label",
+    "lang": "hu",
+    "value": "Az értékelés finomhangolása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-activities-rates-rating-details-description",
+    "key": "guide.activities.rates.rating-details.description",
+    "lang": "hu",
+    "value": "A Mentés előtti szám és nyíl gomb nyitja a részértékeket. A részcsúszkák átlaga adja az értékelést; a főcsúszka együtt mozgatja őket. Zárd be a panelt, majd a Mentés gombbal rögzítsd."
   }
 ]
