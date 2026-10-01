@@ -88,6 +88,17 @@ Independent checks run concurrently, have no retries, and use a five-second
 request timeout by default. This keeps the result bounded to a few seconds
 when a deployment is broken.
 
+HEAD asset probes use the native Node HTTP/HTTPS client with a bounded keep-alive
+pool. Node fetch/Undici otherwise closes the connection after each HEAD request,
+which can turn one precache check into hundreds of TCP/TLS connections. GET
+requests retain fetch. Both paths share the existing redirect policy and request
+deadline; normal certificate verification and all asset assertions remain enabled.
+No retry is used. Focused transport regression checks:
+
+```bash
+node --test packaging/tests/deployment-http-test.mjs
+```
+
 ## TLS and non-standard ports
 
 Certificate-chain, hostname, and expiration validation are never disabled.

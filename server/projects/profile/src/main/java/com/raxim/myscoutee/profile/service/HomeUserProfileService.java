@@ -1895,7 +1895,7 @@ public class HomeUserProfileService {
         if (Boolean.TRUE.equals(record.getMet())) {
             return true;
         }
-        Integer scoreGiven = record.getScoreGiven();
+        Double scoreGiven = record.getScoreGiven();
         return scoreGiven != null && scoreGiven > 0;
     }
 

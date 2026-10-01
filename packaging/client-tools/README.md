@@ -72,6 +72,13 @@ is configured, Docker stores the login in the invoking user's Docker config;
 use a dedicated read-only token on the server. Publishing uses a different
 credential with `write:packages`. Public GHCR images do not require login.
 
+After rotating or revoking a token, repeat the server-side `sudo docker login`
+and verify a digest pull in a fresh login session. A registry `denied` response
+can be an invalid saved credential, independently of Compose. This host login
+is not embedded in the DEB or replaced by a package upgrade. Application images
+inside the normal DEB are loaded from its verified image archive; partial GHCR
+updates use the server-side Docker login.
+
 Select one compatible service image and its exact digest from the trusted
 publisher. For example, on the server:
 

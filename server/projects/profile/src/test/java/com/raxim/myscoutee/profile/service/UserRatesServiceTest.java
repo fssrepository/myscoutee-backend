@@ -94,7 +94,7 @@ class UserRatesServiceTest {
                 null,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         UserRate saved = singleSavedRate();
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
@@ -145,7 +145,7 @@ class UserRatesServiceTest {
                 null,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         ArgumentCaptor<NotificationIntent> intentCaptor = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(intentCaptor.capture());
@@ -181,7 +181,7 @@ class UserRatesServiceTest {
                 null,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
@@ -279,7 +279,7 @@ class UserRatesServiceTest {
                 8,
                 "Mingle",
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         assertThat(writes).hasSize(1);
         UpdateOneModel<Document> connection = (UpdateOneModel<Document>) writes.get(0);
@@ -362,7 +362,7 @@ class UserRatesServiceTest {
         service.sync(new UserRatesSyncRequestDto(List.of(new UserRateRecordDto(
                 "meeting", "u2", "u1", 7, "single", "2026-05-08T10:00:00Z",
                 "2026-05-08T10:01:00Z", "u2", "meeting", "given", null, null, null,
-                7, 0, "Mingle", "2026-05-08T10:00:00Z", null))));
+                7, 0, "Mingle", "2026-05-08T10:00:00Z", null, null))));
         UserRate saved = singleSavedRate();
         assertThat(saved.getId()).isEqualTo("meeting");
         assertThat(saved.getOwnerUserId()).isEqualTo("u2");
@@ -414,7 +414,7 @@ class UserRatesServiceTest {
                 10,
                 null,
                 "2026-05-08T10:00:00Z",
-                1200))));
+                1200, null))));
 
         UserRate saved = singleSavedRate();
         assertThat(response.syncedRateIds()).containsExactly("sync-single");
@@ -461,7 +461,7 @@ class UserRatesServiceTest {
                 null,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         UserRate saved = singleSavedRate();
         assertThat(saved.getId()).isEqualTo("stored-rate-id");
@@ -505,7 +505,7 @@ class UserRatesServiceTest {
                 null,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         UserRate saved = singleSavedRate();
         assertThat(saved.getId()).isEqualTo("natural-rate-id");
@@ -550,7 +550,7 @@ class UserRatesServiceTest {
                         null,
                         null,
                         "2026-05-08T10:00:00Z",
-                        null),
+                        null, null),
                 new UserRateRecordDto(
                         "sync-inside-pair",
                         "u1",
@@ -569,7 +569,7 @@ class UserRatesServiceTest {
                         null,
                         null,
                         "2026-05-08T10:00:00Z",
-                        null),
+                        null, null),
                 new UserRateRecordDto(
                         "sync-wrong-pair-social",
                         "u1",
@@ -588,7 +588,7 @@ class UserRatesServiceTest {
                         null,
                         null,
                         "2026-05-08T10:00:00Z",
-                        null))));
+                        null, null))));
 
         List<UserRate> savedRates = savedRates();
         UserRate friendsSingle = bySyncKey(savedRates, "sync-friends-single");
@@ -641,7 +641,7 @@ class UserRatesServiceTest {
                 null,
                 null,
                 "2026-05-08T10:00:00Z",
-                null))));
+                null, null))));
 
         ArgumentCaptor<org.springframework.data.mongodb.core.query.Query> queryCaptor =
                 ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Query.class);

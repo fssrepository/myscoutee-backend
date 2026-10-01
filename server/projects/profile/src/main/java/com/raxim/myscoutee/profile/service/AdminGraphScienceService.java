@@ -483,7 +483,7 @@ public class AdminGraphScienceService {
     }
 
     private Map<String, Long> genderRatingAverages(Map<String, String> userGendersById) {
-        Map<String, Long> sums = new LinkedHashMap<>();
+        Map<String, Double> sums = new LinkedHashMap<>();
         Map<String, Long> counts = new LinkedHashMap<>();
         for (UserRate rate : userRatesRepository.findAll()) {
             if (rate == null) {
@@ -502,21 +502,21 @@ public class AdminGraphScienceService {
         return result;
     }
 
-    private void addGenderRate(Map<String, Long> sums, Map<String, Long> counts, String fromGender, String toGender, Integer score) {
+    private void addGenderRate(Map<String, Double> sums, Map<String, Long> counts, String fromGender, String toGender, Double score) {
         String from = normalizeGender(fromGender);
         String to = normalizeGender(toGender);
-        int safeScore = safeInt(score);
+        double safeScore = score == null || !Double.isFinite(score) ? 0d : score;
         if (!StringUtils.hasText(from) || !StringUtils.hasText(to) || safeScore <= 0) {
             return;
         }
         String key = from + "-to-" + to;
-        sums.put(key, sums.getOrDefault(key, 0L) + safeScore);
+        sums.put(key, sums.getOrDefault(key, 0d) + safeScore);
         counts.put(key, counts.getOrDefault(key, 0L) + 1L);
     }
 
-    private long averageTenths(Map<String, Long> sums, Map<String, Long> counts, String key) {
+    private long averageTenths(Map<String, Double> sums, Map<String, Long> counts, String key) {
         long count = counts.getOrDefault(key, 0L);
-        return count == 0L ? 0L : Math.round((sums.getOrDefault(key, 0L) * 10d) / count);
+        return count == 0L ? 0L : Math.round((sums.getOrDefault(key, 0d) * 10d) / count);
     }
 
     private int graphHealth(long reachabilityPct, long weakTieRatio, long clusteringPct, long recurringRatio) {

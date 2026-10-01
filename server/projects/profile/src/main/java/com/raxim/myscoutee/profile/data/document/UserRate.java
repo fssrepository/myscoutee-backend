@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.data.document;
 
+import java.util.Map;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -28,8 +29,12 @@ public class UserRate {
     private String ownerUserId;
     private String relatedUserId;
     private String secondaryRelatedUserId;
-    private Integer scoreGiven;
-    private Integer scoreReceived;
+    // Supplemental snapshots keyed by actor; shared Met records may change owner orientation.
+    private Map<String, RatingSnapshot> ratingSnapshots;
+    public Map<String, RatingSnapshot> getRatingSnapshots() { return ratingSnapshots; }
+    public void setRatingSnapshots(Map<String, RatingSnapshot> value) { ratingSnapshots = value; }
+    private Double scoreGiven;
+    private Double scoreReceived;
     private Double affinityScore;
     private Double evidenceConfidence;
     private Boolean mutuallyRated;
@@ -62,10 +67,10 @@ public class UserRate {
     public void setRelatedUserId(String relatedUserId) { this.relatedUserId = relatedUserId; }
     public String getSecondaryRelatedUserId() { return secondaryRelatedUserId; }
     public void setSecondaryRelatedUserId(String secondaryRelatedUserId) { this.secondaryRelatedUserId = secondaryRelatedUserId; }
-    public Integer getScoreGiven() { return scoreGiven; }
-    public void setScoreGiven(Integer scoreGiven) { this.scoreGiven = scoreGiven; }
-    public Integer getScoreReceived() { return scoreReceived; }
-    public void setScoreReceived(Integer scoreReceived) { this.scoreReceived = scoreReceived; }
+    public Double getScoreGiven() { return scoreGiven; }
+    public void setScoreGiven(Number scoreGiven) { this.scoreGiven = scoreGiven == null ? null : scoreGiven.doubleValue(); }
+    public Double getScoreReceived() { return scoreReceived; }
+    public void setScoreReceived(Number scoreReceived) { this.scoreReceived = scoreReceived == null ? null : scoreReceived.doubleValue(); }
     public Double getAffinityScore() { return affinityScore; }
     public void setAffinityScore(Double affinityScore) { this.affinityScore = affinityScore; }
     public Double getEvidenceConfidence() { return evidenceConfidence; }
@@ -88,6 +93,8 @@ public class UserRate {
     public void setDistanceMetersExact(Integer distanceMetersExact) { this.distanceMetersExact = distanceMetersExact; }
     public LocationSnapshot getOwnerLocation() { return ownerLocation; }
     public void setOwnerLocation(LocationSnapshot ownerLocation) { this.ownerLocation = ownerLocation; }
+
+    public record RatingSnapshot(Integer version, String profileType, Map<String, Double> criteria, Double average) {}
 
     public record LocationSnapshot(
             Double latitude,

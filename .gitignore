@@ -72,10 +72,10 @@ Thumbs.db
 /**/cmake_install.cmake
 
 # Generated dev frontend copied by server/docker/scripts/sync_frontend_assets.sh.
-# Keep the exclusion here, not in .git/info/exclude or local index flags.
-# Already tracked files remain visible to Git even with this rule enabled.
-/server/docker/conf/nginx/app/myscoutee/**
-/server/docker/conf/nginx/app/myscoutee/.frontend-ready
+# Keep this shared exclusion in the repository rather than .git/info/exclude.
+# Deliberate snapshots can be added with git add -f. Already tracked snapshots
+# remain tracked: .gitignore only excludes untracked generated files.
+/server/docker/conf/nginx/app/myscoutee/
 
 # local secrets
 *-firebase-adminsdk-*.json

@@ -43,6 +43,7 @@ import com.raxim.myscoutee.profile.data.dto.auth.AuthDtos.UserDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.ActivityRatePageResponseDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.RateMenuItemDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRateRecordDto;
+import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.RatingSnapshotDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRatesSyncResponseDto;
 import com.raxim.myscoutee.profile.repository.UserRatesRepository;
@@ -195,7 +196,7 @@ public class UserRatesService {
         }
 
         Map<String, UserRate> normalizedRatesByNaturalKey = new LinkedHashMap<>();
-        Map<String, Integer> previousScoresByNaturalKey = new LinkedHashMap<>();
+        Map<String, Double> previousScoresByNaturalKey = new LinkedHashMap<>();
         Set<String> affectedHomeProjectionOwnerIds = new LinkedHashSet<>();
         List<String> syncedRateIds = new ArrayList<>();
         List<String> failedRateIds = new ArrayList<>();
@@ -334,7 +335,7 @@ public class UserRatesService {
 
     private void enqueueRatingNotifications(
             Collection<UserRate> persistedRates,
-            Map<String, Integer> previousScoresByNaturalKey) {
+            Map<String, Double> previousScoresByNaturalKey) {
         if (notificationOutboxService == null || persistedRates == null || persistedRates.isEmpty()) {
             return;
         }
@@ -342,8 +343,8 @@ public class UserRatesService {
             if (rate == null) {
                 continue;
             }
-            int currentScore = normalizeScore(rate.getScoreGiven());
-            int previousScore = previousScoresByNaturalKey == null
+            double currentScore = normalizeScore(rate.getScoreGiven());
+            double previousScore = previousScoresByNaturalKey == null
                     ? currentScore
                     : previousScoresByNaturalKey.getOrDefault(naturalKey(rate), currentScore);
             if (currentScore <= 0 || currentScore == previousScore) {
@@ -750,7 +751,7 @@ public class UserRatesService {
     }
 
     private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
-        if (rate == null) {
+        if (rate == null || !validRatingSnapshot(rate.ratingSnapshot(), resolveScoreGiven(rate))) {
             return null;
         }
         String syncKey = resolveSyncKey(rate);
@@ -774,7 +775,7 @@ public class UserRatesService {
         addIfText(affectedHomeProjectionOwnerIds, naturalKeyRecord == null ? null : naturalKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, ownerUserId);
         UserRate existing = naturalKeyRecord != null ? naturalKeyRecord : syncKeyRecord;
-        int previousScoreGiven = normalizeScore(existing == null ? null : existing.getScoreGiven());
+        double previousScoreGiven = normalizeScore(existing == null ? null : existing.getScoreGiven());
         boolean syncKeyBelongsToDifferentRecord = naturalKeyRecord != null
                 && syncKeyRecord != null
                 && !Objects.equals(naturalKeyRecord.getId(), syncKeyRecord.getId());
@@ -786,7 +787,7 @@ public class UserRatesService {
 
         // A Met record is shared by both viewers. Preserve the other person's
         // authoritative score when a stale client submits a rating or edits its own.
-        Integer metCounterpartyScore = existing != null && Boolean.TRUE.equals(existing.getMet())
+        Double metCounterpartyScore = existing != null && Boolean.TRUE.equals(existing.getMet())
                 && "single".equals(mode)
                 ? (ownerUserId.equals(existing.getOwnerUserId())
                         ? existing.getScoreReceived() : existing.getScoreGiven())
@@ -808,10 +809,40 @@ public class UserRatesService {
         if (normalized != null && metCounterpartyScore != null) {
             normalized.setScoreReceived(normalizeScore(metCounterpartyScore));
         }
+        if (normalized != null) {
+            Map<String, UserRate.RatingSnapshot> snapshots = new LinkedHashMap<>(
+                    normalized.getRatingSnapshots() == null ? Map.of() : normalized.getRatingSnapshots());
+            if (rate.ratingSnapshot() == null) snapshots.remove(ownerUserId);
+            else snapshots.put(ownerUserId, new UserRate.RatingSnapshot(1, rate.ratingSnapshot().profileType(),
+                    Map.copyOf(rate.ratingSnapshot().criteria()), rate.ratingSnapshot().average()));
+            normalized.setRatingSnapshots(snapshots);
+        }
         return normalized == null ? null : new NormalizedRate(normalized, previousScoreGiven);
     }
 
-    private record NormalizedRate(UserRate rate, int previousScoreGiven) {}
+    private boolean validRatingSnapshot(RatingSnapshotDto snapshot, double score) {
+        if (snapshot == null) return true;
+        if (!Integer.valueOf(1).equals(snapshot.version())
+                || !"dating".equals(snapshot.profileType())
+                || snapshot.criteria() == null
+                || !snapshot.criteria().keySet().equals(Set.of("attraction", "personality", "interests", "values"))
+                || snapshot.average() == null || !Double.isFinite(snapshot.average())) return false;
+        double sum = 0;
+        for (Double value : snapshot.criteria().values()) {
+            if (value == null || !Double.isFinite(value) || value < 1 || value > 10 || value != Math.rint(value)) return false;
+            sum += value;
+        }
+        double average = sum / snapshot.criteria().size();
+        return Math.abs(average - snapshot.average()) < 0.000001 && Math.abs(average - score) < 0.000001;
+    }
+
+    private RatingSnapshotDto ratingSnapshotFor(UserRate record, String userId) {
+        UserRate.RatingSnapshot snapshot = record.getRatingSnapshots() == null ? null : record.getRatingSnapshots().get(userId);
+        return snapshot == null ? null : new RatingSnapshotDto(snapshot.version(), snapshot.profileType(),
+                snapshot.criteria(), snapshot.average());
+    }
+
+    private record NormalizedRate(UserRate rate, double previousScoreGiven) {}
 
     private UserRate findByNaturalKey(
             String ownerUserId,
@@ -933,9 +964,9 @@ public class UserRatesService {
             return null;
         }
         boolean isSingle = "single".equals(normalizeMode(record.getMode()));
-        int scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven())
+        double scoreGiven = isOwnerView ? normalizeScore(record.getScoreGiven())
                 : isSingle ? normalizeScore(record.getScoreReceived()) : 0;
-        int scoreReceived = isOwnerView
+        double scoreReceived = isOwnerView
                 ? normalizeScore(record.getScoreReceived())
                 : isSingle ? normalizeScore(record.getScoreGiven()) : resolveParticipantIncomingScore(record);
         String eventName = StringUtils.hasText(normalizeOptionalText(record.getEventName()))
@@ -962,12 +993,12 @@ public class UserRatesService {
                 return new RateMenuItemDto(displayId, participantOtherUserId, resolvedCurrentUserId, "pair", direction,
                         socialContext, bridgeUserId, bridgeCount,
                         scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
-                        Boolean.TRUE.equals(record.getMet()));
+                        Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId));
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
                     socialContext, bridgeUserId, bridgeCount,
                     scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
-                    Boolean.TRUE.equals(record.getMet()));
+                    Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId));
         }
 
         String relatedUserId = isOwnerView
@@ -982,7 +1013,7 @@ public class UserRatesService {
                 resolveIndividualBridgeUserId(record, resolvedCurrentUserId, relatedUserId, individualSocialContext),
                 resolveIndividualBridgeCount(record, individualSocialContext),
                 scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
-                Boolean.TRUE.equals(record.getMet()));
+                Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId));
     }
 
     private RatePageProjection toRatePageProjection(RateMenuItemDto item) {
@@ -1053,15 +1084,15 @@ public class UserRatesService {
         if (item == null) {
             return 0d;
         }
-        int scoreGiven = normalizeScore(item.scoreGiven());
-        int scoreReceived = normalizeScore(item.scoreReceived());
+        double scoreGiven = normalizeScore(item.scoreGiven());
+        double scoreReceived = normalizeScore(item.scoreReceived());
         if ("mutual".equals(normalizeDisplayDirection(item.direction()))) {
             return harmonicScore(scoreGiven, scoreReceived);
         }
         return scoreGiven > 0 ? scoreGiven : 5d;
     }
 
-    private double harmonicScore(int scoreGiven, int scoreReceived) {
+    private double harmonicScore(double scoreGiven, double scoreReceived) {
         if (scoreGiven <= 0 || scoreReceived <= 0) {
             return 0d;
         }
@@ -1255,8 +1286,8 @@ public class UserRatesService {
             return null;
         }
         String mode = normalizeMode(record.getMode());
-        int scoreGiven = normalizeScore(record.getScoreGiven());
-        int scoreReceived = normalizeScore(record.getScoreReceived());
+        double scoreGiven = normalizeScore(record.getScoreGiven());
+        double scoreReceived = normalizeScore(record.getScoreReceived());
         if (Boolean.TRUE.equals(record.getMet())
                 && ((scoreGiven <= 0 && scoreReceived <= 0) || (scoreGiven > 0 && scoreReceived > 0))) {
             return "met";
@@ -1283,8 +1314,8 @@ public class UserRatesService {
         if (record == null || !StringUtils.hasText(currentUserId) || !matchesActivityParticipant(record, currentUserId)) {
             return null;
         }
-        int scoreGiven = normalizeScore(record.getScoreGiven());
-        int scoreReceived = normalizeScore(record.getScoreReceived());
+        double scoreGiven = normalizeScore(record.getScoreGiven());
+        double scoreReceived = normalizeScore(record.getScoreReceived());
         if (Boolean.TRUE.equals(record.getMet())
                 && ((scoreGiven <= 0 && scoreReceived <= 0) || (scoreGiven > 0 && scoreReceived > 0))) {
             return "met";
@@ -1306,8 +1337,8 @@ public class UserRatesService {
                 || currentUserId.equals(normalizeOptionalId(record.getSecondaryRelatedUserId()));
     }
 
-    private int resolveParticipantIncomingScore(UserRate record) {
-        int scoreGiven = normalizeScore(record == null ? null : record.getScoreGiven());
+    private double resolveParticipantIncomingScore(UserRate record) {
+        double scoreGiven = normalizeScore(record == null ? null : record.getScoreGiven());
         if (scoreGiven > 0) {
             return scoreGiven;
         }
@@ -1485,15 +1516,15 @@ public class UserRatesService {
         return StringUtils.hasText(normalized) ? normalized : fallback;
     }
 
-    private int normalizeScore(Integer value) {
-        if (value == null) {
+    private double normalizeScore(Number value) {
+        if (value == null || !Double.isFinite(value.doubleValue())) {
             return 0;
         }
-        return Math.max(0, Math.min(10, value));
+        return Math.max(0, Math.min(10, value.doubleValue()));
     }
 
-    private int resolveScoreGiven(UserRateRecordDto rate) {
-        int scoreGiven = normalizeScore(rate == null ? null : rate.scoreGiven());
+    private double resolveScoreGiven(UserRateRecordDto rate) {
+        double scoreGiven = normalizeScore(rate == null ? null : rate.scoreGiven());
         if (scoreGiven > 0) {
             return scoreGiven;
         }

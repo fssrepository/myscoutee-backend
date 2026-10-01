@@ -1,0 +1,188 @@
+{
+  "version": "1.3.3",
+  "date": "2026-10-01",
+  "task": "MSC-113",
+  "taskUrl": "https://github.com/fssrepository/myscoutee-roadmap/issues/151",
+  "scope": "Two digest-pinned images and retained system-data migration; no DEB, signed package or catalog built",
+  "source": {
+    "frontendRuntimeCommit": "a56699c5de2f52a4e262bde75e446b789cf58a1d",
+    "backendRuntimeCommit": "1520780c576e48b258fbf551a26df9a84f0c5c1d",
+    "releaseTags": "v1.3.3 in frontend and backend; retargeted at owner request to include the verifier follow-up and refreshed MSC-113 accounting; deployed runtime/image references unchanged"
+  },
+  "productionBuild": {
+    "version": "1.3.3",
+    "buildId": "a56699c5de2f-20261001022457",
+    "builtAt": "2026-10-01T02:24:57.503Z",
+    "gitSha": "a56699c5de2f"
+  },
+  "images": {
+    "api": {
+      "phase": "applied",
+      "version": "1.3.0",
+      "reference": "ghcr.io/fssrepository/myscoutee-api@sha256:18c70a5048bd1b62b92b4c550b73ff2befa24743840490038d15eb92a9843ffa",
+      "previousId": "sha256:cacbd40da2578451b753fb539210ac3e109dae8bd981be701ba8662b3545bfe4",
+      "targetId": "sha256:18c70a5048bd1b62b92b4c550b73ff2befa24743840490038d15eb92a9843ffa",
+      "currentId": "sha256:18c70a5048bd1b62b92b4c550b73ff2befa24743840490038d15eb92a9843ffa",
+      "matchesSelectedImage": true,
+      "persistentSelectionMatches": true,
+      "matchesPreviousImage": false,
+      "registryManifestVerified": true
+    },
+    "nginx": {
+      "phase": "applied",
+      "version": "1.3.0",
+      "reference": "ghcr.io/fssrepository/myscoutee-nginx@sha256:3f56bdebbf6fc6832ec6b95dd863e996574ce647c5b4dbab2cdcb5f5e56262d3",
+      "previousId": "sha256:519d0673455b894eac6e0c34b765c5570fcc43edb8a00e7ce3511dd3ba57ca2a",
+      "targetId": "sha256:3f56bdebbf6fc6832ec6b95dd863e996574ce647c5b4dbab2cdcb5f5e56262d3",
+      "currentId": "sha256:3f56bdebbf6fc6832ec6b95dd863e996574ce647c5b4dbab2cdcb5f5e56262d3",
+      "matchesSelectedImage": true,
+      "persistentSelectionMatches": true,
+      "matchesPreviousImage": false,
+      "registryManifestVerified": true
+    }
+  },
+  "netcup": {
+    "healthyContainers": 8,
+    "recreated": [
+      "myscoutee",
+      "nginx"
+    ],
+    "retained": [
+      "mcp",
+      "minio",
+      "mongodb",
+      "payment-simulator",
+      "redis",
+      "registry-demo"
+    ],
+    "othersPreserved": true,
+    "changedEnvironmentKeys": [
+      "MYSCOUTEE_PRODUCTION_IMAGE",
+      "NGINX_PRODUCTION_IMAGE"
+    ],
+    "secretsUnchanged": true,
+    "composeUnchanged": true,
+    "installedDebianPackageVersion": "1.3.0",
+    "retainedDataVerified": true,
+    "backup": "/var/backups/myscoutee/myscoutee-backup-20261001-042737.tar.gz",
+    "receiptDirectory": "/root/myscoutee-partial-1.3.3-20261001",
+    "temporaryRegistryCredentialsRemoved": true,
+    "persistentRegistryAuthenticationVerified": true
+  },
+  "guides": [
+    {
+      "database": "production_db",
+      "fields": 965,
+      "ratingSteps": 2,
+      "labels": 2,
+      "activeGuides": 90,
+      "migration": "011-granular-rating-guides",
+      "sha256": "b3f66f7afff774fc38467085c14d8f089a6dea4b97f79a2c7cc49270756f4b95"
+    },
+    {
+      "database": "demo_db",
+      "fields": 965,
+      "ratingSteps": 2,
+      "labels": 2,
+      "activeGuides": 90,
+      "migration": "011-granular-rating-guides",
+      "sha256": "b3f66f7afff774fc38467085c14d8f089a6dea4b97f79a2c7cc49270756f4b95"
+    }
+  ],
+  "backupSha256Records": [
+    "5a678dff127e71ffaf5826b572a204aa3abbef391d09cf301c9f250de845e211  /var/backups/myscoutee/myscoutee-backup-20261001-042737.tar.gz",
+    "5e132f5880860549894f0c786652b3ffba813963c0349589329420419c2dab9c  demo_db.archive.gz",
+    "a5ea1c6126cc57a80b36fc0cdc7e757e568ddcc861ec4a9e04778c6c20190a99  inputs/previous-package-data.tar"
+  ],
+  "checks": {
+    "frontendProductionBuild": "PASS",
+    "backendBootJar": "PASS",
+    "guideMigrationTests": "PASS defaults/fresh/retry/custom/inactive/version collision/retained users and privacy",
+    "deployedMigrationChain": "PASS in production_db and demo_db: checksum-verified004..010 skipped;011 recorded;11602 i18n messages synchronized",
+    "cdp": "PASS Home/Activity list/Activity fullscreen at1280x900 and390x844; appended existing CLOSED guide pass",
+    "ratingSync": "PASS6.75 +3/8/8/8 outbox sync acknowledgement and reload; prior state restored and read back",
+    "javaPrecision": "PASS decimal affinity, legacy integer Mongo reads and JSON/Mongo roundtrip via existing compiled runtime",
+    "integerShiftCases": 8000,
+    "criterionCountsTested": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      10
+    ],
+    "publicHttp": {
+      "passed": 12,
+      "failed": 1,
+      "skipped": 0,
+      "failure": "Concurrent precache HEAD check: varying connection reset/timeout; other12 checks pass with expected frontend1.3.3",
+      "networkDiagnostic": "IPv4 and4-socket dispatcher reproduced reset; all TLS checks retained"
+    },
+    "publicPrecacheExactContent": {
+      "passed": 289,
+      "failed": 0,
+      "method": "Sequential HTTPS GET, default TLS validation, exact bytes against the production artifact; no retries"
+    }
+  },
+  "retainedDataOracle": "Counts/sorted ID hashes for users/events/assets/payments; full sorted documents for userRates/privacyConsents/userPageFilterPreferences. Equal before migration, after migration and after image deployment in both databases.",
+  "registryCredential": "Prior Netcup credential returned GitHub401. Owner requested permanent repair: current publisher credential saved in root Docker credential store (mode0600); both digest pulls verified in a fresh SSH session without DOCKER_CONFIG override. No credential added to repository or DEB.",
+  "localRuntime": "myscoutee and frontend-sync stopped before serial production compilation, then restored healthy",
+  "limitations": [
+    "No DEB/upgrade/restore qualification or new DEB built",
+    "Full Angular/JUnit and full local-storage/native-WebView suites not run",
+    "Standalone all-schema chain test blocked by local Mongo root authorization; focused guide tests and actual retained migration chain passed",
+    "Concurrent Node precache verification connection resets are recorded; separate exact-content verification accompanies this release"
+  ],
+  "verifierFollowup": {
+    "task": "MSC-113",
+    "date": "2026-10-01",
+    "classification": "Repository deployment verifier HTTP/1.1 HEAD connection strategy",
+    "observedBefore": "Default fetch reproduced a pre-HTTP connect ECONNRESET after47 successful asset probes; unchanged site remained healthy",
+    "abComparison": {
+      "same289AssetsSame12Workers": true,
+      "fetchDefault": {
+        "passedBeforeFailure": 47,
+        "connected": 47,
+        "connectErrors": [
+          "ECONNRESET"
+        ]
+      },
+      "fetchWithResetFalse": {
+        "passed": 289,
+        "connections": 12,
+        "failed": 0
+      },
+      "nativeHeadKeepAlive": {
+        "passed": 289,
+        "connections": 12,
+        "failed": 0
+      }
+    },
+    "regressionBefore": {
+      "connectionReuse": "FAIL24connections instead of1"
+    },
+    "regressionAfter": {
+      "passed": 3,
+      "failed": 0,
+      "checks": [
+        "24HEAD requests reuse1connection and preserve headers",
+        "manual/follow redirect behavior and cross-host rejection",
+        "timeout and404 remain observable; no retries"
+      ]
+    },
+    "publicHttpAfter": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "expectedVersion": "1.3.3",
+      "timeoutMs": 30000,
+      "elapsedMs": 4853,
+      "retries": 0
+    },
+    "change": "Native node:http/https bounded keep-alive HEAD pool; GET retains fetch; shared redirect/deadline/TLS checks and all assertions preserved",
+    "deploymentChanges": "None: no container/image/DEB/tag changes",
+    "limit": "The immediate external cause of the failed TLS connection reset was not captured; excessive connection creation in the verifier is reproduced and eliminated."
+  }
+}
