@@ -68,6 +68,7 @@ public class IdeaPostsService {
             .addProtocols("img", "src", "http", "https", "data")
             .preserveRelativeLinks(true);
 
+    private final AdminModerationService admins;
     private final ConfigProperties configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
@@ -78,6 +79,7 @@ public class IdeaPostsService {
     private final MediaStorageService mediaStorageService;
 
     public IdeaPostsService(
+            AdminModerationService admins,
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
@@ -86,6 +88,7 @@ public class IdeaPostsService {
             LandingArticlesRepository landingArticlesRepository,
             IdeaPostMapper ideaPostMapper,
             MediaStorageService mediaStorageService) {
+        this.admins = admins;
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
         this.mongoTemplate = mongoTemplate;
@@ -94,6 +97,10 @@ public class IdeaPostsService {
         this.landingArticlesRepository = landingArticlesRepository;
         this.ideaPostMapper = ideaPostMapper;
         this.mediaStorageService = mediaStorageService;
+    }
+
+    public List<com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.LandingSlideDto> publicSlides(String groupId) {
+        return landingArticlesRepository.findSlides(groupId);
     }
 
     public List<IdeaPostDto> publicPosts() {
@@ -122,6 +129,11 @@ public class IdeaPostsService {
             Integer page,
             Integer pageSize,
             String cursor) {
+        return publicPostsPage(lang, acceptLanguage, page, pageSize, cursor, null);
+    }
+
+    public IdeaPostPublicPageDto publicPostsPage(String lang, String acceptLanguage, Integer page,
+            Integer pageSize, String cursor, String groupId) {
         String requestedLanguage = requestContentLang(lang, acceptLanguage);
         int normalizedPage = Math.max(0, page == null ? 0 : page);
         int normalizedPageSize = normalizePublicPageSize(pageSize);
@@ -133,14 +145,14 @@ public class IdeaPostsService {
                 effectiveLanguage,
                 normalizedPage,
                 normalizedPageSize,
-                decodedCursor);
+                decodedCursor, groupId);
         if (decodedCursor == null && slice.total() == 0L && !DEFAULT_LANG.equals(effectiveLanguage)) {
             effectiveLanguage = DEFAULT_LANG;
             slice = landingArticlesRepository.findPage(
                     effectiveLanguage,
                     normalizedPage,
                     normalizedPageSize,
-                    null);
+                    null, groupId);
         }
         List<IdeaPostDto> records = slice.records().stream()
                 .map(ideaPostMapper::toDto)
@@ -152,15 +164,19 @@ public class IdeaPostsService {
     }
 
     public IdeaPostPublicPageDto publicFeaturedPosts(String lang, String acceptLanguage) {
+        return publicFeaturedPosts(lang, acceptLanguage, null);
+    }
+
+    public IdeaPostPublicPageDto publicFeaturedPosts(String lang, String acceptLanguage, String groupId) {
         String effectiveLanguage = requestContentLang(lang, acceptLanguage);
         LandingArticleSlice preview = landingArticlesRepository.findFeaturedPreview(
                 effectiveLanguage,
-                LANDING_FEATURED_PREVIEW_SIZE);
+                LANDING_FEATURED_PREVIEW_SIZE, groupId);
         if (preview.total() == 0L && !DEFAULT_LANG.equals(effectiveLanguage)) {
             effectiveLanguage = DEFAULT_LANG;
             preview = landingArticlesRepository.findFeaturedPreview(
                     effectiveLanguage,
-                    LANDING_FEATURED_PREVIEW_SIZE);
+                    LANDING_FEATURED_PREVIEW_SIZE, groupId);
         }
         return new IdeaPostPublicPageDto(
                 preview.records().stream().map(ideaPostMapper::toDto).toList(),
@@ -174,7 +190,9 @@ public class IdeaPostsService {
 
     public List<IdeaPostDto> adminPosts(String adminUserId, String lang) {
         ensureAdmin(adminUserId);
+        String groupId = admins.baseGroupId(adminUserId);
         return ideaPostsRepository.findAllByLangOrderBySubmittedAtIsoDesc(contentLang(lang)).stream()
+                .filter(post -> java.util.Objects.equals(groupId, post.getWorkspaceGroupId()))
                 .map(ideaPostMapper::toDto)
                 .toList();
     }
@@ -190,7 +208,8 @@ public class IdeaPostsService {
         String normalizedStatus = adminStatus(status);
         int limit = normalizePageSize(pageSize);
         AdminIdeaPostCursor decodedCursor = parseAdminCursor(cursor, language, normalizedStatus);
-        Criteria filterCriteria = adminPostsCriteria(language, normalizedStatus);
+        String groupId = admins.baseGroupId(adminUserId);
+        Criteria filterCriteria = scopedAdminPostsCriteria(language, normalizedStatus, groupId);
         long total = mongoTemplate.count(Query.query(filterCriteria), IdeaPost.class);
         Criteria pageCriteria = decodedCursor == null
                 ? filterCriteria
@@ -222,7 +241,7 @@ public class IdeaPostsService {
                 records,
                 toSafeInt(total),
                 nextCursor,
-                adminPostCounts(language));
+                adminPostCounts(language, groupId));
     }
 
     public IdeaPostDto savePost(IdeaPostSaveRequestDto request) {
@@ -230,11 +249,14 @@ public class IdeaPostsService {
         String normalizedId = normalize(request == null ? null : request.id());
         String language = contentLang(request == null ? null : request.lang());
         String requestedContentKey = normalize(request == null ? null : request.contentKey());
+        String groupId = admins.baseGroupId(actorUserId);
         IdeaPost post = StringUtils.hasText(normalizedId)
                 ? ideaPostsRepository.findById(normalizedId).orElseGet(IdeaPost::new)
                 : StringUtils.hasText(requestedContentKey)
-                        ? ideaPostsRepository.findByContentKeyAndLang(requestedContentKey, language).orElseGet(IdeaPost::new)
+                        ? ideaPostsRepository.findByContentKeyAndLangAndWorkspaceGroupId(requestedContentKey, language, groupId).orElseGet(IdeaPost::new)
                         : new IdeaPost();
+        if (StringUtils.hasText(post.getId()) && !java.util.Objects.equals(groupId, post.getWorkspaceGroupId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        post.setWorkspaceGroupId(groupId);
         String nowIso = Instant.now().toString();
         if (!StringUtils.hasText(post.getId()) && StringUtils.hasText(normalizedId)) {
             post.setId(normalizedId);
@@ -298,6 +320,7 @@ public class IdeaPostsService {
         if (post == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
         }
+        if (!java.util.Objects.equals(admins.baseGroupId(actorUserId), post.getWorkspaceGroupId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         String nowIso = Instant.now().toString();
         post.setFeatured(false);
         post.setPublished(false);
@@ -321,6 +344,7 @@ public class IdeaPostsService {
         if (post == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article id is required.");
         }
+        if (!java.util.Objects.equals(admins.baseGroupId(actorUserId), post.getWorkspaceGroupId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         String nowIso = Instant.now().toString();
         post.setFeatured(false);
         post.setPublished(false);
@@ -463,17 +487,21 @@ public class IdeaPostsService {
         return text(existing, fallback);
     }
 
-    private IdeaPostAdminCountsDto adminPostCounts(String lang) {
+    private IdeaPostAdminCountsDto adminPostCounts(String lang, String groupId) {
         return new IdeaPostAdminCountsDto(
-                countAdminPosts(lang, "all"),
-                countAdminPosts(lang, "featured"),
-                countAdminPosts(lang, "published"),
-                countAdminPosts(lang, "drafts"),
-                countAdminPosts(lang, "trashed"));
+                countAdminPosts(lang, "all", groupId),
+                countAdminPosts(lang, "featured", groupId),
+                countAdminPosts(lang, "published", groupId),
+                countAdminPosts(lang, "drafts", groupId),
+                countAdminPosts(lang, "trashed", groupId));
     }
 
-    private int countAdminPosts(String lang, String status) {
-        return toSafeInt(mongoTemplate.count(Query.query(adminPostsCriteria(lang, status)), IdeaPost.class));
+    private int countAdminPosts(String lang, String status, String groupId) {
+        return toSafeInt(mongoTemplate.count(Query.query(scopedAdminPostsCriteria(lang, status, groupId)), IdeaPost.class));
+    }
+
+    private Criteria scopedAdminPostsCriteria(String lang, String status, String groupId) {
+        return new Criteria().andOperator(adminPostsCriteria(lang, status), Criteria.where("workspaceGroupId").is(groupId));
     }
 
     private Criteria adminPostsCriteria(String lang, String status) {

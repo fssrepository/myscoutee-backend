@@ -32,6 +32,9 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 
 @Service
 public class EventCounterExpiryService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCounterExpiryService.class);
     private static final String SYSTEM_USER = "event-counter-expiry";
     private static final String OWNER_TYPE_EVENT = "event";
@@ -52,7 +55,7 @@ public class EventCounterExpiryService {
     private final UserActivityCountersService userActivityCountersService;
     private final EventFriendshipProjectionService eventFriendshipProjectionService;
     private final int batchSize;
-    private final AtomicBoolean processing = new AtomicBoolean(false);
+    private final java.util.concurrent.ConcurrentHashMap<String, AtomicBoolean> processing = new java.util.concurrent.ConcurrentHashMap<>();
 
     private record ExpiryRunResult(
             int dueSources,
@@ -97,7 +100,8 @@ public class EventCounterExpiryService {
     }
 
     private ExpiryRunResult runExpiryPass(Instant requestedStart, boolean scheduled) {
-        if (!processing.compareAndSet(false, true)) {
+        var running = processing.computeIfAbsent(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key(), ignored -> new AtomicBoolean());
+        if (!running.compareAndSet(false, true)) {
             return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
         }
         Instant startedAt = requestedStart == null ? Instant.now() : requestedStart;
@@ -168,7 +172,7 @@ public class EventCounterExpiryService {
             }
             return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
         } finally {
-            processing.set(false);
+            running.set(false);
         }
     }
 
@@ -222,6 +226,7 @@ public class EventCounterExpiryService {
                 Criteria.where("endAtIso").lte(cutoff.toString())));
         query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("sourceId")));
         query.limit(batchSize);
+        if (JobGroupContext.isActive()) query.addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId"));
         return mongoTemplate.find(query, ActivityEvent.class);
     }
 
@@ -233,6 +238,7 @@ public class EventCounterExpiryService {
                 dueBoundary(nowIso)));
         query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("startAtIso"), Sort.Order.asc("sourceId")));
         query.limit(batchSize);
+        if (JobGroupContext.isActive()) query.addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId"));
         return mongoTemplate.find(query, ActivityEvent.class);
     }
 
@@ -245,6 +251,7 @@ public class EventCounterExpiryService {
                 dueBoundary(nowIso)));
         query.with(Sort.by(Sort.Order.asc("endAtIso"), Sort.Order.asc("startAtIso"), Sort.Order.asc("_id")));
         query.limit(batchSize);
+        if (JobGroupContext.isActive()) query.addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId"));
         return mongoTemplate.find(query, ActivityEvent.class);
     }
 
@@ -468,7 +475,8 @@ public class EventCounterExpiryService {
                 existing == null ? null : existing.eventFeedback(),
                 count(existing == null ? null : existing.adminJobs()),
                 count(existing == null ? null : existing.adminMetrics()),
-                count(existing == null ? null : existing.notifications()));
+                count(existing == null ? null : existing.notifications()),
+                count(existing == null ? null : existing.serviceFeedbackPending()));
     }
 
     boolean activitiesEqual(Users.UserActivitiesRecord first, Users.UserActivitiesRecord second) {

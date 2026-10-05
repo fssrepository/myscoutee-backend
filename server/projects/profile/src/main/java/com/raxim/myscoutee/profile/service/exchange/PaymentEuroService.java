@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.service.exchange;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
+import com.raxim.myscoutee.profile.service.JobGroupScopeService;
 import java.math.*;
 import com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Snapshot;
 import com.raxim.myscoutee.profile.data.dto.payment.ExchangeRateDtos.Summary;
@@ -13,11 +15,19 @@ import com.raxim.myscoutee.profile.data.document.Payment;
 
 @Service
 public class PaymentEuroService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private JobGroupScopeService jobGroupScope;
     private final ExchangeRateStore rates;
     private final MongoTemplate mongo;
     public PaymentEuroService(ExchangeRateStore rates, MongoTemplate mongo) { this.rates = rates; this.mongo = mongo; }
 
     public void prepare(Payment payment) {
+        if (payment == null) return;
+        String groupId = JobGroupContext.isActive() ? JobGroupContext.groupId() : jobGroupScope.forUser(payment.getUserId());
+        JobGroupContext.run(groupId, () -> prepareInGroup(payment));
+    }
+
+    private void prepareInGroup(Payment payment) {
         if (payment == null || !"payment".equals(payment.getAuditKind()) || !contributes(payment)) return;
         Snapshot previous = payment.getEuro();
         String rate, date, source;
@@ -61,7 +71,7 @@ public class PaymentEuroService {
         if (!refreshed) criteria.orOperator(Criteria.where("euroCheckedAt").is(null),
                 Criteria.where("euroCheckedAt").lt(Instant.now().minusSeconds(3600).toString()));
         Query query = Query.query(criteria).with(org.springframework.data.domain.Sort.by("euroCheckedAt")).limit(100);
-        for (Payment payment : mongo.find(query, Payment.class)) {
+        for (Payment payment : jobGroupScope.findOwned(query, Payment.class, "userId")) {
             prepare(payment);
             Update update = new Update().set("euroCheckedAt", Instant.now().toString());
             if (payment.getEuro() != null) update.set("euro", payment.getEuro());
@@ -92,6 +102,10 @@ public class PaymentEuroService {
                 new Document("$set", new Document("summaryCurrency", currency)));
     }
     public Summary summary(String userId, boolean affiliate) {
+        return JobGroupContext.call(jobGroupScope.forUser(userId), () -> summaryInGroup(userId, affiliate));
+    }
+
+    private Summary summaryInGroup(String userId, boolean affiliate) {
         String currency = currency(userId);
 
         Document match = new Document("auditKind", "payment");
@@ -125,7 +139,10 @@ public class PaymentEuroService {
         List<Document> pipeline = new ArrayList<>();
         pipeline.add(new Document("$match", match));
         if (!"EUR".equals(currency)) pipeline.add(new Document("$lookup", new Document("from", "exchangeRates")
-                .append("localField", "euro.rateDate").append("foreignField", "_id").append("as", "observation")));
+                .append("let", new Document("rateDate", "$euro.rateDate"))
+                .append("pipeline", List.of(new Document("$match", new Document("$expr", new Document("$eq", List.of("$_id",
+                        JobGroupContext.groupId() == null ? "$$rateDate" : new Document("$concat", List.of(JobGroupContext.key() + ":", "$$rateDate"))))))))
+                .append("as", "observation")));
         pipeline.add(new Document("$group", group));
         Document result = mongo.getCollection("payments").aggregate(pipeline).first();
         long grossValue = number(result, "gross"), refundValue = number(result, "refunded");

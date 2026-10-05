@@ -58,6 +58,9 @@ import com.raxim.myscoutee.profile.service.mapper.ActivityMemberMapper;
 
 @Service
 public class ActivitiesMembersService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private JobGroupScopeService jobGroupScope;
+
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
     private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
     private static final String OWNER_TYPE_EVENT = "event";
@@ -3038,7 +3041,9 @@ public class ActivitiesMembersService {
 
         int invitedCount = 0;
         for (String eventId : eventIds) {
-            invitedCount += processEventWaitlist(eventId, findPreferredEventRecord(eventId), false);
+            var event = findPreferredEventRecord(eventId);
+            if (event != null && (!JobGroupContext.isActive() || jobGroupScope.matchesWorkspace(event.getWorkspaceGroupId())))
+                invitedCount += processEventWaitlist(eventId, event, false);
         }
         return invitedCount;
     }

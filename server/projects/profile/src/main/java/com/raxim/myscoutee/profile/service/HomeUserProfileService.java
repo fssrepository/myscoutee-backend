@@ -104,6 +104,9 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class HomeUserProfileService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private JobGroupScopeService jobGroupScope;
+
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
     private static final String PROFILE_STATUS_ONBOARDING = "onboarding";
@@ -210,6 +213,9 @@ public class HomeUserProfileService {
     @org.springframework.context.annotation.Lazy
     private SavedPaymentMethodsService savedPaymentMethods;
 
+    private final com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroupsRepository;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.repository.ServiceCasesRepository serviceCasesRepository;
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
@@ -272,7 +278,9 @@ public class HomeUserProfileService {
             AdminMenuCounterService adminMenuCounterService,
             AccessControlService accessControlService,
             AssetsService assetsService,
-            AffiliateService affiliateService) {
+            AffiliateService affiliateService,
+            com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroupsRepository) {
+        this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
@@ -687,7 +695,7 @@ public class HomeUserProfileService {
             persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
         }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
-            adjustAccountPurgePendingCount(shouldTrackForAccountPurge ? 1 : -1);
+            adjustAccountPurgePendingCount(saved.getUserId(), shouldTrackForAccountPurge ? 1 : -1);
         }
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
         evictUserReadCaches(normalizedUserId);
@@ -889,7 +897,7 @@ public class HomeUserProfileService {
         user.setAccountPurgePendingCounterTracked(true);
         usersRepository.save(user);
         if (newlyTrackedForPurge) {
-            adjustAccountPurgePendingCount(1);
+            adjustAccountPurgePendingCount(user.getUserId(), 1);
         }
         evictUserReadCaches(resolvedUserId);
         affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
@@ -1250,16 +1258,29 @@ public class HomeUserProfileService {
         return queryDemoUserListItems(limit, "member");
     }
 
-    @Cacheable(value = "demo_users", key = "(#role == null ? 'member' : #role) + ':' + (#limit == null ? 'all' : #limit)")
     public List<DemoUserListItemDto> queryDemoUserListItems(Integer limit, String role) {
         String selectorRole = normalizeDemoSelectorRole(role);
         Map<LocationCoordinatesDto, Boolean> locationChecks = new java.util.HashMap<>();
-        return usersRepository.findAllByOrderByNameAscUserIdAsc().stream()
+        var allUsers = usersRepository.findAllByOrderByNameAscUserIdAsc();
+        var baseIds = com.raxim.myscoutee.profile.data.document.CommunityGroup.BASE_IDS;
+        var baseTypes = new java.util.HashMap<String, String>();
+        communityGroupsRepository.findByIdIn(baseIds).stream()
+                .filter(group -> !group.deleted() && group.policy().workspace())
+                .forEach(group -> baseTypes.put(group.id(), group.effectiveType()));
+        Set<String> profileKeys = allUsers.stream().filter(user -> baseTypes.containsKey(user.getWorkspaceGroupId()))
+                .map(user -> user.getWorkspaceGroupId() + ":" + user.getAccountUserId()).collect(java.util.stream.Collectors.toSet());
+        var memberships = new java.util.HashMap<String, List<String>>();
+        activityMembersRepository.findByOwnerTypeAndOwnerIdIn("community", baseTypes.keySet()).stream()
+                .filter(member -> "accepted".equals(member.getStatus())
+                    && profileKeys.contains(member.getOwnerId() + ":" + member.getUserId()))
+                .forEach(member -> memberships.computeIfAbsent(member.getUserId(), ignored -> new java.util.ArrayList<>(List.of("dating")))
+                    .add(baseTypes.get(member.getOwnerId())));
+        return allUsers.stream()
                 .filter(user -> user.getWorkspaceGroupId() == null)
                 .filter(user -> isSelectableDemoUserDocument(user, selectorRole))
                 .limit(resolveDemoUserListLimit(limit))
                 .map(user -> toDemoUserListItemDto(user, "member".equals(selectorRole)
-                        && demoLocationRequired(user, locationChecks)))
+                        && demoLocationRequired(user, locationChecks), memberships.getOrDefault(user.getUserId(), List.of("dating"))))
                 .filter(Objects::nonNull)
                 .toList();
     }
@@ -1380,7 +1401,7 @@ public class HomeUserProfileService {
                 !queryLocationEligibility(coordinates.latitude(), coordinates.longitude()).eligible());
     }
 
-    private DemoUserListItemDto toDemoUserListItemDto(Users user, boolean locationRequired) {
+    private DemoUserListItemDto toDemoUserListItemDto(Users user, boolean locationRequired, List<String> baseGroupTypes) {
         if (user == null) {
             return null;
         }
@@ -1398,7 +1419,8 @@ public class HomeUserProfileService {
                 normalizeCount(user.getProfileFormVersion()),
                 safeText(user.getStatus()),
                 safeText(user.getProfileStatus()),
-                nullToEmpty(user.getDeletedAtIso()));
+                nullToEmpty(user.getDeletedAtIso()),
+                baseGroupTypes);
     }
 
     private String resolveDemoUserAvatarUrl(Users user) {
@@ -2191,7 +2213,19 @@ public class HomeUserProfileService {
                 activities == null ? 0 : normalizeCount(activities.adminMetrics()),
                 normalizeCount(user.getPaymentRefundsPending()),
                 normalizeCount(account == null ? null : account.getContactRequestsPending()),
-                activities == null ? 0 : normalizeCount(activities.notifications()));
+                activities == null ? 0 : normalizeCount(activities.notifications()), communityCaseCount(user));
+    }
+
+    private int communityCaseCount(Users user) {
+        if (serviceCasesRepository == null || user.getWorkspaceGroupId() == null) return 0;
+        boolean community = com.raxim.myscoutee.profile.data.document.CommunityGroup.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
+                || communityGroupsRepository.findById(user.getWorkspaceGroupId()).map(g -> "community".equals(g.effectiveType())).orElse(false);
+        if (!community) return 0;
+        String account = StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId();
+        var managed = CommunityAccessService.managedGroups(account, activityMembersRepository, communityGroupsRepository);
+        long total = serviceCasesRepository.bucketCounts(com.raxim.myscoutee.profile.data.document.CommunityGroup.COMMUNITY_BASE_ID, account, managed)
+                .stream().filter(bucket -> !"trash".equals(bucket.status())).mapToLong(bucket -> bucket.count()).sum();
+        return (int) Math.min(Integer.MAX_VALUE, total);
     }
 
     private UserMenuCountersDto emptyMenuCounters() {
@@ -2313,14 +2347,12 @@ public class HomeUserProfileService {
                 && ("deleted".equals(profileStatus) || PROFILE_STATUS_ONBOARDING.equals(profileStatus));
     }
 
-    private void adjustAccountPurgePendingCount(int delta) {
+    private void adjustAccountPurgePendingCount(String userId, int delta) {
         if (delta == 0 || notificationRuleRegistryService == null) {
             return;
         }
-        notificationRuleRegistryService.adjustPendingCount(
-                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
-                delta,
-                "admin.jobs.table.affected");
+        JobGroupContext.run(jobGroupScope.forUser(userId), () -> notificationRuleRegistryService.adjustPendingCount(
+                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
     }
 
     private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
@@ -2755,7 +2787,7 @@ public class HomeUserProfileService {
                 counters.contactRequestsPending(),
                 resolveRealtimeNotificationCount(user, counters.notifications()),
                 hasPreviousImpressionFingerprints && !Objects.equals(previousHostHash, nextHostHash),
-                hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash));
+                hasPreviousImpressionFingerprints && !Objects.equals(previousMemberHash, nextMemberHash), counters.cases());
     }
 
     private int resolveRealtimeNotificationCount(
@@ -2821,7 +2853,9 @@ public class HomeUserProfileService {
                 paymentTotalsFingerprint(user),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.host()),
                 storedImpressionsFingerprint(storedImpressions == null ? null : storedImpressions.member()),
-                String.valueOf(normalizeCount(counters.contactRequestsPending())));
+                String.valueOf(normalizeCount(counters.contactRequestsPending())), String.valueOf(normalizeCount(counters.cases())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().campaign())),
+                String.valueOf(normalizeCount(counters.chat() == null ? null : counters.chat().cases())));
     }
 
     private UserPaymentTotalsDto paymentTotalsDto(Users user) {
@@ -3043,7 +3077,9 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.appSupport()),
                 toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()),
                 chat == null ? 0 : normalizeCount(chat.groupSupport()),
-                chat == null ? 0 : normalizeCount(chat.contacts()));
+                chat == null ? 0 : normalizeCount(chat.contacts()),
+                chat == null ? 0 : normalizeCount(chat.campaign()),
+                chat == null ? 0 : normalizeCount(chat.cases()));
     }
 
     private UserSupportCaseCountersDto toUserSupportCaseCountersDto(
@@ -3098,7 +3134,9 @@ public class HomeUserProfileService {
                 chat == null ? 0 : normalizeCount(chat.appSupport()),
                 toUserSupportCaseCountersRecord(chat == null ? null : chat.supportCases()),
                 chat == null ? 0 : normalizeCount(chat.groupSupport()),
-                chat == null ? 0 : normalizeCount(chat.contacts()));
+                chat == null ? 0 : normalizeCount(chat.contacts()),
+                chat == null ? 0 : normalizeCount(chat.campaign()),
+                chat == null ? 0 : normalizeCount(chat.cases()));
     }
 
     private Users.UserSupportCaseCountersRecord toUserSupportCaseCountersRecord(

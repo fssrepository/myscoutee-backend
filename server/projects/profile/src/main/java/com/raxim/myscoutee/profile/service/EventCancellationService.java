@@ -20,6 +20,13 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 @Service
 public class EventCancellationService {
     @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
+    @org.springframework.beans.factory.annotation.Autowired
     private EventParticipationTicketService tickets;
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.beans.factory.ObjectProvider<PaymentRefundService> refunds;
@@ -68,18 +75,18 @@ public class EventCancellationService {
 
     @Scheduled(fixedDelay = 5_000L)
     public void finishPendingCancellations() {
-        sessions.runAcrossConfiguredDatabases(() -> {
+        sessions.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("event-cancellation", () -> {
             List<ActivityEvent> cancelled = mongo.find(Query.query(Criteria.where("cancelledAtIso").ne(null)
-                    .and("cancellationRefundsComplete").is(false)).limit(10), ActivityEvent.class);
+                    .and("cancellationRefundsComplete").is(false)).addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId")).limit(10), ActivityEvent.class);
             Set<String> processed = new HashSet<>();
             for (ActivityEvent event : cancelled) {
                 if (processed.add(event.getSourceId())) guardedInMode(event.getCancellationSessionMode(), () -> finishEventCancellation(event));
             }
-            for (ActivityEvent event : mongo.find(Query.query(Criteria.where("paidTermsRefundsPending").is(true)).limit(10), ActivityEvent.class)) {
+            for (ActivityEvent event : mongo.find(Query.query(Criteria.where("paidTermsRefundsPending").is(true)).addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId")).limit(10), ActivityEvent.class)) {
                 if (processed.add(event.getSourceId())) guarded(() -> grantChangedTerms(event));
             }
-            for (Payment payment : mongo.find(Query.query(Criteria.where("auditKind").is("payment")
-                    .and("refundRequestedTargetAmount").gt(0)).limit(20), Payment.class)) {
+            for (Payment payment : jobGroupScope.findOwned(Query.query(Criteria.where("auditKind").is("payment")
+                    .and("refundRequestedTargetAmount").gt(0)).limit(20), Payment.class, "userId")) {
                 guardedInMode(payment.getCancellationSessionMode(), () -> {
                     String eventId = PaymentService.FULFILLMENT_KIND_CLIENT.equals(payment.getFulfillmentKind())
                             && StringUtils.hasText(payment.getContextEventId()) ? payment.getContextEventId() : payment.getSourceId();
@@ -101,7 +108,7 @@ public class EventCancellationService {
                             new Update().unset("refundRequestedTargetAmount").inc("version", 1L), Payment.class);
                 });
             }
-        });
+        }));
     }
 
     private void finishEventCancellation(ActivityEvent event) {

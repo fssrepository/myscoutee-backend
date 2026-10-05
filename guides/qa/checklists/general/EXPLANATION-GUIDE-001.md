@@ -6,14 +6,20 @@ to its intended control. Popup-opening transitions and unsaved editor validation
 Never save a form, send a message, join/leave an event, confirm checkout, create
 a token, or submit any other business action during this case.
 
-Current inventory: 45 explainable screen contexts and 963 conditional catalog fields.
+Current inventory: 67 explainable screen contexts and 1151 conditional catalog fields.
 Runtime progress counts only the targets available on the current surface.
 The context and step inventory in
 `frontend/src/app/shared/core/local/seed/data/help-center-guide-fields.json` is
 the source of truth. For an explicitly limited follow-up, repeat only the changed
 surfaces and shared behavior affected by that change.
 
-## Profiles
+## Expanded Work/Community scope — 2026-10-06
+
+Status: **REOPENED / NOT RUN** for the newly added/changed surfaces. The September PASS covers only its recorded inventory. Follow [MSC-115](../MSC-115_WORK_COMMUNITY_PAIR_QA.md) for actors, reachable content and latest acceptance rules. The canonical `help-center-guide-versions.json` lists 28 revised contexts. Run EN/HU, desktop/mobile, local/HTTP, visible-target highlighting, popup transitions and empty/populated states for these contexts and their affected shared components. Do not execute business mutations during the guide-only portion.
+
+The startup commands below document the earlier Event-only fixture. Do not treat it as the expanded Work/Community baseline: first inspect retained fixture status and prepare the required actors through the existing versioned harness/launcher. No new full campaign browser delegation is implied by this document; the 2026-10-06 delegation is currently limited to login/logout diagnosis.
+
+## Historical Event-only profiles
 
 | Window | Profile | Prepared state |
 | --- | --- | --- |
@@ -25,8 +31,7 @@ The fixture is setup data only. Unsaved editor drafts are allowed. Do not submit
 
 ## Baseline and browser setup
 
-1. Confirm the current branch is `playground/rating-guide`; keep all work on
-   that branch. Confirm the existing dev stack and its frontend/backend
+1. Inspect the current branch and preserve existing work; do not switch to the archived September branch. Confirm the existing dev stack and its frontend/backend
    hot-deploy logs. Do not start a second stack or compiler.
 Close the admin and payment companion windows through their same launcher entries.
 Preserve the user-authorized phone installation; end only the owned QA session.
@@ -51,7 +56,7 @@ startup; select the demo identity through the ordinary login UI.
 ## Per-surface guide sequence
 
 For every context in the inventory below, use the normal in-app navigation to
-open that surface, then inspect the guide with CDP through the managed profile:
+open that surface, then inspect the guide through the managed profile. Codex may operate it only with explicit delegation for this checkpoint:
 
 1. Open the floating explanation-guide launcher. Confirm the guide loads for
    the current surface and displays step `1 / N`, a title, and explanatory text.
@@ -82,8 +87,8 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 
 | Context key | Conditional catalog fields |
 | --- | ---: |
-| `activities.rates` | 39 |
-| `home.game` | 16 |
+| `activities.rates` | 40 |
+| `home.game` | 17 |
 | `chats` | 9 |
 | `profile.editor` | 40 |
 | `profile.view` | 9 |
@@ -94,10 +99,10 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `assets.supplies` | 27 |
 | `assets.tickets` | 27 |
 | `events` | 43 |
-| `event.editor` | 78 |
+| `event.editor` | 79 |
 | `event.feedback` | 20 |
 | `notifications` | 6 |
-| `payment.history` | 26 |
+| `payment.history` | 27 |
 | `profile.impressions` | 4 |
 | `community.groups` | 22 |
 | `community.groups.explore` | 22 |
@@ -105,7 +110,7 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `events.followed` | 19 |
 | `event.explore` | 40 |
 | `event.chat` | 7 |
-| `event.members` | 19 |
+| `event.members` | 21 |
 | `event.checkout` | 31 |
 | `event.resources` | 30 |
 | `event.subevents` | 22 |
@@ -118,16 +123,37 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `assets.checkout` | 20 |
 | `profile.integrations` | 23 |
 | `payment.cash.receipt` | 6 |
-| `navigation.menu` | 30 |
-| `members` | 19 |
+| `navigation.menu` | 33 |
+| `members` | 21 |
 | `assets.availability` | 15 |
 | `assets.explore` | 27 |
-
-| `landing.home` | 3 |
+| `landing.home` | 5 |
 | `landing.setup` | 5 |
 | `landing.demo` | 6 |
 | `landing.auth` | 7 |
 | `landing.registration` | 32 |
+| `community.cases` | 6 |
+| `community.tasks` | 7 |
+| `community.case.editor` | 7 |
+| `community.task.editor` | 13 |
+| `work.campaigns` | 12 |
+| `work.campaign.editor` | 22 |
+| `community.home` | 3 |
+| `community.voting` | 3 |
+| `community.announcement.editor` | 10 |
+| `work.home` | 9 |
+| `community.services.home` | 8 |
+| `community.services` | 6 |
+| `community.service.editor` | 21 |
+| `community.service.calendar` | 2 |
+| `community.case.appointments` | 6 |
+| `community.case.board` | 2 |
+| `community.case.board.task` | 8 |
+| `community.case.quotations` | 5 |
+| `community.case.quotation.editor` | 5 |
+| `work.campaign.select` | 5 |
+| `work.campaign.history` | 10 |
+| `members.select` | 5 |
 
 ## Landing and form-pagination follow-up
 

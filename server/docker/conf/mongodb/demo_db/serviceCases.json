@@ -1,0 +1,244 @@
+[
+  {
+    "_id": "community-case-riverside-leak",
+    "communityId": "community-riverside",
+    "title": "Water leak in the entrance hall",
+    "description": "Water is leaking near the lift. Maya can show the damp patch to the assigned technician.",
+    "caseType": "fault",
+    "status": "open",
+    "audienceAll": false,
+    "baseGroupId": "myscoutee-community",
+    "createdAtIso": "2026-10-05T00:00:00.000Z",
+    "updatedAtIso": "2026-10-05T00:00:00.000Z",
+    "version": 0,
+    "ownerAccountId": "1b1c70be2349b3359a8f6f94",
+    "audienceAccountIds": [
+      "1b1c70be2349b3359a8f6f94"
+    ],
+    "participantAccountIds": [
+      "1b1c70be2349b3359a8f6f94",
+      "af0436815ab38f4864dd1e24",
+      "b29df68956f3fe15e04558de"
+    ],
+    "attentionAccountIds": [
+      "af0436815ab38f4864dd1e24"
+    ],
+    "support": [
+      {
+        "serviceId": "service-balazs-electrical",
+        "status": "accepted",
+        "accountId": "b29df68956f3fe15e04558de"
+      }
+    ],
+    "memberStates": {
+      "1b1c70be2349b3359a8f6f94": "accepted",
+      "af0436815ab38f4864dd1e24": "accepted",
+      "b29df68956f3fe15e04558de": "accepted"
+    },
+    "chatAccountIds": [
+      "b29df68956f3fe15e04558de"
+    ],
+    "boardTasks": [
+      {
+        "_id": "leak-inspection",
+        "title": "Inspect electrical safety",
+        "description": "Inspect the electrical fittings near the damp area.",
+        "status": "todo",
+        "dependsOnIds": [],
+        "startAtIso": "2026-10-08T10:00:00.000Z",
+        "endAtIso": "2026-10-08T11:00:00.000Z",
+        "offerIds": [
+          "leak-safety-quote"
+        ],
+        "assigneeAccountIds": [
+          "b29df68956f3fe15e04558de"
+        ]
+      },
+      {
+        "_id": "leak-repair",
+        "title": "Arrange the repair",
+        "description": "Request quotations after the inspection.",
+        "status": "todo",
+        "dependsOnIds": [
+          "leak-inspection"
+        ],
+        "startAtIso": null,
+        "endAtIso": null,
+        "offerIds": [],
+        "assigneeAccountIds": [
+          "af0436815ab38f4864dd1e24"
+        ]
+      }
+    ],
+    "recommendations": [],
+    "offers": [
+      {
+        "_id": "leak-safety-quote",
+        "serviceId": "service-balazs-electrical",
+        "amount": 80,
+        "currency": "EUR",
+        "note": "Inspect electrical safety around the damp area. Repair work requires a separate quotation.",
+        "status": "accepted",
+        "createdAtIso": "2026-10-05T10:00:00.000Z",
+        "workPolicies": [
+          {
+            "id": "leak-safety-quote-work",
+            "title": "Work policy",
+            "description": "I can start in the week of 12 October after we agree access with the residents. The price covers the stated work; any additional work needs a separate agreement.",
+            "required": true
+          }
+        ],
+        "refundPolicies": [
+          {
+            "id": "leak-safety-quote-refund",
+            "title": "Refund policy",
+            "description": "No advance payment is required. Cancel before the agreed visit without a charge. Completed work and fitted materials are billed as agreed.",
+            "required": true
+          }
+        ],
+        "providerAccountId": "b29df68956f3fe15e04558de"
+      }
+    ],
+    "scheduledTaskId": null,
+    "dueAtIso": null
+  },
+  {
+    "_id": "community-case-park-meters",
+    "communityId": "community-park-court",
+    "title": "Joint meter replacement",
+    "description": "One shared case for meter replacement. Collect quotations and agree access with the residents.",
+    "caseType": "meter-replacement",
+    "status": "open",
+    "audienceAll": true,
+    "baseGroupId": "myscoutee-community",
+    "createdAtIso": "2026-10-05T00:00:00.000Z",
+    "updatedAtIso": "2026-10-05T00:00:00.000Z",
+    "version": 0,
+    "ownerAccountId": "af0436815ab38f4864dd1e24",
+    "audienceAccountIds": [
+      "af0436815ab38f4864dd1e24",
+      "1b1c70be2349b3359a8f6f94",
+      "1d7d3545ba5e0f1d63918589"
+    ],
+    "participantAccountIds": [
+      "af0436815ab38f4864dd1e24",
+      "1b1c70be2349b3359a8f6f94",
+      "1d7d3545ba5e0f1d63918589",
+      "bf057de7c586eede7e84bdc7"
+    ],
+    "attentionAccountIds": [
+      "1b1c70be2349b3359a8f6f94",
+      "1d7d3545ba5e0f1d63918589",
+      "bf057de7c586eede7e84bdc7"
+    ],
+    "support": [
+      {
+        "serviceId": "service-anna-meters",
+        "status": "accepted",
+        "accountId": "bf057de7c586eede7e84bdc7"
+      }
+    ],
+    "memberStates": {
+      "af0436815ab38f4864dd1e24": "accepted",
+      "1b1c70be2349b3359a8f6f94": "accepted",
+      "1d7d3545ba5e0f1d63918589": "accepted",
+      "bf057de7c586eede7e84bdc7": "accepted"
+    },
+    "chatAccountIds": [],
+    "boardTasks": [
+      {
+        "_id": "meters-scope",
+        "title": "Collect meter details",
+        "description": "Record the meter types and access arrangements.",
+        "status": "done",
+        "dependsOnIds": [],
+        "startAtIso": null,
+        "endAtIso": null,
+        "offerIds": [],
+        "assigneeAccountIds": [
+          "1d7d3545ba5e0f1d63918589"
+        ]
+      },
+      {
+        "_id": "meters-quotes",
+        "title": "Request quotations",
+        "description": "Compare the proposals with the residents.",
+        "status": "in-progress",
+        "dependsOnIds": [
+          "meters-scope"
+        ],
+        "startAtIso": null,
+        "endAtIso": null,
+        "offerIds": [
+          "meters-anna-quote"
+        ],
+        "assigneeAccountIds": [
+          "af0436815ab38f4864dd1e24"
+        ]
+      },
+      {
+        "_id": "meters-access",
+        "title": "Coordinate access",
+        "description": "Collect the residents’ preferred times.",
+        "status": "todo",
+        "dependsOnIds": [
+          "meters-scope"
+        ],
+        "startAtIso": "2026-10-08T08:00:00.000Z",
+        "endAtIso": "2026-10-08T09:00:00.000Z",
+        "offerIds": [],
+        "assigneeAccountIds": [
+          "1d7d3545ba5e0f1d63918589",
+          "1b1c70be2349b3359a8f6f94"
+        ]
+      },
+      {
+        "_id": "meters-install",
+        "title": "Replace the meters",
+        "description": "Assign the agreed technician and time after choosing a quotation.",
+        "status": "todo",
+        "dependsOnIds": [
+          "meters-quotes",
+          "meters-access"
+        ],
+        "startAtIso": null,
+        "endAtIso": null,
+        "offerIds": [
+          "meters-anna-quote"
+        ],
+        "assigneeAccountIds": []
+      }
+    ],
+    "recommendations": [],
+    "offers": [
+      {
+        "_id": "meters-anna-quote",
+        "serviceId": "service-anna-meters",
+        "amount": 360,
+        "currency": "EUR",
+        "note": "Replace three water meters, including fittings and installation. The residents agree access and the work date after accepting the quotation.",
+        "status": "accepted",
+        "createdAtIso": "2026-10-06T00:00:00.000Z",
+        "workPolicies": [
+          {
+            "id": "meters-anna-quote-work",
+            "title": "Work policy",
+            "description": "I can start in the week of 12 October after we agree access with the residents. The price covers the stated work; any additional work needs a separate agreement.",
+            "required": true
+          }
+        ],
+        "refundPolicies": [
+          {
+            "id": "meters-anna-quote-refund",
+            "title": "Refund policy",
+            "description": "No advance payment is required. Cancel before the agreed visit without a charge. Completed work and fitted materials are billed as agreed.",
+            "required": true
+          }
+        ],
+        "providerAccountId": "bf057de7c586eede7e84bdc7"
+      }
+    ],
+    "scheduledTaskId": null,
+    "dueAtIso": null
+  }
+]

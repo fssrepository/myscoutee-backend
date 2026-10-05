@@ -45,6 +45,8 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 
 @Service
 public class HelpCenterService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private AdminModerationService adminModerationService;
     private static final String DOCUMENT_HELP = "help";
     private static final String DOCUMENT_PRIVACY = "privacy";
     private static final String DOCUMENT_TERMS = "terms";
@@ -104,6 +106,13 @@ public class HelpCenterService {
         return activeState(documentType, lang, acceptLanguage, null);
     }
 
+    public HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage, String contextKey, String baseGroupId) {
+        if (baseGroupId != null && !com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(baseGroupId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown base group.");
+        }
+        return JobGroupContext.call(contentScope(documentType, baseGroupId), () -> activeState(documentType, lang, acceptLanguage, contextKey));
+    }
+
     public HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage, String contextKey) {
         String kind = documentKind(documentType);
         String language = requestContentLang(lang, acceptLanguage);
@@ -112,7 +121,7 @@ public class HelpCenterService {
             return new HelpCenterStateDto(null, List.of(), List.of(), List.of(), List.of());
         }
         HelpCenterRevision active = revisionsForKind(
-                    revisionsRepository.findAllByOrderByVersionDesc(),
+                    revisionsRepository.findByBaseGroupIdOrderByVersionDesc(contentScope(kind, JobGroupContext.groupId())),
                     kind,
                     language,
                     context)
@@ -141,6 +150,10 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto adminState(String adminUserId, String documentType, String lang, String contextKey) {
+        return JobGroupContext.call(contentScope(documentType, adminModerationService.baseGroupId(adminUserId)), () -> adminStateInGroup(adminUserId, documentType, lang, contextKey));
+    }
+
+    private HelpCenterStateDto adminStateInGroup(String adminUserId, String documentType, String lang, String contextKey) {
         String kind = documentKind(documentType);
         String language = contentLang(lang);
         String context = contextKey(kind, contextKey, false);
@@ -153,6 +166,10 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto saveRevision(HelpCenterRevisionSaveRequestDto request, String documentType) {
+        return JobGroupContext.call(contentScope(documentType, adminModerationService.baseGroupId(request == null ? null : request.actorUserId())), () -> saveRevisionInGroup(request, documentType));
+    }
+
+    private HelpCenterStateDto saveRevisionInGroup(HelpCenterRevisionSaveRequestDto request, String documentType) {
         String kind = documentKind(documentType);
         String language = contentLang(request == null ? null : request.lang());
         String context = contextKey(kind, request == null ? null : request.contextKey(), true);
@@ -177,7 +194,7 @@ public class HelpCenterService {
         DuplicateKeyException lastDuplicate = null;
         for (int attempt = 0; attempt < REVISION_SAVE_MAX_ATTEMPTS; attempt++) {
             List<HelpCenterRevision> currentRevisions = revisionsForKind(
-                    revisionsRepository.findAllByOrderByVersionDesc(),
+                    revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId()),
                     kind,
                     language,
                     context);
@@ -188,6 +205,7 @@ public class HelpCenterService {
                     .orElse(0) + 1;
             String nowIso = Instant.now().toString();
             HelpCenterRevision revision = new HelpCenterRevision();
+            revision.setBaseGroupId(JobGroupContext.groupId());
             revision.setDocumentType(kind);
             revision.setLang(language);
             revision.setContextKey(context);
@@ -218,17 +236,21 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto activateRevision(String revisionId, HelpCenterAdminActionRequestDto request, String documentType) {
+        return JobGroupContext.call(contentScope(documentType, adminModerationService.baseGroupId(request == null ? null : request.actorUserId())), () -> activateRevisionInGroup(revisionId, request, documentType));
+    }
+
+    private HelpCenterStateDto activateRevisionInGroup(String revisionId, HelpCenterAdminActionRequestDto request, String documentType) {
         String kind = documentKind(documentType);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
         String normalizedRevisionId = normalize(revisionId);
         HelpCenterRevision target = revisionsRepository.findById(normalizedRevisionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found."));
-        if (!kind.equals(revisionKind(target))) {
+        if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
         }
         String language = revisionLang(target);
         String targetContext = revisionContext(target);
-        List<HelpCenterRevision> revisions = revisionsRepository.findAllByOrderByVersionDesc();
+        List<HelpCenterRevision> revisions = revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId());
         for (HelpCenterRevision revision : revisions) {
             String revisionKind = revisionKind(revision);
             String revisionLang = revisionLang(revision);
@@ -252,12 +274,16 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto deleteRevision(String revisionId, HelpCenterAdminActionRequestDto request, String documentType) {
+        return JobGroupContext.call(contentScope(documentType, adminModerationService.baseGroupId(request == null ? null : request.actorUserId())), () -> deleteRevisionInGroup(revisionId, request, documentType));
+    }
+
+    private HelpCenterStateDto deleteRevisionInGroup(String revisionId, HelpCenterAdminActionRequestDto request, String documentType) {
         String kind = documentKind(documentType);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
         String normalizedRevisionId = normalize(revisionId);
         HelpCenterRevision target = revisionsRepository.findById(normalizedRevisionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found."));
-        if (!kind.equals(revisionKind(target))) {
+        if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
         }
         String language = revisionLang(target);
@@ -267,7 +293,7 @@ public class HelpCenterService {
         audit("delete", actorUserId, target, "Deleted v" + target.getVersion() + ".");
         adminTelemetryService.record("content.revision.deleted", "content", target.getId(), actorUserId);
         if (wasActive) {
-            revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, targetContext).stream().findFirst().ifPresent(next -> {
+            revisionsForKind(revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId()), kind, language, targetContext).stream().findFirst().ifPresent(next -> {
                 next.setActive(true);
                 next.setDocumentType(kind);
                 next.setLang(language);
@@ -332,12 +358,12 @@ public class HelpCenterService {
     private HelpCenterStateDto fullState(String kind, String lang, String contextKey) {
         String language = contentLang(lang);
         String context = contextKey(kind, contextKey, false);
-        List<HelpCenterRevision> revisions = revisionsForKind(revisionsRepository.findAllByOrderByVersionDesc(), kind, language, context);
+        List<HelpCenterRevision> revisions = revisionsForKind(revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId()), kind, language, context);
         HelpCenterRevision active = revisions.stream()
                 .filter(revision -> Boolean.TRUE.equals(revision.getActive()))
                 .max(Comparator.comparing(HelpCenterRevision::getVersion, Comparator.nullsLast(Integer::compareTo)))
                 .orElse(null);
-        List<HelpCenterAuditEntry> auditTrail = auditRepository.findAllByOrderByCreatedDateDesc().stream()
+        List<HelpCenterAuditEntry> auditTrail = auditRepository.findByBaseGroupIdOrderByCreatedDateDesc(JobGroupContext.groupId()).stream()
                 .filter(entry -> kind.equals(auditKind(entry)))
                 .filter(entry -> language.equals(auditLang(entry)))
                 .toList();
@@ -577,6 +603,7 @@ public class HelpCenterService {
         HelpCenterAuditEntry entry = new HelpCenterAuditEntry();
         entry.setId(new ObjectId().toHexString());
         entry.setRevisionId(revision.getId());
+        entry.setBaseGroupId(revision.getBaseGroupId());
         entry.setDocumentType(kind);
         entry.setLang(language);
         entry.setLanguageLabel(languageLabel(language));
@@ -734,6 +761,10 @@ public class HelpCenterService {
             return "Explanation";
         }
         return "Help";
+    }
+
+    private String contentScope(String kind, String groupId) {
+        return DOCUMENT_PRIVACY.equals(documentKind(kind)) ? null : groupId;
     }
 
     private String ensureAdmin(String adminUserId) {

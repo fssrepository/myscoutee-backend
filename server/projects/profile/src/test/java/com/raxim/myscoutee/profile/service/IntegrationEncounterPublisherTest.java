@@ -27,10 +27,14 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 @ExtendWith(MockitoExtension.class)
 class IntegrationEncounterPublisherTest {
     @Mock MongoTemplate mongo;
+    @Mock JobGroupScopeService jobGroupScope;
     @Mock ActivityEventsRepository events;
     @Mock IntegrationEventQueryService queries;
     @Mock IntegrationWebhookService webhooks;
     @InjectMocks IntegrationEncounterPublisher publisher;
+
+    @org.junit.jupiter.api.BeforeEach
+    void wireScope() { org.springframework.test.util.ReflectionTestUtils.setField(publisher, "jobGroupScope", jobGroupScope); }
 
     @Test
     void retriesFailedPublicationBeforeMarkingTheSameCompletedRevision() {
@@ -39,15 +43,15 @@ class IntegrationEncounterPublisherTest {
         event.setSourceId("event");
         event.setOwnerUserId("owner");
         event.setCreatorUserId("owner");
-        when(mongo.find(any(Query.class), eq(ActivityMingleSession.class))).thenReturn(List.of(session));
+        when(jobGroupScope.findEventOwned(any(Query.class), eq(ActivityMingleSession.class), eq("eventId"))).thenReturn(List.of(session));
         when(events.findBySourceIdIn(List.of("event"))).thenReturn(List.of(event));
         doThrow(new IllegalStateException("outbox temporarily unavailable"))
                 .doNothing().when(webhooks).enqueueEncounters(eq("owner"), any());
 
-        publisher.publishPending();
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(publisher, "publishPendingInGroup");
         verify(mongo, never()).updateFirst(any(Query.class), any(Update.class), eq(ActivityMingleSession.class));
 
-        publisher.publishPending();
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(publisher, "publishPendingInGroup");
         var query = ArgumentCaptor.forClass(Query.class);
         var update = ArgumentCaptor.forClass(Update.class);
         verify(mongo).updateFirst(query.capture(), update.capture(), eq(ActivityMingleSession.class));
@@ -59,10 +63,10 @@ class IntegrationEncounterPublisherTest {
 
     @Test
     void retiresDeletedEventsWithoutPublishingAnInaccessibleResult() {
-        when(mongo.find(any(Query.class), eq(ActivityMingleSession.class))).thenReturn(List.of(session()));
+        when(jobGroupScope.findEventOwned(any(Query.class), eq(ActivityMingleSession.class), eq("eventId"))).thenReturn(List.of(session()));
         when(events.findBySourceIdIn(List.of("event"))).thenReturn(List.of());
 
-        publisher.publishPending();
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(publisher, "publishPendingInGroup");
 
         verify(webhooks, never()).enqueueEncounters(any(), any());
         verify(mongo).updateFirst(any(Query.class), any(Update.class), eq(ActivityMingleSession.class));

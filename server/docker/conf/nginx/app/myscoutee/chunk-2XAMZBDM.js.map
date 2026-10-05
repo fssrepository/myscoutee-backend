@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/ui/scheduler/after-paint.ts"],
-  "sourcesContent": ["/** Let the loading surface paint before synchronous component/render work starts. */\nexport function scheduleAfterPaint(work: () => void): () => void {\n  let cancelled = false;\n  let frame = requestAnimationFrame(() => {\n    frame = requestAnimationFrame(() => {\n      if (!cancelled) work();\n    });\n  });\n  return () => {\n    cancelled = true;\n    cancelAnimationFrame(frame);\n  };\n}\n"],
-  "mappings": ";AACM,SAAU,mBAAmB,MAAgB;AACjD,MAAI,YAAY;AAChB,MAAI,QAAQ,sBAAsB,MAAK;AACrC,YAAQ,sBAAsB,MAAK;AACjC,UAAI,CAAC;AAAW,aAAI;IACtB,CAAC;EACH,CAAC;AACD,SAAO,MAAK;AACV,gBAAY;AACZ,yBAAqB,KAAK;EAC5B;AACF;",
-  "names": []
-}

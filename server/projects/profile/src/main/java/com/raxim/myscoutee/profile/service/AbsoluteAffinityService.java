@@ -35,18 +35,21 @@ import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
 public class AbsoluteAffinityService {
     private static final int TOKEN_HASH_MOD = 997;
 
+    private final com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
 
     public AbsoluteAffinityService(
             AffinityConfigsRepository affinityConfigsRepository,
-            UserExperienceProfilesRepository userExperienceProfilesRepository) {
+            UserExperienceProfilesRepository userExperienceProfilesRepository,
+            com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups) {
+        this.communityGroups = communityGroups;
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
     }
 
     public double resolveUserAffinity(UserDto user) {
-        return resolveUserAffinity(user, activeConfig(), loadExperienceProfile(user == null ? null : user.id()));
+        return resolveUserAffinity(user, activeConfig(CommunityGroupProfilesService.currentGroupId()), loadExperienceProfile(user == null ? null : user.id()));
     }
 
     private double resolveUserAffinity(
@@ -88,7 +91,7 @@ public class AbsoluteAffinityService {
     }
 
     public double resolveUserAffinity(Users user) {
-        return resolveUserAffinity(user, activeConfig(), loadExperienceProfile(user == null ? null : user.getId()));
+        return resolveUserAffinity(user, activeConfig(user == null ? null : user.getWorkspaceGroupId()), loadExperienceProfile(user == null ? null : user.getId()));
     }
 
     private double resolveUserAffinity(
@@ -133,7 +136,7 @@ public class AbsoluteAffinityService {
         if (event == null) {
             return 0d;
         }
-        AffinityConfig config = activeConfig();
+        AffinityConfig config = activeConfig(event.getWorkspaceGroupId());
         AffinityConfig.AbsoluteEventAffinityMultipliers multipliers = config.getAbsolute().getEvent();
         Map<String, UserExperienceProfile> experiencesByUserId = loadExperienceProfiles(participantUserIds(participants));
         LinkedHashSet<String> tokens = new LinkedHashSet<>();
@@ -176,7 +179,7 @@ public class AbsoluteAffinityService {
         if (event == null) {
             return 0d;
         }
-        AffinityConfig config = activeConfig();
+        AffinityConfig config = activeConfig(event.getWorkspaceGroupId());
         AffinityConfig.EventBoostMultipliers multipliers = config.getBoost().getEvent();
         int acceptedMembers = Math.max(0, normalizeCount(event.getAcceptedMembers(), 0));
         int capacityAvailable = Math.max(0, normalizeCount(event.getCapacityTotal(), 0) - acceptedMembers);
@@ -197,7 +200,7 @@ public class AbsoluteAffinityService {
         if (asset == null) {
             return 0d;
         }
-        AffinityConfig config = activeConfig();
+        AffinityConfig config = activeConfig(owner == null ? null : owner.getWorkspaceGroupId());
         AffinityConfig.AbsoluteAssetAffinityMultipliers multipliers = config.getAbsolute().getAsset();
         LinkedHashSet<String> tokens = new LinkedHashSet<>();
         addToken(tokens, "asset:type", asset.getType());
@@ -227,7 +230,7 @@ public class AbsoluteAffinityService {
         if (asset == null) {
             return 0d;
         }
-        AffinityConfig config = activeConfig();
+        AffinityConfig config = activeConfig(owner == null ? null : owner.getWorkspaceGroupId());
         AffinityConfig.AssetBoostMultipliers multipliers = config.getBoost().getAsset();
         int acceptedRequests = 0;
         int activeRequestCount = 0;
@@ -602,11 +605,12 @@ public class AbsoluteAffinityService {
         return Math.max(min, Math.min(max, value));
     }
 
-    private AffinityConfig activeConfig() {
+    private AffinityConfig activeConfig(String groupId) {
         if (affinityConfigsRepository == null) {
             return AffinityConfig.defaults();
         }
-        Optional<AffinityConfig> config = affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc();
+        String key = groupId == null ? "default" : communityGroups.baseGroupIds(List.of(groupId)).getOrDefault(groupId, "default");
+        Optional<AffinityConfig> config = affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(key);
         return config == null ? AffinityConfig.defaults() : config.orElseGet(AffinityConfig::defaults);
     }
 

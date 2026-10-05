@@ -22,16 +22,13 @@ import static org.mockito.Mockito.mock;
 
 class AffinityRecomputeWorkerServiceTest {
     @Test
-    void scheduledTickDoesNotReloadWorkerPollDelayUntilCachedDelayElapses() {
+    void scheduledTickWithoutASeededRegistryDoesNotRunAnImplicitJob() {
         AffinityRecomputeTaskService taskService = mock(AffinityRecomputeTaskService.class);
         AffinityMaintenanceService affinityMaintenanceService = mock(AffinityMaintenanceService.class);
         ModelStatusPropagationService modelStatusPropagationService = mock(ModelStatusPropagationService.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         AffinityRecomputeProperties properties = new AffinityRecomputeProperties();
         properties.setDueTaskLimit(10);
-        when(taskService.workerPollDelayMs(60_000L)).thenReturn(60_000L);
-        when(taskService.dueTaskLimit()).thenReturn(10);
-        when(taskService.findPendingDueTasks(any(Instant.class), eq(10))).thenReturn(List.of());
 
         AffinityRecomputeWorkerService worker = new AffinityRecomputeWorkerService(
                 taskService,
@@ -44,7 +41,8 @@ class AffinityRecomputeWorkerServiceTest {
         worker.runDueTasks();
         worker.runDueTasks();
 
-        verify(taskService, times(1)).workerPollDelayMs(60_000L);
+        verify(taskService, org.mockito.Mockito.never()).findPendingDueTasks(any(), org.mockito.ArgumentMatchers.anyInt());
+        org.mockito.Mockito.verifyNoInteractions(affinityMaintenanceService);
     }
 
     @Test

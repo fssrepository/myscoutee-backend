@@ -19,12 +19,21 @@ public final class CommunityGroupProfileMapper {
         user.setProfileDetails(source.getProfileDetails() == null ? List.of() : List.copyOf(source.getProfileDetails()));
         user.setProfileStatus(source.getProfileStatus()); user.setStatus(source.getStatus());
         user.setStatusText(source.getStatusText()); user.setCompletion(source.getCompletion());
+        boolean baseAdmin = com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(groupId)
+                && "Admin".equalsIgnoreCase(source.getHostTier());
+        if (baseAdmin) user.setHostTier("Admin");
+        else if ("admin workspace".equalsIgnoreCase(user.getStatusText())) user.setStatusText("");
         user.setProfileFormVersion(source.getProfileFormVersion()); user.setOperator(false);
         return user;
     }
     public static long attention(Users user) {
         if (user == null) return 0;
         var i = user.getImpressions(); var a = user.getActivities();
+        if ("Admin".equalsIgnoreCase(user.getHostTier())) {
+            var support = a == null || a.chat() == null ? null : a.chat().supportCases();
+            return a == null ? 0 : count(a.game()) + count(a.feedback()) + count(a.adminJobs()) + count(a.adminMetrics())
+                    + (support == null ? 0 : count(support.pending()) + count(support.warned()) + count(support.picked()) + count(support.blocked()));
+        }
         long flags = i == null ? 0 : (i.host() != null && count(i.host().unreadCount()) > 0 ? 1 : 0)
                 + (i.member() != null && count(i.member().unreadCount()) > 0 ? 1 : 0);
         return flags + count(user.getPaymentRefundsPending())

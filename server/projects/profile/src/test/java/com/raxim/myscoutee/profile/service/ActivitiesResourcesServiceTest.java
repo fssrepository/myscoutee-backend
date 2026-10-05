@@ -129,7 +129,7 @@ class ActivitiesResourcesServiceTest {
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
                 new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
-                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService));
+                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.ServiceCasesRepository.class)));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,

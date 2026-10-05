@@ -87,6 +87,15 @@ public class MediaController {
         return new MediaUploadResponseDto(true, audioUrl);
     }
 
+    @PostMapping(path = "/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequiresPolicy(key = AccessPolicyKeys.USER_MEDIA_UPLOAD, subject = "#ownerId", resourceId = "#ownerId")
+    public MediaUploadResponseDto uploadDocument(@RequestParam String ownerId, @RequestParam String entityId,
+            @RequestParam("document") MultipartFile document) {
+        String url = mediaStorageService.storeDocument(ownerId, entityId, document);
+        if (url == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Document upload unavailable or unsupported file.");
+        return new MediaUploadResponseDto(true, url);
+    }
+
     @GetMapping("/public")
     public ResponseEntity<byte[]> loadPublic(@RequestParam("key") String key) {
         if (!MediaAccessPaths.validKey(key)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid media key.");
@@ -111,11 +120,12 @@ public class MediaController {
         if (stored == null || stored.bytes() == null || stored.bytes().length == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Media not found.");
         }
-        return ResponseEntity.ok()
+        var response = ResponseEntity.ok()
                 .contentType(resolveMediaType(stored.contentType()))
                 .header("X-Content-Type-Options", "nosniff")
-                .cacheControl(publicMedia ? CacheControl.maxAge(Duration.ofDays(365)).cachePublic() : CacheControl.noStore().cachePrivate())
-                .body(stored.bytes());
+                .cacheControl(publicMedia ? CacheControl.maxAge(Duration.ofDays(365)).cachePublic() : CacheControl.noStore().cachePrivate());
+        if (key.startsWith("private/documents/")) response.header("Content-Disposition", "attachment");
+        return response.body(stored.bytes());
     }
 
     private MediaType resolveMediaType(String value) {

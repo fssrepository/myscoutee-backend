@@ -12,5 +12,37 @@
       "PLN": "4.25",
       "CHF": "0.95"
     }
+  },
+  {
+    "_id": "myscoutee-work:default-v1",
+    "default": true,
+    "source": "seed-default-v1",
+    "rates": {
+      "EUR": "1",
+      "HUF": "400",
+      "USD": "1.10",
+      "GBP": "0.85",
+      "CZK": "25",
+      "PLN": "4.25",
+      "CHF": "0.95"
+    },
+    "date": "default-v1",
+    "baseGroupId": "myscoutee-work"
+  },
+  {
+    "_id": "myscoutee-community:default-v1",
+    "default": true,
+    "source": "seed-default-v1",
+    "rates": {
+      "EUR": "1",
+      "HUF": "400",
+      "USD": "1.10",
+      "GBP": "0.85",
+      "CZK": "25",
+      "PLN": "4.25",
+      "CHF": "0.95"
+    },
+    "date": "default-v1",
+    "baseGroupId": "myscoutee-community"
   }
 ]

@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "_id": "myscoutee-work",
+    "groupType": "work",
+    "ownerUserId": "system",
+    "name": "MyScoutee Work",
+    "description": "Meet people through work opportunities, business ideas and professional events.",
+    "imageUrl": null,
+    "category": "work",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0,
+    "pendingMembers": 0
+  },
+  {
+    "_id": "myscoutee-community",
+    "groupType": "community",
+    "ownerUserId": "system",
+    "name": "MyScoutee Community",
+    "description": "Find local help, coordinate shared work and keep your community informed.",
+    "imageUrl": null,
+    "category": "neighbourhood",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0,
+    "pendingMembers": 0
+  }
+]

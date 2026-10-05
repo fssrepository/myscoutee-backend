@@ -3,6 +3,7 @@ package com.raxim.myscoutee.profile.controller.deployment;
 import java.util.Locale;
 
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +51,6 @@ public class DeploymentConfigurationController {
                 configuration.logoCharacterIndex(),
                 configuration.homeLabel(),
                 configuration.logoUrl(),
-                configuration.themePreset(),
                 configuration.revision(),
                 paymentProviderId,
                 configuration.firebaseMessagingConfigured(),
@@ -61,9 +61,12 @@ public class DeploymentConfigurationController {
     @GetMapping("/firebase-config")
     public ResponseEntity<FirebasePublicConfigurationDto>
             firebaseConfiguration() {
-        return ResponseEntity.ok()
+        FirebasePublicConfigurationDto configuration =
+                service.publicFirebaseConfiguration();
+        return ResponseEntity.status(configuration == null
+                        ? HttpStatus.NO_CONTENT : HttpStatus.OK)
                 .cacheControl(CacheControl.noStore())
                 .header("Pragma", "no-cache")
-                .body(service.publicFirebaseConfiguration());
+                .body(configuration);
     }
 }

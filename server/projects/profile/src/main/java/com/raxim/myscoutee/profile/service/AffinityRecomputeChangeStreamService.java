@@ -31,6 +31,10 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 
 @Service
 public class AffinityRecomputeChangeStreamService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
     private static final Logger LOGGER = LoggerFactory.getLogger(AffinityRecomputeChangeStreamService.class);
     private static final String TRIGGER_STREAM = "change-stream";
     private static final String TRIGGER_TIMER = "change-stream-timer";
@@ -39,7 +43,7 @@ public class AffinityRecomputeChangeStreamService {
     private final AffinityRecomputeWorkerService workerService;
     private final AffinityRecomputeProperties properties;
     private final AffinityRecomputeMetricsService metricsService;
-    private final ExecutorService streamExecutor = Executors.newSingleThreadExecutor(runnable -> {
+    private final ExecutorService streamExecutor = Executors.newCachedThreadPool(runnable -> {
         Thread thread = new Thread(runnable, "affinity-recompute-change-stream");
         thread.setDaemon(true);
         return thread;
@@ -49,14 +53,31 @@ public class AffinityRecomputeChangeStreamService {
         thread.setDaemon(true);
         return thread;
     });
-    private final Object wakeupLock = new Object();
-    private final NavigableSet<Instant> futureWakeups = new TreeSet<>();
-
+    private static final class Wakeups {
+        final Object lock = new Object();
+        final NavigableSet<Instant> future = new TreeSet<>();
+        ScheduledFuture<?> immediate;
+        ScheduledFuture<?> timer;
+        Instant timerAt;
+    }
+    private final java.util.Map<String, Wakeups> wakeups = new java.util.concurrent.ConcurrentHashMap<>();
+    private final java.util.List<Future<?>> streamTasks = new java.util.concurrent.CopyOnWriteArrayList<>();
     private volatile boolean running;
-    private volatile Future<?> streamTask;
-    private ScheduledFuture<?> immediateWakeup;
-    private ScheduledFuture<?> futureWakeup;
-    private Instant futureWakeupAt;
+    private Wakeups currentWakeups() {
+        return wakeups.computeIfAbsent(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name()
+                + ":" + JobGroupContext.key(), ignored -> new Wakeups());
+    }
+    private Runnable scoped(Runnable action) {
+        String groupId = JobGroupContext.groupId();
+        var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        return () -> {
+            var previous = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+            try {
+                com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
+                JobGroupContext.run(groupId, action);
+            } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previous); }
+        };
+    }
 
     public AffinityRecomputeChangeStreamService(
             MongoTemplate mongoTemplate,
@@ -75,30 +96,30 @@ public class AffinityRecomputeChangeStreamService {
             return;
         }
         running = true;
-        streamTask = streamExecutor.submit(this::consumeLoop);
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.forEachGroup("affinity-recompute",
+                () -> streamTasks.add(streamExecutor.submit(scoped(this::consumeLoop)))));
     }
 
     @PreDestroy
     void stop() {
         running = false;
-        Future<?> task = streamTask;
-        if (task != null) {
-            task.cancel(true);
-        }
-        synchronized (wakeupLock) {
-            if (immediateWakeup != null) {
-                immediateWakeup.cancel(false);
+        streamTasks.forEach(task -> task.cancel(true));
+        for (Wakeups state : wakeups.values()) {
+            synchronized (state.lock) {
+                if (state.immediate != null) state.immediate.cancel(false);
+                if (state.timer != null) state.timer.cancel(false);
+                state.future.clear();
             }
-            if (futureWakeup != null) {
-                futureWakeup.cancel(false);
-            }
-            futureWakeups.clear();
         }
         streamExecutor.shutdownNow();
         wakeupExecutor.shutdownNow();
     }
 
     void handleTaskChange(AffinityRecomputeTask task) {
+        JobGroupContext.run(task == null ? JobGroupContext.groupId() : task.getBaseGroupId(), () -> handleGroupTaskChange(task));
+    }
+
+    private void handleGroupTaskChange(AffinityRecomputeTask task) {
         if (task == null || !AffinityRecomputeTaskService.STATUS_PENDING.equals(safeText(task.getStatus()))) {
             metricsService.recordChangeStreamEvent(false);
             return;
@@ -129,7 +150,8 @@ public class AffinityRecomputeChangeStreamService {
         MongoCollection<Document> collection = mongoTemplate.getCollection(
                 mongoTemplate.getCollectionName(AffinityRecomputeTask.class));
         try (MongoCursor<ChangeStreamDocument<Document>> cursor = collection
-                .watch()
+                .watch(java.util.List.of(com.mongodb.client.model.Aggregates.match(
+                        com.mongodb.client.model.Filters.eq("fullDocument.baseGroupId", JobGroupContext.groupId()))))
                 .fullDocument(FullDocument.UPDATE_LOOKUP)
                 .iterator()) {
             while (running && !Thread.currentThread().isInterrupted() && cursor.hasNext()) {
@@ -145,68 +167,69 @@ public class AffinityRecomputeChangeStreamService {
             return;
         }
         AffinityRecomputeTask task = new AffinityRecomputeTask();
+        task.setBaseGroupId(fullDocument.getString("baseGroupId"));
         task.setStatus(fullDocument.getString("status"));
         task.setAvailableAtIso(fullDocument.getString("availableAtIso"));
         handleTaskChange(task);
     }
 
     private void scheduleImmediateWakeup() {
-        synchronized (wakeupLock) {
-            if (immediateWakeup != null && !immediateWakeup.isDone()) {
+        synchronized (currentWakeups().lock) {
+            if (currentWakeups().immediate != null && !currentWakeups().immediate.isDone()) {
                 return;
             }
             long delayMs = Math.max(0L, safeDuration(properties.getChangeStreamWakeupCoalesce()).toMillis());
-            immediateWakeup = wakeupExecutor.schedule(() -> {
-                synchronized (wakeupLock) {
-                    immediateWakeup = null;
+            currentWakeups().immediate = wakeupExecutor.schedule(scoped(() -> {
+                synchronized (currentWakeups().lock) {
+                    currentWakeups().immediate = null;
                 }
                 metricsService.recordChangeStreamImmediateWakeup();
                 workerService.wakeDueTasks(TRIGGER_STREAM);
-            }, delayMs, TimeUnit.MILLISECONDS);
+            }), delayMs, TimeUnit.MILLISECONDS);
         }
     }
 
     private void scheduleFutureWakeup(Instant availableAt) {
-        synchronized (wakeupLock) {
-            futureWakeups.add(availableAt);
+        synchronized (currentWakeups().lock) {
+            currentWakeups().future.add(availableAt);
             metricsService.recordChangeStreamFutureTimer();
             scheduleNextFutureWakeupLocked();
         }
     }
 
     private void scheduleNextFutureWakeupLocked() {
-        Instant next = futureWakeups.isEmpty() ? null : futureWakeups.first();
+        Instant next = currentWakeups().future.isEmpty() ? null : currentWakeups().future.first();
         if (next == null) {
-            futureWakeupAt = null;
+            currentWakeups().timerAt = null;
             return;
         }
-        if (futureWakeup != null && !futureWakeup.isDone() && next.equals(futureWakeupAt)) {
+        if (currentWakeups().timer != null && !currentWakeups().timer.isDone() && next.equals(currentWakeups().timerAt)) {
             return;
         }
-        if (futureWakeup != null) {
-            futureWakeup.cancel(false);
+        if (currentWakeups().timer != null) {
+            currentWakeups().timer.cancel(false);
         }
-        futureWakeupAt = next;
+        currentWakeups().timerAt = next;
         Instant now = Instant.now();
         long delayMs = Math.max(0L, Duration.between(now, next).toMillis());
         if (next.isAfter(now)) {
             delayMs += 1L;
         }
-        futureWakeup = wakeupExecutor.schedule(this::runFutureWakeup, delayMs, TimeUnit.MILLISECONDS);
+        currentWakeups().timer = wakeupExecutor.schedule(scoped(this::runFutureWakeup), delayMs, TimeUnit.MILLISECONDS);
     }
 
     private void runFutureWakeup() {
-        synchronized (wakeupLock) {
+        synchronized (currentWakeups().lock) {
             Instant dueBoundary = Instant.now().plusMillis(1L);
-            while (!futureWakeups.isEmpty() && !futureWakeups.first().isAfter(dueBoundary)) {
-                futureWakeups.pollFirst();
+            while (!currentWakeups().future.isEmpty() && !currentWakeups().future.first().isAfter(dueBoundary)) {
+                currentWakeups().future.pollFirst();
             }
-            futureWakeup = null;
-            futureWakeupAt = null;
+            currentWakeups().timer = null;
+            currentWakeups().timerAt = null;
         }
         metricsService.recordChangeStreamTimerWakeup();
         workerService.wakeDueTasks(TRIGGER_TIMER);
-        synchronized (wakeupLock) {
+        synchronized (currentWakeups().lock) {
             scheduleNextFutureWakeupLocked();
         }
     }

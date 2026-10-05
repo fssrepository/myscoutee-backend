@@ -239,5 +239,483 @@
       "assetChangedDebounceSeconds": 15,
       "assetRequestsChangedDebounceSeconds": 15
     }
+  },
+  {
+    "_id": "work-parameters-v1",
+    "key": "myscoutee-work",
+    "active": true,
+    "version": 1,
+    "changedDate": "2026-05-01T09:00:00.000Z",
+    "changedUser": "system",
+    "changedSection": "seed",
+    "changeSummary": "Initial platform parameter defaults.",
+    "rating": {
+      "singleMutual": {
+        "multiplier": 10
+      },
+      "singleOneSided": {
+        "multiplier": 2
+      },
+      "pairOutsideNetwork": {
+        "multiplier": 2
+      },
+      "pairInsideNetwork": {
+        "multiplier": 5
+      }
+    },
+    "evidence": {
+      "mutualSingle": {
+        "multiplier": 1
+      },
+      "singleOneSided": {
+        "multiplier": 0
+      },
+      "pairOutsideNetwork": {
+        "multiplier": 0.3
+      },
+      "pairInsideNetwork": {
+        "multiplier": 0.7
+      },
+      "met": {
+        "multiplier": 0.5
+      }
+    },
+    "distance": {
+      "multiplier": 5,
+      "maxMeters": 50000,
+      "strategy": "linear"
+    },
+    "ownerContext": {
+      "multiplier": 3
+    },
+    "profileRules": [
+      {
+        "group": "profile",
+        "field": "languages",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "physique",
+        "multiplier": 3,
+        "strategy": "exact"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.interest",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.values",
+        "multiplier": 3,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.workout",
+        "multiplier": 2,
+        "strategy": "exact"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.workplace",
+        "multiplier": 4,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.profession",
+        "multiplier": 3,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.school",
+        "multiplier": 4,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.education",
+        "multiplier": 2,
+        "strategy": "intersection"
+      }
+    ],
+    "impressionRules": [
+      {
+        "group": "traits",
+        "field": "member.personalityTraits",
+        "multiplier": 4,
+        "strategy": "trait-vector"
+      },
+      {
+        "group": "traits",
+        "field": "member.vibeBadges",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "traits",
+        "field": "member.categoryBadges",
+        "multiplier": 2,
+        "strategy": "intersection"
+      }
+    ],
+    "absolute": {
+      "user": {
+        "profileTokens": {
+          "multiplier": 97
+        },
+        "profileDetailTokens": {
+          "multiplier": 97
+        },
+        "experienceTokens": {
+          "multiplier": 97
+        },
+        "impressionTokens": {
+          "multiplier": 97
+        },
+        "age": {
+          "multiplier": 17
+        },
+        "height": {
+          "multiplier": 11
+        },
+        "completion": {
+          "multiplier": 13
+        },
+        "impressionAverageRating": {
+          "multiplier": 29
+        },
+        "impressionPeopleMet": {
+          "multiplier": 43
+        },
+        "impressionTotalEvents": {
+          "multiplier": 37
+        },
+        "impressionRepeatCount": {
+          "multiplier": 53
+        },
+        "impressionNoShowPenalty": {
+          "multiplier": 71
+        },
+        "impressionTraitPercent": {
+          "multiplier": 7
+        },
+        "impressionTraitEvidenceCount": {
+          "multiplier": 23
+        }
+      },
+      "event": {
+        "contentTokens": {
+          "multiplier": 89
+        },
+        "participantAffinity": {
+          "multiplier": 1
+        }
+      },
+      "asset": {
+        "contentTokens": {
+          "multiplier": 83
+        },
+        "ownerAffinity": {
+          "multiplier": 1
+        }
+      }
+    },
+    "boost": {
+      "event": {
+        "rating": {
+          "multiplier": 29
+        },
+        "acceptedMembers": {
+          "multiplier": 19
+        },
+        "pendingMembers": {
+          "multiplier": 11
+        },
+        "capacityAvailable": {
+          "multiplier": 7
+        },
+        "freshness": {
+          "multiplier": 5
+        },
+        "hostConfidence": {
+          "multiplier": 0.25
+        }
+      },
+      "asset": {
+        "capacityAvailable": {
+          "multiplier": 7
+        },
+        "quantity": {
+          "multiplier": 11
+        },
+        "requestCount": {
+          "multiplier": 13
+        },
+        "freshness": {
+          "multiplier": 3
+        },
+        "ownerConfidence": {
+          "multiplier": 0.25
+        }
+      }
+    },
+    "jobs": {
+      "eventChangedDebounceSeconds": 15,
+      "eventMembersChangedDebounceSeconds": 15,
+      "assetChangedDebounceSeconds": 15,
+      "assetRequestsChangedDebounceSeconds": 15
+    }
+  },
+  {
+    "_id": "community-parameters-v1",
+    "key": "myscoutee-community",
+    "active": true,
+    "version": 1,
+    "changedDate": "2026-05-01T09:00:00.000Z",
+    "changedUser": "system",
+    "changedSection": "seed",
+    "changeSummary": "Initial platform parameter defaults.",
+    "rating": {
+      "singleMutual": {
+        "multiplier": 10
+      },
+      "singleOneSided": {
+        "multiplier": 2
+      },
+      "pairOutsideNetwork": {
+        "multiplier": 2
+      },
+      "pairInsideNetwork": {
+        "multiplier": 5
+      }
+    },
+    "evidence": {
+      "mutualSingle": {
+        "multiplier": 1
+      },
+      "singleOneSided": {
+        "multiplier": 0
+      },
+      "pairOutsideNetwork": {
+        "multiplier": 0.3
+      },
+      "pairInsideNetwork": {
+        "multiplier": 0.7
+      },
+      "met": {
+        "multiplier": 0.5
+      }
+    },
+    "distance": {
+      "multiplier": 5,
+      "maxMeters": 50000,
+      "strategy": "linear"
+    },
+    "ownerContext": {
+      "multiplier": 3
+    },
+    "profileRules": [
+      {
+        "group": "profile",
+        "field": "languages",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "physique",
+        "multiplier": 3,
+        "strategy": "exact"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.interest",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.values",
+        "multiplier": 3,
+        "strategy": "intersection"
+      },
+      {
+        "group": "profile",
+        "field": "profileDetails",
+        "labelKey": "profile.details.workout",
+        "multiplier": 2,
+        "strategy": "exact"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.workplace",
+        "multiplier": 4,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.profession",
+        "multiplier": 3,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.school",
+        "multiplier": 4,
+        "strategy": "intersection"
+      },
+      {
+        "group": "experience",
+        "field": "experience",
+        "labelKey": "profile.experience.education",
+        "multiplier": 2,
+        "strategy": "intersection"
+      }
+    ],
+    "impressionRules": [
+      {
+        "group": "traits",
+        "field": "member.personalityTraits",
+        "multiplier": 4,
+        "strategy": "trait-vector"
+      },
+      {
+        "group": "traits",
+        "field": "member.vibeBadges",
+        "multiplier": 2,
+        "strategy": "intersection"
+      },
+      {
+        "group": "traits",
+        "field": "member.categoryBadges",
+        "multiplier": 2,
+        "strategy": "intersection"
+      }
+    ],
+    "absolute": {
+      "user": {
+        "profileTokens": {
+          "multiplier": 97
+        },
+        "profileDetailTokens": {
+          "multiplier": 97
+        },
+        "experienceTokens": {
+          "multiplier": 97
+        },
+        "impressionTokens": {
+          "multiplier": 97
+        },
+        "age": {
+          "multiplier": 17
+        },
+        "height": {
+          "multiplier": 11
+        },
+        "completion": {
+          "multiplier": 13
+        },
+        "impressionAverageRating": {
+          "multiplier": 29
+        },
+        "impressionPeopleMet": {
+          "multiplier": 43
+        },
+        "impressionTotalEvents": {
+          "multiplier": 37
+        },
+        "impressionRepeatCount": {
+          "multiplier": 53
+        },
+        "impressionNoShowPenalty": {
+          "multiplier": 71
+        },
+        "impressionTraitPercent": {
+          "multiplier": 7
+        },
+        "impressionTraitEvidenceCount": {
+          "multiplier": 23
+        }
+      },
+      "event": {
+        "contentTokens": {
+          "multiplier": 89
+        },
+        "participantAffinity": {
+          "multiplier": 1
+        }
+      },
+      "asset": {
+        "contentTokens": {
+          "multiplier": 83
+        },
+        "ownerAffinity": {
+          "multiplier": 1
+        }
+      }
+    },
+    "boost": {
+      "event": {
+        "rating": {
+          "multiplier": 29
+        },
+        "acceptedMembers": {
+          "multiplier": 19
+        },
+        "pendingMembers": {
+          "multiplier": 11
+        },
+        "capacityAvailable": {
+          "multiplier": 7
+        },
+        "freshness": {
+          "multiplier": 5
+        },
+        "hostConfidence": {
+          "multiplier": 0.25
+        }
+      },
+      "asset": {
+        "capacityAvailable": {
+          "multiplier": 7
+        },
+        "quantity": {
+          "multiplier": 11
+        },
+        "requestCount": {
+          "multiplier": 13
+        },
+        "freshness": {
+          "multiplier": 3
+        },
+        "ownerConfidence": {
+          "multiplier": 0.25
+        }
+      }
+    },
+    "jobs": {
+      "eventChangedDebounceSeconds": 15,
+      "eventMembersChangedDebounceSeconds": 15,
+      "assetChangedDebounceSeconds": 15,
+      "assetRequestsChangedDebounceSeconds": 15
+    }
   }
 ]

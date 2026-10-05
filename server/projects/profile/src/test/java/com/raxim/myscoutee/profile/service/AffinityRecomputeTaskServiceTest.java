@@ -46,6 +46,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueueEventChanged("event-1", "u1");
         AffinityRecomputeTask merged = service.enqueueEventMembersChanged("event-1", "u2");
@@ -79,6 +81,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueEventChanged("event-1", "u1");
@@ -128,6 +132,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueUserChanged("user-1");
@@ -162,6 +168,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueUserChanged("user-1");

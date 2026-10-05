@@ -48,7 +48,7 @@ public final class ChatDtos {
             String groupId,
             String ownerStatus,
             Long revision,
-            ChatNavigationContextDto navigationContext) {
+            ChatNavigationContextDto navigationContext, String caseOfferId) {
     }
 
     public record ChatHeaderSyncResponseDto(
@@ -231,7 +231,18 @@ public final class ChatDtos {
             String assetId,
             String targetUserId,
             String title,
-            String lastMessage) {
+            String lastMessage,
+            String campaignId,
+            String caseId,
+            String announcementId, String caseOfferId) {
+        public ChatServiceEnsureRequestDto(String serviceContext, String eventId, String subEventId,
+                String assetId, String targetUserId, String title, String lastMessage) {
+            this(serviceContext, eventId, subEventId, assetId, targetUserId, title, lastMessage, null, null, null, null);
+        }
+        public ChatServiceEnsureRequestDto(String serviceContext, String eventId, String subEventId,
+                String assetId, String targetUserId, String title, String lastMessage, String campaignId, String caseId) {
+            this(serviceContext, eventId, subEventId, assetId, targetUserId, title, lastMessage, campaignId, caseId, null, null);
+        }
     }
 
     public record ChatMessageMutationRequestDto(

@@ -15,6 +15,10 @@ public class AdminAffinityGraphLayout {
     @Indexed(name = "admin_affinity_graph_layout_generated_at")
     private String generatedAtIso;
 
+    private String scopeKey;
+    public String getScopeKey() { return scopeKey; }
+    public void setScopeKey(String value) { scopeKey = value; }
+
     private String source;
     private Integer memberCount;
     private Integer linkCount;

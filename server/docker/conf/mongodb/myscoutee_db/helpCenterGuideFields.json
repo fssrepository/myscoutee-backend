@@ -240,6 +240,14 @@
     "order": 29
   },
   {
+    "_id": "activities.rates--rating-details",
+    "id": "rating-details",
+    "screenKey": "activities.rates",
+    "group": "ratings",
+    "i18nKey": "guide.activities.rates.rating-details",
+    "order": 30
+  },
+  {
     "_id": "activities.rates--rating-save",
     "id": "rating-save",
     "screenKey": "activities.rates",
@@ -278,6 +286,38 @@
     "group": "popup",
     "i18nKey": "guide.activities.rates.close",
     "order": 35
+  },
+  {
+    "_id": "activities.rates--pair-score-received",
+    "id": "pair-score-received",
+    "screenKey": "activities.rates",
+    "group": "card",
+    "i18nKey": "guide.common.pair-score-received",
+    "order": 36
+  },
+  {
+    "_id": "activities.rates--pair-images",
+    "id": "pair-images",
+    "screenKey": "activities.rates",
+    "group": "card",
+    "i18nKey": "guide.common.pair-images",
+    "order": 37
+  },
+  {
+    "_id": "activities.rates--pair-profiles",
+    "id": "pair-profiles",
+    "screenKey": "activities.rates",
+    "group": "card",
+    "i18nKey": "guide.common.pair-profiles",
+    "order": 38
+  },
+  {
+    "_id": "activities.rates--pair-score-summary",
+    "id": "pair-score-summary",
+    "screenKey": "activities.rates",
+    "group": "card",
+    "i18nKey": "guide.common.pair-score-summary",
+    "order": 39
   },
   {
     "_id": "home.game--home-header",
@@ -360,6 +400,14 @@
     "order": 9
   },
   {
+    "_id": "home.game--rating-details",
+    "id": "rating-details",
+    "screenKey": "home.game",
+    "group": "ratings",
+    "i18nKey": "guide.home.game.rating-details",
+    "order": 10
+  },
+  {
     "_id": "home.game--image-switch",
     "id": "image-switch",
     "screenKey": "home.game",
@@ -382,6 +430,30 @@
     "group": "card",
     "i18nKey": "guide.home.game.pagination-next",
     "order": 13
+  },
+  {
+    "_id": "home.game--pair-resize",
+    "id": "pair-resize",
+    "screenKey": "home.game",
+    "group": "card",
+    "i18nKey": "guide.activities.rates.pair.resize",
+    "order": 14
+  },
+  {
+    "_id": "home.game--pair-images",
+    "id": "pair-images",
+    "screenKey": "home.game",
+    "group": "card",
+    "i18nKey": "guide.common.pair-images",
+    "order": 15
+  },
+  {
+    "_id": "home.game--pair-profiles",
+    "id": "pair-profiles",
+    "screenKey": "home.game",
+    "group": "card",
+    "i18nKey": "guide.common.pair-profiles",
+    "order": 16
   },
   {
     "_id": "chats--primary:trigger",
@@ -3104,6 +3176,14 @@
     "order": 77
   },
   {
+    "_id": "event.editor--event-campaign",
+    "id": "event-campaign",
+    "screenKey": "event.editor",
+    "group": "menus",
+    "i18nKey": "guide.event.editor.event-campaign",
+    "order": 78
+  },
+  {
     "_id": "event.feedback--event-feedback-filter:trigger",
     "id": "event-feedback-filter:trigger",
     "screenKey": "event.feedback",
@@ -3206,6 +3286,62 @@
     "group": "menus",
     "i18nKey": "guide.event.feedback.card-actions.restoreFeedback",
     "order": 12
+  },
+  {
+    "_id": "event.feedback--form-progress",
+    "id": "form-progress",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.form-progress",
+    "order": 13
+  },
+  {
+    "_id": "event.feedback--feedback-primary",
+    "id": "feedback-primary",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.feedback-primary",
+    "order": 14
+  },
+  {
+    "_id": "event.feedback--feedback-secondary",
+    "id": "feedback-secondary",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.feedback-secondary",
+    "order": 15
+  },
+  {
+    "_id": "event.feedback--feedback-traits",
+    "id": "feedback-traits",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.feedback-traits",
+    "order": 16
+  },
+  {
+    "_id": "event.feedback--feedback-comment",
+    "id": "feedback-comment",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.feedback-comment",
+    "order": 17
+  },
+  {
+    "_id": "event.feedback--form-navigation",
+    "id": "form-navigation",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.form-navigation",
+    "order": 18
+  },
+  {
+    "_id": "event.feedback--form-save",
+    "id": "form-save",
+    "screenKey": "event.feedback",
+    "group": "fields",
+    "i18nKey": "guide.event.feedback.form-save",
+    "order": 19
   },
   {
     "_id": "notifications--notification-workspace:trigger",
@@ -3462,6 +3598,14 @@
     "group": "menus",
     "i18nKey": "guide.payment.history.payment-card-actions.delete-payment-card",
     "order": 25
+  },
+  {
+    "_id": "payment.history--counterparty",
+    "id": "counterparty",
+    "screenKey": "payment.history",
+    "group": "menus",
+    "i18nKey": "guide.payment.history.counterparty",
+    "order": 26
   },
   {
     "_id": "profile.impressions--impressions-host",
@@ -4742,6 +4886,22 @@
     "group": "card",
     "i18nKey": "guide.event.members.member-profile",
     "order": 18
+  },
+  {
+    "_id": "event.members--member-grantVote",
+    "id": "member-grantVote",
+    "screenKey": "event.members",
+    "group": "overview",
+    "i18nKey": "guide.event.members.member-grantVote",
+    "order": 19
+  },
+  {
+    "_id": "event.members--member-revokeVote",
+    "id": "member-revokeVote",
+    "screenKey": "event.members",
+    "group": "overview",
+    "i18nKey": "guide.event.members.member-revokeVote",
+    "order": 20
   },
   {
     "_id": "event.checkout--checkout-event",
@@ -6680,6 +6840,30 @@
     "order": 29
   },
   {
+    "_id": "navigation.menu--campaigns",
+    "id": "campaigns",
+    "screenKey": "navigation.menu",
+    "group": "overview",
+    "i18nKey": "guide.navigation.menu.campaigns",
+    "order": 30
+  },
+  {
+    "_id": "navigation.menu--cases",
+    "id": "cases",
+    "screenKey": "navigation.menu",
+    "group": "overview",
+    "i18nKey": "guide.navigation.menu.cases",
+    "order": 31
+  },
+  {
+    "_id": "navigation.menu--services",
+    "id": "services",
+    "screenKey": "navigation.menu",
+    "group": "overview",
+    "i18nKey": "guide.navigation.menu.services",
+    "order": 32
+  },
+  {
     "_id": "members--members-list",
     "id": "members-list",
     "screenKey": "members",
@@ -6830,6 +7014,22 @@
     "group": "card",
     "i18nKey": "guide.members.member-profile",
     "order": 18
+  },
+  {
+    "_id": "members--member-grantVote",
+    "id": "member-grantVote",
+    "screenKey": "members",
+    "group": "overview",
+    "i18nKey": "guide.members.member-grantVote",
+    "order": 19
+  },
+  {
+    "_id": "members--member-revokeVote",
+    "id": "member-revokeVote",
+    "screenKey": "members",
+    "group": "overview",
+    "i18nKey": "guide.members.member-revokeVote",
+    "order": 20
   },
   {
     "_id": "assets.availability--order:trigger",
@@ -7168,12 +7368,20 @@
     "order": 26
   },
   {
+    "_id": "landing.home--usage-mode",
+    "id": "usage-mode",
+    "screenKey": "landing.home",
+    "group": "overview",
+    "i18nKey": "guide.landing.home.usage-mode",
+    "order": 0
+  },
+  {
     "_id": "landing.home--login",
     "id": "login",
     "screenKey": "landing.home",
     "group": "fields",
     "i18nKey": "guide.landing.home.login",
-    "order": 0
+    "order": 1
   },
   {
     "_id": "landing.home--explore",
@@ -7181,7 +7389,7 @@
     "screenKey": "landing.home",
     "group": "fields",
     "i18nKey": "guide.landing.home.explore",
-    "order": 1
+    "order": 2
   },
   {
     "_id": "landing.home--join",
@@ -7189,7 +7397,15 @@
     "screenKey": "landing.home",
     "group": "fields",
     "i18nKey": "guide.landing.home.join",
-    "order": 2
+    "order": 3
+  },
+  {
+    "_id": "landing.home--footer-privacy",
+    "id": "footer-privacy",
+    "screenKey": "landing.home",
+    "group": "overview",
+    "i18nKey": "guide.entry.landing.privacy",
+    "order": 4
   },
   {
     "_id": "landing.setup--help",
@@ -7592,131 +7808,1419 @@
     "order": 31
   },
   {
-    "_id": "event.feedback--form-progress",
-    "id": "form-progress",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.form-progress",
-    "order": 13
+    "_id": "community.cases--case-list",
+    "id": "case-list",
+    "screenKey": "community.cases",
+    "group": "overview",
+    "i18nKey": "guide.community.cases.case-list",
+    "order": 0
   },
   {
-    "_id": "event.feedback--feedback-primary",
-    "id": "feedback-primary",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-primary",
-    "order": 15
+    "_id": "community.cases--type:trigger",
+    "id": "type:trigger",
+    "screenKey": "community.cases",
+    "group": "overview",
+    "i18nKey": "guide.community.cases.type.trigger",
+    "order": 1
   },
   {
-    "_id": "event.feedback--feedback-secondary",
-    "id": "feedback-secondary",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-secondary",
-    "order": 17
+    "_id": "community.cases--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "community.cases",
+    "group": "overview",
+    "i18nKey": "guide.community.cases.status:trigger",
+    "order": 2
   },
   {
-    "_id": "event.feedback--feedback-traits",
-    "id": "feedback-traits",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-traits",
-    "order": 19
-  },
-  {
-    "_id": "event.feedback--feedback-comment",
-    "id": "feedback-comment",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.feedback-comment",
-    "order": 21
-  },
-  {
-    "_id": "event.feedback--form-navigation",
-    "id": "form-navigation",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.form-navigation",
-    "order": 23
-  },
-  {
-    "_id": "event.feedback--form-save",
-    "id": "form-save",
-    "screenKey": "event.feedback",
-    "group": "fields",
-    "i18nKey": "guide.event.feedback.form-save",
-    "order": 25
-  },
-  {
-    "_id": "home.game--pair-resize",
-    "id": "pair-resize",
-    "screenKey": "home.game",
+    "_id": "community.cases--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.cases",
     "group": "card",
-    "i18nKey": "guide.activities.rates.pair.resize",
-    "order": 14
+    "i18nKey": "guide.community.cases.card-actions",
+    "order": 3
   },
   {
-    "_id": "home.game--pair-images",
-    "id": "pair-images",
-    "screenKey": "home.game",
+    "_id": "community.cases--tasks",
+    "id": "tasks",
+    "screenKey": "community.cases",
+    "group": "overview",
+    "i18nKey": "guide.community.cases.tasks",
+    "order": 4
+  },
+  {
+    "_id": "community.cases--create",
+    "id": "create",
+    "screenKey": "community.cases",
+    "group": "overview",
+    "i18nKey": "guide.community.cases.create",
+    "order": 5
+  },
+  {
+    "_id": "community.tasks--task-list",
+    "id": "task-list",
+    "screenKey": "community.tasks",
+    "group": "overview",
+    "i18nKey": "guide.community.tasks.task-list",
+    "order": 0
+  },
+  {
+    "_id": "community.tasks--create-task",
+    "id": "create-task",
+    "screenKey": "community.tasks",
+    "group": "overview",
+    "i18nKey": "guide.community.tasks.actions.trigger",
+    "order": 1
+  },
+  {
+    "_id": "community.tasks--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "community.tasks",
+    "group": "overview",
+    "i18nKey": "guide.community.tasks.status:trigger",
+    "order": 2
+  },
+  {
+    "_id": "community.tasks--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.tasks",
     "group": "card",
-    "i18nKey": "guide.common.pair-images",
-    "order": 15
+    "i18nKey": "guide.community.tasks.card-actions",
+    "order": 3
   },
   {
-    "_id": "home.game--pair-profiles",
-    "id": "pair-profiles",
-    "screenKey": "home.game",
+    "_id": "community.tasks--card-actions:pause",
+    "id": "card-actions:pause",
+    "screenKey": "community.tasks",
     "group": "card",
-    "i18nKey": "guide.common.pair-profiles",
-    "order": 16
+    "i18nKey": "guide.community.tasks.card-actions:pause",
+    "order": 4
   },
   {
-    "_id": "activities.rates--pair-score-received",
-    "id": "pair-score-received",
-    "screenKey": "activities.rates",
+    "_id": "community.tasks--card-actions:resume",
+    "id": "card-actions:resume",
+    "screenKey": "community.tasks",
     "group": "card",
-    "i18nKey": "guide.common.pair-score-received",
-    "order": 36
+    "i18nKey": "guide.community.tasks.card-actions:resume",
+    "order": 5
   },
   {
-    "_id": "activities.rates--pair-images",
-    "id": "pair-images",
-    "screenKey": "activities.rates",
+    "_id": "community.tasks--card-actions:trash",
+    "id": "card-actions:trash",
+    "screenKey": "community.tasks",
     "group": "card",
-    "i18nKey": "guide.common.pair-images",
-    "order": 37
+    "i18nKey": "guide.community.tasks.card-actions:trash",
+    "order": 6
   },
   {
-    "_id": "activities.rates--pair-profiles",
-    "id": "pair-profiles",
-    "screenKey": "activities.rates",
-    "group": "card",
-    "i18nKey": "guide.common.pair-profiles",
-    "order": 38
+    "_id": "community.case.editor--case-details",
+    "id": "case-details",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.case-details",
+    "order": 0
   },
   {
-    "_id": "activities.rates--pair-score-summary",
-    "id": "pair-score-summary",
-    "screenKey": "activities.rates",
-    "group": "card",
-    "i18nKey": "guide.common.pair-score-summary",
-    "order": 39
+    "_id": "community.case.editor--audience",
+    "id": "audience",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.audience.trigger",
+    "order": 1
   },
   {
-    "_id": "home.game--rating-details",
-    "id": "rating-details",
-    "screenKey": "home.game",
-    "group": "ratings",
-    "i18nKey": "guide.home.game.rating-details",
+    "_id": "community.case.editor--title",
+    "id": "title",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.title",
+    "order": 2
+  },
+  {
+    "_id": "community.case.editor--type",
+    "id": "type",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.type",
+    "order": 3
+  },
+  {
+    "_id": "community.case.editor--description",
+    "id": "description",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.description",
+    "order": 4
+  },
+  {
+    "_id": "community.case.editor--members",
+    "id": "members",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.members",
+    "order": 5
+  },
+  {
+    "_id": "community.case.editor--save",
+    "id": "save",
+    "screenKey": "community.case.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.editor.save",
+    "order": 6
+  },
+  {
+    "_id": "community.task.editor--case-details",
+    "id": "case-details",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.case-details",
+    "order": 0
+  },
+  {
+    "_id": "community.task.editor--audience",
+    "id": "audience",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.audience.trigger",
+    "order": 1
+  },
+  {
+    "_id": "community.task.editor--title",
+    "id": "title",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.title",
+    "order": 2
+  },
+  {
+    "_id": "community.task.editor--type",
+    "id": "type",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.type",
+    "order": 3
+  },
+  {
+    "_id": "community.task.editor--description",
+    "id": "description",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.description",
+    "order": 4
+  },
+  {
+    "_id": "community.task.editor--members",
+    "id": "members",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.members",
+    "order": 5
+  },
+  {
+    "_id": "community.task.editor--save",
+    "id": "save",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.save",
+    "order": 6
+  },
+  {
+    "_id": "community.task.editor--startAtIso",
+    "id": "startAtIso",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.startAtIso",
+    "order": 7
+  },
+  {
+    "_id": "community.task.editor--schedule-frequency",
+    "id": "schedule-frequency",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.schedule-frequency",
+    "order": 8
+  },
+  {
+    "_id": "community.task.editor--frequency",
+    "id": "frequency",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.frequency",
+    "order": 9
+  },
+  {
+    "_id": "community.task.editor--startAt",
+    "id": "startAt",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.startAt",
     "order": 10
   },
   {
-    "_id": "activities.rates--rating-details",
+    "_id": "community.task.editor--save-schedule",
+    "id": "save-schedule",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.save-schedule",
+    "order": 11
+  },
+  {
+    "_id": "community.task.editor--add-schedule",
+    "id": "add-schedule",
+    "screenKey": "community.task.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.task.editor.add-schedule",
+    "order": 12
+  },
+  {
+    "_id": "work.campaigns--campaign-list",
+    "id": "campaign-list",
+    "screenKey": "work.campaigns",
+    "group": "overview",
+    "i18nKey": "guide.work.campaigns.campaign-list",
+    "order": 0
+  },
+  {
+    "_id": "work.campaigns--close",
+    "id": "close",
+    "screenKey": "work.campaigns",
+    "group": "popup",
+    "i18nKey": "guide.work.campaigns.close",
+    "order": 1
+  },
+  {
+    "_id": "work.campaigns--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "work.campaigns",
+    "group": "overview",
+    "i18nKey": "guide.work.campaigns.status:trigger",
+    "order": 2
+  },
+  {
+    "_id": "work.campaigns--create",
+    "id": "create",
+    "screenKey": "work.campaigns",
+    "group": "overview",
+    "i18nKey": "guide.work.campaigns.create",
+    "order": 3
+  },
+  {
+    "_id": "work.campaigns--card-actions",
+    "id": "card-actions",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions",
+    "order": 4
+  },
+  {
+    "_id": "work.campaigns--card-actions:view",
+    "id": "card-actions:view",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:view",
+    "order": 5
+  },
+  {
+    "_id": "work.campaigns--card-actions:edit",
+    "id": "card-actions:edit",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:edit",
+    "order": 6
+  },
+  {
+    "_id": "work.campaigns--card-actions:campaign-ratings",
+    "id": "card-actions:campaign-ratings",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:campaign-ratings",
+    "order": 7
+  },
+  {
+    "_id": "work.campaigns--card-actions:publish",
+    "id": "card-actions:publish",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:publish",
+    "order": 8
+  },
+  {
+    "_id": "work.campaigns--card-actions:unpublish",
+    "id": "card-actions:unpublish",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:unpublish",
+    "order": 9
+  },
+  {
+    "_id": "work.campaigns--card-actions:trash",
+    "id": "card-actions:trash",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:trash",
+    "order": 10
+  },
+  {
+    "_id": "work.campaigns--card-actions:restore",
+    "id": "card-actions:restore",
+    "screenKey": "work.campaigns",
+    "group": "card",
+    "i18nKey": "guide.work.campaigns.card-actions:restore",
+    "order": 11
+  },
+  {
+    "_id": "work.campaign.editor--campaign-details",
+    "id": "campaign-details",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.campaign-details",
+    "order": 0
+  },
+  {
+    "_id": "work.campaign.editor--images",
+    "id": "images",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.images",
+    "order": 1
+  },
+  {
+    "_id": "work.campaign.editor--title",
+    "id": "title",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.title",
+    "order": 2
+  },
+  {
+    "_id": "work.campaign.editor--description",
+    "id": "description",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.description",
+    "order": 3
+  },
+  {
+    "_id": "work.campaign.editor--kind",
+    "id": "kind",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.kind",
+    "order": 4
+  },
+  {
+    "_id": "work.campaign.editor--category",
+    "id": "category",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.category",
+    "order": 5
+  },
+  {
+    "_id": "work.campaign.editor--attachments",
+    "id": "attachments",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.attachments",
+    "order": 6
+  },
+  {
+    "_id": "work.campaign.editor--attach",
+    "id": "attach",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.attach",
+    "order": 7
+  },
+  {
+    "_id": "work.campaign.editor--save",
+    "id": "save",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.save",
+    "order": 8
+  },
+  {
+    "_id": "work.campaign.editor--view:trigger",
+    "id": "view:trigger",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.view:trigger",
+    "order": 9
+  },
+  {
+    "_id": "work.campaign.editor--image-preview",
+    "id": "image-preview",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-preview",
+    "order": 10
+  },
+  {
+    "_id": "work.campaign.editor--image-upload",
+    "id": "image-upload",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-upload",
+    "order": 11
+  },
+  {
+    "_id": "work.campaign.editor--image-replace",
+    "id": "image-replace",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-replace",
+    "order": 12
+  },
+  {
+    "_id": "work.campaign.editor--image-copy",
+    "id": "image-copy",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-copy",
+    "order": 13
+  },
+  {
+    "_id": "work.campaign.editor--image-remove",
+    "id": "image-remove",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-remove",
+    "order": 14
+  },
+  {
+    "_id": "work.campaign.editor--image-pages",
+    "id": "image-pages",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-pages",
+    "order": 15
+  },
+  {
+    "_id": "work.campaign.editor--image-details",
+    "id": "image-details",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-details",
+    "order": 16
+  },
+  {
+    "_id": "work.campaign.editor--image-location",
+    "id": "image-location",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-location",
+    "order": 17
+  },
+  {
+    "_id": "work.campaign.editor--image-caption",
+    "id": "image-caption",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-caption",
+    "order": 18
+  },
+  {
+    "_id": "work.campaign.editor--image-details-save",
+    "id": "image-details-save",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-details-save",
+    "order": 19
+  },
+  {
+    "_id": "work.campaign.editor--image-gallery-expand",
+    "id": "image-gallery-expand",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-gallery-expand",
+    "order": 20
+  },
+  {
+    "_id": "work.campaign.editor--image-view",
+    "id": "image-view",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.image-view",
+    "order": 21
+  },
+  {
+    "_id": "work.campaign.editor--campaign-ask",
+    "id": "campaign-ask",
+    "screenKey": "work.campaign.editor",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.editor.campaign-ask",
+    "order": 22
+  },
+  {
+    "_id": "community.home--announcements",
+    "id": "announcements",
+    "screenKey": "community.home",
+    "group": "overview",
+    "i18nKey": "guide.community.home.announcements",
+    "order": 0
+  },
+  {
+    "_id": "community.home--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "community.home",
+    "group": "overview",
+    "i18nKey": "guide.community.home.status:trigger",
+    "order": 1
+  },
+  {
+    "_id": "community.home--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.home",
+    "group": "card",
+    "i18nKey": "guide.community.home.card-actions",
+    "order": 2
+  },
+  {
+    "_id": "community.voting--announcements",
+    "id": "announcements",
+    "screenKey": "community.voting",
+    "group": "overview",
+    "i18nKey": "guide.community.voting.announcements",
+    "order": 0
+  },
+  {
+    "_id": "community.voting--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "community.voting",
+    "group": "overview",
+    "i18nKey": "guide.community.voting.status:trigger",
+    "order": 1
+  },
+  {
+    "_id": "community.voting--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.voting",
+    "group": "card",
+    "i18nKey": "guide.community.voting.card-actions",
+    "order": 2
+  },
+  {
+    "_id": "community.announcement.editor--announcement-details",
+    "id": "announcement-details",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.announcement-details",
+    "order": 0
+  },
+  {
+    "_id": "community.announcement.editor--attachments",
+    "id": "attachments",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.attachments",
+    "order": 1
+  },
+  {
+    "_id": "community.announcement.editor--vote",
+    "id": "vote",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.vote",
+    "order": 2
+  },
+  {
+    "_id": "community.announcement.editor--voting-results",
+    "id": "voting-results",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.voting-results",
+    "order": 3
+  },
+  {
+    "_id": "community.announcement.editor--title",
+    "id": "title",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.title",
+    "order": 4
+  },
+  {
+    "_id": "community.announcement.editor--body",
+    "id": "body",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.body",
+    "order": 5
+  },
+  {
+    "_id": "community.announcement.editor--voting",
+    "id": "voting",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.voting",
+    "order": 6
+  },
+  {
+    "_id": "community.announcement.editor--deadline",
+    "id": "deadline",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.deadline",
+    "order": 7
+  },
+  {
+    "_id": "community.announcement.editor--attach",
+    "id": "attach",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.attach",
+    "order": 8
+  },
+  {
+    "_id": "community.announcement.editor--save",
+    "id": "save",
+    "screenKey": "community.announcement.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.announcement.editor.save",
+    "order": 9
+  },
+  {
+    "_id": "work.home--work-kind",
+    "id": "work-kind",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.work-kind",
+    "order": 0
+  },
+  {
+    "_id": "work.home--work-campaigns",
+    "id": "work-campaigns",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.work-campaigns",
+    "order": 1
+  },
+  {
+    "_id": "work.home--category",
+    "id": "category",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.category",
+    "order": 2
+  },
+  {
+    "_id": "work.home--rates",
+    "id": "rates",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.rates",
+    "order": 3
+  },
+  {
+    "_id": "work.home--rating-input",
+    "id": "rating-input",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.rating-input",
+    "order": 4
+  },
+  {
+    "_id": "work.home--rating-details",
     "id": "rating-details",
-    "screenKey": "activities.rates",
-    "group": "ratings",
-    "i18nKey": "guide.activities.rates.rating-details",
-    "order": 30
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.rating-details",
+    "order": 5
+  },
+  {
+    "_id": "work.home--rating-criteria",
+    "id": "rating-criteria",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.rating-criteria",
+    "order": 6
+  },
+  {
+    "_id": "work.home--rating-save",
+    "id": "rating-save",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.rating-save",
+    "order": 7
+  },
+  {
+    "_id": "work.home--profile",
+    "id": "profile",
+    "screenKey": "work.home",
+    "group": "overview",
+    "i18nKey": "guide.work.home.profile",
+    "order": 8
+  },
+  {
+    "_id": "community.services.home--service-discovery",
+    "id": "service-discovery",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.service-discovery",
+    "order": 0
+  },
+  {
+    "_id": "community.services.home--category",
+    "id": "category",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.category",
+    "order": 1
+  },
+  {
+    "_id": "community.services.home--rates",
+    "id": "rates",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.rates",
+    "order": 2
+  },
+  {
+    "_id": "community.services.home--rating-input",
+    "id": "rating-input",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.rating-input",
+    "order": 3
+  },
+  {
+    "_id": "community.services.home--rating-details",
+    "id": "rating-details",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.rating-details",
+    "order": 4
+  },
+  {
+    "_id": "community.services.home--rating-criteria",
+    "id": "rating-criteria",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.rating-criteria",
+    "order": 5
+  },
+  {
+    "_id": "community.services.home--rating-save",
+    "id": "rating-save",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.rating-save",
+    "order": 6
+  },
+  {
+    "_id": "community.services.home--profile",
+    "id": "profile",
+    "screenKey": "community.services.home",
+    "group": "overview",
+    "i18nKey": "guide.community.services.home.profile",
+    "order": 7
+  },
+  {
+    "_id": "community.services--service-list",
+    "id": "service-list",
+    "screenKey": "community.services",
+    "group": "overview",
+    "i18nKey": "guide.community.services.service-list",
+    "order": 0
+  },
+  {
+    "_id": "community.services--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.services",
+    "group": "card",
+    "i18nKey": "guide.community.services.card-actions",
+    "order": 1
+  },
+  {
+    "_id": "community.services--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "community.services",
+    "group": "overview",
+    "i18nKey": "guide.community.services.status:trigger",
+    "order": 2
+  },
+  {
+    "_id": "community.services--view:trigger",
+    "id": "view:trigger",
+    "screenKey": "community.services",
+    "group": "overview",
+    "i18nKey": "guide.community.services.view:trigger",
+    "order": 3
+  },
+  {
+    "_id": "community.services--create",
+    "id": "create",
+    "screenKey": "community.services",
+    "group": "overview",
+    "i18nKey": "guide.community.services.create",
+    "order": 4
+  },
+  {
+    "_id": "community.services--category:trigger",
+    "id": "category:trigger",
+    "screenKey": "community.services",
+    "group": "overview",
+    "i18nKey": "guide.community.services.category:trigger",
+    "order": 5
+  },
+  {
+    "_id": "community.service.editor--service-details",
+    "id": "service-details",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.service-details",
+    "order": 0
+  },
+  {
+    "_id": "community.service.editor--staff",
+    "id": "staff",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.staff",
+    "order": 1
+  },
+  {
+    "_id": "community.service.editor--choose-staff",
+    "id": "choose-staff",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.choose-staff",
+    "order": 2
+  },
+  {
+    "_id": "community.service.editor--imageUrls",
+    "id": "imageUrls",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.imageUrls",
+    "order": 3
+  },
+  {
+    "_id": "community.service.editor--title",
+    "id": "title",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.title",
+    "order": 4
+  },
+  {
+    "_id": "community.service.editor--description",
+    "id": "description",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.description",
+    "order": 5
+  },
+  {
+    "_id": "community.service.editor--sourceLink",
+    "id": "sourceLink",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.sourceLink",
+    "order": 6
+  },
+  {
+    "_id": "community.service.editor--category",
+    "id": "category",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.category",
+    "order": 7
+  },
+  {
+    "_id": "community.service.editor--save",
+    "id": "save",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.save",
+    "order": 8
+  },
+  {
+    "_id": "community.service.editor--image-preview",
+    "id": "image-preview",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-preview",
+    "order": 9
+  },
+  {
+    "_id": "community.service.editor--image-upload",
+    "id": "image-upload",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-upload",
+    "order": 10
+  },
+  {
+    "_id": "community.service.editor--image-replace",
+    "id": "image-replace",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-replace",
+    "order": 11
+  },
+  {
+    "_id": "community.service.editor--image-copy",
+    "id": "image-copy",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-copy",
+    "order": 12
+  },
+  {
+    "_id": "community.service.editor--image-remove",
+    "id": "image-remove",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-remove",
+    "order": 13
+  },
+  {
+    "_id": "community.service.editor--image-pages",
+    "id": "image-pages",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-pages",
+    "order": 14
+  },
+  {
+    "_id": "community.service.editor--image-details",
+    "id": "image-details",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-details",
+    "order": 15
+  },
+  {
+    "_id": "community.service.editor--image-location",
+    "id": "image-location",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-location",
+    "order": 16
+  },
+  {
+    "_id": "community.service.editor--image-caption",
+    "id": "image-caption",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-caption",
+    "order": 17
+  },
+  {
+    "_id": "community.service.editor--image-details-save",
+    "id": "image-details-save",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-details-save",
+    "order": 18
+  },
+  {
+    "_id": "community.service.editor--image-gallery-expand",
+    "id": "image-gallery-expand",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-gallery-expand",
+    "order": 19
+  },
+  {
+    "_id": "community.service.editor--image-view",
+    "id": "image-view",
+    "screenKey": "community.service.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.service.editor.image-view",
+    "order": 20
+  },
+  {
+    "_id": "community.service.calendar--provider-calendar",
+    "id": "provider-calendar",
+    "screenKey": "community.service.calendar",
+    "group": "overview",
+    "i18nKey": "guide.community.service.calendar.provider-calendar",
+    "order": 0
+  },
+  {
+    "_id": "community.service.calendar--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.service.calendar",
+    "group": "card",
+    "i18nKey": "guide.community.service.calendar.card-actions",
+    "order": 1
+  },
+  {
+    "_id": "community.case.appointments--appointment-slots",
+    "id": "appointment-slots",
+    "screenKey": "community.case.appointments",
+    "group": "controls",
+    "i18nKey": "guide.community.case.appointments.appointment-slots",
+    "order": 0
+  },
+  {
+    "_id": "community.case.appointments--slot-picker-date",
+    "id": "slot-picker-date",
+    "screenKey": "community.case.appointments",
+    "group": "controls",
+    "i18nKey": "guide.community.case.appointments.slot-picker-date",
+    "order": 1
+  },
+  {
+    "_id": "community.case.appointments--slot-picker-calendar",
+    "id": "slot-picker-calendar",
+    "screenKey": "community.case.appointments",
+    "group": "controls",
+    "i18nKey": "guide.community.case.appointments.slot-picker-calendar",
+    "order": 2
+  },
+  {
+    "_id": "community.case.appointments--slot-picker-actions:basket",
+    "id": "slot-picker-actions:basket",
+    "screenKey": "community.case.appointments",
+    "group": "controls",
+    "i18nKey": "guide.community.case.appointments.slot-picker-actions:basket",
+    "order": 3
+  },
+  {
+    "_id": "community.case.appointments--slot-picker-actions:save",
+    "id": "slot-picker-actions:save",
+    "screenKey": "community.case.appointments",
+    "group": "controls",
+    "i18nKey": "guide.community.case.appointments.slot-picker-actions:save",
+    "order": 4
+  },
+  {
+    "_id": "community.case.appointments--close",
+    "id": "close",
+    "screenKey": "community.case.appointments",
+    "group": "controls",
+    "i18nKey": "guide.community.case.appointments.close",
+    "order": 5
+  },
+  {
+    "_id": "community.case.board--case-board-tasks",
+    "id": "case-board-tasks",
+    "screenKey": "community.case.board",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.case-board-tasks",
+    "order": 0
+  },
+  {
+    "_id": "community.case.board--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.case.board",
+    "group": "card",
+    "i18nKey": "guide.community.case.board.card-actions",
+    "order": 1
+  },
+  {
+    "_id": "community.case.board.task--case-board-task-details",
+    "id": "case-board-task-details",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.case-board-task-details",
+    "order": 0
+  },
+  {
+    "_id": "community.case.board.task--title",
+    "id": "title",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.title",
+    "order": 1
+  },
+  {
+    "_id": "community.case.board.task--description",
+    "id": "description",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.description",
+    "order": 2
+  },
+  {
+    "_id": "community.case.board.task--date-range",
+    "id": "date-range",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.date-range",
+    "order": 3
+  },
+  {
+    "_id": "community.case.board.task--members",
+    "id": "members",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.members",
+    "order": 4
+  },
+  {
+    "_id": "community.case.board.task--offers",
+    "id": "offers",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.offers",
+    "order": 5
+  },
+  {
+    "_id": "community.case.board.task--dependencies",
+    "id": "dependencies",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.dependencies",
+    "order": 6
+  },
+  {
+    "_id": "community.case.board.task--save",
+    "id": "save",
+    "screenKey": "community.case.board.task",
+    "group": "overview",
+    "i18nKey": "guide.community.case.board.task.save",
+    "order": 7
+  },
+  {
+    "_id": "community.case.quotations--case-quotations",
+    "id": "case-quotations",
+    "screenKey": "community.case.quotations",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotations.case-quotations",
+    "order": 0
+  },
+  {
+    "_id": "community.case.quotations--card-actions",
+    "id": "card-actions",
+    "screenKey": "community.case.quotations",
+    "group": "card",
+    "i18nKey": "guide.community.case.quotations.card-actions",
+    "order": 1
+  },
+  {
+    "_id": "community.case.quotations--providers",
+    "id": "providers",
+    "screenKey": "community.case.quotations",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotations.providers",
+    "order": 2
+  },
+  {
+    "_id": "community.case.quotations--status:trigger",
+    "id": "status:trigger",
+    "screenKey": "community.case.quotations",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotations.status:trigger",
+    "order": 3
+  },
+  {
+    "_id": "community.case.quotations--offer",
+    "id": "offer",
+    "screenKey": "community.case.quotations",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotations.offer",
+    "order": 4
+  },
+  {
+    "_id": "community.case.quotation.editor--case-quotation-details",
+    "id": "case-quotation-details",
+    "screenKey": "community.case.quotation.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotation.editor.case-quotation-details",
+    "order": 0
+  },
+  {
+    "_id": "community.case.quotation.editor--amount",
+    "id": "amount",
+    "screenKey": "community.case.quotation.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotation.editor.amount",
+    "order": 1
+  },
+  {
+    "_id": "community.case.quotation.editor--currency",
+    "id": "currency",
+    "screenKey": "community.case.quotation.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotation.editor.currency",
+    "order": 2
+  },
+  {
+    "_id": "community.case.quotation.editor--note",
+    "id": "note",
+    "screenKey": "community.case.quotation.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotation.editor.note",
+    "order": 3
+  },
+  {
+    "_id": "community.case.quotation.editor--save",
+    "id": "save",
+    "screenKey": "community.case.quotation.editor",
+    "group": "overview",
+    "i18nKey": "guide.community.case.quotation.editor.save",
+    "order": 4
+  },
+  {
+    "_id": "work.campaign.select--campaign-list",
+    "id": "campaign-list",
+    "screenKey": "work.campaign.select",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.select.campaign-list",
+    "order": 0
+  },
+  {
+    "_id": "work.campaign.select--close",
+    "id": "close",
+    "screenKey": "work.campaign.select",
+    "group": "popup",
+    "i18nKey": "guide.work.campaign.select.close",
+    "order": 1
+  },
+  {
+    "_id": "work.campaign.select--campaign-select",
+    "id": "campaign-select",
+    "screenKey": "work.campaign.select",
+    "group": "card",
+    "i18nKey": "guide.work.campaign.select.card-media-action-select",
+    "order": 2
+  },
+  {
+    "_id": "work.campaign.select--basket",
+    "id": "basket",
+    "screenKey": "work.campaign.select",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.select.basket",
+    "order": 3
+  },
+  {
+    "_id": "work.campaign.select--confirm",
+    "id": "confirm",
+    "screenKey": "work.campaign.select",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.select.confirm",
+    "order": 4
+  },
+  {
+    "_id": "work.campaign.history--history-list",
+    "id": "history-list",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.history-list",
+    "order": 0
+  },
+  {
+    "_id": "work.campaign.history--history-campaign",
+    "id": "history-campaign",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.history-campaign",
+    "order": 1
+  },
+  {
+    "_id": "work.campaign.history--view:trigger",
+    "id": "view:trigger",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.view:trigger",
+    "order": 2
+  },
+  {
+    "_id": "work.campaign.history--images",
+    "id": "images",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.images",
+    "order": 3
+  },
+  {
+    "_id": "work.campaign.history--title",
+    "id": "title",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.title",
+    "order": 4
+  },
+  {
+    "_id": "work.campaign.history--description",
+    "id": "description",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.description",
+    "order": 5
+  },
+  {
+    "_id": "work.campaign.history--kind",
+    "id": "kind",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.kind",
+    "order": 6
+  },
+  {
+    "_id": "work.campaign.history--category",
+    "id": "category",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.category",
+    "order": 7
+  },
+  {
+    "_id": "work.campaign.history--attachments",
+    "id": "attachments",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.attachments",
+    "order": 8
+  },
+  {
+    "_id": "work.campaign.history--attach",
+    "id": "attach",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.attach",
+    "order": 9
+  },
+  {
+    "_id": "work.campaign.history--campaign-ask",
+    "id": "campaign-ask",
+    "screenKey": "work.campaign.history",
+    "group": "overview",
+    "i18nKey": "guide.work.campaign.history.campaign-ask",
+    "order": 10
+  },
+  {
+    "_id": "members.select--member-selection",
+    "id": "member-selection",
+    "screenKey": "members.select",
+    "group": "overview",
+    "i18nKey": "guide.members.select.member-selection",
+    "order": 0
+  },
+  {
+    "_id": "members.select--invite-all",
+    "id": "invite-all",
+    "screenKey": "members.select",
+    "group": "overview",
+    "i18nKey": "guide.members.select.invite-all",
+    "order": 1
+  },
+  {
+    "_id": "members.select--invite-basket",
+    "id": "invite-basket",
+    "screenKey": "members.select",
+    "group": "overview",
+    "i18nKey": "guide.members.select.invite-basket",
+    "order": 2
+  },
+  {
+    "_id": "members.select--invite-confirm",
+    "id": "invite-confirm",
+    "screenKey": "members.select",
+    "group": "overview",
+    "i18nKey": "guide.members.select.invite-confirm",
+    "order": 3
+  },
+  {
+    "_id": "members.select--invite-sort:trigger",
+    "id": "invite-sort:trigger",
+    "screenKey": "members.select",
+    "group": "overview",
+    "i18nKey": "guide.members.select.invite-sort:trigger",
+    "order": 4
   }
 ]

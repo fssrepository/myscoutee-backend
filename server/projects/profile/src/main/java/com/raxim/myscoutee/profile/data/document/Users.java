@@ -585,7 +585,32 @@ public class Users {
             UserEventFeedbackCountersRecord eventFeedback,
             Integer adminJobs,
             Integer adminMetrics,
-            Integer notifications) {
+            Integer notifications,
+            Integer serviceFeedbackPending) {
+        public UserActivitiesRecord(
+                Integer game,
+                Integer chats,
+                Integer invitations,
+                Integer events,
+                Integer hosting,
+                Integer cars,
+                Integer accommodation,
+                Integer supplies,
+                Integer tickets,
+                Integer contacts,
+                Integer feedback,
+                UserChatCountersRecord chat,
+                UserEventCountersRecord event,
+                UserAssetCountersRecord asset,
+                UserEventFeedbackCountersRecord eventFeedback,
+                Integer adminJobs,
+                Integer adminMetrics,
+                Integer notifications) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets,
+                    contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics,
+                    notifications, 0);
+        }
+
         public UserActivitiesRecord(
                 Integer game,
                 Integer chats,
@@ -638,7 +663,13 @@ public class Users {
             Integer appSupport,
             UserSupportCaseCountersRecord supportCases,
             Integer groupSupport,
-            Integer contacts) {
+            Integer contacts,
+            Integer campaign,
+            Integer cases) {
+        public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersRecord supportCases, Integer groupSupport, Integer contacts) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, contacts, 0, 0);
+        }
         public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
                 Integer appSupport, UserSupportCaseCountersRecord supportCases, Integer groupSupport) {
             this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, 0);

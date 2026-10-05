@@ -8,10 +8,31 @@
       "logoCharacterIndex": 0,
       "homeLabel": "Your preferences come first",
       "logoUrl": "assets/logo/heart.webp",
-      "themePreset": "VIOLET",
       "revision": 0
     },
-    "socialLinks": [],
+    "socialLinks": [
+      {
+        "provider": "instagram",
+        "label": "Instagram",
+        "url": "https://www.instagram.com/myscoutee",
+        "icon": "photo_camera",
+        "handle": "@myscoutee"
+      },
+      {
+        "provider": "youtube",
+        "label": "YouTube",
+        "url": "https://www.youtube.com/@myscoutee",
+        "icon": "smart_display",
+        "handle": "@myscoutee"
+      },
+      {
+        "provider": "facebook",
+        "label": "Facebook",
+        "url": "https://www.facebook.com/myscoutee",
+        "icon": "public",
+        "handle": "MyScoutee"
+      }
+    ],
     "privacyContact": {
       "dataControllerName": "",
       "privacyContactEmail": ""

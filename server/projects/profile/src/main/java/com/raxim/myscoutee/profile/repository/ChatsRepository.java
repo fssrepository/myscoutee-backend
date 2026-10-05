@@ -9,6 +9,7 @@ import com.raxim.myscoutee.profile.data.document.Chat;
 
 public interface ChatsRepository extends MongoRepository<Chat, String> {
     List<Chat> findByOwnerUserId(String ownerUserId);
+    List<Chat> findByOwnerUserIdAndChannelTypeAndMemberIdsContaining(String ownerUserId, String channelType, String memberId);
 
     Optional<Chat> findByOwnerUserIdAndChatId(String ownerUserId, String chatId);
 

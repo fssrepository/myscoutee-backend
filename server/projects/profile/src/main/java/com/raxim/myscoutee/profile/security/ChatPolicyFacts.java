@@ -15,6 +15,7 @@ import com.raxim.myscoutee.profile.service.AdminMenuCounterService;
 
 @Component
 public class ChatPolicyFacts {
+    private final com.raxim.myscoutee.profile.repository.ServiceCasesRepository cases;
     private final ChatsRepository chatsRepository;
     private final UsersRepository usersRepository;
     private final AdminMenuCounterService adminMenuCounterService;
@@ -22,8 +23,8 @@ public class ChatPolicyFacts {
     public ChatPolicyFacts(
             ChatsRepository chatsRepository,
             UsersRepository usersRepository,
-            AdminMenuCounterService adminMenuCounterService) {
-        this.chatsRepository = chatsRepository;
+            AdminMenuCounterService adminMenuCounterService, com.raxim.myscoutee.profile.repository.ServiceCasesRepository cases) {
+        this.chatsRepository = chatsRepository; this.cases = cases;
         this.usersRepository = usersRepository;
         this.adminMenuCounterService = adminMenuCounterService;
     }
@@ -67,7 +68,7 @@ public class ChatPolicyFacts {
         }
         return isAdminUser(normalizedActorUserId)
                 && safeChats(chatsRepository.findByChatId(normalizedChatId)).stream()
-                        .anyMatch(this::isSupportCaseChat);
+                        .anyMatch(chat -> isSupportCaseChat(chat) && sameSupportBase(chat, normalizedActorUserId));
     }
 
     private boolean hasChatAccess(Chat chat, String actorUserId) {
@@ -75,16 +76,27 @@ public class ChatPolicyFacts {
             return false;
         }
         String normalizedActorUserId = normalizeId(actorUserId);
+        if ("case".equals(chat.getChannelType())) {
+            var c = cases.findById(chat.getOwnerId()).orElse(null);
+            var profile = usersRepository.findByUserId(normalizedActorUserId).orElse(null);
+            if (c == null || profile == null || !"myscoutee-community".equals(profile.getWorkspaceGroupId())
+                    || !c.activeParticipantAccountIds().contains(profile.getAccountUserId() == null ? normalizedActorUserId : profile.getAccountUserId())) return false;
+        }
         if (normalizedActorUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }
         if (isSupportCaseChat(chat) && isAdminUser(normalizedActorUserId)) {
-            return true;
+            return sameSupportBase(chat, normalizedActorUserId);
         }
         return chat.getMemberIds() != null
                 && chat.getMemberIds().stream()
                         .map(this::normalizeId)
                         .anyMatch(normalizedActorUserId::equals);
+    }
+
+    private boolean sameSupportBase(Chat chat, String actorId) {
+        Users actor = usersRepository.findByUserId(actorId).orElse(null);
+        return actor != null && java.util.Objects.equals(actor.getWorkspaceGroupId(), chat.getSupportBaseGroupId());
     }
 
     private boolean isSupportCaseChat(Chat chat) {

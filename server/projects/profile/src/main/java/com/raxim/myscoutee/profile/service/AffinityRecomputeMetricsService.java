@@ -11,113 +11,120 @@ import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
 
 @Service
 public class AffinityRecomputeMetricsService {
-    private final LongAdder scheduledPasses = new LongAdder();
-    private final LongAdder wakeupPasses = new LongAdder();
-    private final LongAdder emptyPasses = new LongAdder();
-    private final LongAdder busySkips = new LongAdder();
-    private final LongAdder taskReadCount = new LongAdder();
-    private final LongAdder taskReadDurationMs = new LongAdder();
-    private final LongAdder tasksDue = new LongAdder();
-    private final LongAdder tasksLeased = new LongAdder();
-    private final LongAdder taskDueToRunningCount = new LongAdder();
-    private final LongAdder taskDueToRunningMs = new LongAdder();
-    private final LongAdder taskEnqueueToRunningCount = new LongAdder();
-    private final LongAdder taskEnqueueToRunningMs = new LongAdder();
-    private final LongAdder recomputeRuntimeCount = new LongAdder();
-    private final LongAdder recomputeRuntimeMs = new LongAdder();
-    private final LongAdder changeStreamEvents = new LongAdder();
-    private final LongAdder changeStreamIgnoredEvents = new LongAdder();
-    private final LongAdder changeStreamImmediateWakeups = new LongAdder();
-    private final LongAdder changeStreamTimerWakeups = new LongAdder();
-    private final LongAdder changeStreamFutureTimers = new LongAdder();
-    private final LongAdder changeStreamErrors = new LongAdder();
+    private static final class Counters {
+        final LongAdder scheduledPasses = new LongAdder();
+        final LongAdder wakeupPasses = new LongAdder();
+        final LongAdder emptyPasses = new LongAdder();
+        final LongAdder busySkips = new LongAdder();
+        final LongAdder taskReadCount = new LongAdder();
+        final LongAdder taskReadDurationMs = new LongAdder();
+        final LongAdder tasksDue = new LongAdder();
+        final LongAdder tasksLeased = new LongAdder();
+        final LongAdder taskDueToRunningCount = new LongAdder();
+        final LongAdder taskDueToRunningMs = new LongAdder();
+        final LongAdder taskEnqueueToRunningCount = new LongAdder();
+        final LongAdder taskEnqueueToRunningMs = new LongAdder();
+        final LongAdder recomputeRuntimeCount = new LongAdder();
+        final LongAdder recomputeRuntimeMs = new LongAdder();
+        final LongAdder changeStreamEvents = new LongAdder();
+        final LongAdder changeStreamIgnoredEvents = new LongAdder();
+        final LongAdder changeStreamImmediateWakeups = new LongAdder();
+        final LongAdder changeStreamTimerWakeups = new LongAdder();
+        final LongAdder changeStreamFutureTimers = new LongAdder();
+        final LongAdder changeStreamErrors = new LongAdder();
+    }
+    private final java.util.concurrent.ConcurrentMap<String, Counters> counters = new java.util.concurrent.ConcurrentHashMap<>();
+    private Counters current() {
+        return counters.computeIfAbsent(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name()
+                + ":" + JobGroupContext.key(), ignored -> new Counters());
+    }
 
     public void recordWorkerBusySkip() {
-        busySkips.increment();
+        current().busySkips.increment();
     }
 
     public void recordWorkerPass(String trigger, int dueCount, int leasedCount, long readMs, long runtimeMs) {
         if ("scheduled".equals(trigger)) {
-            scheduledPasses.increment();
+            current().scheduledPasses.increment();
         } else {
-            wakeupPasses.increment();
+            current().wakeupPasses.increment();
         }
         if (leasedCount <= 0) {
-            emptyPasses.increment();
+            current().emptyPasses.increment();
         }
-        taskReadCount.increment();
-        taskReadDurationMs.add(Math.max(0L, readMs));
-        tasksDue.add(Math.max(0, dueCount));
-        tasksLeased.add(Math.max(0, leasedCount));
-        recomputeRuntimeCount.increment();
-        recomputeRuntimeMs.add(Math.max(0L, runtimeMs));
+        current().taskReadCount.increment();
+        current().taskReadDurationMs.add(Math.max(0L, readMs));
+        current().tasksDue.add(Math.max(0, dueCount));
+        current().tasksLeased.add(Math.max(0, leasedCount));
+        current().recomputeRuntimeCount.increment();
+        current().recomputeRuntimeMs.add(Math.max(0L, runtimeMs));
     }
 
     public void recordTaskLeased(AffinityRecomputeTask task, Instant runningAt) {
         Instant now = runningAt == null ? Instant.now() : runningAt;
         Instant availableAt = parseInstant(task == null ? null : task.getAvailableAtIso());
         if (availableAt != null) {
-            taskDueToRunningCount.increment();
-            taskDueToRunningMs.add(Math.max(0L, Duration.between(availableAt, now).toMillis()));
+            current().taskDueToRunningCount.increment();
+            current().taskDueToRunningMs.add(Math.max(0L, Duration.between(availableAt, now).toMillis()));
         }
         Instant queuedAt = parseInstant(firstNonBlank(
                 task == null ? null : task.getUpdatedDate(),
                 task == null ? null : task.getCreatedDate()));
         if (queuedAt != null) {
-            taskEnqueueToRunningCount.increment();
-            taskEnqueueToRunningMs.add(Math.max(0L, Duration.between(queuedAt, now).toMillis()));
+            current().taskEnqueueToRunningCount.increment();
+            current().taskEnqueueToRunningMs.add(Math.max(0L, Duration.between(queuedAt, now).toMillis()));
         }
     }
 
     public void recordChangeStreamEvent(boolean useful) {
-        changeStreamEvents.increment();
+        current().changeStreamEvents.increment();
         if (!useful) {
-            changeStreamIgnoredEvents.increment();
+            current().changeStreamIgnoredEvents.increment();
         }
     }
 
     public void recordChangeStreamImmediateWakeup() {
-        changeStreamImmediateWakeups.increment();
+        current().changeStreamImmediateWakeups.increment();
     }
 
     public void recordChangeStreamFutureTimer() {
-        changeStreamFutureTimers.increment();
+        current().changeStreamFutureTimers.increment();
     }
 
     public void recordChangeStreamTimerWakeup() {
-        changeStreamTimerWakeups.increment();
+        current().changeStreamTimerWakeups.increment();
     }
 
     public void recordChangeStreamError() {
-        changeStreamErrors.increment();
+        current().changeStreamErrors.increment();
     }
 
     public Snapshot snapshot() {
-        long dueToRunningCount = taskDueToRunningCount.sum();
-        long enqueueToRunningCount = taskEnqueueToRunningCount.sum();
-        long runtimeCount = recomputeRuntimeCount.sum();
-        long readCount = taskReadCount.sum();
+        long dueToRunningCount = current().taskDueToRunningCount.sum();
+        long enqueueToRunningCount = current().taskEnqueueToRunningCount.sum();
+        long runtimeCount = current().recomputeRuntimeCount.sum();
+        long readCount = current().taskReadCount.sum();
         return new Snapshot(
-                scheduledPasses.sum(),
-                wakeupPasses.sum(),
-                emptyPasses.sum(),
-                busySkips.sum(),
+                current().scheduledPasses.sum(),
+                current().wakeupPasses.sum(),
+                current().emptyPasses.sum(),
+                current().busySkips.sum(),
                 readCount,
-                readCount == 0L ? 0L : taskReadDurationMs.sum() / readCount,
-                tasksDue.sum(),
-                tasksLeased.sum(),
+                readCount == 0L ? 0L : current().taskReadDurationMs.sum() / readCount,
+                current().tasksDue.sum(),
+                current().tasksLeased.sum(),
                 dueToRunningCount,
-                dueToRunningCount == 0L ? 0L : taskDueToRunningMs.sum() / dueToRunningCount,
+                dueToRunningCount == 0L ? 0L : current().taskDueToRunningMs.sum() / dueToRunningCount,
                 enqueueToRunningCount,
-                enqueueToRunningCount == 0L ? 0L : taskEnqueueToRunningMs.sum() / enqueueToRunningCount,
+                enqueueToRunningCount == 0L ? 0L : current().taskEnqueueToRunningMs.sum() / enqueueToRunningCount,
                 runtimeCount,
-                runtimeCount == 0L ? 0L : recomputeRuntimeMs.sum() / runtimeCount,
-                changeStreamEvents.sum(),
-                changeStreamIgnoredEvents.sum(),
-                changeStreamImmediateWakeups.sum(),
-                changeStreamTimerWakeups.sum(),
-                changeStreamFutureTimers.sum(),
-                changeStreamErrors.sum());
+                runtimeCount == 0L ? 0L : current().recomputeRuntimeMs.sum() / runtimeCount,
+                current().changeStreamEvents.sum(),
+                current().changeStreamIgnoredEvents.sum(),
+                current().changeStreamImmediateWakeups.sum(),
+                current().changeStreamTimerWakeups.sum(),
+                current().changeStreamFutureTimers.sum(),
+                current().changeStreamErrors.sum());
     }
 
     private Instant parseInstant(String value) {

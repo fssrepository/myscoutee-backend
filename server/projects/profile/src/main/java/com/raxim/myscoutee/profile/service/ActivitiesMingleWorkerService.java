@@ -14,6 +14,13 @@ import com.raxim.myscoutee.profile.repository.ActivityMingleSessionsRepository;
 
 @Service
 public class ActivitiesMingleWorkerService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesMingleWorkerService.class);
     private static final List<String> TIMED_STATUSES = List.of(
             ActivitiesMingleService.STATUS_ROUND,
@@ -31,11 +38,15 @@ public class ActivitiesMingleWorkerService {
 
     @Scheduled(fixedDelayString = "${app.mingle.worker.fixed-delay-ms:5000}")
     public void advanceDueSessions() {
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("event-mingle-advance", this::advanceDueSessionsInGroup));
+    }
+
+    private void advanceDueSessionsInGroup() {
         Instant now = Instant.now();
-        for (ActivityMingleSession session : sessionsRepository
-                .findTop50ByStatusInAndPhaseEndsAtIsoLessThanEqualOrderByPhaseEndsAtIsoAsc(
-                        TIMED_STATUSES,
-                        now.toString())) {
+        for (ActivityMingleSession session : jobGroupScope.findEventOwned(org.springframework.data.mongodb.core.query.Query.query(
+                    org.springframework.data.mongodb.core.query.Criteria.where("status").in(TIMED_STATUSES)
+                        .and("phaseEndsAtIso").lte(now.toString()))
+                    .with(org.springframework.data.domain.Sort.by("phaseEndsAtIso")).limit(50), ActivityMingleSession.class, "eventId")) {
             try {
                 mingleService.advanceDueSession(session, now);
             } catch (OptimisticLockingFailureException ignored) {

@@ -50,6 +50,15 @@ public class CommunityGroupsService {
     public List<Workspace> workspaces(Users actor) {
         var memberships = this.memberships.findByOwnerTypeAndUserId(OWNER_TYPE, actor.getUserId()).stream()
                 .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).collect(Collectors.toMap(ActivityMember::getOwnerId, m -> m));
+        for (String baseId : CommunityGroup.BASE_IDS) if ("Admin".equalsIgnoreCase(actor.getHostTier()) && !memberships.containsKey(baseId)
+                && membership(baseId, actor.getUserId()) == null) {
+            groups.findById(baseId).filter(group -> !group.deleted()).ifPresent(group -> {
+                // App administration uses the same workspace/profile admission path.
+                var member = this.memberships.save(newMember(group, actor.getUserId(), "Admin", "accepted", null, null));
+                groupProfiles.admit(group, actor.getUserId());
+                memberships.put(group.id(), member);
+            });
+        }
         var profiles = groupProfiles.profilesByGroup(actor.getUserId());
         return groups.findByIdIn(memberships.keySet()).stream().filter(g -> !g.deleted())
                 .map(g -> new Workspace(g.id(), profiles.containsKey(g.id()) ? profiles.get(g.id()).getUserId() : null, g.name(), memberships.get(g.id()).getRole(),
@@ -59,7 +68,7 @@ public class CommunityGroupsService {
                         + (isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0), g.policy(),
                     isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0,
                     isAdmin(memberships.get(g.id())) && g.moderationQueueRevision() != null ? g.moderationQueueRevision() : 0, g.category(), memberships.get(g.id()).getStatus(),
-                    CommunityGroupMapper.membersActivity(g, memberships.get(g.id())), memberships.get(g.id()).getRequestKind()))
+                    CommunityGroupMapper.membersActivity(g, memberships.get(g.id())), memberships.get(g.id()).getRequestKind(), g.effectiveType()))
                 .sorted(Comparator.comparing(Workspace::name).thenComparing(Workspace::groupId)).toList();
     }
     public ProfileExtByIdResponseDto completeProfileLoad(
@@ -146,6 +155,7 @@ public class CommunityGroupsService {
         if (request == null || request.name() == null || request.name().isBlank() || request.name().codePointCount(0, request.name().length()) > 20
                 || request.description() != null && request.description().length() > 4000
                 || !CATEGORIES.contains(request.category()) || !VISIBILITIES.contains(request.visibility())) throw error(HttpStatus.BAD_REQUEST);
+        if (request.groupType() != null && !Set.of("dating", "work", "community").contains(request.groupType())) throw error(HttpStatus.BAD_REQUEST);
         var policy = request.policy();
         if (policy == null || policy.requiredFields() == null || !FIELDS.containsAll(policy.requiredFields())) throw error(HttpStatus.BAD_REQUEST);
         var existing = request.id() == null || request.id().isBlank() ? null : visible(actor, request.id());
@@ -161,7 +171,7 @@ public class CommunityGroupsService {
                     existing == null ? null : existing.version(), existing == null ? null : existing.moderationStatus(),
                     existing == null ? null : existing.moderationVersion(),
                     existing == null ? null : existing.moderationPending(), existing == null ? null : existing.moderationQueueRevision(), existing == null ? 0L : existing.pendingMembers(), existing == null ? null : existing.lifecycleStatus(),
-                    existing == null ? null : existing.ownerReleasedAtIso(), existing == null ? null : existing.takeoverCandidates());
+                    existing == null ? null : existing.ownerReleasedAtIso(), existing == null ? null : existing.takeoverCandidates(), request.groupType() == null ? (existing == null ? "dating" : existing.effectiveType()) : request.groupType());
         group = groups.save(group);
         if (existing == null) memberships.save(newMember(group, actor.getUserId(), "Admin", "accepted", null, actor.getUserId()));
         groupProfiles.applyPolicy(group);
@@ -197,6 +207,15 @@ public class CommunityGroupsService {
         var group = visible(actor, id);
         if (group.awaitingOwner() || !group.moderationVisible()) throw error(HttpStatus.FORBIDDEN);
         var old = membership(id, actor.getUserId());
+        if (CommunityGroup.isBaseId(id)) {
+            if (old != null && "blocked".equals(old.getStatus())) throw error(HttpStatus.FORBIDDEN);
+            if (old == null || !"accepted".equals(old.getStatus())) {
+                memberships.save(newMember(group, actor.getUserId(), "Member", "accepted", null, null));
+                if (old != null && "pending".equals(old.getStatus())) counters.applyCommunityMemberDelta(id, -1);
+                groupProfiles.admit(group, actor.getUserId());
+            }
+            return dto(actor, groups.findById(id).orElseThrow(), members(id));
+        }
         if (old != null && Set.of("accepted", "pending").contains(old.getStatus())) {
             if ("pending".equals(old.getStatus()) && "join".equals(old.getRequestKind())) {
                 notifyMembers(group, "join-requested", actor.getUserId(), old, members(id).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
@@ -204,11 +223,18 @@ public class CommunityGroupsService {
             return dto(actor, groups.findById(id).orElseThrow(), members(id));
         }
         if ("invitation".equals(group.visibility())) throw error(HttpStatus.FORBIDDEN);
-        // Admission always goes through an administrator; pending users have no group profile.
+        // Independent workspace admission goes through an administrator.
         var requested = memberships.save(newMember(group, actor.getUserId(), "Member", "pending", "join", null));
         counters.applyCommunityMemberDelta(id, 1);
         notifyMembers(group, "join-requested", actor.getUserId(), requested, members(id).stream().filter(this::isAdmin).map(ActivityMember::getUserId).toList(), false);
         return dto(actor, groups.findById(id).orElseThrow(), members(id));
+    }
+    public void joinWorkspaceBase(Users actor, String groupId) {
+        var workspace = visible(actor, groupId);
+        var member = membership(groupId, actor.getUserId());
+        if (member == null || !"accepted".equals(member.getStatus())) throw error(HttpStatus.FORBIDDEN);
+        if (workspace.baseId() != null && !workspace.baseId().equals(groupId))
+            join(actor, workspace.baseId());
     }
     public List<ActivityMemberEntryDto> roster(Users actor, String id, boolean pendingOnly) {
         var group = visible(actor, id);
@@ -306,7 +332,7 @@ public class CommunityGroupsService {
         boolean self = actor.getUserId().equals(target.getUserId());
         boolean admin = isAdmin(membership(id, actor.getUserId()));
         boolean owner = group.ownerUserId().equals(target.getUserId());
-        if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (self || admin)) {
+        if (request.action().equals(target.getCommunityAction()) && actor.getUserId().equals(target.getCommunityActor()) && (Set.of("grant-vote", "revoke-vote").contains(request.action()) ? admin : self || admin)) {
             group = groups.findById(id).orElseThrow();
             notifyMemberTransition(group, actor.getUserId(), target, request.action());
             if (group.awaitingOwner() && group.ownerUserId().equals(target.getUserId()) && Objects.equals(group.ownerReleasedAtIso(), target.getActionAtIso()))
@@ -337,6 +363,10 @@ public class CommunityGroupsService {
                 if (!Set.of("accepted", "pending").contains(target.getStatus()) || !(self || admin && !owner && !isAdmin(target))) throw error(HttpStatus.FORBIDDEN);
                 target.setStatus(self ? "deleted" : "blocked"); target.setManagerGrantedByUserId(null);
             }
+            case "grant-vote", "revoke-vote" -> {
+                if (!admin || !"accepted".equals(target.getStatus())) throw error(HttpStatus.FORBIDDEN);
+                target.setVotingEligible("grant-vote".equals(request.action()));
+            }
             case "promote-admin" -> {
                 if (!admin || self || !"accepted".equals(target.getStatus()) || isAdmin(target)) throw error(HttpStatus.FORBIDDEN);
                 target.setRole("Admin"); target.setManagerGrantedByUserId(actor.getUserId());
@@ -363,13 +393,13 @@ public class CommunityGroupsService {
             default -> throw error(HttpStatus.BAD_REQUEST);
         }
         if (Objects.equals(previousStatus, target.getStatus()) && Objects.equals(previousRole, target.getRole())
-                && !Set.of("set-organizer-only", "set-participant", "take-over").contains(request.action()))
+                && !Set.of("set-organizer-only", "set-participant", "take-over", "grant-vote", "revoke-vote").contains(request.action()))
             return new ActivityMemberActionResponseDto(roster(actor, id, false), null, dto(actor, group, members(id)));
         target.setUpdatedDate(Instant.now().toString()); target.setActionAtIso(target.getUpdatedDate());
         target.setCommunityAction(request.action()); target.setCommunityActor(actor.getUserId());
         if (memberships.updateCommunityState(target.getId(), previousStatus, previousRole, previousActionAtIso,
                 target.getStatus(), target.getRole(), target.getRequestKind(), target.getPendingSource(),
-                Boolean.TRUE.equals(target.getOrganizerOnly()), target.getActionAtIso(), request.action(), actor.getUserId(), target.getManagerGrantedByUserId()) == 0)
+                Boolean.TRUE.equals(target.getOrganizerOnly()), target.getActionAtIso(), request.action(), actor.getUserId(), target.getManagerGrantedByUserId(), Boolean.TRUE.equals(target.getVotingEligible())) == 0)
             throw error(HttpStatus.CONFLICT);
         int pendingDelta = ("pending".equals(target.getStatus()) ? 1 : 0) - ("pending".equals(previousStatus) ? 1 : 0);
         if (pendingDelta == 0) counters.touchCommunityGroup(id, target.getActionAtIso());

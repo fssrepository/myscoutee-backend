@@ -1,5 +1,8 @@
 package com.raxim.myscoutee.profile.service.email;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -43,6 +46,13 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class PromotionalEmailPlannerService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PromotionalEmailPlannerService.class);
     private static final String UPDATED_BY = "email-planner";
     private static final String OWNER_TYPE_EVENT = "event";
@@ -106,6 +116,10 @@ public class PromotionalEmailPlannerService {
 
     @Scheduled(fixedDelayString = "${email.promotions.scheduler-poll-delay-ms:60000}")
     public void planScheduledPromotionalEmails() {
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("promotional-email-planning", this::planScheduledPromotionalEmailsInGroup));
+    }
+
+    private void planScheduledPromotionalEmailsInGroup() {
         if (!promotionsEnabled()) {
             cancelAllRunningTasks("Email promotions are disabled.");
             return;
@@ -113,7 +127,7 @@ public class PromotionalEmailPlannerService {
 
         clearFinishedTasks();
         Instant now = Instant.now();
-        List<EmailCampaignRule> rules = emailCampaignRulesRepository.findAll();
+        List<EmailCampaignRule> rules = emailCampaignRulesRepository.findByBaseGroupId(JobGroupContext.groupId());
         cancelSuspendedRuleTasks(rules);
         for (EmailCampaignRule rule : emailCampaignRulesRepository.findByEnabledTrueOrderByPriorityDescRuleKeyAsc()) {
             if (rule == null || !isDue(rule, now)) {
@@ -155,14 +169,24 @@ public class PromotionalEmailPlannerService {
         if (!StringUtils.hasText(ruleKey)) {
             return false;
         }
-        Future<?> current = runningRuleTasks.get(ruleKey);
+        Future<?> current = runningRuleTasks.get(workerKey(ruleKey));
         if (current != null && !current.isDone() && !current.isCancelled()) {
             return false;
         }
         markRuleRunning(ruleKey);
-        Future<?> task = ruleExecutor.submit(() -> runRuleWorker(ruleKey));
-        runningRuleTasks.put(ruleKey, task);
+        String groupId = JobGroupContext.groupId();
+        var mode = MongoSessionModeContext.currentMode();
+        Future<?> task = ruleExecutor.submit(() -> {
+            var previous = MongoSessionModeContext.currentMode();
+            try { MongoSessionModeContext.set(mode); JobGroupContext.run(groupId, () -> runRuleWorker(ruleKey)); }
+            finally { MongoSessionModeContext.set(previous); }
+        });
+        runningRuleTasks.put(workerKey(ruleKey), task);
         return true;
+    }
+
+    private String workerKey(String ruleKey) {
+        return MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key() + ":" + ruleKey;
     }
 
     private void runRuleWorker(String ruleKey) {
@@ -203,7 +227,7 @@ public class PromotionalEmailPlannerService {
                 }
                 markRuleFinished(ruleKey, result.affectedCount(), status, detail);
             } finally {
-                runningRuleTasks.remove(ruleKey);
+                runningRuleTasks.remove(workerKey(ruleKey));
             }
         }
     }
@@ -225,6 +249,7 @@ public class PromotionalEmailPlannerService {
         int emailQueuedCount = 0;
         int failedCount = 0;
         for (Users user : resolveAudience(rule)) {
+            if (!jobGroupScope.matchesWorkspace(user.getWorkspaceGroupId())) continue;
             if (Thread.currentThread().isInterrupted()) {
                 throw new IllegalStateException("Scheduled email campaign was cancelled.");
             }
@@ -417,7 +442,7 @@ public class PromotionalEmailPlannerService {
                 continue;
             }
             String ruleKey = safeText(rule == null ? null : rule.getRuleKey());
-            Future<?> task = runningRuleTasks.remove(ruleKey);
+            Future<?> task = runningRuleTasks.remove(workerKey(ruleKey));
             if (task != null) {
                 task.cancel(true);
                 markRuleFinished(ruleKey, 0, "suspended", "Rule was suspended while running.");
@@ -426,14 +451,13 @@ public class PromotionalEmailPlannerService {
     }
 
     private void cancelAllRunningTasks(String detail) {
+        String prefix = workerKey("");
         for (Map.Entry<String, Future<?>> entry : runningRuleTasks.entrySet()) {
-            Future<?> task = entry.getValue();
-            if (task != null) {
-                task.cancel(true);
-            }
-            markRuleFinished(entry.getKey(), 0, "suspended", detail);
+            if (!entry.getKey().startsWith(prefix)) continue;
+            Future<?> task = runningRuleTasks.remove(entry.getKey());
+            if (task != null) task.cancel(true);
+            markRuleFinished(entry.getKey().substring(prefix.length()), 0, "suspended", detail);
         }
-        runningRuleTasks.clear();
     }
 
     private void markRuleRunning(String ruleKey) {
@@ -534,6 +558,7 @@ public class PromotionalEmailPlannerService {
         item.setUserId(safeText(user.getId()));
         item.setRecipientEmail(safeText(user.getEmail()));
         item.setRecipientName(safeText(user.getName()));
+        item.setBaseGroupId(JobGroupContext.groupId());
         item.setTemplateKey(safeText(template.getTemplateKey()));
         item.setRuleKey(safeText(rule.getRuleKey()));
         item.setCategory("promotional");

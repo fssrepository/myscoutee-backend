@@ -59,7 +59,10 @@ public final class GeneratorModels {
             List<Integer> tableNumbers,
             List<MinglePreviousTable> previousTables,
             Map<String, String> userGenders,
-            boolean requireGenderBalance) {
+            boolean requireGenderBalance, boolean randomMixing) {
+        public MingleGeneratorRequest(FGraph graph,Set<String> eligibleUserIds,int groupSize,int roundNumber,List<Integer> tableNumbers,List<MinglePreviousTable> previousTables,Map<String,String> userGenders,boolean requireGenderBalance) {
+            this(graph,eligibleUserIds,groupSize,roundNumber,tableNumbers,previousTables,userGenders,requireGenderBalance,false);
+        }
     }
 
     public record MinglePreviousTable(

@@ -105,7 +105,7 @@ public class ActivityEventDetailMapper {
                         : List.copyOf(record.getImageUrls()),
                 record.getImageDetails(),
                 record.getPaymentDeadlineHours() == null ? 4 : record.getPaymentDeadlineHours(),
-                !Boolean.FALSE.equals(record.getPaymentDeadlineEnabled()));
+                !Boolean.FALSE.equals(record.getPaymentDeadlineEnabled()), record.getCampaignId());
     }
 
     private MingleConfigurationDto cloneMingleConfiguration(MingleConfigurationDto value) {

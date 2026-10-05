@@ -147,12 +147,12 @@ public class PaymentSimulatorRegistrationClient {
         return access;
     }
 
-    public GatewayConfigurationAccess createAuthorizationAccess() {
+    public GatewayConfigurationAccess createAuthorizationAccess(AuthorizationScope scope) {
         requireConfigured();
         ResponseEntity<GatewayConfigurationAccess> response = restTemplate.exchange(
                 baseUrl + "/myscoutee/v1/authorization-access",
                 HttpMethod.POST,
-                new HttpEntity<>(Map.of(), headers()),
+                new HttpEntity<>(scope, headers()),
                 GatewayConfigurationAccess.class);
         GatewayConfigurationAccess access = response.getBody();
         if (access == null || !StringUtils.hasText(access.url()) || !StringUtils.hasText(access.expiresAt())) {
@@ -236,6 +236,8 @@ public class PaymentSimulatorRegistrationClient {
             boolean requires3ds,
             boolean connected,
             String credential) {}
+
+    public record AuthorizationScope(String baseGroupId, java.util.List<String> userReferences, java.util.List<String> paymentReferences) {}
 
     public record GatewayConfigurationAccess(String url, String expiresAt) {}
 }

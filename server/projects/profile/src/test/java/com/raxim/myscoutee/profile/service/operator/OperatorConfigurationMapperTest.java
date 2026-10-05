@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.PaymentUpdateDto;
@@ -23,23 +22,6 @@ import tools.jackson.databind.ObjectMapper;
 
 class OperatorConfigurationMapperTest {
     private final ObjectMapper objectMapper = new JsonConfig().objectMapper();
-
-    @Test
-    void themeWhitelistContainsExactlyTheTenDeploymentPresets() {
-        assertThat(DeploymentThemePreset.values())
-                .extracting(Enum::name)
-                .containsExactly(
-                        "AURORA",
-                        "OCEAN",
-                        "FOREST",
-                        "SUNSET",
-                        "VIOLET",
-                        "ROSE",
-                        "AMBER",
-                        "SLATE",
-                        "AQUARIUS",
-                        "MONOCHROME");
-    }
 
     @Test
     void configurationUsesOneVersionedDeploymentSingletonCollection() throws Exception {
@@ -75,8 +57,7 @@ class OperatorConfigurationMapperTest {
             assertThat(singleton.path("schemaVersion").asInt())
                     .isEqualTo(DeploymentConfiguration.SCHEMA_VERSION);
             assertThat(singleton.path("version").asLong()).isZero();
-            assertThat(singleton.path("branding").path("themePreset").asText())
-                    .isEqualTo(DeploymentThemePreset.VIOLET.name());
+            assertThat(singleton.path("branding").has("themePreset")).isFalse();
             assertThat(singleton.path("branding")
                             .has("logoCharacterIndex"))
                     .isTrue();
@@ -130,7 +111,6 @@ class OperatorConfigurationMapperTest {
                         "logoCharacterIndex",
                         "homeLabel",
                         "logoUrl",
-                        "themePreset",
                         "revision",
                         "paymentProviderId",
                         "firebaseMessagingConfigured",
@@ -311,7 +291,7 @@ class OperatorConfigurationMapperTest {
         branding.setLogoCharacterIndex(null);
         branding.setHomeLabel("Your preferences come first");
         branding.setLogoUrl("assets/logo/heart.webp");
-        branding.setThemePreset(DeploymentThemePreset.AURORA.name());
+
         branding.setRevision(0L);
         configuration.setBranding(branding);
         configuration.setSocialLinks(List.of());

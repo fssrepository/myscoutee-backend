@@ -3,7 +3,7 @@
 // Attaches to versioned-launcher sessions; never creates logins.
 import { readFile, writeFile } from 'node:fs/promises';
 const [checkpoint, actor = '0', command = 'inspect', input = '', output = ''] = process.argv.slice(2);
-if (!['GROUP-LIFECYCLE-001-PENDING-BLOCK19', 'GROUP-LIFECYCLE-001-ENTRY-BLOCK19', 'GROUP-LIFECYCLE-001-MCP', 'GROUP-LIFECYCLE-001-CONTACT-INVITEES', 'GROUP-LIFECYCLE-001-CONTACTS', 'GROUP-LIFECYCLE-001-CASH', 'GROUP-LIFECYCLE-001-ENTRY', 'GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'GROUP-ISOLATION-001-OUTSIDER', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
+if (!['MSC115-UI-REGRESSION', 'GROUP-LIFECYCLE-001-PENDING-BLOCK19', 'GROUP-LIFECYCLE-001-ENTRY-BLOCK19', 'GROUP-LIFECYCLE-001-MCP', 'GROUP-LIFECYCLE-001-CONTACT-INVITEES', 'GROUP-LIFECYCLE-001-CONTACTS', 'GROUP-LIFECYCLE-001-CASH', 'GROUP-LIFECYCLE-001-ENTRY', 'GROUP-LIFECYCLE-001-APP-ADMIN', 'GROUP-LIFECYCLE-001', 'GROUP-ISOLATION-001', 'GROUP-ISOLATION-001-OUTSIDER', 'INTEGRATION-API-GROUP-001', 'EVENT-GALLERY-FEED-001', 'OPERATOR-EMAIL-WARNING-001', 'ADMIN-CLIENT-API-001', 'ADMIN-CLIENT-MONITOR-001', 'AFFILIATE-INVITATION-001', 'EMAIL-UNSUBSCRIBE-001'].includes(checkpoint)) throw Error('Unsupported checkpoint');
 const manifest = JSON.parse(await readFile(`/tmp/myscoutee-qa-browser-sessions/${checkpoint}.json`, 'utf8'));
 const session = manifest.sessions[Number(actor)];
 const targets = await fetch(`http://127.0.0.1:${session.devToolsPort}/json/list`).then(r => r.json());
@@ -173,11 +173,33 @@ try {
       }
     }
   } else if (command === 'viewport-eval') {
-    const { width, height, script } = JSON.parse(await readFile(input, 'utf8'));
+    const { width, height, script, swipe } = JSON.parse(await readFile(input, 'utf8'));
     await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
     try {
+      if (swipe) {
+        await send('Emulation.setTouchEmulationEnabled', { enabled: true });
+        await new Promise(resolve => setTimeout(resolve, 150));
+        const expression = `(()=>{const e=document.querySelector(${JSON.stringify(swipe.selector)});if(!e)throw Error('Swipe surface missing');const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+Math.min(r.height/2,120),left:e.scrollLeft};})()`;
+        const positions = [];
+        for (const distance of swipe.distances) {
+          const before = (await send('Runtime.evaluate', { expression, returnByValue: true })).result.value;
+          await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: before.x, y: before.y }] });
+          for (let step = 1; step <= 12; step++) {
+            await send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: before.x + distance * step / 12, y: before.y }] });
+            await new Promise(resolve => setTimeout(resolve, 16));
+          }
+          await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+          await new Promise(resolve => setTimeout(resolve, 200));
+          const after = (await send('Runtime.evaluate', { expression, returnByValue: true })).result.value;
+          positions.push({ distance, before: before.left, after: after.left });
+        }
+        console.log(JSON.stringify({ nativeTouchSwipes: positions }));
+      }
       result = (await send('Runtime.evaluate', { expression: await readFile(script, 'utf8'), awaitPromise: true, returnByValue: true })).result.value;
-    } finally { await send('Emulation.clearDeviceMetricsOverride'); }
+    } finally {
+      if (swipe) await send('Emulation.setTouchEmulationEnabled', { enabled: false });
+      await send('Emulation.clearDeviceMetricsOverride');
+    }
   } else if (command === 'viewport') {
     const size = JSON.parse(input);
     result = size ? await send('Emulation.setDeviceMetricsOverride', { ...size, deviceScaleFactor: 1, mobile: false })

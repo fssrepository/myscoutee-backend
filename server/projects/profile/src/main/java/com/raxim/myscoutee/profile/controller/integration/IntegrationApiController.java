@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationAssetSyncRequestDto;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationCampaignSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationConnectDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEventSyncRequestDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationSyncResponseDto;
@@ -110,6 +111,18 @@ public class IntegrationApiController {
                 actorUserId(authentication),
                 request,
                 imageFiles(multipartRequest));
+    }
+
+    @PostMapping(path = "/campaigns", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public IntegrationSyncResponseDto createCampaigns(Authentication authentication,
+            @RequestBody IntegrationCampaignSyncRequestDto request) {
+        return syncService.createCampaigns(actorUserId(authentication), request);
+    }
+
+    @PostMapping(path = "/campaigns", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public IntegrationSyncResponseDto createCampaignsWithImages(Authentication authentication,
+            @RequestPart("request") IntegrationCampaignSyncRequestDto request, MultipartHttpServletRequest multipartRequest) {
+        return syncService.createCampaigns(actorUserId(authentication), request, imageFiles(multipartRequest));
     }
 
     @PostMapping("/groups/{groupId}/invites")

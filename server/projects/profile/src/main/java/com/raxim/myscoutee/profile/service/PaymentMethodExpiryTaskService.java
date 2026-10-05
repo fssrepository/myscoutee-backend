@@ -23,6 +23,9 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 
 @Service
 public class PaymentMethodExpiryTaskService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentMethodExpiryTaskService.class);
     private static final String ACTIVE = "active";
     private static final String SYSTEM_USER = "payment-method-expiry-task";
@@ -48,6 +51,11 @@ public class PaymentMethodExpiryTaskService {
     }
 
     private void runScheduledPassForCurrentDatabase() {
+        var registry = notificationRuleRegistryService;
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY, this::runScheduledPassForCurrentDatabaseInGroup);
+    }
+
+    private void runScheduledPassForCurrentDatabaseInGroup() {
         Instant startedAt = Instant.now();
         NotificationRuleConfig rule = notificationRuleRegistryService
                 .findRule(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY)
@@ -92,10 +100,11 @@ public class PaymentMethodExpiryTaskService {
         int currentExpiryKey = now.getYear() * 100 + now.getMonthValue();
         int expiredCount = 0;
         while (true) {
-            List<SavedPaymentMethod> candidates = repository
-                    .findTop100ByStatusAndExpiryKeyLessThanAndExpiredNotifiedAtIsoIsNullOrderByExpiryKeyAsc(
-                            ACTIVE,
-                            currentExpiryKey);
+            List<SavedPaymentMethod> candidates = jobGroupScope.findOwned(
+                    org.springframework.data.mongodb.core.query.Query.query(
+                        org.springframework.data.mongodb.core.query.Criteria.where("status").is(ACTIVE)
+                            .and("expiryKey").lt(currentExpiryKey).and("expiredNotifiedAtIso").is(null))
+                        .with(org.springframework.data.domain.Sort.by("expiryKey")).limit(100), SavedPaymentMethod.class, "userId");
             if (candidates.isEmpty()) {
                 return expiredCount;
             }

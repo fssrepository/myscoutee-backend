@@ -14,4 +14,5 @@ public interface NotificationOutboxRepository extends MongoRepository<Notificati
             String createdDate);
 
     long countByStatus(String status);
+    long countByBaseGroupIdAndStatus(String baseGroupId, String status);
 }

@@ -51,6 +51,7 @@ public class AdminModerationService {
             new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "admin2@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()));
 
+    private final com.raxim.myscoutee.profile.repository.CommunityGroupsRepository groups;
     private final ConfigProperties configProperties;
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
@@ -65,6 +66,7 @@ public class AdminModerationService {
     private final NotificationOutboxService notificationOutboxService;
 
     public AdminModerationService(
+            com.raxim.myscoutee.profile.repository.CommunityGroupsRepository groups,
             ConfigProperties configProperties,
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
@@ -77,6 +79,7 @@ public class AdminModerationService {
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService,
             NotificationOutboxService notificationOutboxService) {
+        this.groups = groups;
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
@@ -124,9 +127,20 @@ public class AdminModerationService {
     private AdminDashboardDto dashboardFor(AdminUserDto admin, String reportsStatus, String feedbackStatus) {
         List<UserReportSubmission> allReports = reportsRepository.findAllByOrderByCreatedDateDesc();
         List<UserFeedbackSubmission> allFeedback = feedbackRepository.findAllByOrderByCreatedDateDesc();
+        Map<String, Users> scopedUsers = usersById(allReports, allFeedback);
+        String groupId = usersRepository.findByUserId(admin.id()).map(Users::getWorkspaceGroupId).orElse(null);
+        var blocked = usersRepository.findByProfileStatus("blocked");
+        blocked.forEach(user -> scopedUsers.put(user.getUserId(), user));
+        var types = new java.util.HashMap<String, String>();
+        groups.findAllById(scopedUsers.values().stream().map(Users::getWorkspaceGroupId)
+                .filter(StringUtils::hasText).distinct().toList()).forEach(group -> types.put(group.id(), group.effectiveType()));
+        java.util.function.Predicate<String> inScope = id -> java.util.Objects.equals(groupId,
+                reportBaseGroup(scopedUsers.get(id), types));
+        allReports = allReports.stream().filter(report -> inScope.test(report.getUserId())).toList();
+        allFeedback = allFeedback.stream().filter(item -> inScope.test(item.getUserId())).toList();
         List<UserReportSubmission> reports = filterReportsByStatus(allReports, reportsStatus);
         List<UserFeedbackSubmission> feedback = filterFeedbackByStatus(allFeedback, feedbackStatus);
-        Map<String, Users> usersById = usersById(allReports, allFeedback);
+        Map<String, Users> usersById = scopedUsers;
         Map<String, List<UserReportSubmission>> byTarget = new LinkedHashMap<>();
         for (UserReportSubmission report : reports) {
             String targetUserId = normalize(report.getTargetUserId());
@@ -145,7 +159,8 @@ public class AdminModerationService {
                 .map(entry -> toReportedUser(entry.getKey(), entry.getValue(), usersById, admin.id()))
                 .sorted(Comparator.comparing(AdminReportedUserDto::lastReportedAtIso, Comparator.nullsLast(String::compareTo)).reversed())
                 .toList();
-        List<AdminReportedUserDto> blockedUsers = usersRepository.findByProfileStatus("blocked").stream()
+        List<AdminReportedUserDto> blockedUsers = blocked.stream()
+                .filter(user -> java.util.Objects.equals(groupId, reportBaseGroup(user, types)))
                 .map(user -> toBlockedUser(user, allByTarget.getOrDefault(normalize(user.getId()), List.of()), usersById, admin.id()))
                 .toList();
         return new AdminDashboardDto(
@@ -163,6 +178,7 @@ public class AdminModerationService {
         UserReportSubmission report = requireWarningReport(
                 targetUserId,
                 request == null ? null : request.reportId());
+        requireScope(admin.id(), report.getUserId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
                 : "Please update the reported behavior before your account is blocked.", "warned");
@@ -177,6 +193,7 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         Users user = usersRepository.findByUserId(targetUserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reported user not found."));
+        requireScope(admin.id(), targetUserId);
         if (!"blocked".equals(normalize(user.getProfileStatus()))) {
             user.setPreviousProfileStatus(StringUtils.hasText(user.getProfileStatus()) ? user.getProfileStatus() : "public");
             user.setProfileStatus("blocked");
@@ -195,6 +212,7 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         Users user = usersRepository.findByUserId(targetUserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blocked user not found."));
+        requireScope(admin.id(), targetUserId);
         String previous = normalize(user.getPreviousProfileStatus());
         user.setProfileStatus(StringUtils.hasText(previous) && !"blocked".equals(previous) ? previous : "public");
         user.setPreviousProfileStatus(null);
@@ -212,6 +230,7 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         UserReportSubmission report = reportsRepository.findById(normalizedReportId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Report not found."));
+        requireScope(admin.id(), report.getUserId());
         boolean resolved = request == null || request.resolved() == null || Boolean.TRUE.equals(request.resolved());
         boolean wasResolved = isResolved(report.getResolvedAtIso());
         String nowIso = Instant.now().toString();
@@ -244,6 +263,7 @@ public class AdminModerationService {
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
         UserFeedbackSubmission feedback = feedbackRepository.findById(normalizedFeedbackId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Feedback not found."));
+        requireScope(admin.id(), feedback.getUserId());
         boolean resolved = request == null || request.resolved() == null || Boolean.TRUE.equals(request.resolved());
         boolean wasResolved = isResolved(feedback.getResolvedAtIso());
         String nowIso = Instant.now().toString();
@@ -266,17 +286,82 @@ public class AdminModerationService {
 
     private AdminUserDto resolveAdmin(String adminUserId) {
         if (configProperties.isFirebaseEnabled()) {
-            return resolveFirebaseAdmin();
+            AdminUserDto account = resolveFirebaseAdmin();
+            return resolveBaseAdminProfile(account, adminUserId);
         }
         if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin demo access is restricted to demo data.");
         }
         String normalized = normalize(adminUserId);
+        Users requested = usersRepository.findByUserId(normalized).orElse(null);
+        String accountId = requested != null && requested.getAccountUserId() != null ? requested.getAccountUserId() : normalized;
         AdminUserDto admin = DEMO_ADMINS.stream()
-                .filter(candidate -> candidate.id().equals(normalized))
+                .filter(candidate -> candidate.id().equals(accountId))
                 .findFirst()
                 .orElse(DEMO_ADMINS.get(0));
-        return withStoredAdminProfile(admin);
+        return resolveBaseAdminProfile(withStoredAdminProfile(admin), adminUserId);
+    }
+
+    private AdminUserDto resolveBaseAdminProfile(AdminUserDto account, String requestedId) {
+        if (!StringUtils.hasText(requestedId) || account.id().equals(requestedId)) return account;
+        Users profile = usersRepository.findByUserId(requestedId).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        if (!account.id().equals(profile.getAccountUserId())
+            || !com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(profile.getWorkspaceGroupId())
+            || !"Admin".equalsIgnoreCase(profile.getHostTier())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        return withStoredAdminProfile(new AdminUserDto(profile.getUserId(), account.name(), account.initials(), account.email(), account.headline(), account.about(), account.images()));
+    }
+
+    public boolean isBaseAdminProfile(String userId) {
+        return usersRepository.findByUserId(userId).map(user ->
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(user.getWorkspaceGroupId())
+                && "Admin".equalsIgnoreCase(user.getHostTier())).orElse(false);
+    }
+
+    public String baseGroupId(String adminUserId) {
+        var actor = resolveAdmin(adminUserId);
+        return usersRepository.findByUserId(actor.id()).map(Users::getWorkspaceGroupId).orElse(null);
+    }
+
+    /** Base-profile telemetry excludes independent workspaces; those have their own statistics. */
+    public Map<String, List<AdminTelemetryEvent>> baseProfileEvents(List<AdminTelemetryEvent> batch) {
+        var actors = new java.util.HashMap<String, Users>();
+        usersRepository.findByUserIdIn(batch.stream().filter(java.util.Objects::nonNull)
+                .map(AdminTelemetryEvent::actorUserId).filter(StringUtils::hasText).distinct().toList())
+                .forEach(user -> actors.put(user.getUserId(), user));
+        Map<String, List<AdminTelemetryEvent>> scoped = new LinkedHashMap<>();
+        for (var event : batch) {
+            if (event == null) continue;
+            var actor = actors.get(event.actorUserId());
+            String groupId = actor == null ? null : actor.getWorkspaceGroupId();
+            // Job summaries belong to their base-group instance. Member activity from an
+            // independent workspace remains outside the base-profile statistics.
+            if (groupId != null && !com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(groupId)
+                    && !"jobs".equals(event.domain())) continue;
+            String jobGroup = event.tags() == null ? null : event.tags().get("baseGroupId");
+            if (jobGroup != null) {
+                scoped.computeIfAbsent(jobGroup, ignored -> new ArrayList<>()).add(event);
+                continue;
+            }
+            scoped.computeIfAbsent(groupId == null ? "global" : groupId, ignored -> new ArrayList<>()).add(event);
+        }
+        return scoped;
+    }
+
+    private String reportBaseGroup(Users user, Map<String, String> types) {
+        String workspace = user == null ? null : user.getWorkspaceGroupId();
+        return com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(workspace) ? workspace
+                : com.raxim.myscoutee.profile.data.document.CommunityGroup.baseIdForType(types.get(workspace));
+    }
+
+    private void requireScope(String adminId, String userId) {
+        Users user = usersRepository.findByUserId(normalize(userId)).orElse(null);
+        Map<String, String> types = new java.util.HashMap<>();
+        if (user != null && StringUtils.hasText(user.getWorkspaceGroupId())) {
+            groups.findById(user.getWorkspaceGroupId()).ifPresent(group -> types.put(group.id(), group.effectiveType()));
+        }
+        String selected = usersRepository.findByUserId(adminId).map(Users::getWorkspaceGroupId).orElse(null);
+        if (!java.util.Objects.equals(selected, reportBaseGroup(user, types)))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case not found in this workspace.");
     }
 
     private AdminUserDto resolveFirebaseAdmin() {

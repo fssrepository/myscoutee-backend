@@ -226,6 +226,13 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
     { name: 'user_rate_owner_primary_mode_v2' }
   );
   portalDb.userRates.createIndex(
+    { ownerUserId: 1, mode: 1, relatedUserId: 1, secondaryRelatedUserId: 1, campaignId: 1 },
+    { name: 'user_rate_owner_mode_target_campaign_unique_v2', unique: true }
+  );
+  if (portalDb.userRates.getIndexes().some(index => index.name === 'user_rate_owner_mode_target_unique_v1')) {
+    portalDb.userRates.dropIndex('user_rate_owner_mode_target_unique_v1');
+  }
+  portalDb.userRates.createIndex(
     { relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 },
     { name: 'user_rate_pair_lookup_v2' }
   );

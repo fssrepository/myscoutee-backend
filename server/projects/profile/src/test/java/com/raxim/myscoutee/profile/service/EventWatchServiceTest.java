@@ -52,10 +52,12 @@ class EventWatchServiceTest {
         event.setVisibility("Invitation only");
         event.setCapacityTotal(2);
         event.setAcceptedMembers(1);
-        when(fixture.eventWatchSubscriptionsRepository.findAll()).thenReturn(List.of(subscription));
+        var scope = mock(JobGroupScopeService.class);
+        when(scope.findEventOwned(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(EventWatchSubscription.class), org.mockito.ArgumentMatchers.eq("eventId"))).thenReturn(List.of(subscription));
+        org.springframework.test.util.ReflectionTestUtils.setField(fixture.service, "jobGroupScope", scope);
         when(fixture.activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
 
-        fixture.service.notifyWhenEventBecomesAvailable();
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(fixture.service, "notifyWhenEventBecomesAvailableInGroup");
 
         verify(fixture.notificationOutboxService, never()).enqueue(org.mockito.ArgumentMatchers.any());
         @SuppressWarnings("unchecked")

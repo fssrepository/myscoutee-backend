@@ -131,6 +131,42 @@ class ChatServiceTest {
     }
 
     @Test
+    void campaignQuestionRequiresAPersistedRatingInTheCampaignWorkspace() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        Users viewer = user("viewer", "Viewer", "V"); viewer.setWorkspaceGroupId("myscoutee-work");
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
+        var campaign = new com.raxim.myscoutee.profile.data.document.Campaign("campaign", "myscoutee-work", "organizer",
+                "Idea", "Description", "business", "technology", List.of(), 6, List.of(), null, "published", "now", "now", 1L);
+        when(mongoTemplate.findById("campaign", com.raxim.myscoutee.profile.data.document.Campaign.class)).thenReturn(campaign);
+        var request = new ChatServiceEnsureRequestDto("campaign", null, null, null, "forged-target", "Fake title", "", "campaign", null);
+        assertThatThrownBy(() -> service.ensureServiceChat(request, "viewer"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(mongoTemplate, never()).bulkOps(any(), eq(Chat.class));
+        when(mongoTemplate.exists(any(Query.class), eq(com.raxim.myscoutee.profile.data.document.UserRate.class))).thenReturn(true);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
+        var chat = service.ensureServiceChat(request, "viewer");
+        assertThat(chat.channelType()).isEqualTo("campaign");
+        assertThat(chat.title()).isEqualTo("Idea");
+        assertThat(chat.memberIds()).containsExactly("viewer", "organizer");
+        assertThat(chat.eventId()).isEmpty();
+        verify(bulkOperations, times(2)).upsert(any(Query.class), any(Update.class));
+        verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any());
+    }
+
+    @Test
+    void staleCaseChatCopyDoesNotGrantADeclinedProviderAccess() {
+        Users provider = user("provider-profile", "Provider", "P"); provider.setAccountUserId("provider"); provider.setWorkspaceGroupId("myscoutee-community");
+        when(usersRepository.findByUserId("provider-profile")).thenReturn(Optional.of(provider));
+        var stale = chat("c-case-case", "provider-profile", 0, "now", "case"); stale.setOwnerId("case");
+        when(chatsRepository.findByOwnerUserIdAndChatId("provider-profile", "c-case-case")).thenReturn(Optional.of(stale));
+        var c = new com.raxim.myscoutee.profile.data.document.ServiceCase("case", "myscoutee-community", "private", "owner", "Repair", "", "fault", "open", false,
+                List.of("owner"), List.of("owner", "provider"), List.of(),
+                List.of(new com.raxim.myscoutee.profile.data.document.ServiceCase.Support("provider", null, "declined")), List.of(), List.of(), null, null, "now", "now", 1L);
+        when(mongoTemplate.findById("case", com.raxim.myscoutee.profile.data.document.ServiceCase.class)).thenReturn(c);
+        assertThat(service.hasChatAccess("c-case-case", "provider-profile")).isFalse();
+    }
+
+    @Test
     void retriedShareReturnsThePersistedMessageWithoutAnotherUnreadIncrement() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(true);
@@ -994,6 +1030,33 @@ class ChatServiceTest {
     }
 
     @Test
+    void workAppAdminUsesSupportCaseChannelAndRejectsTheDatingContext() {
+        Users target = user("target", "Target User", "TU");
+        target.setWorkspaceGroupId("myscoutee-work");
+        Users admin = user("admin", "Admin User", "AU");
+        admin.setWorkspaceGroupId("myscoutee-work");
+        when(adminMenuCounterService.isAdminUser(admin)).thenReturn(true);
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+        when(usersRepository.findByUserId("admin")).thenReturn(Optional.of(admin));
+        when(chatsRepository.findByChatId("c-support-admin-target")).thenReturn(List.of());
+        when(chatsRepository.saveAll(anyList())).thenAnswer(call -> call.getArgument(0));
+        when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
+        when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
+        service.sendAdminSupportMessage("target", "admin", "Admin User", "AU", "Warning", "warned");
+        ArgumentCaptor<List<Chat>> documents = ArgumentCaptor.forClass(List.class);
+        verify(chatsRepository).saveAll(documents.capture());
+        assertThat(documents.getValue()).allSatisfy(chat -> {
+            assertThat(chat.getChannelType()).isEqualTo("appSupport");
+            assertThat(chat.getSupportCase()).isNotNull();
+            assertThat(chat.getSupportBaseGroupId()).isEqualTo("myscoutee-work");
+        });
+        admin.setWorkspaceGroupId(null);
+        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "admin", "Admin", "AU", "Warning", "warned"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+    }
+
+    @Test
     void adminSupportMessageUsesTheChatMutationSignalsAndOnlyIncrementsTheTargetUnread() {
         String chatId = "c-support-admin-target";
         Users target = user("target", "Target User", "TU");
@@ -1070,7 +1133,7 @@ class ChatServiceTest {
             assertThat(chat.getOwnerId()).isNull();
             assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
         });
-        var access = new com.raxim.myscoutee.profile.security.ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService);
+        var access = new com.raxim.myscoutee.profile.security.ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.ServiceCasesRepository.class));
         when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
         assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
         assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();

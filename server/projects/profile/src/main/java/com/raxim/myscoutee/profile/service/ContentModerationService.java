@@ -43,7 +43,7 @@ public class ContentModerationService {
         return page(category, status, cursor, pageSize, null);
     }
     public Page page(String category, String status, String cursor, int pageSize, String groupId) {
-        if (groupId != null && !"all".equals(category) && !GROUP_CATEGORIES.contains(category)) throw invalid();
+        if (groupId != null && !com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(groupId) && !"all".equals(category) && !GROUP_CATEGORIES.contains(category)) throw invalid();
         if (!"all".equals(category)) validate(category, status);
         else if (!STATUSES.contains(status)) throw invalid();
         int limit = Math.max(1, Math.min(50, pageSize));
@@ -59,7 +59,7 @@ public class ContentModerationService {
     public Snapshot settings(SaveSettings request, String groupId) {
         Settings next = request.settings();
         if (next == null || next.delayMinutes() < 0 || next.delayMinutes() > 43200 || next.categories() == null
-                || !(groupId == null ? CATEGORIES : GROUP_CATEGORIES).containsAll(next.categories())) throw invalid();
+                || !(groupId == null || com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(groupId) ? CATEGORIES : GROUP_CATEGORIES).containsAll(next.categories())) throw invalid();
         next = new Settings(next.enabled(), next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
         State current = state(groupId);
         if (current.revision() != request.expectedRevision() || !repository.compareAndSet(current, next, current.counts(), current.pending())) throw conflict();
@@ -75,6 +75,10 @@ public class ContentModerationService {
         }
         var owner = "group".equals(category) ? null : mongo.findOne(Query.query(Criteria.where("userId").is(ownerId)), com.raxim.myscoutee.profile.data.document.Users.class);
         String groupId = owner == null ? null : owner.getWorkspaceGroupId();
+        if ("group".equals(category)) {
+            var group = mongo.findById(sourceId, com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
+            if (group != null) groupId = group.baseId();
+        }
         Settings settings = state(groupId).settings();
         String status = !Boolean.TRUE.equals(settings.enabled()) || (settings.autoApprove() && settings.delayMinutes() == 0 && settings.categories().contains(category))
                 ? "accepted" : "under-review";
@@ -142,8 +146,7 @@ public class ContentModerationService {
         throw conflict();
     }
     public void drainPending() {
-        drainPending(null);
-        for (State state : repository.states()) if (state.id().startsWith("group:")) drainPending(state.id().substring(6));
+        drainPending(JobGroupContext.groupId());
     }
     private void drainPending(String groupId) {
         for (Mutation mutation : state(groupId).pending()) { apply(mutation); acknowledge(mutation.commandId(), groupId); }
@@ -223,9 +226,7 @@ public class ContentModerationService {
     }
     public int approveDue() {
         drainPending();
-        int changed = approveDue(null);
-        for (State state : repository.states()) if (state.id().startsWith("group:")) changed += approveDue(state.id().substring(6));
-        return changed;
+        return approveDue(JobGroupContext.groupId());
     }
     private int approveDue(String groupId) {
         Settings settings = state(groupId).settings();

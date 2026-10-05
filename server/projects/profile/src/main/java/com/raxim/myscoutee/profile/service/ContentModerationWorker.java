@@ -18,6 +18,11 @@ public class ContentModerationWorker {
     @Scheduled(fixedDelayString="${moderation.worker-check-delay-ms:60000}")
     public void tick() { databases.runAcrossConfiguredDatabases(this::run); }
     private void run() {
+        var registry = rules;
+        if (registry != null) registry.forEachGroup(RULE, this::runInGroup);
+    }
+
+    private void runInGroup() {
         // Finish committed decisions even when automatic approval has been suspended.
         moderation.drainPending();
         var now = Instant.now();

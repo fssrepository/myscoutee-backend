@@ -173,7 +173,7 @@ public class PaymentRefundService {
             String actorUserId,
             String recipientUserId,
             boolean approved) {
-        if (!StringUtils.hasText(recipientUserId)) return;
+        if (!StringUtils.hasText(recipientUserId)||recipientUserId.equals(actorUserId)) return;
         String paymentId = StringUtils.hasText(normalize(payment.getSupersedesPaymentId()))
                 ? normalize(payment.getSupersedesPaymentId())
                 : normalize(payment.getId());
@@ -181,6 +181,8 @@ public class PaymentRefundService {
         String type = approved ? "payment-refund-approved" : "payment-refund-requested";
         Map<String, String> payload = new LinkedHashMap<>();
         payload.put("paymentId", paymentId);
+        var recipient=mongoTemplate.findOne(Query.query(Criteria.where("userId").is(recipientUserId)),Users.class);
+        if(recipient!=null&&recipient.getWorkspaceGroupId()!=null)payload.put("workspaceGroupId",recipient.getWorkspaceGroupId());
         payload.put("sourceId", sourceId);
         payload.put("refundRequestStatus", approved ? "approved" : "pending");
         payload.put("refundAmount", Double.toString(payment.getRefundedAmount() == null ? 0D : payment.getRefundedAmount()));
@@ -198,7 +200,7 @@ public class PaymentRefundService {
                 approved
                         ? "The payment recipient approved your refund request."
                         : "A payer requested a refund for " + sourceId + ".",
-                "/game",
+                "/game?payments=1",
                 "/assets/logo/heart.webp",
                 "/assets/logo/heart.webp",
                 type + "-" + paymentId,

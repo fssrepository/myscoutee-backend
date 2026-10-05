@@ -12,12 +12,15 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "helpCenterRevisions")
 @CompoundIndexes({
-        @CompoundIndex(name = "help_revision_document_lang_context_version", def = "{'documentType': 1, 'lang': 1, 'contextKey': 1, 'version': -1}", unique = true),
-        @CompoundIndex(name = "help_revision_document_lang_context_active", def = "{'documentType': 1, 'lang': 1, 'contextKey': 1, 'active': 1, 'version': -1}")
+        @CompoundIndex(name = "help_revision_group_document_lang_context_version", def = "{'baseGroupId': 1, 'documentType': 1, 'lang': 1, 'contextKey': 1, 'version': -1}", unique = true),
+        @CompoundIndex(name = "help_revision_group_document_lang_context_active", def = "{'baseGroupId': 1, 'documentType': 1, 'lang': 1, 'contextKey': 1, 'active': 1, 'version': -1}")
 })
 public class HelpCenterRevision {
     @Id
     private String id;
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String value) { baseGroupId = value; }
 
     @Indexed(name = "help_revision_document_type")
     private String documentType;
@@ -48,6 +51,9 @@ public class HelpCenterRevision {
     public static class HelpCenterSection {
         @Field("id")
         private String id;
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String value) { baseGroupId = value; }
         private String icon;
         private String title;
         private String blurb;

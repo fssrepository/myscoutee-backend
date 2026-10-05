@@ -42,6 +42,7 @@ public class AdminParamsService {
             new SectionDefinition("notifications", "Notifications"),
             new SectionDefinition("jobs", "Jobs"));
 
+    private final AdminModerationService admins;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final ObjectMapper objectMapper;
     private final NotificationOutboxService notificationOutboxService;
@@ -50,12 +51,14 @@ public class AdminParamsService {
     private final AdminTelemetryService adminTelemetryService;
 
     public AdminParamsService(
+            AdminModerationService admins,
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
             NotificationOutboxService notificationOutboxService,
             AdminAudienceService adminAudienceService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService) {
+        this.admins = admins;
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.objectMapper = objectMapper;
         this.notificationOutboxService = notificationOutboxService;
@@ -65,7 +68,7 @@ public class AdminParamsService {
     }
 
     public AdminParamsStateDto state(String adminUserId) {
-        AffinityConfig active = activeConfig();
+        AffinityConfig active = activeConfig(configKey(adminUserId));
         List<AffinityConfig> versions = configHistory(active.getKey());
         List<AdminParamsSectionDto> sections = SECTIONS.stream()
                 .map(section -> sectionDto(section, active, versions))
@@ -73,9 +76,11 @@ public class AdminParamsService {
         return new AdminParamsStateDto(sections, firstNonBlank(active.getChangedDate(), Instant.now().toString()));
     }
 
-    public AdminParamsHistoryDto history(String sectionKey) {
+    public AdminParamsHistoryDto history(String sectionKey) { return history(sectionKey, null); }
+
+    public AdminParamsHistoryDto history(String sectionKey, String adminUserId) {
         SectionDefinition section = section(sectionKey);
-        AffinityConfig active = activeConfig();
+        AffinityConfig active = activeConfig(configKey(adminUserId));
         List<AffinityConfig> history = configHistory(active.getKey());
         int activeSectionVersion = activeSectionVersion(section.key(), history, active);
         List<AdminParamsHistoryItemDto> versions = history.stream()
@@ -95,7 +100,7 @@ public class AdminParamsService {
 
     public AdminParamsStateDto save(AdminParamsSaveRequestDto request) {
         String sectionKey = section(request == null ? null : request.sectionKey()).key();
-        AffinityConfig current = activeConfig();
+        AffinityConfig current = activeConfig(configKey(request == null ? null : request.adminUserId()));
         AffinityConfig next = cloneConfig(current);
         applySection(sectionKey, next, request == null ? List.of() : request.fields());
         persistNextVersion(
@@ -114,7 +119,7 @@ public class AdminParamsService {
         if (selectedVersion == null || selectedVersion <= 0) {
             return state(request == null ? null : request.adminUserId());
         }
-        AffinityConfig current = activeConfig();
+        AffinityConfig current = activeConfig(configKey(request == null ? null : request.adminUserId()));
         if (selectedVersion == activeSectionVersion(section.key(), configHistory(current.getKey()), current)) {
             return state(request == null ? null : request.adminUserId());
         }
@@ -429,6 +434,7 @@ public class AdminParamsService {
         String key = firstNonBlank(current == null ? null : current.getKey(), CONFIG_KEY);
         String nowIso = Instant.now().toString();
         for (AffinityConfig active : affinityConfigsRepository.findByActiveTrue()) {
+            if (!key.equals(active.getKey())) continue;
             active.setActive(false);
             affinityConfigsRepository.save(active);
         }
@@ -490,14 +496,17 @@ public class AdminParamsService {
                 normalizedActorUserId));
     }
 
-    private AffinityConfig activeConfig() {
-        AffinityConfig config = affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()
-                .or(() -> affinityConfigsRepository.findFirstByKeyOrderByVersionDesc(CONFIG_KEY))
+    private String configKey(String adminUserId) {
+        String groupId = admins.baseGroupId(adminUserId);
+        return groupId == null ? CONFIG_KEY : groupId;
+    }
+
+    private AffinityConfig activeConfig(String key) {
+        AffinityConfig config = affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(key)
+                .or(() -> affinityConfigsRepository.findFirstByKeyOrderByVersionDesc(key))
                 .map(this::cloneConfig)
                 .orElseGet(AffinityConfig::defaults);
-        if (!StringUtils.hasText(config.getKey())) {
-            config.setKey(CONFIG_KEY);
-        }
+        config.setKey(key);
         if (config.getVersion() == null || config.getVersion() <= 0) {
             config.setVersion(1);
         }
@@ -508,7 +517,7 @@ public class AdminParamsService {
         String normalizedKey = firstNonBlank(key, CONFIG_KEY);
         List<AffinityConfig> versions = affinityConfigsRepository.findByKeyOrderByVersionDesc(normalizedKey);
         if (versions == null || versions.isEmpty()) {
-            return List.of(activeConfig());
+            return List.of(activeConfig(normalizedKey));
         }
         return versions.stream().map(this::cloneConfig).toList();
     }

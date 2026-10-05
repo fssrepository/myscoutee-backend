@@ -16,4 +16,31 @@ public interface CommunityGroupsRepository extends MongoRepository<CommunityGrou
     @org.springframework.data.mongodb.repository.Update("{ '$set': { 'lifecycleStatus': ?1, 'ownerReleasedAtIso': ?2, 'updatedAtIso': ?2, 'takeoverCandidates': ?3 }, '$inc': { 'version': 1 } }")
     long updateLifecycle(String id, String status, String now, List<String> candidates);
     List<CommunityGroup> findByIdIn(Collection<String> ids);
+
+    /** Non-Dating workspace ownership, resolved with one bounded batch query. */
+    default java.util.Map<String, String> baseGroupIds(Collection<String> ids) {
+        var result = new java.util.HashMap<String, String>();
+        var custom = new java.util.HashSet<String>();
+        for (String id : ids) {
+            if (CommunityGroup.isBaseId(id)) result.put(id, id);
+            else if (id != null && !id.isBlank()) custom.add(id);
+        }
+        if (!custom.isEmpty()) findByIdIn(custom).forEach(group -> {
+            if (group.baseId() != null) result.put(group.id(), group.baseId());
+        });
+        return result;
+    }
+
+    /** Resolve type once for a batch; the built-in Work base needs no extra query. */
+    default java.util.Set<String> workGroupIds(Collection<String> ids) {
+        var result = new java.util.HashSet<String>();
+        var customIds = new java.util.HashSet<String>();
+        for (String id : ids) {
+            if (CommunityGroup.WORK_BASE_ID.equals(id)) result.add(id);
+            else if (id != null && !id.isBlank()) customIds.add(id);
+        }
+        if (!customIds.isEmpty()) findByIdIn(customIds).stream()
+                .filter(group -> "work".equals(group.effectiveType())).forEach(group -> result.add(group.id()));
+        return result;
+    }
 }

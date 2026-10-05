@@ -57,3 +57,23 @@ configuration before becoming visible. Reuse already loaded shared state, open
 synchronously and show pending state only on controls requiring asynchronous data.
 
 Promotion evidence needed: apply and verify the same boundary in another popup.
+
+
+## C006 — Keep Angular input models stable and isolate effect side effects
+
+Observation: the Work/Community delivery put freshly allocated popup, FormFlow,
+menu and query models behind ordinary template methods despite the user's
+explicit request to reuse the established patterns. Guide registration inside a
+tracked effect also read and changed shared guide state, creating a repeatable
+reactive cycle when surfaces were stacked.
+
+Candidate habit: bind stable fields or computed signals; update form/filter state
+through signals. Use the existing `untracked` boundary for guide registration and
+SmartList mutation calls from effects. Inspect the callee's signal reads as well
+as the effect body. Do not treat a successful Angular build as reactivity proof.
+
+Evidence: the old Campaign dev artifact exceeds a bounded 50-effect execution
+check; the corrected compiled components settle and preserve model identity.
+The regression check also covers nested guide contexts and mutation-to-list state.
+Promotion evidence needed: repeat this check for further independently changed
+surfaces and record browser verification separately from component-level evidence.

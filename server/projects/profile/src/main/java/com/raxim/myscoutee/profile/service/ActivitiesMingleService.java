@@ -64,6 +64,7 @@ public class ActivitiesMingleService {
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessControlService accessControlService;
     private final NotificationOutboxService notificationOutboxService;
+    private final com.raxim.myscoutee.profile.repository.CommunityGroupsRepository groups;
     private final EventGeneratorByMingle generator = new EventGeneratorByMingle();
 
     public ActivitiesMingleService(
@@ -74,7 +75,8 @@ public class ActivitiesMingleService {
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
             AccessControlService accessControlService,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationOutboxService notificationOutboxService, com.raxim.myscoutee.profile.repository.CommunityGroupsRepository groups) {
+        this.groups=groups;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMingleSessionsRepository = activityMingleSessionsRepository;
         this.activityMingleRoundsRepository = activityMingleRoundsRepository;
@@ -280,15 +282,16 @@ public class ActivitiesMingleService {
                     Map.of("accepted", eligibleUserIds.size(), "required", 2));
         }
         MingleConfigurationDto config = mingleConfiguration(event);
+        boolean priorityEnabled=event.getWorkspaceGroupId()==null || groups.findById(event.getWorkspaceGroupId()).map(com.raxim.myscoutee.profile.data.document.CommunityGroup::priorityEnabled).orElse(true);
         MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
-                buildPriorityGraph(eligibleUserIds),
+                priorityEnabled?buildPriorityGraph(eligibleUserIds):new FGraph(),
                 eligibleUserIds,
                 config.groupSize(),
                 roundNumber,
                 List.of(),
                 previousTables(eventId),
                 userGenders(eligibleUserIds),
-                config.requireGenderBalance()));
+                config.requireGenderBalance(), !priorityEnabled));
         if (plan.tables().isEmpty()) {
             throw new MingleActionException(
                     HttpStatus.CONFLICT,
@@ -530,7 +533,8 @@ public class ActivitiesMingleService {
             return;
         }
         for (TableAssignment table : safeTables(round)) {
-            if (table.memberUserIds().isEmpty()) {
+            var recipients=table.memberUserIds().stream().filter(id->!id.equals(actorUserId)).toList();
+            if (recipients.isEmpty()) {
                 continue;
             }
             Map<String, String> payload = new LinkedHashMap<>();
@@ -543,7 +547,7 @@ public class ActivitiesMingleService {
                     "event",
                     normalizeId(event.getSourceId()),
                     "mingle-table",
-                    table.memberUserIds(),
+                    recipients,
                     "Your Speed meeting table is ready",
                     "Go to Table " + count(table.tableNumber()) + " for round " + count(round.getRoundNumber()) + ".",
                     "/game?mingleEventId=" + normalizeId(event.getSourceId()),
@@ -555,6 +559,7 @@ public class ActivitiesMingleService {
         }
         Set<String> waiting = new LinkedHashSet<>(acceptedParticipantIds(event));
         for (TableAssignment table : safeTables(round)) waiting.removeAll(table.memberUserIds());
+        waiting.remove(actorUserId);
         if (!waiting.isEmpty()) {
             notificationOutboxService.enqueue(new NotificationIntent(
                     "mingle-table-waiting", "event", event.getSourceId(), "mingle-table", List.copyOf(waiting),

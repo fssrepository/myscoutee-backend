@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/ui/components/core/deployment-brand/deployment-brand.component.scss"],
-  "sourcesContent": [":host {\n  display: inline-flex;\n  min-width: 0;\n  max-width: 100%;\n}\n\n.deployment-brand {\n  min-width: 0;\n  max-width: 100%;\n  display: inline-flex;\n  align-items: var(--deployment-brand-align, flex-end);\n  gap: var(--deployment-brand-gap, 0);\n  color: inherit;\n  font: inherit;\n  font-weight: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n  white-space: nowrap;\n}\n\n.deployment-brand--inline-logo {\n  align-items: center;\n  gap: var(--deployment-brand-character-gap, 0.02em);\n}\n\n.deployment-brand__logo {\n  width: var(--deployment-brand-logo-size, 1.2em);\n  height: var(--deployment-brand-logo-size, 1.2em);\n  flex: 0 0 auto;\n  display: block;\n  object-fit: contain;\n}\n\n.deployment-brand__text {\n  min-width: 0;\n  color: inherit;\n  font: inherit;\n  font-weight: inherit;\n  line-height: inherit;\n  letter-spacing: inherit;\n}\n"],
-  "mappings": ";AAAA;AACE,WAAA;AACA,aAAA;AACA,aAAA;;AAGF,CAAA;AACE,aAAA;AACA,aAAA;AACA,WAAA;AACA,eAAA,IAAA,wBAAA,EAAA;AACA,OAAA,IAAA,sBAAA,EAAA;AACA,SAAA;AACA,QAAA;AACA,eAAA;AACA,eAAA;AACA,kBAAA;AACA,eAAA;;AAGF,CAAA;AACE,eAAA;AACA,OAAA,IAAA,gCAAA,EAAA;;AAGF,CAAA;AACE,SAAA,IAAA,4BAAA,EAAA;AACA,UAAA,IAAA,4BAAA,EAAA;AACA,QAAA,EAAA,EAAA;AACA,WAAA;AACA,cAAA;;AAGF,CAAA;AACE,aAAA;AACA,SAAA;AACA,QAAA;AACA,eAAA;AACA,eAAA;AACA,kBAAA;;",
-  "names": []
-}

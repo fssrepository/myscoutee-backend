@@ -94,6 +94,7 @@ class ActivitiesEventsServiceTest {
     private ActivityMembersRepository activityMembersRepository;
     @Mock
     private ActivityMingleSessionsRepository activityMingleSessionsRepository;
+    @Mock private CampaignsService campaigns;
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -146,7 +147,7 @@ class ActivitiesEventsServiceTest {
     private com.raxim.myscoutee.profile.repository.EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
 
     private ActivitiesEventsService service;
-    private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
+    private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null, null);
     private final ActivityEventDetailMapper activityEventDetailMapper = new ActivityEventDetailMapper();
     private final ActivityEventMapper activityEventMapper = new ActivityEventMapper();
     private final ActivityEventSubEventsMapper activityEventSubEventsMapper = new ActivityEventSubEventsMapper();
@@ -158,6 +159,7 @@ class ActivitiesEventsServiceTest {
         lenient().when(eventCheckoutBasketService.loadCardStatesByEvent(anyString(), anyList()))
                 .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
         service = new ActivitiesEventsService(
+                campaigns,
                 activityEventsRepository,
                 activitySubEventGroupsRepository,
                 activitySubEventResourcesRepository,
@@ -1819,10 +1821,28 @@ class ActivitiesEventsServiceTest {
     }
 
     @Test
+    void eventOrganizerCannotAttachAnotherPersonsCampaign() {
+        Users host = new Users(); host.setUserId("host"); host.setName("Host User");
+        host.setWorkspaceGroupId("myscoutee-work");
+        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(campaigns.actor("host")).thenReturn(host);
+        var campaign = org.mockito.Mockito.mock(com.raxim.myscoutee.profile.data.document.Campaign.class);
+        when(campaign.ownerUserId()).thenReturn("another-organizer");
+        when(campaigns.visible(host, "campaign-other")).thenReturn(campaign);
+        var request = org.mockito.Mockito.spy(eventPayload("sync-draft-1", "draft-1", "host", false));
+        when(request.campaignId()).thenReturn("campaign-other");
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.sync(request))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class,
+                        error -> assertThat(error.getStatusCode().value()).isEqualTo(403));
+        verify(activityEventsRepository, never()).saveAll(anyList());
+    }
+
+    @Test
     void syncDraftSavesCanonicalDraftEvent() {
         Users host = new Users();
         host.setId("host");
         host.setName("Host User");
+        host.setWorkspaceGroupId("myscoutee-work");
 
         when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
         when(activityEventsRepository.findByOwnerUserIdAndSourceId("host", "draft-1"))
@@ -1838,6 +1858,7 @@ class ActivitiesEventsServiceTest {
         verify(activityEventsRepository, never()).findByParentEventIdIn(anyList());
         assertThat(savedCaptor.getValue()).singleElement().satisfies(record -> {
             assertThat(record.getSourceId()).isEqualTo("draft-1");
+            assertThat(record.getWorkspaceGroupId()).isEqualTo("myscoutee-work");
             assertThat(record.getStatus()).isEqualTo(ActivityEvent.STATUS_DRAFT);
             assertThat(record.getPublished()).isFalse();
         });

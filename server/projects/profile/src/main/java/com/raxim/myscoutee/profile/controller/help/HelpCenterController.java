@@ -27,30 +27,34 @@ public class HelpCenterController {
     @GetMapping("/help/active")
     public HelpCenterStateDto activeHelp(
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
-            @RequestParam(value = "lang", required = false) String lang) {
-        return helpCenterService.activeState("help", lang, acceptLanguage);
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "baseGroupId", required = false) String baseGroupId) {
+        return helpCenterService.activeState("help", lang, acceptLanguage, null, baseGroupId);
     }
 
     @GetMapping("/privacy/active")
     public HelpCenterStateDto activePrivacy(
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
-            @RequestParam(value = "lang", required = false) String lang) {
-        return helpCenterService.activeState("privacy", lang, acceptLanguage);
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "baseGroupId", required = false) String baseGroupId) {
+        return helpCenterService.activeState("privacy", lang, acceptLanguage, null, baseGroupId);
     }
 
     @GetMapping("/terms/active")
     public HelpCenterStateDto activeTerms(
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
-            @RequestParam(value = "lang", required = false) String lang) {
-        return helpCenterService.activeState("terms", lang, acceptLanguage);
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "baseGroupId", required = false) String baseGroupId) {
+        return helpCenterService.activeState("terms", lang, acceptLanguage, null, baseGroupId);
     }
 
     @GetMapping("/explanation/active")
     public HelpCenterStateDto activeExplanation(
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "contextKey", required = false) String contextKey) {
-        return helpCenterService.activeState("explanation", lang, acceptLanguage, contextKey);
+            @RequestParam(value = "contextKey", required = false) String contextKey,
+            @RequestParam(value = "baseGroupId", required = false) String baseGroupId) {
+        return helpCenterService.activeState("explanation", lang, acceptLanguage, contextKey, baseGroupId);
     }
 
     @GetMapping("/privacy/consents")

@@ -59,6 +59,9 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 
 @ExtendWith(MockitoExtension.class)
 class EventSchedulerTest {
+    @Mock private com.raxim.myscoutee.profile.repository.UserRatesRepository userRatesRepository;
+    @Mock private UserAffinityEdgeService affinityEdgeService;
+    @Mock private com.raxim.myscoutee.profile.repository.CommunityGroupsRepository groupsRepository;
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -91,6 +94,16 @@ class EventSchedulerTest {
     private PlatformParametersService platformParametersService;
     @Mock
     private NotificationOutboxService notificationOutboxService;
+
+    @Test
+    void priorityOffEventUsesParticipantsWithoutGlobalOrCampaignAffinity() {
+        var scheduler=createScheduler();var event=new ActivityEvent();event.setWorkspaceGroupId("community-private");event.setCampaignId("ignored");
+        var a=new com.raxim.myscoutee.algo.dto.Node("a");var b=new com.raxim.myscoutee.algo.dto.Node("b");
+        var global=new com.raxim.myscoutee.algo.dto.FGraph(Map.of("a",a,"b",b),List.of(new com.raxim.myscoutee.algo.dto.Edge(a,b,99d)));
+        com.raxim.myscoutee.algo.dto.FGraph actual=org.springframework.test.util.ReflectionTestUtils.invokeMethod(scheduler,"eventGraph",event,global,Map.of("ignored",global),Set.of("a","b"),Set.of("community-private"));
+        assertThat(actual.getNodes().keySet()).containsExactlyInAnyOrder("a","b");assertThat(actual.getEdges()).isEmpty();
+        org.mockito.Mockito.verifyNoInteractions(userAffinityEdgesRepository,userRatesRepository);
+    }
 
     @Test
     void runScheduledWrappersRunsCounterExpiryWhenAdminRuleIsDue() {
@@ -223,11 +236,13 @@ class EventSchedulerTest {
         when(activityEventsRepository.findBySourceIdIn(argThat(sourceIds ->
                 sourceIds.size() == 1 && sourceIds.contains("event-empty"))))
                 .thenReturn(List.of(event));
+        Users workCandidate = user("work-candidate");
+        workCandidate.setWorkspaceGroupId("myscoutee-work");
         when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
-                user("candidate-1")));
+                user("candidate-1"), workCandidate));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
-                rate("creator-1", "candidate-1", 1.0d)));
+                rate("creator-1", "candidate-1", .8d), rate("creator-1", "work-candidate", 1d)));
         when(activitiesMembersService.queryOwnerSnapshot("event", "event-empty"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "event",
@@ -264,6 +279,56 @@ class EventSchedulerTest {
                 "creator-1");
         verify(activityEventsRepository, never()).findByAutoInviterTrue();
         verify(activityEventsRepository, never()).findAll();
+    }
+
+    @Test
+    void campaignEventInvitesOnlyItsOwnCandidatesEvenWhenGlobalPriorityFavorsSomeoneElse() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("work-event"); event.setAutoInviter(true); event.setStatus("A");
+        event.setCapacityTotal(1); event.setCreatorUserId("organizer"); event.setCampaignId("campaign-a");
+        event.setWorkspaceGroupId("myscoutee-work");
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
+        var candidates = List.of(user("organizer"), user("other-campaign"), user("candidate-a"));
+        candidates.forEach(user -> user.setWorkspaceGroupId("myscoutee-work"));
+        when(usersRepository.findAllById(anyCollection())).thenReturn(candidates);
+        when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(rate("organizer", "other-campaign", 1d)));
+        var evidence = new com.raxim.myscoutee.profile.data.document.UserRate();
+        evidence.setCampaignId("campaign-a"); evidence.setOwnerUserId("candidate-a"); evidence.setRelatedUserId("organizer");
+        when(userRatesRepository.findByCampaignIdIn(Set.of("campaign-a"))).thenReturn(List.of(evidence));
+        when(affinityEdgeService.projectCampaignEdges(List.of(evidence))).thenReturn(Map.of("campaign-a", List.of(rate("organizer", "candidate-a", .8d))));
+        when(activitiesMembersService.inviteUsers("work-event", "organizer", List.of("candidate-a"), event)).thenReturn(List.of("candidate-a"));
+        assertThat(scheduler.generatePriorityPlansForEvents(List.of("work-event")))
+                .singleElement().satisfies(plan -> assertThat(plan.invitedUserIds()).containsExactly("candidate-a"));
+        verify(activitiesMembersService, never()).inviteUsers(anyString(), anyString(), eq(List.of("other-campaign")), any());
+    }
+
+    @Test
+    void workEventsDoNotRunAutomaticRandomGrouping() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("work-event"); event.setWorkspaceGroupId("myscoutee-work"); event.setStatus("A");
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
+        var group = new com.raxim.myscoutee.profile.data.document.CommunityGroup("myscoutee-work", "owner", "Work", "", "", "", "public",
+                false, null, "", "", 0L, null, 0L, 0L, 0L, 0L, null, null, null, "work");
+        when(groupsRepository.findByIdIn(anyCollection())).thenReturn(List.of(group));
+        assertThat(scheduler.generateRandomPlansForEvents(List.of("work-event"))).isEmpty();
+        verify(activitiesMembersService, never()).inviteUsers(anyString(), anyString(), anyList(), any());
+        verify(userAffinityEdgesRepository, never()).findRelevantByUserIds(anyList());
+    }
+
+    @Test
+    void privateCommunityCannotRunPriorityInvitationsEvenForAnOldEnabledEvent() {
+        EventScheduler scheduler = createScheduler();
+        ActivityEvent event = new ActivityEvent();
+        event.setSourceId("community-event"); event.setWorkspaceGroupId("private-community");
+        event.setAutoInviter(true); event.setStatus("A");
+        when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
+        var group = new com.raxim.myscoutee.profile.data.document.CommunityGroup("private-community", "owner", "Community", "", "", "", "private",
+                false, null, "", "", 0L, null, 0L, 0L, 0L, 0L, null, null, null, "community");
+        when(groupsRepository.findByIdIn(anyCollection())).thenReturn(List.of(group));
+        assertThat(scheduler.generatePriorityPlansForEvents(List.of("community-event"))).isEmpty();
+        org.mockito.Mockito.verifyNoInteractions(userAffinityEdgesRepository, userRatesRepository, activitiesMembersService, eventInviteNotificationService);
     }
 
     @Test
@@ -1845,6 +1910,13 @@ class EventSchedulerTest {
     }
 
     private EventScheduler createScheduler() {
+        org.mockito.Mockito.lenient().doAnswer(call -> {
+            JobGroupContext.run(null, call.getArgument(1)); return null;
+        }).when(notificationRuleRegistryService).forEachGroup(org.mockito.ArgumentMatchers.<java.util.Set<String>>any(), any(Runnable.class));
+        org.mockito.Mockito.lenient().doAnswer(call -> {
+            JobGroupContext.run(null, call.getArgument(1)); return null;
+        }).when(notificationRuleRegistryService).forEachGroup(anyString(), any(Runnable.class));
+
         lenient().when(usersRepository.findByUserIdIn(anyCollection()))
                 .thenAnswer(invocation -> ((java.util.Collection<String>) invocation.getArgument(0))
                         .stream()
@@ -1865,6 +1937,9 @@ class EventSchedulerTest {
                         anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(2));
         EventScheduler scheduler = new EventScheduler(
+                userRatesRepository,
+                affinityEdgeService,
+                groupsRepository,
                 usersRepository,
                 userAffinityEdgesRepository,
                 activityEventsRepository,
@@ -1882,6 +1957,7 @@ class EventSchedulerTest {
                 notificationOutboxService,
                 new com.raxim.myscoutee.profile.service.mapper.ActivityEventSubEventsMapper());
         scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(scheduler, "jobGroupScope", new JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         return scheduler;
     }
 

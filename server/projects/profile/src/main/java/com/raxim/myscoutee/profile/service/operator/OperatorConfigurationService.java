@@ -32,7 +32,6 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.C
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentBrandingDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.IntegrationUpdateDto;
@@ -194,13 +193,14 @@ public class OperatorConfigurationService {
         MongoSessionMode mode = MongoSessionModeContext.currentMode();
         synchronized (modeLocks.get(mode)) {
             if (mode == MongoSessionMode.DEMO) {
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Firebase client configuration is unavailable in Explore/demo mode.");
+                return null;
             }
             DeploymentConfiguration configuration = loadPersisted();
             DeploymentConfiguration.Firebase firebase =
                     configuration.getFirebase();
+            if (!firebase.isActive()) {
+                return null;
+            }
             try {
                 crypto.decrypt(
                         FIREBASE_AUTHENTICATION_PURPOSE,
@@ -214,11 +214,10 @@ public class OperatorConfigurationService {
                         "Firebase client configuration is temporarily unavailable.",
                         exception);
             }
-            if (!firebase.isActive()
-                    || !completePublicFirebaseConfiguration(firebase)) {
+            if (!completePublicFirebaseConfiguration(firebase)) {
                 throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Firebase client configuration has not been activated.");
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        "Active Firebase client configuration is incomplete.");
             }
             return mapper.toPublicFirebaseConfiguration(configuration);
         }
@@ -625,7 +624,6 @@ public class OperatorConfigurationService {
         if (!StringUtils.hasText(branding.getProductName())
                 || !StringUtils.hasText(branding.getHomeLabel())
                 || branding.getLogoUrl() == null
-                || !StringUtils.hasText(branding.getThemePreset())
                 || branding.getRevision() == null
                 || branding.getRevision() < 0L) {
             throw unavailable(
@@ -636,13 +634,6 @@ public class OperatorConfigurationService {
                 branding.getLogoCharacterIndex())) {
             throw unavailable(
                     "Deployment branding seed has an invalid logo character index.");
-        }
-        try {
-            DeploymentThemePreset.valueOf(branding.getThemePreset());
-        } catch (IllegalArgumentException exception) {
-            throw unavailable(
-                    "Deployment branding seed has an unsupported theme.",
-                    exception);
         }
         if (configuration.getFirebase().getProjectId() == null) {
             throw unavailable(
@@ -718,15 +709,11 @@ public class OperatorConfigurationService {
                             + "character in the product name.");
         }
         String logoUrl = validateLogoUrl(request.logoUrl());
-        if (request.themePreset() == null) {
-            throw badRequest("Theme preset is required.");
-        }
 
         DeploymentConfiguration.Branding branding = configuration.getBranding();
         branding.setProductName(productName);
         branding.setLogoCharacterIndex(logoCharacterIndex);
         branding.setLogoUrl(logoUrl);
-        branding.setThemePreset(request.themePreset().name());
         long currentRevision = branding.getRevision();
         if (currentRevision == Long.MAX_VALUE) {
             throw new ResponseStatusException(

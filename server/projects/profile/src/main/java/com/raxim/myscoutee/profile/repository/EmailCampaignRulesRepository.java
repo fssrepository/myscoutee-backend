@@ -8,7 +8,14 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.profile.data.document.EmailCampaignRule;
 
 public interface EmailCampaignRulesRepository extends MongoRepository<EmailCampaignRule, String> {
-    Optional<EmailCampaignRule> findByRuleKey(String ruleKey);
+    List<EmailCampaignRule> findByBaseGroupId(String baseGroupId);
+    Optional<EmailCampaignRule> findByBaseGroupIdAndRuleKey(String baseGroupId, String ruleKey);
+    default Optional<EmailCampaignRule> findByRuleKey(String ruleKey) {
+        return findByBaseGroupIdAndRuleKey(com.raxim.myscoutee.profile.service.JobGroupContext.groupId(), ruleKey);
+    }
 
-    List<EmailCampaignRule> findByEnabledTrueOrderByPriorityDescRuleKeyAsc();
+    List<EmailCampaignRule> findByBaseGroupIdAndEnabledTrueOrderByPriorityDescRuleKeyAsc(String baseGroupId);
+    default List<EmailCampaignRule> findByEnabledTrueOrderByPriorityDescRuleKeyAsc() {
+        return findByBaseGroupIdAndEnabledTrueOrderByPriorityDescRuleKeyAsc(com.raxim.myscoutee.profile.service.JobGroupContext.groupId());
+    }
 }

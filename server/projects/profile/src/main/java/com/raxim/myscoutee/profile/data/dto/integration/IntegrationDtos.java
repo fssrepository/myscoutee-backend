@@ -132,6 +132,11 @@ public final class IntegrationDtos {
     public record IntegrationEncountersDto(String id, String externalId, int revision,
             List<IntegrationEncounterPairDto> pairs, int total, Integer nextOffset) { }
 
+    public record IntegrationCampaignSyncItemDto(String id, String title, String description,
+            String kind, String category) { }
+
+    public record IntegrationCampaignSyncRequestDto(List<IntegrationCampaignSyncItemDto> items) { }
+
     public record IntegrationEventSyncRequestDto(
             List<IntegrationEventSyncItemDto> items) {
     }

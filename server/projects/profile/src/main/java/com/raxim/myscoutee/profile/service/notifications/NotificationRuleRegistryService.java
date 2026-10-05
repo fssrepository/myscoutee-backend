@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -81,12 +82,53 @@ public class NotificationRuleRegistryService {
         this.adminTelemetryService = adminTelemetryService;
     }
 
+    /** Iterate seeded instances only; each instance owns its run claim and state. */
+    public void forEachGroup(String ruleKey, Runnable action) {
+        forEachGroup(Set.of(ruleKey), action);
+    }
+
+    public void forEachGroup(Set<String> ruleKeys, Runnable action) {
+        var groups = new java.util.LinkedHashSet<String>();
+        for (var rule : notificationRuleConfigsRepository.findByRuleKeyIn(ruleKeys)) {
+            groups.add(rule.getBaseGroupId());
+        }
+        RuntimeException failure = null;
+        for (String groupId : groups) {
+            try { JobGroupContext.run(groupId, action); }
+            catch (RuntimeException error) {
+                if (failure == null) failure = error;
+                else failure.addSuppressed(error);
+            }
+        }
+        if (failure != null) throw failure;
+    }
+
+    private Criteria ruleCriteria(String ruleKey) {
+        return Criteria.where("baseGroupId").is(JobGroupContext.groupId()).and("ruleKey").is(ruleKey);
+    }
+
+    /** Existing scheduled processors share catalog/claim/history behavior, with one execution per seeded group. */
+    public void runScheduledGroups(String ruleKey, Runnable process) {
+        forEachGroup(ruleKey, () -> {
+            Instant started = Instant.now();
+            if (!shouldRunScheduledRule(ruleKey, started)
+                    || beginScheduledRun(ruleKey, "Scheduled processing started.", ruleKey, started) == null) return;
+            try {
+                process.run();
+                recordRun(ruleKey, 0, "completed", "Scheduled processing completed.", ruleKey, started);
+            } catch (RuntimeException error) {
+                recordRun(ruleKey, 0, "failed", error.getMessage(), ruleKey, started);
+                throw error;
+            }
+        });
+    }
+
     public List<NotificationRuleConfig> rules() {
-        return sorted(notificationRuleConfigsRepository.findAll());
+        return sorted(notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId()));
     }
 
     public Optional<NotificationRuleConfig> findRule(String ruleKey) {
-        return notificationRuleConfigsRepository.findByRuleKey(safeText(ruleKey));
+        return notificationRuleConfigsRepository.findByBaseGroupIdAndRuleKey(JobGroupContext.groupId(), safeText(ruleKey));
     }
 
     public boolean shouldRunScheduledRule(String ruleKey, Instant now) {
@@ -163,7 +205,7 @@ public class NotificationRuleRegistryService {
     }
 
     public boolean hasEnabledScheduledEventRule() {
-        for (NotificationRuleConfig rule : notificationRuleConfigsRepository.findAll()) {
+        for (NotificationRuleConfig rule : notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId())) {
             if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
                 continue;
             }
@@ -217,7 +259,7 @@ public class NotificationRuleRegistryService {
         String nowIso = Instant.now().toString();
         String startedAtIso = (startedAt == null ? Instant.now() : startedAt).toString();
         List<Criteria> criteria = new ArrayList<>();
-        criteria.add(Criteria.where("ruleKey").is(safeText(ruleKey)));
+        criteria.add(ruleCriteria(safeText(ruleKey)));
         criteria.add(new Criteria().orOperator(
                 Criteria.where("runState.currentStatus").ne("running"),
                 Criteria.where("runState.startedAtIso").exists(false),
@@ -311,7 +353,7 @@ public class NotificationRuleRegistryService {
                         status,
                         detail,
                         actorUserId));
-        Criteria criteria = Criteria.where("ruleKey").is(safeText(ruleKey));
+        Criteria criteria = ruleCriteria(safeText(ruleKey));
         if (startedAtOverride != null) {
             criteria = new Criteria().andOperator(
                     criteria,
@@ -350,7 +392,7 @@ public class NotificationRuleRegistryService {
                 ? nowIso
                 : firstNonBlank(rule.getRunState().getStartedAtIso(), nowIso);
         NotificationRuleConfig saved = mongoTemplate.findAndModify(
-                Query.query(Criteria.where("ruleKey").is(safeText(ruleKey))),
+                Query.query(ruleCriteria(safeText(ruleKey))),
                 new Update()
                         .set("runState.currentStatus", "running")
                         .set("runState.progressPercent", clamp(progressPercent, 0, 99))
@@ -393,7 +435,7 @@ public class NotificationRuleRegistryService {
                 .set("runState.pendingCountUnit").toValue(firstNonBlank(unit, "records"))
                 .set("runState.pendingCountUpdatedAtIso").toValue(nowIso);
         NotificationRuleConfig saved = mongoTemplate.findAndModify(
-                Query.query(Criteria.where("ruleKey").is(normalizedRuleKey)),
+                Query.query(ruleCriteria(normalizedRuleKey)),
                 update,
                 FindAndModifyOptions.options().returnNew(true),
                 NotificationRuleConfig.class);
@@ -407,7 +449,7 @@ public class NotificationRuleRegistryService {
         }
         String nowIso = Instant.now().toString();
         NotificationRuleConfig previous = mongoTemplate.findAndModify(
-                Query.query(Criteria.where("ruleKey").is(normalizedRuleKey)),
+                Query.query(ruleCriteria(normalizedRuleKey)),
                 new Update()
                         .set("runState.pendingCount", 0)
                         .set("runState.pendingCountUpdatedAtIso", nowIso),
@@ -447,7 +489,7 @@ public class NotificationRuleRegistryService {
             return rules();
         }
         Map<String, NotificationRuleConfig> existingByKey = new LinkedHashMap<>();
-        for (NotificationRuleConfig existing : notificationRuleConfigsRepository.findAll()) {
+        for (NotificationRuleConfig existing : notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId())) {
             if (existing != null && StringUtils.hasText(safeText(existing.getRuleKey()))) {
                 existingByKey.put(safeText(existing.getRuleKey()), existing);
             }
@@ -459,7 +501,11 @@ public class NotificationRuleRegistryService {
                 continue;
             }
             NotificationRuleConfig current = existingByKey.get(ruleKey);
-            NotificationRuleConfig merged = current == null ? baseRule(ruleKey, nowIso) : current;
+            if (current == null) {
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.BAD_REQUEST, "Job is not seeded for this group.");
+            }
+            NotificationRuleConfig merged = current;
             mergeEditableFields(merged, incoming);
             if (!StringUtils.hasText(merged.getCreatedDate())) {
                 merged.setCreatedDate(nowIso);
@@ -469,11 +515,7 @@ public class NotificationRuleRegistryService {
             }
             merged.setUpdatedDate(nowIso);
             merged.setUpdatedUser(firstNonBlank(actorUserId, SYSTEM_USER));
-            if (current == null) {
-                notificationRuleConfigsRepository.save(merged);
-            } else {
-                saveEditableFields(merged);
-            }
+            saveEditableFields(merged);
         }
         return rules();
     }
@@ -497,7 +539,7 @@ public class NotificationRuleRegistryService {
                 .set("updatedDate", rule.getUpdatedDate())
                 .set("updatedUser", rule.getUpdatedUser());
         return mongoTemplate.findAndModify(
-                Query.query(Criteria.where("ruleKey").is(safeText(rule.getRuleKey()))),
+                Query.query(ruleCriteria(safeText(rule.getRuleKey()))),
                 update,
                 FindAndModifyOptions.options().returnNew(true),
                 NotificationRuleConfig.class);
@@ -511,17 +553,6 @@ public class NotificationRuleRegistryService {
                 .toLowerCase();
     }
 
-    private NotificationRuleConfig baseRule(String ruleKey, String nowIso) {
-        NotificationRuleConfig rule = new NotificationRuleConfig();
-        rule.setId(new ObjectId().toHexString());
-        rule.setSyncKey(UUID.randomUUID().toString());
-        rule.setRuleKey(safeText(ruleKey));
-        rule.setCreatedDate(nowIso);
-        rule.setCreatedUser(SYSTEM_USER);
-        rule.setUpdatedDate(nowIso);
-        rule.setUpdatedUser(SYSTEM_USER);
-        return rule;
-    }
 
     private void mergeEditableFields(NotificationRuleConfig target, NotificationRuleConfig source) {
         target.setRuleKey(firstNonBlank(source.getRuleKey(), target.getRuleKey()));

@@ -34,7 +34,7 @@ class NotificationRuleRegistryServiceTest {
         var rule = new NotificationRuleConfig();
         rule.setRuleKey("account-deletion-warning");
         rule.setEnabled(false);
-        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        when(repository.findByBaseGroupIdAndRuleKey(null, rule.getRuleKey())).thenReturn(Optional.of(rule));
         assertThat(service.beginQueuedRun(rule.getRuleKey(), "retry", rule.getRuleKey(), Instant.now())).isNull();
         verifyNoInteractions(mongo);
         rule.setEnabled(true);
@@ -91,7 +91,7 @@ class NotificationRuleRegistryServiceTest {
         runState.setStartedAtIso("2026-07-31T10:01:00Z");
         runState.setLastRunAtIso("2026-07-31T10:00:00Z");
         rule.setRunState(runState);
-        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        when(repository.findByBaseGroupIdAndRuleKey(null, rule.getRuleKey())).thenReturn(Optional.of(rule));
         NotificationRuleRegistryService service =
                 new NotificationRuleRegistryService(
                         repository,
@@ -178,7 +178,7 @@ class NotificationRuleRegistryServiceTest {
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
         rule.setManualRunEnabled(true);
-        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        when(repository.findByBaseGroupIdAndRuleKey(null, rule.getRuleKey())).thenReturn(Optional.of(rule));
         when(mongoTemplate.findAndModify(
                 any(Query.class),
                 any(Update.class),
@@ -224,7 +224,7 @@ class NotificationRuleRegistryServiceTest {
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE);
         rule.setManualRunEnabled(false);
-        when(repository.findByRuleKey(rule.getRuleKey())).thenReturn(Optional.of(rule));
+        when(repository.findByBaseGroupIdAndRuleKey(null, rule.getRuleKey())).thenReturn(Optional.of(rule));
         when(mongoTemplate.findAndModify(
                 any(Query.class),
                 any(Update.class),
@@ -263,7 +263,7 @@ class NotificationRuleRegistryServiceTest {
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(ruleKey);
         rule.setManualRunEnabled(manualRunEnabled);
-        when(repository.findByRuleKey(ruleKey)).thenReturn(Optional.of(rule));
+        when(repository.findByBaseGroupIdAndRuleKey(null, ruleKey)).thenReturn(Optional.of(rule));
         when(mongoTemplate.findAndModify(
                 any(Query.class),
                 any(Update.class),

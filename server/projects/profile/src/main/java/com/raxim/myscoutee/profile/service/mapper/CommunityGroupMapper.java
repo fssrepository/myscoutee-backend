@@ -27,7 +27,7 @@ public final class CommunityGroupMapper {
                 (int)pendingMembers(group, own),
                 (own != null && "accepted".equals(own.getStatus()) ? activity : 0) + membersActivity(group, own)
                     + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
-                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own), canRestoreGroup(group, own));
+                admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own), canRestoreGroup(group, own), group.effectiveType());
     }
     public static boolean restorableMembership(ActivityMember member) {
         return member != null && ("blocked".equals(member.getStatus()) || "deleted".equals(member.getStatus()) && member.getRequestKind() == null
@@ -56,7 +56,7 @@ public final class CommunityGroupMapper {
                 user.getGender(), user.getCity(), "", m.getRole(), m.getStatus(), m.getPendingSource(),
                 m.getRequestKind(), m.getInvitedByUserId(), actor.equals(m.getInvitedByUserId()),
                 m.getMetAtIso(), m.getActionAtIso(), m.getMetWhere(), avatar(user), null, List.of(),
-                m.getUpdatedDate(), null, null, null, null, m.getManagerGrantedByUserId(), m.getOrganizerOnly());
+                m.getUpdatedDate(), null, null, null, null, m.getManagerGrantedByUserId(), m.getOrganizerOnly(), m.getVotingEligible());
     }
     private static String avatar(Users user) {
         return user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().getFirst();

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/ui/components/notification-center-popup/notification-center-popup.component.scss"],
-  "sourcesContent": [":host {\n  display: contents;\n}\n\n.notification-center-popup__body {\n  display: flex;\n  min-height: 0;\n  height: 100%;\n  flex-direction: column;\n  background:\n    linear-gradient(180deg, rgba(237, 233, 254, 0.56), rgba(248, 250, 252, 0) 7rem),\n    #f8fafc;\n}\n\n.notification-center-popup__list {\n  display: flex;\n  min-height: 0;\n  flex: 1 1 auto;\n}\n"],
-  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA;AACE,WAAA;AACA,cAAA;AACA,UAAA;AACA,kBAAA;AACA;IACE;MAAA,MAAA;MAAA,KAAA,GAAA,EAAA,GAAA,EAAA,GAAA,EAAA,KAAA;MAAA,KAAA,GAAA,EAAA,GAAA,EAAA,GAAA,EAAA,GAAA,KAAA;IAAA;;AAIJ,CAAA;AACE,WAAA;AACA,cAAA;AACA,QAAA,EAAA,EAAA;;",
-  "names": []
-}

@@ -33,6 +33,7 @@ class AdminClientServiceTest {
     @Test void statisticsRefreshExcludesInactiveDeletedBlockedAndStaffFromActiveGenderDistribution() {
         var repository = mock(AdminStatsRepository.class); var users = mock(UsersRepository.class);
         var snapshot = AdminStatsSnapshot.createDefault("global"); when(repository.ensureGlobalSnapshot()).thenReturn(snapshot);
+        when(repository.ensureSnapshot("myscoutee-work")).thenReturn(AdminStatsSnapshot.createDefault("myscoutee-work"));
         List<Users> records = new ArrayList<>();
         for (String status : List.of("public", "friends only", "host only", "inactive", "deleted", "blocked")) {
             var user = new Users(); user.setUserId(status); user.setProfileStatus(status); user.setGender("female"); records.add(user);

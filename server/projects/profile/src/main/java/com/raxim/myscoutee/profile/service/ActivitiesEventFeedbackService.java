@@ -125,8 +125,10 @@ public class ActivitiesEventFeedbackService {
             return emptyPageResult();
         }
 
-        List<ActivityEvent> feedbackEvents = queryFeedbackCandidateEvents(userId);
-        List<ActivityEvent> organizerEvents = queryOrganizerFeedbackEvents(userId);
+        List<ActivityEvent> feedbackEvents = queryFeedbackCandidateEvents(userId).stream()
+            .filter(event -> request == null || !StringUtils.hasText(request.campaignId()) || request.campaignId().equals(event.getCampaignId())).toList();
+        List<ActivityEvent> organizerEvents = queryOrganizerFeedbackEvents(userId).stream()
+            .filter(event -> request == null || !StringUtils.hasText(request.campaignId()) || request.campaignId().equals(event.getCampaignId())).toList();
         Map<String, Set<String>> minglePeers = completedMinglePeers(userId, feedbackEvents);
         Map<String, Users> usersById = buildFeedbackUsersById(activeUser, feedbackEvents, organizerEvents, minglePeers);
         EventFeedbackPageStateSnapshotDto state = pageStateSnapshot(queryStateDtos(userId));

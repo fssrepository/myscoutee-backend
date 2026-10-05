@@ -61,7 +61,7 @@ public class ChatMapper {
                 normalizeId(record.getGroupId()),
                 StringUtils.hasText(safeText(record.getOwnerStatus())) ? safeText(record.getOwnerStatus()) : null,
                 normalizeRevision(record.getRevision()),
-                null);
+                null, record.getCaseOfferId());
     }
 
     public Map<String, ChatDto> toMap(Collection<Chat> records) {
@@ -107,7 +107,7 @@ public class ChatMapper {
                 dto.groupId(),
                 dto.ownerStatus(),
                 dto.revision(),
-                dto.navigationContext());
+                dto.navigationContext(), dto.caseOfferId());
     }
 
     public ChatDto withMembers(ChatDto dto, List<String> memberIds, Map<String, Users> usersById) {
@@ -142,7 +142,7 @@ public class ChatMapper {
                 dto.groupId(),
                 dto.ownerStatus(),
                 dto.revision(),
-                dto.navigationContext());
+                dto.navigationContext(), dto.caseOfferId());
     }
 
     public ChatDto withNavigationContext(ChatDto dto, ChatNavigationContextDto navigationContext) {
@@ -172,7 +172,7 @@ public class ChatMapper {
                 dto.groupId(),
                 dto.ownerStatus(),
                 dto.revision(),
-                navigationContext);
+                navigationContext, dto.caseOfferId());
     }
 
     private long normalizeRevision(Long value) {

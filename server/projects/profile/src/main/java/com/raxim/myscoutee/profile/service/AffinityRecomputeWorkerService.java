@@ -40,7 +40,7 @@ public class AffinityRecomputeWorkerService {
     private final MongoTemplate mongoTemplate;
     private final AffinityRecomputeMetricsService metricsService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
-    private final AtomicBoolean processing = new AtomicBoolean(false);
+    private final java.util.concurrent.ConcurrentHashMap<String, AtomicBoolean> processing = new java.util.concurrent.ConcurrentHashMap<>();
     private volatile long lastScheduledRunMs = 0L;
     private volatile long cachedWorkerPollDelayMs = DEFAULT_WORKER_POLL_DELAY_MS;
 
@@ -74,6 +74,11 @@ public class AffinityRecomputeWorkerService {
     }
 
     private void runDueTasksForCurrentDatabase() {
+        var registry = taskService.notificationRuleRegistry();
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE, this::runDueTasksForCurrentDatabaseInGroup);
+    }
+
+    private void runDueTasksForCurrentDatabaseInGroup() {
         if (!properties.isEnabled()
                 || (properties.isChangeStreamEnabled()
                         && !properties.isChangeStreamFallbackPollEnabled()
@@ -125,6 +130,18 @@ public class AffinityRecomputeWorkerService {
     }
 
     public int wakeDueTasks(String trigger) {
+        var registry = taskService.notificationRuleRegistry();
+        if (JobGroupContext.isActive()) {
+            return registry == null || registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isEmpty()
+                    ? 0 : wakeDueTasksInGroup(trigger);
+        }
+        var total = new java.util.concurrent.atomic.AtomicInteger();
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                () -> total.addAndGet(wakeDueTasksInGroup(trigger)));
+        return total.get();
+    }
+
+    private int wakeDueTasksInGroup(String trigger) {
         if (!properties.isEnabled()) {
             return 0;
         }
@@ -132,7 +149,8 @@ public class AffinityRecomputeWorkerService {
         NotificationRuleRegistryService registry = taskService.notificationRuleRegistry();
         boolean ruleConfigured = registry != null
                 && registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isPresent();
-        if (ruleConfigured && !registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE)
+        if (!ruleConfigured) return 0;
+        if (!registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE)
                 .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
                 .orElse(false)) {
             return 0;
@@ -182,7 +200,8 @@ public class AffinityRecomputeWorkerService {
     }
 
     private int processDueTasks(Instant now, String trigger) {
-        if (!processing.compareAndSet(false, true)) {
+        AtomicBoolean running = processing.computeIfAbsent(MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key(), ignored -> new AtomicBoolean());
+        if (!running.compareAndSet(false, true)) {
             metricsService.recordWorkerBusySkip();
             return 0;
         }
@@ -221,7 +240,7 @@ public class AffinityRecomputeWorkerService {
             metricsService.recordWorkerPass(trigger, dueCount, leasedCount, readMs, elapsedMs(runtimeStartMs));
             return leasedCount;
         } finally {
-            processing.set(false);
+            running.set(false);
         }
     }
 
@@ -235,6 +254,7 @@ public class AffinityRecomputeWorkerService {
         }
         Instant leaseUntil = now.plus(effectiveLeaseDuration());
         Query query = new Query(Criteria.where("_id").is(task.getId())
+                .and("baseGroupId").is(JobGroupContext.groupId())
                 .and("status").is(AffinityRecomputeTaskService.STATUS_PENDING)
                 .and("availableAtIso").lte(now.toString()));
         Update update = new Update()

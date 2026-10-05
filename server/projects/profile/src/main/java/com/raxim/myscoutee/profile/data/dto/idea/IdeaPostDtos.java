@@ -29,7 +29,8 @@ public final class IdeaPostDtos {
             String createdByUserId,
             String updatedAtIso,
             String updatedByUserId,
-            Map<String, ImageDetailsDto> imageDetails) {
+            Map<String, ImageDetailsDto> imageDetails,
+            String workspaceGroupId) {
     }
 
     public record IdeaPostAdminCountsDto(

@@ -12,6 +12,8 @@ public interface HelpCenterRevisionsRepository extends MongoRepository<HelpCente
 
     List<HelpCenterRevision> findAllByOrderByVersionDesc();
 
+    List<HelpCenterRevision> findByBaseGroupIdOrderByVersionDesc(String baseGroupId);
+
     Optional<HelpCenterRevision> findFirstByDocumentTypeAndLangAndActiveTrueOrderByVersionDesc(String documentType, String lang);
 
     Optional<HelpCenterRevision> findFirstByOrderByVersionDesc();

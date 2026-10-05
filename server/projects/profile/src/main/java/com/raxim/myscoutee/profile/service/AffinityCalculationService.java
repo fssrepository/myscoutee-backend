@@ -29,6 +29,7 @@ public class AffinityCalculationService {
     private static final String SOCIAL_SEPARATED_FRIENDS = "separated-friends";
     private static final double EARTH_RADIUS_METERS = 6_371_000d;
 
+    private final com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final UsersRepository usersRepository;
     private final UserRatesRepository userRatesRepository;
@@ -38,7 +39,9 @@ public class AffinityCalculationService {
             AffinityConfigsRepository affinityConfigsRepository,
             UsersRepository usersRepository,
             UserRatesRepository userRatesRepository,
-            UserExperienceProfilesRepository userExperienceProfilesRepository) {
+            UserExperienceProfilesRepository userExperienceProfilesRepository,
+            com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups) {
+        this.communityGroups = communityGroups;
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
@@ -46,6 +49,14 @@ public class AffinityCalculationService {
     }
 
     public void applyAffinity(List<UserRate> rates) {
+        applyAffinity(rates, false);
+    }
+
+    public void applyAggregatedAffinity(List<UserRate> rates) {
+        applyAffinity(rates, true);
+    }
+
+    private void applyAffinity(List<UserRate> rates, boolean aggregated) {
         if (rates == null || rates.isEmpty()) {
             return;
         }
@@ -54,10 +65,17 @@ public class AffinityCalculationService {
         Set<String> userIds = collectUserIds(rates);
         Map<String, Users> usersById = loadUsers(userIds);
         Map<String, UserExperienceProfile> experiencesByUserId = loadExperienceProfiles(userIds);
-        List<UserRate> contextRates = loadContextRates(userIds, rates);
-
+        List<UserRate> contextRates = aggregated ? rates : loadContextRates(userIds, rates);
+        Map<String, String> baseByWorkspace = communityGroups.baseGroupIds(usersById.values().stream()
+                .map(Users::getWorkspaceGroupId).filter(StringUtils::hasText).distinct().toList());
+        Map<String, AffinityConfig> configs = new java.util.HashMap<>();
+        configs.put("default", config);
+        for (String baseId : new java.util.HashSet<>(baseByWorkspace.values()))
+            configs.put(baseId, affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(baseId).orElseGet(AffinityConfig::defaults));
         for (UserRate rate : rates) {
-            applyAffinity(rate, usersById, experiencesByUserId, contextRates, config);
+            Users owner = rate == null ? null : usersById.get(rate.getOwnerUserId());
+            String key = owner == null || owner.getWorkspaceGroupId() == null ? "default" : baseByWorkspace.getOrDefault(owner.getWorkspaceGroupId(), "default");
+            applyAffinity(rate, usersById, experiencesByUserId, contextRates, configs.get(key));
         }
     }
 
@@ -601,6 +619,9 @@ public class AffinityCalculationService {
                     || !ownerUserId.equals(normalize(candidate.getRelatedUserId()))) {
                 continue;
             }
+            if (!normalize(rate.getCampaignId()).equals(normalize(candidate.getCampaignId()))) {
+                continue;
+            }
             if (normalizeScore(candidate.getScoreGiven()) <= 0) {
                 continue;
             }
@@ -688,7 +709,7 @@ public class AffinityCalculationService {
     }
 
     private AffinityConfig activeConfig() {
-        return affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()
+        return affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")
                 .orElseGet(AffinityConfig::defaults);
     }
 

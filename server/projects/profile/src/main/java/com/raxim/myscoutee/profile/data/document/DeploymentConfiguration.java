@@ -109,7 +109,6 @@ public class DeploymentConfiguration {
         private Integer logoCharacterIndex;
         private String homeLabel;
         private String logoUrl;
-        private String themePreset;
         private Long revision;
 
         public String getProductName() {
@@ -144,13 +143,6 @@ public class DeploymentConfiguration {
             this.logoUrl = logoUrl;
         }
 
-        public String getThemePreset() {
-            return themePreset;
-        }
-
-        public void setThemePreset(String themePreset) {
-            this.themePreset = themePreset;
-        }
 
         public Long getRevision() {
             return revision;

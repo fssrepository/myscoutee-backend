@@ -26,17 +26,57 @@ public class UserAffinityEdgeService {
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
     private final AffinityConfigsRepository affinityConfigsRepository;
+    private final JobGroupScopeService groupScope;
+    private final CampaignRatingProjectionService campaignRatings;
 
     public UserAffinityEdgeService(
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
-            AffinityConfigsRepository affinityConfigsRepository) {
+            AffinityConfigsRepository affinityConfigsRepository, JobGroupScopeService groupScope,
+            CampaignRatingProjectionService campaignRatings) {
+        this.campaignRatings = campaignRatings;
+        this.groupScope = groupScope;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.affinityConfigsRepository = affinityConfigsRepository;
     }
 
-    public void recomputeForRates(List<UserRate> rates) {
+    /** Reuses the canonical evidence calculation for a bounded campaign context. */
+    public List<UserAffinityEdge> projectEdges(List<UserRate> rates) {
+        var configs = configsForUsers(rates.stream().filter(java.util.Objects::nonNull).map(UserRate::getOwnerUserId).toList());
+        return projectEdges(rates, configs);
+    }
+
+    private List<UserAffinityEdge> projectEdges(List<UserRate> rates, Map<String, AffinityConfig> configs) {
+        Map<PairKey, EdgeAccumulator> pairs = new LinkedHashMap<>();
+        for (UserRate rate : rates) {
+            PairKey pair = resolveEvidencePair(rate);
+            if (pair != null) pairs.computeIfAbsent(pair, ignored -> new EdgeAccumulator(configs.getOrDefault(rate.getOwnerUserId(), AffinityConfig.defaults()))).add(rate);
+        }
+        List<UserAffinityEdge> edges = new ArrayList<>();
+        pairs.forEach((pair, accumulator) -> {
+            if (!accumulator.hasEvidence()) return;
+            UserAffinityEdge edge = new UserAffinityEdge();
+            edge.setPairKey(pair.pairKey());
+            edge.setLeftUserId(pair.leftUserId());
+            edge.setRightUserId(pair.rightUserId());
+            edge.setAffinityScore(accumulator.affinityScore());
+            edge.setEdgeWeight(accumulator.edgeWeight());
+            edge.setEvidence(accumulator.summary());
+            edges.add(edge);
+        });
+        return edges;
+    }
+
+    public Map<String, List<UserAffinityEdge>> projectCampaignEdges(List<UserRate> rates) {
+        var configs = configsForUsers(rates.stream().map(UserRate::getOwnerUserId).toList());
+        Map<String, List<UserRate>> contexts = rates.stream().collect(java.util.stream.Collectors.groupingBy(UserRate::getCampaignId));
+        Map<String, List<UserAffinityEdge>> result = new LinkedHashMap<>();
+        contexts.forEach((id, rows) -> result.put(id, projectEdges(rows, configs)));
+        return result;
+    }
+
+    public synchronized void recomputeForRates(List<UserRate> rates) {
         Map<String, PairKey> affectedPairs = new LinkedHashMap<>();
         if (rates != null) {
             for (UserRate rate : rates) {
@@ -50,26 +90,39 @@ public class UserAffinityEdgeService {
             return;
         }
 
-        AffinityConfig config = activeConfig();
+        var configs = configsForUsers(affectedPairs.values().stream().map(PairKey::leftUserId).toList());
+        Map<String, List<UserRate>> evidence = new LinkedHashMap<>();
+        for (PairKey pair : affectedPairs.values()) evidence.put(pair.pairKey(),
+                userRatesRepository.findEvidenceForPair(pair.leftUserId(), pair.rightUserId()).stream()
+                    .filter(rate -> pair.equals(resolveEvidencePair(rate)))
+                    .sorted(Comparator.comparing(rate -> normalize(rate.getUpdatedDate()))).toList());
+        Map<String, UserRate> summaries = campaignRatings.write(evidence);
         for (PairKey pair : affectedPairs.values()) {
-            recompute(pair, config);
+            List<UserRate> rows = new ArrayList<>(evidence.get(pair.pairKey()));
+            UserRate summary = summaries.get(pair.pairKey());
+            if (summary != null) {
+                rows.removeIf(rate -> MODE_SINGLE.equals(rate.getMode()));
+                rows.add(summary);
+            }
+            recompute(pair, configs.getOrDefault(pair.leftUserId(), AffinityConfig.defaults()), rows);
         }
     }
+
+    public List<com.raxim.myscoutee.profile.data.document.CampaignRatingSummary> ratingSummaries(String userId) {
+        return campaignRatings.forUser(userId);
+    }
+
+    public void backfillCampaignRatings() { recomputeForRates(campaignRatings.staleEvidence()); }
 
     public void recompute(String firstUserId, String secondUserId) {
         PairKey pair = PairKey.of(firstUserId, secondUserId);
-        if (pair == null) {
-            return;
-        }
-        recompute(pair, activeConfig());
+        if (pair == null) return;
+        UserRate trigger = new UserRate(); trigger.setMode(MODE_SINGLE);
+        trigger.setOwnerUserId(pair.leftUserId()); trigger.setRelatedUserId(pair.rightUserId());
+        recomputeForRates(List.of(trigger));
     }
 
-    private void recompute(PairKey pair, AffinityConfig config) {
-        List<UserRate> pairRates = userRatesRepository.findEvidenceForPair(pair.leftUserId(), pair.rightUserId()).stream()
-                .filter(rate -> pair.equals(resolveEvidencePair(rate)))
-                .sorted(Comparator.comparing(rate -> normalize(rate.getUpdatedDate())))
-                .toList();
-
+    private void recompute(PairKey pair, AffinityConfig config, List<UserRate> pairRates) {
         EdgeAccumulator accumulator = new EdgeAccumulator(config);
         for (UserRate rate : pairRates) {
             accumulator.add(rate);
@@ -108,9 +161,14 @@ public class UserAffinityEdgeService {
         return null;
     }
 
-    private AffinityConfig activeConfig() {
-        return affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()
-                .orElseGet(AffinityConfig::defaults);
+    private Map<String, AffinityConfig> configsForUsers(java.util.Collection<String> ids) {
+        Map<String, AffinityConfig> result = new LinkedHashMap<>();
+        groupScope.usersByGroup(ids).forEach((baseId, users) -> {
+            var config = affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(baseId == null ? "default" : baseId)
+                    .orElseGet(AffinityConfig::defaults);
+            users.forEach(user -> result.put(user, config));
+        });
+        return result;
     }
 
     private String normalize(String value) {

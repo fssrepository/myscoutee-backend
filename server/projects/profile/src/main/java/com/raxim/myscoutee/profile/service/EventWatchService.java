@@ -31,6 +31,13 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationOutboxServi
 
 @Service
 public class EventWatchService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
     private static final String SYSTEM_USER_ID = "event-watchlist";
     private static final String DEFAULT_CLICK_URL = "/game";
     private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
@@ -130,7 +137,11 @@ public class EventWatchService {
 
     @Scheduled(fixedDelayString = "${events.watchlist.check-delay-ms:60000}")
     public void notifyWhenEventBecomesAvailable() {
-        List<EventWatchSubscription> subscriptions = eventWatchSubscriptionsRepository.findAll();
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("event-watchlist", this::notifyWhenEventBecomesAvailableInGroup));
+    }
+
+    private void notifyWhenEventBecomesAvailableInGroup() {
+        List<EventWatchSubscription> subscriptions = jobGroupScope.findEventOwned(new org.springframework.data.mongodb.core.query.Query(), EventWatchSubscription.class, "eventId");
         if (subscriptions.isEmpty()) {
             return;
         }

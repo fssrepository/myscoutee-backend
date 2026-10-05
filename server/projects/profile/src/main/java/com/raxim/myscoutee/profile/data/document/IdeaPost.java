@@ -35,6 +35,9 @@ public class IdeaPost {
 
     @Indexed(name = "idea_post_lang")
     private String lang;
+    private String workspaceGroupId;
+    public String getWorkspaceGroupId() { return workspaceGroupId; }
+    public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
     private String languageLabel;
     private String title;
     private String excerpt;

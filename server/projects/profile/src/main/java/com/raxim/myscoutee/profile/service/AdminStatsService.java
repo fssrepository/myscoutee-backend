@@ -53,22 +53,33 @@ public class AdminStatsService {
     }
 
     public AdminStatsDashboardDto dashboard(String adminUserId) {
-        adminModerationService.resolveAdminActor(adminUserId);
-        return toDto(adminStatsRepository.globalSnapshotOrDefault());
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        return toDto(groupId == null ? adminStatsRepository.globalSnapshotOrDefault() : adminStatsRepository.snapshotOrDefault(groupId));
     }
 
     public Optional<String> lastTelemetryStreamId() {
-        return adminStatsRepository.findGlobalSnapshot()
+        return adminStatsRepository.findByStatsKey(JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId())
                 .map(AdminStatsSnapshot::getLastTelemetryStreamId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText);
     }
 
     public void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId) {
-        if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
+        if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) return;
+        List<AdminTelemetryEvent> batch = events == null ? List.of() : events;
+        var scoped = adminModerationService.baseProfileEvents(batch);
+        if (JobGroupContext.isActive()) {
+            String key = JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId();
+            applyTelemetryEvents(scoped.getOrDefault(key, List.of()), lastStreamId, adminStatsRepository.ensureSnapshot(JobGroupContext.groupId()));
             return;
         }
-        AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
+        for (var entry : scoped.entrySet()) {
+            if (!"global".equals(entry.getKey())) applyTelemetryEvents(entry.getValue(), lastStreamId, adminStatsRepository.ensureSnapshot(entry.getKey()));
+        }
+        applyTelemetryEvents(scoped.getOrDefault("global", List.of()), lastStreamId, adminStatsRepository.ensureGlobalSnapshot());
+    }
+
+    private void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId, AdminStatsSnapshot snapshot) {
         Map<String, Long> counters = new LinkedHashMap<>(safeMap(snapshot.getCounters()));
         Map<String, Long> attention = new LinkedHashMap<>(safeMap(snapshot.getAttention()));
         Map<String, Long> topCities = new LinkedHashMap<>(safeMap(snapshot.getTopCities()));
@@ -177,11 +188,14 @@ public class AdminStatsService {
     }
 
     public void refreshGraphScienceSnapshot() {
-        AdminStatsSnapshot snapshot = adminStatsRepository.ensureGlobalSnapshot();
-        adminGraphScienceService.refresh(snapshot);
-        refreshProfileCounts(snapshot);
-        snapshot.setGeneratedAtIso(Instant.now().toString());
-        adminStatsRepository.save(snapshot);
+        for (String key : JobGroupContext.isActive() ? List.of(JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId())
+                : List.of("global", com.raxim.myscoutee.profile.data.document.CommunityGroup.WORK_BASE_ID, com.raxim.myscoutee.profile.data.document.CommunityGroup.COMMUNITY_BASE_ID)) {
+            AdminStatsSnapshot snapshot = "global".equals(key) ? adminStatsRepository.ensureGlobalSnapshot() : adminStatsRepository.ensureSnapshot(key);
+            adminGraphScienceService.refresh(snapshot);
+            refreshProfileCounts(snapshot);
+            snapshot.setGeneratedAtIso(Instant.now().toString());
+            adminStatsRepository.save(snapshot);
+        }
     }
 
     private AdminStatsDashboardDto toDto(AdminStatsSnapshot snapshot) {
@@ -557,7 +571,8 @@ public class AdminStatsService {
         Map<String, String> activeProfileUsers = new LinkedHashMap<>();
         Map<String, Long> activeGenders = new LinkedHashMap<>();
         for (Users user : usersRepository.findAll()) {
-            if (user == null || isAdminSeedUser(user)) {
+            if (user == null || isAdminSeedUser(user) || !Objects.equals(user.getWorkspaceGroupId(),
+                    "global".equals(snapshot.getStatsKey()) ? null : snapshot.getStatsKey())) {
                 continue;
             }
             String profileStatus = normalizeProfileStatus(user);

@@ -18,6 +18,9 @@ import com.raxim.myscoutee.profile.security.FriendshipFacts;
  * Reads return the stored state. Event mutations and the existing expiry worker own updates. */
 @Service
 public class OrganizerFollowingService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private final MongoTemplate mongo;
     private final FriendshipFacts friendships;
     public OrganizerFollowingService(MongoTemplate mongo, FriendshipFacts friendships) {
@@ -117,6 +120,7 @@ public class OrganizerFollowingService {
 
     public void expire(Instant now) {
         Query query = Query.query(Criteria.where("following.nextExpiryAtIso").ne(null).lte(now.toString())).limit(200);
+        if (JobGroupContext.isActive()) query.addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId"));
         for (Users user : mongo.find(query, Users.class)) update(user.getUserId(), null, false);
     }
 

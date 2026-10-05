@@ -18,6 +18,15 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class AdminTelemetryService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private JobGroupScopeService jobGroupScope;
+
+    public static String streamKey(AdminStatsProperties properties, String groupId) {
+        var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        if (mode == com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL && groupId == null) return properties.getStreamKey();
+        return properties.getStreamKey() + ":" + mode.name() + ":" + (groupId == null ? "default" : groupId);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminTelemetryService.class);
 
     private final StringRedisTemplate stringRedisTemplate;
@@ -58,6 +67,8 @@ public class AdminTelemetryService {
         if (!StringUtils.hasText(normalizedEventKey)) {
             return;
         }
+        String groupId = JobGroupContext.isActive() ? JobGroupContext.groupId() : jobGroupScope.forUser(actorUserId);
+        String streamKey = streamKey(properties, groupId);
         AdminTelemetryEvent event = new AdminTelemetryEvent(
                 normalizedEventKey,
                 safeText(domain),
@@ -65,18 +76,24 @@ public class AdminTelemetryService {
                 safeText(actorUserId),
                 Math.max(1L, amount),
                 Instant.now().toString(),
-                normalizeTags(tags));
+                scopedTags(tags, groupId));
         try {
             stringRedisTemplate.opsForStream().add(
                     StreamRecords.mapBacked(Map.of("payload", objectMapper.writeValueAsString(event)))
-                            .withStreamKey(properties.getStreamKey()));
+                            .withStreamKey(streamKey));
             redisStreamRetentionService.trimByAge(
                     stringRedisTemplate,
-                    properties.getStreamKey(),
+                    streamKey,
                     Duration.ofDays(properties.getStreamRetentionDays()));
         } catch (Exception exception) {
             LOGGER.warn("Unable to enqueue admin telemetry event {}.", normalizedEventKey, exception);
         }
+    }
+
+    private Map<String, String> scopedTags(Map<String, String> tags, String groupId) {
+        var scoped = new LinkedHashMap<>(normalizeTags(tags));
+        scoped.put("baseGroupId", groupId == null ? "global" : groupId);
+        return scoped;
     }
 
     private Map<String, String> normalizeTags(Map<String, String> tags) {

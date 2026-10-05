@@ -26,6 +26,7 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AffinityCalculationServiceTest {
+    @Mock private com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups;
     @Mock
     private AffinityConfigsRepository affinityConfigsRepository;
     @Mock
@@ -247,6 +248,31 @@ class AffinityCalculationServiceTest {
         assertThat(bucketed).isCloseTo(0.5d, org.assertj.core.data.Offset.offset(0.15d));
     }
 
+    @Test
+    void privateWorkWorkspaceUsesWorkConfigurationWithoutNeedingACampaign() {
+        Users left = user("u1", List.of(), null), right = user("u2", List.of(), null);
+        left.setWorkspaceGroupId("private-work"); right.setWorkspaceGroupId("private-work");
+        var service = service(ratingOnlyConfig(), List.of(), Map.of("u1", left, "u2", right));
+        when(communityGroups.baseGroupIds(anyCollection())).thenReturn(Map.of("private-work", "myscoutee-work"));
+        when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-work"))
+                .thenReturn(Optional.of(ratingOnlyConfig()));
+        service.applyAffinity(List.of(singleRate("work-rate", "u1", "u2", 7)));
+        org.mockito.Mockito.verify(affinityConfigsRepository).findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-work");
+    }
+
+    @Test
+    void communityPriorityUsesItsOwnConfigurationWithoutReadingWork() {
+        Users left = user("u1", List.of(), null), right = user("u2", List.of(), null);
+        left.setWorkspaceGroupId("private-community"); right.setWorkspaceGroupId("private-community");
+        var service = service(ratingOnlyConfig(), List.of(), Map.of("u1", left, "u2", right));
+        when(communityGroups.baseGroupIds(anyCollection())).thenReturn(Map.of("private-community", "myscoutee-community"));
+        when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-community"))
+                .thenReturn(Optional.of(ratingOnlyConfig()));
+        service.applyAffinity(List.of(singleRate("service-rate", "u1", "u2", 7)));
+        org.mockito.Mockito.verify(affinityConfigsRepository).findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-community");
+        org.mockito.Mockito.verify(affinityConfigsRepository, org.mockito.Mockito.never()).findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-work");
+    }
+
     private AffinityCalculationService service(
             AffinityConfig config,
             List<UserRate> existingRates,
@@ -259,7 +285,7 @@ class AffinityCalculationServiceTest {
             List<UserRate> existingRates,
             Map<String, Users> usersById,
             boolean stubEmptyExperiences) {
-        when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(config));
+        when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(config));
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(existingRates);
         if (stubEmptyExperiences) {
             when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
@@ -275,7 +301,7 @@ class AffinityCalculationServiceTest {
                 affinityConfigsRepository,
                 usersRepository,
                 userRatesRepository,
-                userExperienceProfilesRepository);
+                userExperienceProfilesRepository, communityGroups);
     }
 
     private UserExperienceProfile experienceProfile(String userId, String type, String org) {

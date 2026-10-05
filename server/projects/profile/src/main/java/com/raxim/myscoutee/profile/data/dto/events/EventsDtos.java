@@ -37,7 +37,12 @@ public final class EventsDtos {
             String cursor,
             String anchorDate,
             String rangeStart,
-            String rangeEnd) {
+            String rangeEnd,
+            String campaignId) {
+        public EventsFilterRequestDto(String userId, String filter, String hostingPublicationFilter, String secondaryFilter, String sort, String view, Integer limit, String cursor, String anchorDate, String rangeStart, String rangeEnd) {
+            this(userId, filter, hostingPublicationFilter, secondaryFilter, sort, view, limit, cursor, anchorDate, rangeStart, rangeEnd, null);
+        }
+
     }
 
     public record EventsExploreQueryDto(
@@ -421,7 +426,12 @@ public final class EventsDtos {
             String userId,
             String filter,
             Integer page,
-            Integer pageSize) {
+            Integer pageSize,
+            String campaignId) {
+        public EventFeedbackPageQueryDto(String userId, String filter, Integer page, Integer pageSize) {
+            this(userId, filter, page, pageSize, null);
+        }
+
     }
 
     public record EventFeedbackQueryDto(
@@ -589,7 +599,12 @@ public final class EventsDtos {
             Boolean paymentDeadlineEnabled,
             Boolean cancelled,
             Boolean cancellationRefundsPending,
-            Boolean canCancelForFullRefund) {
+            Boolean canCancelForFullRefund,
+            String campaignId) {
+        public EventDto(String id, String userId, String status, List<String> adminIds, String title, String subtitle, String timeframe, String inviter, Integer activity, String creatorUserId, String creatorName, String creatorInitials, String creatorAvatarUrl, String creatorCity, String organizerUserId, String visibility, String startAtIso, String endAtIso, Double distanceKm, String imageUrl, String location, Integer capacityMin, Integer capacityMax, Integer capacityTotal, Boolean full, String eventType, String mode, TournamentCurrentStageDto currentStage, Boolean ticketing, PricingConfigDto pricing, Boolean policiesEnabled, List<PolicyItemDto> policies, Boolean slotsEnabled, List<EventSlotTemplateDto> slotTemplates, EventSlotOccurrenceDto nextSlot, List<EventSlotOccurrenceDto> upcomingSlots, Boolean subEventsEnabled, List<SubEventDefinitionDto> subEventDefinitions, List<SubEventItemDto> subEvents, Integer acceptedMembers, Integer pendingMembers, List<String> acceptedMemberUserIds, List<String> pendingMemberUserIds, List<String> invitedMemberUserIds, List<String> pendingRequestMemberUserIds, String pendingReason, String currentUserMembershipStatus, Boolean approvalRequired, String checkoutResultState, Double boost, Boolean watched, String sourceLink, String moderationStatus, Integer paymentDeadlineHours, Boolean paymentDeadlineEnabled, Boolean cancelled, Boolean cancellationRefundsPending, Boolean canCancelForFullRefund) {
+            this(id, userId, status, adminIds, title, subtitle, timeframe, inviter, activity, creatorUserId, creatorName, creatorInitials, creatorAvatarUrl, creatorCity, organizerUserId, visibility, startAtIso, endAtIso, distanceKm, imageUrl, location, capacityMin, capacityMax, capacityTotal, full, eventType, mode, currentStage, ticketing, pricing, policiesEnabled, policies, slotsEnabled, slotTemplates, nextSlot, upcomingSlots, subEventsEnabled, subEventDefinitions, subEvents, acceptedMembers, pendingMembers, acceptedMemberUserIds, pendingMemberUserIds, invitedMemberUserIds, pendingRequestMemberUserIds, pendingReason, currentUserMembershipStatus, approvalRequired, checkoutResultState, boost, watched, sourceLink, moderationStatus, paymentDeadlineHours, paymentDeadlineEnabled, cancelled, cancellationRefundsPending, canCancelForFullRefund, null);
+        }
+
     }
 
     public record EventsExplorePageDto(
@@ -688,7 +703,12 @@ public final class EventsDtos {
             List<String> imageUrls,
             Map<String, ImageDetailsDto> imageDetails,
             Integer paymentDeadlineHours,
-            Boolean paymentDeadlineEnabled) {
+            Boolean paymentDeadlineEnabled,
+            String campaignId) {
+        public EventDetailDto(String syncKey, String id, String userId, String type, String status, String statusBeforeSuppression, List<String> adminIds, String avatar, String title, String subtitle, String timeframe, String inviter, Integer unread, Integer activity, String trashedAtIso, String creatorUserId, String creatorName, String creatorInitials, String creatorGender, String creatorCity, String visibility, String blindMode, String startAtIso, String endAtIso, Double distanceKm, String imageUrl, String sourceLink, String location, LocationCoordinatesDto locationCoordinates, Integer capacityMin, Integer capacityMax, Integer capacityTotal, Integer capacityTotalActual, Boolean full, Boolean autoInviter, String frequency, Boolean ticketing, Boolean approvalRequired, PricingConfigDto pricing, Boolean policiesEnabled, List<PolicyItemDto> policies, Boolean slotsEnabled, List<EventSlotTemplateDto> slotTemplates, String parentEventId, String slotTemplateId, Boolean generated, String eventType, EventSlotOccurrenceDto nextSlot, List<EventSlotOccurrenceDto> upcomingSlots, Integer acceptedMembers, Integer pendingMembers, List<String> acceptedMemberUserIds, List<String> pendingMemberUserIds, List<String> invitedMemberUserIds, List<String> pendingRequestMemberUserIds, String pendingReason, List<String> topics, Boolean subEventsEnabled, List<SubEventDefinitionDto> subEventDefinitions, List<SubEventItemDto> subEvents, String mode, MingleConfigurationDto mingleConfiguration, TournamentCurrentStageDto currentStage, Double rating, Double boost, Double affinity, String paymentSessionId, List<String> imageUrls, Map<String, ImageDetailsDto> imageDetails, Integer paymentDeadlineHours, Boolean paymentDeadlineEnabled) {
+            this(syncKey, id, userId, type, status, statusBeforeSuppression, adminIds, avatar, title, subtitle, timeframe, inviter, unread, activity, trashedAtIso, creatorUserId, creatorName, creatorInitials, creatorGender, creatorCity, visibility, blindMode, startAtIso, endAtIso, distanceKm, imageUrl, sourceLink, location, locationCoordinates, capacityMin, capacityMax, capacityTotal, capacityTotalActual, full, autoInviter, frequency, ticketing, approvalRequired, pricing, policiesEnabled, policies, slotsEnabled, slotTemplates, parentEventId, slotTemplateId, generated, eventType, nextSlot, upcomingSlots, acceptedMembers, pendingMembers, acceptedMemberUserIds, pendingMemberUserIds, invitedMemberUserIds, pendingRequestMemberUserIds, pendingReason, topics, subEventsEnabled, subEventDefinitions, subEvents, mode, mingleConfiguration, currentStage, rating, boost, affinity, paymentSessionId, imageUrls, imageDetails, paymentDeadlineHours, paymentDeadlineEnabled, null);
+        }
+
     }
 
     public record EventInvitationContextDto(

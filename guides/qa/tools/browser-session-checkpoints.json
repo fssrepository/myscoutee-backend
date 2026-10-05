@@ -14,6 +14,18 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "MSC115-UI-REGRESSION": {
+      "preserveOtherSessions": true,
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "Codex isolated Community UI check",
+        "sessionKind": "anonymous",
+        "expectedName": "Isolated Community layout regression session"
+      }]
+    },
     "GROUP-LIFECYCLE-001-CONTACT-INVITEES": {
       "preserveOtherSessions": true,
       "fixtureCheckpointId": "GROUP-LIFECYCLE-001",

@@ -10,7 +10,7 @@ import com.raxim.myscoutee.profile.data.document.ActivityEvent;
 import com.raxim.myscoutee.profile.data.document.Users;
 
 class AbsoluteAffinityServiceTest {
-    private final AbsoluteAffinityService service = new AbsoluteAffinityService(null, null);
+    private final AbsoluteAffinityService service = new AbsoluteAffinityService(null, null, null);
 
     @Test
     void userAffinityChangesWhenProfileImpressionsChange() {

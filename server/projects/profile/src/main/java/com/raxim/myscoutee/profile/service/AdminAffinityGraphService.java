@@ -75,14 +75,14 @@ public class AdminAffinityGraphService {
     }
 
     public AdminAffinityGraphMetaDto meta(String adminUserId, Double minWeight, Double maxWeight) {
-        adminModerationService.resolveAdminActor(adminUserId);
+        String groupId = adminModerationService.baseGroupId(adminUserId);
         if (isDefaultWeightRange(minWeight, maxWeight)) {
-            Optional<AdminAffinityGraphLayout> materializedLayout = latestMaterializedLayout();
+            Optional<AdminAffinityGraphLayout> materializedLayout = latestMaterializedLayout(groupId);
             if (materializedLayout.isPresent()) {
                 return toMetaDto(materializedLayout.get());
             }
         }
-        GraphSnapshot snapshot = loadSnapshot();
+        GraphSnapshot snapshot = loadSnapshot(groupId);
         FilteredGraph graph = filterGraph(snapshot, minWeight, maxWeight);
         List<ComponentRecord> components = components(snapshot, graph.edges());
         long isolated = components.stream().filter(component -> component.nodes().size() == 1 && component.edges().isEmpty()).count();
@@ -102,8 +102,8 @@ public class AdminAffinityGraphService {
     }
 
     public AdminAffinityGraphDto full(String adminUserId, Double minWeight, Double maxWeight) {
-        adminModerationService.resolveAdminActor(adminUserId);
-        GraphSnapshot snapshot = loadSnapshot();
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        GraphSnapshot snapshot = loadSnapshot(groupId);
         FilteredGraph graph = filterGraph(snapshot, minWeight, maxWeight);
         return new AdminAffinityGraphDto(
                 snapshot.generatedAtIso(),
@@ -119,8 +119,8 @@ public class AdminAffinityGraphService {
             Integer depth,
             Double minWeight,
             Double maxWeight) {
-        adminModerationService.resolveAdminActor(adminUserId);
-        GraphSnapshot snapshot = loadSnapshot();
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        GraphSnapshot snapshot = loadSnapshot(groupId);
         String centerUserId = normalizeId(userId);
         int normalizedDepth = Math.max(1, Math.min(MAX_DEPTH, depth == null ? 1 : depth));
         FilteredGraph graph = filterGraph(snapshot, minWeight, maxWeight);
@@ -155,9 +155,9 @@ public class AdminAffinityGraphService {
             Integer forestLevel,
             Integer limit,
             Integer offset) {
-        adminModerationService.resolveAdminActor(adminUserId);
+        String groupId = adminModerationService.baseGroupId(adminUserId);
         if (isDefaultWeightRange(minWeight, maxWeight)) {
-            Optional<AdminAffinityGraphLayout> materializedLayout = latestMaterializedLayout();
+            Optional<AdminAffinityGraphLayout> materializedLayout = latestMaterializedLayout(groupId);
             if (materializedLayout.isPresent()) {
                 AdminAffinityGraphLayout layout = materializedLayout.get();
                 int forestCount = Math.toIntExact(Math.min(
@@ -185,7 +185,7 @@ public class AdminAffinityGraphService {
                         forests);
             }
         }
-        GraphSnapshot snapshot = loadSnapshot();
+        GraphSnapshot snapshot = loadSnapshot(groupId);
         FilteredGraph graph = filterGraph(snapshot, minWeight, maxWeight);
         List<ComponentRecord> components = components(snapshot, graph.edges());
         Map<String, Position> centers = componentCenters(components);
@@ -214,12 +214,12 @@ public class AdminAffinityGraphService {
             Double minWeight,
             Double maxWeight,
             String componentId) {
-        adminModerationService.resolveAdminActor(adminUserId);
-        Optional<AdminAffinityGraphLayout> materializedLayout = materializedLayout(layoutVersion);
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        Optional<AdminAffinityGraphLayout> materializedLayout = materializedLayout(layoutVersion, groupId);
         if (materializedLayout.isPresent()) {
             return materializedTile(materializedLayout.get(), z, x, y, minWeight, maxWeight, componentId);
         }
-        GraphSnapshot snapshot = loadSnapshot();
+        GraphSnapshot snapshot = loadSnapshot(groupId);
         int zoom = Math.max(0, Math.min(MAX_ZOOM, z == null ? 0 : z));
         int maxTile = (1 << zoom) - 1;
         int tileX = Math.max(0, Math.min(maxTile, x == null ? 0 : x));
@@ -279,14 +279,18 @@ public class AdminAffinityGraphService {
     }
 
     public AdminAffinityGraphMetaDto rebuildLayout(String adminUserId) {
-        adminModerationService.resolveAdminActor(adminUserId);
-        return rebuildMaterializedLayout();
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        return rebuildMaterializedLayout(groupId);
     }
 
     AdminAffinityGraphMetaDto rebuildMaterializedLayout() {
+        return rebuildMaterializedLayout(JobGroupContext.groupId());
+    }
+
+    private AdminAffinityGraphMetaDto rebuildMaterializedLayout(String groupId) {
         Instant generatedAt = Instant.now();
-        String layoutVersion = "layout-" + generatedAt.toEpochMilli();
-        GraphSnapshot snapshot = loadSnapshot(generatedAt.toString(), layoutVersion);
+        String layoutVersion = "layout-" + scopeKey(groupId) + "-" + generatedAt.toEpochMilli();
+        GraphSnapshot snapshot = loadSnapshot(generatedAt.toString(), layoutVersion, groupId);
         FilteredGraph graph = filterGraph(snapshot, 0d, 1d);
         List<ComponentRecord> components = components(snapshot, graph.edges());
         LayoutRecord layout = layout(components);
@@ -295,6 +299,7 @@ public class AdminAffinityGraphService {
         long isolated = components.stream().filter(component -> component.nodes().size() == 1 && component.edges().isEmpty()).count();
 
         AdminAffinityGraphLayout layoutDocument = new AdminAffinityGraphLayout();
+        layoutDocument.setScopeKey(scopeKey(groupId));
         layoutDocument.setLayoutVersion(layoutVersion);
         layoutDocument.setGeneratedAtIso(generatedAt.toString());
         layoutDocument.setSource("materialized");
@@ -330,17 +335,17 @@ public class AdminAffinityGraphService {
         return toMetaDto(layoutDocument);
     }
 
-    private Optional<AdminAffinityGraphLayout> latestMaterializedLayout() {
-        return layoutsRepository.findFirstByOrderByGeneratedAtIsoDesc()
+    private Optional<AdminAffinityGraphLayout> latestMaterializedLayout(String groupId) {
+        return layoutsRepository.findFirstByScopeKeyOrderByGeneratedAtIsoDesc(scopeKey(groupId))
                 .filter(layout -> StringUtils.hasText(layout.getLayoutVersion()));
     }
 
-    private Optional<AdminAffinityGraphLayout> materializedLayout(String layoutVersion) {
+    private Optional<AdminAffinityGraphLayout> materializedLayout(String layoutVersion, String groupId) {
         String normalizedLayoutVersion = normalizeText(layoutVersion);
         if (StringUtils.hasText(normalizedLayoutVersion)) {
-            return layoutsRepository.findByLayoutVersion(normalizedLayoutVersion);
+            return layoutsRepository.findByLayoutVersion(normalizedLayoutVersion).filter(layout -> scopeKey(groupId).equals(layout.getScopeKey()));
         }
-        return latestMaterializedLayout();
+        return latestMaterializedLayout(groupId);
     }
 
     private AdminAffinityGraphMetaDto toMetaDto(AdminAffinityGraphLayout layout) {
@@ -434,14 +439,17 @@ public class AdminAffinityGraphService {
                 edges);
     }
 
-    private GraphSnapshot loadSnapshot() {
+    private String scopeKey(String groupId) { return groupId == null ? "dating" : groupId; }
+
+    private GraphSnapshot loadSnapshot(String groupId) {
         String generatedAtIso = Instant.now().toString();
-        return loadSnapshot(generatedAtIso, "live-" + generatedAtIso);
+        return loadSnapshot(generatedAtIso, "live-" + scopeKey(groupId) + "-" + generatedAtIso, groupId);
     }
 
-    private GraphSnapshot loadSnapshot(String generatedAtIso, String layoutVersion) {
+    private GraphSnapshot loadSnapshot(String generatedAtIso, String layoutVersion, String groupId) {
         Map<String, AdminAffinityGraphNodeDto> nodesById = new LinkedHashMap<>();
         for (Users user : usersRepository.findAll()) {
+            if (!java.util.Objects.equals(groupId, user.getWorkspaceGroupId())) continue;
             AdminAffinityGraphNodeDto node = toNode(user);
             if (node != null) {
                 nodesById.put(node.id(), node);

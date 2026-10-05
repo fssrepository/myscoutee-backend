@@ -411,7 +411,8 @@ public class NavigatorContactsService {
                 safe.eventFeedback() == null ? emptyEventFeedbackCounters() : safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()));
+                count(safe.notifications()),
+                count(safe.serviceFeedbackPending()));
     }
 
     private Users.UserActivitiesRecord emptyActivities() {

@@ -18,8 +18,8 @@ public class PlatformParametersService {
     }
 
     public AffinityConfig activeConfig() {
-        return affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()
-                .or(() -> affinityConfigsRepository.findFirstByKeyOrderByVersionDesc(CONFIG_KEY))
+        return affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(JobGroupContext.key())
+                .or(() -> affinityConfigsRepository.findFirstByKeyOrderByVersionDesc(JobGroupContext.key()))
                 .orElseGet(AffinityConfig::defaults);
     }
 

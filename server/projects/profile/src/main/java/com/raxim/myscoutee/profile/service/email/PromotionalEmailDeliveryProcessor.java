@@ -19,6 +19,13 @@ import com.raxim.myscoutee.profile.repository.EmailOutboxRepository;
 
 @Service
 public class PromotionalEmailDeliveryProcessor {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PromotionalEmailDeliveryProcessor.class);
     private static final String UPDATED_BY = "email-delivery";
 
@@ -40,6 +47,10 @@ public class PromotionalEmailDeliveryProcessor {
 
     @Scheduled(fixedDelayString = "${email.promotions.delivery-delay-ms:60000}")
     public void processScheduledPromotionalEmails() {
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("promotional-email-delivery", this::processScheduledPromotionalEmailsInGroup));
+    }
+
+    private void processScheduledPromotionalEmailsInGroup() {
         if (!emailProperties.isEnabled()) {
             return;
         }
@@ -118,6 +129,7 @@ public class PromotionalEmailDeliveryProcessor {
 
     private List<EmailOutboxItem> loadPendingItems(String nowIso, int batchSize) {
         Query query = Query.query(new Criteria().andOperator(
+                Criteria.where("baseGroupId").is(com.raxim.myscoutee.profile.service.JobGroupContext.groupId()),
                 Criteria.where("status").is(EmailOutboxStatus.PENDING),
                 Criteria.where("scheduledAt").lte(nowIso)))
                 .with(Sort.by(Sort.Direction.ASC, "scheduledAt", "createdDate"))

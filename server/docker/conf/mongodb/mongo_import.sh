@@ -445,7 +445,10 @@ db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, updatedDate
 db.getCollection('userRates').createIndex({ relatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_primary_lookup_v2' });
 db.getCollection('userRates').createIndex({ secondaryRelatedUserId: 1, updatedDate: -1 }, { name: 'user_rate_secondary_lookup_v2', sparse: true });
 db.getCollection('userRates').createIndex({ ownerUserId: 1, relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_owner_primary_mode_v2' });
-db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, relatedUserId: 1, secondaryRelatedUserId: 1 }, { name: 'user_rate_owner_mode_target_unique_v1', unique: true });
+db.getCollection('userRates').createIndex({ ownerUserId: 1, mode: 1, relatedUserId: 1, secondaryRelatedUserId: 1, campaignId: 1 }, { name: 'user_rate_owner_mode_target_campaign_unique_v2', unique: true });
+if (db.getCollection('userRates').getIndexes().some(index => index.name === 'user_rate_owner_mode_target_unique_v1')) {
+  db.getCollection('userRates').dropIndex('user_rate_owner_mode_target_unique_v1');
+}
 db.getCollection('userRates').createIndex({ relatedUserId: 1, secondaryRelatedUserId: 1, mode: 1 }, { name: 'user_rate_pair_lookup_v2' });
 db.getCollection('userRates').createIndex({ scoreGiven: 1, updatedDate: 1, createdDate: 1, ownerUserId: 1 }, { name: 'user_rate_qmau_window' });
 " >/dev/null
@@ -474,7 +477,8 @@ db.getCollection('appSettings').createIndex({ settingsKey: 1 }, { name: 'app_set
         "${target_db}" \
         --eval "
 db.getCollection('notificationRuleConfigs').createIndex({ syncKey: 1 }, { name: 'notification_rule_config_sync_key', unique: true, sparse: true });
-db.getCollection('notificationRuleConfigs').createIndex({ ruleKey: 1 }, { name: 'notification_rule_config_rule_key', unique: true });
+db.getCollection('notificationRuleConfigs').createIndex({ baseGroupId: 1, ruleKey: 1 }, { name: 'notification_rule_group_key', unique: true });
+if (db.getCollection('notificationRuleConfigs').getIndexes().some(index => index.name === 'notification_rule_config_rule_key')) db.getCollection('notificationRuleConfigs').dropIndex('notification_rule_config_rule_key');
 " >/dev/null
       ;;
     emailTemplates)
@@ -488,7 +492,8 @@ db.getCollection('notificationRuleConfigs').createIndex({ ruleKey: 1 }, { name: 
         "${target_db}" \
         --eval "
 db.getCollection('emailTemplates').createIndex({ syncKey: 1 }, { name: 'email_template_sync_key', unique: true, sparse: true });
-db.getCollection('emailTemplates').createIndex({ templateKey: 1 }, { name: 'email_template_key', unique: true });
+db.getCollection('emailTemplates').createIndex({ baseGroupId: 1, templateKey: 1 }, { name: 'email_template_key_group', unique: true });
+if (db.getCollection('emailTemplates').getIndexes().some(index => index.name === 'email_template_key')) db.getCollection('emailTemplates').dropIndex('email_template_key');
 " >/dev/null
       ;;
     emailCampaignRules)
@@ -502,7 +507,8 @@ db.getCollection('emailTemplates').createIndex({ templateKey: 1 }, { name: 'emai
         "${target_db}" \
         --eval "
 db.getCollection('emailCampaignRules').createIndex({ syncKey: 1 }, { name: 'email_campaign_rule_sync_key', unique: true, sparse: true });
-db.getCollection('emailCampaignRules').createIndex({ ruleKey: 1 }, { name: 'email_campaign_rule_key', unique: true });
+db.getCollection('emailCampaignRules').createIndex({ baseGroupId: 1, ruleKey: 1 }, { name: 'email_campaign_rule_key_group', unique: true });
+if (db.getCollection('emailCampaignRules').getIndexes().some(index => index.name === 'email_campaign_rule_key')) db.getCollection('emailCampaignRules').dropIndex('email_campaign_rule_key');
 db.getCollection('emailCampaignRules').createIndex({ enabled: 1, priority: -1 }, { name: 'email_campaign_rule_enabled_priority' });
 " >/dev/null
       ;;
@@ -517,7 +523,8 @@ db.getCollection('emailCampaignRules').createIndex({ enabled: 1, priority: -1 },
         "${target_db}" \
         --eval "
 db.getCollection('notificationTemplates').createIndex({ syncKey: 1 }, { name: 'notification_template_sync_key', unique: true, sparse: true });
-db.getCollection('notificationTemplates').createIndex({ templateKey: 1 }, { name: 'notification_template_key', unique: true });
+db.getCollection('notificationTemplates').createIndex({ baseGroupId: 1, templateKey: 1 }, { name: 'notification_template_key_group', unique: true });
+if (db.getCollection('notificationTemplates').getIndexes().some(index => index.name === 'notification_template_key')) db.getCollection('notificationTemplates').dropIndex('notification_template_key');
 " >/dev/null
       ;;
     userNotifications)
@@ -550,6 +557,9 @@ db.getCollection('userNotifications').createIndex({ recipientUserId: 1, kind: 1,
 db.getCollection('scheduledMessageTasks').createIndex({ syncKey: 1 }, { name: 'scheduled_message_task_sync_key', unique: true, sparse: true });
 db.getCollection('scheduledMessageTasks').createIndex({ taskKey: 1 }, { name: 'scheduled_message_task_key', unique: true });
 db.getCollection('scheduledMessageTasks').createIndex({ status: 1, dueAtIso: 1 }, { name: 'scheduled_message_task_status_due' });
+db.getCollection('affinityRecomputeTasks').createIndex({ baseGroupId: 1, status: 1, availableAtIso: 1 }, { name: 'affinity_recompute_group_status_available' });
+db.getCollection('notificationOutbox').createIndex({ baseGroupId: 1, status: 1, nextRetryAt: 1, createdDate: 1 }, { name: 'notification_outbox_group_status_retry' });
+db.getCollection('scheduledMessageTasks').createIndex({ baseGroupId: 1, status: 1, dueAtIso: 1 }, { name: 'scheduled_message_group_status_due' });
 " >/dev/null
       ;;
     affinityConfigs)
@@ -1060,8 +1070,9 @@ db.getCollection('adminAffinityGraphForests').createIndex({ layoutVersion: 1, me
         --quiet \
         "${target_db}" \
         --eval "
-db.getCollection('helpCenterRevisions').createIndex({ documentType: 1, lang: 1, contextKey: 1, version: -1 }, { name: 'help_revision_document_lang_context_version', unique: true });
-db.getCollection('helpCenterRevisions').createIndex({ documentType: 1, lang: 1, contextKey: 1, active: 1, version: -1 }, { name: 'help_revision_document_lang_context_active' });
+db.getCollection('helpCenterRevisions').createIndex({ baseGroupId: 1, documentType: 1, lang: 1, contextKey: 1, version: -1 }, { name: 'help_revision_group_document_lang_context_version', unique: true });
+if (db.getCollection('helpCenterRevisions').getIndexes().some(index => index.name === 'help_revision_document_lang_context_version')) db.getCollection('helpCenterRevisions').dropIndex('help_revision_document_lang_context_version');
+db.getCollection('helpCenterRevisions').createIndex({ baseGroupId: 1, documentType: 1, lang: 1, contextKey: 1, active: 1, version: -1 }, { name: 'help_revision_group_document_lang_context_active' });
 db.getCollection('helpCenterRevisions').createIndex({ documentType: 1 }, { name: 'help_revision_document_type' });
 db.getCollection('helpCenterRevisions').createIndex({ lang: 1 }, { name: 'help_revision_lang' });
 db.getCollection('helpCenterRevisions').createIndex({ contextKey: 1 }, { name: 'help_revision_context_key' });
@@ -1141,6 +1152,13 @@ import_json_file() {
   if collection_should_replace_on_import "${collection_name}"; then
     clear_collection "${target_db}" "${target_collection}"
   fi
+
+  # Replace obsolete global/rating uniqueness before inserting scoped seed rows.
+  case "${target_collection}" in
+    notificationRuleConfigs|emailTemplates|notificationTemplates|emailCampaignRules|helpCenterRevisions|userRates)
+      ensure_collection_indexes "${target_db}" "${target_collection}"
+      ;;
+  esac
 
   mongoimport \
     -h "${mongo_host}" \

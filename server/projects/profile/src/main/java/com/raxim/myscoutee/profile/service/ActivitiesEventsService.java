@@ -164,6 +164,7 @@ public class ActivitiesEventsService {
     @org.springframework.context.annotation.Lazy
     private ContentModerationService contentModeration;
 
+    private final CampaignsService campaigns;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
@@ -202,6 +203,7 @@ public class ActivitiesEventsService {
     private final ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper;
 
     public ActivitiesEventsService(
+            CampaignsService campaigns,
             ActivityEventsRepository activityEventsRepository,
             ActivitySubEventGroupsRepository activitySubEventGroupsRepository,
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
@@ -238,6 +240,7 @@ public class ActivitiesEventsService {
             ActivityEventSubEventsMapper activityEventSubEventsMapper,
             ActivitySubEventResourceMapper activitySubEventResourceMapper,
             ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper) {
+        this.campaigns = campaigns;
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventGroupsRepository = activitySubEventGroupsRepository;
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
@@ -5895,6 +5898,7 @@ public class ActivitiesEventsService {
         int limit = normalizeLimit(requestedLimit, 10);
 
         List<EventProjection> sorted = (records == null ? List.<ActivityEvent>of() : records).stream()
+                .filter(record -> request == null || !StringUtils.hasText(request.campaignId()) || request.campaignId().equals(record.getCampaignId()))
                 .map(record -> toSortProjection(record, viewer))
                 .filter(Objects::nonNull)
                 .filter(projection -> matchesActivitiesSecondaryFilter(projection, secondaryFilter))
@@ -6858,6 +6862,7 @@ public class ActivitiesEventsService {
         ActivityEvent existing = activityEventsRepository.findByOwnerUserIdAndSourceId(ownerUserId, sourceId)
                 .orElse(null);
         ActivityEvent document = existing == null ? new ActivityEvent() : cloneDocument(existing);
+        document.setWorkspaceGroupId(creator.getWorkspaceGroupId());
         ActivityEvent publishedExisting = isPublishedEventManageUpdate(existing) ? existing : null;
         boolean publishedManageMode = publishedExisting != null;
         String nowIso = Instant.now().toString();
@@ -6991,6 +6996,10 @@ public class ActivitiesEventsService {
                 ? resolvePublishedCapacityTotal(effectiveCapacityMax, acceptedMembers)
                 : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
+        if (StringUtils.hasText(creator.getWorkspaceGroupId())) {
+            var group = mongoTemplate.findById(creator.getWorkspaceGroupId(), com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
+            if (group != null && !group.priorityEnabled()) document.setAutoInviter(false);
+        }
         document.setTicketing(publishedManageMode
                 ? existing != null && (Boolean.TRUE.equals(existing.getTicketing()) || Boolean.TRUE.equals(request.ticketing()))
                 : request.ticketing() != null ? request.ticketing() : existing != null && Boolean.TRUE.equals(existing.getTicketing()));
@@ -6998,7 +7007,7 @@ public class ActivitiesEventsService {
                 ? existing != null && Boolean.TRUE.equals(existing.getApprovalRequired())
                 : request.approvalRequired() != null ? request.approvalRequired() : existing != null && Boolean.TRUE.equals(existing.getApprovalRequired()));
         Integer paymentDeadlineHours = request.paymentDeadlineHours() != null
-                ? request.paymentDeadlineHours() : existing == null ? 4 : existing.getPaymentDeadlineHours();
+                ? request.paymentDeadlineHours() : existing == null ? Integer.valueOf(4) : existing.getPaymentDeadlineHours();
         if (paymentDeadlineHours != null && paymentDeadlineHours < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment deadline hours must not be negative.");
         }
@@ -7038,6 +7047,14 @@ public class ActivitiesEventsService {
         document.setInvitedMemberUserIds(invitedMemberUserIds);
         document.setPendingRequestMemberUserIds(pendingRequestMemberUserIds);
         document.setFull(directRecordFull(document));
+        String campaignId = normalizeId(request.campaignId());
+        if (StringUtils.hasText(campaignId) && !campaignId.equals(existing == null ? null : existing.getCampaignId())) {
+            Users campaignActor = campaigns.actor(request.userId());
+            var campaign = campaigns.visible(campaignActor, campaignId);
+            if (!campaign.ownerUserId().equals(campaignActor.getUserId()) || !"published".equals(campaign.status()))
+                throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
+        }
+        document.setCampaignId(StringUtils.hasText(campaignId) ? campaignId : null);
         document.setTopics(normalizeStrings(request.topics()));
         String nextMode = normalizeEventMode(publishedManageMode
                 ? safeText(existing == null ? null : existing.getMode())
@@ -7762,6 +7779,7 @@ public class ActivitiesEventsService {
         clone.setPendingMemberUserIds(new ArrayList<>(normalizeIds(source.getPendingMemberUserIds())));
         clone.setInvitedMemberUserIds(new ArrayList<>(normalizeIds(source.getInvitedMemberUserIds())));
         clone.setPendingRequestMemberUserIds(new ArrayList<>(normalizeIds(source.getPendingRequestMemberUserIds())));
+        clone.setCampaignId(source.getCampaignId());
         clone.setTopics(new ArrayList<>(normalizeStrings(source.getTopics())));
         clone.setSubEventDefinitions(cloneSubEventDefinitions(source.getSubEventDefinitions()));
         clone.setSubEvents(cloneSubEvents(source.getSubEvents()));

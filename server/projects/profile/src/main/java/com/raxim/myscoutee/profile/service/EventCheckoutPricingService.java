@@ -470,14 +470,27 @@ public class EventCheckoutPricingService {
             String baseKey,
             String baseLabel,
             boolean vipEligible) {
+        return calculateSlotPricing(pricing, requestedSlotTemplateId, slot == null ? null : slot.slotTemplateId(),
+                slot == null ? parent.getCapacityTotal() : slot.capacityTotal(),
+                slot == null ? parent.getAcceptedMembers() : slot.acceptedMembers(),
+                firstText(slot == null ? null : slot.startAtIso(), parent.getStartAtIso()), baseKey, baseLabel, vipEligible);
+    }
+
+    /** Shared pricing definition for a service appointment; no event or payment is created. */
+    public PricingSnapshot quoteServiceSlot(PricingConfigDto pricing, String templateId, String startAtIso, int occupied) {
+        return finishRounding(calculateSlotPricing(pricing, templateId, templateId, 1, occupied, startAtIso,
+                "base", "pricing.base.price", false), pricing, "rounding");
+    }
+
+    private PricingSnapshot calculateSlotPricing(PricingConfigDto pricing, String requestedSlotTemplateId,
+            String occurrenceTemplateId, Integer capacity, Integer accepted, String startsAt,
+            String baseKey, String baseLabel, boolean vipEligible) {
         String currency = pricingCurrency(pricing);
         if (pricing == null || Boolean.FALSE.equals(pricing.enabled())) {
             return new PricingSnapshot(0d, currency, List.of());
         }
 
-        String slotTemplateId = firstText(
-                requestedSlotTemplateId,
-                slot == null ? null : slot.slotTemplateId());
+        String slotTemplateId = firstText(requestedSlotTemplateId, occurrenceTemplateId);
         double basePrice = Math.max(0d, safeDouble(pricing.basePrice()));
         if (Boolean.TRUE.equals(pricing.slotPricingEnabled()) && StringUtils.hasText(slotTemplateId)) {
             basePrice = (pricing.slotOverrides() == null ? List.<PricingSlotOverrideDto>of() : pricing.slotOverrides()).stream()
@@ -505,12 +518,11 @@ public class EventCheckoutPricingService {
                 currency,
                 1));
         double nextPrice = basePrice;
-        int capacityTotal = normalizeCount(slot == null ? parent.getCapacityTotal() : slot.capacityTotal());
-        int acceptedMembers = normalizeCount(slot == null ? parent.getAcceptedMembers() : slot.acceptedMembers());
+        int capacityTotal = normalizeCount(capacity);
+        int acceptedMembers = normalizeCount(accepted);
         int filledPercent = capacityTotal > 0
                 ? (int) Math.round((acceptedMembers / (double) capacityTotal) * 100d)
                 : 0;
-        String startsAt = firstText(slot == null ? null : slot.startAtIso(), parent.getStartAtIso());
         double hoursUntilStart = hoursUntilStart(startsAt);
 
         if (!vipAudience && pricingModeMatches(pricing.mode(), "demand-based", "hybrid")
@@ -1054,7 +1066,7 @@ public class EventCheckoutPricingService {
             PricingSnapshot pricing) {
     }
 
-    private record PricingSnapshot(
+    public record PricingSnapshot(
             double amount,
             String currency,
             List<EventCheckoutPricingSummaryRowDto> rows) {

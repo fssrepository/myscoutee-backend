@@ -54,6 +54,9 @@ import com.raxim.myscoutee.profile.service.operator.OperatorGlobalIdentityServic
 
 @Service
 public class DeletedAccountPurgeService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private static final int DELETE_GRACE_DAYS = 30;
     private static final Duration PURGE_JOB_LEASE = Duration.ofMinutes(30);
     private static final Duration PURGE_RETRY_BASE = Duration.ofMinutes(15);
@@ -126,6 +129,11 @@ public class DeletedAccountPurgeService {
     }
 
     private void purgeExpiredDeletedAccountsForCurrentDatabase() {
+        var registry = notificationRuleRegistryService;
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_ACCOUNT_PURGE, this::purgeExpiredDeletedAccountsForCurrentDatabaseInGroup);
+    }
+
+    private void purgeExpiredDeletedAccountsForCurrentDatabaseInGroup() {
         Instant now = Instant.now();
         boolean ruleConfigured = notificationRuleRegistryService != null
                 && notificationRuleRegistryService
@@ -175,6 +183,7 @@ public class DeletedAccountPurgeService {
         int purgedCount = 0;
         List<Users> users = usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(profileStatus, purgeBeforeIso);
         for (Users user : users == null ? List.<Users>of() : users) {
+            if (user != null && JobGroupContext.isActive() && !jobGroupScope.matchesWorkspace(user.getWorkspaceGroupId())) continue;
             if (purgeUser(user, null, now)) {
                 purgedCount += 1;
             }
@@ -195,6 +204,7 @@ public class DeletedAccountPurgeService {
                 AccountPurgeJob.STATUS_RUNNING,
                 AccountPurgeJob.STATUS_FAILED));
         for (AccountPurgeJob job : jobs == null ? List.<AccountPurgeJob>of() : jobs) {
+            if (job != null && !java.util.Objects.equals(job.getBaseGroupId(), JobGroupContext.groupId())) continue;
             String userId = safeText(job == null ? null : job.getUserId());
             if (!StringUtils.hasText(userId) || !shouldRunPurgeJob(job, now)) {
                 continue;
@@ -288,6 +298,7 @@ public class DeletedAccountPurgeService {
         AccountPurgeJob job = new AccountPurgeJob();
         String nowIso = now.toString();
         job.setUserId(userId);
+        job.setBaseGroupId(JobGroupContext.groupId());
         job.setUserHash(hashUserId(userId));
         job.setStatus(AccountPurgeJob.STATUS_PENDING);
         job.setStage("queued");
@@ -311,6 +322,7 @@ public class DeletedAccountPurgeService {
     private void startJob(AccountPurgeJob job, String userId, Instant now) {
         String nowIso = now.toString();
         job.setUserId(userId);
+        job.setBaseGroupId(JobGroupContext.groupId());
         job.setUserHash(hashUserId(userId));
         job.setStatus(AccountPurgeJob.STATUS_RUNNING);
         job.setStage("start");

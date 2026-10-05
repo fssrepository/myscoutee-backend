@@ -63,7 +63,10 @@ class AdminMonitoringServiceTest {
         AdminMonitoringRepository repository = mock(AdminMonitoringRepository.class);
         when(repository.ensureGlobalSnapshot()).thenReturn(snapshot);
         when(repository.globalSnapshotOrDefault()).thenReturn(snapshot);
-        return new AdminMonitoringService(repository, mock(AdminModerationService.class));
+        var admin = mock(AdminModerationService.class);
+        when(admin.baseProfileEvents(org.mockito.ArgumentMatchers.anyList()))
+                .thenAnswer(invocation -> Map.of("global", invocation.getArgument(0)));
+        return new AdminMonitoringService(repository, admin);
     }
 
     private AdminTelemetryEvent event(String eventKey, Long amount) {

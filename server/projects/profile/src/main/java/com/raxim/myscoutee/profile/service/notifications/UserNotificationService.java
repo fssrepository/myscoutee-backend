@@ -375,6 +375,7 @@ public class UserNotificationService {
     }
 
     private String resolveCategory(String kind, String recipientScope, String sourceType) {
+        if ("case-reminder".equals(kind) || "announcement-closed".equals(kind)) return "scheduled";
         if ("event-member-approved".equals(safeText(kind).toLowerCase(Locale.ROOT))) {
             return "event-admin";
         }

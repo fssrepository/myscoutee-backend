@@ -202,7 +202,7 @@ class IntegrationParticipantInviteServiceTest {
         when(mongo.findAndModify(any(), any(), any(), eq(IntegrationParticipantInvite.class))).thenReturn(
                 new IntegrationParticipantInvite("link", "owner", "event", null, token, "hash", null, "now", null, "event", true));
         assertThat(service.externalLink("owner", "event", "event").url())
-                .isEqualTo("https://app.example/game?affiliate=referral-code&partnerInvite=" + token);
+                .isEqualTo("https://app.example/game?affiliate=referral-code&partnerInvite=" + token + "&mode=dating");
         verifyNoInteractions(members);
     }
 

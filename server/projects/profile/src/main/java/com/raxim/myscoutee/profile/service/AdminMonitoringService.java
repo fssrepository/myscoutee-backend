@@ -48,12 +48,12 @@ public class AdminMonitoringService {
     }
 
     public AdminMonitoringStateDto state(String adminUserId, String filter) {
-        adminModerationService.resolveAdminActor(adminUserId);
-        return toDto(monitoringRepository.globalSnapshotOrDefault(), filter);
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        return toDto(groupId == null ? monitoringRepository.globalSnapshotOrDefault() : monitoringRepository.snapshotOrDefault(groupId), filter);
     }
 
     public Optional<String> lastTelemetryStreamId() {
-        return monitoringRepository.findGlobalSnapshot()
+        return monitoringRepository.findByMonitoringKey(JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId())
                 .map(AdminMonitoringSnapshot::getLastTelemetryStreamId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText);
@@ -63,7 +63,19 @@ public class AdminMonitoringService {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) {
             return;
         }
-        AdminMonitoringSnapshot snapshot = monitoringRepository.ensureGlobalSnapshot();
+        var scoped = adminModerationService.baseProfileEvents(events == null ? List.of() : events);
+        if (JobGroupContext.isActive()) {
+            String key = JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId();
+            applyTelemetryEvents(scoped.getOrDefault(key, List.of()), lastStreamId, monitoringRepository.ensureSnapshot(JobGroupContext.groupId()));
+            return;
+        }
+        for (var entry : scoped.entrySet()) {
+            if (!"global".equals(entry.getKey())) applyTelemetryEvents(entry.getValue(), lastStreamId, monitoringRepository.ensureSnapshot(entry.getKey()));
+        }
+        applyTelemetryEvents(scoped.getOrDefault("global", List.of()), lastStreamId, monitoringRepository.ensureGlobalSnapshot());
+    }
+
+    private void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId, AdminMonitoringSnapshot snapshot) {
         Map<String, Long> counters = safeMap(snapshot.getCounters());
         Map<String, Long> categoryCounters = safeMap(snapshot.getCategoryCounters());
         Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());

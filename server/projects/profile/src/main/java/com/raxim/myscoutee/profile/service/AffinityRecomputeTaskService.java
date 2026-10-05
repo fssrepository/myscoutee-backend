@@ -48,6 +48,9 @@ public class AffinityRecomputeTaskService {
     public static final String STATUS_DONE = "done";
     public static final String STATUS_FAILED = "failed";
 
+    @Autowired
+    private JobGroupScopeService jobGroupScope;
+
     private final AffinityRecomputeTasksRepository tasksRepository;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
@@ -133,8 +136,23 @@ public class AffinityRecomputeTaskService {
             String reason,
             Duration debounce,
             String actorUserId) {
+        String groupId = jobGroupScope.forTarget(targetType, targetId);
+        return JobGroupContext.call(groupId, () -> enqueueInGroup(targetType, targetId, reason, debounce, actorUserId));
+    }
+
+    private AffinityRecomputeTask enqueueInGroup(String targetType, String targetId, String reason,
+            Duration debounce, String actorUserId) {
         String normalizedTargetType = normalizeTargetType(targetType);
         String normalizedTargetId = normalizeId(targetId);
+        Duration groupDebounce = switch (safeText(reason)) {
+            case REASON_USER_CHANGED -> userChangedDebounce();
+            case REASON_EVENT_CHANGED -> eventChangedDebounce();
+            case REASON_EVENT_MEMBERS_CHANGED -> eventMembersChangedDebounce();
+            case REASON_ASSET_CHANGED -> assetChangedDebounce();
+            case REASON_ASSET_REQUESTS_CHANGED -> assetRequestsChangedDebounce();
+            case REASON_CONFIG_CHANGED -> configChangedDebounce();
+            default -> debounce;
+        };
         if (!StringUtils.hasText(normalizedTargetType) || !StringUtils.hasText(normalizedTargetId)) {
             return null;
         }
@@ -142,7 +160,7 @@ public class AffinityRecomputeTaskService {
         String taskKey = taskKey(normalizedTargetType, normalizedTargetId);
         for (int attempt = 0; attempt < 5; attempt += 1) {
             try {
-                return saveMergedTask(taskKey, normalizedTargetType, normalizedTargetId, reason, debounce, actorUserId);
+                return saveMergedTask(taskKey, normalizedTargetType, normalizedTargetId, reason, groupDebounce, actorUserId);
             } catch (DuplicateKeyException | OptimisticLockingFailureException ignored) {
                 // Another writer created or updated the collapsed target task; retry against the stored document.
             }
@@ -154,7 +172,7 @@ public class AffinityRecomputeTaskService {
         String dueIso = iso(now);
         int normalizedLimit = Math.max(1, limit);
         List<AffinityRecomputeTask> due = tasksRepository
-                .findByStatusAndAvailableAtIsoLessThanEqualOrderByAvailableAtIsoAsc(STATUS_PENDING, dueIso);
+                .findByBaseGroupIdAndStatusAndAvailableAtIsoLessThanEqualOrderByAvailableAtIsoAsc(JobGroupContext.groupId(), STATUS_PENDING, dueIso, org.springframework.data.domain.PageRequest.of(0, normalizedLimit));
         if (due == null || due.isEmpty()) {
             return List.of();
         }
@@ -256,6 +274,7 @@ public class AffinityRecomputeTaskService {
             task = new AffinityRecomputeTask();
             task.setId(new ObjectId().toHexString());
             task.setTaskKey(taskKey);
+            task.setBaseGroupId(JobGroupContext.groupId());
             task.setTargetType(targetType);
             task.setTargetId(targetId);
             task.setCreatedDate(iso(Instant.now()));

@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -95,6 +96,9 @@ public class EventScheduler {
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
+    private final com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups;
+    private final com.raxim.myscoutee.profile.repository.UserRatesRepository userRatesRepository;
+    private final UserAffinityEdgeService affinityEdgeService;
     private final UsersRepository usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -113,6 +117,9 @@ public class EventScheduler {
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventSubEventsMapper subEventsMapper;
+    @org.springframework.beans.factory.annotation.Autowired
+    private JobGroupScopeService jobGroupScope;
+
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
     private final EventGeneratorByPriority eventGeneratorByPriority = new EventGeneratorByPriority();
@@ -126,6 +133,9 @@ public class EventScheduler {
     private boolean waitlistInviterEnabled;
 
     public EventScheduler(
+            com.raxim.myscoutee.profile.repository.UserRatesRepository userRatesRepository,
+            UserAffinityEdgeService affinityEdgeService,
+            com.raxim.myscoutee.profile.repository.CommunityGroupsRepository communityGroups,
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
@@ -142,6 +152,9 @@ public class EventScheduler {
             PlatformParametersService platformParametersService,
             NotificationOutboxService notificationOutboxService,
             ActivityEventSubEventsMapper subEventsMapper) {
+        this.userRatesRepository = userRatesRepository;
+        this.affinityEdgeService = affinityEdgeService;
+        this.communityGroups = communityGroups;
         this.usersRepository = usersRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -181,6 +194,11 @@ public class EventScheduler {
     }
 
     private void runScheduledWrappersForCurrentDatabase() {
+        var registry = notificationRuleRegistryService;
+        if (registry != null) registry.forEachGroup(Set.of(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW, NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE), this::runScheduledWrappersForCurrentDatabaseInGroup);
+    }
+
+    private void runScheduledWrappersForCurrentDatabaseInGroup() {
         if (!schedulerEnabled && !notificationRuleRegistryService.hasEnabledScheduledEventRule()) {
             return;
         }
@@ -190,10 +208,9 @@ public class EventScheduler {
                 .findRule(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
                 .isPresent();
         boolean tournamentReviewDue = tournamentRuleConfigured
-                ? notificationRuleRegistryService.shouldRunScheduledRule(
+                && notificationRuleRegistryService.shouldRunScheduledRule(
                         NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
-                        now)
-                : schedulerEnabled && claimStageSchedulerRun(now);
+                        now);
         if (tournamentReviewDue) {
             runTournamentReview(now, tournamentRuleConfigured);
         }
@@ -224,6 +241,11 @@ public class EventScheduler {
     }
 
     private void runWaitlistInviterForCurrentDatabase() {
+        var registry = notificationRuleRegistryService;
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER, this::runWaitlistInviterForCurrentDatabaseInGroup);
+    }
+
+    private void runWaitlistInviterForCurrentDatabaseInGroup() {
         if (!waitlistInviterEnabled) {
             return;
         }
@@ -232,10 +254,9 @@ public class EventScheduler {
                 .findRule(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
                 .isPresent();
         boolean due = ruleConfigured
-                ? notificationRuleRegistryService.shouldRunScheduledRule(
+                && notificationRuleRegistryService.shouldRunScheduledRule(
                         NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
-                        now)
-                : claimAutoInviterRun(now);
+                        now);
         if (!due) {
             return;
         }
@@ -436,7 +457,7 @@ public class EventScheduler {
         List<ActivityEvent> changedRecords = new ArrayList<>();
         Set<String> changedStageKeys = new LinkedHashSet<>();
 
-        List<ActivityEvent> events = activityEventsRepository.findAll().stream().filter(Objects::nonNull).toList();
+        List<ActivityEvent> events = scopedEvents(activityEventsRepository.findAll());
         Map<String, Map<String, ActivitySubEventStageRuntime>> runtimes = stageRuntimesByOwner(events);
         Set<ActivitySubEventStageRuntime> changedRuntimes = new LinkedHashSet<>();
         for (ActivityEvent event : events) {
@@ -503,7 +524,7 @@ public class EventScheduler {
         List<ActivityEvent> changedRecords = new ArrayList<>();
         Set<String> changedStageKeys = new LinkedHashSet<>();
 
-        for (ActivityEvent event : activityEventsRepository.findAll()) {
+        for (ActivityEvent event : scopedEvents(activityEventsRepository.findAll())) {
             if (event == null || !shouldReviewTournamentStages(event)) {
                 continue;
             }
@@ -725,6 +746,11 @@ public class EventScheduler {
         return value.length() <= 180 ? value : value.substring(0, 180);
     }
 
+    private List<ActivityEvent> scopedEvents(List<ActivityEvent> events) {
+        return events.stream().filter(Objects::nonNull)
+                .filter(event -> !JobGroupContext.isActive() || jobGroupScope.matchesWorkspace(event.getWorkspaceGroupId())).toList();
+    }
+
     public List<GeneratedEventPlan> generateRandomPlans() {
         return generateRandomPlans(null, configuredRandomRoomSourceEventIds());
     }
@@ -806,7 +832,13 @@ public class EventScheduler {
         List<ActivityEvent> eventRecords = sourceIdFilter.isEmpty()
                 ? activityEventsRepository.findAll()
                 : activityEventsRepository.findBySourceIdIn(sourceIdFilter);
-        List<ActivityEvent> events = applyStageRuntimeOverlays(resolveCanonicalEvents(eventRecords));
+        List<ActivityEvent> events = applyStageRuntimeOverlays(resolveCanonicalEvents(scopedEvents(eventRecords)));
+        Set<String> groupIds = events.stream().map(ActivityEvent::getWorkspaceGroupId).filter(StringUtils::hasText)
+            .collect(Collectors.toSet());
+        Set<String> campaignOrServiceGroupIds = groupIds.isEmpty() ? Set.of() : communityGroups.findByIdIn(groupIds).stream()
+            .filter(group -> !"dating".equals(group.effectiveType())).map(com.raxim.myscoutee.profile.data.document.CommunityGroup::id)
+            .collect(Collectors.toSet());
+        if (!includeAllAcceptedMembers) events = events.stream().filter(event -> !campaignOrServiceGroupIds.contains(normalizeId(event.getWorkspaceGroupId()))).toList();
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
         AtomicInteger observedQueries = new AtomicInteger(1);
         publishRandomProgress(progressConsumer, 0, 0, events.size(), 0, observedQueries.get(), "Loaded " + events.size() + " event record(s).");
@@ -880,8 +912,10 @@ public class EventScheduler {
                 .sum());
         AtomicInteger processedSubEvents = new AtomicInteger(0);
 
-        // Single DB/Graph construction
-        FGraph graph = buildGraphSnapshot(requiredUserIds, observedQueries);
+        Set<String> priorityOffGroups=priorityOffGroups(events);
+        FGraph graph=events.stream().allMatch(e->priorityOffGroups.contains(normalizeId(e.getWorkspaceGroupId())))
+            ? participantGraph(requiredUserIds):buildGraphSnapshot(requiredUserIds, observedQueries);
+        Map<String, FGraph> campaignGraphs = buildCampaignGraphs(events);
         if (graph.getNodes().isEmpty()) {
             publishRandomProgress(progressConsumer, 100, 0, snapshotsByEventId.size(), requiredUserIds.size(), observedQueries.get(),
                     "No candidate user graph was available after " + observedQueries.get() + " backend lookup(s).");
@@ -916,7 +950,7 @@ public class EventScheduler {
             if (acceptedUserIds.size() < 2 && existingTournamentUserIds.isEmpty()) {
                 return;
             }
-            FGraph eventGraph = graph.filter(tournamentUserIds, Set.of(), 0d);
+            FGraph eventGraph = eventGraph(event, graph, campaignGraphs, tournamentUserIds, priorityOffGroups);
             
             if (eventGraph.getNodes().isEmpty()) return;
 
@@ -1079,13 +1113,17 @@ public class EventScheduler {
         List<ActivityEvent> records = requestedSourceIds.isEmpty()
                 ? activityEventsRepository.findByAutoInviterTrue()
                 : activityEventsRepository.findBySourceIdIn(requestedSourceIds);
-        List<ActivityEvent> events = resolveCanonicalEvents(records);
+        List<ActivityEvent> events = resolveCanonicalEvents(scopedEvents(records));
         if (!requestedSourceIds.isEmpty()) {
             events = events.stream()
                     .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
                     .toList();
         }
         
+        Set<String> priorityOffGroups = priorityOffGroups(events);
+        events = events.stream().filter(event -> !priorityOffGroups.contains(normalizeId(event.getWorkspaceGroupId()))).toList();
+        if (events.isEmpty()) return List.of();
+
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
@@ -1107,11 +1145,17 @@ public class EventScheduler {
             }
         }
 
+        Map<String, FGraph> campaignGraphs = buildCampaignGraphs(events);
+
         // Single DB/Graph construction
         FGraph graph = buildGraphSnapshot(requiredUserIds);
-        if (graph.getNodes().isEmpty()) {
+        if (graph.getNodes().isEmpty() && campaignGraphs.values().stream().allMatch(value -> value.getNodes().isEmpty())) {
             return List.of();
         }
+        Set<String> graphUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
+        campaignGraphs.values().forEach(value -> graphUserIds.addAll(value.getNodes().keySet()));
+        Map<String, Users> graphUsers = usersRepository.findAllById(graphUserIds).stream()
+                .collect(Collectors.toMap(Users::getUserId, user -> user, (first, second) -> first));
 
         // THREAD SAFETY: Synchronized list for parallel addition
         List<InviteBatchPlan> plans = Collections.synchronizedList(new ArrayList<>());
@@ -1149,11 +1193,18 @@ public class EventScheduler {
                         .forEach(lockedUserIds::add);
             }
             
-            Set<String> candidateUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
+            FGraph eventGraph = StringUtils.hasText(event.getCampaignId())
+                    ? campaignGraphs.getOrDefault(event.getCampaignId(), new FGraph()) : graph;
+            Set<String> candidateUserIds = new LinkedHashSet<>(eventGraph.getNodes().keySet());
             candidateUserIds.removeAll(lockedUserIds);
+            candidateUserIds.removeIf(id -> {
+                Users user = graphUsers.get(id);
+                return user == null || !Objects.equals(event.getWorkspaceGroupId(), user.getWorkspaceGroupId())
+                        || Set.of("inactive", "blocked", "deleted").contains(safeText(user.getProfileStatus()));
+            });
 
             InviteBatchPlan plan = eventGeneratorByPriority.generate(new PriorityGeneratorRequest(
-                    eventId, graph, candidateUserIds, lockedUserIds, Range.of(openSpots, openSpots), List.of(), true, 0d));
+                    eventId, eventGraph, candidateUserIds, lockedUserIds, Range.of(openSpots, openSpots), List.of(), true, 0d));
                     
             if (plan.invitedUserIds().isEmpty()) return;
 
@@ -1242,7 +1293,10 @@ public class EventScheduler {
             allRequiredUserIds.addAll(existingTournamentUserIds);
         }
         
-        FGraph globalGraph = allRequiredUserIds.isEmpty() ? new FGraph() : buildGraphSnapshot(allRequiredUserIds);
+        Set<String> priorityOffGroups=priorityOffGroups(events);
+        FGraph globalGraph=allRequiredUserIds.isEmpty()||events.stream().allMatch(e->priorityOffGroups.contains(normalizeId(e.getWorkspaceGroupId())))
+            ? participantGraph(allRequiredUserIds):buildGraphSnapshot(allRequiredUserIds);
+        Map<String, FGraph> campaignGraphs = buildCampaignGraphs(events);
 
         // --- PHASE 2: PARALLEL EXECUTION ---
         // Process every event concurrently across all available CPU cores!
@@ -1264,7 +1318,7 @@ public class EventScheduler {
             
             FGraph eventGraph = tournamentUserIds.isEmpty()
                     ? new FGraph()
-                    : globalGraph.filter(tournamentUserIds, Set.of(), 0d);
+                    : eventGraph(event, globalGraph, campaignGraphs, tournamentUserIds, priorityOffGroups);
 
             List<SubEventItem> subEvents = safeSubEvents(event);
             for (int index = 0; index < subEvents.size(); index += 1) {
@@ -1645,6 +1699,48 @@ public class EventScheduler {
         }
     }
 
+    /** One batched read per scheduler run; campaign evidence never crosses event contexts. */
+    private Map<String, FGraph> buildCampaignGraphs(List<ActivityEvent> events) {
+        Set<String> campaignIds = events.stream().filter(Objects::nonNull).map(ActivityEvent::getCampaignId)
+                .filter(StringUtils::hasText).collect(Collectors.toSet());
+        Map<String, FGraph> graphs = new LinkedHashMap<>();
+        if (campaignIds.isEmpty()) return graphs;
+        var campaignRates = userRatesRepository.findByCampaignIdIn(campaignIds);
+        var ratesByCampaign = campaignRates.stream().collect(Collectors.groupingBy(com.raxim.myscoutee.profile.data.document.UserRate::getCampaignId));
+        var edgesByCampaign = affinityEdgeService.projectCampaignEdges(campaignRates);
+        for (String campaignId : campaignIds) {
+            var rates = ratesByCampaign.getOrDefault(campaignId, List.of());
+            Map<String, Node> nodes = new LinkedHashMap<>();
+            List<Edge> edges = new ArrayList<>();
+            for (var rate : rates) {
+                for (String id : List.of(normalizeId(rate.getOwnerUserId()), normalizeId(rate.getRelatedUserId()))) {
+                    if (StringUtils.hasText(id)) nodes.putIfAbsent(id, new Node(id));
+                }
+            }
+            for (UserAffinityEdge edge : edgesByCampaign.getOrDefault(campaignId, List.of())) addUserAffinityEdge(edges, nodes, edge);
+            graphs.put(campaignId, new FGraph(nodes, edges));
+        }
+        return graphs;
+    }
+
+    private Set<String> priorityOffGroups(List<ActivityEvent> events) {
+        var ids=events.stream().map(ActivityEvent::getWorkspaceGroupId).filter(StringUtils::hasText).collect(Collectors.toSet());
+        return ids.isEmpty()?Set.of():communityGroups.findByIdIn(ids).stream().filter(g->!g.priorityEnabled()).map(com.raxim.myscoutee.profile.data.document.CommunityGroup::id).collect(Collectors.toSet());
+    }
+    private FGraph participantGraph(Set<String> participants) {
+        Map<String,Node> nodes=new LinkedHashMap<>();if(participants!=null)participants.forEach(id->nodes.put(id,new Node(id)));return new FGraph(nodes,List.of());
+    }
+    private FGraph eventGraph(ActivityEvent event, FGraph global, Map<String, FGraph> campaigns, Set<String> participants, Set<String> priorityOffGroups) {
+        if(priorityOffGroups.contains(normalizeId(event.getWorkspaceGroupId())))return participantGraph(participants);
+        FGraph selected = StringUtils.hasText(event.getCampaignId())
+                ? campaigns.getOrDefault(event.getCampaignId(), new FGraph()) : global;
+        if (participants == null) return selected;
+        // Accepted participants remain eligible even when they have no mutual score.
+        Map<String, Node> nodes = new LinkedHashMap<>(selected.getNodes());
+        participants.forEach(id -> nodes.putIfAbsent(id, new Node(id)));
+        return new FGraph(nodes, selected.getEdges()).filter(participants, Set.of(), 0d);
+    }
+
     private FGraph buildGraphSnapshot(Set<String> requiredUserIds) {
         return buildGraphSnapshot(requiredUserIds, null);
     }
@@ -1734,7 +1830,7 @@ public class EventScheduler {
     }
 
     private List<ActivityEvent> resolveCanonicalEvents() {
-        return resolveCanonicalEvents(activityEventsRepository.findAll());
+        return resolveCanonicalEvents(scopedEvents(activityEventsRepository.findAll()));
     }
 
     private List<ActivityEvent> resolveCanonicalEvents(List<ActivityEvent> records) {
@@ -2352,6 +2448,8 @@ public class EventScheduler {
         room.setSyncKey(syncKey);
         room.setSourceId(roomEventId);
         room.setOwnerUserId(null);
+        room.setWorkspaceGroupId(sourceEvent == null ? null : sourceEvent.getWorkspaceGroupId());
+        room.setCampaignId(sourceEvent == null ? null : sourceEvent.getCampaignId());
         room.setStatus(ActivityEvent.STATUS_ACTIVE);
         room.setAdmins(List.of());
         room.setAvatar(tournamentRoomPresentation ? TOURNAMENT_ROOM_IMAGE_URL : "SY");

@@ -11,6 +11,9 @@ public interface AffinityRecomputeTasksRepository extends MongoRepository<Affini
     Optional<AffinityRecomputeTask> findByTaskKey(String taskKey);
 
     long countByStatus(String status);
+    long countByBaseGroupIdAndStatus(String baseGroupId, String status);
+    List<AffinityRecomputeTask> findByBaseGroupIdAndStatusAndAvailableAtIsoLessThanEqualOrderByAvailableAtIsoAsc(
+            String baseGroupId, String status, String availableAtIso, org.springframework.data.domain.Pageable page);
 
     List<AffinityRecomputeTask> findByStatusAndAvailableAtIsoLessThanEqualOrderByAvailableAtIsoAsc(
             String status,

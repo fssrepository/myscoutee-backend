@@ -22,6 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.profile.data.document.ActivityEvent;
+import com.raxim.myscoutee.profile.data.document.Campaign;
+import com.raxim.myscoutee.profile.data.dto.campaigns.CampaignDtos;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationCampaignSyncItemDto;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationCampaignSyncRequestDto;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.IntegrationExternalId;
@@ -43,6 +47,8 @@ import com.raxim.myscoutee.profile.service.MediaStorageService.StoredImageSet;
 public class IntegrationSyncService {
     private static final String RESOURCE_ASSET = "asset";
     private static final String RESOURCE_EVENT = "event";
+    private static final String RESOURCE_CAMPAIGN = "campaign";
+    private final CampaignsService campaignsService;
 
     private final IntegrationExternalIdsRepository externalIdsRepository;
     private final MongoTemplate mongoTemplate;
@@ -55,12 +61,13 @@ public class IntegrationSyncService {
             MongoTemplate mongoTemplate,
             AssetsService assetsService,
             ActivitiesEventsService eventsService,
-            MediaStorageService mediaStorageService) {
+            MediaStorageService mediaStorageService, CampaignsService campaignsService) {
         this.externalIdsRepository = externalIdsRepository;
         this.mongoTemplate = mongoTemplate;
         this.assetsService = assetsService;
         this.eventsService = eventsService;
         this.mediaStorageService = mediaStorageService;
+        this.campaignsService = campaignsService;
     }
 
     public IntegrationSyncResponseDto createAssets(
@@ -201,6 +208,55 @@ public class IntegrationSyncService {
         return new IntegrationSyncResponseDto(results);
     }
 
+    public IntegrationSyncResponseDto createCampaigns(String ownerUserId, IntegrationCampaignSyncRequestDto request) {
+        return createCampaigns(ownerUserId, request, Map.of());
+    }
+
+    public IntegrationSyncResponseDto createCampaigns(String ownerUserId, IntegrationCampaignSyncRequestDto request,
+            Map<String, MultipartFile> requestedImages) {
+        // Resolve the authenticated profile and accepted Work membership before any allocation or upload.
+        var actor = campaignsService.actor(ownerUserId);
+        List<IntegrationCampaignSyncItemDto> items = requireBatch(request == null ? null : request.items());
+        var ids = items.stream().map(item -> item == null ? null : item.id()).toList();
+        var images = requireImageFiles(ids, requestedImages);
+        var existing = existingMappings(actor.getUserId(), RESOURCE_CAMPAIGN, ids);
+        Set<String> seen = new HashSet<>();
+        List<IntegrationSyncResultDto> results = new ArrayList<>(items.size());
+        for (var item : items) {
+            String itemId = normalizeItemId(item == null ? null : item.id());
+            String validationError = item == null ? "item_required" : validateCommon(itemId, item.title(), seen);
+            if (validationError != null) {
+                results.add(rejected(itemId, validationError));
+                continue;
+            }
+            var previous = existing.get(itemId);
+            if (previous != null && resourceExists(actor.getUserId(), RESOURCE_CAMPAIGN, previous.getInternalId())) {
+                results.add(success(itemId, previous.getInternalId(), "existing"));
+                continue;
+            }
+            var mapping = previous != null ? previous : ensureMapping(actor.getUserId(), RESOURCE_CAMPAIGN, itemId);
+            var image = storeImage(actor.getUserId(), RESOURCE_CAMPAIGN, mapping.getInternalId(), images.get(itemId));
+            if (images.containsKey(itemId) && image == null) {
+                results.add(rejected(itemId, "image_upload_failed"));
+                continue;
+            }
+            try {
+                var saved = campaignsService.createImported(actor, new CampaignDtos.Save(actor.getUserId(), null,
+                        item.title(), item.description(), item.kind(), item.category(),
+                        image == null ? List.of() : List.of(image.imageUrl()), List.of(), null), mapping.getInternalId());
+                results.add(success(itemId, saved.id(), "created"));
+            } catch (org.springframework.dao.DuplicateKeyException exception) {
+                discardImage(image);
+                results.add(resourceExists(actor.getUserId(), RESOURCE_CAMPAIGN, mapping.getInternalId())
+                        ? success(itemId, mapping.getInternalId(), "existing") : rejected(itemId, "create_failed"));
+            } catch (RuntimeException exception) {
+                discardImage(image);
+                results.add(rejected(itemId, "not_allowed_or_invalid"));
+            }
+        }
+        return new IntegrationSyncResponseDto(results);
+    }
+
     private Map<String, MultipartFile> requireImageFiles(
             List<String> requestedItemIds,
             Map<String, MultipartFile> requestedImages) {
@@ -256,6 +312,10 @@ public class IntegrationSyncService {
             String ownerUserId,
             String resourceType,
             String internalId) {
+        if (RESOURCE_CAMPAIGN.equals(resourceType)) {
+            return mongoTemplate.exists(Query.query(Criteria.where("ownerUserId").is(ownerUserId)
+                    .and("_id").is(internalId)), Campaign.class);
+        }
         if (RESOURCE_ASSET.equals(resourceType)) {
             return mongoTemplate.exists(
                     Query.query(Criteria.where("ownerUserId").is(ownerUserId)

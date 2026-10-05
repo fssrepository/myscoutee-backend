@@ -15,6 +15,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "account_purge_hash", def = "{'userHash': 1}")
 })
 public class AccountPurgeJob {
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }
+
     public static final String STATUS_PENDING = "pending";
     public static final String STATUS_RUNNING = "running";
     public static final String STATUS_COMPLETED = "completed";

@@ -27,8 +27,10 @@ class CashReceiptTest {
     private final CashReceiptRequestDto request = new CashReceiptRequestDto(
             "b5e0289c-1b09-47ca-8ba1-20cf5e2dcb02", "payer", 20D, "EUR", "Lunch");
 
-    @Test
-    void receiptPersistsBothPartiesAndNoteAndRetriesDoNotAddAnotherPayment() {
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings={"cash","bank-transfer"})
+    void receiptPersistsBothPartiesAndNoteAndRetriesDoNotAddAnotherPayment(String method) {
+        CashReceiptRequestDto request=new CashReceiptRequestDto(this.request.requestId(),"payer",20D,"EUR","Lunch",method);
         ReflectionTestUtils.setField(service, "cashNotifications", notifications);
         Users payer = user("payer", "Payer", null);
         Users recipient = user("recipient", "Recipient", null);
@@ -40,13 +42,13 @@ class CashReceiptTest {
         service.recordCashReceipt("recipient", request);
         service.recordCashReceipt("recipient", request);
 
-        assertThat(saved.get().getProvider()).isEqualTo("cash");
+        assertThat(saved.get().getProvider()).isEqualTo(method);
         assertThat(saved.get().getUserId()).isEqualTo("payer");
         assertThat(saved.get().getRecipientUserId()).isEqualTo("recipient");
         assertThat(saved.get().getReceiptNote()).isEqualTo("Lunch");
         assertThat(saved.get().getAccountedSpentAmount()).isEqualTo(20D);
         verify(payments, times(1)).save(any(Payment.class));
-        verify(notifications, times(2)).enqueueOnce(eq("payment-cash-received:" + saved.get().getId()),
+        verify(notifications, times(2)).enqueueOnce(eq(("bank-transfer".equals(method)?"payment-transfer-received:":"payment-cash-received:") + saved.get().getId()),
                 argThat(intent -> intent.recipientUserIds().equals(List.of("payer"))));
         assertThatThrownBy(() -> service.recordCashReceipt("recipient", new CashReceiptRequestDto(
                 request.requestId(), "payer", 21D, "EUR", "Lunch"))).isInstanceOf(ResponseStatusException.class);

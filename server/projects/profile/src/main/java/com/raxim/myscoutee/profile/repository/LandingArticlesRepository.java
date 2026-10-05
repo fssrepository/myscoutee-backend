@@ -29,13 +29,17 @@ public class LandingArticlesRepository {
             int page,
             int pageSize,
             LandingArticleCursor cursor) {
-        Criteria publicCriteria = publicArticleCriteria(lang);
+        return findPage(lang, page, pageSize, cursor, null);
+    }
+
+    public LandingArticleSlice findPage(String lang, int page, int pageSize, LandingArticleCursor cursor, String groupId) {
+        Criteria publicCriteria = publicArticleCriteria(lang, groupId);
         long total = mongoTemplate.count(Query.query(publicCriteria), IdeaPost.class);
         if (total == 0L) {
             return new LandingArticleSlice(List.of(), 0L, false);
         }
 
-        Query pageQuery = Query.query(pageCriteria(lang, cursor))
+        Query pageQuery = Query.query(pageCriteria(lang, cursor, groupId))
                 .with(PUBLIC_ARTICLE_SORT)
                 .limit(pageSize + 1);
         if (cursor == null) {
@@ -51,13 +55,17 @@ public class LandingArticlesRepository {
     }
 
     public LandingArticleSlice findFeaturedPreview(String lang, int limit) {
-        Criteria publicCriteria = publicArticleCriteria(lang);
+        return findFeaturedPreview(lang, limit, null);
+    }
+
+    public LandingArticleSlice findFeaturedPreview(String lang, int limit, String groupId) {
+        Criteria publicCriteria = publicArticleCriteria(lang, groupId);
         long total = mongoTemplate.count(Query.query(publicCriteria), IdeaPost.class);
         if (total == 0L) {
             return new LandingArticleSlice(List.of(), 0L, false);
         }
         Criteria featuredCriteria = new Criteria().andOperator(
-                publicArticleCriteria(lang),
+                publicArticleCriteria(lang, groupId),
                 Criteria.where("featured").is(true));
         List<IdeaPost> records = mongoTemplate.find(
                 Query.query(featuredCriteria)
@@ -67,9 +75,10 @@ public class LandingArticlesRepository {
         return new LandingArticleSlice(List.copyOf(records), total, false);
     }
 
-    private Criteria publicArticleCriteria(String lang) {
+    private Criteria publicArticleCriteria(String lang, String groupId) {
         return new Criteria().andOperator(
                 Criteria.where("lang").is(lang),
+                Criteria.where("workspaceGroupId").is(groupId),
                 Criteria.where("published").is(true),
                 Criteria.where("trashed").ne(true),
                 Criteria.where("title").regex(NON_BLANK_TEXT),
@@ -77,8 +86,8 @@ public class LandingArticlesRepository {
                 Criteria.where("submittedAtIso").regex(NON_BLANK_TEXT));
     }
 
-    private Criteria pageCriteria(String lang, LandingArticleCursor cursor) {
-        Criteria publicCriteria = publicArticleCriteria(lang);
+    private Criteria pageCriteria(String lang, LandingArticleCursor cursor, String groupId) {
+        Criteria publicCriteria = publicArticleCriteria(lang, groupId);
         if (cursor == null) {
             return publicCriteria;
         }
@@ -88,6 +97,12 @@ public class LandingArticlesRepository {
                         Criteria.where("submittedAtIso").is(cursor.submittedAtIso()),
                         Criteria.where("_id").lt(cursor.id())));
         return new Criteria().andOperator(publicCriteria, afterCursor);
+    }
+
+    public List<com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.LandingSlideDto> findSlides(String groupId) {
+        return mongoTemplate.find(Query.query(Criteria.where("workspaceGroupId").is(groupId))
+                .with(Sort.by(Sort.Direction.ASC, "index")),
+                com.raxim.myscoutee.profile.data.dto.landing.LandingContentDtos.LandingSlideDto.class, "landingSlides");
     }
 
     public record LandingArticleCursor(String lang, String submittedAtIso, String id) {

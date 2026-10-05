@@ -67,12 +67,40 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @BeforeEach
     void cleanMongo() {
+        mongoTemplate.dropCollection(com.raxim.myscoutee.profile.data.document.NotificationRuleConfig.class);
+        var rule = new com.raxim.myscoutee.profile.data.document.NotificationRuleConfig();
+        rule.setRuleKey("scheduled-messages"); rule.setEnabled(true); rule.setTriggerKind("scheduled_process");
+        rule.setTiming(new com.raxim.myscoutee.profile.data.document.NotificationRuleConfig.Timing());
+        rule.getTiming().setMode("interval"); rule.getTiming().setIntervalSeconds(1);
+        mongoTemplate.save(rule);
         mongoTemplate.dropCollection(Users.class);
         mongoTemplate.dropCollection(ScheduledMessageTask.class);
         mongoTemplate.dropCollection(ScheduledMessageRun.class);
         mongoTemplate.dropCollection(ScheduledMessageDelivery.class);
         mongoTemplate.dropCollection(UserSessionAction.class);
         mongoTemplate.dropCollection(AffinityRecomputeTask.class);
+    }
+
+    @Test
+    void groupOwnedSelectionFiltersBeforeBatchLimit() {
+        var dating = activeUser("dating-owner");
+        var work = activeUser("work-owner"); work.setWorkspaceGroupId("myscoutee-work");
+        usersRepository.saveAll(List.of(dating, work));
+        mongoTemplate.dropCollection(com.raxim.myscoutee.profile.data.document.Payment.class);
+        for (var owner : List.of("dating-owner", "work-owner")) {
+            var payment = new com.raxim.myscoutee.profile.data.document.Payment();
+            payment.setUserId(owner); payment.setStatus("pending"); payment.setCreatedDate(owner);
+            mongoTemplate.save(payment);
+        }
+        var scope = new JobGroupScopeService(mongoTemplate);
+        var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("status").is("pending"))
+                .with(org.springframework.data.domain.Sort.by("createdDate")).limit(1);
+        var result = JobGroupContext.call("myscoutee-work", () -> scope.findOwned(query,
+                com.raxim.myscoutee.profile.data.document.Payment.class, "userId"));
+        assertThat(result).extracting(com.raxim.myscoutee.profile.data.document.Payment::getUserId).containsExactly("work-owner");
+        assertThat(JobGroupContext.call(null, () -> scope.findOwned(query,
+                com.raxim.myscoutee.profile.data.document.Payment.class, "userId")))
+                .extracting(com.raxim.myscoutee.profile.data.document.Payment::getUserId).containsExactly("dating-owner");
     }
 
     @Test
@@ -335,9 +363,18 @@ class ScheduledMessageTaskServiceIntegrationTest {
     @EnableMongoRepositories(basePackages = "com.raxim.myscoutee.profile.repository")
     @Import({
             ScheduledMessageTaskService.class,
-            ScheduledMessageAuditService.class
+            ScheduledMessageAuditService.class,
+            JobGroupScopeService.class
     })
     static class Config {
+        @Bean
+        com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService jobRegistry(
+                com.raxim.myscoutee.profile.repository.NotificationRuleConfigsRepository rules, MongoTemplate mongo) {
+            return new com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService(rules,
+                    org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.notifications.AdminNotificationSocketSessionRegistry.class),
+                    mongo, org.mockito.Mockito.mock(AdminTelemetryService.class));
+        }
+
         @Bean(destroyMethod = "close")
         TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo() {
             return Mongod.instance().start(Version.Main.V6_0);

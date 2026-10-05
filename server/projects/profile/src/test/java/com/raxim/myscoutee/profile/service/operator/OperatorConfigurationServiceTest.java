@@ -33,7 +33,6 @@ import com.raxim.myscoutee.profile.data.document.DeploymentConfiguration;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.BrandingUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestKind;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.ConfigurationTestRequestDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseUpdateDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
@@ -76,7 +75,6 @@ class OperatorConfigurationServiceTest {
         String persistedJson = new ObjectMapper().writeValueAsString(document);
 
         assertThat(saved.branding().productName()).isEqualTo("My Community");
-        assertThat(saved.branding().themePreset()).isEqualTo(DeploymentThemePreset.OCEAN);
         assertThat(saved.branding().revision()).isEqualTo(1L);
         assertThat(saved.adminEmails())
                 .containsExactly("operator.admin@example.test");
@@ -191,20 +189,7 @@ class OperatorConfigurationServiceTest {
                         "",
                         "")),
                 "not available");
-        OperatorConfigurationUpdateDto missingTheme =
-                new OperatorConfigurationUpdateDto(
-                        List.of(),
-                        List.of(),
-                        new BrandingUpdateDto(
-                                "Product",
-                                null,
-                                "/media/public?key=images%2Flogo",
-                                null),
-                        null,
-                        null);
-        assertBadRequest(
-                () -> fixture.service().update(missingTheme),
-                "Theme preset");
+
     }
 
     @Test
@@ -258,8 +243,7 @@ class OperatorConfigurationServiceTest {
                         new BrandingUpdateDto(
                                 "Product",
                                 null,
-                                "/media/public?key=images%2Flogo",
-                                DeploymentThemePreset.OCEAN),
+                                "/media/public?key=images%2Flogo"),
                         null,
                         null);
 
@@ -496,8 +480,7 @@ class OperatorConfigurationServiceTest {
                         new BrandingUpdateDto(
                                 "Product",
                                 -1,
-                                "",
-                                DeploymentThemePreset.OCEAN),
+                                ""),
                         null,
                         null);
 
@@ -615,6 +598,17 @@ class OperatorConfigurationServiceTest {
     }
 
     @Test
+    void publicFirebaseConfigurationIsAbsentForDemoAndInactiveDeployment()
+            throws Exception {
+        Fixture fixture = fixtureWithKey();
+        fixture.persisted().get().getFirebase().setActive(false);
+        assertThat(fixture.service().publicFirebaseConfiguration()).isNull();
+
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        assertThat(fixture.service().publicFirebaseConfiguration()).isNull();
+    }
+
+    @Test
     void firebaseActivationAllowsNoStorageBucketAndPublishesOnlyClientData()
             throws Exception {
         Fixture fixture = fixtureWithKey();
@@ -667,12 +661,7 @@ class OperatorConfigurationServiceTest {
         assertThat(failed.success()).isFalse();
         assertThat(failed.firebase().active()).isFalse();
         assertThat(failed.firebase().activatedAt()).isNull();
-        assertThatThrownBy(
-                fixture.service()::publicFirebaseConfiguration)
-                .isInstanceOfSatisfying(
-                        ResponseStatusException.class,
-                        exception -> assertThat(exception.getStatusCode())
-                                .isEqualTo(HttpStatus.NOT_FOUND));
+        assertThat(fixture.service().publicFirebaseConfiguration()).isNull();
     }
 
     @Test
@@ -928,8 +917,7 @@ class OperatorConfigurationServiceTest {
                 new BrandingUpdateDto(
                         productName,
                         null,
-                        logoUrl,
-                        DeploymentThemePreset.OCEAN),
+                        logoUrl),
                 new PaymentUpdateDto(
                         providerId,
                         "https://community.example.test/",
@@ -959,8 +947,7 @@ class OperatorConfigurationServiceTest {
                 new BrandingUpdateDto(
                         productName,
                         logoCharacterIndex,
-                        "/media/public?key=images%2Foperator%2Fbranding",
-                        DeploymentThemePreset.OCEAN),
+                        "/media/public?key=images%2Foperator%2Fbranding"),
                 null,
                 null);
     }
@@ -974,8 +961,7 @@ class OperatorConfigurationServiceTest {
                 new BrandingUpdateDto(
                         "Product",
                         null,
-                        "/media/public?key=images%2Foperator%2Fbranding",
-                        DeploymentThemePreset.OCEAN),
+                        "/media/public?key=images%2Foperator%2Fbranding"),
                 null,
                 null);
     }
@@ -1017,7 +1003,7 @@ class OperatorConfigurationServiceTest {
         branding.setLogoCharacterIndex(null);
         branding.setHomeLabel("Your preferences come first");
         branding.setLogoUrl("assets/logo/heart.webp");
-        branding.setThemePreset(DeploymentThemePreset.AURORA.name());
+
         branding.setRevision(0L);
         configuration.setBranding(branding);
         configuration.setSocialLinks(List.of());

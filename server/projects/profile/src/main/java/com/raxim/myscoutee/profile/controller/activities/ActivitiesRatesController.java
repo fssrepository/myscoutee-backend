@@ -21,8 +21,9 @@ public class ActivitiesRatesController {
     }
 
     @GetMapping
-    public List<RateMenuItemDto> queryRates(@RequestParam("userId") String userId) {
-        return userRatesService.queryRateItemsByUser(userId);
+    public List<RateMenuItemDto> queryRates(@RequestParam("userId") String userId,
+            @RequestParam(value = "campaignId", required = false) String campaignId) {
+        return userRatesService.queryRateItemsByUser(userId, campaignId);
     }
 
     @GetMapping("/page")
@@ -37,7 +38,8 @@ public class ActivitiesRatesController {
             @RequestParam(value = "cursor", required = false) String cursor,
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "rangeStartIso", required = false) String rangeStartIso,
-            @RequestParam(value = "rangeEndIso", required = false) String rangeEndIso) {
+            @RequestParam(value = "rangeEndIso", required = false) String rangeEndIso,
+            @RequestParam(value = "campaignId", required = false) String campaignId) {
         return userRatesService.queryActivityRatePage(
                 userId,
                 mode,
@@ -49,6 +51,6 @@ public class ActivitiesRatesController {
                 cursor,
                 limit,
                 rangeStartIso,
-                rangeEndIso);
+                rangeEndIso, campaignId);
     }
 }
