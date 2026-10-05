@@ -33,15 +33,39 @@ public class MediaPolicyFacts {
         if (MediaAccessPaths.isPublicKey(key)) return true;
         String[] parts = key.split("/");
         int offset = "private".equals(parts[0]) ? 1 : 0;
-        if (parts.length < offset + 4 || !List.of("images", "audio").contains(parts[offset])) return false;
+        if (parts.length < offset + 4 || !List.of("images", "audio", "documents").contains(parts[offset])) return false;
         String owner = parts[offset + 1];
         String entity = parts[offset + 2];
-        if (viewer.equals(owner)) return true; // Upload preview, including unsaved own drafts.
+        if (MediaAccessPaths.storageSegment(viewer).equals(owner)) return true; // Upload preview, including unsaved own drafts.
         List<String> urls = variantUrls(key, "images".equals(parts[offset]));
         if ("images".equals(parts[offset]) && (owner.equals(entity) || "profile-onboarding".equals(entity))) {
             Document profile = find("users", Criteria.where("userId").is(owner), "profileStatus", "images");
             return profile != null && profile.getString("profileStatus") != null
                     && !profile.getString("profileStatus").isBlank() && visible(profile.getString("profileStatus"), owner, viewer);
+        }
+        Document announcement = find("communityAnnouncements", Criteria.where("attachments.url").in(urls), "communityId", "status");
+        if (announcement != null) {
+            var group = find("communityGroups", Criteria.where("_id").is(announcement.getString("communityId")), "lifecycleStatus");
+            if (group == null || List.of("deleted", "under-review").contains(group.getString("lifecycleStatus") == null ? "" : group.getString("lifecycleStatus"))) return false;
+            var profile = find("users", Criteria.where("userId").is(viewer), "accountUserId");
+            String account = profile == null || profile.getString("accountUserId") == null ? viewer : profile.getString("accountUserId");
+            var membership = find("activityMembers", Criteria.where("ownerType").is("community").and("ownerId").is(announcement.getString("communityId"))
+                    .and("userId").is(account).and("status").is("accepted"), "role");
+            return membership != null && ("published".equals(announcement.getString("status")) || "Admin".equals(membership.getString("role")));
+        }
+        Document campaign = find("campaigns", new Criteria().orOperator(Criteria.where("imageUrls").in(urls), Criteria.where("attachments.url").in(urls)), "workspaceGroupId", "status");
+        if (campaign != null) {
+            var profile = find("users", Criteria.where("userId").is(viewer), "workspaceGroupId");
+            return "published".equals(campaign.getString("status")) && profile != null
+                    && java.util.Objects.equals(profile.getString("workspaceGroupId"), campaign.getString("workspaceGroupId"));
+        }
+        Document service = find("serviceOfferings", Criteria.where("imageUrls").in(urls), "baseGroupId", "status");
+        if (service != null) {
+            var profile = find("users", Criteria.where("userId").is(viewer), "workspaceGroupId", "accountUserId");
+            if (!"published".equals(service.getString("status")) || profile == null) return false;
+            String account = profile.getString("accountUserId") == null ? viewer : profile.getString("accountUserId");
+            return find("activityMembers", Criteria.where("ownerType").is("community").and("ownerId").is(service.getString("baseGroupId"))
+                    .and("userId").is(account).and("status").is("accepted"), "userId") != null;
         }
         Document asset = find("assets", Criteria.where("imageUrl").in(urls), "ownerUserId", "visibility", "status", "moderationStatus");
         if (asset != null) return canModerate(viewer, asset) || active(asset) && visible(asset.getString("visibility"), asset.getString("ownerUserId"), viewer);

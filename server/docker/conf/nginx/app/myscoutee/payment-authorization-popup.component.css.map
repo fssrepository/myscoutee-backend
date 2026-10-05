@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/ui/components/payment-authorization-popup/payment-authorization-popup.component.scss"],
-  "sourcesContent": [":host {\n  display: contents;\n}\n\n.payment-authorization-popup__frame {\n  display: block;\n  width: 100%;\n  height: 100%;\n  min-height: 26rem;\n  border: 0;\n  background: #eef3f9;\n}\n"],
-  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA;AACE,WAAA;AACA,SAAA;AACA,UAAA;AACA,cAAA;AACA,UAAA;AACA,cAAA;;",
-  "names": []
-}

@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
 import java.time.Duration;
+import com.raxim.myscoutee.profile.service.JobGroupContext;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -83,7 +84,7 @@ public class NotificationOutboxWorkerService {
     private final int deliveryWindowEndHour;
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
-    private String lastWakeupStreamId = "0-0";
+    private final java.util.Map<String, String> lastWakeupStreamIds = new java.util.concurrent.ConcurrentHashMap<>();
     private volatile Instant lastScheduledPollAt = Instant.EPOCH;
 
     public NotificationOutboxWorkerService(
@@ -144,6 +145,11 @@ public class NotificationOutboxWorkerService {
     }
 
     private void processDueNotificationsForCurrentDatabase() {
+        var registry = notificationRuleRegistry();
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX, this::processDueNotificationsForCurrentDatabaseInGroup);
+    }
+
+    private void processDueNotificationsForCurrentDatabaseInGroup() {
         Instant startedAt = Instant.now();
         NotificationRuleRegistryService registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
@@ -249,6 +255,10 @@ public class NotificationOutboxWorkerService {
     }
 
     private void processLeasedItem(NotificationOutboxItem leased) {
+        if (leased != null) JobGroupContext.run(leased.getBaseGroupId(), () -> processLeasedItemInGroup(leased));
+    }
+
+    private void processLeasedItemInGroup(NotificationOutboxItem leased) {
         if (leased == null) {
             return;
         }
@@ -263,6 +273,15 @@ public class NotificationOutboxWorkerService {
     @Scheduled(fixedDelayString = "${notifications.outbox.wakeup-poll-delay-ms:5000}")
     @SuppressWarnings("unchecked")
     public void processRedisWakeups() {
+        Runnable action = () -> {
+            var registry = notificationRuleRegistry();
+            if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX, this::processRedisWakeupsInGroup);
+        };
+        if (scheduledMongoSessionRunner == null) action.run();
+        else scheduledMongoSessionRunner.runAcrossConfiguredDatabases(action);
+    }
+
+    private void processRedisWakeupsInGroup() {
         if (stringRedisTemplate == null) {
             return;
         }
@@ -279,7 +298,7 @@ public class NotificationOutboxWorkerService {
         try {
             List<MapRecord<String, Object, Object>> records = stringRedisTemplate.opsForStream().read(
                     StreamReadOptions.empty().count(effectiveBatchSize()),
-                    StreamOffset.create(NotificationOutboxService.WAKEUP_STREAM_KEY, ReadOffset.from(lastWakeupStreamId)));
+                    StreamOffset.create(NotificationOutboxService.wakeupStreamKey(), ReadOffset.from(lastWakeupStreamIds.getOrDefault(NotificationOutboxService.wakeupStreamKey(), "0-0"))));
             if (records == null || records.isEmpty()) {
                 return;
             }
@@ -287,7 +306,7 @@ public class NotificationOutboxWorkerService {
                     .map(record -> record.getId().getValue())
                     .filter(StringUtils::hasText)
                     .toList();
-            lastWakeupStreamId = records.get(records.size() - 1).getId().getValue();
+            lastWakeupStreamIds.put(NotificationOutboxService.wakeupStreamKey(), records.get(records.size() - 1).getId().getValue());
             startedAt = Instant.now();
             boolean ruleConfigured = registry != null
                     && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent();
@@ -309,7 +328,7 @@ public class NotificationOutboxWorkerService {
                         "notification-outbox",
                         startedAt);
             }
-            redisStreamRetentionService.deleteRecords(stringRedisTemplate, NotificationOutboxService.WAKEUP_STREAM_KEY, recordIds);
+            redisStreamRetentionService.deleteRecords(stringRedisTemplate, NotificationOutboxService.wakeupStreamKey(), recordIds);
         } catch (RuntimeException exception) {
             if (runStarted && registry != null && startedAt != null) {
                 registry.recordRun(
@@ -343,7 +362,7 @@ public class NotificationOutboxWorkerService {
                 Criteria.where("nextRetryAt").exists(false),
                 Criteria.where("nextRetryAt").is(null),
                 Criteria.where("nextRetryAt").lte(nowIso));
-        Query query = Query.query(new Criteria().andOperator(statusCriteria, retryCriteria))
+        Query query = Query.query(new Criteria().andOperator(statusCriteria, retryCriteria, Criteria.where("baseGroupId").is(JobGroupContext.groupId())))
                 .with(Sort.by(Sort.Direction.ASC, "createdDate"))
                 .limit(Math.max(1, limit));
         if (!configProperties.isFirebaseEnabled()) {

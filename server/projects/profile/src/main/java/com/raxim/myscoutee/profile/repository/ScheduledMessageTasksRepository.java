@@ -11,6 +11,7 @@ public interface ScheduledMessageTasksRepository extends MongoRepository<Schedul
     Optional<ScheduledMessageTask> findByTaskKey(String taskKey);
 
     List<ScheduledMessageTask> findTop12ByLastRunAtIsoNotNullOrderByLastRunAtIsoDesc();
+    List<ScheduledMessageTask> findTop12ByBaseGroupIdAndLastRunAtIsoNotNullOrderByLastRunAtIsoDesc(String baseGroupId);
 
     List<ScheduledMessageTask> findByEventIdAndActionKey(String eventId, String actionKey);
 }

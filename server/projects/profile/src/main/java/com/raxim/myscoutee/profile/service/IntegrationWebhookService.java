@@ -65,6 +65,13 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class IntegrationWebhookService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
     public static final String EVENT_CHANGED = "event.changed";
     public static final String EVENT_ENCOUNTERS = "event.encounters";
     public static final String ASSET_CHANGED = "asset.changed";
@@ -329,6 +336,10 @@ public class IntegrationWebhookService {
 
     @Scheduled(fixedDelayString = "${integration.webhook.delivery-interval-ms:1000}")
     public void deliverPending() {
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("integration-webhooks", this::deliverPendingInGroup));
+    }
+
+    private void deliverPendingInGroup() {
         int availableSlots = deliveryExecutor.getMaximumPoolSize() - deliveryExecutor.getActiveCount();
         if (availableSlots <= 0) {
             return;
@@ -339,7 +350,7 @@ public class IntegrationWebhookService {
                 Criteria.where("nextAttemptAtIso").lte(now)));
         due.with(Sort.by(Sort.Order.asc("createdAtIso")));
         due.limit(Math.min(deliveryBatchSize, availableSlots));
-        for (IntegrationWebhookDelivery candidate : mongoTemplate.find(due, IntegrationWebhookDelivery.class)) {
+        for (IntegrationWebhookDelivery candidate : jobGroupScope.findOwned(due, IntegrationWebhookDelivery.class, "ownerUserId")) {
             IntegrationWebhookDelivery claimed = mongoTemplate.findAndModify(
                     Query.query(new Criteria().andOperator(
                             Criteria.where("_id").is(candidate.getId()),
@@ -350,7 +361,15 @@ public class IntegrationWebhookService {
                     IntegrationWebhookDelivery.class);
             if (claimed != null) {
                 try {
-                    deliveryExecutor.execute(() -> deliver(claimed));
+                    var groupId = com.raxim.myscoutee.profile.service.JobGroupContext.groupId();
+                    var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+                    deliveryExecutor.execute(() -> {
+                        var previousMode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+                        try {
+                            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
+                            com.raxim.myscoutee.profile.service.JobGroupContext.run(groupId, () -> deliver(claimed));
+                        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previousMode); }
+                    });
                 } catch (RejectedExecutionException exception) {
                     claimed.setStatus(STATUS_RETRY);
                     claimed.setNextAttemptAtIso(Instant.now().toString());

@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
+import com.raxim.myscoutee.profile.service.JobGroupScopeService;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -44,6 +46,9 @@ import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.R
 @Service
 public class NotificationOutboxService {
     public static final String WAKEUP_STREAM_KEY = "notification:outbox:wakeups";
+    public static String wakeupStreamKey() {
+        return WAKEUP_STREAM_KEY + ":" + com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key();
+    }
     private static final Duration WAKEUP_STREAM_RETENTION = Duration.ofDays(30);
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationOutboxService.class);
     private static final String DEFAULT_CLICK_URL = "/game";
@@ -53,6 +58,9 @@ public class NotificationOutboxService {
     private static final int DEFAULT_MULTICAST_THRESHOLD = 3;
     private static final int DEFAULT_TOPIC_THRESHOLD = 1000;
     private static final int DEFAULT_COLLAPSE_WINDOW_SECONDS = 300;
+
+    @Autowired
+    private JobGroupScopeService jobGroupScope;
 
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final StringRedisTemplate stringRedisTemplate;
@@ -132,6 +140,26 @@ public class NotificationOutboxService {
     }
 
     public Optional<NotificationOutboxItem> enqueue(NotificationIntent intent) {
+        return enqueueByGroup(intent, null);
+    }
+
+    private Optional<NotificationOutboxItem> enqueueByGroup(NotificationIntent intent, String operationId) {
+        if (intent == null) return Optional.empty();
+        var groups = jobGroupScope.usersByGroup(compactIds(intent.recipientUserIds()));
+        if (groups.isEmpty()) groups.put(JobGroupContext.groupId(), List.of());
+        Optional<NotificationOutboxItem> first = Optional.empty();
+        for (var entry : groups.entrySet()) {
+            var scoped = new NotificationIntent(intent.type(), intent.entityType(), intent.entityId(), intent.recipientScope(),
+                    entry.getValue(), intent.title(), intent.body(), intent.clickUrl(), intent.iconUrl(), intent.badgeUrl(),
+                    intent.tag(), intent.payload(), intent.createdUser());
+            var result = JobGroupContext.call(entry.getKey(), () -> operationId == null
+                    ? enqueueInGroup(scoped) : enqueueOnceInGroup(operationId, scoped));
+            if (first.isEmpty()) first = result;
+        }
+        return first;
+    }
+
+    private Optional<NotificationOutboxItem> enqueueInGroup(NotificationIntent intent) {
         if (intent == null) {
             return Optional.empty();
         }
@@ -159,6 +187,7 @@ public class NotificationOutboxService {
                 recipientScope,
                 payloadHash);
 
+        if (JobGroupContext.groupId() != null) collapseKey = JobGroupContext.key() + ":" + collapseKey;
         NotificationOutboxItem existing = notificationOutboxRepository
                 .findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
                         collapseKey,
@@ -191,7 +220,11 @@ public class NotificationOutboxService {
 
     /** Durable operation identity; retries do not create another inbox/provider delivery. */
     public Optional<NotificationOutboxItem> enqueueOnce(String operationId, NotificationIntent intent) {
-        String id = "operation:" + sha256(operationId);
+        return enqueueByGroup(intent, operationId);
+    }
+
+    private Optional<NotificationOutboxItem> enqueueOnceInGroup(String operationId, NotificationIntent intent) {
+        String id = "operation:" + sha256(JobGroupContext.groupId() == null ? operationId : JobGroupContext.key() + ":" + operationId);
         NotificationOutboxItem saved = notificationOutboxRepository.findById(id).orElse(null);
         if (saved == null) {
             Map<String, String> payload = normalizedPayload(intent, deploymentBranding(intent));
@@ -307,6 +340,7 @@ public class NotificationOutboxService {
             String nowIso) {
         NotificationOutboxItem item = new NotificationOutboxItem();
         item.setId(new ObjectId().toHexString());
+        item.setBaseGroupId(JobGroupContext.groupId());
         item.setSyncKey(UUID.randomUUID().toString());
         item.setNotificationType(safeText(intent.type()));
         item.setEntityType(safeNullableText(intent.entityType()));
@@ -467,7 +501,7 @@ public class NotificationOutboxService {
                     "outboxId", safeText(item.getId()),
                     "collapseKey", safeText(item.getCollapseKey()),
                     "type", safeText(item.getNotificationType()),
-                    "createdDate", firstNonBlank(item.getCreatedDate(), Instant.now().toString()))).withStreamKey(WAKEUP_STREAM_KEY));
+                    "createdDate", firstNonBlank(item.getCreatedDate(), Instant.now().toString()))).withStreamKey(wakeupStreamKey()));
             if (redisStreamRetentionService != null) {
                 redisStreamRetentionService.trimByAge(stringRedisTemplate, WAKEUP_STREAM_KEY, WAKEUP_STREAM_RETENTION);
             }

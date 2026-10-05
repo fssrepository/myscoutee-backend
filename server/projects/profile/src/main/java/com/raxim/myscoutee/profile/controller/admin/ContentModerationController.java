@@ -66,6 +66,8 @@ public class ContentModerationController {
     }
     private com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto actor(String requestedId, String groupId) {
         if (groupId == null) return admins.resolveAdminActor(requestedId);
+        if (com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(groupId)
+                && admins.isBaseAdminProfile(requestedId)) return admins.resolveAdminActor(requestedId);
         var account = groups.actor(requestedId);
         groups.requireAdmin(account, groupId);
         var profile = groups.select(account, groupId).profile();

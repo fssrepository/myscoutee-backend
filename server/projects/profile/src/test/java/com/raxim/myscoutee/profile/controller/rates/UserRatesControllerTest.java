@@ -89,7 +89,7 @@ class UserRatesControllerTest {
         assertThat(request.rates().get(0).bridgeUserId()).isEqualTo("bridge-1");
         assertThat(request.rates().get(0).bridgeCount()).isEqualTo(2);
         assertThat(request.rates().get(0).scoreGiven()).isEqualTo(9);
-        assertThat(request.rates().get(0).scoreReceived()).isZero();
+        assertThat(request.rates().get(0).scoreReceived().doubleValue()).isZero();
         assertThat(request.rates().get(0).distanceMetersExact()).isEqualTo(1200);
     }
 }

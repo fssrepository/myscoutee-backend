@@ -6,6 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.profile.data.document.CommunityGroup;
+import com.raxim.myscoutee.profile.repository.ServiceCasesRepository;
+import com.raxim.myscoutee.profile.repository.UsersRepository;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,12 +35,14 @@ public class ChatWebSocketSessionRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatWebSocketSessionRegistry.class);
 
     private final ObjectMapper objectMapper;
+    private final ServiceCasesRepository cases;
+    private final UsersRepository users;
     private final Map<String, Map<String, SessionRef>> sessionsByChatId = new ConcurrentHashMap<>();
     private final Map<String, Object> sendLocksBySessionId = new ConcurrentHashMap<>();
     private final ExecutorService broadcastExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
-    public ChatWebSocketSessionRegistry(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
+    public ChatWebSocketSessionRegistry(ObjectMapper objectMapper, ServiceCasesRepository cases, UsersRepository users) {
+        this.objectMapper = objectMapper; this.cases = cases; this.users = users;
     }
 
     @PreDestroy
@@ -47,7 +55,7 @@ public class ChatWebSocketSessionRegistry {
             return;
         }
         sessionsByChatId.computeIfAbsent(chatId.trim(), key -> new ConcurrentHashMap<>())
-                .put(session.getId(), new SessionRef(session, userId.trim()));
+                .put(session.getId(), new SessionRef(session, userId.trim(), MongoSessionModeContext.currentMode()));
     }
 
     public void unregister(WebSocketSession session) {
@@ -91,7 +99,17 @@ public class ChatWebSocketSessionRegistry {
         List<SessionRef> sessionRefs = List.copyOf(sessions.values());
         Map<String, String> payloadCache = new LinkedHashMap<>();
         List<Future<?>> futures = new ArrayList<>(sessionRefs.size());
+        Map<MongoSessionMode, Set<String>> caseMembers = new LinkedHashMap<>();
         for (SessionRef sessionRef : sessionRefs) {
+            if (event.chatId().startsWith("c-case-")) {
+                Set<String> allowed = caseMembers.computeIfAbsent(sessionRef.mode(), mode -> caseMembers(event.chatId(), mode));
+                if (!allowed.contains(sessionRef.userId())) {
+                    unregister(sessionRef.session());
+                    try { sessionRef.session().close(org.springframework.web.socket.CloseStatus.NOT_ACCEPTABLE); }
+                    catch (IOException ignored) { }
+                    continue;
+                }
+            }
             futures.add(broadcastExecutor.submit(() -> broadcastToSession(event, sessionRef, payloadCache)));
         }
         for (Future<?> future : futures) {
@@ -104,6 +122,17 @@ public class ChatWebSocketSessionRegistry {
                 // Individual sends unregister failed sessions inside broadcastToSession.
             }
         }
+    }
+
+    private Set<String> caseMembers(String chatId, MongoSessionMode mode) {
+        MongoSessionMode previous = MongoSessionModeContext.currentMode();
+        try {
+            MongoSessionModeContext.set(mode);
+            var serviceCase = cases.findById(chatId.substring("c-case-".length())).orElse(null);
+            if (serviceCase == null || !CommunityGroup.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())) return Set.of();
+            return users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds())
+                    .stream().map(u -> u.getUserId()).collect(java.util.stream.Collectors.toSet());
+        } finally { MongoSessionModeContext.set(previous); }
     }
 
     private void broadcastToSession(ChatStreamEvent event, SessionRef sessionRef, Map<String, String> payloadCache) {
@@ -185,6 +214,6 @@ public class ChatWebSocketSessionRegistry {
         return StringUtils.hasText(value) ? value.trim() : "";
     }
 
-    private record SessionRef(WebSocketSession session, String userId) {
+    private record SessionRef(WebSocketSession session, String userId, MongoSessionMode mode) {
     }
 }

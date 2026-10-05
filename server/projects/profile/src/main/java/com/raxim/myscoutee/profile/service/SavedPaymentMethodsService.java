@@ -322,13 +322,17 @@ public class SavedPaymentMethodsService {
             String direction,
             Integer page,
             Integer size) {
+        return queryHistory(userId,direction,page,size,null);
+    }
+    public PaymentHistoryPageDto queryHistory(String userId,String direction,Integer page,Integer size,String counterpartyUserId) {
         String ownerId = requiredId(userId, "Current user");
+        String counterpartyId = normalizeId(counterpartyUserId);
         String normalizedDirection = normalizeHistoryDirection(direction);
         List<Payment> expenses = paymentsRepository.findByUserIdOrderByCreatedDateDesc(ownerId);
         List<Payment> income = paymentsRepository.findByRecipientUserIdOrderByCreatedDateDesc(ownerId).stream()
                 .filter(payment -> !ownerId.equals(normalizeId(payment.getUserId())))
                 .toList();
-        List<Payment> merged = mergeHistory(expenses, income);
+        List<Payment> merged = mergeHistory(expenses, income).stream().filter(p -> !StringUtils.hasText(counterpartyId) || counterpartyId.equals(ownerId.equals(p.getUserId()) ? p.getRecipientUserId() : p.getUserId())).toList();
         List<Payment> all = "all".equals(normalizedDirection)
                 ? merged
                 : merged.stream()
@@ -597,7 +601,8 @@ public class SavedPaymentMethodsService {
                         refund.status(), refund.ruleId(), refund.ruleOffsetUnit(), refund.ruleOffsetValue(),
                         refund.refundKind(), refund.refundValue(), refund.ruleDescription()),
                 paymentMethod, payment.getReceiptNote(),
-                viewerId.equals(userId) ? payment.getReceiptRecipientName() : payment.getReceiptPayerName());
+                viewerId.equals(userId) ? payment.getReceiptRecipientName() : payment.getReceiptPayerName(),
+                viewerId.equals(userId) ? payment.getRecipientUserId() : userId);
     }
 
     private String paymentHistoryDirection(Payment payment, String viewerUserId) {

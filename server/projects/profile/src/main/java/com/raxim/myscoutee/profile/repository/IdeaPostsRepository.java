@@ -16,5 +16,7 @@ public interface IdeaPostsRepository extends MongoRepository<IdeaPost, String> {
 
     List<IdeaPost> findByPublishedTrueAndLangOrderBySubmittedAtIsoDesc(String lang);
 
+    Optional<IdeaPost> findByContentKeyAndLangAndWorkspaceGroupId(String contentKey, String lang, String workspaceGroupId);
+
     Optional<IdeaPost> findByContentKeyAndLang(String contentKey, String lang);
 }

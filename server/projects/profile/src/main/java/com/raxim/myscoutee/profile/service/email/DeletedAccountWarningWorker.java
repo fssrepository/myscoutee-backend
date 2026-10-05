@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.email;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
@@ -24,6 +25,9 @@ import com.raxim.myscoutee.profile.service.operator.OperatorEmailConfigurationSe
 /** A deletion episode has one durable delivery claim, independent of subsequent Job runs. */
 @Service
 public class DeletedAccountWarningWorker {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     public static final String RULE = "account-deletion-warning";
     public static final int WARNING_DAYS = 5;
     private static final int MAX_ATTEMPTS = 4; // Initial delivery plus three retries.
@@ -46,6 +50,11 @@ public class DeletedAccountWarningWorker {
     @Scheduled(fixedDelayString="${email.account-warning-check-delay-ms:60000}")
     public void tick() { databases.runAcrossConfiguredDatabases(this::run); }
     private void run() {
+        var registry = jobs;
+        if (registry != null) registry.forEachGroup(RULE, this::runInGroup);
+    }
+
+    private void runInGroup() {
         Instant now = Instant.now();
         boolean scanDue = jobs.shouldRunScheduledRule(RULE, now);
         if (!scanDue && (!email.enabled() || !mongo.exists(dueRetries(now), COLLECTION))) return;
@@ -62,7 +71,7 @@ public class DeletedAccountWarningWorker {
         }
     }
     private Query dueRetries(Instant now) {
-        return Query.query(Criteria.where("status").is("retry")
+        return Query.query(Criteria.where("baseGroupId").is(JobGroupContext.groupId()).and("status").is("retry")
                 .and("nextAttemptAtIso").lte(now.toString()).and("attemptCount").lt(MAX_ATTEMPTS));
     }
     public int deliver(Instant now) {
@@ -70,7 +79,7 @@ public class DeletedAccountWarningWorker {
         int graceDays = parameters.accountPurgeWindowDays(30);
         if (graceDays < WARNING_DAYS) return 0;
         // A timed-out/crashed request may already have been accepted by the provider. Never resend it blindly.
-        mongo.updateMulti(Query.query(Criteria.where("status").is("sending").and("startedAtIso").lt(now.minusSeconds(120).toString())),
+        mongo.updateMulti(Query.query(Criteria.where("baseGroupId").is(JobGroupContext.groupId()).and("status").is("sending").and("startedAtIso").lt(now.minusSeconds(120).toString())),
                 new Update().set("status", "unknown").set("error", "Delivery outcome is unknown; automatic resend suppressed."), COLLECTION);
         Query candidates = Query.query(Criteria.where("profileStatus").is("deleted").and("deletedAtIso")
                 .gt(now.minus(graceDays, ChronoUnit.DAYS).toString())
@@ -78,6 +87,7 @@ public class DeletedAccountWarningWorker {
                 .andOperator(Criteria.where("$expr").is(new Document("$ne", java.util.List.of("$deletedAtIso",
                         new Document("$ifNull", java.util.List.of("$deletionWarningFor", "")))))))
                 .with(Sort.by("deletedAtIso", "userId")).limit(100);
+        candidates.addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId"));
         int sent = 0, failed = 0;
         var bundle = i18n.getBundle("en", "en", null).data();
         if (bundle == null || !bundle.containsKey("account.deletion.warning.subject") || !bundle.containsKey("account.deletion.warning.body"))
@@ -102,7 +112,7 @@ public class DeletedAccountWarningWorker {
                 if (!"sending".equals(existing.getString("status"))) markHandled(user.getUserId(), episode);
                 continue;
             }
-            var claim = new Document("_id", id).append("userId", user.getUserId()).append("deletedAtIso", episode)
+            var claim = new Document("_id", id).append("baseGroupId", JobGroupContext.groupId()).append("userId", user.getUserId()).append("deletedAtIso", episode)
                     .append("status", "sending").append("startedAtIso", now.toString()).append("attemptCount", 1);
             try { mongo.insert(claim, COLLECTION); } catch (DuplicateKeyException duplicate) { continue; }
             int outcome = deliverClaim(claim, bundle, now, graceDays);

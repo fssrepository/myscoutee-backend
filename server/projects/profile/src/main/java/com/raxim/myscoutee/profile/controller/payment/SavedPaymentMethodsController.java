@@ -127,8 +127,9 @@ public class SavedPaymentMethodsController {
             @RequestParam(value = "userId", required = false) String userId,
             @RequestParam(value = "direction", required = false, defaultValue = "all") String direction,
             @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "size", required = false) Integer size) {
-        return service.queryHistory(resolveCurrentUserId(userId), direction, page, size);
+            @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "counterpartyUserId", required = false) String counterpartyUserId) {
+        return service.queryHistory(resolveCurrentUserId(userId), direction, page, size, counterpartyUserId);
     }
 
     @PostMapping("/history/{paymentId}/refund-request")

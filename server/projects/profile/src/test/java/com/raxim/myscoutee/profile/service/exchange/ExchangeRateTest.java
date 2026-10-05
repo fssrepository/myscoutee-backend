@@ -38,7 +38,7 @@ class ExchangeRateTest {
         when(store.observations()).thenReturn(List.of(defaults));
         var payment = new Payment(); payment.setAuditKind("payment"); payment.setStatus("captured");
         payment.setCurrency("HUF"); payment.setAmount(5000D); payment.setCreatedDate("2026-09-18T10:00:00Z");
-        var service = new PaymentEuroService(store, mock(MongoTemplate.class));
+        var service = paymentService(store);
         service.prepare(payment);
         assertThat(payment.getEuro().amountMinor()).isEqualTo(1250);
         assertThat(payment.getEuro().rateDate()).isEqualTo("default-v1");
@@ -53,7 +53,7 @@ class ExchangeRateTest {
         ExchangeRateStore store = mock(ExchangeRateStore.class);
         when(store.observations()).thenReturn(List.of(new Document("_id", "2026-09-18").append("source", "test")
                 .append("rates", new Document("HUF", "400"))));
-        PaymentEuroService service = new PaymentEuroService(store, mock(MongoTemplate.class));
+        PaymentEuroService service = paymentService(store);
         Payment payment = new Payment(); payment.setAuditKind("payment"); payment.setStatus("captured");
         payment.setCurrency("HUF"); payment.setAmount(5001D); payment.setCreatedDate("2026-09-18T10:00:00Z");
         service.prepare(payment);
@@ -69,7 +69,7 @@ class ExchangeRateTest {
         ExchangeRateStore store = mock(ExchangeRateStore.class); when(store.observations()).thenReturn(List.of());
         Payment payment = new Payment(); payment.setAuditKind("payment"); payment.setStatus("captured");
         payment.setCurrency("HUF"); payment.setAmount(10D); payment.setCreatedDate("2026-09-18T10:00:00Z");
-        new PaymentEuroService(store, mock(MongoTemplate.class)).prepare(payment);
+        paymentService(store).prepare(payment);
         assertThat(payment.getEuro()).isNull(); assertThat(payment.getStatus()).isEqualTo("captured");
     }
     @Test void developmentRejectsExternalSourcesAndEmbeddedCredentials() {
@@ -95,5 +95,11 @@ class ExchangeRateTest {
                 .isInstanceOf(Exception.class);
         assertThatThrownBy(() -> ExchangeRateSource.parse("<Cube time='2026-09-18'><Cube currency='HUF' rate='0'/></Cube>".getBytes(StandardCharsets.UTF_8), "test"))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+    private PaymentEuroService paymentService(ExchangeRateStore store) {
+        var service = new PaymentEuroService(store, mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(mock(MongoTemplate.class)));
+        return service;
     }
 }

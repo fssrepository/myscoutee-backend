@@ -19,8 +19,15 @@ import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient.Ga
 @RequestMapping("/admin/payment-simulator")
 public class AdminPaymentSimulatorController {
     private final PaymentSimulatorRegistrationClient simulatorClient;
+    private final com.raxim.myscoutee.profile.service.AdminModerationService moderation;
+    private final org.springframework.data.mongodb.core.MongoTemplate mongo;
+    private final com.raxim.myscoutee.profile.repository.UsersRepository users;
 
-    public AdminPaymentSimulatorController(PaymentSimulatorRegistrationClient simulatorClient) {
+    public AdminPaymentSimulatorController(PaymentSimulatorRegistrationClient simulatorClient,
+            com.raxim.myscoutee.profile.service.AdminModerationService moderation,
+            org.springframework.data.mongodb.core.MongoTemplate mongo,
+            com.raxim.myscoutee.profile.repository.UsersRepository users) {
+        this.moderation = moderation; this.mongo = mongo; this.users = users;
         this.simulatorClient = simulatorClient;
     }
 
@@ -34,22 +41,35 @@ public class AdminPaymentSimulatorController {
     @PostMapping("/authorization-access")
     @PreAuthorize("hasAuthority('A')")
     public GatewayConfigurationAccess createAuthorizationAccess() {
-        requireDemoAdmin();
-        return simulatorClient.createAuthorizationAccess();
+        String groupId = requireDemoAdmin();
+        var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("workspaceGroupId").is(groupId));
+        query.fields().include("userId");
+        var ids = mongo.find(query, com.raxim.myscoutee.profile.data.document.Users.class).stream()
+                .map(com.raxim.myscoutee.profile.data.document.Users::getUserId).toList();
+        var paymentQuery = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").in(ids));
+        paymentQuery.fields().include("checkoutSessionId");
+        var references = mongo.find(paymentQuery, com.raxim.myscoutee.profile.data.document.Payment.class).stream()
+                .map(com.raxim.myscoutee.profile.data.document.Payment::getCheckoutSessionId)
+                .filter(org.springframework.util.StringUtils::hasText).map(id -> "myscoutee:" + id).distinct().toList();
+        return simulatorClient.createAuthorizationAccess(new PaymentSimulatorRegistrationClient.AuthorizationScope(
+                groupId == null ? "dating" : groupId, ids, references));
     }
 
-    private void requireDemoAdmin() {
+    private String requireDemoAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication != null
                 && authentication.getPrincipal() instanceof FirebasePrincipal principal
                 ? principal.getUserId()
                 : "";
+        var profile = users.findByUserId(userId == null ? "" : userId).orElse(null);
+        String accountId = profile != null && profile.getAccountUserId() != null ? profile.getAccountUserId() : userId;
         if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO
                 || userId == null
-                || !userId.trim().startsWith("admin-demo-")) {
+                || accountId == null || !accountId.trim().startsWith("admin-demo-")) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "Payment simulator administration is available only to demo admins.");
         }
+        return moderation.baseGroupId(userId);
     }
 }

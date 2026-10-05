@@ -100,14 +100,19 @@ class UserAffinityEdgeServiceTest {
     }
 
     private UserAffinityEdgeService service(List<UserRate> relevantRates) {
-        when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc())
+        when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default"))
                 .thenReturn(Optional.of(AffinityConfig.defaults()));
         when(userRatesRepository.findEvidenceForPair("u1", "u2")).thenReturn(relevantRates);
         lenient().when(userAffinityEdgesRepository.findByPairKey("u1:u2")).thenReturn(Optional.empty());
+        var groupScope = org.mockito.Mockito.mock(JobGroupScopeService.class);
+        when(groupScope.usersByGroup(any())).thenAnswer(a -> {
+            java.util.Map<String, List<String>> result = new java.util.HashMap<>();
+            result.put(null, List.copyOf(a.<java.util.Collection<String>>getArgument(0))); return result;
+        });
         return new UserAffinityEdgeService(
                 userAffinityEdgesRepository,
                 userRatesRepository,
-                affinityConfigsRepository);
+                affinityConfigsRepository, groupScope, org.mockito.Mockito.mock(CampaignRatingProjectionService.class));
     }
 
     private UserAffinityEdge capturedEdge() {

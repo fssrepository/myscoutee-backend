@@ -14,6 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class HelpCenterAuditEntry {
     @Id
     private String id;
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String value) { baseGroupId = value; }
 
     private String revisionId;
     private String documentType;

@@ -9,7 +9,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.dto.admin.AdminDtos.AdminUserDto;
 import com.raxim.myscoutee.profile.service.AdminModerationService;
 import com.raxim.myscoutee.profile.service.notifications.AdminNotificationSocketSessionRegistry;
 
@@ -30,7 +29,7 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        if (!hasAdminAccess(session)) {
+        if (!authorizeScope(session)) {
             session.close(CloseStatus.NOT_ACCEPTABLE);
             return;
         }
@@ -50,25 +49,34 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private boolean hasAdminAccess(WebSocketSession session) {
+    private boolean authorizeScope(WebSocketSession session) {
         FirebasePrincipal principal = resolvePrincipal(session);
-        if (principal != null) {
-            return principal.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .anyMatch("A"::equals);
+        if (configProperties.isFirebaseEnabled() && (principal == null || principal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).noneMatch("A"::equals))) return false;
+        var previousMode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        var previousSecurity = org.springframework.security.core.context.SecurityContextHolder.getContext();
+        var security = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        if (session.getPrincipal() instanceof org.springframework.security.core.Authentication authentication) {
+            security.setAuthentication(authentication);
         }
-        if (configProperties.isFirebaseEnabled()) {
-            return false;
-        }
-        String adminUserId = resolveQueryValue(session, "adminUserId");
-        if (!StringUtils.hasText(adminUserId)) {
-            return false;
-        }
+        Object sessionKind = session.getAttributes().get(ChatHandshakeInterceptor.SESSION_KIND_ATTRIBUTE);
+        var mode = "demo".equalsIgnoreCase(String.valueOf(sessionKind))
+                ? com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO
+                : com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL;
         try {
-            AdminUserDto admin = adminModerationService.resolveAdminActor(adminUserId);
-            return admin != null && StringUtils.hasText(admin.id());
-        } catch (Exception exception) {
+            org.springframework.security.core.context.SecurityContextHolder.setContext(security);
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
+            String adminId = java.net.URLDecoder.decode(resolveQueryValue(session, "adminUserId"), java.nio.charset.StandardCharsets.UTF_8);
+            String groupId = adminModerationService.baseGroupId(adminId);
+            if (groupId == null) session.getAttributes().remove(AdminNotificationSocketSessionRegistry.GROUP_ATTRIBUTE);
+            else session.getAttributes().put(AdminNotificationSocketSessionRegistry.GROUP_ATTRIBUTE, groupId);
+            session.getAttributes().put(AdminNotificationSocketSessionRegistry.DATABASE_ATTRIBUTE, mode.name());
+            return true;
+        } catch (RuntimeException error) {
             return false;
+        } finally {
+            org.springframework.security.core.context.SecurityContextHolder.setContext(previousSecurity);
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previousMode);
         }
     }
 

@@ -52,14 +52,20 @@ class SavedPaymentMethodsServiceTest {
             assertThat(item.id()).isEqualTo("asset-payment");
             assertThat(item.direction()).isEqualTo("expense");
             assertThat(item.recipientUserId()).isEqualTo("asset-owner");
+            assertThat(item.counterpartyUserId()).isEqualTo("asset-owner");
         });
         assertThat(service.queryHistory("asset-owner", "all", 0, 20).items()).singleElement().satisfies(item -> {
             assertThat(item.id()).isEqualTo("asset-payment");
             assertThat(item.direction()).isEqualTo("income");
             assertThat(item.contextAssetId()).isEqualTo("asset-1");
+            assertThat(item.counterpartyUserId()).isEqualTo("payer-group");
         });
         assertThat(service.queryHistory("payer-account", "all", 0, 20).items()).isEmpty();
         assertThat(service.queryHistory("owner-group", "all", 0, 20).items()).isEmpty();
+        assertThat(service.queryHistory("payer-group","all",0,20,"asset-owner").total()).isEqualTo(1);
+        assertThat(service.queryHistory("payer-group","all",0,20,"owner-group").items()).isEmpty();
+        assertThat(service.queryHistory("asset-owner","all",0,20,"payer-group").total()).isEqualTo(1);
+        assertThat(service.queryHistory("outsider","all",0,20,"payer-group").items()).isEmpty();
         assertThat(payment.getUserId()).isEqualTo("payer-group");
         verify(payments, never()).save(org.mockito.ArgumentMatchers.any(Payment.class));
     }

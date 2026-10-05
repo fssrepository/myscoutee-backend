@@ -542,7 +542,7 @@ public class PaymentService {
         }
         if (statusValue(AuthorizationStatus.AUTHORIZED).equals(safeText(current.getStatus()))
                 && hasText(current.getGatewayAuthorizationId())
-                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !Set.of("cash", "bank-transfer").contains(safeText(current.getProvider()).toLowerCase(java.util.Locale.ROOT))
                 && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
             if (approvedAmount >= paidAmount) {
                 releaseGatewayAuthorization(current, "refund-request:" + normalizeId(current.getId()));
@@ -555,7 +555,7 @@ public class PaymentService {
             current = paymentsRepository.findById(current.getId()).orElse(current);
         } else if (Set.of("captured", "partially_refunded", "refunded").contains(safeText(current.getStatus()))
                 && hasText(current.getGatewayAuthorizationId())
-                && !"cash".equalsIgnoreCase(safeText(current.getProvider()))
+                && !Set.of("cash", "bank-transfer").contains(safeText(current.getProvider()).toLowerCase(java.util.Locale.ROOT))
                 && !"dummy".equalsIgnoreCase(safeText(current.getProvider()))) {
             current.setGatewayRefundOperationKey("refund-request:" + normalizeId(current.getId())
                     + ":" + BigDecimal.valueOf(approvedAmount).movePointRight(2).longValueExact());
@@ -1430,6 +1430,8 @@ public class PaymentService {
         }
         try { java.util.Currency.getInstance(request.currency()); }
         catch (IllegalArgumentException error) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid currency."); }
+        String method = request.method() == null ? "cash" : request.method();
+        if (!Set.of("cash", "bank-transfer").contains(method)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid receipt method.");
         String payerId = normalizeId(request.payerUserId());
         if (!hasText(payerId) || payerId.equals(recipientId))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another member.");
@@ -1447,7 +1449,7 @@ public class PaymentService {
             payment.setId(id); payment.setCheckoutSessionId(id); payment.setSourceId(id);
             payment.setUserId(payerId); payment.setRecipientUserId(recipientId);
             payment.setReceiptPayerName(payer.getName()); payment.setReceiptRecipientName(recipient.getName());
-            payment.setReceiptNote(note); payment.setProvider("cash"); payment.setStatus("approved");
+            payment.setReceiptNote(note); payment.setProvider(method); payment.setStatus("approved");
             payment.setAmount(request.amount()); payment.setCurrency(request.currency());
             payment.setAuditKind(AUDIT_KIND_PAYMENT); payment.setFulfillmentKind("cash-receipt");
             payment.setBookingStatus("received"); payment.setCreatedDate(nowIso());
@@ -1458,16 +1460,19 @@ public class PaymentService {
         }
         if (!payerId.equals(payment.getUserId()) || !recipientId.equals(payment.getRecipientUserId())
                 || !request.currency().equals(payment.getCurrency()) || !request.amount().equals(payment.getAmount())
-                || !note.equals(payment.getReceiptNote()))
+                || !note.equals(payment.getReceiptNote()) || !method.equals(payment.getProvider()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Receipt request already used.");
         if ("deleted".equals(payment.getStatus()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Receipt was deleted.");
-        cashNotifications.enqueueOnce("payment-cash-received:" + id, new NotificationIntent(
-                "payment-cash-received", "payment", id, "payment-participant", List.of(payerId),
-                "Cash receipt recorded", recipient.getName() + " recorded a cash receipt.", "/game",
-                "/assets/logo/heart.webp", "/assets/logo/heart.webp", "payment-cash-received:" + id,
-                Map.of("paymentId", id, "notification_title_key", "notification.kind.payment-cash-received.title",
-                        "notification_message_key", "notification.kind.payment-cash-received.message"), recipientId));
+        String notificationKind = "bank-transfer".equals(method) ? "payment-transfer-received" : "payment-cash-received";
+        var payload = new java.util.LinkedHashMap<String,String>();
+        payload.put("paymentId",id); payload.put("notification_title_key","notification.kind."+notificationKind+".title");
+        payload.put("notification_message_key","notification.kind."+notificationKind+".message");
+        if (recipient.getWorkspaceGroupId()!=null) payload.put("workspaceGroupId",recipient.getWorkspaceGroupId());
+        cashNotifications.enqueueOnce(notificationKind + ":" + id, new NotificationIntent(
+                notificationKind, "payment", id, "payment-participant", List.of(payerId),
+                "Receipt recorded", recipient.getName() + " recorded a payment receipt.", "/game?payments=1",
+                "/assets/logo/heart.webp", "/assets/logo/heart.webp", notificationKind + ":" + id, payload, recipientId));
         return savedPaymentMethodsService.mutationDto(payment, recipientId);
     }
 

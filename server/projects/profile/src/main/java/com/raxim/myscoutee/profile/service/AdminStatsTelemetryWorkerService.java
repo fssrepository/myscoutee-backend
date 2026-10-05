@@ -20,6 +20,10 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class AdminStatsTelemetryWorkerService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminStatsTelemetryWorkerService.class);
 
     private final StringRedisTemplate stringRedisTemplate;
@@ -30,7 +34,7 @@ public class AdminStatsTelemetryWorkerService {
     private final AdminStatsProperties properties;
     private final RedisStreamRetentionService redisStreamRetentionService;
 
-    private String lastSeenId = "";
+    private final java.util.Map<String, String> cursors = new java.util.concurrent.ConcurrentHashMap<>();
     private boolean streamUnavailableLogged;
 
     public AdminStatsTelemetryWorkerService(
@@ -52,6 +56,12 @@ public class AdminStatsTelemetryWorkerService {
 
     @Scheduled(fixedDelayString = "${admin.stats.telemetry-window-ms:60000}")
     public void drainTelemetryWindow() {
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("admin-telemetry", this::drainGroup));
+    }
+
+    private void drainGroup() {
+        String streamKey = AdminTelemetryService.streamKey(properties, JobGroupContext.groupId());
+        String lastSeenId = cursors.getOrDefault(streamKey, "");
         if (!properties.isEnabled()) {
             return;
         }
@@ -89,11 +99,11 @@ public class AdminStatsTelemetryWorkerService {
                     // Keep draining malformed telemetry records.
                 }
             }
-            lastSeenId = latestId;
             adminStatsService.applyTelemetryEvents(events, latestId);
             adminMonitoringService.applyTelemetryEvents(events, latestId);
             adminMenuCounterService.refreshAdminMenuCounters();
-            redisStreamRetentionService.deleteRecords(stringRedisTemplate, properties.getStreamKey(), recordIds);
+            cursors.put(streamKey, latestId);
+            redisStreamRetentionService.deleteRecords(stringRedisTemplate, AdminTelemetryService.streamKey(properties, JobGroupContext.groupId()), recordIds);
         } catch (Exception exception) {
             if (!streamUnavailableLogged) {
                 LOGGER.warn("Admin stats telemetry worker paused because Redis is unavailable.", exception);
@@ -106,6 +116,6 @@ public class AdminStatsTelemetryWorkerService {
     private List<MapRecord<String, Object, Object>> readRecords(String offset) {
         return stringRedisTemplate.opsForStream().read(
                 StreamReadOptions.empty().count(Math.max(1, properties.getMaxBatchSize())),
-                StreamOffset.create(properties.getStreamKey(), ReadOffset.from(offset)));
+                StreamOffset.create(AdminTelemetryService.streamKey(properties, JobGroupContext.groupId()), ReadOffset.from(offset)));
     }
 }

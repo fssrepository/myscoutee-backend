@@ -15,8 +15,11 @@ public class NotificationRuleConfig {
     @Indexed(name = "notification_rule_config_sync_key", unique = true, sparse = true)
     private String syncKey;
 
-    @Indexed(name = "notification_rule_config_rule_key", unique = true)
     private String ruleKey;
+    private String baseGroupId;
+
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }
 
     private String label;
     private String category;

@@ -25,6 +25,28 @@ import com.raxim.myscoutee.profile.service.operator.DeploymentBrandingResolver.R
 
 class NotificationOutboxServiceTest {
     @Test
+    void mixedRecipientsCreateSeparateDurableItemsAndRestoreCallerScope() {
+        var repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
+        var dating = new com.raxim.myscoutee.profile.data.document.Users(); dating.setUserId("dating");
+        var work = new com.raxim.myscoutee.profile.data.document.Users(); work.setUserId("work"); work.setWorkspaceGroupId("myscoutee-work");
+        when(mongo.find(any(org.springframework.data.mongodb.core.query.Query.class), org.mockito.ArgumentMatchers.eq(com.raxim.myscoutee.profile.data.document.Users.class))).thenReturn(List.of(dating, work));
+        var service = new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope", new com.raxim.myscoutee.profile.service.JobGroupScopeService(mongo));
+        service.enqueue(intent(List.of("dating", "work"), Map.of()));
+        var captured = org.mockito.ArgumentCaptor.forClass(NotificationOutboxItem.class);
+        verify(repository, org.mockito.Mockito.times(2)).save(captured.capture());
+        var items = captured.getAllValues();
+        assertThat(items.get(0).getBaseGroupId()).isNull();
+        assertThat(items.get(0).getRecipientUserIds()).containsExactly("dating");
+        assertThat(items.get(1).getBaseGroupId()).isEqualTo("myscoutee-work");
+        assertThat(items.get(1).getRecipientUserIds()).containsExactly("work");
+        assertThat(items.get(0).getCollapseKey()).isNotEqualTo(items.get(1).getCollapseKey());
+        assertThat(com.raxim.myscoutee.profile.service.JobGroupContext.isActive()).isFalse();
+    }
+
+    @Test
     void enqueueCollapsesPendingMessagesAndMergesRecipients() {
         NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
         NotificationOutboxItem existing = new NotificationOutboxItem();
@@ -40,6 +62,10 @@ class NotificationOutboxServiceTest {
         when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         NotificationOutboxService service = new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueue(new NotificationIntent(
                 "asset-review",
@@ -69,6 +95,10 @@ class NotificationOutboxServiceTest {
     void enqueueSkipsEmptyRecipients() {
         NotificationOutboxRepository repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
         NotificationOutboxService service = new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         Optional<NotificationOutboxItem> result = service.enqueue(new NotificationIntent(
                 "asset-review",
@@ -96,6 +126,10 @@ class NotificationOutboxServiceTest {
                 anyString(), anyCollection(), anyString())).thenReturn(Optional.empty());
         when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
         NotificationOutboxService service = new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         NotificationOutboxItem saved = service.enqueue(intent(
                 List.of("u1"),
@@ -118,6 +152,8 @@ class NotificationOutboxServiceTest {
         PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
         when(parameters.notificationMulticastThreshold(3)).thenReturn(3);
         NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueue(intent(List.of("u1", "u2"), Map.of()));
 
@@ -135,6 +171,8 @@ class NotificationOutboxServiceTest {
         PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
         when(parameters.notificationMulticastThreshold(3)).thenReturn(3);
         NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueue(intent(List.of("u1", "u2", "u3"), Map.of()));
 
@@ -152,6 +190,8 @@ class NotificationOutboxServiceTest {
         PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
         when(parameters.notificationMulticastThreshold(3)).thenReturn(10);
         NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueue(intent(List.of("u1", "u2"), Map.of("multicastThreshold", "2")));
 
@@ -175,6 +215,8 @@ class NotificationOutboxServiceTest {
         PlatformParametersService parameters = org.mockito.Mockito.mock(PlatformParametersService.class);
         when(parameters.notificationMulticastThreshold(3)).thenReturn(3);
         NotificationOutboxService service = new NotificationOutboxService(repository, null, parameters);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueue(intent(List.of("u3"), Map.of()));
 
@@ -202,6 +244,8 @@ class NotificationOutboxServiceTest {
                 null,
                 null,
                 provider);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         NotificationOutboxItem saved = service.enqueue(intent(List.of("u1"), Map.of())).orElseThrow();
 
@@ -229,6 +273,8 @@ class NotificationOutboxServiceTest {
                         9L));
         NotificationOutboxService service =
                 new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setDeploymentBrandingResolver(brandingResolver);
 
         NotificationOutboxItem saved = service.enqueue(
@@ -282,6 +328,8 @@ class NotificationOutboxServiceTest {
                         9L));
         NotificationOutboxService service =
                 new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setDeploymentBrandingResolver(brandingResolver);
 
         NotificationOutboxItem saved = service.enqueue(
@@ -323,6 +371,8 @@ class NotificationOutboxServiceTest {
                 org.mockito.Mockito.mock(DeploymentBrandingResolver.class);
         NotificationOutboxService service =
                 new NotificationOutboxService(repository);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setDeploymentBrandingResolver(brandingResolver);
 
         NotificationOutboxItem saved = service.enqueue(

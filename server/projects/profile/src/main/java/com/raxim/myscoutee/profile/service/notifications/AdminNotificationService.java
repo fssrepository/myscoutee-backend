@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -102,17 +103,32 @@ public class AdminNotificationService {
     }
 
     public AdminNotificationCenterStateDto state(String adminUserId, String filter) {
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        return JobGroupContext.call(groupId, () -> stateInGroup(adminUserId, filter));
+    }
+
+    private AdminNotificationCenterStateDto stateInGroup(String adminUserId, String filter) {
         adminModerationService.resolveAdminActor(adminUserId);
         return toState(notificationRuleRegistryService.rules(), filter);
     }
 
     public AdminNotificationRuleDto ruleState(String ruleKey, String adminUserId) {
+        String groupId = adminModerationService.baseGroupId(adminUserId);
+        return JobGroupContext.call(groupId, () -> ruleStateInGroup(ruleKey, adminUserId));
+    }
+
+    private AdminNotificationRuleDto ruleStateInGroup(String ruleKey, String adminUserId) {
         adminModerationService.resolveAdminActor(adminUserId);
         NotificationRuleConfig rule = notificationRuleRegistryService.findRule(ruleKey).orElse(null);
         return rule == null ? null : toDto(rule);
     }
 
     public AdminNotificationCenterStateDto save(AdminNotificationRuleSaveRequestDto request, String filter) {
+        String groupId = adminModerationService.baseGroupId(request == null ? null : request.adminUserId());
+        return JobGroupContext.call(groupId, () -> saveInGroup(request, filter));
+    }
+
+    private AdminNotificationCenterStateDto saveInGroup(AdminNotificationRuleSaveRequestDto request, String filter) {
         AdminUserDto admin = adminModerationService.resolveAdminActor(request == null ? null : request.adminUserId());
         List<NotificationRuleConfig> documents = request == null || request.rules() == null
                 ? List.of()
@@ -125,6 +141,11 @@ public class AdminNotificationService {
     }
 
     public AdminNotificationRuleRunResultDto run(String ruleKey, AdminNotificationRuleRunRequestDto request) {
+        String groupId = adminModerationService.baseGroupId(request == null ? null : request.adminUserId());
+        return JobGroupContext.call(groupId, () -> runInGroup(ruleKey, request));
+    }
+
+    private AdminNotificationRuleRunResultDto runInGroup(String ruleKey, AdminNotificationRuleRunRequestDto request) {
         String normalizedRuleKey = safeText(ruleKey);
         String requestedAdminUserId = safeText(request == null ? null : request.adminUserId());
         RandomRunProgress progress = NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS.equals(normalizedRuleKey)
@@ -192,17 +213,19 @@ public class AdminNotificationService {
             switch (normalizedRuleKey) {
                 case com.raxim.myscoutee.profile.service.exchange.ExchangeRateJob.KEY -> {
                     MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+                    String jobGroupId = JobGroupContext.groupId();
                     Instant started = Instant.parse(startedAtIso(startedRule));
-                    runExecutor.submit(() -> runWithMongoSessionMode(sessionMode, () -> exchangeRateJob.run(admin.id(), started)));
+                    runExecutor.submit(() -> runWithMongoSessionMode(sessionMode, () -> JobGroupContext.run(jobGroupId, () -> exchangeRateJob.run(admin.id(), started))));
                     return new AdminNotificationRuleRunResultDto(normalizedRuleKey, safeText(rule.getLabel()), 0,
                             "running", "Exchange-rate refresh started.", started.toString());
                 }
                 case NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS -> {
                     RandomRunProgress runProgress = progress;
                     MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
+                    String jobGroupId = JobGroupContext.groupId();
                     runExecutor.submit(() -> runWithMongoSessionMode(
                             sessionMode,
-                            () -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress)));
+                            () -> JobGroupContext.run(jobGroupId, () -> runRandomEventGroups(normalizedRuleKey, admin.id(), startedRule, runProgress))));
                     String startedAtIso = startedAtIso(startedRule);
                     return new AdminNotificationRuleRunResultDto(
                             normalizedRuleKey,
@@ -355,7 +378,8 @@ public class AdminNotificationService {
             runtimeState.setStartedAtIso(startedAt.toString());
             runtimeState.setFinishedAtIso("");
             runtimeState.setDurationMillis(0L);
-            heartbeat = progressHeartbeatExecutor.scheduleAtFixedRate(this::tick, 0, 100, TimeUnit.MILLISECONDS);
+            String jobGroupId = JobGroupContext.groupId();
+            heartbeat = progressHeartbeatExecutor.scheduleAtFixedRate(() -> JobGroupContext.run(jobGroupId, this::tick), 0, 100, TimeUnit.MILLISECONDS);
         }
 
         Instant startedAt() {
@@ -654,7 +678,7 @@ public class AdminNotificationService {
     }
 
     private List<AdminScheduledTaskResultDto> scheduledTaskResults() {
-        return scheduledMessageTasksRepository.findTop12ByLastRunAtIsoNotNullOrderByLastRunAtIsoDesc().stream()
+        return scheduledMessageTasksRepository.findTop12ByBaseGroupIdAndLastRunAtIsoNotNullOrderByLastRunAtIsoDesc(JobGroupContext.groupId()).stream()
                 .map(task -> new AdminScheduledTaskResultDto(
                         task.getTaskKey(),
                         task.getLastRunAtIso(),

@@ -66,7 +66,7 @@ public class ActivitiesInviteCandidatesService {
                 ? communityGroups.actor(request.activeUserId())
                 : homeUserProfileService.resolveCurrentUser(request.activeUserId());
         String ownerId = normalizeId(request.ownerId());
-        if ("asset".equals(ownerType) && activeUser != null
+        if (!"payment".equals(request.purpose()) && "asset".equals(ownerType) && activeUser != null
                 && StringUtils.hasText(ownerId)
                 && StringUtils.hasText(activeUser.getAccountUserId())
                 && ownerId.equals(normalizeId(activeUser.getAccountUserId()))) {
@@ -79,6 +79,12 @@ public class ActivitiesInviteCandidatesService {
             return emptyPage(page, pageSize);
         }
 
+        if("payment".equals(request.purpose())) {
+            if(!"asset".equals(ownerType)||!ownerId.equals(activeUserId))return emptyPage(page,pageSize);
+            var records=usersRepository.findPaymentMembers(activeUser.getWorkspaceGroupId(),activeUserId,PageRequest.of(page,pageSize,Sort.by("name").ascending().and(Sort.by("userId").ascending())));
+            var signal=new CandidateSignal("","",0d);
+            return new ActivityInviteCandidatesPageDto(records.getContent().stream().map(u->toEntry(u.getUserId(),u,signal)).toList(),(int)Math.min(Integer.MAX_VALUE,records.getTotalElements()),page,pageSize);
+        }
         if ("community".equals(ownerType)) communityGroups.requireAdmin(activeUser, ownerId);
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(ownerType, ownerId);
         String parentOwnerId = normalizeId(request.parentOwnerId());

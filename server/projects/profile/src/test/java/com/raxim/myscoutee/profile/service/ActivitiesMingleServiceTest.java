@@ -39,7 +39,7 @@ class ActivitiesMingleServiceTest {
     ActivitiesMingleService service;
 
     @BeforeEach void setup() {
-        service = new ActivitiesMingleService(events, sessions, rounds, users, affinities, members, access, notifications);
+        service = new ActivitiesMingleService(events, sessions, rounds, users, affinities, members, access, notifications, mock(CommunityGroupsRepository.class));
     }
 
     @Test void acceptedParticipantWithoutATableReceivesWaitingStateWithoutOtherTables() {

@@ -44,33 +44,36 @@ public class LandingContentController {
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
             @RequestParam(value = "latitude", required = false) Double latitude,
             @RequestParam(value = "longitude", required = false) Double longitude,
-            @RequestParam(value = "lang", required = false) String lang) {
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "groupId", required = false) String groupId) {
+        groupId = publicGroupId(groupId);
         UserLocationEligibilityResponseDto loginAvailability = hasCoordinates(latitude, longitude)
                 ? homeUserProfileService.queryLocationEligibility(latitude, longitude)
                 : null;
-        IdeaPostPublicPageDto ideaPreview = ideaPostsService.publicFeaturedPosts(lang, acceptLanguage);
+        IdeaPostPublicPageDto ideaPreview = ideaPostsService.publicFeaturedPosts(lang, acceptLanguage, groupId);
         return new LandingContentDto(
-                helpCenterService.activeState("privacy", lang, acceptLanguage),
-                helpCenterService.activeState("terms", lang, acceptLanguage),
+                helpCenterService.activeState("privacy", lang, acceptLanguage, null, groupId),
+                helpCenterService.activeState("terms", lang, acceptLanguage, null, groupId),
                 ideaPreview.records(),
                 ideaPreview.total(),
                 loginAvailability,
                 countryPartitionService.supportedCountries().stream()
                         .map(country -> new SupportedCountryDto(country.getCountryCode(), country.getCountryName()))
-                        .toList());
+                        .toList(), groupId, ideaPostsService.publicSlides(groupId));
     }
 
     @GetMapping("/explanation")
     public HelpCenterStateDto explanation(
             @RequestHeader(name = "accept-language", defaultValue = "en") String acceptLanguage,
             @RequestParam String contextKey,
+            @RequestParam(value = "groupId", required = false) String groupId,
             @RequestParam(value = "lang", required = false) String lang) {
         // Only public entry surfaces are exposed; authenticated guides keep their existing route.
         if (!Set.of("landing.home", "landing.setup",
                 "landing.demo", "landing.auth", "landing.registration").contains(contextKey)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return helpCenterService.activeState("explanation", lang, acceptLanguage, contextKey);
+        return helpCenterService.activeState("explanation", lang, acceptLanguage, contextKey, groupId);
     }
 
     @GetMapping("/articles")
@@ -79,8 +82,15 @@ public class LandingContentController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
-            @RequestParam(value = "cursor", required = false) String cursor) {
-        return ideaPostsService.publicPostsPage(lang, acceptLanguage, page, pageSize, cursor);
+            @RequestParam(value = "cursor", required = false) String cursor,
+            @RequestParam(value = "groupId", required = false) String groupId) {
+        return ideaPostsService.publicPostsPage(lang, acceptLanguage, page, pageSize, cursor, publicGroupId(groupId));
+    }
+
+    private String publicGroupId(String groupId) {
+        if (groupId == null || groupId.isBlank()) return null;
+        if (com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(groupId)) return groupId;
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     private boolean hasCoordinates(Double latitude, Double longitude) {

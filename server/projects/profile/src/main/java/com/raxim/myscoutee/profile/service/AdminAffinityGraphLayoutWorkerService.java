@@ -45,6 +45,11 @@ public class AdminAffinityGraphLayoutWorkerService {
     }
 
     private void rebuildDueLayoutForCurrentDatabase() {
+        var registry = notificationRuleRegistryService;
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT, this::rebuildDueLayoutForCurrentDatabaseInGroup);
+    }
+
+    private void rebuildDueLayoutForCurrentDatabaseInGroup() {
         Optional<NotificationRuleConfig> configuredRule = notificationRuleRegistryService.findRule(
                 NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT);
         if (configuredRule.isEmpty()) {

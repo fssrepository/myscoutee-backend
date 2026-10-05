@@ -66,11 +66,27 @@ class HelpCenterServiceTest {
                 adminTelemetryService,
                 appSettingsService,
                 accessControlService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", org.mockito.Mockito.mock(AdminModerationService.class));
     }
 
     @AfterEach
     void tearDown() {
         MongoSessionModeContext.clear();
+    }
+
+    @Test
+    void workAdminCannotActivateOrDeleteADatingRevision() {
+        var moderation = org.mockito.Mockito.mock(AdminModerationService.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "adminModerationService", moderation);
+        when(moderation.baseGroupId("work-admin")).thenReturn("myscoutee-work");
+        var dating = revision("dating", 1);
+        when(revisionsRepository.findById("dating")).thenReturn(Optional.of(dating));
+        var request = new com.raxim.myscoutee.profile.data.dto.help.HelpCenterDtos.HelpCenterAdminActionRequestDto("work-admin");
+        assertThatThrownBy(() -> service.activateRevision("dating", request, "help")).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThatThrownBy(() -> service.deleteRevision("dating", request, "help")).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(revisionsRepository, never()).save(any());
+        verify(revisionsRepository, never()).delete(any());
+        assertThat(JobGroupContext.isActive()).isFalse();
     }
 
     @Test
@@ -81,7 +97,7 @@ class HelpCenterServiceTest {
         concurrentVersionTwo.setContextKey("profile.impressions");
         AtomicInteger revisionReads = new AtomicInteger();
         when(guideFieldsRepository.existsByScreenKey("profile.impressions")).thenReturn(true);
-        when(revisionsRepository.findAllByOrderByVersionDesc())
+        when(revisionsRepository.findByBaseGroupIdOrderByVersionDesc(null))
                 .thenAnswer(invocation -> revisionReads.getAndIncrement() == 0
                         ? List.of(versionOne)
                         : List.of(concurrentVersionTwo, versionOne));
@@ -94,7 +110,7 @@ class HelpCenterServiceTest {
                 });
         when(auditRepository.save(any(HelpCenterAuditEntry.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        when(auditRepository.findAllByOrderByCreatedDateDesc()).thenReturn(List.of());
+        when(auditRepository.findByBaseGroupIdOrderByCreatedDateDesc(null)).thenReturn(List.of());
 
         service.saveRevision(new HelpCenterRevisionSaveRequestDto(
                 "admin",

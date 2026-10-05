@@ -15,19 +15,6 @@ public final class OperatorConfigurationDtos {
     private OperatorConfigurationDtos() {
     }
 
-    public enum DeploymentThemePreset {
-        AURORA,
-        OCEAN,
-        FOREST,
-        SUNSET,
-        VIOLET,
-        ROSE,
-        AMBER,
-        SLATE,
-        AQUARIUS,
-        MONOCHROME
-    }
-
     public enum ConfigurationTestKind {
         FIREBASE_AUTHENTICATION,
         FIREBASE_MESSAGING
@@ -39,7 +26,6 @@ public final class OperatorConfigurationDtos {
             Integer logoCharacterIndex,
             String homeLabel,
             String logoUrl,
-            DeploymentThemePreset themePreset,
             long revision,
             List<DeploymentSocialLinkDto> socialLinks) {
     }
@@ -57,7 +43,6 @@ public final class OperatorConfigurationDtos {
             Integer logoCharacterIndex,
             String homeLabel,
             String logoUrl,
-            DeploymentThemePreset themePreset,
             long revision,
             String paymentProviderId,
             boolean firebaseMessagingConfigured,
@@ -191,19 +176,16 @@ public final class OperatorConfigurationDtos {
             Integer logoCharacterIndex,
             @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
             @Size(max = 120) String homeLabel,
-            @NotNull @Size(max = 2048) String logoUrl,
-            @NotNull DeploymentThemePreset themePreset) {
+            @NotNull @Size(max = 2048) String logoUrl) {
         public BrandingUpdateDto(
                 String productName,
                 Integer logoCharacterIndex,
-                String logoUrl,
-                DeploymentThemePreset themePreset) {
+                String logoUrl) {
             this(
                     productName,
                     logoCharacterIndex,
                     null,
-                    logoUrl,
-                    themePreset);
+                    logoUrl);
         }
     }
 

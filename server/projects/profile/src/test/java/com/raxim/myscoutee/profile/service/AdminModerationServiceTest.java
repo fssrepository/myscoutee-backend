@@ -68,6 +68,7 @@ class AdminModerationServiceTest {
     void setUp() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new AdminModerationService(
+                org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.CommunityGroupsRepository.class),
                 configProperties,
                 reportsRepository,
                 feedbackRepository,
@@ -85,6 +86,16 @@ class AdminModerationServiceTest {
     @AfterEach
     void tearDown() {
         MongoSessionModeContext.clear();
+    }
+
+    @Test
+    void baseStatisticsExcludeIndependentWorkspaceActivityEvenWhenTaggedByAJob() {
+        var member = new Users(); member.setUserId("private-member"); member.setWorkspaceGroupId("private-workspace");
+        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(member));
+        var tags = java.util.Map.of("baseGroupId", "myscoutee-work");
+        var activity = new AdminTelemetryEvent("event.synced", "events", "event", member.getUserId(), 1L, "2026-10-05T00:00:00Z", tags);
+        var job = new AdminTelemetryEvent("jobs.run.completed", "jobs", "job", "worker", 1L, "2026-10-05T00:00:00Z", tags);
+        assertThat(service.baseProfileEvents(List.of(activity, job)).get("myscoutee-work")).containsExactly(job);
     }
 
     @Test

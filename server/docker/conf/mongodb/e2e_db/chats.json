@@ -76277,5 +76277,269 @@
     "unread": 27,
     "_id": "922691a9d0f47e5065ab5909",
     "ownerId": "b020670ad3b6597a393418b4:769b0fde63688179c80faea6:769b0fde63688179c80faea6:group:4"
+  },
+  {
+    "_id": "seed:group:myscoutee-community:1b1c70be2349b3359a8f6f94:c-case-community-case-riverside-leak",
+    "id": "c-case-community-case-riverside-leak",
+    "ownerUserId": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+    "ownerId": "community-case-riverside-leak",
+    "caseOfferId": null,
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Water leak in the entrance hall",
+    "memberIds": [
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:b29df68956f3fe15e04558de"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:af0436815ab38f4864dd1e24:c-case-community-case-riverside-leak",
+    "id": "c-case-community-case-riverside-leak",
+    "ownerUserId": "group:myscoutee-community:af0436815ab38f4864dd1e24",
+    "ownerId": "community-case-riverside-leak",
+    "caseOfferId": null,
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Water leak in the entrance hall",
+    "memberIds": [
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:b29df68956f3fe15e04558de"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:b29df68956f3fe15e04558de:c-case-community-case-riverside-leak",
+    "id": "c-case-community-case-riverside-leak",
+    "ownerUserId": "group:myscoutee-community:b29df68956f3fe15e04558de",
+    "ownerId": "community-case-riverside-leak",
+    "caseOfferId": null,
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Water leak in the entrance hall",
+    "memberIds": [
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:b29df68956f3fe15e04558de"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:1b1c70be2349b3359a8f6f94:c-case-offer-community-case-riverside-leak-leak-safety-quote",
+    "id": "c-case-offer-community-case-riverside-leak-leak-safety-quote",
+    "ownerUserId": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+    "ownerId": "community-case-riverside-leak",
+    "caseOfferId": "leak-safety-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Water leak in the entrance hall · 80 EUR",
+    "memberIds": [
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:b29df68956f3fe15e04558de"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:af0436815ab38f4864dd1e24:c-case-offer-community-case-riverside-leak-leak-safety-quote",
+    "id": "c-case-offer-community-case-riverside-leak-leak-safety-quote",
+    "ownerUserId": "group:myscoutee-community:af0436815ab38f4864dd1e24",
+    "ownerId": "community-case-riverside-leak",
+    "caseOfferId": "leak-safety-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Water leak in the entrance hall · 80 EUR",
+    "memberIds": [
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:b29df68956f3fe15e04558de"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:b29df68956f3fe15e04558de:c-case-offer-community-case-riverside-leak-leak-safety-quote",
+    "id": "c-case-offer-community-case-riverside-leak-leak-safety-quote",
+    "ownerUserId": "group:myscoutee-community:b29df68956f3fe15e04558de",
+    "ownerId": "community-case-riverside-leak",
+    "caseOfferId": "leak-safety-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Water leak in the entrance hall · 80 EUR",
+    "memberIds": [
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:b29df68956f3fe15e04558de"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:af0436815ab38f4864dd1e24:c-case-community-case-park-meters",
+    "id": "c-case-community-case-park-meters",
+    "ownerUserId": "group:myscoutee-community:af0436815ab38f4864dd1e24",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": null,
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:1b1c70be2349b3359a8f6f94:c-case-community-case-park-meters",
+    "id": "c-case-community-case-park-meters",
+    "ownerUserId": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": null,
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:1d7d3545ba5e0f1d63918589:c-case-community-case-park-meters",
+    "id": "c-case-community-case-park-meters",
+    "ownerUserId": "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": null,
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:af0436815ab38f4864dd1e24:c-case-offer-community-case-park-meters-meters-anna-quote",
+    "id": "c-case-offer-community-case-park-meters-meters-anna-quote",
+    "ownerUserId": "group:myscoutee-community:af0436815ab38f4864dd1e24",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": "meters-anna-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement · 360 EUR",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+      "group:myscoutee-community:bf057de7c586eede7e84bdc7"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:1b1c70be2349b3359a8f6f94:c-case-offer-community-case-park-meters-meters-anna-quote",
+    "id": "c-case-offer-community-case-park-meters-meters-anna-quote",
+    "ownerUserId": "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": "meters-anna-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement · 360 EUR",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+      "group:myscoutee-community:bf057de7c586eede7e84bdc7"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:1d7d3545ba5e0f1d63918589:c-case-offer-community-case-park-meters-meters-anna-quote",
+    "id": "c-case-offer-community-case-park-meters-meters-anna-quote",
+    "ownerUserId": "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": "meters-anna-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement · 360 EUR",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+      "group:myscoutee-community:bf057de7c586eede7e84bdc7"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
+  },
+  {
+    "_id": "seed:group:myscoutee-community:bf057de7c586eede7e84bdc7:c-case-offer-community-case-park-meters-meters-anna-quote",
+    "id": "c-case-offer-community-case-park-meters-meters-anna-quote",
+    "ownerUserId": "group:myscoutee-community:bf057de7c586eede7e84bdc7",
+    "ownerId": "community-case-park-meters",
+    "caseOfferId": "meters-anna-quote",
+    "channelType": "case",
+    "avatar": "C",
+    "title": "Joint meter replacement · 360 EUR",
+    "memberIds": [
+      "group:myscoutee-community:af0436815ab38f4864dd1e24",
+      "group:myscoutee-community:1b1c70be2349b3359a8f6f94",
+      "group:myscoutee-community:1d7d3545ba5e0f1d63918589",
+      "group:myscoutee-community:bf057de7c586eede7e84bdc7"
+    ],
+    "unread": 0,
+    "lastMessage": "",
+    "lastSenderId": "",
+    "dateIso": "2026-10-05T00:00:00.000Z",
+    "revision": 1
   }
 ]

@@ -61,6 +61,18 @@ class ActivitiesInviteCandidatesServiceTest {
     }
 
     @Test
+    void paymentPickerUsesTheCurrentWorkspaceRosterWithoutMetOrContactGates() {
+        Users active=user("work-alex","Alex");active.setWorkspaceGroupId("myscoutee-work");active.setAccountUserId("account-alex");
+        Users other=user("work-maya","Maya");other.setWorkspaceGroupId("myscoutee-work");
+        when(homeUserProfileService.resolveCurrentUser("work-alex")).thenReturn(active);
+        when(usersRepository.findPaymentMembers(eq("myscoutee-work"),eq("work-alex"),any(Pageable.class))).thenReturn(new PageImpl<>(List.of(other)));
+        var page=service.queryCandidates(new ActivityInviteCandidatesRequestDto("work-alex","work-alex","asset",null,null,"recent",0,16,List.of(),List.of(),"payment"));
+        assertThat(page.items()).extracting(item->item.userId()).containsExactly("work-maya");
+        org.mockito.Mockito.verifyNoInteractions(userRatesRepository,navigatorContactsProfilesRepository,communityGroups,activitiesMembersService);
+        assertThat(service.queryCandidates(new ActivityInviteCandidatesRequestDto("work-alex","account-alex","asset",null,null,"recent",0,16,List.of(),List.of(),"payment")).items()).isEmpty();
+    }
+
+    @Test
     void communityCandidatesUseAccountAndExcludeSelf() {
         Users account = user("account", "Account");
         Users other = user("other", "Other");

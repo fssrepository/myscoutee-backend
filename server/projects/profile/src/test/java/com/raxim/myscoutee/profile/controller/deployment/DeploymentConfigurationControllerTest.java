@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,7 +19,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient;
 import com.raxim.myscoutee.profile.service.PaymentSimulatorRegistrationClient.GatewayConfiguration;
@@ -45,7 +45,7 @@ class DeploymentConfigurationControllerTest {
                         2,
                         "Welcome home",
                         null,
-                        DeploymentThemePreset.FOREST,
+
                         7L,
                         "stripe",
                         false,
@@ -74,7 +74,7 @@ class DeploymentConfigurationControllerTest {
                         2,
                         "Welcome home",
                         "/media/public?key=images%2Fbranding%2Fmedium",
-                        DeploymentThemePreset.FOREST,
+
                         7L,
                         "stripe",
                         true,
@@ -101,7 +101,7 @@ class DeploymentConfigurationControllerTest {
                 .andExpect(jsonPath("$.homeLabel").value("Welcome home"))
                 .andExpect(jsonPath("$.logoUrl")
                         .value("/media/public?key=images%2Fbranding%2Fmedium"))
-                .andExpect(jsonPath("$.themePreset").value("FOREST"))
+                .andExpect(jsonPath("$.themePreset").doesNotExist())
                 .andExpect(jsonPath("$.revision").value(7))
                 .andExpect(jsonPath("$.paymentProviderId").value("stripe"))
                 .andExpect(jsonPath("$.firebaseMessagingConfigured").value(true))
@@ -128,6 +128,23 @@ class DeploymentConfigurationControllerTest {
                 .andExpect(jsonPath("$.credential").doesNotExist());
 
         verify(service).publicConfiguration();
+    }
+
+    @Test
+    void disabledFirebaseReturnsUncachedNoContent() throws Exception {
+        OperatorConfigurationService service =
+                mock(OperatorConfigurationService.class);
+        when(service.publicFirebaseConfiguration()).thenReturn(null);
+        var mockMvc = MockMvcBuilders.standaloneSetup(
+                new DeploymentConfigurationController(
+                        service, mock(PaymentSimulatorRegistrationClient.class)))
+                .build();
+
+        mockMvc.perform(get("/deployment/configuration/firebase-config"))
+                .andExpect(status().isNoContent())
+                .andExpect(header().string("Cache-Control", "no-store"))
+                .andExpect(header().string("Pragma", "no-cache"))
+                .andExpect(content().string(""));
     }
 
     @Test

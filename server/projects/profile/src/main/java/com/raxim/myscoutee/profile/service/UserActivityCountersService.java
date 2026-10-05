@@ -222,7 +222,6 @@ public class UserActivityCountersService {
     }
 
     public void refreshSupportCaseCountersForAdmins() {
-        SupportCaseCounters counters = resolveSupportCaseCounters();
         Map<String, Users> adminsById = new LinkedHashMap<>();
         for (Users admin : usersRepository.findByHostTier("Admin")) {
             String userId = normalizeId(admin == null ? null : admin.getUserId());
@@ -236,8 +235,11 @@ public class UserActivityCountersService {
                 adminsById.put(userId, admin);
             }
         }
-        for (String userId : adminsById.keySet()) {
-            updateSupportCaseCounters(userId, counters);
+        Map<String, SupportCaseCounters> byBase = new LinkedHashMap<>();
+        for (Users admin : adminsById.values()) {
+            String base = admin.getWorkspaceGroupId();
+            SupportCaseCounters counters = byBase.computeIfAbsent(base, this::resolveSupportCaseCounters);
+            updateSupportCaseCounters(admin.getUserId(), counters);
         }
     }
 
@@ -373,12 +375,13 @@ public class UserActivityCountersService {
         return updatedUsers;
     }
 
-    private SupportCaseCounters resolveSupportCaseCounters() {
+    private SupportCaseCounters resolveSupportCaseCounters(String baseGroupId) {
         List<Document> rows = mongoTemplate.aggregate(
                 Aggregation.newAggregation(
                         context -> new Document("$match", new Document()
                                 .append("channelType", new Document("$in", List.of("appSupport", "supportCase")))
                                 .append("supportCase.status", new Document("$in", SUPPORT_CASE_STATUSES))
+                                .append("supportBaseGroupId", baseGroupId)
                                 .append("id", new Document("$type", "string").append("$ne", ""))),
                         context -> new Document("$group", new Document("_id", "$id")
                                 .append("status", new Document("$first", "$supportCase.status"))),
@@ -639,7 +642,8 @@ public class UserActivityCountersService {
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()));
+                count(safe.notifications()),
+                count(safe.serviceFeedbackPending()));
     }
 
     private void updateEventCounters(String userId, Users.UserActivitiesRecord next) {
@@ -692,7 +696,8 @@ public class UserActivityCountersService {
                 safe.eventFeedback(),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()));
+                count(safe.notifications()),
+                count(safe.serviceFeedbackPending()));
     }
 
     private void updateAssetCounters(String userId, Users.UserActivitiesRecord next) {
@@ -728,7 +733,7 @@ public class UserActivityCountersService {
                 count(safe.supplies()),
                 count(safe.tickets()),
                 count(safe.contacts()),
-                Math.max(0, counters.pending() + counters.ownEvents()),
+                Math.max(0, counters.pending() + counters.ownEvents() + count(safe.serviceFeedbackPending())),
                 safe.chat(),
                 safe.event(),
                 safe.asset(),
@@ -739,7 +744,8 @@ public class UserActivityCountersService {
                         counters.removed()),
                 count(safe.adminJobs()),
                 count(safe.adminMetrics()),
-                count(safe.notifications()));
+                count(safe.notifications()),
+                count(safe.serviceFeedbackPending()));
     }
 
     private void updateFeedbackCounters(String userId, Users.UserActivitiesRecord next) {
@@ -757,6 +763,20 @@ public class UserActivityCountersService {
                 .set("activities.eventFeedback.feedbacked", count(feedback.feedbacked()))
                 .set("activities.eventFeedback.removed", count(feedback.removed()));
         updateUserActivityFields(normalizedUserId, update);
+        refreshFeedbackTotal(normalizedUserId);
+    }
+
+    public void updateServiceFeedbackPending(String userId, int pending) {
+        updateUserActivityFields(userId, new Update().set("activities.serviceFeedbackPending", Math.max(0,pending)));
+        refreshFeedbackTotal(userId);
+    }
+
+    private void refreshFeedbackTotal(String userId) {
+        // Derive the total atomically from the latest independent bucket projections.
+        var fields=java.util.List.of("$activities.eventFeedback.pending", "$activities.eventFeedback.ownEvents", "$activities.serviceFeedbackPending");
+        var terms=fields.stream().map(f->new org.bson.Document("$ifNull",java.util.List.of(f,0))).toList();
+        mongoTemplate.getCollection("users").updateOne(new org.bson.Document("userId",userId),
+            java.util.List.of(new org.bson.Document("$set",new org.bson.Document("activities.feedback",new org.bson.Document("$add",terms)))));
     }
 
     private void updateSupportCaseCounters(String userId, SupportCaseCounters counters) {

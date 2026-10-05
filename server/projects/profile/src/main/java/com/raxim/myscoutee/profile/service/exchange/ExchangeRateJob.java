@@ -24,12 +24,12 @@ public class ExchangeRateJob {
     }
     @Scheduled(fixedDelay = 60_000L)
     public void scheduled() {
-        sessions.runAcrossConfiguredDatabases(() -> {
+        sessions.runAcrossConfiguredDatabases(() -> rules.forEachGroup(KEY, () -> {
             Instant now = Instant.now();
             if (rules.shouldRunScheduledRule(KEY, now) && rules.beginScheduledRun(KEY, "admin.jobs.exchange.refreshing", "exchange-rate-job", now) != null)
                 run("exchange-rate-job", now);
             else payments.fillMissing(false);
-        });
+        }));
     }
     public void run(String actor, Instant startedAt) {
         try {

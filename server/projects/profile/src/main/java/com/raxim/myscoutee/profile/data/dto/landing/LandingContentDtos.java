@@ -16,8 +16,17 @@ public final class LandingContentDtos {
             List<IdeaPostDto> ideas,
             Integer ideasTotal,
             UserLocationEligibilityResponseDto loginAvailability,
-            List<SupportedCountryDto> supportedCountries) {
+            List<SupportedCountryDto> supportedCountries,
+            String groupId,
+            List<LandingSlideDto> slides) {
+        public LandingContentDto(HelpCenterStateDto privacy, HelpCenterStateDto terms, List<IdeaPostDto> ideas,
+                Integer ideasTotal, UserLocationEligibilityResponseDto loginAvailability, List<SupportedCountryDto> supportedCountries) {
+            this(privacy, terms, ideas, ideasTotal, loginAvailability, supportedCountries, null, List.of());
+        }
     }
+
+    public record LandingSlideDto(String id, String index, String titleKey, String title, String messageKey,
+            String message, String imageUrl, String tone, String sliceX, String sliceY) { }
 
     public record SupportedCountryDto(String countryCode, String countryName) {
     }

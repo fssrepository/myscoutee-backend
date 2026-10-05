@@ -52,6 +52,8 @@ class EventCheckoutBasketServiceTest {
                 notificationRuleRegistryService,
                 mock(org.springframework.beans.factory.ObjectProvider.class),
                 checkoutPricing);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
+            new com.raxim.myscoutee.profile.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                 any(String.class),
                 any(String.class),
@@ -210,7 +212,8 @@ class EventCheckoutBasketServiceTest {
     }
 
     @Test
-    void missingExpiryUsesTheTenMinuteBasketContract() {
+    void missingExpiryUsesTheCheckoutPricingDeadline() {
+        when(checkoutPricing.checkoutDeadline(any())).thenAnswer(invocation -> Instant.now().plusSeconds(600).toString());
         Instant beforeSave = Instant.now();
 
         service.saveBasket(request(itemDto()));

@@ -10,6 +10,10 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.UserRate;
 
 public interface UserRatesRepository extends MongoRepository<UserRate, String> {
+    @Query("{'campaignId': ?1, '$or': [{'ownerUserId': ?0}, {'relatedUserId': ?0}, {'secondaryRelatedUserId': ?0}]}")
+    List<UserRate> findRelevantInCampaign(String userId, String campaignId);
+    List<UserRate> findByCampaignIdIn(Collection<String> campaignIds);
+
     Optional<UserRate> findBySyncKey(String syncKey);
 
     @Query("{'$or': [ {'ownerUserId': {'$in': ?0}}, {'relatedUserId': {'$in': ?0}}, {'secondaryRelatedUserId': {'$in': ?0}} ]}")

@@ -1,6 +1,6 @@
 # Current manual QA session
 
-Updated: 2026-09-30
+Updated: 2026-10-06
 
 This is the context-saving entry point for continuing the manual QA campaign.
 It stores one minimal live resume pointer plus reusable pair-QA execution lessons. It
@@ -83,6 +83,35 @@ resume pointer and reusable working method.
 
 ## Active resume point
 
+```yaml
+checkpoint: MSC115-GUIDES
+checklist: ../checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md
+substage: MSC-115 development and local commit consolidation complete for the retained scope. Follow-us links confirmed by user after clearing a cached redirect; disabled Firebase now returns 204. Stop before API/MCP expansion. Broad QA is deferred.
+execution_authority: User explicitly deferred tests and guide QA, and requested a stop before MCP expansion. The earlier scoped login/logout diagnosis is complete.
+fixture_phase: No new multi-actor MSC115 fixture staged; preserve current demo rows and retained browser/session state.
+last_completed: Guide/content sources and targeted live updates, privacy HTTP parity, compiled AVG/history/configuration tests; see checklist evidence and the auth diagnostic record.
+next_action: Await the user's instruction before the separately numbered MCP task. Broad QA, including expanded guides and the added Firebase/Campaign question/public local configuration regression cases, remains deferred. See the checklist for the user's follow-us confirmation and live 204 evidence.
+resume_gate: Do not replay/reset September fixtures, mutate the current actors, or relaunch windows merely to restore an old pointer. Existing frontend-sync and myscoutee remain sole build owners.
+queued_work: After this implementation/review, separate API/MCP Blocked-Write-Full permission/read expansion and publication/account/hosting research with its own QA.
+```
+
+Latest review steering (2026-10-06): the user deferred all QA, including the expanded
+guide test, until after development and explicitly requested a stop before MCP.
+Article titles reserve two lines; the mobile mode-label trial was reverted. Follow-us
+links use the existing configuration seeds/importer; no new reader fallback or
+empty-list auto-backfill remains. See the checklist's superseding evidence note.
+The user subsequently re-authorized the GitHub Pages social-link binding through the existing local service. It now reads a small canonical public configuration catalog without creating demo/operator state, and preserves saved overrides. The rejected application initializer remains removed. The public static-content call moved from EntryPage into the local landing service; exact builder imports removed unrelated demo dependencies. Canonical Mongo follow-us links and Work hero company-team-building copy are retained. The user authorized
+squashing the backup commits into MSC-115 to leave a clean local baseline.
+The local layer remains a backend emulation: demo seed writes and operator persistence are retained. Only configuration-GET-time full-operator reseeding was removed. Fresh local public data comes from the packaged seed; saved operator data takes precedence. Existing HTTP/local route selection and offline caches are unchanged; offline browser verification is still deferred (see the checklist's emulation review).
+Final source review restored the existing Campaign question action inside read-only Details, including campaign history, with viewer-rating evidence from both adapters. Header and sidebar Ratings retain the aggregate scope. Watcher compilation passed; browser execution remains deferred.
+The queued MCP research includes the shared MCP Events discussion and
+its verified official webhook/subscription contract. No new API/MCP permission
+code has been written.
+
+Current ledger: **141 cases; 120 passed, 21 NOT RUN**, including the reopened guide row. Historical evidence below remains valid only for its recorded scope.
+
+## Archived resume point — 2026-09-30
+
 Earlier Event Mode, Integration API, Activity Rating and EVENT-FOLLOWING-001 remain closed.
 
 ```yaml
@@ -99,7 +128,7 @@ resume_gate: Read git and frontend-submodule status, retaining user commits. Do 
 
 ```
 
-The guide QA and release 1.3.2 are closed in the recorded scope, including the accepted launcher follow-up. The CSV/XLSX row explicitly records PASS / CLOSED; its earlier in-progress notes are superseded by the accepted results. No release continuation remains pending. The subsequent EVENT-PAST-BADGES-001 server regression is also closed: real worker/HTTP checks and 20/20 Java tests passed, with exact fixture reset. CSV/XLSX totals are121/121 PASS,0 pending. Unproven local-persistence/native-WebView boundaries remain separate.
+The guide QA and release 1.3.2 are closed in the recorded scope, including the accepted launcher follow-up. The CSV/XLSX row explicitly records PASS / CLOSED; its earlier in-progress notes are superseded by the accepted results. No release continuation remains pending. The subsequent EVENT-PAST-BADGES-001 server regression is also closed: real worker/HTTP checks and 20/20 Java tests passed, with exact fixture reset. At that checkpoint the CSV/XLSX totals were 121/121 PASS, 0 pending. Unproven local-persistence/native-WebView boundaries remain separate.
 
 
 ## Archived pair-QA resume point — 2026-09-17

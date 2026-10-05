@@ -95,3 +95,11 @@ record test results, evidence and the scope of each case.
 
 The [MyScoutee roadmap](https://github.com/fssrepository/myscoutee-roadmap/tree/master/guides/project-history/myscoutee)
 contains the task history, workstream effort and measurement method.
+
+## Manual QA status
+
+As of 2026-10-06, the [canonical QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+contains 141 cases: 120 passed and 21 NOT RUN. The existing explanation-guide
+case is reopened for the expanded Work/Community scope; its earlier evidence
+remains historical. Continue from the [current handoff](guides/qa/handoffs/CURRENT_QA_SESSION.md)
+and [MSC-115 checklist and conversation review](guides/qa/checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md).

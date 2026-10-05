@@ -47,6 +47,7 @@ public class ActivityMember {
             String atIso, PricingConfigDto pricing) { }
     private String managerGrantedByUserId;
     private Boolean organizerOnly = false;
+    private Boolean votingEligible = false;
     private String metAtIso;
     private String actionAtIso;
     private String metWhere;
@@ -195,6 +196,10 @@ public class ActivityMember {
     public void setManagerGrantedByUserId(String managerGrantedByUserId) {
         this.managerGrantedByUserId = managerGrantedByUserId;
     }
+
+    public Boolean getVotingEligible() { return Boolean.TRUE.equals(votingEligible); }
+
+    public void setVotingEligible(Boolean votingEligible) { this.votingEligible = Boolean.TRUE.equals(votingEligible); }
 
     public Boolean getOrganizerOnly() {
         return organizerOnly;

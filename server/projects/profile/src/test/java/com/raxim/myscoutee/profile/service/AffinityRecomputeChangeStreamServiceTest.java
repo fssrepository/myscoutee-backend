@@ -109,6 +109,27 @@ class AffinityRecomputeChangeStreamServiceTest {
         }
     }
 
+    @Test
+    void workWakeupKeepsGroupAndMetricsAcrossExecutorBoundary() throws Exception {
+        var metrics = new AffinityRecomputeMetricsService();
+        var worker = mock(AffinityRecomputeWorkerService.class);
+        var wakeup = new CountDownLatch(1);
+        var scope = new java.util.concurrent.atomic.AtomicReference<String>();
+        doAnswer(invocation -> { scope.set(JobGroupContext.groupId()); wakeup.countDown(); return 0; })
+                .when(worker).wakeDueTasks("change-stream");
+        var service = service(worker, metrics, Duration.ZERO);
+        try {
+            var task = task(AffinityRecomputeTaskService.STATUS_PENDING, Instant.now());
+            task.setBaseGroupId("myscoutee-work");
+            service.handleTaskChange(task);
+            assertThat(wakeup.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(scope.get()).isEqualTo("myscoutee-work");
+            assertThat(metrics.snapshot().changeStreamImmediateWakeups()).isZero();
+            assertThat(JobGroupContext.call("myscoutee-work", () -> metrics.snapshot().changeStreamImmediateWakeups())).isEqualTo(1);
+            assertThat(JobGroupContext.groupId()).isNull();
+        } finally { service.stop(); }
+    }
+
     private AffinityRecomputeChangeStreamService service(
             AffinityRecomputeWorkerService worker,
             AffinityRecomputeMetricsService metrics,

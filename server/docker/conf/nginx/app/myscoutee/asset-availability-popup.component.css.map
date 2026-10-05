@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/asset/components/asset-availability-popup/asset-availability-popup.component.scss"],
-  "sourcesContent": [":host {\n  display: contents;\n}\n\n.asset-availability-popup .ui-popup__toolbar {\n  justify-content: flex-end;\n}\n\n.asset-availability-popup--day-list .ui-popup__panel {\n  max-width: min(720px, calc(100vw - 1.5rem));\n}\n"],
-  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA,yBAAA,CAAA;AACE,mBAAA;;AAGF,CAAA,mCAAA,CAAA;AACE,aAAA,IAAA,KAAA,EAAA,MAAA,EAAA;;",
-  "names": []
-}

@@ -219,5 +219,93 @@
     "moderationStatus": "accepted",
     "moderationVersion": 0,
     "pendingMembers": 1
+  },
+  {
+    "_id": "myscoutee-work",
+    "groupType": "work",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "name": "MyScoutee Work",
+    "description": "Meet people through work opportunities, business ideas and professional events.",
+    "imageUrl": null,
+    "category": "work",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0,
+    "pendingMembers": 0
+  },
+  {
+    "_id": "myscoutee-community",
+    "groupType": "community",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "name": "MyScoutee Community",
+    "description": "Find local help, coordinate shared work and keep your community informed.",
+    "imageUrl": null,
+    "category": "neighbourhood",
+    "visibility": "public",
+    "hideMembers": false,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0,
+    "pendingMembers": 0
+  },
+  {
+    "_id": "community-riverside",
+    "groupType": "community",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "name": "Riverside homes",
+    "description": "Private resident workspace for decisions, maintenance and shared appointments.",
+    "imageUrl": null,
+    "category": "neighbourhood",
+    "visibility": "invitation",
+    "hideMembers": true,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0,
+    "pendingMembers": 0
+  },
+  {
+    "_id": "community-park-court",
+    "groupType": "community",
+    "ownerUserId": "af0436815ab38f4864dd1e24",
+    "name": "Park Court",
+    "description": "A second community managed by Alex, with separate announcements and cases.",
+    "imageUrl": null,
+    "category": "neighbourhood",
+    "visibility": "invitation",
+    "hideMembers": true,
+    "policy": {
+      "workspace": true,
+      "enabled": false,
+      "requiredFields": []
+    },
+    "createdAtIso": "2026-09-20T12:00:00.000Z",
+    "updatedAtIso": "2026-09-20T12:00:00.000Z",
+    "version": 0,
+    "moderationStatus": "accepted",
+    "moderationVersion": 0,
+    "pendingMembers": 0
   }
 ]

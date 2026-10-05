@@ -91,6 +91,27 @@ ROW_FILL_COLORS.update({
 # owner. Deployment qualification is not Pair QA. Operator remains a normal
 # manual-QA domain and uses the same domain-priority table as every other row.
 EXACT_DOMAIN_OVERRIDES = {
+    "MSC115-LANDING": "Identity & access",
+    "MSC115-INVITE": "Group",
+    "MSC115-ADMIN": "Administration",
+    "MSC115-JOBS": "Administration",
+    "MSC115-WORK-CAMPAIGN": "Group",
+    "MSC115-WORK-RATING": "Group",
+    "MSC115-WORK-CHAT": "Chat",
+    "MSC115-WORK-EVENT": "Event",
+    "MSC115-CAMPAIGN-API": "API test",
+    "MSC115-SERVICE": "Group",
+    "MSC115-CASE": "Group",
+    "MSC115-CASE-PROVIDER": "Group",
+    "MSC115-CASE-CHAT": "Chat",
+    "MSC115-SCHEDULE": "Group",
+    "MSC115-APPOINTMENT": "Group",
+    "MSC115-ANNOUNCEMENT": "Content",
+    "MSC115-VOTING": "Group",
+    "MSC115-PAYMENT": "Event",
+    "MSC115-MIXING": "Tournament",
+    "MSC115-GUIDES": "General UI",
+
     "DEPLOY-EXTERNAL-CONFIG-001": "Identity & access",
     "AFFILIATE-INVITATION-001": "API test",
     "AFFILIATE-REVENUE-001": "API test",

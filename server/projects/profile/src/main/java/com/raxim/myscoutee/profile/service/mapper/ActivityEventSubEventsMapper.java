@@ -966,7 +966,7 @@ public class ActivityEventSubEventsMapper {
         return maxEndOffset;
     }
 
-    private List<LocalDateTime> generateSlotOccurrenceStarts(
+    public List<LocalDateTime> generateSlotOccurrenceStarts(
             String frequency,
             LocalDateTime templateStart,
             LocalDateTime horizonStart,
@@ -1074,7 +1074,7 @@ public class ActivityEventSubEventsMapper {
         return queryDate(value);
     }
 
-    private LocalDate slotOccurrenceAnchorDateKey(
+    public LocalDate slotOccurrenceAnchorDateKey(
             LocalDateTime occurrenceStart,
             LocalDateTime templateStart,
             LocalDateTime parentStart) {

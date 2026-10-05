@@ -11508,3 +11508,12 @@ verified. Earlier planning NOT RUN entries above are historical. The detailed
 [ordered JSON](../evidence/INTEGRATION-API-GROUP-001-ordered-20260928.json) retain
 individual boundaries. Actual ChatGPT/Claude/Codex acceptance remains the separate
 [post-deployment smoke](../../qualification/MCP-CLIENT-CONNECT-SMOKE.md).
+
+
+## 2026-10-06 — Work/Community expansion and guide reopening
+
+The authoritative expanded acceptance sequence is [MSC-115](../checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md), including its conversation traceability review. `EXPLANATION-GUIDE-001` is reopened as NOT RUN for 28 revised contexts (full catalog: 67 contexts / 1151 conditional fields); historical September guide/release evidence is preserved. The existing row owns the guide run, and MSC115-GUIDES references it.
+
+Focused compiled checks cover materialized AVG and criterion domains, real Campaign history popup/eye/paging, deployment configuration retry, and canonical i18n/content parity. Public HTTP privacy returns the same active website revision for Dating, Work and Community. Content seed migration changed only relevant records and retained live QA data. Full paired Local/HTTP business lifecycles and visual guide/landing checks are not passed by these checks. No separate compiler/test server was started.
+
+Current execution authorization: scoped login/logout diagnosis in the already-open CDP browser, granted on 2026-10-06. Other manual campaign actions remain user-controlled until explicitly delegated. The next separate package is API/MCP access levels/read operations and platform publication research; it has not been completed by the Campaign create integration already present.

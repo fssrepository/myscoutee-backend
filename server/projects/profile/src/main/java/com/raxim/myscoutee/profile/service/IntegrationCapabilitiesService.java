@@ -42,16 +42,18 @@ public class IntegrationCapabilitiesService {
         var profile = principal.getUser();
         String profileId = profile.getUserId();
         String groupId = StringUtils.hasText(profile.getWorkspaceGroupId()) ? profile.getWorkspaceGroupId() : null;
-        String groupName = groupId == null ? null : groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN)).name();
+        var group = groupId == null ? null : groupRepository.findById(groupId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        String groupName = group == null ? null : group.name();
         var inviteGroups = groups.administeredGroups(groups.actor(profileId)).stream()
-                .map(group -> new IntegrationGroupScopeDto(group.id(), group.name()))
+                .map(inviteGroup -> new IntegrationGroupScopeDto(inviteGroup.id(), inviteGroup.name()))
                 .sorted(Comparator.comparing(IntegrationGroupScopeDto::id)).toList();
         var operations = new ArrayList<>(List.of("event", "encounters", "inviteParticipants"));
         // Discovery describes operation-level access. Per-resource restrictions
         // and lifecycle preconditions are still checked by the normal endpoints.
         if (access.canCurrentActorCreateEvent(profileId, "*")) operations.add("createEvents");
         if (groupId == null && access.canCurrentActorCreateAsset(profileId, "*")) operations.add("createAssets");
+        if (group != null && "work".equals(group.effectiveType())) operations.add("createCampaigns");
         if (!inviteGroups.isEmpty()) operations.add("inviteGroupParticipants");
         return new IntegrationConnectDto(true, IntegrationTokenService.MAX_BATCH_SIZE,
                 profileId, profile.getName(), groupId, groupName, List.copyOf(operations), inviteGroups);

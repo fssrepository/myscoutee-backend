@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.profile.service.notifications;
 
 import java.util.List;
+import com.raxim.myscoutee.profile.service.JobGroupContext;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +22,8 @@ public class AdminNotificationSocketSessionRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminNotificationSocketSessionRegistry.class);
 
     private final ObjectMapper objectMapper;
+    public static final String GROUP_ATTRIBUTE = "jobBaseGroupId";
+    public static final String DATABASE_ATTRIBUTE = "jobDatabaseMode";
     private final Set<WebSocketSession> sessions = ConcurrentHashMap.newKeySet();
 
     public AdminNotificationSocketSessionRegistry(ObjectMapper objectMapper) {
@@ -40,12 +44,12 @@ public class AdminNotificationSocketSessionRegistry {
         if (rule == null || sessions.isEmpty()) {
             return;
         }
-        broadcastRuleRuntime(
+        JobGroupContext.run(rule.getBaseGroupId(), () -> broadcastRuleRuntime(
                 rule.getRuleKey(),
                 rule.getRunState(),
                 rule.getRunHistory(),
                 rule.getUpdatedDate(),
-                rule.getUpdatedUser());
+                rule.getUpdatedUser()));
     }
 
     public void broadcastRuleRuntime(
@@ -81,6 +85,10 @@ public class AdminNotificationSocketSessionRegistry {
                 sessions.remove(session);
                 continue;
             }
+            String group = (String) session.getAttributes().get(GROUP_ATTRIBUTE);
+            String database = (String) session.getAttributes().get(DATABASE_ATTRIBUTE);
+            if (!java.util.Objects.equals(group, JobGroupContext.groupId())
+                    || !MongoSessionModeContext.currentMode().name().equals(database)) continue;
             try {
                 session.sendMessage(message);
             } catch (Exception exception) {

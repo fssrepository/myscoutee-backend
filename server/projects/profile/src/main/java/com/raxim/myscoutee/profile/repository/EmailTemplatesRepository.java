@@ -8,7 +8,14 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.profile.data.document.EmailTemplate;
 
 public interface EmailTemplatesRepository extends MongoRepository<EmailTemplate, String> {
-    Optional<EmailTemplate> findByTemplateKey(String templateKey);
+    List<EmailTemplate> findByBaseGroupId(String baseGroupId);
+    Optional<EmailTemplate> findByBaseGroupIdAndTemplateKey(String baseGroupId, String templateKey);
+    default Optional<EmailTemplate> findByTemplateKey(String templateKey) {
+        return findByBaseGroupIdAndTemplateKey(com.raxim.myscoutee.profile.service.JobGroupContext.groupId(), templateKey);
+    }
 
-    List<EmailTemplate> findByEnabledTrueOrderByTemplateKeyAsc();
+    List<EmailTemplate> findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(String baseGroupId);
+    default List<EmailTemplate> findByEnabledTrueOrderByTemplateKeyAsc() {
+        return findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(com.raxim.myscoutee.profile.service.JobGroupContext.groupId());
+    }
 }

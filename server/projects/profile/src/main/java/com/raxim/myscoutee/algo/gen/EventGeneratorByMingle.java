@@ -62,7 +62,7 @@ public class EventGeneratorByMingle implements EventGenerator<MingleGeneratorReq
                     roundNumber);
         }
         Map<String, Map<String, Integer>> repeats = repeatCounts(input.previousTables());
-        FGraph graph = input.graph() == null ? new FGraph() : input.graph();
+        FGraph graph = input.randomMixing() || input.graph() == null ? new FGraph() : input.graph();
         Set<String> genderCategories = new LinkedHashSet<>(genders.values());
 
         List<List<String>> tables = new ArrayList<>();
@@ -74,10 +74,13 @@ public class EventGeneratorByMingle implements EventGenerator<MingleGeneratorReq
         List<Map<String, Integer>> genderQuotas = balancedSelection == null
                 ? List.of()
                 : balancedSelection.genderQuotas();
+        var tieOrder=new ArrayList<>(members);
+        if(input.randomMixing())java.util.Collections.shuffle(tieOrder);
+        Map<String,Integer> ranks=new HashMap<>();for(int i=0;i<tieOrder.size();i++)ranks.put(tieOrder.get(i),i);
         members.stream()
                 .sorted(Comparator
                         .<String>comparingInt(member -> totalRepeats(member, repeats)).reversed()
-                        .thenComparing(Comparator.naturalOrder()))
+                        .thenComparing(input.randomMixing()?Comparator.comparingInt(ranks::get):Comparator.naturalOrder()))
                 .forEach(member -> selectTable(
                         member,
                         tables,

@@ -56,11 +56,17 @@ public class AdminMenuCounterService {
     }
 
     public void refreshAdminMenuCounters() {
-        AdminAlertCounters counters = currentCounters();
-        refreshMonitoringQueueSnapshot(counters.queues());
+        Map<String, AdminAlertCounters> scoped = new LinkedHashMap<>();
         for (Users admin : adminUsers()) {
+            if (JobGroupContext.isActive() && !java.util.Objects.equals(JobGroupContext.groupId(), admin.getWorkspaceGroupId())) continue;
             Users.UserActivitiesRecord before = admin.getActivities();
-            Users updated = applyCounters(admin, counters);
+            String groupId = admin.getWorkspaceGroupId();
+            String key = groupId == null ? "global" : groupId;
+            Users updated = applyCounters(admin, scoped.computeIfAbsent(key, ignored -> JobGroupContext.call(groupId, () -> {
+                var counters = currentCounters();
+                refreshMonitoringQueueSnapshot(counters.queues());
+                return counters;
+            })));
             if (!activitiesEqual(before, updated.getActivities())) {
                 usersRepository.save(updated);
             }
@@ -72,7 +78,7 @@ public class AdminMenuCounterService {
             return user;
         }
         Users.UserActivitiesRecord before = user.getActivities();
-        Users updated = applyCounters(user, currentCounters());
+        Users updated = applyCounters(user, JobGroupContext.call(user.getWorkspaceGroupId(), this::currentCounters));
         if (activitiesEqual(before, updated.getActivities())) {
             return user;
         }
@@ -126,7 +132,8 @@ public class AdminMenuCounterService {
                 existing == null ? null : existing.eventFeedback(),
                 counters.jobs(),
                 counters.metrics(),
-                count(existing == null ? null : existing.notifications()));
+                count(existing == null ? null : existing.notifications()),
+                count(existing == null ? null : existing.serviceFeedbackPending()));
         if (activitiesEqual(existing, next)) {
             return user;
         }
@@ -160,7 +167,7 @@ public class AdminMenuCounterService {
 
     private long failedJobs() {
         try {
-            return notificationRuleConfigsRepository.findAll().stream()
+            return notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId()).stream()
                     .filter(this::isFailedRule)
                     .count();
         } catch (Exception ignored) {
@@ -181,7 +188,7 @@ public class AdminMenuCounterService {
             return;
         }
         try {
-            AdminMonitoringSnapshot snapshot = monitoringRepository.ensureGlobalSnapshot();
+            AdminMonitoringSnapshot snapshot = monitoringRepository.ensureSnapshot(JobGroupContext.groupId());
             Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
             nodeCounters.put("queues.rules.failed", queues.failedRules());
             nodeCounters.put("queues.recompute.pending", queues.recomputePending());
@@ -200,7 +207,7 @@ public class AdminMenuCounterService {
 
     private long telemetryFailureEvents() {
         try {
-            return monitoringRepository.findGlobalSnapshot()
+            return monitoringRepository.findByMonitoringKey(JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId())
                     .map(AdminMonitoringSnapshot::getCounters)
                     .map(this::safeMap)
                     .map(counters -> counters.entrySet().stream()
@@ -215,7 +222,7 @@ public class AdminMenuCounterService {
 
     private long countOutbox(String status) {
         try {
-            return notificationOutboxRepository.countByStatus(status);
+            return notificationOutboxRepository.countByBaseGroupIdAndStatus(JobGroupContext.groupId(), status);
         } catch (Exception ignored) {
             return 0L;
         }
@@ -223,7 +230,7 @@ public class AdminMenuCounterService {
 
     private long countAffinityTasks(String status) {
         try {
-            return affinityRecomputeTasksRepository.countByStatus(status);
+            return affinityRecomputeTasksRepository.countByBaseGroupIdAndStatus(JobGroupContext.groupId(), status);
         } catch (Exception ignored) {
             return 0L;
         }

@@ -17,6 +17,16 @@ import org.springframework.web.socket.WebSocketHandler;
 class ChatHandshakeInterceptorTest {
 
     @Test
+    void adminJobSocketRetainsTheDatabaseSessionKind() {
+        var request = mock(ServerHttpRequest.class);
+        when(request.getURI()).thenReturn(URI.create("http://localhost/api/admin/notifications/ws?userId=work-admin&sessionKind=demo"));
+        Map<String, Object> attributes = new HashMap<>();
+        assertTrue(new ChatHandshakeInterceptor().beforeHandshake(request, mock(ServerHttpResponse.class), mock(WebSocketHandler.class), attributes));
+        assertEquals("demo", attributes.get(ChatHandshakeInterceptor.SESSION_KIND_ATTRIBUTE));
+        assertEquals("work-admin", attributes.get(ChatHandshakeInterceptor.USER_ID_ATTRIBUTE));
+    }
+
+    @Test
     void decodesEncodedChatIdBeforeStoringHandshakeAttributes() {
         ChatHandshakeInterceptor interceptor = new ChatHandshakeInterceptor();
         ServerHttpRequest request = mock(ServerHttpRequest.class);

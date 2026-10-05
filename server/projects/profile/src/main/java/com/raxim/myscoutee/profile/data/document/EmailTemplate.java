@@ -8,11 +8,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class EmailTemplate {
     @Id
     private String id;
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String value) { baseGroupId = value; }
 
     @Indexed(name = "email_template_sync_key", unique = true, sparse = true)
     private String syncKey;
 
-    @Indexed(name = "email_template_key", unique = true)
     private String templateKey;
 
     private String name;

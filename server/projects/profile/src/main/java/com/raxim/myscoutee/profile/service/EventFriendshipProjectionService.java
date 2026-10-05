@@ -26,6 +26,9 @@ import com.raxim.myscoutee.profile.repository.ActivityMembersRepository;
 /** Write-side projection owned by the existing expiry job; never called by card reads. */
 @Service
 public class EventFriendshipProjectionService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private static final String MINGLE_MODE = "Mingle";
     private static final String MINGLE_ROUND_COMPLETED = "COMPLETED";
     private static final String SYSTEM_USER = "event-friendship-projection";
@@ -51,6 +54,7 @@ public class EventFriendshipProjectionService {
                 Criteria.where("sourceId").exists(true).nin("", null),
                 Criteria.where("endAtIso").exists(true).nin("", null).lte(now.toString())));
         due.with(Sort.by("endAtIso", "sourceId")).limit(batchSize);
+        if (JobGroupContext.isActive()) due.addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId"));
         Map<String, ActivityEvent> events = new LinkedHashMap<>();
         for (ActivityEvent event : mongo.find(due, ActivityEvent.class)) {
             events.putIfAbsent(event.getSourceId(), event);
@@ -105,7 +109,9 @@ public class EventFriendshipProjectionService {
         Query due = Query.query(Criteria.where("status").is(MINGLE_ROUND_COMPLETED)
                 .and("meetingsProjected").ne(true).and("completedAtIso").lte(now.toString()));
         due.with(Sort.by("completedAtIso", "eventId", "roundNumber")).limit(batchSize);
-        List<ActivityMingleRound> rounds = mongo.find(due, ActivityMingleRound.class);
+        List<ActivityMingleRound> rounds = JobGroupContext.isActive()
+                ? jobGroupScope.findEventOwned(due, ActivityMingleRound.class, "eventId")
+                : mongo.find(due, ActivityMingleRound.class);
         if (rounds.isEmpty()) return 0;
         List<String> eventIds = rounds.stream().map(ActivityMingleRound::getEventId).distinct().toList();
         Map<String, ActivityEvent> events = new LinkedHashMap<>();

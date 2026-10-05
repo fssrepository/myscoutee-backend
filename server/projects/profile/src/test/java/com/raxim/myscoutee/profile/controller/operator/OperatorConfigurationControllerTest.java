@@ -59,8 +59,7 @@ class OperatorConfigurationControllerTest {
                                   ],
                                   "branding": {
                                     "productName": "Community",
-                                    "logoUrl": "/media/public?key=images%2Flogo",
-                                    "themePreset": "AURORA"
+                                    "logoUrl": "/media/public?key=images%2Flogo"
                                   },
                                   "payment": {
                                     "providerId": "stripe",

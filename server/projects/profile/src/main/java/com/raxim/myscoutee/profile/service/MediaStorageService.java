@@ -112,6 +112,16 @@ public class MediaStorageService {
         }
     }
 
+    public String storeDocument(String ownerId, String entityId, MultipartFile file) {
+        if (file == null || file.isEmpty() || file.getSize() > 10485760 || !List.of(
+                "application/pdf", "text/plain", "text/csv", "application/msword", "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.spreadsheet").contains(file.getContentType())) return null;
+        try { return storeMediaBytes("documents", ownerId, entityId, file.getOriginalFilename(), file.getContentType(), file.getBytes(), ""); }
+        catch (IOException ex) { return null; }
+    }
+
     public String importImage(String ownerId, String entityId, String imageUrl) {
         StoredImageSet imageSet = importImageSet(ownerId, entityId, imageUrl);
         return imageSet == null ? null : imageSet.imageUrl();
@@ -591,8 +601,7 @@ public class MediaStorageService {
     }
 
     private String sanitizeSegment(String value) {
-        String normalized = safeText(value).replaceAll("[^a-zA-Z0-9._-]+", "-");
-        return normalized.replaceAll("(^-+|-+$)", "");
+        return com.raxim.myscoutee.profile.service.media.MediaAccessPaths.storageSegment(value);
     }
 
     private String resolveExtension(String originalFilename, String contentType) {

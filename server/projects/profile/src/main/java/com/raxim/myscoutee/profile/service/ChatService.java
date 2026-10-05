@@ -50,6 +50,10 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.AssetCatalog;
 import com.raxim.myscoutee.profile.data.document.Chat;
+import com.raxim.myscoutee.profile.data.document.Campaign;
+import com.raxim.myscoutee.profile.data.document.ServiceCase;
+import com.raxim.myscoutee.profile.data.document.CommunityGroup;
+import com.raxim.myscoutee.profile.data.document.UserRate;
 import com.raxim.myscoutee.profile.data.document.ChatMessage;
 import com.raxim.myscoutee.profile.data.document.Asset;
 import com.raxim.myscoutee.profile.data.document.Users;
@@ -546,6 +550,9 @@ public class ChatService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service chat request is required.");
         }
         String serviceContext = safeText(request.serviceContext()).toLowerCase(Locale.US);
+        if ("campaign".equals(serviceContext)) return ensureCampaignChat(request, userId);
+        if ("case".equals(serviceContext)) return ensureCaseChat(request, userId);
+        if ("groupsupport".equals(serviceContext)) return ensureAnnouncementFeedbackChat(request, userId);
         if (!"event".equals(serviceContext) && !"asset".equals(serviceContext)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported service chat context.");
         }
@@ -637,6 +644,112 @@ public class ChatService {
         Chat viewerChat = findOwnerChat(chatDocuments, userId);
         Chat responseChat = viewerChat == null ? chatDocuments.get(0) : viewerChat;
         return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
+    }
+
+    private ChatDto ensureAnnouncementFeedbackChat(ChatServiceEnsureRequestDto request, String userId) {
+        var a = mongoTemplate.findById(normalizeId(request.announcementId()), com.raxim.myscoutee.profile.data.document.CommunityAnnouncement.class);
+        Users actor = findUser(userId);
+        if (a == null || actor == null || !"published".equals(a.status()) || !a.communityId().equals(actor.getWorkspaceGroupId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement unavailable.");
+        var group = mongoTemplate.findById(a.communityId(), CommunityGroup.class);
+        var roster = activityMembersRepository.findByOwnerTypeAndOwnerId("community", a.communityId());
+        String account = firstNonBlank(actor.getAccountUserId(), userId);
+        if (group == null || group.deleted() || group.awaitingOwner() || !roster.stream().anyMatch(m -> account.equals(m.getUserId()) && "accepted".equals(m.getStatus())))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Announcement unavailable.");
+        String adminId = "group:" + group.id() + ":" + group.ownerUserId();
+        if (adminId.equals(userId) || findUser(adminId) == null
+                || !roster.stream().anyMatch(m -> group.ownerUserId().equals(m.getUserId()) && "Admin".equals(m.getRole()) && "accepted".equals(m.getStatus())))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Group manager unavailable.");
+        String chatId = "c-moderation-group-" + userId;
+        Chat viewer = findOwnerChat(syncResourceChat(chatId, CHAT_CHANNEL_GROUP_SUPPORT, null, group.name(), List.of(userId, adminId)), userId);
+        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
+    }
+
+    private ChatDto ensureCampaignChat(ChatServiceEnsureRequestDto request, String userId) {
+        Campaign campaign = mongoTemplate.findById(normalizeId(request.campaignId()), Campaign.class);
+        Users actor = findUser(userId);
+        if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
+                || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campaign unavailable.");
+        if (!mongoTemplate.exists(Query.query(Criteria.where("campaignId").is(campaign.id())
+                .and("ownerUserId").is(userId).and("relatedUserId").is(campaign.ownerUserId()).and("scoreGiven").gt(0)), UserRate.class))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Rate the campaign before asking its organizer.");
+        String chatId = "c-campaign-" + campaign.id() + "-" + userId;
+        List<Chat> copies = syncResourceChat(chatId, "campaign", campaign.id(), campaign.title(),
+                List.of(userId, campaign.ownerUserId()));
+        Chat viewer = findOwnerChat(copies, userId);
+        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
+    }
+
+    private ChatDto ensureCaseChat(ChatServiceEnsureRequestDto request, String userId) {
+        ServiceCase serviceCase = mongoTemplate.findById(normalizeId(request.caseId()), ServiceCase.class);
+        if (!caseChatAccess(serviceCase, findUser(userId), request.caseOfferId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
+        syncCaseChat(serviceCase);
+        List<Chat> copies = chatsRepository.findByChatId(StringUtils.hasText(request.caseOfferId())
+                ? "c-case-offer-" + serviceCase.id() + "-" + request.caseOfferId() : "c-case-" + serviceCase.id());
+        Chat viewer = findOwnerChat(copies, userId);
+        if (viewer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
+        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
+    }
+
+    private boolean caseChatAccess(ServiceCase serviceCase, Users actor, String caseOfferId) {
+        return serviceCase != null && actor != null
+                && CommunityGroup.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
+                && CommunityGroup.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
+                && (StringUtils.hasText(caseOfferId) ? serviceCase.offerChatParticipantAccountIds(caseOfferId) : serviceCase.chatParticipantAccountIds()).contains(
+                        StringUtils.hasText(actor.getAccountUserId()) ? actor.getAccountUserId() : actor.getUserId());
+    }
+
+    /** Case and quotation groups share the existing Cases channel and membership lifecycle. */
+    public List<Chat> syncCaseChat(ServiceCase serviceCase) {
+        var profiles = usersRepository.findByWorkspaceGroupIdAndAccountUserIdIn(
+                CommunityGroup.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
+        var byAccount = profiles.stream().collect(java.util.stream.Collectors.toMap(
+                u -> StringUtils.hasText(u.getAccountUserId()) ? u.getAccountUserId() : u.getUserId(), Users::getUserId, (a,b) -> a));
+        java.util.function.Function<List<String>, List<String>> memberProfiles = ids -> ids.stream().map(byAccount::get).filter(Objects::nonNull).toList();
+        var main = syncResourceChat("c-case-" + serviceCase.id(), "case", serviceCase.id(), serviceCase.title(), memberProfiles.apply(serviceCase.chatParticipantAccountIds()));
+        for (var offer : serviceCase.offers()) {
+            syncResourceChat("c-case-offer-" + serviceCase.id() + "-" + offer.id(), "case", serviceCase.id(),
+                    serviceCase.title() + " · " + java.math.BigDecimal.valueOf(offer.amount()).stripTrailingZeros().toPlainString() + " " + offer.currency(),
+                    memberProfiles.apply(serviceCase.offerChatParticipantAccountIds(offer.id())), offer.id());
+        }
+        return main;
+    }
+
+    private List<Chat> syncResourceChat(String chatId, String channel, String ownerId, String title, List<String> members) {
+        return syncResourceChat(chatId, channel, ownerId, title, members, null);
+    }
+    private List<Chat> syncResourceChat(String chatId, String channel, String ownerId, String title, List<String> members, String caseOfferId) {
+        List<Chat> existing = chatsRepository.findByChatId(chatId);
+        List<Chat> saved = new ArrayList<>();
+        for (String member : members) {
+            Chat copy = findOwnerChat(existing, member);
+            if (copy == null) {
+                copy = new Chat(); copy.setMongoId(buildMongoId(member, chatId)); copy.setChatId(chatId);
+                copy.setOwnerUserId(member); copy.setUnread(0); copy.setLastMessage(""); copy.setLastSenderId("");
+                copy.setDateIso(Instant.now().toString()); copy.setAvatar("case".equals(channel) ? "C" : "W");
+            }
+            copy.setChannelType(channel); copy.setOwnerId(ownerId); copy.setTitle(title); copy.setCaseOfferId(caseOfferId);
+            copy.setMemberIds(List.copyOf(members)); copy.setRevision(nextChatRevision(copy)); saved.add(copy);
+        }
+        if (!saved.isEmpty()) {
+            BulkOperations writes = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class);
+            for (Chat copy : saved) writes.upsert(Query.query(Criteria.where("_id").is(copy.getMongoId())),
+                    new Update().setOnInsert("id", chatId).setOnInsert("ownerUserId", copy.getOwnerUserId())
+                            .setOnInsert("unread", 0).setOnInsert("lastMessage", "").setOnInsert("lastSenderId", "")
+                            .setOnInsert("dateIso", copy.getDateIso()).setOnInsert("avatar", copy.getAvatar())
+                            .set("channelType", channel).set("ownerId", ownerId).set("title", title).set("caseOfferId", caseOfferId)
+                            .set("memberIds", members).inc("revision", 1));
+            writes.execute();
+        }
+        List<Chat> removed = existing.stream().filter(c -> !members.contains(c.getOwnerUserId())).toList();
+        if (!removed.isEmpty()) {
+            chatsRepository.deleteAll(removed);
+            incrementStoredChatCounters(removed.stream().map(c -> new ChatCounterChange(c, -normalizeCount(c.getUnread()))).toList());
+        }
+        evictChatOwnerReadCaches(saved); evictChatOwnerReadCaches(removed);
+        return saved;
     }
 
     private SubEventItem findChatContextSubEvent(ActivityEvent event, String subEventId) {
@@ -767,6 +880,7 @@ public class ChatService {
                         List.of(CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE))),
                 new Document("supportCase.status", new Document("$exists", true)),
                 new Document("id", new Document("$type", "string").append("$ne", ""))))));
+        operations.add(context -> new Document("$match", new Document("supportBaseGroupId", actor.getWorkspaceGroupId())));
         operations.add(context -> new Document("$addFields", new Document(
                 "_supportViewerCopy",
                 new Document("$cond", List.of(
@@ -1173,7 +1287,16 @@ public class ChatService {
         }
         Users adminUser = findUser(normalizedAdminUserId);
         String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
-        boolean groupModeration = StringUtils.hasText(workspaceGroupId);
+        var targetGroup = StringUtils.hasText(workspaceGroupId) ? mongoTemplate.findById(workspaceGroupId,
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class) : null;
+        boolean appModeration = isAdminUser(adminUser);
+        if (appModeration) {
+            String targetBase = normalizeId(com.raxim.myscoutee.profile.data.document.CommunityGroup.isBaseId(workspaceGroupId)
+                    ? workspaceGroupId : targetGroup == null ? null : targetGroup.baseId());
+            if (!targetBase.equals(normalizeId(adminUser.getWorkspaceGroupId())))
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case unavailable in this base group.");
+        }
+        boolean groupModeration = StringUtils.hasText(workspaceGroupId) && !appModeration;
         if (groupModeration && (adminUser == null || !workspaceGroupId.equals(normalizeId(adminUser.getWorkspaceGroupId())))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Moderator and recipient must belong to the same workspace.");
         }
@@ -1182,8 +1305,7 @@ public class ChatService {
             var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
             if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
         }
-        var group = groupModeration ? mongoTemplate.findById(workspaceGroupId,
-                com.raxim.myscoutee.profile.data.document.CommunityGroup.class) : null;
+        var group = groupModeration ? targetGroup : null;
         String chatTitle = groupModeration ? (group == null ? workspaceGroupId : group.name()) : "MyScoutee Support";
         String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
         String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
@@ -1216,6 +1338,10 @@ public class ChatService {
                 chatTitle + " · " + resolveUserName(targetUser, normalizedTargetUserId),
                 List.of(normalizedTargetUserId, normalizedAdminUserId),
                 supportCaseState);
+        if (!groupModeration) {
+            targetChat.setSupportBaseGroupId(adminUser == null ? null : adminUser.getWorkspaceGroupId());
+            adminChat.setSupportBaseGroupId(targetChat.getSupportBaseGroupId());
+        }
         if (groupModeration) {
             for (Chat chat : List.of(targetChat, adminChat)) {
                 chat.setChannelType(CHAT_CHANNEL_GROUP_SUPPORT);
@@ -1913,6 +2039,8 @@ public class ChatService {
             case CHAT_CHANNEL_GROUP_SUB_EVENT -> "group";
             case CHAT_CHANNEL_SERVICE_EVENT -> "service";
             case "contact" -> "contacts";
+            case "campaign" -> "campaign";
+            case "case" -> "cases";
             case CHAT_CHANNEL_GROUP_SUPPORT -> "groupSupport";
             case CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE -> "appSupport";
             default -> "";
@@ -2728,11 +2856,14 @@ public class ChatService {
             return false;
         }
         String normalizedUserId = normalizeId(userId);
+        if ("case".equals(chat.getChannelType()) && !caseChatAccess(
+                mongoTemplate.findById(chat.getOwnerId(), ServiceCase.class), findUser(normalizedUserId), chat.getCaseOfferId())) return false;
         if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }
-        if (isSupportCaseChat(chat) && isAdminUser(findUser(normalizedUserId))) {
-            return true;
+        Users admin = isSupportCaseChat(chat) ? findUser(normalizedUserId) : null;
+        if (isSupportCaseChat(chat) && isAdminUser(admin)) {
+            return Objects.equals(admin.getWorkspaceGroupId(), chat.getSupportBaseGroupId());
         }
         if (chat.getMemberIds() == null) {
             return false;
@@ -2786,6 +2917,7 @@ public class ChatService {
         copy.setDistanceKm(null);
         copy.setDistanceMetersExact(null);
         copy.setSupportCase(copySupportCase(source.getSupportCase()));
+        copy.setSupportBaseGroupId(source.getSupportBaseGroupId());
         return copy;
     }
 
@@ -3207,7 +3339,8 @@ public class ChatService {
 
     private String chatChannelType(Chat record) {
         String channelType = safeText(record == null ? null : record.getChannelType());
-        if (CHAT_CHANNEL_MAIN_EVENT.equals(channelType)
+        if ("campaign".equals(channelType) || "case".equals(channelType) || "contact".equals(channelType)
+                || CHAT_CHANNEL_MAIN_EVENT.equals(channelType)
                 || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
                 || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
                 || CHAT_CHANNEL_SERVICE_EVENT.equals(channelType)
@@ -3280,6 +3413,8 @@ public class ChatService {
                 || "subEvent".equalsIgnoreCase(normalized)
                 || "group".equalsIgnoreCase(normalized)
                 || "service".equalsIgnoreCase(normalized)
+                || "campaign".equalsIgnoreCase(normalized)
+                || "cases".equalsIgnoreCase(normalized)
                 || "contacts".equalsIgnoreCase(normalized)
                 || "groupSupport".equalsIgnoreCase(normalized)
                 || "appSupport".equalsIgnoreCase(normalized)) {
@@ -3305,6 +3440,8 @@ public class ChatService {
         if ("service".equalsIgnoreCase(contextFilter)) {
             return "serviceEvent".equalsIgnoreCase(channelType);
         }
+        if ("campaign".equals(contextFilter)) return "campaign".equals(channelType);
+        if ("cases".equals(contextFilter)) return "case".equals(channelType);
         if ("contacts".equalsIgnoreCase(contextFilter)) return "contact".equals(channelType);
         if ("groupSupport".equalsIgnoreCase(contextFilter)) return CHAT_CHANNEL_GROUP_SUPPORT.equals(channelType);
         if ("appSupport".equalsIgnoreCase(contextFilter)) {
@@ -3474,6 +3611,8 @@ public class ChatService {
             criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_GROUP_SUB_EVENT));
         } else if ("service".equals(normalizedContext)) {
             criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_SERVICE_EVENT));
+        } else if ("campaign".equals(normalizedContext) || "cases".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is("cases".equals(normalizedContext) ? "case" : "campaign"));
         } else if ("contacts".equals(normalizedContext)) {
             criteria.add(Criteria.where("channelType").is("contact"));
         } else if ("groupSupport".equals(normalizedContext)) {

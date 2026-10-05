@@ -173,8 +173,8 @@ public class AdminController {
     }
 
     @GetMapping("/params/{sectionKey}/history")
-    public AdminParamsHistoryDto paramsHistory(@PathVariable String sectionKey) {
-        return adminParamsService.history(sectionKey);
+    public AdminParamsHistoryDto paramsHistory(@PathVariable String sectionKey, @RequestParam(value = "adminUserId", required = false) String adminUserId) {
+        return adminParamsService.history(sectionKey, adminUserId);
     }
 
     @PostMapping("/params/{sectionKey}/revert")

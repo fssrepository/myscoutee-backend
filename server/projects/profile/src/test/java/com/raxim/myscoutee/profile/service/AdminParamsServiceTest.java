@@ -31,6 +31,29 @@ import tools.jackson.databind.json.JsonMapper;
 
 class AdminParamsServiceTest {
     @Test
+    void savingWorkParametersDoesNotDeactivateTheDatingConfiguration() {
+        var repository = mock(AffinityConfigsRepository.class);
+        var admins = mock(AdminModerationService.class);
+        when(admins.baseGroupId("work-admin")).thenReturn("myscoutee-work");
+        var dating = config(7, true, "matching", "Dating");
+        var work = config(1, true, "seed", "Work"); work.setKey("myscoutee-work");
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-work")).thenReturn(Optional.of(work));
+        when(repository.findByActiveTrue()).thenReturn(List.of(dating, work));
+        when(repository.findFirstByKeyOrderByVersionDesc("myscoutee-work")).thenReturn(Optional.of(work));
+        when(repository.save(any(AffinityConfig.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        var service = new AdminParamsService(admins, repository, JsonMapper.builder().build(),
+                mock(NotificationOutboxService.class), mock(AdminAudienceService.class),
+                mock(AffinityRecomputeTaskService.class), mock(AdminTelemetryService.class));
+        service.save(new AdminParamsSaveRequestDto("work-admin", "matching", List.of(), "Work update"));
+        assertThat(dating.getActive()).isTrue();
+        verify(repository, never()).save(dating);
+        verify(repository, never()).findByKeyOrderByVersionDesc("default");
+        var saved = ArgumentCaptor.forClass(AffinityConfig.class);
+        verify(repository, org.mockito.Mockito.atLeastOnce()).save(saved.capture());
+        assertThat(saved.getAllValues()).allMatch(item -> "myscoutee-work".equals(item.getKey()));
+    }
+
+    @Test
     void historyReturnsOnlySectionChangesAndInitialSeed() {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         AffinityConfig seed = config(1, false, "seed", "Initial parameter seed.");
@@ -38,7 +61,7 @@ class AdminParamsServiceTest {
         AffinityConfig matching = config(3, false, "matching", "Raised inside-network confidence after graph review.");
         AffinityConfig events = config(4, false, "events", "Adjusted host confidence and open-capacity boost.");
         AffinityConfig assets = config(5, true, "assets", "Added owner confidence and request pressure to asset ranking.");
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(assets));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(assets));
         when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(assets, events, matching, profile, seed));
 
         AdminParamsHistoryDto history = service(repository).history("matching");
@@ -76,7 +99,7 @@ class AdminParamsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByActiveTrue()).thenReturn(List.of(current));
         when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(current));
@@ -123,7 +146,7 @@ class AdminParamsServiceTest {
         AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         AffinityConfig previous = config(1, false, "seed", "Initial parameter seed.");
         AffinityConfig current = config(2, true, "matching", "Current matching parameters.");
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByActiveTrue()).thenReturn(List.of(current));
         when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByKeyAndVersion("default", 1)).thenReturn(Optional.of(previous));
@@ -177,7 +200,7 @@ class AdminParamsServiceTest {
         AdminTelemetryService telemetry = mock(AdminTelemetryService.class);
         AffinityConfig jobs = config(2, false, "jobs", "Jobs update.");
         AffinityConfig current = config(3, true, "matching", "Matching update.");
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByKeyOrderByVersionDesc("default")).thenReturn(List.of(current, jobs));
 
         service(repository, outbox, mock(AdminAudienceService.class), tasks, telemetry)
@@ -193,7 +216,7 @@ class AdminParamsServiceTest {
         AffinityRecomputeTaskService affinityRecomputeTaskService = mock(AffinityRecomputeTaskService.class);
         AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByActiveTrue()).thenReturn(List.of(current));
         when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.save(any(AffinityConfig.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -226,7 +249,7 @@ class AdminParamsServiceTest {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         AdminTelemetryService adminTelemetryService = mock(AdminTelemetryService.class);
         AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.findByActiveTrue()).thenReturn(List.of(current));
         when(repository.findFirstByKeyOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         when(repository.save(any(AffinityConfig.class)))
@@ -252,7 +275,7 @@ class AdminParamsServiceTest {
         AffinityConfigsRepository repository = mock(AffinityConfigsRepository.class);
         AffinityConfig current = config(1, true, "seed", "Initial parameter seed.");
         int originalDistance = current.getDistance().getMaxMeters();
-        when(repository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(current));
+        when(repository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(current));
         NotificationOutboxService outbox = mock(NotificationOutboxService.class);
         AffinityRecomputeTaskService tasks = mock(AffinityRecomputeTaskService.class);
         AdminTelemetryService telemetry = mock(AdminTelemetryService.class);
@@ -291,7 +314,7 @@ class AdminParamsServiceTest {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService) {
         ObjectMapper objectMapper = JsonMapper.builder().build();
-        return new AdminParamsService(
+        return new AdminParamsService(org.mockito.Mockito.mock(AdminModerationService.class),
                 repository,
                 objectMapper,
                 notificationOutboxService,

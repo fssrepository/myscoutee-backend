@@ -116,16 +116,21 @@ public class UserRatesService {
     void ensureUserRateIndexes() {
         ensureCanonicalUserRateIndexes();
         backfillHomeGameRateProjections();
+        userAffinityEdgeService.backfillCampaignRatings();
     }
 
     public List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId) {
+        return queryRateItemsByUser(requestedUserId, null);
+    }
+
+    public List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId, String campaignId) {
         Users currentUser = homeUserProfileService.resolveCurrentUser(requestedUserId);
         String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
         if (!StringUtils.hasText(ownerUserId)) {
             return List.of();
         }
 
-        return queryNormalizedRateItems(currentUser, ownerUserId).stream()
+        return queryNormalizedRateItems(currentUser, ownerUserId, campaignId).stream()
                 .sorted(Comparator
                         .comparing((RateMenuItemDto item) -> rateDateMillis(item.happenedAt()), Comparator.reverseOrder())
                         .thenComparing(item -> safeText(item.id())))
@@ -144,6 +149,21 @@ public class UserRatesService {
             Integer limitValue,
             String rangeStartIso,
             String rangeEndIso) {
+        return queryActivityRatePage(requestedUserId, modeValue, directionValue, sortValue, sortDirectionValue, secondaryFilterValue, socialBadgeEnabled, cursor, limitValue, rangeStartIso, rangeEndIso, null);
+    }
+
+    public ActivityRatePageResponseDto queryActivityRatePage(
+            String requestedUserId,
+            String modeValue,
+            String directionValue,
+            String sortValue,
+            String sortDirectionValue,
+            String secondaryFilterValue,
+            boolean socialBadgeEnabled,
+            String cursor,
+            Integer limitValue,
+            String rangeStartIso,
+            String rangeEndIso, String campaignId) {
         Users currentUser = homeUserProfileService.resolveCurrentUser(requestedUserId);
         String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
         String mode = normalizeMode(modeValue);
@@ -164,7 +184,7 @@ public class UserRatesService {
             return new ActivityRatePageResponseDto(List.of(), 0, null, List.of(), gameCounter);
         }
 
-        List<RatePageProjection> projections = queryNormalizedRateItems(currentUser, ownerUserId).stream()
+        List<RatePageProjection> projections = queryNormalizedRateItems(currentUser, ownerUserId, campaignId).stream()
                 .filter(item -> matchesRequestedMode(item, mode))
                 .filter(item -> direction.equals(item.direction()))
                 .filter(item -> matchesSocialBadgeFilter(item, mode, socialBadgeEnabled))
@@ -207,7 +227,21 @@ public class UserRatesService {
         Set<String> workspaceParticipants = usersRepository.findByUserIdIn(participantIds).stream()
                 .filter(user -> CommunityGroupProfilesService.allows(user.getWorkspaceGroupId()))
                 .map(Users::getUserId).collect(java.util.stream.Collectors.toSet());
+        Set<String> campaignIds = request.rates().stream().filter(Objects::nonNull).map(UserRateRecordDto::campaignId)
+                .filter(StringUtils::hasText).collect(java.util.stream.Collectors.toSet());
+        var campaigns = campaignIds.isEmpty() ? Map.<String, com.raxim.myscoutee.profile.data.document.Campaign>of()
+                : mongoTemplate.find(Query.query(Criteria.where("_id").in(campaignIds)), com.raxim.myscoutee.profile.data.document.Campaign.class)
+                    .stream().collect(java.util.stream.Collectors.toMap(com.raxim.myscoutee.profile.data.document.Campaign::id, c -> c));
         for (UserRateRecordDto rate : request.rates()) {
+            if (rate != null && StringUtils.hasText(rate.campaignId())) {
+                var campaign = campaigns.get(rate.campaignId());
+                if (campaign == null || !"published".equals(campaign.status()) || !"single".equals(rate.mode())
+                    || !CommunityGroupProfilesService.allows(campaign.workspaceGroupId())
+                    || (!campaign.ownerUserId().equals(rate.ownerUserId()) && !campaign.ownerUserId().equals(rate.toUserId()) && !campaign.ownerUserId().equals(rate.fromUserId()))) {
+                    if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
+                    continue;
+                }
+            }
             if (rate != null && java.util.stream.Stream.of(rate.ownerUserId(), rate.fromUserId(), rate.toUserId())
                     .filter(org.springframework.util.StringUtils::hasText).anyMatch(id -> !workspaceParticipants.contains(id))) {
                 if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
@@ -234,11 +268,11 @@ public class UserRatesService {
             List<UserRate> savedRates = new ArrayList<>();
             userRatesRepository.saveAll(normalizedRates).forEach(savedRates::add);
             List<UserRate> persistedRates = savedRates.isEmpty() ? normalizedRates : savedRates;
+            enqueueRateRecomputeTasks(persistedRates);
             projectMutualMetFriendships(persistedRates);
             enqueueRatingNotifications(persistedRates, previousScoresByNaturalKey);
             userAffinityEdgeService.recomputeForRates(persistedRates);
             refreshHomeGameRateProjections(affectedHomeProjectionOwnerIds, persistedRates);
-            enqueueRateRecomputeTasks(persistedRates);
             adminTelemetryService.record("rates.synced", "matching", "", normalizedRates.get(0).getOwnerUserId(), normalizedRates.size());
         }
         return new UserRatesSyncResponseDto(syncedRateIds, failedRateIds);
@@ -365,6 +399,7 @@ public class UserRatesService {
             String rateId = normalizeId(rate.getId());
             Map<String, String> payload = new LinkedHashMap<>();
             payload.put("rateId", rateId);
+            if (StringUtils.hasText(rate.getCampaignId())) payload.put("campaignId", rate.getCampaignId());
             payload.put("mode", normalizeMode(rate.getMode()));
             payload.put("senderUserId", actorUserId);
             notificationOutboxService.enqueue(new NotificationIntent(
@@ -375,7 +410,7 @@ public class UserRatesService {
                     recipientUserIds,
                     "New rating",
                     "You received a new rating.",
-                    "/game",
+                    "/game?ratings=1" + (StringUtils.hasText(rate.getCampaignId()) ? "&campaignId=" + java.net.URLEncoder.encode(rate.getCampaignId(), java.nio.charset.StandardCharsets.UTF_8) : ""),
                     "/assets/logo/heart.webp",
                     "/assets/logo/heart.webp",
                     "user-rated-" + rateId,
@@ -618,12 +653,14 @@ public class UserRatesService {
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC));
         indexOps.createIndex(new Index()
-                .named("user_rate_owner_mode_target_unique_v1")
+                .named("user_rate_owner_mode_target_campaign_unique_v2")
                 .on("ownerUserId", Sort.Direction.ASC)
                 .on("mode", Sort.Direction.ASC)
                 .on("relatedUserId", Sort.Direction.ASC)
                 .on("secondaryRelatedUserId", Sort.Direction.ASC)
+                .on("campaignId", Sort.Direction.ASC)
                 .unique());
+        dropIndexIfPresent(indexOps, existingIndexNames, "user_rate_owner_mode_target_unique_v1");
         indexOps.createIndex(new Index()
                 .named("user_rate_pair_lookup_v2")
                 .on("relatedUserId", Sort.Direction.ASC)
@@ -642,14 +679,66 @@ public class UserRatesService {
     }
 
     private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId) {
-        Map<String, UserRate> recordsById = new LinkedHashMap<>();
-        addRecords(recordsById, userRatesRepository.findRelevantByUserIds(List.of(ownerUserId)));
+        return queryNormalizedRateItems(currentUser, ownerUserId, null);
+    }
+    private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId, String campaignId) {
+        List<UserRate> records = userRatesRepository.findRelevantInCampaign(ownerUserId,
+                StringUtils.hasText(campaignId) ? campaignId : null);
+        if (StringUtils.hasText(campaignId)) {
+            return filterActivityRateVisibleItems(dedupeRateItems(aggregateCampaignRatings(records.stream()
+                    .map(record -> toRateMenuItem(record, currentUser)).filter(Objects::nonNull).toList(), ownerUserId, campaignId)), ownerUserId);
+        }
+        var summaries = userAffinityEdgeService.ratingSummaries(ownerUserId);
+        Set<String> summarizedPeople = summaries.stream().map(s -> ownerUserId.equals(s.leftUserId()) ? s.rightUserId() : s.leftUserId())
+                .collect(java.util.stream.Collectors.toSet());
+        List<RateMenuItemDto> items = new ArrayList<>(records.stream().map(record -> toRateMenuItem(record, currentUser))
+                .filter(Objects::nonNull).filter(item -> !"individual".equals(item.mode()) || !summarizedPeople.contains(item.userId())).toList());
+        for (var summary : summaries) {
+            var item = toRateMenuItem(summary.rate(), currentUser);
+            if (item == null) continue;
+            items.add(new RateMenuItemDto("game-card:" + ownerUserId + ":" + item.userId(), item.userId(), null,
+                    item.mode(), item.direction(), item.socialContext(), item.bridgeUserId(), item.bridgeCount(),
+                    item.scoreGiven(), item.scoreReceived(), item.eventName(), item.happenedAt(), item.distanceMetersExact(),
+                    item.met(), item.ratingSnapshot(), null));
+        }
+        String workspaceId = currentUser.getWorkspaceGroupId();
+        var group = StringUtils.hasText(workspaceId) ? mongoTemplate.findById(workspaceId,
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class) : null;
+        String defaultDomain = group == null ? "dating" : "work".equals(group.effectiveType()) ? "work"
+                : "community".equals(group.effectiveType()) ? "service-interest" : "dating";
+        return filterActivityRateVisibleItems(dedupeRateItems(items.stream().map(item -> item.withRatingDomain(
+                summarizedPeople.contains(item.userId()) && "individual".equals(item.mode()) ? "campaign"
+                : "pair".equals(item.mode()) ? "dating-pair" : defaultDomain)).toList()), ownerUserId);
+    }
 
-        List<RateMenuItemDto> items = dedupeRateItems(recordsById.values().stream()
-                .map(record -> toRateMenuItem(record, currentUser))
-                .filter(Objects::nonNull)
-                .toList());
-        return filterActivityRateVisibleItems(items, ownerUserId);
+    private List<RateMenuItemDto> aggregateCampaignRatings(List<RateMenuItemDto> items, String viewerId, String campaignId) {
+        Set<String> people = items.stream().filter(i -> "individual".equals(i.mode()) && StringUtils.hasText(i.campaignId()))
+                .map(RateMenuItemDto::userId).collect(java.util.stream.Collectors.toSet());
+        var result = new ArrayList<RateMenuItemDto>();
+        var byPerson = new LinkedHashMap<String, List<RateMenuItemDto>>();
+        for (var item : items) {
+            if (!"individual".equals(item.mode()) || !people.contains(item.userId())) result.add(item);
+            else byPerson.computeIfAbsent(item.userId(), ignored -> new ArrayList<>()).add(item);
+        }
+        for (var entry : byPerson.entrySet()) {
+            var rows = entry.getValue(); rows.sort(Comparator.comparing(RateMenuItemDto::happenedAt).reversed());
+            var latest = rows.getFirst();
+            var given = new LinkedHashMap<String, Double>(); var received = new LinkedHashMap<String, Double>();
+            for (var row : rows) {
+                if (row.scoreGiven() != null && row.scoreGiven() > 0) given.putIfAbsent(normalizeId(row.campaignId()), row.scoreGiven());
+                if (row.scoreReceived() != null && row.scoreReceived() > 0) received.putIfAbsent(normalizeId(row.campaignId()), row.scoreReceived());
+            }
+            double g = Math.round(given.values().stream().mapToDouble(Double::doubleValue).average().orElse(0) * 100d) / 100d;
+            double r = Math.round(received.values().stream().mapToDouble(Double::doubleValue).average().orElse(0) * 100d) / 100d;
+            boolean met = rows.stream().anyMatch(row -> Boolean.TRUE.equals(row.met()));
+            String direction = met ? "met" : g > 0 && r > 0 ? "mutual" : g > 0 ? "given" : "received";
+            String id = "game-card:" + viewerId + ":" + entry.getKey() + (StringUtils.hasText(campaignId) ? ":campaign:" + campaignId : "");
+            result.add(new RateMenuItemDto(id, entry.getKey(), null, "individual", direction, latest.socialContext(), latest.bridgeUserId(),
+                latest.bridgeCount(), g, r, latest.eventName(), latest.happenedAt(), latest.distanceMetersExact(), met,
+                StringUtils.hasText(campaignId) ? rows.stream().map(RateMenuItemDto::ratingSnapshot).filter(Objects::nonNull).findFirst().orElse(null) : null,
+                StringUtils.hasText(campaignId) ? campaignId : null));
+        }
+        return result;
     }
 
     private void addRecords(Map<String, UserRate> target, List<UserRate> records) {
@@ -751,7 +840,8 @@ public class UserRatesService {
     }
 
     private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
-        if (rate == null || !validRatingSnapshot(rate.ratingSnapshot(), resolveScoreGiven(rate))) {
+        if (rate == null || !validRatingSnapshot(rate.ratingSnapshot(), resolveScoreGiven(rate))
+                || (StringUtils.hasText(rate.campaignId()) && rate.ratingSnapshot() != null && !"campaign".equals(rate.ratingSnapshot().profileType()))) {
             return null;
         }
         String syncKey = resolveSyncKey(rate);
@@ -770,7 +860,8 @@ public class UserRatesService {
             return null;
         }
         UserRate syncKeyRecord = userRatesRepository.findBySyncKey(syncKey).orElse(null);
-        UserRate naturalKeyRecord = findByNaturalKey(ownerUserId, mode, relatedUserId, secondaryRelatedUserId);
+        if (syncKeyRecord != null && !Objects.equals(normalizeOptionalId(syncKeyRecord.getCampaignId()), normalizeOptionalId(rate.campaignId()))) return null;
+        UserRate naturalKeyRecord = findByNaturalKey(ownerUserId, mode, relatedUserId, secondaryRelatedUserId, normalizeOptionalId(rate.campaignId()));
         addIfText(affectedHomeProjectionOwnerIds, syncKeyRecord == null ? null : syncKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, naturalKeyRecord == null ? null : naturalKeyRecord.getOwnerUserId());
         addIfText(affectedHomeProjectionOwnerIds, ownerUserId);
@@ -796,6 +887,7 @@ public class UserRatesService {
         document.setId(existing != null ? existing.getId() : new ObjectId().toHexString());
         document.setSyncKey(syncKeyBelongsToDifferentRecord ? naturalKeyRecord.getSyncKey() : syncKey);
         document.setMode(mode);
+        document.setCampaignId(normalizeOptionalId(rate.campaignId()));
         document.setCreatedDate(existing != null
                 ? normalizeDate(existing.getCreatedDate(), nowIso)
                 : normalizeDate(rate.createdAtIso(), normalizeDate(rate.happenedAtIso(), normalizeDate(rate.updatedAtIso(), nowIso))));
@@ -822,10 +914,17 @@ public class UserRatesService {
 
     private boolean validRatingSnapshot(RatingSnapshotDto snapshot, double score) {
         if (snapshot == null) return true;
-        if (!Integer.valueOf(1).equals(snapshot.version())
-                || !"dating".equals(snapshot.profileType())
-                || snapshot.criteria() == null
-                || !snapshot.criteria().keySet().equals(Set.of("attraction", "personality", "interests", "values"))
+        Set<String> keys = switch (snapshot.profileType() == null ? "" : snapshot.profileType()) {
+            case "dating" -> Set.of("attraction", "personality", "interests", "values");
+            case "dating-pair" -> Set.of("chemistry", "interests", "values", "compatibility");
+            case "campaign" -> Set.of("relevance", "appeal", "clarity", "collaboration");
+            case "work" -> Set.of("fit", "interests", "communication", "collaboration");
+            case "service-interest" -> Set.of("relevance", "clarity", "confidence", "value");
+            case "service" -> ServiceFeedbackService.CRITERIA;
+            default -> Set.of();
+        };
+        if (!Integer.valueOf(1).equals(snapshot.version()) || keys.isEmpty() || snapshot.criteria() == null
+                || !snapshot.criteria().keySet().equals(keys)
                 || snapshot.average() == null || !Double.isFinite(snapshot.average())) return false;
         double sum = 0;
         for (Double value : snapshot.criteria().values()) {
@@ -848,10 +947,11 @@ public class UserRatesService {
             String ownerUserId,
             String mode,
             String relatedUserId,
-            String secondaryRelatedUserId) {
+            String secondaryRelatedUserId, String campaignId) {
         return userRatesRepository.findByOwnerUserIdAndMode(ownerUserId, mode).stream()
                 .filter(record -> Objects.equals(relatedUserId, normalizeOptionalId(record.getRelatedUserId())))
                 .filter(record -> Objects.equals(secondaryRelatedUserId, normalizeOptionalId(record.getSecondaryRelatedUserId())))
+                .filter(record -> Objects.equals(campaignId, normalizeOptionalId(record.getCampaignId())))
                 .findFirst()
                 .orElse(null);
     }
@@ -861,7 +961,7 @@ public class UserRatesService {
                 normalizeId(record.getOwnerUserId()),
                 normalizeId(record.getMode()),
                 normalizeId(record.getRelatedUserId()),
-                normalizeId(record.getSecondaryRelatedUserId()));
+                normalizeId(record.getSecondaryRelatedUserId()), normalizeId(record.getCampaignId()));
     }
 
     private boolean isValidNaturalKey(
@@ -993,12 +1093,12 @@ public class UserRatesService {
                 return new RateMenuItemDto(displayId, participantOtherUserId, resolvedCurrentUserId, "pair", direction,
                         socialContext, bridgeUserId, bridgeCount,
                         scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
-                        Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId));
+                        Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId), record.getCampaignId());
             }
             return new RateMenuItemDto(displayId, primaryUserId, secondaryUserId, "pair", direction,
                     socialContext, bridgeUserId, bridgeCount,
                     scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
-                    Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId));
+                    Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId), record.getCampaignId());
         }
 
         String relatedUserId = isOwnerView
@@ -1013,7 +1113,7 @@ public class UserRatesService {
                 resolveIndividualBridgeUserId(record, resolvedCurrentUserId, relatedUserId, individualSocialContext),
                 resolveIndividualBridgeCount(record, individualSocialContext),
                 scoreGiven, scoreReceived, eventName, happenedAt, distance.metersExact(),
-                Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId));
+                Boolean.TRUE.equals(record.getMet()), ratingSnapshotFor(record, resolvedCurrentUserId), record.getCampaignId());
     }
 
     private RatePageProjection toRatePageProjection(RateMenuItemDto item) {

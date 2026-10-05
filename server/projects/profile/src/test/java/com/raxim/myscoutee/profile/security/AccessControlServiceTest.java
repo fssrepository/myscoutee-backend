@@ -80,7 +80,7 @@ class AccessControlServiceTest {
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
                 new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
-                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService));
+                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.ServiceCasesRepository.class)));
         service.loadAccessControlCacheAtStartup();
     }
 

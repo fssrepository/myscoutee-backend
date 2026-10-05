@@ -18,10 +18,10 @@ public interface ActivityMembersRepository extends MongoRepository<ActivityMembe
     @Query("{ '_id': ?0, 'ownerType': 'community', 'status': ?1, 'role': ?2, 'actionAtIso': ?3 }")
     @Update("{ '$set': { 'status': ?4, 'role': ?5, 'requestKind': ?6, 'pendingSource': ?7,"
             + " 'organizerOnly': ?8, 'actionAtIso': ?9, 'updatedDate': ?9,"
-            + " 'communityAction': ?10, 'communityActor': ?11, 'managerGrantedByUserId': ?12 } }")
+            + " 'communityAction': ?10, 'communityActor': ?11, 'managerGrantedByUserId': ?12, 'votingEligible': ?13 } }")
     long updateCommunityState(String id, String expectedStatus, String expectedRole, String expectedActionAtIso,
             String status, String role, String requestKind, String pendingSource, boolean organizerOnly,
-            String actionAtIso, String action, String actor, String managerGrantedByUserId);
+            String actionAtIso, String action, String actor, String managerGrantedByUserId, boolean votingEligible);
 
     Optional<ActivityMember> findBySyncKey(String syncKey);
 

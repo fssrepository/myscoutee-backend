@@ -45,7 +45,9 @@ public final class PaymentDtos {
             String registrationId,
             String status) {}
 
-    public record CashReceiptRequestDto(String requestId, String payerUserId, Double amount, String currency, String note) {}
+    public record CashReceiptRequestDto(String requestId, String payerUserId, Double amount, String currency, String note, String method) {
+        public CashReceiptRequestDto(String requestId, String payerUserId, Double amount, String currency, String note) { this(requestId,payerUserId,amount,currency,note,"cash"); }
+    }
 
     public record PaymentHistoryItemDto(
             String id,
@@ -74,7 +76,39 @@ public final class PaymentDtos {
             PaymentRefundPreviewDto refundPreview,
             SavedPaymentMethodDto paymentMethod,
             String note,
-            String counterpartyName) {}
+            String counterpartyName,
+            String counterpartyUserId) {
+        public PaymentHistoryItemDto(
+            String id,
+            String sourceId,
+            String direction,
+            String paymentMethodId,
+            String provider,
+            String status,
+            String failureReason,
+            Double amount,
+            String currency,
+            String bookingStatus,
+            String auditKind,
+            String fulfillmentKind,
+            String checkoutSessionId,
+            String createdAtIso,
+            String recipientUserId,
+            String serviceContext,
+            String contextEventId,
+            String contextSubEventId,
+            String contextAssetId,
+            String refundRequestStatus,
+            String refundRequestedAtIso,
+            Boolean canRequestRefund,
+            Boolean canApproveRefund,
+            PaymentRefundPreviewDto refundPreview,
+            SavedPaymentMethodDto paymentMethod,
+            String note,
+            String counterpartyName) {
+            this(id, sourceId, direction, paymentMethodId, provider, status, failureReason, amount, currency, bookingStatus, auditKind, fulfillmentKind, checkoutSessionId, createdAtIso, recipientUserId, serviceContext, contextEventId, contextSubEventId, contextAssetId, refundRequestStatus, refundRequestedAtIso, canRequestRefund, canApproveRefund, refundPreview, paymentMethod, note, counterpartyName, null);
+        }
+    }
 
     public record PaymentRefundPreviewDto(
             Double paidAmount,

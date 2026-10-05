@@ -34,6 +34,9 @@ import com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistr
 
 @Service
 public class EventCheckoutBasketService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
     private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved", "pay");
     private static final List<String> DISPLAY_RESULT_STATES = List.of("pending", "active", "failed", "succeeded");
@@ -48,7 +51,7 @@ public class EventCheckoutBasketService {
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService;
     private final EventCheckoutPricingService checkoutPricing;
-    private final AtomicBoolean processing = new AtomicBoolean(false);
+    private final java.util.concurrent.ConcurrentMap<String, AtomicBoolean> processingByGroup = new java.util.concurrent.ConcurrentHashMap<>();
 
     public EventCheckoutBasketService(
             EventCheckoutBasketItemsRepository repository,
@@ -239,6 +242,10 @@ public class EventCheckoutBasketService {
     }
 
     public EventCheckoutBasketDto saveBasket(EventCheckoutRequestDto request) {
+        return JobGroupContext.call(jobGroupScope.forUser(request == null ? null : request.userId()), () -> saveBasketInGroup(request));
+    }
+
+    private EventCheckoutBasketDto saveBasketInGroup(EventCheckoutRequestDto request) {
         String normalizedUserId = normalizeId(request == null ? null : request.userId());
         String normalizedSourceId = normalizeId(request == null ? null : request.sourceId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
@@ -333,6 +340,10 @@ public class EventCheckoutBasketService {
     }
 
     public EventCheckoutBasketDto updateBasketState(EventCheckoutStateChangeRequestDto request) {
+        return JobGroupContext.call(jobGroupScope.forUser(request == null ? null : request.userId()), () -> updateBasketStateInGroup(request));
+    }
+
+    private EventCheckoutBasketDto updateBasketStateInGroup(EventCheckoutStateChangeRequestDto request) {
         String normalizedUserId = normalizeId(request == null ? null : request.userId());
         String normalizedSourceId = normalizeId(request == null ? null : request.sourceId());
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
@@ -411,6 +422,10 @@ public class EventCheckoutBasketService {
     }
 
     public void retireCancelledEventReservations(String sourceId, Collection<String> participantIds) {
+        JobGroupContext.run(jobGroupScope.forTarget("event", sourceId), () -> retireCancelledEventReservationsInGroup(sourceId, participantIds));
+    }
+
+    private void retireCancelledEventReservationsInGroup(String sourceId, Collection<String> participantIds) {
         if (participantIds.isEmpty()) return;
         Criteria scope = Criteria.where("sourceId").is(sourceId).and("userId").in(participantIds)
                 .and("status").in(ACTIVE_STATUSES).and("resultState").ne(RESULT_STATE_DELETED);
@@ -423,6 +438,10 @@ public class EventCheckoutBasketService {
     }
 
     public void finalizeAcceptedReservation(String userId, String sourceId) {
+        JobGroupContext.run(jobGroupScope.forUser(userId), () -> finalizeAcceptedReservationInGroup(userId, sourceId));
+    }
+
+    private void finalizeAcceptedReservationInGroup(String userId, String sourceId) {
         String normalizedUserId = normalizeId(userId);
         String normalizedSourceId = normalizeId(sourceId);
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedSourceId)) {
@@ -481,6 +500,9 @@ public class EventCheckoutBasketService {
     }
 
     private int purgeExpiredDraftBaskets(Instant now, boolean scheduled) {
+        AtomicBoolean processing = processingByGroup.computeIfAbsent(
+                com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode() + ":" + JobGroupContext.key(),
+                ignored -> new AtomicBoolean());
         if (!processing.compareAndSet(false, true)) {
             return 0;
         }
@@ -509,7 +531,10 @@ public class EventCheckoutBasketService {
                     reservationResultStateCriteria(),
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso)));
-            List<EventCheckoutBasketItem> dueItems = mongoTemplate.find(query, EventCheckoutBasketItem.class);
+            List<EventCheckoutBasketItem> dueItems = JobGroupContext.isActive()
+                    ? jobGroupScope.findOwned(query, EventCheckoutBasketItem.class, "userId")
+                    : mongoTemplate.find(query, EventCheckoutBasketItem.class);
+            query.addCriteria(Criteria.where("_id").in(dueItems.stream().map(EventCheckoutBasketItem::getId).toList()));
             var expiredOwners = new java.util.HashSet<String>();
             for (EventCheckoutBasketItem item : dueItems) {
                 if (expiredOwners.add(item.getUserId() + ":" + item.getSourceId())) {
@@ -527,6 +552,7 @@ public class EventCheckoutBasketService {
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso),
                     Criteria.where("pendingCounterTracked").is(true)));
+            trackedQuery.addCriteria(Criteria.where("_id").in(dueItems.stream().map(EventCheckoutBasketItem::getId).toList()));
             int trackedModified = modifiedCount(
                     mongoTemplate.updateMulti(trackedQuery, update, EventCheckoutBasketItem.class));
             int modified = trackedModified + modifiedCount(

@@ -8,4 +8,5 @@ import com.raxim.myscoutee.profile.data.document.HelpCenterAuditEntry;
 
 public interface HelpCenterAuditRepository extends MongoRepository<HelpCenterAuditEntry, String> {
     List<HelpCenterAuditEntry> findAllByOrderByCreatedDateDesc();
+    List<HelpCenterAuditEntry> findByBaseGroupIdOrderByCreatedDateDesc(String baseGroupId);
 }

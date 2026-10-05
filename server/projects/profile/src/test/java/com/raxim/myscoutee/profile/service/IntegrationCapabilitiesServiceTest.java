@@ -36,7 +36,7 @@ class IntegrationCapabilitiesServiceTest {
         var result = service.describe(authentication(profile));
         assertThat(result.profileId()).isEqualTo("base");
         assertThat(result.groupId()).isNull();
-        assertThat(result.operations()).contains("createAssets", "event").doesNotContain("createEvents", "inviteGroupParticipants");
+        assertThat(result.operations()).contains("createAssets", "event").doesNotContain("createEvents", "inviteGroupParticipants", "createCampaigns");
         assertThat(result.inviteGroups()).isEmpty();
         verifyNoInteractions(repository);
     }
@@ -55,6 +55,16 @@ class IntegrationCapabilitiesServiceTest {
         assertThat(result.operations()).contains("createEvents", "inviteGroupParticipants").doesNotContain("createAssets");
         assertThat(result.inviteGroups()).extracting(item -> item.id()).containsExactly("g1");
         verify(access, never()).canCurrentActorCreateAsset(anyString(), anyString());
+    }
+
+    @Test void workConnectionAdvertisesCampaignCreationWithoutListing() {
+        var profile = new Users(); profile.setUserId("work-profile"); profile.setWorkspaceGroupId("myscoutee-work");
+        var group = new CommunityGroup("myscoutee-work", "account", "Work", null, null, null, "public", false,
+                null, null, null, null, null, null, null, null, null, null, null, null, "work");
+        when(groups.actor("work-profile")).thenReturn(profile);
+        when(groups.administeredGroups(profile)).thenReturn(List.of());
+        when(repository.findById("myscoutee-work")).thenReturn(Optional.of(group));
+        assertThat(service.describe(authentication(profile)).operations()).contains("createCampaigns").doesNotContain("listCampaigns");
     }
 
     @Test void rejectsNonIntegrationOrMismatchedIdentity() {

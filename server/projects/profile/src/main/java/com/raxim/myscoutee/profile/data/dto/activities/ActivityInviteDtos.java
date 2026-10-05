@@ -18,7 +18,10 @@ public final class ActivityInviteDtos {
             Integer page,
             Integer pageSize,
             List<String> existingMemberUserIds,
-            List<String> pendingInviteUserIds) {
+            List<String> pendingInviteUserIds,String purpose) {
+        public ActivityInviteCandidatesRequestDto(String activeUserId,String ownerId,String ownerType,String parentOwnerId,String parentOwnerType,String sort,Integer page,Integer pageSize,List<String> existingMemberUserIds,List<String> pendingInviteUserIds) {
+            this(activeUserId,ownerId,ownerType,parentOwnerId,parentOwnerType,sort,page,pageSize,existingMemberUserIds,pendingInviteUserIds,null);
+        }
         public ActivityInviteCandidatesRequestDto(
                 String activeUserId,
                 String ownerId,

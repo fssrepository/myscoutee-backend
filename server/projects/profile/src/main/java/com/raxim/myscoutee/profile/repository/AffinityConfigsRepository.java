@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.profile.data.document.AffinityConfig;
 
 public interface AffinityConfigsRepository extends MongoRepository<AffinityConfig, String> {
-    Optional<AffinityConfig> findFirstByActiveTrueOrderByVersionDesc();
+    Optional<AffinityConfig> findFirstByKeyAndActiveTrueOrderByVersionDesc(String key);
     Optional<AffinityConfig> findFirstByKeyOrderByVersionDesc(String key);
     List<AffinityConfig> findByActiveTrue();
     List<AffinityConfig> findByKeyOrderByVersionDesc(String key);

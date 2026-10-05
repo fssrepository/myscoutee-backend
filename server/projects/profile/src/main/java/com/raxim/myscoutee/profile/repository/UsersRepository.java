@@ -25,6 +25,9 @@ public interface UsersRepository extends MongoRepository<Users, String> {
     Optional<Users> findByWorkspaceGroupIdAndAccountUserId(String workspaceGroupId, String accountUserId);
     List<Users> findByAccountUserId(String accountUserId);
     List<Users> findByWorkspaceGroupId(String workspaceGroupId);
+    @Query("{ 'workspaceGroupId': ?0, 'userId': {'$ne': ?1}, 'profileStatus': {'$nin': ['deleted','blocked','inactive']} }")
+    org.springframework.data.domain.Page<Users> findPaymentMembers(String workspaceGroupId,String currentUserId,org.springframework.data.domain.Pageable pageable);
+    List<Users> findByWorkspaceGroupIdAndAccountUserIdIn(String workspaceGroupId, java.util.Collection<String> accountIds);
 
     @Query(value = "{}", sort = "{ 'name': 1, 'userId': 1 }", collation = "{ 'locale': 'en', 'strength': 2 }")
     List<Users> findAllByOrderByNameAscUserIdAsc();

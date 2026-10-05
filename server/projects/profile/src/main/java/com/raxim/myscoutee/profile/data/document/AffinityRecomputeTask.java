@@ -12,10 +12,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "affinityRecomputeTasks")
 @CompoundIndexes({
+        @CompoundIndex(name = "affinity_recompute_group_status_available", def = "{'baseGroupId': 1, 'status': 1, 'availableAtIso': 1}"),
         @CompoundIndex(name = "affinity_recompute_task_status_available", def = "{'status': 1, 'availableAtIso': 1}"),
         @CompoundIndex(name = "affinity_recompute_task_target_status", def = "{'targetType': 1, 'status': 1}")
 })
 public class AffinityRecomputeTask {
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }
+
     @Id
     private String id;
 

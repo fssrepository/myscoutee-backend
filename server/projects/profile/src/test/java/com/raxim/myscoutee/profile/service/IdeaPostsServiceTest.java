@@ -62,6 +62,7 @@ class IdeaPostsServiceTest {
     void setUp() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new IdeaPostsService(
+                org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.AdminModerationService.class),
                 configProperties,
                 ideaPostsRepository,
                 mongoTemplate,
@@ -80,9 +81,9 @@ class IdeaPostsServiceTest {
     @Test
     void publicPostsPageUsesAcceptLanguageThenFallsBackToEnglishAndBoundsPaging() {
         IdeaPost english = post("article-en", "en", "2026-07-20T10:00:00Z");
-        when(landingArticlesRepository.findPage("hu", 0, 50, null))
+        when(landingArticlesRepository.findPage("hu", 0, 50, null, null))
                 .thenReturn(new LandingArticleSlice(List.of(), 0L, false));
-        when(landingArticlesRepository.findPage("en", 0, 50, null))
+        when(landingArticlesRepository.findPage("en", 0, 50, null, null))
                 .thenReturn(new LandingArticleSlice(List.of(english), 1L, false));
 
         IdeaPostPublicPageDto result = service.publicPostsPage(
@@ -95,15 +96,15 @@ class IdeaPostsServiceTest {
         assertThat(result.records()).extracting(record -> record.id()).containsExactly("article-en");
         assertThat(result.total()).isEqualTo(1);
         assertThat(result.nextCursor()).isNull();
-        verify(landingArticlesRepository).findPage("hu", 0, 50, null);
-        verify(landingArticlesRepository).findPage("en", 0, 50, null);
+        verify(landingArticlesRepository).findPage("hu", 0, 50, null, null);
+        verify(landingArticlesRepository).findPage("en", 0, 50, null, null);
     }
 
     @Test
     void publicPostsPageReturnsAndConsumesStableOpaqueCursor() {
         IdeaPost first = post("article-c", "en", "2026-07-20T10:00:00Z");
         IdeaPost second = post("article-b", "en", "2026-07-20T10:00:00Z");
-        when(landingArticlesRepository.findPage("en", 0, 2, null))
+        when(landingArticlesRepository.findPage("en", 0, 2, null, null))
                 .thenReturn(new LandingArticleSlice(List.of(first, second), 3L, true));
 
         IdeaPostPublicPageDto firstPage = service.publicPostsPage("en", "hu", 0, 2, null);
@@ -117,7 +118,7 @@ class IdeaPostsServiceTest {
                 "en",
                 "2026-07-20T10:00:00Z",
                 "article-b");
-        when(landingArticlesRepository.findPage("en", 0, 2, expectedCursor))
+        when(landingArticlesRepository.findPage("en", 0, 2, expectedCursor, null))
                 .thenReturn(new LandingArticleSlice(List.of(), 3L, false));
 
         IdeaPostPublicPageDto lastPage = service.publicPostsPage(
@@ -129,12 +130,12 @@ class IdeaPostsServiceTest {
 
         assertThat(lastPage.records()).isEmpty();
         assertThat(lastPage.nextCursor()).isNull();
-        verify(landingArticlesRepository).findPage("en", 0, 2, expectedCursor);
+        verify(landingArticlesRepository).findPage("en", 0, 2, expectedCursor, null);
     }
 
     @Test
     void publicFeaturedPostsKeepsRequestedLanguageWhenOnlyRegularPostsExist() {
-        when(landingArticlesRepository.findFeaturedPreview("hu", 8))
+        when(landingArticlesRepository.findFeaturedPreview("hu", 8, null))
                 .thenReturn(new LandingArticleSlice(List.of(), 3L, false));
 
         IdeaPostPublicPageDto result = service.publicFeaturedPosts("hu-HU", "en");
@@ -142,15 +143,15 @@ class IdeaPostsServiceTest {
         assertThat(result.records()).isEmpty();
         assertThat(result.total()).isEqualTo(3);
         assertThat(result.nextCursor()).isNull();
-        verify(landingArticlesRepository).findFeaturedPreview("hu", 8);
+        verify(landingArticlesRepository).findFeaturedPreview("hu", 8, null);
     }
 
     @Test
     void publicPostsPageCursorLocksAnEnglishFallbackAcrossLaterPages() {
         IdeaPost english = post("article-en", "en", "2026-07-20T10:00:00Z");
-        when(landingArticlesRepository.findPage("hu", 0, 1, null))
+        when(landingArticlesRepository.findPage("hu", 0, 1, null, null))
                 .thenReturn(new LandingArticleSlice(List.of(), 0L, false));
-        when(landingArticlesRepository.findPage("en", 0, 1, null))
+        when(landingArticlesRepository.findPage("en", 0, 1, null, null))
                 .thenReturn(new LandingArticleSlice(List.of(english), 2L, true));
 
         IdeaPostPublicPageDto firstPage = service.publicPostsPage("hu", "en", 0, 1, null);
@@ -158,7 +159,7 @@ class IdeaPostsServiceTest {
                 "en",
                 "2026-07-20T10:00:00Z",
                 "article-en");
-        when(landingArticlesRepository.findPage("en", 0, 1, englishCursor))
+        when(landingArticlesRepository.findPage("en", 0, 1, englishCursor, null))
                 .thenReturn(new LandingArticleSlice(List.of(), 2L, false));
 
         IdeaPostPublicPageDto secondPage = service.publicPostsPage(
@@ -169,7 +170,7 @@ class IdeaPostsServiceTest {
                 firstPage.nextCursor());
 
         assertThat(secondPage.records()).isEmpty();
-        verify(landingArticlesRepository).findPage("en", 0, 1, englishCursor);
+        verify(landingArticlesRepository).findPage("en", 0, 1, englishCursor, null);
     }
 
     @Test

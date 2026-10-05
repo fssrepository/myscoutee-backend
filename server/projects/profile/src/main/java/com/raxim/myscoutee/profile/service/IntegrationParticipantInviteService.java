@@ -86,7 +86,7 @@ public class IntegrationParticipantInviteService {
         var stored = mongo.find(Query.query(Criteria.where("_id").in(ids.keySet())), IntegrationParticipantInvite.class);
         Map<String, IntegrationParticipantInvite> byId = new HashMap<>();
         stored.forEach(invite -> byId.put(invite.id(), invite));
-        String appUrl = invitationBaseUrl(ownerUserId);
+        String appUrl = invitationBaseUrl(ownerUserId) + "&mode=" + invitationLandingType(ownerUserId, ownerType, eventId);
         return new IntegrationParticipantInvitesDto(ids.keySet().stream().map(id -> {
             var invite = byId.get(id);
             return new IntegrationParticipantInviteDto(invite.participantId(), appUrl + "&partnerInvite=" + invite.token(),
@@ -120,6 +120,7 @@ public class IntegrationParticipantInviteService {
             if (original == null || !(original.getPrincipal() instanceof com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal))
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             var recipient = groups.claimEventInvite(event.getWorkspaceGroupId(), invite.ownerUserId(), accountId);
+            groups.joinWorkspaceBase(groups.actor(accountId), event.getWorkspaceGroupId());
             try {
                 org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
                         com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationToken.forProfile(original, recipient));
@@ -166,6 +167,7 @@ public class IntegrationParticipantInviteService {
         }
         if (community) {
             groups.claimIntegrationInvite(claimed, actor);
+            groups.joinWorkspaceBase(groups.actor(actor), invite.eventId());
             return new IntegrationParticipantClaimDto(null, true, invite.eventId());
         }
         if (invitationAvailable) {
@@ -211,7 +213,16 @@ public class IntegrationParticipantInviteService {
         } catch (DuplicateKeyException conflict) {
             invite = mongo.findById(id, IntegrationParticipantInvite.class);
         }
-        return new ExternalInviteLinkDto(invitationBaseUrl(actor) + "&partnerInvite=" + invite.token());
+        return new ExternalInviteLinkDto(invitationBaseUrl(actor) + "&partnerInvite=" + invite.token()
+                + "&mode=" + invitationLandingType(actor, ownerType, entityId));
+    }
+
+    private String invitationLandingType(String actor, String ownerType, String entityId) {
+        var profile = users.findByUserId(actor).orElse(null);
+        String groupId = "community".equals(ownerType) ? entityId : profile == null ? null : profile.getWorkspaceGroupId();
+        var group = groupId == null ? null : mongo.findById(groupId,
+                com.raxim.myscoutee.profile.data.document.CommunityGroup.class);
+        return group == null ? "dating" : group.effectiveType();
     }
 
     private String invitationBaseUrl(String owner) {

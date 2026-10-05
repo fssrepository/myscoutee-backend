@@ -28,6 +28,13 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map<String, Object> attributes) {
         var queryParams = UriComponentsBuilder.fromUri(request.getURI()).build().getQueryParams();
+        String sessionKind = decodeQueryParam(queryParams.getFirst("sessionKind"));
+        if (!StringUtils.hasText(sessionKind)) {
+            sessionKind = request.getHeaders().getFirst(DemoSessionRequestSupport.SESSION_KIND_HEADER);
+        }
+        if (StringUtils.hasText(sessionKind)) {
+            attributes.put(SESSION_KIND_ATTRIBUTE, sessionKind.trim());
+        }
         String chatId = decodeQueryParam(queryParams.getFirst("chatId"));
         String path = request.getURI() == null ? "" : request.getURI().getPath();
         if (path != null && path.endsWith("/admin/notifications/ws")) {
@@ -45,13 +52,6 @@ public class ChatHandshakeInterceptor implements HandshakeInterceptor {
         String userId = decodeQueryParam(queryParams.getFirst("userId"));
         if (StringUtils.hasText(userId)) {
             attributes.put(USER_ID_ATTRIBUTE, userId.trim());
-        }
-        String sessionKind = decodeQueryParam(queryParams.getFirst("sessionKind"));
-        if (!StringUtils.hasText(sessionKind)) {
-            sessionKind = request.getHeaders().getFirst(DemoSessionRequestSupport.SESSION_KIND_HEADER);
-        }
-        if (StringUtils.hasText(sessionKind)) {
-            attributes.put(SESSION_KIND_ATTRIBUTE, sessionKind.trim());
         }
         return true;
     }

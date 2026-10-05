@@ -59,8 +59,7 @@ class AdminAffinityGraphServiceTest {
 
     @BeforeEach
     void setUp() {
-        when(adminModerationService.resolveAdminActor("admin-1"))
-                .thenReturn(new AdminUserDto("admin-1", "Admin", "A", "admin@example.test", "", "", List.of()));
+        when(adminModerationService.baseGroupId("admin-1")).thenReturn(null);
         service = new AdminAffinityGraphService(
                 adminModerationService,
                 usersRepository,
@@ -95,7 +94,7 @@ class AdminAffinityGraphServiceTest {
         assertThat(meta.linkCount()).isEqualTo(1);
         assertThat(meta.componentCount()).isEqualTo(2);
         assertThat(meta.isolatedCount()).isEqualTo(1);
-        verify(adminModerationService, atLeastOnce()).resolveAdminActor("admin-1");
+        verify(adminModerationService, atLeastOnce()).baseGroupId("admin-1");
     }
 
     @Test
@@ -120,7 +119,7 @@ class AdminAffinityGraphServiceTest {
 
     @Test
     void tileReturnsOnlyViewportNodesWithLayoutCoordinates() {
-        when(layoutsRepository.findFirstByOrderByGeneratedAtIsoDesc()).thenReturn(Optional.empty());
+        when(layoutsRepository.findFirstByScopeKeyOrderByGeneratedAtIsoDesc("dating")).thenReturn(Optional.empty());
         when(usersRepository.findAll()).thenReturn(List.of(
                 user("u1", "Ava", "woman", "public"),
                 user("u2", "Ben", "man", "public"),
@@ -170,7 +169,7 @@ class AdminAffinityGraphServiceTest {
     @Test
     void forestsUseMaterializedPagedRepositoryForDefaultWeightRange() {
         AdminAffinityGraphLayout layout = layout("layout-1", 40, 39, 20, 3);
-        when(layoutsRepository.findFirstByOrderByGeneratedAtIsoDesc()).thenReturn(Optional.of(layout));
+        when(layoutsRepository.findFirstByScopeKeyOrderByGeneratedAtIsoDesc("dating")).thenReturn(Optional.of(layout));
         when(graphForestsRepository.countByLayoutVersion("layout-1")).thenReturn(40L);
         when(graphForestsRepository.findByLayoutVersionOrderByMemberCountDesc("layout-1", PageRequest.of(1, 20)))
                 .thenReturn(List.of(forest("c20", "u20", "Uma", "woman", 7, 8, 30d)));
@@ -250,6 +249,18 @@ class AdminAffinityGraphServiceTest {
         verify(graphEdgesRepository, times(1)).findRelevantByLayoutVersionAndUserIds("layout-1", List.of("u1", "u2"));
     }
 
+    @Test
+    void selectedBaseGroupExcludesOtherProfilesAndCrossGroupEdges() {
+        when(adminModerationService.baseGroupId("admin-1")).thenReturn("myscoutee-work");
+        var work = user("work-u1", "Work member", "woman", "public"); work.setWorkspaceGroupId("myscoutee-work");
+        var other = user("dating-u1", "Dating member", "woman", "public");
+        when(usersRepository.findAll()).thenReturn(List.of(work, other));
+        when(userAffinityEdgesRepository.findAll()).thenReturn(List.of(edge("work-u1", "dating-u1", 1d)));
+        var graph = service.full("admin-1", 0d, 1d);
+        assertThat(graph.nodes()).extracting("id").containsExactly("work-u1");
+        assertThat(graph.edges()).isEmpty();
+    }
+
     private Users user(String id, String name, String gender, String profileStatus) {
         Users user = new Users();
         user.setId(id);
@@ -272,6 +283,7 @@ class AdminAffinityGraphServiceTest {
 
     private AdminAffinityGraphLayout layout(String version, int memberCount, int linkCount, int componentCount, int isolatedCount) {
         AdminAffinityGraphLayout layout = new AdminAffinityGraphLayout();
+        layout.setScopeKey("dating");
         layout.setLayoutVersion(version);
         layout.setGeneratedAtIso("2026-05-26T00:00:00Z");
         layout.setSource("materialized");

@@ -16,7 +16,6 @@ import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.D
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentSocialLinkDto;
-import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.DeploymentThemePreset;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebaseConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.profile.data.dto.operator.OperatorConfigurationDtos.IntegrationConfigurationDto;
@@ -36,7 +35,6 @@ public class OperatorConfigurationMapper {
                 logoCharacterIndex(branding),
                 requireText(branding.getHomeLabel(), "Deployment home label"),
                 safeText(branding.getLogoUrl()),
-                theme(branding.getThemePreset()),
                 branding.getRevision(),
                 toSocialLinks(configuration));
     }
@@ -49,7 +47,6 @@ public class OperatorConfigurationMapper {
                 logoCharacterIndex(branding),
                 requireText(branding.getHomeLabel(), "Deployment home label"),
                 safeText(branding.getLogoUrl()),
-                theme(branding.getThemePreset()),
                 branding.getRevision(),
                 blankToNull(configuration.getPayment().getProviderId()),
                 configuration.getFirebase().getMessagingCredentialEnvelope() != null,
@@ -187,17 +184,6 @@ public class OperatorConfigurationMapper {
                 .toList();
     }
 
-    private DeploymentThemePreset theme(String value) {
-        try {
-            return DeploymentThemePreset.valueOf(requireText(
-                    value,
-                    "Deployment theme preset"));
-        } catch (IllegalArgumentException exception) {
-            throw new IllegalStateException(
-                    "Deployment theme preset is unsupported.",
-                    exception);
-        }
-    }
 
     private String requireText(String value, String fieldName) {
         if (!StringUtils.hasText(value)) {

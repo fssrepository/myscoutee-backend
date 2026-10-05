@@ -29,6 +29,9 @@ import com.raxim.myscoutee.profile.repository.UsersRepository;
 
 @Service
 public class AffinityMaintenanceService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String STATUS_ACCEPTED = "accepted";
     private final UsersRepository usersRepository;
@@ -219,7 +222,7 @@ public class AffinityMaintenanceService {
     }
 
     public StoredAffinityRecomputeOutcome refreshAllStoredAffinities() {
-        List<Users> users = usersRepository.findAll().stream()
+        List<Users> users = (JobGroupContext.isActive() ? mongoTemplate.find(Query.query(jobGroupScope.workspaceCriteria("workspaceGroupId")), Users.class) : usersRepository.findAll()).stream()
                 .filter(user -> StringUtils.hasText(normalizeId(user == null ? null : user.getId())))
                 .toList();
         for (Users user : users) {
@@ -323,7 +326,8 @@ public class AffinityMaintenanceService {
     private RecomputeOutcome saveChangedEvents(Collection<ActivityEvent> events, Map<String, Users> usersById) {
         List<ActivityEvent> eventList = events == null
                 ? List.of()
-                : events.stream().filter(event -> event != null).toList();
+                : events.stream().filter(event -> event != null)
+                        .filter(event -> !JobGroupContext.isActive() || jobGroupScope.matchesWorkspace(event.getWorkspaceGroupId())).toList();
         Map<String, List<String>> acceptedMembersBySourceId = eventAcceptedMemberUserIdsBySourceId(eventList);
         List<String> updatedSourceIds = new ArrayList<>();
         List<String> conflictedSourceIds = new ArrayList<>();
@@ -378,6 +382,7 @@ public class AffinityMaintenanceService {
                 continue;
             }
             Users owner = usersById.get(normalizeId(asset.getOwnerUserId()));
+            if (JobGroupContext.isActive() && owner == null) continue;
             double nextAffinity = absoluteAffinityService.resolveAssetAffinity(asset, owner);
             double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
             if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
@@ -467,7 +472,7 @@ public class AffinityMaintenanceService {
     }
 
     private void refreshAllRateAffinities() {
-        refreshRateAffinities(userRatesRepository.findAll());
+        refreshRateAffinities(JobGroupContext.isActive() ? jobGroupScope.findOwned(new Query(), UserRate.class, "ownerUserId") : userRatesRepository.findAll());
     }
 
     private void refreshRateAffinities(List<UserRate> rates) {

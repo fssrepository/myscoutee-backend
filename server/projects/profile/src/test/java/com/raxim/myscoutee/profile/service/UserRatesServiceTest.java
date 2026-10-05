@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
@@ -105,7 +106,7 @@ class UserRatesServiceTest {
         assertThat(intent.entityId()).isEqualTo(saved.getId());
         assertThat(intent.recipientScope()).isEqualTo("rated-users");
         assertThat(intent.recipientUserIds()).containsExactly("u2");
-        assertThat(intent.clickUrl()).isEqualTo("/game");
+        assertThat(intent.clickUrl()).isEqualTo("/game?ratings=1");
         assertThat(intent.createdUser()).isEqualTo("u1");
         assertThat(intent.payload())
                 .containsEntry("rateId", saved.getId())
@@ -300,7 +301,7 @@ class UserRatesServiceTest {
         UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
                 homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
                 userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
-        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
+        when(userRatesRepository.findRelevantInCampaign(anyString(), isNull())).thenReturn(List.of(record));
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
         verify(mongoTemplate, never()).getCollection("userFriendships");
     }
@@ -315,7 +316,7 @@ class UserRatesServiceTest {
         UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
                 homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
                 userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
-        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
+        when(userRatesRepository.findRelevantInCampaign(anyString(), isNull())).thenReturn(List.of(record));
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
         verify(friendshipCollection).bulkWrite(anyList(), any(BulkWriteOptions.class));
@@ -329,13 +330,13 @@ class UserRatesServiceTest {
         meeting.setMet(true);
         meeting.setScoreReceived(0);
         UserRate reciprocal = singleRate("reciprocal", "u2", "u1", 8);
-        when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc())
+        when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default"))
                 .thenReturn(Optional.of(AffinityConfig.defaults()));
-        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(meeting, reciprocal));
+        when(userRatesRepository.findRelevantInCampaign(anyString(), isNull())).thenReturn(List.of(meeting, reciprocal));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(first, second));
         when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
         AffinityCalculationService affinity = new AffinityCalculationService(affinityConfigsRepository,
-                usersRepository, userRatesRepository, userExperienceProfilesRepository);
+                usersRepository, userRatesRepository, userExperienceProfilesRepository, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.CommunityGroupsRepository.class));
         UserRatesService service = new UserRatesService(userRatesRepository, usersRepository,
                 homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
@@ -779,11 +780,33 @@ class UserRatesServiceTest {
                 .containsExactly(4_000, 2_000, 5_000);
     }
 
+    @Test
+    void campaignRatingsAggregatePeopleAndFilterBeforeAveraging() {
+        Users viewer = user("u1", "Member", List.of());
+        Users organizer = user("u2", "Organizer", List.of());
+        UserRate first = singleRate("campaign-a-interest", "u1", "u2", 6);
+        first.setCampaignId("campaign-a");
+        UserRate second = singleRate("campaign-b-interest", "u1", "u2", 10);
+        second.setCampaignId("campaign-b");
+        UserRate reply = singleRate("campaign-a-reply", "u2", "u1", 8);
+        reply.setCampaignId("campaign-a");
+        var service = queryService(Map.of("u1", viewer, "u2", organizer), List.of(first, second, reply));
+        var aggregate = service.queryActivityRatePage("u1", "single", "mutual", "happenedAt", "desc", "recent", false, null, 10, null, null);
+        assertThat(aggregate.items()).hasSize(1);
+        assertThat(aggregate.items().getFirst().scoreGiven()).isEqualTo(8d);
+        assertThat(aggregate.items().getFirst().scoreReceived()).isEqualTo(8d);
+        assertThat(aggregate.items().getFirst().campaignId()).isNull();
+        var selected = service.queryActivityRatePage("u1", "single", "mutual", "happenedAt", "desc", "recent", false, null, 10, null, null, "campaign-a");
+        assertThat(selected.items()).hasSize(1);
+        assertThat(selected.items().getFirst().scoreGiven()).isEqualTo(6d);
+        assertThat(selected.items().getFirst().campaignId()).isEqualTo("campaign-a");
+    }
+
     private UserRatesService syncService(Map<String, Users> usersById, List<UserRate> contextRates) {
         AffinityConfig config = AffinityConfig.defaults();
         config.setProfileRules(List.of());
         config.setImpressionRules(List.of());
-        when(affinityConfigsRepository.findFirstByActiveTrueOrderByVersionDesc()).thenReturn(Optional.of(config));
+        when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default")).thenReturn(Optional.of(config));
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(contextRates);
         when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
         when(userRatesRepository.saveAll(anyList())).thenAnswer(invocation -> List.copyOf(invocation.getArgument(0)));
@@ -792,7 +815,7 @@ class UserRatesServiceTest {
                 affinityConfigsRepository,
                 usersRepository,
                 userRatesRepository,
-                userExperienceProfilesRepository);
+                userExperienceProfilesRepository, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.CommunityGroupsRepository.class));
         return new UserRatesService(
                 userRatesRepository,
                 usersRepository,
@@ -806,7 +829,7 @@ class UserRatesServiceTest {
     }
 
     private UserRatesService queryService(Map<String, Users> usersById, List<UserRate> records) {
-        when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(records);
+        when(userRatesRepository.findRelevantInCampaign(anyString(), isNull())).thenReturn(records);
         when(homeUserProfileService.isActivityRateVisibleUser(any(Users.class))).thenAnswer(invocation -> {
             Users user = invocation.getArgument(0);
             return user != null && !"blocked".equals(user.getProfileStatus()) && !"inactive".equals(user.getProfileStatus());
@@ -820,7 +843,7 @@ class UserRatesServiceTest {
                         affinityConfigsRepository,
                         usersRepository,
                         userRatesRepository,
-                userExperienceProfilesRepository),
+                userExperienceProfilesRepository, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.CommunityGroupsRepository.class)),
                 userAffinityEdgeService,
                 mongoTemplate,
                 adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.service.OrganizerFollowingService.class));

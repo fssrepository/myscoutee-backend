@@ -185,7 +185,8 @@ public class ActivityEventMapper {
                 StringUtils.hasText(record.getCancelledAtIso()),
                 StringUtils.hasText(record.getCancelledAtIso()) && !Boolean.TRUE.equals(record.getCancellationRefundsComplete()),
                 context != null && record.getRefundEligibleUserIds() != null
-                        && record.getRefundEligibleUserIds().contains(context.viewerUserId()));
+                        && record.getRefundEligibleUserIds().contains(context.viewerUserId()),
+                record.getCampaignId());
     }
 
     private String resolvePendingReason(ActivityEvent record, MappingContext context,

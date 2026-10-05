@@ -11,10 +11,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "scheduledMessageTasks")
 @CompoundIndexes({
+        @CompoundIndex(name = "scheduled_message_group_status_due", def = "{'baseGroupId': 1, 'status': 1, 'dueAtIso': 1}"),
         @CompoundIndex(name = "scheduled_message_task_status_due", def = "{'status': 1, 'dueAtIso': 1}"),
         @CompoundIndex(name = "scheduled_message_task_action_due", def = "{'actionKey': 1, 'dueAtIso': 1}")
 })
 public class ScheduledMessageTask {
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }
+
     @Id
     private String id;
 

@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "community-task-riverside-chimney",
+    "communityId": "community-riverside",
+    "title": "Annual chimney inspection",
+    "description": "Arrange a shared visit and give residents enough time to choose an appointment.",
+    "caseType": "chimney-sweep",
+    "audienceAll": true,
+    "nextDueAtIso": "2026-11-19T09:00:00.000Z",
+    "frequency": "yearly",
+    "enabled": true,
+    "startAtIso": "2026-11-19T09:00:00.000Z",
+    "deleted": false,
+    "baseGroupId": "myscoutee-community",
+    "createdAtIso": "2026-10-05T00:00:00.000Z",
+    "updatedAtIso": "2026-10-05T00:00:00.000Z",
+    "version": 0,
+    "ownerAccountId": "af0436815ab38f4864dd1e24",
+    "audienceAccountIds": []
+  }
+]

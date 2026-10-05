@@ -22,6 +22,13 @@ import com.raxim.myscoutee.profile.repository.AffiliateRevenueRepository;
 @Service
 public class AffiliateRevenueService {
     @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
+    @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.profile.service.exchange.PaymentEuroService euroService;
     private final MongoTemplate mongo;
     private final AffiliateRevenueRepository repository;
@@ -89,14 +96,14 @@ public class AffiliateRevenueService {
 
     @Scheduled(fixedDelay = 30_000L)
     public void finishInterruptedWrites() {
-        sessions.runAcrossConfiguredDatabases(() -> {
-            for (Payment payment : mongo.find(Query.query(Criteria.where("affiliateRevenuePending").is(true)).limit(100), Payment.class)) {
+        sessions.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("affiliate-revenue", () -> {
+            for (Payment payment : jobGroupScope.findOwned(Query.query(Criteria.where("affiliateRevenuePending").is(true)).limit(100), Payment.class, "userId")) {
                 try { record(payment); }
                 catch (RuntimeException error) {
                     org.slf4j.LoggerFactory.getLogger(AffiliateRevenueService.class)
                             .warn("Affiliate counter write remains pending: {}", error.getClass().getSimpleName());
                 }
             }
-        });
+        }));
     }
 }

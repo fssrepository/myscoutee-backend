@@ -17,6 +17,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class EmailOutboxItem {
     @Id
     private String id;
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String value) { baseGroupId = value; }
 
     @Indexed(name = "email_outbox_sync_key", unique = true, sparse = true)
     private String syncKey;

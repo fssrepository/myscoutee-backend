@@ -13,11 +13,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "notificationOutbox")
 @CompoundIndexes({
+        @CompoundIndex(name = "notification_outbox_group_status_retry", def = "{'baseGroupId': 1, 'status': 1, 'nextRetryAt': 1, 'createdDate': 1}"),
         @CompoundIndex(name = "notification_outbox_status_retry", def = "{'status': 1, 'nextRetryAt': 1, 'createdDate': 1}"),
         @CompoundIndex(name = "notification_outbox_collapse_status", def = "{'collapseKey': 1, 'status': 1}"),
         @CompoundIndex(name = "notification_outbox_entity_created", def = "{'entityType': 1, 'entityId': 1, 'createdDate': -1}")
 })
 public class NotificationOutboxItem {
+    private String baseGroupId;
+    public String getBaseGroupId() { return baseGroupId; }
+    public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }
+
     public static final String STATUS_PENDING = "pending";
     public static final String STATUS_RUNNING = "running";
     public static final String STATUS_SENT = "sent";

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/shared/ui/components/payment-refund-policy/payment-refund-policy.component.scss"],
-  "sourcesContent": [":host { display: block; min-width: 0; }\n.refund-policy { padding: 16px; border: 1px solid #d6e1ef; border-radius: 18px; background: linear-gradient(145deg, #fff, #f5faff); color: #244363; }\nheader { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }\nh3, p { margin: 0; }\nh3 { font-size: 14px; }\np { margin-top: 4px; color: #647b98; font-size: 12px; overflow-wrap: anywhere; }\n.refund-policy__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 8px 16px; padding: 10px 0; font-size: 13px; }\n.refund-policy__row + .refund-policy__row { border-top: 1px solid #dfe8f2; }\n.refund-policy__row > div { flex: 1 1 180px; min-width: 0; }\n"],
-  "mappings": ";AAAA;AAAQ,WAAA;AAAgB,aAAA;;AACxB,CAAA;AAAiB,WAAA;AAAe,UAAA,IAAA,MAAA;AAA2B,iBAAA;AAAqB;IAAA;MAAA,MAAA;MAAA,IAAA;MAAA;AAAoD,SAAA;;AACpI;AAAS,WAAA;AAAe,eAAA;AAAqB,OAAA;AAAU,iBAAA;;AACvD;AAAA;AAAQ,UAAA;;AACR;AAAK,aAAA;;AACL;AAAI,cAAA;AAAiB,SAAA;AAAgB,aAAA;AAAiB,iBAAA;;AACtD,CAAA;AAAsB,WAAA;AAAe,aAAA;AAAiB,mBAAA;AAAgC,eAAA;AAAoB,OAAA,IAAA;AAAe,WAAA,KAAA;AAAiB,aAAA;;AAC1I,CADA,mBACA,EAAA,CADA;AAC4C,cAAA,IAAA,MAAA;;AAC5C,CAFA,mBAEA,EAAA;AAA4B,QAAA,EAAA,EAAA;AAAiB,aAAA;;",
-  "names": []
-}

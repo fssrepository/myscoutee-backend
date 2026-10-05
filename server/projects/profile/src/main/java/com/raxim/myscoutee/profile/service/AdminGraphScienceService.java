@@ -57,7 +57,7 @@ public class AdminGraphScienceService {
         if (snapshot == null) {
             return;
         }
-        GraphScienceResult result = calculate();
+        GraphScienceResult result = calculate("global".equals(snapshot.getStatsKey()) ? null : snapshot.getStatsKey());
         snapshot.setGraphHealthScore(result.healthScore());
         snapshot.setGraphHealthLabelKey(result.healthLabelKey());
         snapshot.setGraphInsightKey(result.insightKey());
@@ -88,9 +88,10 @@ public class AdminGraphScienceService {
         return merged;
     }
 
-    private GraphScienceResult calculate() {
-        Map<String, String> userNamesById = userNamesById();
-        Map<String, String> userGendersById = userGendersById();
+    private GraphScienceResult calculate(String groupId) {
+        List<Users> users = usersRepository.findAll().stream().filter(user -> Objects.equals(groupId, user.getWorkspaceGroupId())).toList();
+        Map<String, String> userNamesById = userNamesById(users);
+        Map<String, String> userGendersById = userGendersById(users);
         Map<String, GraphEdge> edgesByKey = new LinkedHashMap<>();
         LinkedHashSet<String> nodes = new LinkedHashSet<>();
 
@@ -98,7 +99,9 @@ public class AdminGraphScienceService {
         addRateEdges(edgesByKey, nodes);
         addEventMemberEdges(edgesByKey, nodes);
 
+        nodes.retainAll(userNamesById.keySet());
         List<GraphEdge> edges = edgesByKey.values().stream()
+                .filter(edge -> userNamesById.containsKey(edge.left()) && userNamesById.containsKey(edge.right()))
                 .filter(edge -> StringUtils.hasText(edge.left()) && StringUtils.hasText(edge.right()))
                 .toList();
         Map<String, Map<String, Double>> graph = adjacency(edges);
@@ -549,9 +552,9 @@ public class AdminGraphScienceService {
         return "stats.graph.insight.healthy";
     }
 
-    private Map<String, String> userNamesById() {
+    private Map<String, String> userNamesById(List<Users> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (Users user : usersRepository.findAll()) {
+        for (Users user : users) {
             if (user == null) {
                 continue;
             }
@@ -563,9 +566,9 @@ public class AdminGraphScienceService {
         return result;
     }
 
-    private Map<String, String> userGendersById() {
+    private Map<String, String> userGendersById(List<Users> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (Users user : usersRepository.findAll()) {
+        for (Users user : users) {
             if (user == null) {
                 continue;
             }

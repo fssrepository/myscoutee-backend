@@ -18,6 +18,13 @@ import com.raxim.myscoutee.profile.repository.ActivityEventsRepository;
 /** The completed session is the durable source; publication is marked only after outbox insertion. */
 @Service
 public class IntegrationEncounterPublisher {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.notifications.NotificationRuleRegistryService groupRules;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.profile.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
+
     private static final Logger LOG = LoggerFactory.getLogger(IntegrationEncounterPublisher.class);
     private final MongoTemplate mongo;
     private final ActivityEventsRepository events;
@@ -31,8 +38,12 @@ public class IntegrationEncounterPublisher {
 
     @Scheduled(fixedDelayString = "${integration.encounters.publish-interval-ms:5000}")
     public void publishPending() {
-        List<ActivityMingleSession> pending = mongo.find(Query.query(Criteria.where("status").is("COMPLETED")
-                .and("encountersPublished").is(false)).with(Sort.by("updatedAtIso")).limit(20), ActivityMingleSession.class);
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("integration-encounters", this::publishPendingInGroup));
+    }
+
+    private void publishPendingInGroup() {
+        List<ActivityMingleSession> pending = jobGroupScope.findEventOwned(Query.query(Criteria.where("status").is("COMPLETED")
+                .and("encountersPublished").is(false)).with(Sort.by("updatedAtIso")).limit(20), ActivityMingleSession.class, "eventId");
         if (pending.isEmpty()) return;
         var eventIds = pending.stream().map(ActivityMingleSession::getEventId).distinct().toList();
         var canonical = new LinkedHashMap<String, ActivityEvent>();

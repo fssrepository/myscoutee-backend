@@ -39,7 +39,7 @@ public class IdeaPostMapper {
                 normalize(post.getCreatedUser()),
                 normalize(post.getUpdatedDate()),
                 normalize(post.getUpdatedUser()),
-                post.getImageDetails());
+                post.getImageDetails(), post.getWorkspaceGroupId());
     }
 
     private String contentLang(String value) {

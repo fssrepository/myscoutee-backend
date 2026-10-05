@@ -130,7 +130,7 @@ class HomeUserProfileServiceTest {
     private AffiliateService affiliateService;
 
     private HomeUserProfileService service;
-    private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null);
+    private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null, null);
 
     @BeforeEach
     void setUp() {
@@ -170,7 +170,7 @@ class HomeUserProfileServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
-                assetsService, affiliateService);
+                assetsService, affiliateService, org.mockito.Mockito.mock(com.raxim.myscoutee.profile.repository.CommunityGroupsRepository.class));
         service.setUserNotificationPageRepository(userNotificationPageRepository);
         lenient().when(userNotificationPageRepository.countUnread("active"))
                 .thenReturn(17L);

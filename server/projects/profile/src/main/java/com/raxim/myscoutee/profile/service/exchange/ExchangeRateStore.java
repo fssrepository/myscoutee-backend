@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.profile.service.exchange;
 
+import com.raxim.myscoutee.profile.service.JobGroupContext;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,16 +17,22 @@ public class ExchangeRateStore {
     private final MongoTemplate mongo;
     public ExchangeRateStore(MongoTemplate mongo) { this.mongo = mongo; }
 
-    @Cacheable(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name()")
+    @Cacheable(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.profile.service.JobGroupContext).key()")
     public List<Document> observations() {
-        return mongo.getCollection("exchangeRates").find().sort(new Document("_id", -1)).limit(400)
+        return mongo.getCollection("exchangeRates").find(new Document("baseGroupId", JobGroupContext.groupId())).sort(new Document("_id", -1)).limit(400)
+                .map(row -> { if (row.getString("date") != null) row.put("_id", row.getString("date")); return row; })
                 .into(new java.util.ArrayList<>());
     }
 
-    @CacheEvict(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name()")
+    @CacheEvict(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.profile.service.JobGroupContext).key()")
     public void save(List<Document> observations) {
-        var writes = observations.stream().map(row -> new com.mongodb.client.model.UpdateOneModel<Document>(
-                new Document("_id", row.getString("_id")), new Document("$setOnInsert", row), new UpdateOptions().upsert(true))).toList();
+        var writes = observations.stream().map(row -> {
+            String date = row.getString("_id");
+            String id = JobGroupContext.groupId() == null ? date : JobGroupContext.key() + ":" + date;
+            Document scoped = new Document(row).append("_id", id).append("date", date).append("baseGroupId", JobGroupContext.groupId());
+            return new com.mongodb.client.model.UpdateOneModel<Document>(new Document("_id", id),
+                    new Document("$setOnInsert", scoped), new UpdateOptions().upsert(true));
+        }).toList();
         if (!writes.isEmpty()) mongo.getCollection("exchangeRates").bulkWrite(writes);
     }
 

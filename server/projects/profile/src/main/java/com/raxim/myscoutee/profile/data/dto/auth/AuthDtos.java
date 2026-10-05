@@ -75,7 +75,31 @@ public final class AuthDtos {
             Integer adminMetrics,
             Integer paymentRefundsPending,
             Integer contactRequestsPending,
+            Integer notifications,
+            Integer cases) {
+        public UserMenuCountersDto(Integer game,
+            Integer chats,
+            Integer invitations,
+            Integer events,
+            Integer hosting,
+            Integer cars,
+            Integer accommodation,
+            Integer supplies,
+            Integer tickets,
+            Integer contacts,
+            Integer feedback,
+            UserChatCountersDto chat,
+            UserEventCountersDto event,
+            UserAssetCountersDto asset,
+            UserEventFeedbackCountersDto eventFeedback,
+            Integer adminJobs,
+            Integer adminMetrics,
+            Integer paymentRefundsPending,
+            Integer contactRequestsPending,
             Integer notifications) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, contactRequestsPending, notifications, 0);
+        }
+
         public UserMenuCountersDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications) {
             this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, 0, notifications);
         }
@@ -142,7 +166,13 @@ public final class AuthDtos {
             Integer appSupport,
             UserSupportCaseCountersDto supportCases,
             Integer groupSupport,
-            Integer contacts) {
+            Integer contacts,
+            Integer campaign,
+            Integer cases) {
+        public UserChatCountersDto(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
+                Integer appSupport, UserSupportCaseCountersDto supportCases, Integer groupSupport, Integer contacts) {
+            this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, contacts, 0, 0);
+        }
         public UserChatCountersDto(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
                 Integer appSupport, UserSupportCaseCountersDto supportCases, Integer groupSupport) {
             this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, 0);
@@ -243,7 +273,33 @@ public final class AuthDtos {
             Integer contactRequestsPending,
             Integer notifications,
             Boolean impressionsHostChanged,
+            Boolean impressionsMemberChanged,
+            Integer cases) {
+        public UserRealtimeCountersDto(Integer game,
+            Integer chats,
+            Integer invitations,
+            Integer events,
+            Integer hosting,
+            Integer cars,
+            Integer accommodation,
+            Integer supplies,
+            Integer tickets,
+            Integer contacts,
+            Integer feedback,
+            UserChatCountersDto chat,
+            UserEventCountersDto event,
+            UserAssetCountersDto asset,
+            UserEventFeedbackCountersDto eventFeedback,
+            Integer adminJobs,
+            Integer adminMetrics,
+            Integer paymentRefundsPending,
+            Integer contactRequestsPending,
+            Integer notifications,
+            Boolean impressionsHostChanged,
             Boolean impressionsMemberChanged) {
+            this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, contactRequestsPending, notifications, impressionsHostChanged, impressionsMemberChanged, 0);
+        }
+
         public UserRealtimeCountersDto(Integer game, Integer chats, Integer invitations, Integer events, Integer hosting, Integer cars, Integer accommodation, Integer supplies, Integer tickets, Integer contacts, Integer feedback, UserChatCountersDto chat, UserEventCountersDto event, UserAssetCountersDto asset, UserEventFeedbackCountersDto eventFeedback, Integer adminJobs, Integer adminMetrics, Integer paymentRefundsPending, Integer notifications, Boolean impressionsHostChanged, Boolean impressionsMemberChanged) {
             this(game, chats, invitations, events, hosting, cars, accommodation, supplies, tickets, contacts, feedback, chat, event, asset, eventFeedback, adminJobs, adminMetrics, paymentRefundsPending, 0, notifications, impressionsHostChanged, impressionsMemberChanged);
         }
@@ -547,7 +603,8 @@ public final class AuthDtos {
             Integer profileFormVersion,
             String status,
             String profileStatus,
-            String deletedAtIso) {
+            String deletedAtIso,
+            List<String> baseGroupTypes) {
     }
 
     public record UserNotificationDeviceDto(String deviceId, boolean notificationsEnabled) {

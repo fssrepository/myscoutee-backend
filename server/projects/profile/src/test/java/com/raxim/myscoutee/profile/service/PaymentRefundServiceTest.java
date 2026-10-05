@@ -43,7 +43,7 @@ class PaymentRefundServiceTest {
         when(fixture.paymentService.saveRefundRequestHistoryRecord(
                 eq(payment), any(String.class), eq("nova"), any(PaymentRefundCalculator.Preview.class)))
                 .thenReturn(request);
-        PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(null, Map.of("HUF", 3200D), Map.of(), 0);
+        PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(mock(com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryItemDto.class), Map.of("HUF", 3200D), Map.of(), 0);
         when(fixture.history.mutationDto(request, "nova")).thenReturn(expected);
 
         assertThat(fixture.service.requestRefund("payment-1", "nova")).isSameAs(expected);
@@ -65,7 +65,7 @@ class PaymentRefundServiceTest {
         Fixture fixture = new Fixture();
         Payment payment = fixture.payment("authorized");
         Payment request = fixture.refundRequest("pending");
-        PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(null, Map.of(), Map.of(), 0);
+        PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(mock(com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryItemDto.class), Map.of(), Map.of(), 0);
         when(fixture.payments.findById("payment-1")).thenReturn(Optional.of(payment));
         when(fixture.payments.findById("refund:payment-1")).thenReturn(Optional.of(request));
         when(fixture.history.mutationDto(request, "nova")).thenReturn(expected);
@@ -100,7 +100,7 @@ class PaymentRefundServiceTest {
             return request;
         });
         when(fixture.payments.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(null, Map.of(), Map.of(), 0);
+        PaymentHistoryMutationDto expected = new PaymentHistoryMutationDto(mock(com.raxim.myscoutee.profile.data.dto.payment.PaymentDtos.PaymentHistoryItemDto.class), Map.of(), Map.of(), 0);
         when(fixture.history.mutationDto(request, "casey")).thenReturn(expected);
 
         assertThat(fixture.service.approveRefund("refund:payment-1", "casey")).isSameAs(expected);

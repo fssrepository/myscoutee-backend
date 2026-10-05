@@ -31,6 +31,9 @@ public class Chat {
 
     @Indexed(name = "chat_owner_user")
     private String ownerUserId;
+    private String supportBaseGroupId;
+    public String getSupportBaseGroupId() { return supportBaseGroupId; }
+    public void setSupportBaseGroupId(String value) { supportBaseGroupId = value; }
 
     private String avatar;
     private String title;
@@ -48,6 +51,10 @@ public class Chat {
     private String ownerStatus;
     private Long revision = 1L;
     private String subEventId;
+    private String caseOfferId;
+
+    public String getCaseOfferId() { return caseOfferId; }
+    public void setCaseOfferId(String caseOfferId) { this.caseOfferId = caseOfferId; }
     private String groupId;
     private Double distanceKm;
     private Integer distanceMetersExact;

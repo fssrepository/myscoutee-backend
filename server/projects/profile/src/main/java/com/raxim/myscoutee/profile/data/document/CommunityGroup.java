@@ -14,7 +14,25 @@ public record CommunityGroup(
         boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
         @Version Long version, String moderationStatus, Long moderationVersion,
         Long moderationPending, Long moderationQueueRevision, Long pendingMembers,
+        String lifecycleStatus, String ownerReleasedAtIso, List<String> takeoverCandidates, String groupType) {
+    public static final String WORK_BASE_ID = "myscoutee-work";
+    public static final String COMMUNITY_BASE_ID = "myscoutee-community";
+    public static final List<String> BASE_IDS = List.of(WORK_BASE_ID, COMMUNITY_BASE_ID);
+    public static boolean isBaseId(String id) { return id != null && BASE_IDS.contains(id); }
+    public static String baseIdForType(String type) {
+        return "work".equals(type) ? WORK_BASE_ID : "community".equals(type) ? COMMUNITY_BASE_ID : null;
+    }
+    public boolean priorityEnabled() { return !"community".equals(effectiveType()) || COMMUNITY_BASE_ID.equals(id); }
+    public String baseId() { return baseIdForType(effectiveType()); }
+    public CommunityGroup(String id, String ownerUserId, String name, String description,
+        String imageUrl, String category, String visibility,
+        boolean hideMembers, Policy policy, String createdAtIso, String updatedAtIso,
+        Long version, String moderationStatus, Long moderationVersion,
+        Long moderationPending, Long moderationQueueRevision, Long pendingMembers,
         String lifecycleStatus, String ownerReleasedAtIso, List<String> takeoverCandidates) {
+        this(id, ownerUserId, name, description, imageUrl, category, visibility, hideMembers, policy, createdAtIso, updatedAtIso, version, moderationStatus, moderationVersion, moderationPending, moderationQueueRevision, pendingMembers, lifecycleStatus, ownerReleasedAtIso, takeoverCandidates, "dating");
+    }
+
     public CommunityGroup(String id, String ownerUserId, String name, String description, String imageUrl,
             String category, String visibility, boolean hideMembers, Policy policy, String createdAtIso,
             String updatedAtIso, Long version, String moderationStatus, Long moderationVersion,
@@ -23,6 +41,7 @@ public record CommunityGroup(
             createdAtIso, updatedAtIso, version, moderationStatus, moderationVersion, moderationPending,
             moderationQueueRevision, pendingMembers, null, null, null);
     }
+    public String effectiveType() { return "work".equals(groupType) || "community".equals(groupType) ? groupType : "dating"; }
     public boolean deleted() { return "deleted".equals(lifecycleStatus); }
     public boolean awaitingOwner() { return "under-review".equals(lifecycleStatus); }
     public CommunityGroup(String id, String ownerUserId, String name, String description, String imageUrl,

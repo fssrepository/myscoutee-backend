@@ -66,8 +66,17 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class ScheduledMessageTaskService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private JobGroupScopeService jobGroupScope;
+
     public static final String ACTION_INACTIVATE_PROFILE_AFTER_INACTIVITY = "user.profile.inactivate-after-inactivity";
     public static final String ACTION_EVENT_STAGE_REMINDER = "event.stage.reminder";
+    public static final String ACTION_CASE_FEEDBACK_PREPARE = "case.feedback.prepare";
+    @org.springframework.beans.factory.annotation.Autowired
+    private ServiceFeedbackService serviceFeedback;
+    @org.springframework.beans.factory.annotation.Autowired
+    private tools.jackson.databind.ObjectMapper objectMapper;
+
     public static final String ACTION_EVENT_DEFINITION_CHANGED = "event.definition.changed";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduledMessageTaskService.class);
@@ -192,6 +201,11 @@ public class ScheduledMessageTaskService {
     }
 
     private void runDueTasksForCurrentDatabase() {
+        var registry = notificationRuleRegistry();
+        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES, this::runDueTasksForCurrentDatabaseInGroup);
+    }
+
+    private void runDueTasksForCurrentDatabaseInGroup() {
         Instant startedAt = Instant.now();
         NotificationRuleRegistryService registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
@@ -212,7 +226,7 @@ public class ScheduledMessageTaskService {
             reconcileLocalWorkersFromDb();
             Instant horizon = startedAt.plusMillis(workerLookaheadMs());
             Query query = Query.query(Criteria
-                    .where("status").is(STATUS_SCHEDULED)
+                    .where("baseGroupId").is(JobGroupContext.groupId()).and("status").is(STATUS_SCHEDULED)
                     .and("suspended").ne(Boolean.TRUE)
                     .and("dueAtIso").lte(horizon.toString()))
                     .with(Sort.by(Sort.Direction.ASC, "dueAtIso"))
@@ -508,11 +522,34 @@ public class ScheduledMessageTaskService {
         return saved;
     }
 
+    public void scheduleCaseFeedback(com.raxim.myscoutee.profile.data.document.ServiceCase closed) {
+        String now = Instant.now().toString();
+        ScheduledMessageTask task = new ScheduledMessageTask();
+        task.setId(new ObjectId().toHexString()); task.setSyncKey(UUID.randomUUID().toString());
+        task.setTaskKey("case-feedback:" + closed.id() + ":" + closed.version());
+        task.setActionKey(ACTION_CASE_FEEDBACK_PREPARE);
+        task.setBaseGroupId(closed.baseGroupId());
+        task.setDueAtIso(now); task.setStatus(STATUS_SCHEDULED); task.setSuspended(false);
+        task.setCreatedDate(now); task.setUpdatedDate(now); task.setCreatedUser(UPDATED_BY); task.setUpdatedUser(UPDATED_BY);
+        try { task.setPayload(Map.of("closedCase", objectMapper.writeValueAsString(closed))); }
+        catch (tools.jackson.core.JacksonException error) { throw new IllegalStateException(error); }
+        scheduleLocalWorker(saveRunnableTask(task));
+    }
+
+    private TaskResult prepareCaseFeedback(ScheduledMessageTask task) throws tools.jackson.core.JacksonException {
+        var closed = objectMapper.readValue(task.getPayload().get("closedCase"), com.raxim.myscoutee.profile.data.document.ServiceCase.class);
+        return new TaskResult(STATUS_COMPLETED, serviceFeedback.prepare(closed), "Case feedback prepared.");
+    }
+
     public void acceptTaskMetadata(ScheduledMessageTask task) {
         scheduleLocalWorker(task);
     }
 
     private void scheduleLocalWorker(ScheduledMessageTask task) {
+        if (task != null) JobGroupContext.run(task.getBaseGroupId(), () -> scheduleLocalWorkerInGroup(task));
+    }
+
+    private void scheduleLocalWorkerInGroup(ScheduledMessageTask task) {
         String taskKey = safeText(task == null ? null : task.getTaskKey());
         if (task == null || !StringUtils.hasText(taskKey)) {
             return;
@@ -540,7 +577,7 @@ public class ScheduledMessageTaskService {
         cancelLocalWorker(taskKey);
         MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
         ScheduledFuture<?> worker = taskExecutor.schedule(
-                () -> withMongoSessionMode(sessionMode, () -> runLocalWorker(taskKey, dueAtIso)),
+                () -> withMongoSessionMode(sessionMode, () -> JobGroupContext.run(task.getBaseGroupId(), () -> runLocalWorker(taskKey, dueAtIso))),
                 delayMs,
                 TimeUnit.MILLISECONDS);
         scheduledWorkers.put(workerKey, worker);
@@ -561,7 +598,7 @@ public class ScheduledMessageTaskService {
     }
 
     private String localWorkerPrefix() {
-        return MongoSessionModeContext.currentMode().name() + ":";
+        return MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key() + ":";
     }
 
     private void withMongoSessionMode(MongoSessionMode sessionMode, Runnable action) {
@@ -599,9 +636,7 @@ public class ScheduledMessageTaskService {
             return;
         }
         NotificationRuleRegistryService registry = notificationRuleRegistry();
-        if (registry != null
-                && registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES).isPresent()
-                && !registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES)
+        if (registry == null || !registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES)
                         .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
                         .orElse(false)) {
             return;
@@ -633,6 +668,7 @@ public class ScheduledMessageTaskService {
                 case ACTION_INACTIVATE_PROFILE_AFTER_INACTIVITY -> inactivateProfileAfterInactivity(task, runId);
                 case ACTION_EVENT_STAGE_REMINDER -> markStageReminderDue(task, runId);
                 case ACTION_EVENT_DEFINITION_CHANGED -> notifyEventDefinitionChanged(task, runId);
+                case ACTION_CASE_FEEDBACK_PREPARE -> prepareCaseFeedback(task);
                 default -> new TaskResult(STATUS_FAILED, 0, "Unknown scheduled action.");
             };
             finishTask(task, result.status(), result.count(), result.detail());
@@ -913,7 +949,7 @@ public class ScheduledMessageTaskService {
         if (remainsScheduled) {
             scheduleLocalWorker(saved);
         } else if (pendingCounterTracked) {
-            adjustPendingCount(-1);
+            JobGroupContext.run(saved.getBaseGroupId(), () -> adjustPendingCount(-1));
         }
     }
 
@@ -966,6 +1002,7 @@ public class ScheduledMessageTaskService {
             return copy;
         }
         copy.setId(source.getId());
+        copy.setBaseGroupId(source.getBaseGroupId());
         copy.setSyncKey(source.getSyncKey());
         copy.setTaskKey(source.getTaskKey());
         copy.setActionKey(source.getActionKey());
@@ -1005,7 +1042,7 @@ public class ScheduledMessageTaskService {
                 ScheduledMessageTask.class);
         ScheduledMessageTask saved = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElse(task);
         if (previous != null && Boolean.TRUE.equals(previous.getPendingCounterTracked())) {
-            adjustPendingCount(-1);
+            JobGroupContext.run(saved.getBaseGroupId(), () -> adjustPendingCount(-1));
         }
         scheduleLocalWorker(saved);
         return saved;
@@ -1015,6 +1052,9 @@ public class ScheduledMessageTaskService {
         if (task == null || !StringUtils.hasText(safeText(task.getTaskKey()))) {
             return task;
         }
+        String groupId = ACTION_CASE_FEEDBACK_PREPARE.equals(task.getActionKey()) ? task.getBaseGroupId() : StringUtils.hasText(task.getEventId()) ? jobGroupScope.forTarget("EVENT", task.getEventId())
+                : jobGroupScope.forUser(task.getUserId());
+        task.setBaseGroupId(groupId);
         Update update = runnableTaskUpdate(task);
         ScheduledMessageTask previous;
         try {
@@ -1035,7 +1075,7 @@ public class ScheduledMessageTaskService {
         ScheduledMessageTask saved = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElse(task);
         saved.setPendingCounterTracked(true);
         if (previous == null || !Boolean.TRUE.equals(previous.getPendingCounterTracked())) {
-            adjustPendingCount(1);
+            JobGroupContext.run(groupId, () -> adjustPendingCount(1));
         }
         return saved;
     }
@@ -1046,6 +1086,7 @@ public class ScheduledMessageTaskService {
                 .setOnInsert("syncKey", task.getSyncKey())
                 .setOnInsert("createdDate", task.getCreatedDate())
                 .setOnInsert("createdUser", task.getCreatedUser())
+                .set("baseGroupId", task.getBaseGroupId())
                 .set("taskKey", task.getTaskKey())
                 .set("actionKey", task.getActionKey())
                 .set("userId", task.getUserId())

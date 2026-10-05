@@ -12,6 +12,19 @@ public interface AdminStatsRepository extends MongoRepository<AdminStatsSnapshot
 
     Optional<AdminStatsSnapshot> findByStatsKey(String statsKey);
 
+    default AdminStatsSnapshot snapshotOrDefault(String groupId) {
+        String key = groupId == null ? GLOBAL_STATS_KEY : groupId;
+        return findByStatsKey(key).orElseGet(() -> AdminStatsSnapshot.createDefault(key));
+    }
+
+    default AdminStatsSnapshot ensureSnapshot(String groupId) {
+        if (groupId == null) return ensureGlobalSnapshot();
+        return findByStatsKey(groupId).orElseGet(() -> {
+            try { return save(AdminStatsSnapshot.createDefault(groupId)); }
+            catch (DuplicateKeyException ignored) { return findByStatsKey(groupId).orElseThrow(); }
+        });
+    }
+
     default Optional<AdminStatsSnapshot> findGlobalSnapshot() {
         return findByStatsKey(GLOBAL_STATS_KEY);
     }
