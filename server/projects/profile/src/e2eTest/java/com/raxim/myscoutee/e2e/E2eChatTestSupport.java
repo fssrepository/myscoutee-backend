@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.e2e;
 
-import com.raxim.myscoutee.profile.data.document.ChatMessage;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 
 final class E2eChatTestSupport {
     private E2eChatTestSupport() {

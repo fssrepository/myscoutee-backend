@@ -41,6 +41,14 @@ that crosses into the sibling `myscoutee-registry` repository.
 
 ## CRITICAL LOCAL RESOURCE RULE
 
+**Backend JUnit exception authorized by the user:** standard and embedded JUnit
+tests may run in a separate, serial process while the dev server runs. Use
+`tools/run-backend-junit.sh`; it reuses the existing Gradle/JUnit implementation
+with isolated `build/junit` outputs and `server/build/junit-gradle` project state,
+and does not signal DevTools or connect to the dev databases. Integration tests
+are a separate, opt-in JUnit group. This exception does not authorize a second
+server or changes to the running QA deployment.
+
 **If the dev stack is already running and its hot-deploy process or watcher
 handles compilation or builds, trigger that existing process and inspect its
 logs, regardless of available capacity. Never repeat the same compilation or

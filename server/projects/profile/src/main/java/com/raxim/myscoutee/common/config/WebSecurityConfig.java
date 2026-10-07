@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.common.config;
 
+import com.raxim.myscoutee.domain.groups.config.GroupWorkspaceFilter;
+import com.raxim.myscoutee.domain.integrations.config.AdminClientAuthenticationFilter;
+import com.raxim.myscoutee.domain.integrations.config.IntegrationTokenAuthenticationFilter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,18 +17,18 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
-import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapAuthenticationFilter;
-import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapAuthenticationService;
-import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
-import com.raxim.myscoutee.common.config.firebase.FirebaseAuthenticationProvider;
-import com.raxim.myscoutee.common.config.firebase.FirebaseFilter;
+import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationFilter;
+import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationService;
+import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationProvider;
+import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.SessionMongoRoutingFilter;
-import com.raxim.myscoutee.common.config.firebase.FirebaseService;
-import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.service.UserLoginSessionService;
-import com.raxim.myscoutee.profile.service.media.MediaSessionAccessService;
+import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseService;
+import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier;
+import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
+import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +44,7 @@ public class WebSecurityConfig {
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
-    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.profile.service.CommunityGroupProfilesService> groupProfiles;
+    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService> groupProfiles;
     @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,

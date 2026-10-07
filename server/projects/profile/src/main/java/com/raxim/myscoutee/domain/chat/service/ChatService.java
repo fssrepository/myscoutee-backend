@@ -1,0 +1,3854 @@
+package com.raxim.myscoutee.domain.chat.service;
+
+import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
+import com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService;
+import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+
+import com.raxim.myscoutee.domain.chat.document.ContactChatAccess;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.BiPredicate;
+
+import jakarta.annotation.PreDestroy;
+import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.chat.document.Chat;
+import com.raxim.myscoutee.domain.campaigns.document.Campaign;
+import com.raxim.myscoutee.domain.community.document.ServiceCase;
+import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
+import com.raxim.myscoutee.domain.affinity.document.UserRate;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage;
+import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.domain.events.document.SubEventItem;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatAvatarRecord;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageAttachmentRecord;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReactionRecord;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReplyRecord;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
+import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseAssigneeRecord;
+import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseRecord;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDeviceDeleteRequestDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDeviceUpsertRequestDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatGroupContextDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatHeaderSyncResponseDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMetricBucketDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMetricsDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatNavigationContextDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMemberDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMembersPageResponseDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageAttachmentDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReplyDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessagesPageResponseDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatPageResponseDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadAvatarDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadReceiptDto;
+import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatServiceEnsureRequestDto;
+import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserMenuCountersDto;
+import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
+import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
+import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
+import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
+import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
+import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.chat.mapper.ChatMapper;
+import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
+import com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper;
+import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
+
+@Service
+public class ChatService {
+    public static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
+    public static final String RANDOM_ROOM_WELCOME_MESSAGE_ID =
+            "system:" + RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
+    public static final String RANDOM_ROOM_WELCOME_MESSAGE =
+            "Welcome! We matched you here by affinity and past interactions. Leave anytime. "
+                    + "Set visibility to non-public in Global Settings to stop future Random Rooms.";
+    public static final String TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE = "tournament-room-welcome";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
+    private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
+            .withZone(ZoneId.systemDefault());
+    private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    private static final String SUPPORT_CASE_STATUS_WARNED = "warned";
+    private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
+    private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
+    private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
+    private static final String SUPPORT_CASE_FILTER_ALL = "all";
+    private static final String CHAT_CHANNEL_MAIN_EVENT = "mainEvent";
+    private static final String CHAT_CHANNEL_OPTIONAL_SUB_EVENT = "optionalSubEvent";
+    private static final String CHAT_CHANNEL_GROUP_SUB_EVENT = "groupSubEvent";
+    private static final String CHAT_CHANNEL_SERVICE_EVENT = "serviceEvent";
+    private static final String CHAT_CHANNEL_GROUP_SUPPORT = "groupSupport";
+    private static final String CHAT_CHANNEL_APP_SUPPORT = "appSupport";
+    private static final String CHAT_CHANNEL_SUPPORT_CASE = "supportCase";
+    private static final String OWNER_TYPE_EVENT = "event";
+    private static final String OWNER_TYPE_SUB_EVENT = "subEvent";
+    private static final String OWNER_TYPE_GROUP = "group";
+    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
+    private static final String MEMBER_STATUS_PENDING = "pending";
+    private static final String RUNTIME_STATUS_DELETED = "D";
+    private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
+    private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
+    private static final String ASSET_TYPE_SUPPLIES = AssetCatalog.TYPE_SUPPLIES;
+    private static final int DEFAULT_CHAT_MESSAGES_PAGE_SIZE = 20;
+    private static final int MAX_CHAT_MESSAGES_PAGE_SIZE = 100;
+
+    private final ChatsRepository chatsRepository;
+    private final ChatMessagesRepository chatMessagesRepository;
+    private final MongoTemplate mongoTemplate;
+    private final UsersRepository usersRepository;
+    private final ActivityMembersRepository activityMembersRepository;
+    private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
+    private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    private final HomeUserProfileService homeUserProfileService;
+    private final UserActivityCountersService userActivityCountersService;
+    private final ChatStreamPublisher chatStreamPublisher;
+    private final ChatPushNotificationService chatPushNotificationService;
+    private final UserNotificationService userNotificationService;
+    private final AdminTelemetryService adminTelemetryService;
+    private final AdminMenuCounterService adminMenuCounterService;
+    private final AccessControlService accessControlService;
+    private final ChatMapper chatMapper;
+    private final ChatMessageMapper chatMessageMapper;
+    private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
+
+    public ChatService(
+            ChatsRepository chatsRepository,
+            ChatMessagesRepository chatMessagesRepository,
+            MongoTemplate mongoTemplate,
+            UsersRepository usersRepository,
+            ActivityMembersRepository activityMembersRepository,
+            ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
+            ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
+            HomeUserProfileService homeUserProfileService,
+            UserActivityCountersService userActivityCountersService,
+            ChatStreamPublisher chatStreamPublisher,
+            ChatPushNotificationService chatPushNotificationService,
+            UserNotificationService userNotificationService,
+            AdminTelemetryService adminTelemetryService,
+            AdminMenuCounterService adminMenuCounterService,
+            AccessControlService accessControlService,
+            ChatMapper chatMapper,
+            ChatMessageMapper chatMessageMapper) {
+        this.chatsRepository = chatsRepository;
+        this.chatMessagesRepository = chatMessagesRepository;
+        this.mongoTemplate = mongoTemplate;
+        this.usersRepository = usersRepository;
+        this.activityMembersRepository = activityMembersRepository;
+        this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
+        this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
+        this.homeUserProfileService = homeUserProfileService;
+        this.userActivityCountersService = userActivityCountersService;
+        this.chatStreamPublisher = chatStreamPublisher;
+        this.chatPushNotificationService = chatPushNotificationService;
+        this.userNotificationService = userNotificationService;
+        this.adminTelemetryService = adminTelemetryService;
+        this.adminMenuCounterService = adminMenuCounterService;
+        this.accessControlService = accessControlService;
+        this.chatMapper = chatMapper;
+        this.chatMessageMapper = chatMessageMapper;
+    }
+
+    @PreDestroy
+    void shutdownChatWriteExecutor() {
+        chatWriteExecutor.shutdownNow();
+    }
+
+    public List<ChatDto> queryChats(String requestedUserId) {
+        return queryChatPage(
+                requestedUserId,
+                "all",
+                "date",
+                "desc",
+                null,
+                null,
+                MAX_CHAT_MESSAGES_PAGE_SIZE,
+                null,
+                null,
+                false,
+                null).items();
+    }
+
+    public ChatDto queryChatById(String chatId, String requestedUserId) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Chat chat = snapshot.viewerChat() == null
+                ? snapshot.chatDocuments().get(0)
+                : snapshot.viewerChat();
+        return toChatDto(chat, chatMemberUsers(List.of(chat)));
+    }
+
+    public String ensureMainEventChat(ActivityEvent event, Collection<String> participantUserIds) {
+        return ensureMainEventChatDocuments(event, participantUserIds).chatId();
+    }
+
+    public PublishedMainEventChatResult ensurePublishedMainEventChat(
+            ActivityEvent event,
+            Collection<String> participantUserIds) {
+        MainEventChatDocumentsResult result = ensureMainEventChatDocuments(event, participantUserIds);
+        Set<String> createdOwnerUserIds = result.createdDocuments().stream()
+                .map(Chat::getOwnerUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        return new PublishedMainEventChatResult(result.chatId(), createdOwnerUserIds);
+    }
+
+    private MainEventChatDocumentsResult ensureMainEventChatDocuments(
+            ActivityEvent event,
+            Collection<String> participantUserIds) {
+        String eventId = normalizeId(event == null ? null : event.getSourceId());
+        List<String> memberUserIds = participantUserIds == null
+                ? List.of()
+                : participantUserIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .distinct()
+                        .sorted()
+                        .toList();
+        if (!StringUtils.hasText(eventId) || memberUserIds.isEmpty()) {
+            throw new IllegalStateException("A system event chat requires an event id and participants.");
+        }
+
+        String chatId = eventId;
+        String nowIso = Instant.now().toString();
+        List<Chat> existingDocuments = chatsRepository.findByChatId(chatId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
+        for (Chat existing : existingDocuments) {
+            String ownerUserId = normalizeId(existing.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                existingByOwnerUserId.putIfAbsent(ownerUserId, existing);
+            }
+        }
+
+        List<Chat> documentsToSave = new ArrayList<>();
+        List<Chat> createdDocuments = new ArrayList<>();
+        for (String memberUserId : memberUserIds) {
+            Chat current = existingByOwnerUserId.get(memberUserId);
+            Chat document = current == null ? new Chat() : copyChat(current);
+            boolean contextWindowChanged = current != null
+                    && (!Objects.equals(current.getContextStartAtIso(), event.getStartAtIso())
+                            || !Objects.equals(current.getContextEndAtIso(), event.getEndAtIso()));
+            document.setMongoId(current == null
+                    ? buildMongoId(memberUserId, chatId)
+                    : current.getMongoId());
+            document.setChatId(chatId);
+            document.setOwnerUserId(memberUserId);
+            document.setAvatar(firstNonBlank(event.getAvatar(), "SY"));
+            document.setTitle(firstNonBlank(event.getTitle(), "Random Room"));
+            document.setLastMessage(current == null ? "" : safeText(current.getLastMessage()));
+            document.setLastSenderId(current == null ? null : current.getLastSenderId());
+            document.setMemberIds(new ArrayList<>(memberUserIds));
+            document.setUnread(current == null ? 0 : normalizeCount(current.getUnread()));
+            document.setDateIso(current == null
+                    ? nowIso
+                    : firstNonBlank(current.getDateIso(), nowIso));
+            document.setContextStartAtIso(event.getStartAtIso());
+            document.setContextEndAtIso(event.getEndAtIso());
+            document.setChannelType(CHAT_CHANNEL_MAIN_EVENT);
+            document.setOwnerId(eventId);
+            document.setEventId(eventId);
+            document.setOwnerStatus(ActivityEvent.STATUS_ACTIVE);
+            document.setRevision(current == null
+                    ? 1L
+                    : contextWindowChanged
+                            ? nextChatRevision(current)
+                            : normalizeChatRevision(current.getRevision()));
+            document.setSubEventId(null);
+            document.setGroupId(null);
+            document.setDistanceKm(null);
+            document.setDistanceMetersExact(null);
+            document.setSupportCase(null);
+            documentsToSave.add(document);
+            if (current == null) {
+                createdDocuments.add(document);
+            }
+        }
+        chatsRepository.saveAll(documentsToSave);
+
+        List<Chat> staleDocuments = existingDocuments.stream()
+                .filter(document -> !memberUserIds.contains(normalizeId(document.getOwnerUserId())))
+                .toList();
+        if (!staleDocuments.isEmpty()) {
+            chatsRepository.deleteAll(staleDocuments);
+            incrementStoredChatCounters(staleDocuments.stream()
+                    .map(document -> new ChatCounterChange(document, -normalizeCount(document.getUnread())))
+                    .toList());
+        }
+        evictChatOwnerReadCaches(documentsToSave);
+        evictChatOwnerReadCaches(staleDocuments);
+
+        return new MainEventChatDocumentsResult(chatId, List.copyOf(createdDocuments));
+    }
+
+    public long updateEventChatOwnerStatus(String eventId, String ownerStatus) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedOwnerStatus = safeText(ownerStatus);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedOwnerStatus)) {
+            return 0L;
+        }
+        List<Chat> chatDocuments = chatsRepository.findByEventId(normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (chatDocuments.isEmpty()) {
+            return 0L;
+        }
+        Query query = Query.query(Criteria.where("eventId").is(normalizedEventId)
+                .and("ownerStatus").ne(normalizedOwnerStatus));
+        long modifiedCount = mongoTemplate.updateMulti(
+                query,
+                Update.update("ownerStatus", normalizedOwnerStatus)
+                        .set("revision", Instant.now().toEpochMilli()),
+                Chat.class).getModifiedCount();
+        if (modifiedCount > 0L) {
+            evictChatOwnerReadCaches(chatDocuments);
+        }
+        return modifiedCount;
+    }
+
+    public ChatHeaderSyncResponseDto syncChatHeader(
+            String chatId,
+            String requestedUserId,
+            Long knownRevision) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
+        }
+        Chat chat = chatsRepository.findByOwnerUserIdAndChatId(userId, normalizedChatId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found."));
+        long revision = normalizeChatRevision(chat.getRevision());
+        boolean changed = knownRevision == null || knownRevision.longValue() != revision;
+        UserMenuCountersDto counters = homeUserProfileService.queryMenuCounters(userId);
+        return new ChatHeaderSyncResponseDto(
+                revision,
+                changed,
+                StringUtils.hasText(safeText(chat.getOwnerStatus())) ? safeText(chat.getOwnerStatus()) : null,
+                normalizeCount(chat.getUnread()),
+                safeText(chat.getLastMessage()),
+                StringUtils.hasText(normalizeId(chat.getLastSenderId())) ? normalizeId(chat.getLastSenderId()) : null,
+                StringUtils.hasText(safeText(chat.getDateIso())) ? safeText(chat.getDateIso()) : null,
+                StringUtils.hasText(safeText(chat.getContextStartAtIso())) ? safeText(chat.getContextStartAtIso()) : null,
+                StringUtils.hasText(safeText(chat.getContextEndAtIso())) ? safeText(chat.getContextEndAtIso()) : null,
+                normalizeCount(counters.chats()),
+                counters.chat());
+    }
+
+    public ChatPageResponseDto queryChatPage(
+            String requestedUserId,
+            String contextFilterValue,
+            String sortValue,
+            String sortDirectionValue,
+            String secondaryFilterValue,
+            String cursor,
+            Integer limitValue,
+            String rangeStartIso,
+            String rangeEndIso,
+            Boolean adminServiceOnly,
+            String supportCaseFilterValue) {
+        String userId = resolveUserId(requestedUserId);
+        if (!StringUtils.hasText(userId)) {
+            return chatPageResponse(userId, List.of(), 0, null);
+        }
+
+        String contextFilter = normalizeChatContextFilter(contextFilterValue);
+        String sort = normalizeChatQuerySort(sortValue, secondaryFilterValue);
+        boolean sortAscending = resolveChatSortAscending(sort, sortDirectionValue);
+        long rangeStartMs = parseIsoMillis(rangeStartIso, Long.MIN_VALUE);
+        long rangeEndMs = parseIsoMillis(rangeEndIso, Long.MAX_VALUE);
+        if (rangeStartMs > rangeEndMs) {
+            return chatPageResponse(userId, List.of(), 0, null);
+        }
+        if (Boolean.TRUE.equals(adminServiceOnly) && "service".equals(contextFilter)) {
+            return querySupportCasePage(
+                    userId,
+                    sort,
+                    sortAscending,
+                    cursor,
+                    limitValue,
+                    rangeStartMs,
+                    rangeEndMs,
+                    supportCaseFilterValue);
+        }
+
+        int limit = normalizeChatPageLimit(limitValue);
+        int offset = parseChatCursorOffset(cursor);
+        Criteria criteria = chatPageCriteria(
+                userId,
+                contextFilter,
+                rangeStartIso,
+                rangeEndIso,
+                false,
+                null);
+        long total = mongoTemplate.count(new Query(criteria), Chat.class);
+        Query pageQuery = new Query(criteria)
+                .with(chatPageSort(sort, sortAscending))
+                .skip(offset)
+                .limit(limit);
+        List<ChatDto> items = chatDtosWithMetrics(mongoTemplate.find(pageQuery, Chat.class));
+        int endOffset = offset + items.size();
+        String nextCursor = endOffset < total && !items.isEmpty()
+                ? Integer.toString(endOffset)
+                : null;
+        return chatPageResponse(userId, items, safePageTotal(total), nextCursor);
+    }
+
+    public ChatDto ensureContactChat(String requestedUserId, String targetUserId) {
+        String actorId = accountUserId(requireResolvedUserId(requestedUserId));
+        String targetId = normalizeId(targetUserId);
+        Map<String, Users> users = requireContactTargets(actorId, List.of(targetId), true);
+        requireContactChatConsent(actorId, targetId);
+        List<String> participantIds = new ArrayList<>(List.of(actorId, targetId));
+        participantIds.sort(String::compareTo);
+        String chatId = "c-contact-" + java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(String.join("\n", participantIds).getBytes(StandardCharsets.UTF_8));
+        // Only initialize missing owner copies: reopening must never replace messages or unread state.
+        for (String ownerId : participantIds) {
+            String otherId = ownerId.equals(actorId) ? targetId : actorId;
+            Users other = users.get(otherId);
+            mongoTemplate.upsert(Query.query(Criteria.where("_id").is(buildMongoId(ownerId, chatId))), new Update()
+                    .setOnInsert("chatId", chatId).setOnInsert("ownerUserId", ownerId)
+                    .setOnInsert("channelType", "contact").setOnInsert("memberIds", participantIds)
+                    .setOnInsert("title", safeText(other.getName())).setOnInsert("avatar", resolveUserInitials(other, otherId))
+                    .setOnInsert("lastMessage", "").setOnInsert("lastSenderId", "")
+                    .setOnInsert("unread", 0).setOnInsert("revision", 1L)
+                    .setOnInsert("dateIso", Instant.now().toString()), Chat.class);
+        }
+        return queryChatById(chatId, actorId);
+    }
+
+    public ChatDto addContactChatMembers(String chatId, String requestedUserId, List<String> userIds) {
+        String actorId = accountUserId(requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, actorId);
+        Chat chat = snapshot.viewerChat();
+        if (chat == null || !"contact".equals(chat.getChannelType()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only contact chats accept contact invitations.");
+        List<String> targets = (userIds == null ? List.<String>of() : userIds).stream()
+                .map(this::normalizeId).distinct().toList();
+        if (targets.isEmpty()) return toChatDto(chat, chatMemberUsers(List.of(chat)));
+        if (targets.size() > 100) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too many contacts.");
+        List<String> newTargets = targets.stream().filter(id -> !safeMemberIds(chat.getMemberIds()).contains(id)).toList();
+        if (!newTargets.isEmpty()) {
+            requireContactTargets(actorId, newTargets);
+            List<String> consentIds = newTargets.stream().map(target -> ContactChatAccess.pairId(actorId, target)).toList();
+            long approved = mongoTemplate.count(Query.query(Criteria.where("_id").in(consentIds)
+                    .and("status").is("approved")), ContactChatAccess.class);
+            if (approved != consentIds.size())
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Direct chat access requires approval.");
+            mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
+                    new Update().addToSet("memberIds").each(newTargets.toArray()).inc("revision", 1L), Chat.class);
+        }
+        List<Chat> copies = chatsRepository.findByChatId(snapshot.chatId());
+        Set<String> participants = new LinkedHashSet<>();
+        for (Chat copy : copies) participants.addAll(safeMemberIds(copy.getMemberIds()));
+        for (String targetId : targets) {
+            // A retry also finishes owner copies after an interrupted member update.
+            mongoTemplate.upsert(Query.query(Criteria.where("_id").is(buildMongoId(targetId, snapshot.chatId()))), new Update()
+                    .setOnInsert("chatId", snapshot.chatId()).setOnInsert("ownerUserId", targetId)
+                    .setOnInsert("channelType", "contact").setOnInsert("memberIds", List.copyOf(participants))
+                    .setOnInsert("title", chat.getTitle()).setOnInsert("avatar", chat.getAvatar())
+                    .setOnInsert("lastMessage", chat.getLastMessage()).setOnInsert("lastSenderId", chat.getLastSenderId())
+                    .setOnInsert("unread", 0).setOnInsert("revision", nextChatRevision(chat))
+                    .setOnInsert("dateIso", chat.getDateIso()), Chat.class);
+        }
+        // Merge concurrent invitations after inserting copies without replacing any message/counter state.
+        copies = chatsRepository.findByChatId(snapshot.chatId());
+        for (Chat copy : copies) participants.addAll(safeMemberIds(copy.getMemberIds()));
+        mongoTemplate.updateMulti(Query.query(Criteria.where("chatId").is(snapshot.chatId())),
+                new Update().addToSet("memberIds").each(participants.toArray()), Chat.class);
+        for (Chat copy : copies) copy.setMemberIds(List.copyOf(participants));
+        evictChatOwnerReadCaches(copies);
+        Chat result = findOwnerChat(copies, actorId);
+        return toChatDto(result, chatMemberUsers(List.of(result)));
+    }
+
+    private Map<String, Users> requireContactTargets(String actorId, List<String> targetIds) {
+        return requireContactTargets(actorId, targetIds, false);
+    }
+
+    private Map<String, Users> requireContactTargets(String actorId, List<String> targetIds, boolean allowApprovedPair) {
+        if (targetIds.isEmpty() || targetIds.size() > 100 || targetIds.contains(actorId)
+                || targetIds.stream().anyMatch(id -> !StringUtils.hasText(id)))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another contact.");
+        var contacts = mongoTemplate.findOne(Query.query(Criteria.where("userId").is(actorId)),
+                com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile.class);
+        Set<String> allowed = new LinkedHashSet<>();
+        if (contacts != null) for (var contact : contacts.getContacts()) allowed.add(normalizeId(contact.getUserId()));
+        for (String targetId : targetIds) if (allowApprovedPair && !allowed.contains(targetId)) {
+            var consent = mongoTemplate.findById(ContactChatAccess.pairId(actorId, targetId),
+                    ContactChatAccess.class);
+            if (consent != null && "approved".equals(consent.status())) allowed.add(targetId);
+        }
+        if (!allowed.containsAll(targetIds))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
+        Set<String> participantIds = new LinkedHashSet<>(targetIds); participantIds.add(actorId);
+        Map<String, Users> users = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(participantIds)) {
+            if (!StringUtils.hasText(user.getDeletedAtIso()) && !"deleted".equalsIgnoreCase(user.getProfileStatus()))
+                users.put(user.getUserId(), user);
+        }
+        Users actor = users.get(actorId);
+        if (targetIds.stream().anyMatch(id -> !CommunityGroupProfilesService.sameWorkspace(actor, users.get(id))))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
+        return users;
+    }
+
+    public ChatDto ensureServiceChat(ChatServiceEnsureRequestDto request, String requestedUserId) {
+        String userId = requireResolvedUserId(requestedUserId);
+        if (request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Service chat request is required.");
+        }
+        String serviceContext = safeText(request.serviceContext()).toLowerCase(Locale.US);
+        if ("campaign".equals(serviceContext)) return ensureCampaignChat(request, userId);
+        if ("case".equals(serviceContext)) return ensureCaseChat(request, userId);
+        if ("groupsupport".equals(serviceContext)) return ensureAnnouncementFeedbackChat(request, userId);
+        if (!"event".equals(serviceContext) && !"asset".equals(serviceContext)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported service chat context.");
+        }
+        String eventId = normalizeId(request.eventId());
+        if (!StringUtils.hasText(eventId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event id is required.");
+        }
+        ActivityEvent event = findServiceChatEvent(eventId);
+        if (event == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found.");
+        }
+
+        String subEventId = normalizeId(request.subEventId());
+        String assetId = normalizeId(request.assetId());
+        String requestedTargetUserId = normalizeId(request.targetUserId());
+        Asset asset = null;
+        String targetUserId;
+        String chatId;
+        if ("asset".equals(serviceContext)) {
+            if (!StringUtils.hasText(assetId) || !StringUtils.hasText(subEventId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Asset and sub-event ids are required.");
+            }
+            asset = findServiceChatAsset(assetId);
+            if (asset == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Asset not found.");
+            }
+            targetUserId = normalizeId(asset.getOwnerUserId());
+            chatId = "c-service-asset-" + assetId + "-" + subEventId + "-" + userId;
+        } else {
+            targetUserId = normalizeId(event.getCreatorUserId());
+            if (!StringUtils.hasText(targetUserId)) {
+                targetUserId = normalizeId(event.getOwnerUserId());
+            }
+            chatId = "c-service-event-" + eventId + "-" + userId;
+        }
+        Users targetUser = StringUtils.hasText(targetUserId) ? findUser(targetUserId) : null;
+        if (targetUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service chat recipient not found.");
+        }
+        if (!"asset".equals(serviceContext)
+                && StringUtils.hasText(requestedTargetUserId)
+                && !targetUserId.equals(requestedTargetUserId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The selected service chat recipient is not the resource owner.");
+        }
+        if (targetUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The resource owner cannot open a service chat with themselves.");
+        }
+
+        SubEventItem contextSubEvent = findChatContextSubEvent(event, subEventId);
+        String contextStartAtIso = firstNonBlank(
+                contextSubEvent == null ? null : contextSubEvent.startAt(),
+                event.getStartAtIso());
+        String contextEndAtIso = firstNonBlank(
+                contextSubEvent == null ? null : contextSubEvent.endAt(),
+                event.getEndAtIso());
+
+        List<Chat> chatDocuments = chatsRepository.findByChatId(chatId);
+        if (chatDocuments.isEmpty()) {
+            Chat baseChat = new Chat();
+            baseChat.setMongoId(buildMongoId(userId, chatId));
+            baseChat.setChatId(chatId);
+            baseChat.setOwnerUserId(userId);
+            baseChat.setAvatar(resolveUserInitials(targetUser, targetUserId));
+            baseChat.setTitle(serviceChatTitle(request.title(), serviceContext, asset, event));
+            baseChat.setLastMessage(serviceChatLastMessage(request.lastMessage(), serviceContext, asset, event));
+            baseChat.setLastSenderId(targetUserId);
+            baseChat.setMemberIds(List.of(userId, targetUserId));
+            baseChat.setUnread(0);
+            baseChat.setDateIso(Instant.now().toString());
+            baseChat.setContextStartAtIso(contextStartAtIso);
+            baseChat.setContextEndAtIso(contextEndAtIso);
+            baseChat.setChannelType(CHAT_CHANNEL_SERVICE_EVENT);
+            baseChat.setOwnerId(eventId);
+            baseChat.setEventId(eventId);
+            baseChat.setOwnerStatus(event.getStatus());
+            baseChat.setSubEventId(StringUtils.hasText(subEventId) ? subEventId : null);
+            chatsRepository.save(baseChat);
+            chatDocuments = List.of(baseChat);
+        } else {
+            chatDocuments = reconcileServiceChatParticipants(
+                    chatDocuments,
+                    userId,
+                    targetUserId,
+                    resolveUserInitials(targetUser, targetUserId),
+                    contextStartAtIso,
+                    contextEndAtIso);
+        }
+        chatDocuments = ensureOwnerCopies(chatDocuments);
+        Chat viewerChat = findOwnerChat(chatDocuments, userId);
+        Chat responseChat = viewerChat == null ? chatDocuments.get(0) : viewerChat;
+        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
+    }
+
+    private ChatDto ensureAnnouncementFeedbackChat(ChatServiceEnsureRequestDto request, String userId) {
+        var a = mongoTemplate.findById(normalizeId(request.announcementId()), com.raxim.myscoutee.domain.community.document.CommunityAnnouncement.class);
+        Users actor = findUser(userId);
+        if (a == null || actor == null || !"published".equals(a.status()) || !a.communityId().equals(actor.getWorkspaceGroupId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement unavailable.");
+        var group = mongoTemplate.findById(a.communityId(), CommunityGroup.class);
+        var roster = activityMembersRepository.findByOwnerTypeAndOwnerId("community", a.communityId());
+        String account = firstNonBlank(actor.getAccountUserId(), userId);
+        if (group == null || group.deleted() || group.awaitingOwner() || !roster.stream().anyMatch(m -> account.equals(m.getUserId()) && "accepted".equals(m.getStatus())))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Announcement unavailable.");
+        String adminId = "group:" + group.id() + ":" + group.ownerUserId();
+        if (adminId.equals(userId) || findUser(adminId) == null
+                || !roster.stream().anyMatch(m -> group.ownerUserId().equals(m.getUserId()) && "Admin".equals(m.getRole()) && "accepted".equals(m.getStatus())))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Group manager unavailable.");
+        String chatId = "c-moderation-group-" + userId;
+        Chat viewer = findOwnerChat(syncResourceChat(chatId, CHAT_CHANNEL_GROUP_SUPPORT, null, group.name(), List.of(userId, adminId)), userId);
+        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
+    }
+
+    private ChatDto ensureCampaignChat(ChatServiceEnsureRequestDto request, String userId) {
+        Campaign campaign = mongoTemplate.findById(normalizeId(request.campaignId()), Campaign.class);
+        Users actor = findUser(userId);
+        if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
+                || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campaign unavailable.");
+        if (!mongoTemplate.exists(Query.query(Criteria.where("campaignId").is(campaign.id())
+                .and("ownerUserId").is(userId).and("relatedUserId").is(campaign.ownerUserId()).and("scoreGiven").gt(0)), UserRate.class))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Rate the campaign before asking its organizer.");
+        String chatId = "c-campaign-" + campaign.id() + "-" + userId;
+        List<Chat> copies = syncResourceChat(chatId, "campaign", campaign.id(), campaign.title(),
+                List.of(userId, campaign.ownerUserId()));
+        Chat viewer = findOwnerChat(copies, userId);
+        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
+    }
+
+    private ChatDto ensureCaseChat(ChatServiceEnsureRequestDto request, String userId) {
+        ServiceCase serviceCase = mongoTemplate.findById(normalizeId(request.caseId()), ServiceCase.class);
+        if (!caseChatAccess(serviceCase, findUser(userId), request.caseOfferId()))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
+        syncCaseChat(serviceCase);
+        List<Chat> copies = chatsRepository.findByChatId(StringUtils.hasText(request.caseOfferId())
+                ? "c-case-offer-" + serviceCase.id() + "-" + request.caseOfferId() : "c-case-" + serviceCase.id());
+        Chat viewer = findOwnerChat(copies, userId);
+        if (viewer == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
+        return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
+    }
+
+    private boolean caseChatAccess(ServiceCase serviceCase, Users actor, String caseOfferId) {
+        return serviceCase != null && actor != null
+                && CommunityGroup.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
+                && CommunityGroup.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
+                && (StringUtils.hasText(caseOfferId) ? serviceCase.offerChatParticipantAccountIds(caseOfferId) : serviceCase.chatParticipantAccountIds()).contains(
+                        StringUtils.hasText(actor.getAccountUserId()) ? actor.getAccountUserId() : actor.getUserId());
+    }
+
+    /** Case and quotation groups share the existing Cases channel and membership lifecycle. */
+    public List<Chat> syncCaseChat(ServiceCase serviceCase) {
+        var profiles = usersRepository.findByWorkspaceGroupIdAndAccountUserIdIn(
+                CommunityGroup.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
+        var byAccount = profiles.stream().collect(java.util.stream.Collectors.toMap(
+                u -> StringUtils.hasText(u.getAccountUserId()) ? u.getAccountUserId() : u.getUserId(), Users::getUserId, (a,b) -> a));
+        java.util.function.Function<List<String>, List<String>> memberProfiles = ids -> ids.stream().map(byAccount::get).filter(Objects::nonNull).toList();
+        var main = syncResourceChat("c-case-" + serviceCase.id(), "case", serviceCase.id(), serviceCase.title(), memberProfiles.apply(serviceCase.chatParticipantAccountIds()));
+        for (var offer : serviceCase.offers()) {
+            syncResourceChat("c-case-offer-" + serviceCase.id() + "-" + offer.id(), "case", serviceCase.id(),
+                    serviceCase.title() + " · " + java.math.BigDecimal.valueOf(offer.amount()).stripTrailingZeros().toPlainString() + " " + offer.currency(),
+                    memberProfiles.apply(serviceCase.offerChatParticipantAccountIds(offer.id())), offer.id());
+        }
+        return main;
+    }
+
+    private List<Chat> syncResourceChat(String chatId, String channel, String ownerId, String title, List<String> members) {
+        return syncResourceChat(chatId, channel, ownerId, title, members, null);
+    }
+    private List<Chat> syncResourceChat(String chatId, String channel, String ownerId, String title, List<String> members, String caseOfferId) {
+        List<Chat> existing = chatsRepository.findByChatId(chatId);
+        List<Chat> saved = new ArrayList<>();
+        for (String member : members) {
+            Chat copy = findOwnerChat(existing, member);
+            if (copy == null) {
+                copy = new Chat(); copy.setMongoId(buildMongoId(member, chatId)); copy.setChatId(chatId);
+                copy.setOwnerUserId(member); copy.setUnread(0); copy.setLastMessage(""); copy.setLastSenderId("");
+                copy.setDateIso(Instant.now().toString()); copy.setAvatar("case".equals(channel) ? "C" : "W");
+            }
+            copy.setChannelType(channel); copy.setOwnerId(ownerId); copy.setTitle(title); copy.setCaseOfferId(caseOfferId);
+            copy.setMemberIds(List.copyOf(members)); copy.setRevision(nextChatRevision(copy)); saved.add(copy);
+        }
+        if (!saved.isEmpty()) {
+            BulkOperations writes = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class);
+            for (Chat copy : saved) writes.upsert(Query.query(Criteria.where("_id").is(copy.getMongoId())),
+                    new Update().setOnInsert("id", chatId).setOnInsert("ownerUserId", copy.getOwnerUserId())
+                            .setOnInsert("unread", 0).setOnInsert("lastMessage", "").setOnInsert("lastSenderId", "")
+                            .setOnInsert("dateIso", copy.getDateIso()).setOnInsert("avatar", copy.getAvatar())
+                            .set("channelType", channel).set("ownerId", ownerId).set("title", title).set("caseOfferId", caseOfferId)
+                            .set("memberIds", members).inc("revision", 1));
+            writes.execute();
+        }
+        List<Chat> removed = existing.stream().filter(c -> !members.contains(c.getOwnerUserId())).toList();
+        if (!removed.isEmpty()) {
+            chatsRepository.deleteAll(removed);
+            incrementStoredChatCounters(removed.stream().map(c -> new ChatCounterChange(c, -normalizeCount(c.getUnread()))).toList());
+        }
+        evictChatOwnerReadCaches(saved); evictChatOwnerReadCaches(removed);
+        return saved;
+    }
+
+    private SubEventItem findChatContextSubEvent(ActivityEvent event, String subEventId) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+        return (event.getSubEvents() == null ? List.<SubEventItem>of() : event.getSubEvents()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> normalizedSubEventId.equals(normalizeId(item.id())))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private ActivityEvent findServiceChatEvent(String eventId) {
+        Criteria identity = new Criteria().orOperator(
+                Criteria.where("_id").is(eventId),
+                Criteria.where("sourceId").is(eventId));
+        return mongoTemplate.findOne(Query.query(identity), ActivityEvent.class);
+    }
+
+    private Asset findServiceChatAsset(String assetId) {
+        Criteria identity = new Criteria().orOperator(
+                Criteria.where("_id").is(assetId),
+                Criteria.where("assetId").is(assetId));
+        return mongoTemplate.findOne(Query.query(identity), Asset.class);
+    }
+
+    private List<Chat> reconcileServiceChatParticipants(
+            List<Chat> existingDocuments,
+            String requesterUserId,
+            String targetUserId,
+            String targetAvatar,
+            String contextStartAtIso,
+            String contextEndAtIso) {
+        List<String> memberUserIds = List.of(requesterUserId, targetUserId);
+        List<Chat> activeDocuments = new ArrayList<>();
+        List<Chat> staleDocuments = new ArrayList<>();
+        List<Chat> changedDocuments = new ArrayList<>();
+        for (Chat existing : existingDocuments == null ? List.<Chat>of() : existingDocuments) {
+            if (existing == null) {
+                continue;
+            }
+            if (!memberUserIds.contains(normalizeId(existing.getOwnerUserId()))) {
+                staleDocuments.add(existing);
+                continue;
+            }
+            Chat next = copyChat(existing);
+            boolean changed = !memberUserIds.equals(existing.getMemberIds())
+                    || !Objects.equals(existing.getAvatar(), targetAvatar)
+                    || !Objects.equals(existing.getContextStartAtIso(), contextStartAtIso)
+                    || !Objects.equals(existing.getContextEndAtIso(), contextEndAtIso);
+            next.setMemberIds(new ArrayList<>(memberUserIds));
+            next.setAvatar(targetAvatar);
+            next.setContextStartAtIso(contextStartAtIso);
+            next.setContextEndAtIso(contextEndAtIso);
+            if (changed) {
+                next.setRevision(nextChatRevision(existing));
+                changedDocuments.add(next);
+            }
+            activeDocuments.add(next);
+        }
+        if (!changedDocuments.isEmpty()) {
+            chatsRepository.saveAll(changedDocuments);
+        }
+        if (!staleDocuments.isEmpty()) {
+            chatsRepository.deleteAll(staleDocuments);
+            incrementStoredChatCounters(staleDocuments.stream()
+                    .map(document -> new ChatCounterChange(document, -normalizeCount(document.getUnread())))
+                    .toList());
+        }
+        evictChatOwnerReadCaches(changedDocuments);
+        evictChatOwnerReadCaches(staleDocuments);
+        return activeDocuments;
+    }
+
+    private String serviceChatTitle(
+            String requestedTitle,
+            String serviceContext,
+            Asset asset,
+            ActivityEvent event) {
+        String title = safeText(requestedTitle);
+        if (StringUtils.hasText(title)) {
+            return title;
+        }
+        String subject = "asset".equals(serviceContext)
+                ? safeText(asset == null ? null : asset.getTitle())
+                : safeText(event == null ? null : event.getTitle());
+        return ("asset".equals(serviceContext) ? "Asset Service" : "Event Service")
+                + (StringUtils.hasText(subject) ? " · " + subject : "");
+    }
+
+    private String serviceChatLastMessage(
+            String requestedLastMessage,
+            String serviceContext,
+            Asset asset,
+            ActivityEvent event) {
+        String lastMessage = safeText(requestedLastMessage);
+        if (StringUtils.hasText(lastMessage)) {
+            return lastMessage;
+        }
+        String subject = "asset".equals(serviceContext)
+                ? safeText(asset == null ? null : asset.getTitle())
+                : safeText(event == null ? null : event.getTitle());
+        return "Service chat for " + (StringUtils.hasText(subject) ? subject : serviceContext) + ".";
+    }
+
+    private ChatPageResponseDto querySupportCasePage(
+            String userId,
+            String sort,
+            boolean sortAscending,
+            String cursor,
+            Integer limitValue,
+            long rangeStartMs,
+            long rangeEndMs,
+            String supportCaseFilterValue) {
+        Users actor = findUser(userId);
+        if (!isAdminUser(actor)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
+        }
+        int limit = normalizeChatPageLimit(limitValue);
+        int offset = parseChatCursorOffset(cursor);
+        String supportCaseFilter = normalizeSupportCaseFilter(supportCaseFilterValue);
+        List<AggregationOperation> operations = new ArrayList<>();
+        operations.add(context -> new Document("$match", new Document("$and", List.of(
+                new Document("channelType", new Document(
+                        "$in",
+                        List.of(CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE))),
+                new Document("supportCase.status", new Document("$exists", true)),
+                new Document("id", new Document("$type", "string").append("$ne", ""))))));
+        operations.add(context -> new Document("$match", new Document("supportBaseGroupId", actor.getWorkspaceGroupId())));
+        operations.add(context -> new Document("$addFields", new Document(
+                "_supportViewerCopy",
+                new Document("$cond", List.of(
+                        new Document("$eq", List.of("$ownerUserId", userId)),
+                        1,
+                        0)))));
+        operations.add(context -> new Document("$sort", new Document()
+                .append("_supportViewerCopy", -1)
+                .append("dateIso", -1)
+                .append("_id", 1)));
+        operations.add(context -> new Document("$group", new Document()
+                .append("_id", "$id")
+                .append("selected", new Document("$first", "$$ROOT"))));
+        operations.add(context -> new Document("$replaceRoot", new Document("newRoot", "$selected")));
+        Document selectedCaseMatch = supportCaseSelectionMatchDocument(
+                rangeStartMs,
+                rangeEndMs,
+                supportCaseFilter);
+        if (!selectedCaseMatch.isEmpty()) {
+            operations.add(context -> new Document("$match", selectedCaseMatch));
+        }
+        operations.add(context -> new Document("$sort", chatPageSortDocument(sort, sortAscending)));
+        operations.add(context -> new Document("$facet", new Document()
+                .append("metadata", List.of(new Document("$count", "total")))
+                .append("items", List.of(
+                        new Document("$skip", offset),
+                        new Document("$limit", limit)))));
+
+        AggregationResults<Document> aggregationResults = mongoTemplate.aggregate(
+                Aggregation.newAggregation(operations),
+                "chats",
+                Document.class);
+        Document aggregationResult = aggregationResults.getUniqueMappedResult();
+        List<Document> metadata = aggregationDocuments(
+                aggregationResult == null ? null : aggregationResult.get("metadata"));
+        int total = metadata.isEmpty()
+                ? 0
+                : safePageTotal(aggregationNumber(metadata.get(0).get("total")));
+        List<Chat> pageRecords = aggregationDocuments(
+                aggregationResult == null ? null : aggregationResult.get("items")).stream()
+                .map(document -> mongoTemplate.getConverter().read(Chat.class, document))
+                .filter(Objects::nonNull)
+                .toList();
+        List<ChatDto> items = chatDtosWithMetrics(pageRecords);
+        int endOffset = offset + items.size();
+        String nextCursor = endOffset < total && !items.isEmpty()
+                ? Integer.toString(endOffset)
+                : null;
+        return chatPageResponse(userId, items, total, nextCursor);
+    }
+
+    private ChatPageResponseDto chatPageResponse(
+            String userId,
+            List<ChatDto> items,
+            int total,
+            String nextCursor) {
+        UserMenuCountersDto counters = homeUserProfileService.queryMenuCounters(userId);
+        return new ChatPageResponseDto(
+                items,
+                total,
+                nextCursor,
+                normalizeCount(counters.chats()),
+                counters.chat());
+    }
+
+    public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
+        }
+        if (!accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, userId, normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage this support chat.");
+        }
+        Users actor = findUser(userId);
+        String action = normalizeSupportCaseAction(actionValue);
+        if (!StringUtils.hasText(action)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
+        }
+
+        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(this::isSupportCaseChat)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case not found.");
+        }
+
+        SupportCaseState state = nextSupportCaseState(action, userId, actor);
+        List<Chat> updatedDocuments = new ArrayList<>();
+        for (Chat existing : chatDocuments) {
+            Chat next = copyChat(existing);
+            applySupportCaseState(next, state);
+            updatedDocuments.add(next);
+        }
+        chatsRepository.saveAll(updatedDocuments);
+        userActivityCountersService.refreshSupportCaseCountersForAdmins();
+        adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
+
+        Chat viewerChat = findOwnerChat(updatedDocuments, userId);
+        Chat responseChat = viewerChat == null ? updatedDocuments.get(0) : viewerChat;
+        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
+    }
+
+    public List<ChatMessageDto> querySharedMessages(String chatId, String requestedUserId, String kind) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        if (!"event".equals(kind) && !"asset".equals(kind)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported share kind.");
+        }
+        Map<String, Users> userCache = new LinkedHashMap<>();
+        return chatMessagesRepository.findActiveSharesBySender(snapshot.chatId(), userId, kind).stream()
+                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
+                .toList();
+    }
+
+    public ChatMessagesPageResponseDto queryMessagesPage(
+            String chatId,
+            String requestedUserId,
+            Integer limit,
+            String cursor) {
+        return queryMessagesPage(chatId, requestedUserId, limit, cursor, null);
+    }
+
+    public ChatMessagesPageResponseDto queryMessagesPage(
+            String chatId, String requestedUserId, Integer limit, String cursor,
+            String targetMessageId) {
+        return queryMessagesPage(chatId, requestedUserId, limit, cursor, targetMessageId, true);
+    }
+
+    /** Integration reads do not imply that the person has viewed the messages. */
+    public ChatMessagesPageResponseDto queryMessagesPage(
+            String chatId, String requestedUserId, Integer limit, String cursor,
+            String targetMessageId, boolean markViewed) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        String targetId = normalizeId(targetMessageId);
+        ChatMessage target = StringUtils.hasText(targetId)
+                ? chatMessagesRepository.findByChatIdAndMessageId(snapshot.chatId(), targetId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat message not found."))
+                : null;
+        int pageSize = normalizeChatMessagesPageSize(limit);
+        int startIndex = normalizeChatMessagesCursor(cursor);
+        if (target != null && !StringUtils.hasText(cursor)) {
+            int newer = normalizeLongCount(chatMessagesRepository.countByChatIdAndSentAtIsoGreaterThan(
+                    snapshot.chatId(), target.getSentAtIso()));
+            startIndex = (newer / pageSize) * pageSize;
+        }
+        int total = normalizeLongCount(chatMessagesRepository.countByChatId(snapshot.chatId()));
+        if (startIndex >= total) {
+            return new ChatMessagesPageResponseDto(
+                    List.of(),
+                    total,
+                    null,
+                    null,
+                    userNotificationService.currentUnreadCount(userId));
+        }
+        List<ChatMessage> messages = chatMessagesRepository
+                .findByChatIdOrderBySentAtIsoDesc(snapshot.chatId(), PageRequest.of(startIndex / pageSize, pageSize))
+                .stream()
+                .filter(Objects::nonNull)
+                .toList();
+        List<String> loadedMessageIds = messages.stream()
+                .map(ChatMessage::getId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .toList();
+        ChatReadUpdate readUpdate = !markViewed ? null : target != null
+                ? markMessagesRead(snapshot, userId, List.of(targetId), messages)
+                : startIndex == 0
+                        ? markChannelRead(snapshot, userId, messages)
+                        : markMessagesRead(snapshot, userId, loadedMessageIds, messages);
+        if (readUpdate != null && readUpdate.changed() && !readUpdate.readMessageIds().isEmpty()) {
+            publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
+        }
+        Map<String, Users> userCache = new LinkedHashMap<>();
+        List<ChatMessageDto> items = messages.stream()
+                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
+                .toList();
+        int nextIndex = startIndex + items.size();
+        return new ChatMessagesPageResponseDto(
+                items,
+                total,
+                nextIndex < total ? String.valueOf(nextIndex) : null,
+                readUpdate == null ? null : toReadReceiptDto(readUpdate),
+                userNotificationService.currentUnreadCount(userId));
+    }
+
+    public ChatMembersPageResponseDto queryMembersPage(
+            String chatId,
+            String requestedUserId,
+            Integer limitValue,
+            String cursor,
+            Boolean pendingOnly) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Chat memberSource = snapshot.viewerChat() == null
+                ? snapshot.chatDocuments().get(0)
+                : snapshot.viewerChat();
+        String memberOwnerType = memberOwnerType(chatChannelType(memberSource));
+        String memberOwnerId = normalizeId(memberSource.getOwnerId());
+        int limit = normalizeChatPageLimit(limitValue);
+        int offset = parseChatCursorOffset(cursor);
+        if (StringUtils.hasText(memberOwnerType) && StringUtils.hasText(memberOwnerId)) {
+            Criteria criteria = Criteria.where("ownerType").is(memberOwnerType)
+                    .and("ownerId").is(memberOwnerId)
+                    .and("status").is(Boolean.TRUE.equals(pendingOnly)
+                            ? MEMBER_STATUS_PENDING
+                            : MEMBER_STATUS_ACCEPTED);
+            long total = mongoTemplate.count(new Query(criteria), ActivityMember.class);
+            Query memberPageQuery = new Query(criteria)
+                    .with(Sort.by(Sort.Direction.ASC, "userId"))
+                    .skip(offset)
+                    .limit(limit);
+            List<ActivityMember> memberRecords = mongoTemplate.find(memberPageQuery, ActivityMember.class);
+            Set<String> pageMemberIds = memberRecords.stream()
+                    .map(ActivityMember::getUserId)
+                    .map(this::normalizeId)
+                    .filter(StringUtils::hasText)
+                    .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+            Map<String, Users> usersById = new LinkedHashMap<>();
+            for (Users user : usersRepository.findByUserIdIn(pageMemberIds)) {
+                String memberUserId = normalizeId(user == null ? null : user.getUserId());
+                if (StringUtils.hasText(memberUserId)) {
+                    usersById.put(memberUserId, user);
+                }
+            }
+            List<ChatMemberDto> items = memberRecords.stream()
+                    .map(record -> chatMapper.toMemberDto(
+                            usersById.get(normalizeId(record.getUserId())),
+                            safeText(record.getStatus()).toLowerCase(Locale.ROOT)))
+                    .filter(Objects::nonNull)
+                    .toList();
+            int nextOffset = offset + memberRecords.size();
+            return new ChatMembersPageResponseDto(
+                    items,
+                    safePageTotal(total),
+                    nextOffset < total && !memberRecords.isEmpty() ? Integer.toString(nextOffset) : null);
+        }
+
+        List<String> memberIds = safeMemberIds(memberSource.getMemberIds()).stream()
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .distinct()
+                .toList();
+        if (memberIds.isEmpty()) {
+            return new ChatMembersPageResponseDto(List.of(), 0, null);
+        }
+
+        long total;
+        List<String> pageMemberIds;
+        if (Boolean.TRUE.equals(pendingOnly)) {
+            return new ChatMembersPageResponseDto(List.of(), 0, null);
+        } else {
+            total = mongoTemplate.count(new Query(Criteria.where("userId").in(memberIds)), Users.class);
+            pageMemberIds = memberIds;
+        }
+        Criteria memberCriteria = Criteria.where("userId").in(pageMemberIds);
+        Query pageQuery = new Query(memberCriteria)
+                .with(Sort.by(Sort.Direction.ASC, "userId"))
+                .limit(limit);
+        pageQuery.skip(offset);
+        List<ChatMemberDto> items = mongoTemplate.find(pageQuery, Users.class).stream()
+                .map(user -> chatMapper.toMemberDto(
+                        user,
+                        MEMBER_STATUS_ACCEPTED))
+                .filter(Objects::nonNull)
+                .toList();
+        int nextOffset = offset + items.size();
+        return new ChatMembersPageResponseDto(
+                items,
+                safePageTotal(total),
+                nextOffset < total && !items.isEmpty() ? Integer.toString(nextOffset) : null);
+    }
+
+    public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text) {
+        return sendMessage(chatId, requestedUserId, text, null, null, List.of());
+    }
+
+    public ChatMessageDto sendMessage(String chatId, String requestedUserId, String text, String clientId) {
+        return sendMessage(chatId, requestedUserId, text, clientId, null, List.of());
+    }
+
+    public ChatMessageDto postSystemMessage(String chatId, String text, String systemType) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedText = normalizeText(text);
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
+            return null;
+        }
+        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty()) {
+            return null;
+        }
+
+        ChatMessage message = buildSystemMessage(normalizedText, systemType);
+        ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(normalizedChatId, message);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
+        message.setChatId(normalizedChatId);
+        message.setMongoId(ChatMessage.buildMongoId(normalizedChatId, message.getId()));
+        message.refreshMessageSearchFields();
+        chatMessagesRepository.save(message);
+        List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, message, "", false);
+        observeChatEventPublish(redisPublish, streamEvent);
+        chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record("chat.message.system", "chats", normalizedChatId, "system");
+        return chatMessageMapper.toDto(message, "");
+    }
+
+    public ChatMessageDto ensureInitialSystemMessage(String chatId, String text, String systemType) {
+        return ensureInitialSystemMessageResult(chatId, text, systemType).message();
+    }
+
+    private InitialSystemMessageResult ensureInitialSystemMessageResult(
+            String chatId,
+            String text,
+            String systemType) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedText = normalizeText(text);
+        String normalizedSystemType = firstNonBlank(systemType, "welcome");
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedText)) {
+            return new InitialSystemMessageResult(null, false);
+        }
+        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
+        if (chatDocuments.isEmpty()) {
+            return new InitialSystemMessageResult(null, false);
+        }
+
+        String messageId = "system:" + normalizedSystemType;
+        ChatMessage existing = chatMessagesRepository
+                .findByChatIdAndMessageId(normalizedChatId, messageId)
+                .orElse(null);
+        if (existing != null) {
+            return new InitialSystemMessageResult(chatMessageMapper.toDto(existing, ""), false);
+        }
+
+        ChatMessage message = buildSystemMessage(normalizedText, normalizedSystemType);
+        message.setId(messageId);
+        message.setSender("MyScoutee System");
+        message.setChatId(normalizedChatId);
+        message.setMongoId(ChatMessage.buildMongoId(normalizedChatId, messageId));
+        message.refreshMessageSearchFields();
+        try {
+            chatMessagesRepository.insert(message);
+        } catch (DuplicateKeyException duplicate) {
+            ChatMessage concurrentlyInserted = chatMessagesRepository
+                    .findByChatIdAndMessageId(normalizedChatId, messageId)
+                    .orElseThrow(() -> duplicate);
+            return new InitialSystemMessageResult(chatMessageMapper.toDto(concurrentlyInserted, ""), false);
+        }
+
+        ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(normalizedChatId, message);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
+        List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, message, "", false);
+        observeChatEventPublish(redisPublish, streamEvent);
+        chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record(
+                "chat.message.system.initial",
+                "chats",
+                normalizedChatId,
+                normalizedSystemType);
+        return new InitialSystemMessageResult(chatMessageMapper.toDto(message, ""), true);
+    }
+
+    public ChatMessageDto sendMessage(
+            String chatId,
+            String requestedUserId,
+            String text,
+            String clientId,
+            ChatMessageReplyDto replyTo,
+            List<ChatMessageAttachmentDto> attachments) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        String normalizedText = normalizeText(text);
+        List<ChatMessageAttachmentRecord> normalizedAttachments = normalizeAttachments(attachments);
+        if (!StringUtils.hasText(normalizedText) && normalizedAttachments.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat message text is required.");
+        }
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        if (!accessControlService.canCurrentActorCreateChatMessage(userId, normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to post in this chat.");
+        }
+
+        ChatDocumentsSnapshot accessSnapshot = requireChatAccessForSend(normalizedChatId, userId);
+        Users sender = findUser(userId);
+        ChatMessage message = buildMessage(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
+        return persistChatMessage(accessSnapshot, userId, message);
+    }
+
+    public ChatMessageDto sendAdminSupportMessage(
+            String targetUserId,
+            String adminUserId,
+            String adminName,
+            String adminInitials,
+            String text,
+            String supportStatus) {
+        return sendAdminSupportMessage(targetUserId, adminUserId, adminName, adminInitials, text, supportStatus, null);
+    }
+
+    public ChatMessageDto sendAdminSupportMessage(String targetUserId, String adminUserId, String adminName,
+            String adminInitials, String text, String supportStatus, String stableMessageId) {
+        String normalizedTargetUserId = normalizeId(targetUserId);
+        String normalizedAdminUserId = normalizeId(adminUserId);
+        String normalizedText = normalizeText(text);
+        if (!StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(normalizedAdminUserId)
+                || !StringUtils.hasText(normalizedText)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
+        }
+        Users targetUser = findUser(normalizedTargetUserId);
+        if (targetUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support target was not found.");
+        }
+        Users adminUser = findUser(normalizedAdminUserId);
+        String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
+        var targetGroup = StringUtils.hasText(workspaceGroupId) ? mongoTemplate.findById(workspaceGroupId,
+                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class) : null;
+        boolean appModeration = isAdminUser(adminUser);
+        if (appModeration) {
+            String targetBase = normalizeId(com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(workspaceGroupId)
+                    ? workspaceGroupId : targetGroup == null ? null : targetGroup.baseId());
+            if (!targetBase.equals(normalizeId(adminUser.getWorkspaceGroupId())))
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case unavailable in this base group.");
+        }
+        boolean groupModeration = StringUtils.hasText(workspaceGroupId) && !appModeration;
+        if (groupModeration && (adminUser == null || !workspaceGroupId.equals(normalizeId(adminUser.getWorkspaceGroupId())))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Moderator and recipient must belong to the same workspace.");
+        }
+        String chatId = (groupModeration ? "c-moderation-group-" : "c-support-admin-") + normalizedTargetUserId;
+        if (stableMessageId != null) {
+            var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
+            if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
+        }
+        var group = groupModeration ? targetGroup : null;
+        String chatTitle = groupModeration ? (group == null ? workspaceGroupId : group.name()) : "MyScoutee Support";
+        String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
+        String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
+        String nowIso = Instant.now().toString();
+        SupportCaseState supportCaseState = new SupportCaseState(
+                normalizeSupportCaseStatus(supportStatus),
+                normalizedAdminUserId,
+                resolvedAdminName,
+                resolvedAdminInitials,
+                nowIso);
+        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
+        for (Chat existing : chatsRepository.findByChatId(chatId)) {
+            if (existing != null && StringUtils.hasText(normalizeId(existing.getOwnerUserId()))) {
+                existingByOwnerUserId.put(normalizeId(existing.getOwnerUserId()), existing);
+            }
+        }
+        Chat targetChat = supportChatDocument(
+                existingByOwnerUserId.get(normalizedTargetUserId),
+                normalizedTargetUserId,
+                chatId,
+                resolvedAdminInitials,
+                chatTitle,
+                List.of(normalizedTargetUserId, normalizedAdminUserId),
+                supportCaseState);
+        Chat adminChat = supportChatDocument(
+                existingByOwnerUserId.get(normalizedAdminUserId),
+                normalizedAdminUserId,
+                chatId,
+                resolveUserInitials(targetUser, normalizedTargetUserId),
+                chatTitle + " · " + resolveUserName(targetUser, normalizedTargetUserId),
+                List.of(normalizedTargetUserId, normalizedAdminUserId),
+                supportCaseState);
+        if (!groupModeration) {
+            targetChat.setSupportBaseGroupId(adminUser == null ? null : adminUser.getWorkspaceGroupId());
+            adminChat.setSupportBaseGroupId(targetChat.getSupportBaseGroupId());
+        }
+        if (groupModeration) {
+            for (Chat chat : List.of(targetChat, adminChat)) {
+                chat.setChannelType(CHAT_CHANNEL_GROUP_SUPPORT);
+                chat.setOwnerId(null);
+                chat.setSupportCase(null);
+            }
+        }
+        List<Chat> chatDocuments = normalizedTargetUserId.equals(normalizedAdminUserId)
+                ? List.of(adminChat) : List.of(targetChat, adminChat);
+        chatsRepository.saveAll(chatDocuments);
+        if (!groupModeration) userActivityCountersService.refreshSupportCaseCountersForAdmins();
+
+        ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
+        message.setSender(resolvedAdminName);
+        ChatAvatarRecord senderAvatar = message.getSenderAvatar();
+        if (senderAvatar != null) {
+            senderAvatar.setInitials(resolvedAdminInitials);
+        }
+        if (stableMessageId != null) {
+            message.setId(stableMessageId);
+            message.setChatId(chatId);
+            message.setMongoId(ChatMessage.buildMongoId(chatId, stableMessageId));
+            message.refreshMessageSearchFields();
+            try { chatMessagesRepository.insert(message); }
+            catch (DuplicateKeyException duplicate) {
+                return chatMessageMapper.toDto(chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElseThrow(), normalizedAdminUserId);
+            }
+            var updated = updateChatSummaries(chatDocuments, message, normalizedAdminUserId, true);
+            var streamEvent = chatMessageMapper.toStreamEvent(chatId, message);
+            observeChatEventPublish(publishChatEventAsync(streamEvent), streamEvent);
+            chatPushNotificationService.notifyRecipients(updated, streamEvent);
+            return chatMessageMapper.toDto(message, normalizedAdminUserId);
+        }
+        return persistChatMessage(
+                new ChatDocumentsSnapshot(chatId, adminChat, chatDocuments),
+                normalizedAdminUserId,
+                message);
+    }
+
+    private ChatMessageDto persistChatMessage(
+            ChatDocumentsSnapshot accessSnapshot,
+            String userId,
+            ChatMessage message) {
+        List<Chat> chatDocuments = chatDocumentsForMutation(accessSnapshot, userId);
+        message.setChatId(accessSnapshot.chatId());
+        message.setMongoId(ChatMessage.buildMongoId(accessSnapshot.chatId(), message.getId()));
+        message.refreshMessageSearchFields();
+        if (StringUtils.hasText(message.getClientId())) {
+            try { chatMessagesRepository.insert(message); }
+            catch (DuplicateKeyException duplicate) {
+                return chatMessageMapper.toDto(chatMessagesRepository.findByChatIdAndMessageId(
+                        accessSnapshot.chatId(), message.getId()).orElseThrow(), userId);
+            }
+        } else chatMessagesRepository.save(message);
+        ChatStreamEvent streamEvent = chatMessageMapper.toStreamEvent(accessSnapshot.chatId(), message);
+        CompletableFuture<Boolean> redisPublish = publishChatEventAsync(streamEvent);
+        List<Chat> updatedDocuments = updateChatSummaries(chatDocuments, message, userId, true);
+        observeChatEventPublish(redisPublish, streamEvent);
+        chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
+        adminTelemetryService.record("chat.message.sent", "chats", accessSnapshot.chatId(), userId);
+        return chatMessageMapper.toDto(message, userId);
+    }
+
+    private Chat supportChatDocument(
+            Chat existing,
+            String ownerUserId,
+            String chatId,
+            String avatar,
+            String title,
+            List<String> memberIds,
+            SupportCaseState supportCaseState) {
+        Chat chat = existing == null ? new Chat() : copyChat(existing);
+        if (existing == null) {
+            chat.setMongoId(buildMongoId(ownerUserId, chatId));
+            chat.setChatId(chatId);
+            chat.setOwnerUserId(ownerUserId);
+            chat.setUnread(0);
+            chat.setLastMessage("");
+            chat.setLastSenderId("");
+            chat.setDateIso(supportCaseState.updatedAtIso());
+        }
+        chat.setAvatar(avatar);
+        chat.setTitle(title);
+        chat.setMemberIds(memberIds);
+        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
+        chat.setOwnerId(chatId);
+        applySupportCaseState(chat, supportCaseState);
+        return chat;
+    }
+
+    public ChatMessageDto editMessage(String chatId, String requestedUserId, String messageId, String text) {
+        String normalizedText = normalizeText(text);
+        if (!StringUtils.hasText(normalizedText)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat message text is required.");
+        }
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorEditChatMessage, (message, userId, user) -> {
+            requireOwnMessage(message, userId);
+            if (StringUtils.hasText(message.getDeletedAtIso())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deleted messages cannot be edited.");
+            }
+            message.setText(normalizedText);
+            message.setEditedAtIso(Instant.now().toString());
+        });
+    }
+
+    public ChatMessageDto deleteMessage(String chatId, String requestedUserId, String messageId) {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorDeleteChatMessage, (message, userId, user) -> {
+            requireOwnMessage(message, userId);
+            message.setText("");
+            message.setDeletedAtIso(Instant.now().toString());
+            message.setDeletedByUserId(userId);
+            message.setDeletedByName(resolveUserName(user, userId));
+            message.setReactions(new ArrayList<>());
+            message.setReadBy(new ArrayList<>());
+            message.setAttachments(new ArrayList<>());
+            message.setReplyTo(null);
+            message.setEditedAtIso(null);
+            message.setPinnedAtIso(null);
+            message.setPinnedByUserId(null);
+        });
+    }
+
+    public ChatMessageDto pinMessage(String chatId, String requestedUserId, String messageId, Boolean pinned) {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorPinChatMessage, (message, userId, user) -> {
+            if (Boolean.TRUE.equals(pinned)) {
+                message.setPinnedAtIso(Instant.now().toString());
+                message.setPinnedByUserId(userId);
+            } else {
+                message.setPinnedAtIso(null);
+                message.setPinnedByUserId(null);
+            }
+        });
+    }
+
+    public ChatMessageDto reactToMessage(String chatId, String requestedUserId, String messageId, String emoji) {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorManageChatReaction, (message, userId, user) -> {
+            String normalizedEmoji = normalizeText(emoji);
+            List<ChatMessageReactionRecord> reactions = new ArrayList<>();
+            for (ChatMessageReactionRecord reaction : safeReactions(message.getReactions())) {
+                if (!userId.equals(normalizeId(reaction.getUserId()))) {
+                    reactions.add(copyReactionRecords(List.of(reaction)).get(0));
+                }
+            }
+            if (StringUtils.hasText(normalizedEmoji)) {
+                ChatMessageReactionRecord reaction = new ChatMessageReactionRecord();
+                reaction.setEmoji(normalizedEmoji);
+                reaction.setUserId(userId);
+                reaction.setUserName(resolveUserName(user, userId));
+                reaction.setUserInitials(resolveUserInitials(user, userId));
+                reaction.setUserGender(resolveUserGender(user));
+                reaction.setReactedAtIso(Instant.now().toString());
+                reactions.add(reaction);
+            }
+            message.setReactions(reactions);
+        });
+    }
+
+    public ChatMessageDto updateMessageAttachments(
+            String chatId,
+            String requestedUserId,
+            String messageId,
+            List<ChatMessageAttachmentDto> attachments) {
+        return mutateMessage(chatId, requestedUserId, messageId, accessControlService::canCurrentActorAddChatAttachment, (message, userId, user) -> {
+            if (StringUtils.hasText(message.getDeletedAtIso())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deleted messages cannot be updated.");
+            }
+            message.setAttachments(normalizeAttachments(attachments));
+        });
+    }
+
+    public void markMessagesRead(String chatId, String requestedUserId, List<String> messageIds) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        ChatReadUpdate readUpdate = markMessagesRead(snapshot, userId, messageIds);
+        if (!readUpdate.readMessageIds().isEmpty()) {
+            publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
+        }
+    }
+
+    public void sendTypingSignal(String chatId, String requestedUserId, Boolean typing) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
+        Users user = findUser(userId);
+        publishChatEvent(ChatStreamEvent.typing(
+                snapshot.chatId(),
+                userId,
+                resolveUserName(user, userId),
+                resolveUserInitials(user, userId),
+                resolveUserGender(user),
+                Boolean.TRUE.equals(typing)));
+    }
+
+    public boolean hasChatAccess(String chatId, String userId) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedUserId = resolveChatActor(normalizedChatId, normalizeId(userId));
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        Chat viewerChat = chatsRepository
+                .findByOwnerUserIdAndChatId(normalizedUserId, normalizedChatId)
+                .orElse(null);
+        if (viewerChat != null) {
+            return hasChatAccess(viewerChat, normalizedUserId);
+        }
+        return chatsRepository.findByChatId(normalizedChatId).stream()
+                .anyMatch(chat -> hasChatAccess(chat, normalizedUserId));
+    }
+
+    /** Reuse the chat's existing app-admin or resource-member management authority. */
+    public boolean canModerateCall(String chatId, String userId) {
+        String actor = resolveChatActor(normalizeId(chatId), normalizeId(userId));
+        if (!hasChatAccess(chatId, actor)) return false;
+        if (isAdminUser(findUser(actor))) return true;
+        Chat chat = chatsRepository.findByOwnerUserIdAndChatId(actor, chatId).orElse(null);
+        if (chat == null) chat = chatsRepository.findByChatId(chatId).stream().findFirst().orElse(null);
+        if (chat == null) return false;
+        ChatOwnerParts parts = chatOwnerParts(chat);
+        if (StringUtils.hasText(parts.eventId()) && accessControlService.canManageMembers(OWNER_TYPE_EVENT, parts.eventId(), actor)) return true;
+        if (StringUtils.hasText(parts.groupId()) && accessControlService.canManageMembers(OWNER_TYPE_GROUP, parts.groupId(), actor)) return true;
+        return false;
+    }
+
+    public void upsertDevice(ChatDeviceUpsertRequestDto request) {
+        if (request == null) {
+            return;
+        }
+        String userId = resolveUserId(request.userId());
+        String deviceId = normalizeText(request.deviceId());
+        String firebaseToken = normalizeText(request.firebaseToken());
+        if (!StringUtils.hasText(userId) || (!StringUtils.hasText(deviceId) && !StringUtils.hasText(firebaseToken))) {
+            return;
+        }
+
+        Users user = usersRepository.findByUserId(userId).orElse(null);
+        if (user == null) {
+            return;
+        }
+
+        String nowIso = Instant.now().toString();
+        List<Users.UserDeviceRecord> devices = new ArrayList<>(user.getDevices() == null ? List.of() : user.getDevices());
+        Users.UserDeviceRecord target = null;
+        for (Users.UserDeviceRecord device : devices) {
+            if (device == null) {
+                continue;
+            }
+            if (StringUtils.hasText(deviceId) && deviceId.equals(normalizeId(device.getDeviceId()))) {
+                target = device;
+                break;
+            }
+            if (StringUtils.hasText(firebaseToken) && firebaseToken.equals(normalizeText(device.getFirebaseToken()))) {
+                target = device;
+                break;
+            }
+        }
+        if (target == null) {
+            target = new Users.UserDeviceRecord();
+            devices.add(target);
+        }
+        target.setDeviceId(StringUtils.hasText(deviceId) ? deviceId : stableDeviceId(firebaseToken));
+        target.setPlatform(normalizeText(request.platform()));
+        target.setFirebaseToken(firebaseToken);
+        target.setNotificationsEnabled(request.notificationsEnabled() == null ? Boolean.TRUE : request.notificationsEnabled());
+        target.setLastRegisteredAtIso(nowIso);
+        target.setLastSeenAtIso(nowIso);
+        user.setDevices(devices);
+        usersRepository.save(user);
+    }
+
+    public void deleteDevice(ChatDeviceDeleteRequestDto request) {
+        if (request == null) {
+            return;
+        }
+        String userId = resolveUserId(request.userId());
+        if (!StringUtils.hasText(userId)) {
+            return;
+        }
+        String deviceId = normalizeText(request.deviceId());
+        String firebaseToken = normalizeText(request.firebaseToken());
+        if (!StringUtils.hasText(deviceId) && !StringUtils.hasText(firebaseToken)) {
+            return;
+        }
+
+        Users user = usersRepository.findByUserId(userId).orElse(null);
+        if (user == null || user.getDevices() == null || user.getDevices().isEmpty()) {
+            return;
+        }
+
+        List<Users.UserDeviceRecord> retained = user.getDevices().stream()
+                .filter(Objects::nonNull)
+                .filter(device -> !matchesDevice(device, deviceId, firebaseToken))
+                .toList();
+        if (retained.size() == user.getDevices().size()) {
+            return;
+        }
+        user.setDevices(new ArrayList<>(retained));
+        usersRepository.save(user);
+    }
+
+    private ChatDocumentsSnapshot requireChat(String chatId, String userId) {
+        return requireChat(chatId, userId, false);
+    }
+
+    private ChatDocumentsSnapshot requireChat(String chatId, String userId, boolean prepareOwnerCopies) {
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        List<Chat> chatDocuments = prepareOwnerCopies
+                ? ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId))
+                : chatsRepository.findByChatId(normalizedChatId);
+        if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(chat -> hasChatAccess(chat, userId))) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        Chat viewerChat = findOwnerChat(chatDocuments, userId);
+        if (prepareOwnerCopies && viewerChat == null) {
+            Chat baseChat = chatDocuments.get(0);
+            Chat createdViewerChat = createOwnerCopy(baseChat, userId);
+            chatsRepository.save(createdViewerChat);
+            chatDocuments = new ArrayList<>(chatDocuments);
+            chatDocuments.add(createdViewerChat);
+            viewerChat = createdViewerChat;
+        }
+        return new ChatDocumentsSnapshot(normalizedChatId, viewerChat, chatDocuments);
+    }
+
+    private ChatDocumentsSnapshot requireChatAccessForSend(String chatId, String userId) {
+        var snapshot = requireChat(chatId, userId, true);
+        var chat = snapshot.viewerChat();
+        if (chat != null && "contact".equals(chat.getChannelType()) && safeMemberIds(chat.getMemberIds()).size() == 2) {
+            for (String peer : safeMemberIds(chat.getMemberIds())) if (!peer.equals(userId)) requireContactChatConsent(userId, peer);
+        }
+        return snapshot;
+    }
+
+    private void requireContactChatConsent(String actor, String target) {
+        var consent = mongoTemplate.findById(ContactChatAccess.pairId(actor, target),
+                ContactChatAccess.class);
+        if (consent == null || !"approved".equals(consent.status()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Direct chat access requires approval.");
+    }
+
+    private List<Chat> chatDocumentsForMutation(ChatDocumentsSnapshot snapshot, String userId) {
+        if (snapshot != null && snapshot.chatDocuments() != null && !snapshot.chatDocuments().isEmpty()) {
+            return snapshot.chatDocuments();
+        }
+        return requireChatAccessForSend(snapshot == null ? "" : snapshot.chatId(), userId).chatDocuments();
+    }
+
+    private List<Chat> ensureOwnerCopies(List<Chat> chatDocuments) {
+        if (chatDocuments == null || chatDocuments.isEmpty()) {
+            return List.of();
+        }
+        Map<String, List<Chat>> chatsByChatId = groupChatsByChatId(chatDocuments);
+
+        List<Chat> created = new ArrayList<>();
+        for (List<Chat> chatsWithSameId : chatsByChatId.values()) {
+            if (chatsWithSameId.isEmpty()) {
+                continue;
+            }
+            Chat baseChat = chatsWithSameId.get(0);
+            String chatId = normalizeId(baseChat.getChatId());
+            if (!StringUtils.hasText(chatId)) {
+                continue;
+            }
+            Set<String> ownerUserIds = new LinkedHashSet<>();
+            Set<String> participantUserIds = new LinkedHashSet<>();
+            for (Chat chat : chatsRepository.findByChatId(chatId)) {
+                if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
+                    ownerUserIds.add(normalizeId(chat.getOwnerUserId()));
+                }
+            }
+            collectChatOwnersAndParticipants(chatsWithSameId, ownerUserIds, participantUserIds);
+            for (String participantUserId : participantUserIds) {
+                if (ownerUserIds.contains(participantUserId)) {
+                    continue;
+                }
+                Chat createdChat = createOwnerCopy(baseChat, participantUserId);
+                created.add(createdChat);
+                chatsWithSameId.add(createdChat);
+                ownerUserIds.add(participantUserId);
+            }
+        }
+        if (!created.isEmpty()) {
+            chatsRepository.saveAll(created);
+        }
+        return flattenChatGroups(chatsByChatId);
+    }
+
+    private Map<String, List<Chat>> groupChatsByChatId(List<Chat> chatDocuments) {
+        Map<String, List<Chat>> chatsByChatId = new LinkedHashMap<>();
+        for (Chat chat : chatDocuments == null ? List.<Chat>of() : chatDocuments) {
+            if (chat == null || !StringUtils.hasText(chat.getChatId())) {
+                continue;
+            }
+            String chatId = normalizeId(chat.getChatId());
+            chatsByChatId.computeIfAbsent(chatId, key -> new ArrayList<>()).add(chat);
+        }
+        return chatsByChatId;
+    }
+
+    private void collectChatOwnersAndParticipants(
+            List<Chat> chatsWithSameId,
+            Set<String> ownerUserIds,
+            Set<String> participantUserIds) {
+        for (Chat chat : chatsWithSameId == null ? List.<Chat>of() : chatsWithSameId) {
+            if (StringUtils.hasText(chat.getOwnerUserId())) {
+                String ownerUserId = normalizeId(chat.getOwnerUserId());
+                ownerUserIds.add(ownerUserId);
+                participantUserIds.add(ownerUserId);
+            }
+            for (String memberId : chat.getMemberIds() == null ? List.<String>of() : chat.getMemberIds()) {
+                if (StringUtils.hasText(memberId)) {
+                    participantUserIds.add(normalizeId(memberId));
+                }
+            }
+        }
+    }
+
+    private List<Chat> flattenChatGroups(Map<String, List<Chat>> chatsByChatId) {
+        List<Chat> flattened = new ArrayList<>();
+        for (List<Chat> sameChatId : chatsByChatId.values()) {
+            flattened.addAll(sameChatId);
+        }
+        return flattened;
+    }
+
+    private ChatReadUpdate markMessagesRead(
+            ChatDocumentsSnapshot snapshot,
+            String viewerUserId,
+            List<String> requestedMessageIds) {
+        return markMessagesRead(snapshot, viewerUserId, requestedMessageIds, null);
+    }
+
+    private ChatReadUpdate markMessagesRead(
+            ChatDocumentsSnapshot snapshot,
+            String viewerUserId,
+            List<String> requestedMessageIds,
+            List<ChatMessage> preloadedMessages) {
+        Set<String> targetMessageIds = requestedMessageIds == null
+                ? Set.of()
+                : requestedMessageIds.stream()
+                        .map(this::normalizeId)
+                        .filter(StringUtils::hasText)
+                        .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        Set<String> readMessageIds = new LinkedHashSet<>();
+        String readAtIso = Instant.now().toString();
+        Users viewer = null;
+        ChatReadAvatarRecord reader = null;
+        List<ChatMessage> messages = preloadedMessages != null
+                ? preloadedMessages
+                : chatMessagesRepository.findByChatIdAndMessageIds(snapshot.chatId(), targetMessageIds);
+        for (ChatMessage message : messages) {
+            if (message == null) {
+                continue;
+            }
+            String senderId = message.getSenderAvatar() == null ? "" : normalizeId(message.getSenderAvatar().getId());
+            boolean matchesTarget = targetMessageIds.contains(normalizeId(message.getId()));
+            if (!matchesTarget
+                    || viewerUserId.equals(senderId)
+                    || StringUtils.hasText(message.getDeletedAtIso())
+                    || hasReader(message, viewerUserId)) {
+                continue;
+            }
+            if (reader == null) {
+                viewer = findUser(viewerUserId);
+                reader = buildReadAvatarRecord(viewer, viewerUserId);
+            }
+            Query unreadMessage = new Query(unreadMessageCriteria(snapshot.chatId(), viewerUserId)
+                    .and("id").is(normalizeId(message.getId())));
+            Update readUpdate = new Update()
+                    .addToSet("readBy", reader)
+                    .addToSet("messageReadByUserIds", viewerUserId);
+            var updateResult = mongoTemplate.updateFirst(unreadMessage, readUpdate, ChatMessage.class);
+            if (updateResult != null && updateResult.getModifiedCount() > 0) {
+                addReader(message, reader);
+                List<String> readByUserIds = new ArrayList<>(message.getMessageReadByUserIds());
+                readByUserIds.add(viewerUserId);
+                message.setMessageReadByUserIds(readByUserIds);
+                readMessageIds.add(normalizeId(message.getId()));
+            }
+        }
+        Chat viewerChat = snapshot.viewerChat();
+        if (viewerChat != null && !readMessageIds.isEmpty()) {
+            int unread = Math.max(0, normalizeCount(viewerChat.getUnread()) - readMessageIds.size());
+            if (normalizeCount(viewerChat.getUnread()) != unread) {
+                int unreadDelta = unread - normalizeCount(viewerChat.getUnread());
+                Chat nextViewerChat = copyChat(viewerChat);
+                nextViewerChat.setUnread(unread);
+                nextViewerChat.setRevision(nextChatRevision(viewerChat));
+                viewerChat = chatsRepository.save(nextViewerChat);
+                incrementStoredChatCounters(nextViewerChat, unreadDelta);
+                homeUserProfileService.evictUserReadCaches(viewerUserId);
+            }
+        }
+        if (!readMessageIds.isEmpty()) {
+            userNotificationService.markChatMessagesRead(viewerUserId, snapshot.chatId(), List.copyOf(readMessageIds));
+        }
+        return new ChatReadUpdate(
+                viewerChat,
+                List.copyOf(readMessageIds),
+                reader == null ? chatMessageMapper.emptyReadAvatarDto() : chatMessageMapper.toReadAvatarDto(reader, viewer),
+                readAtIso,
+                viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread()),
+                !readMessageIds.isEmpty());
+    }
+
+    private ChatReadUpdate markChannelRead(
+            ChatDocumentsSnapshot snapshot,
+            String viewerUserId,
+            List<ChatMessage> loadedMessages) {
+        String readAtIso = Instant.now().toString();
+        List<String> loadedUnreadIds = (loadedMessages == null ? List.<ChatMessage>of() : loadedMessages).stream()
+                .filter(Objects::nonNull)
+                .filter(message -> !StringUtils.hasText(message.getDeletedAtIso()))
+                .filter(message -> message.getSenderAvatar() == null
+                        || !viewerUserId.equals(normalizeId(message.getSenderAvatar().getId())))
+                .filter(message -> !hasReader(message, viewerUserId))
+                .map(ChatMessage::getId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .toList();
+        Chat viewerChat = snapshot.viewerChat();
+        int previousUnread = viewerChat == null ? 0 : normalizeCount(viewerChat.getUnread());
+        userNotificationService.markChatRead(viewerUserId, snapshot.chatId());
+        if (previousUnread == 0 && loadedUnreadIds.isEmpty()) {
+            return new ChatReadUpdate(
+                    viewerChat,
+                    List.of(),
+                    chatMessageMapper.emptyReadAvatarDto(),
+                    readAtIso,
+                    0,
+                    false);
+        }
+        Users viewer = findUser(viewerUserId);
+        ChatReadAvatarRecord reader = buildReadAvatarRecord(viewer, viewerUserId);
+        Query unreadMessages = new Query(unreadMessageCriteria(snapshot.chatId(), viewerUserId));
+        Update readUpdate = new Update()
+                .addToSet("readBy", reader)
+                .addToSet("messageReadByUserIds", viewerUserId);
+        var updateResult = mongoTemplate.updateMulti(unreadMessages, readUpdate, ChatMessage.class);
+        long changedMessageCount = updateResult == null ? 0 : updateResult.getModifiedCount();
+
+        if (viewerChat != null && previousUnread > 0) {
+            Chat nextViewerChat = copyChat(viewerChat);
+            nextViewerChat.setUnread(0);
+            nextViewerChat.setRevision(nextChatRevision(viewerChat));
+            viewerChat = chatsRepository.save(nextViewerChat);
+            incrementStoredChatCounters(nextViewerChat, -previousUnread);
+            homeUserProfileService.evictUserReadCaches(viewerUserId);
+        }
+        boolean changed = changedMessageCount > 0 || previousUnread > 0;
+        return new ChatReadUpdate(
+                viewerChat,
+                loadedUnreadIds,
+                chatMessageMapper.toReadAvatarDto(reader, viewer),
+                readAtIso,
+                0,
+                changed);
+    }
+
+    private Criteria unreadMessageCriteria(String chatId, String viewerUserId) {
+        return new Criteria().andOperator(
+                Criteria.where("chatId").is(chatId),
+                Criteria.where("senderAvatar.id").ne(viewerUserId),
+                Criteria.where("messageReadByUserIds").ne(viewerUserId),
+                new Criteria().orOperator(
+                        Criteria.where("deletedAtIso").exists(false),
+                        Criteria.where("deletedAtIso").is(null),
+                        Criteria.where("deletedAtIso").is("")));
+    }
+
+    private ChatMessageDto mutateMessage(
+            String chatId,
+            String requestedUserId,
+            String messageId,
+            BiPredicate<String, String> policyGuard,
+            ChatMessageMutator mutator) {
+        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
+        String normalizedMessageId = normalizeId(messageId);
+        if (!StringUtils.hasText(normalizedMessageId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Message id is required.");
+        }
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found.");
+        }
+        if (policyGuard != null && !policyGuard.test(userId, normalizedChatId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to change messages in this chat.");
+        }
+        ChatDocumentsSnapshot snapshot = requireChat(normalizedChatId, userId);
+        Users user = findUser(userId);
+        ChatMessage message = chatMessagesRepository
+                .findByChatIdAndMessageId(snapshot.chatId(), normalizedMessageId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found."));
+        mutator.apply(message, userId, user);
+        message.refreshMessageSearchFields();
+        ChatMessage updatedMessage = chatMessagesRepository.save(message);
+        refreshChatSummaries(snapshot.chatId(), snapshot.chatDocuments());
+        publishChatEvent(chatMessageMapper.toStreamEvent(snapshot.chatId(), updatedMessage));
+        return chatMessageMapper.toDto(updatedMessage, userId);
+    }
+
+    private void requireOwnMessage(ChatMessage message, String userId) {
+        ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
+        String senderId = senderAvatar == null ? "" : normalizeId(senderAvatar.getId());
+        if (!userId.equals(senderId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only your own messages can be changed.");
+        }
+    }
+
+    private List<Chat> updateChatSummaries(
+            List<Chat> chatDocuments,
+            ChatMessage message,
+            String lastSenderId,
+            boolean clearUnreadForSender) {
+        if (chatDocuments == null || chatDocuments.isEmpty() || message == null) {
+            return List.of();
+        }
+        List<Chat> updatedDocuments = new ArrayList<>(chatDocuments.size());
+        List<ChatCounterChange> counterChanges = new ArrayList<>();
+        BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class);
+        boolean hasBulkUpdates = false;
+        String summary = chatMessageMapper.summary(message);
+        String sentAtIso = message.getSentAtIso();
+        String normalizedLastSenderId = normalizeId(lastSenderId);
+        for (Chat existing : chatDocuments) {
+            if (existing == null || !StringUtils.hasText(existing.getMongoId())) {
+                continue;
+            }
+            Chat next = copyChat(existing);
+            next.setLastMessage(summary);
+            next.setLastSenderId(normalizedLastSenderId);
+            next.setDateIso(sentAtIso);
+            boolean senderCopy = clearUnreadForSender && normalizedLastSenderId.equals(normalizeId(next.getOwnerUserId()));
+            next.setUnread(senderCopy ? 0 : normalizeCount(existing.getUnread()) + 1);
+            next.setRevision(nextChatRevision(existing));
+            updatedDocuments.add(next);
+            int unreadDelta = normalizeCount(next.getUnread()) - normalizeCount(existing.getUnread());
+            if (unreadDelta != 0) {
+                counterChanges.add(new ChatCounterChange(next, unreadDelta));
+            }
+
+            Update update = new Update()
+                    .set("lastMessage", next.getLastMessage())
+                    .set("lastSenderId", next.getLastSenderId())
+                    .set("dateIso", next.getDateIso())
+                    .set("unread", next.getUnread())
+                    .inc("revision", 1L);
+            bulk.updateOne(Query.query(Criteria.where("_id").is(existing.getMongoId())), update);
+            hasBulkUpdates = true;
+        }
+        if (hasBulkUpdates) {
+            bulk.execute();
+            incrementStoredChatCounters(counterChanges);
+            evictChatOwnerReadCaches(updatedDocuments);
+        }
+        return updatedDocuments;
+    }
+
+    private void incrementStoredChatCounters(Collection<ChatCounterChange> changes) {
+        List<ChatCounterChange> applicable = changes == null
+                ? List.of()
+                : changes.stream()
+                        .filter(Objects::nonNull)
+                        .filter(change -> change.chat() != null)
+                        .filter(change -> change.delta() != 0)
+                        .filter(change -> StringUtils.hasText(normalizeId(change.chat().getOwnerUserId())))
+                        .toList();
+        if (applicable.isEmpty()) {
+            return;
+        }
+        BulkOperations bulk = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class);
+        for (ChatCounterChange change : applicable) {
+            Chat chat = change.chat();
+            Update update = storedChatCounterUpdate(chat, change.delta());
+            bulk.updateOne(
+                    Query.query(Criteria.where("userId").is(normalizeId(chat.getOwnerUserId()))),
+                    update);
+        }
+        bulk.execute();
+    }
+
+    private void incrementStoredChatCounters(Chat chat, int unreadDelta) {
+        String ownerUserId = normalizeId(chat == null ? null : chat.getOwnerUserId());
+        if (!StringUtils.hasText(ownerUserId) || unreadDelta == 0) {
+            return;
+        }
+        mongoTemplate.updateFirst(
+                Query.query(Criteria.where("userId").is(ownerUserId)),
+                storedChatCounterUpdate(chat, unreadDelta),
+                Users.class);
+    }
+
+    private Update storedChatCounterUpdate(Chat chat, int unreadDelta) {
+        Update update = new Update()
+                .inc("activities.chats", unreadDelta)
+                .inc("activities.chat.all", unreadDelta);
+        String contextField = chatCounterContextField(chat.getChannelType());
+        if (StringUtils.hasText(contextField)) {
+            update.inc("activities.chat." + contextField, unreadDelta);
+        }
+        return update;
+    }
+
+    private String chatCounterContextField(String channelType) {
+        return switch (safeText(channelType)) {
+            case CHAT_CHANNEL_MAIN_EVENT -> "event";
+            case CHAT_CHANNEL_OPTIONAL_SUB_EVENT -> "subEvent";
+            case CHAT_CHANNEL_GROUP_SUB_EVENT -> "group";
+            case CHAT_CHANNEL_SERVICE_EVENT -> "service";
+            case "contact" -> "contacts";
+            case "campaign" -> "campaign";
+            case "case" -> "cases";
+            case CHAT_CHANNEL_GROUP_SUPPORT -> "groupSupport";
+            case CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE -> "appSupport";
+            default -> "";
+        };
+    }
+
+    private void evictChatOwnerReadCaches(List<Chat> chatDocuments) {
+        Set<String> ownerUserIds = new LinkedHashSet<>();
+        for (Chat chat : chatDocuments == null ? List.<Chat>of() : chatDocuments) {
+            if (chat != null && StringUtils.hasText(chat.getOwnerUserId())) {
+                ownerUserIds.add(normalizeId(chat.getOwnerUserId()));
+            }
+        }
+        homeUserProfileService.evictUserReadCaches(ownerUserIds);
+    }
+
+    private void refreshChatSummaries(String chatId, List<Chat> chatDocuments) {
+        String normalizedChatId = normalizeId(chatId);
+        if (!StringUtils.hasText(normalizedChatId)) {
+            return;
+        }
+        ChatMessage latest = chatMessagesRepository
+                .findByChatIdOrderBySentAtIsoDesc(normalizedChatId, PageRequest.of(0, 1))
+                .stream()
+                .findFirst()
+                .orElse(null);
+        List<Chat> sourceDocuments = chatDocuments == null || chatDocuments.isEmpty()
+                ? chatsRepository.findByChatId(normalizedChatId)
+                : chatDocuments;
+        if (sourceDocuments.isEmpty()) {
+            return;
+        }
+        List<Chat> updatedDocuments = new ArrayList<>();
+        for (Chat existing : sourceDocuments) {
+            if (existing == null) {
+                continue;
+            }
+            Chat next = copyChat(existing);
+            if (latest == null) {
+                next.setLastMessage("");
+                next.setLastSenderId("");
+            } else {
+                next.setLastMessage(chatMessageMapper.summary(latest));
+                ChatAvatarRecord latestSender = latest.getSenderAvatar();
+                next.setLastSenderId(latestSender == null ? "" : normalizeId(latestSender.getId()));
+                next.setDateIso(latest.getSentAtIso());
+            }
+            next.setRevision(nextChatRevision(existing));
+            updatedDocuments.add(next);
+        }
+        if (!updatedDocuments.isEmpty()) {
+            chatsRepository.saveAll(updatedDocuments);
+        }
+    }
+
+    @FunctionalInterface
+    private interface ChatMessageMutator {
+        void apply(ChatMessage message, String userId, Users user);
+    }
+
+    private record ChatCounterChange(Chat chat, int delta) {
+    }
+
+    private boolean addReader(ChatMessage message, ChatReadAvatarRecord reader) {
+        if (message == null || reader == null || !StringUtils.hasText(reader.getId())) {
+            return false;
+        }
+        List<ChatReadAvatarRecord> readBy = new ArrayList<>(safeReadBy(message.getReadBy()));
+        for (ChatReadAvatarRecord existingReader : readBy) {
+            if (existingReader != null && reader.getId().equals(normalizeId(existingReader.getId()))) {
+                return false;
+            }
+        }
+        readBy.add(copyReadAvatarRecord(reader));
+        message.setReadBy(readBy);
+        return true;
+    }
+
+    private boolean hasReader(ChatMessage message, String viewerUserId) {
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        if (message == null || !StringUtils.hasText(normalizedViewerUserId)) {
+            return false;
+        }
+        return safeReadBy(message.getReadBy()).stream()
+                .map(ChatReadAvatarRecord::getId)
+                .map(this::normalizeId)
+                .anyMatch(normalizedViewerUserId::equals);
+    }
+
+    private boolean matchesDevice(Users.UserDeviceRecord device, String deviceId, String firebaseToken) {
+        if (device == null) {
+            return false;
+        }
+        if (StringUtils.hasText(deviceId) && deviceId.equals(normalizeId(device.getDeviceId()))) {
+            return true;
+        }
+        return StringUtils.hasText(firebaseToken) && firebaseToken.equals(normalizeText(device.getFirebaseToken()));
+    }
+
+    private ChatDto toChatDto(Chat chat) {
+        return chatMapper.toDto(chat);
+    }
+
+    private ChatDto toChatDto(Chat chat, Map<String, Users> usersById) {
+        return chatMapper.toDto(chat, usersById);
+    }
+
+    private List<ChatDto> chatDtosWithMetrics(List<Chat> records) {
+        List<Chat> safeRecords = records == null ? List.of() : records;
+        Map<String, Users> usersById = chatMemberUsers(safeRecords);
+        List<Chat> metricRecords = safeRecords.stream()
+                .filter(this::metricChatRecord)
+                .toList();
+        Map<String, ChatDto> dtoByOwnerId = chatMapper.toMap(metricRecords, usersById);
+        patchChatDtosWithMetrics(metricRecords, dtoByOwnerId);
+        List<ChatDto> result = new ArrayList<>();
+        for (Chat record : safeRecords) {
+            ChatDto dto = toChatDto(record, usersById);
+            String ownerId = normalizeId(dto == null ? null : dto.ownerId());
+            if (StringUtils.hasText(ownerId) && supportsChatMetrics(chatChannelType(record))) {
+                result.add(dtoByOwnerId.getOrDefault(ownerId, dto));
+            } else if (dto != null) {
+                result.add(dto);
+            }
+        }
+        return patchChatDtosWithNavigationContext(safeRecords, result);
+    }
+
+    private List<ChatDto> patchChatDtosWithNavigationContext(List<Chat> records, List<ChatDto> dtos) {
+        if (records == null || records.isEmpty() || dtos == null || dtos.isEmpty()) {
+            return dtos == null ? List.of() : dtos;
+        }
+        Set<String> eventIds = new LinkedHashSet<>();
+        for (Chat record : records) {
+            ChatOwnerParts parts = chatOwnerParts(record);
+            String channelType = chatChannelType(record);
+            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
+                    || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))
+                    && StringUtils.hasText(parts.eventId())) {
+                eventIds.add(parts.eventId());
+            }
+        }
+        if (eventIds.isEmpty()) {
+            return dtos;
+        }
+
+        Query eventQuery = Query.query(Criteria.where("sourceId").in(eventIds));
+        eventQuery.fields()
+                .include("sourceId")
+                .include("ownerUserId")
+                .include("creatorUserId")
+                .include("admins")
+                .include("title")
+                .include("pendingMembers")
+                .include("subEvents");
+        List<ActivityEvent> eventRecords = mongoTemplate.find(eventQuery, ActivityEvent.class);
+        Map<String, ActivityEvent> eventsByViewerAndId = new LinkedHashMap<>();
+        Map<String, ActivityEvent> fallbackEventsById = new LinkedHashMap<>();
+        for (ActivityEvent event : eventRecords == null ? List.<ActivityEvent>of() : eventRecords) {
+            String eventId = normalizeId(event == null ? null : event.getSourceId());
+            if (!StringUtils.hasText(eventId)) {
+                continue;
+            }
+            fallbackEventsById.putIfAbsent(eventId, event);
+            String ownerUserId = normalizeId(event.getOwnerUserId());
+            if (StringUtils.hasText(ownerUserId)) {
+                eventsByViewerAndId.put(ownerUserId + ":" + eventId, event);
+            }
+        }
+
+        List<ChatDto> result = new ArrayList<>(dtos.size());
+        for (int index = 0; index < dtos.size(); index += 1) {
+            ChatDto dto = dtos.get(index);
+            Chat record = index < records.size() ? records.get(index) : null;
+            ChatOwnerParts parts = chatOwnerParts(record);
+            String eventId = parts.eventId();
+            ActivityEvent event = eventsByViewerAndId.get(normalizeId(record == null ? null : record.getOwnerUserId())
+                    + ":" + eventId);
+            if (event == null) {
+                event = fallbackEventsById.get(eventId);
+            }
+            result.add(chatMapper.withNavigationContext(
+                    dto,
+                    chatNavigationContext(record, dto, event, parts)));
+        }
+        return result;
+    }
+
+    private ChatNavigationContextDto chatNavigationContext(
+            Chat chat,
+            ChatDto dto,
+            ActivityEvent event,
+            ChatOwnerParts parts) {
+        String channelType = chatChannelType(chat);
+        if (event == null
+                || (!CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
+                        && !CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))) {
+            return null;
+        }
+        SubEventItem subEvent = findChatContextSubEvent(event, parts.subEventId());
+        if (subEvent == null) {
+            return null;
+        }
+        String viewerUserId = normalizeId(chat == null ? null : chat.getOwnerUserId());
+        boolean canManage = viewerUserId.equals(normalizeId(event.getCreatorUserId()))
+                || (event.getAdmins() != null && event.getAdmins().stream()
+                        .map(this::normalizeId)
+                        .anyMatch(viewerUserId::equals));
+        return new ChatNavigationContextDto(
+                parts.eventId(),
+                safeText(event.getTitle()),
+                canManage ? "hosting" : "events",
+                normalizeCount(event.getPendingMembers()),
+                SubEventItemMapper.toDto(subEvent),
+                CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
+                        ? toChatGroupContext(subEvent, parts.groupId(), dto == null ? null : dto.metrics())
+                        : null);
+    }
+
+    private ChatGroupContextDto toChatGroupContext(SubEventItem subEvent, String groupId, ChatMetricsDto metrics) {
+        ChatMetricBucketDto members = metrics == null ? null : metrics.members();
+        SubEventGroupItemDto group = (subEvent == null || subEvent.groups() == null
+                ? List.<SubEventGroupItemDto>of()
+                : subEvent.groups()).stream()
+                .filter(Objects::nonNull)
+                .filter(item -> normalizeId(groupId).equals(normalizeId(item.id())))
+                .findFirst()
+                .orElse(null);
+        if (group == null) {
+            return null;
+        }
+        return new ChatGroupContextDto(
+                normalizeId(group.id()),
+                safeText(group.name()),
+                safeText(group.source()),
+                members == null ? 0 : members.accepted(),
+                members == null ? 0 : members.pending(),
+                normalizeCount(group.capacityMin()),
+                normalizeCount(group.capacityMax()));
+    }
+
+    private Map<String, Users> chatMemberUsers(Collection<Chat> records) {
+        Set<String> memberIds = new LinkedHashSet<>();
+        for (Chat record : records == null ? List.<Chat>of() : records) {
+            for (String memberId : safeMemberIds(record == null ? null : record.getMemberIds())) {
+                String normalizedMemberId = normalizeId(memberId);
+                if (StringUtils.hasText(normalizedMemberId)) {
+                    memberIds.add(normalizedMemberId);
+                }
+            }
+        }
+        if (memberIds.isEmpty()) {
+            return Map.of();
+        }
+        Map<String, Users> usersById = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(memberIds)) {
+            String userId = normalizeId(user == null ? null : user.getUserId());
+            if (StringUtils.hasText(userId)) {
+                usersById.put(userId, user);
+            }
+        }
+        return usersById;
+    }
+
+    private void patchChatDtosWithMetrics(List<Chat> records, Map<String, ChatDto> dtoByOwnerId) {
+        if (records == null || records.isEmpty() || dtoByOwnerId == null || dtoByOwnerId.isEmpty()) {
+            return;
+        }
+        Map<String, ChatMetricLookup> lookupByOwnerId = new LinkedHashMap<>();
+        Map<String, MemberOwnerLookup> memberOwnersByKey = new LinkedHashMap<>();
+        Set<String> resourceOwnerIds = new LinkedHashSet<>();
+        Set<String> resourceViewerUserIds = new LinkedHashSet<>();
+        Set<String> stageRuntimeOwnerIds = new LinkedHashSet<>();
+
+        for (Chat record : records) {
+            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
+            String channelType = chatChannelType(record);
+            if (!StringUtils.hasText(ownerId)
+                    || !dtoByOwnerId.containsKey(ownerId)
+                    || !supportsChatMetrics(channelType)) {
+                continue;
+            }
+            ChatOwnerParts parts = chatOwnerParts(record);
+            String viewerUserId = normalizeId(record.getOwnerUserId());
+            lookupByOwnerId.put(ownerId, new ChatMetricLookup(channelType, ownerId, viewerUserId, parts));
+
+            String memberOwnerType = memberOwnerType(channelType);
+            if (StringUtils.hasText(memberOwnerType)) {
+                memberOwnersByKey.put(memberOwnerType + ":" + ownerId, new MemberOwnerLookup(memberOwnerType, ownerId));
+            }
+            if ((CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType) || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType))
+                    && StringUtils.hasText(parts.subEventId())) {
+                if (StringUtils.hasText(parts.eventId())) {
+                    resourceOwnerIds.add(parts.eventId());
+                    stageRuntimeOwnerIds.add(parts.eventId());
+                }
+                resourceOwnerIds.add(ownerId);
+                if (StringUtils.hasText(viewerUserId)) {
+                    resourceViewerUserIds.add(viewerUserId);
+                }
+                stageRuntimeOwnerIds.add(ownerId);
+            }
+        }
+
+        Map<String, List<ActivityMember>> membersByOwnerKey = activityMembersByOwnerKey(memberOwnersByKey.values());
+        Set<String> acceptedMemberIds = membersByOwnerKey.values().stream()
+                .flatMap(Collection::stream)
+                .filter(record -> MEMBER_STATUS_ACCEPTED.equals(
+                        safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT)))
+                .map(ActivityMember::getUserId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+        Map<String, Users> activityMemberUsersById = new LinkedHashMap<>();
+        if (!acceptedMemberIds.isEmpty()) {
+            for (Users user : usersRepository.findByUserIdIn(acceptedMemberIds)) {
+                String memberUserId = normalizeId(user == null ? null : user.getUserId());
+                if (StringUtils.hasText(memberUserId)) {
+                    activityMemberUsersById.put(memberUserId, user);
+                }
+            }
+        }
+        Map<String, List<ActivitySubEventResource>> resourcesByMetricKey = resourceRecordsByMetricKey(
+                resourceOwnerIds,
+                resourceViewerUserIds);
+        Map<String, Asset> assetsByOwnerAndId = assetsByOwnerAndId(resourcesByMetricKey.values());
+        Map<String, ActivitySubEventStageRuntime> stageRuntimeByMetricKey = stageRuntimeByMetricKey(stageRuntimeOwnerIds);
+
+        for (Map.Entry<String, ChatMetricLookup> entry : lookupByOwnerId.entrySet()) {
+            String ownerIdKey = entry.getKey();
+            ChatMetricLookup lookup = entry.getValue();
+            String memberOwnerType = memberOwnerType(lookup.channelType());
+            ChatMetricBucketDto members = StringUtils.hasText(memberOwnerType)
+                    ? memberBucket(membersByOwnerKey.getOrDefault(memberOwnerType + ":" + lookup.ownerId(), List.of()))
+                    : null;
+            ChatMetricsDto metrics = buildChatMetrics(
+                    lookup,
+                    members,
+                    resourcesByMetricKey,
+                    assetsByOwnerAndId,
+                    stageRuntimeByMetricKey);
+            ChatDto dto = dtoByOwnerId.get(ownerIdKey);
+            if (dto != null) {
+                List<String> authoritativeMemberIds = StringUtils.hasText(memberOwnerType)
+                        ? membersByOwnerKey.getOrDefault(
+                                        memberOwnerType + ":" + lookup.ownerId(),
+                                        List.of()).stream()
+                                .filter(record -> MEMBER_STATUS_ACCEPTED.equals(
+                                        safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT)))
+                                .map(ActivityMember::getUserId)
+                                .map(this::normalizeId)
+                                .filter(StringUtils::hasText)
+                                .distinct()
+                                .toList()
+                        : dto.memberIds();
+                ChatDto withMembers = chatMapper.withMembers(dto, authoritativeMemberIds, activityMemberUsersById);
+                dtoByOwnerId.put(ownerIdKey, chatMapper.withMetrics(withMembers, metrics));
+            }
+        }
+    }
+
+    private ChatMetricsDto buildChatMetrics(
+            ChatMetricLookup lookup,
+            ChatMetricBucketDto members,
+            Map<String, List<ActivitySubEventResource>> resourcesByMetricKey,
+            Map<String, Asset> assetsByOwnerAndId,
+            Map<String, ActivitySubEventStageRuntime> stageRuntimeByMetricKey) {
+        ChatMetricBucketDto transport = null;
+        ChatMetricBucketDto accommodation = null;
+        ChatMetricBucketDto supplies = null;
+        Integer groupsCount = null;
+        int pendingTotal = countValue(members == null ? null : members.pending());
+
+        if (lookup != null
+                && (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(lookup.channelType())
+                        || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(lookup.channelType()))
+                && StringUtils.hasText(lookup.parts().subEventId())) {
+            List<ActivitySubEventResource> resources = metricResourceRecords(
+                    resourcesByMetricKey,
+                    lookup.viewerUserId(),
+                    CHAT_CHANNEL_GROUP_SUB_EVENT.equals(lookup.channelType()) ? "" : lookup.parts().eventId(),
+                    lookup.ownerId(),
+                    lookup.parts().subEventId());
+            transport = assetBucket(resources, ASSET_TYPE_TRANSPORT, assetsByOwnerAndId);
+            accommodation = assetBucket(resources, ASSET_TYPE_ACCOMMODATION, assetsByOwnerAndId);
+            supplies = assetBucket(resources, ASSET_TYPE_SUPPLIES, assetsByOwnerAndId);
+            ActivitySubEventStageRuntime stageRuntime = firstStageRuntime(
+                    stageRuntimeByMetricKey,
+                    lookup.parts().eventId(),
+                    lookup.ownerId(),
+                    lookup.parts().subEventId());
+            groupsCount = stageRuntime == null ? null : countValue(stageRuntime.getGroupsCount());
+            pendingTotal += countValue(transport.pending())
+                    + countValue(accommodation.pending())
+                    + countValue(supplies.pending());
+        }
+
+        return new ChatMetricsDto(
+                members,
+                transport,
+                accommodation,
+                supplies,
+                groupsCount,
+                pendingTotal);
+    }
+
+    private Map<String, List<ActivityMember>> activityMembersByOwnerKey(Collection<MemberOwnerLookup> lookups) {
+        Map<String, Set<String>> ownerIdsByType = new LinkedHashMap<>();
+        for (MemberOwnerLookup lookup : lookups == null ? List.<MemberOwnerLookup>of() : lookups) {
+            if (lookup == null || !StringUtils.hasText(lookup.ownerType()) || !StringUtils.hasText(lookup.ownerId())) {
+                continue;
+            }
+            ownerIdsByType.computeIfAbsent(lookup.ownerType(), ignored -> new LinkedHashSet<>()).add(lookup.ownerId());
+        }
+
+        Map<String, List<ActivityMember>> result = new LinkedHashMap<>();
+        for (Map.Entry<String, Set<String>> entry : ownerIdsByType.entrySet()) {
+            if (entry.getValue().isEmpty()) {
+                continue;
+            }
+            List<ActivityMember> records = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(entry.getKey(), entry.getValue());
+            for (ActivityMember record : records == null ? List.<ActivityMember>of() : records) {
+                String ownerType = safeText(record == null ? null : record.getOwnerType());
+                String ownerId = normalizeId(record == null ? null : record.getOwnerId());
+                if (!StringUtils.hasText(ownerType) || !StringUtils.hasText(ownerId)) {
+                    continue;
+                }
+                result.computeIfAbsent(ownerType + ":" + ownerId, ignored -> new ArrayList<>()).add(record);
+            }
+        }
+        return result;
+    }
+
+    private Map<String, List<ActivitySubEventResource>> resourceRecordsByMetricKey(
+            Set<String> ownerIds,
+            Set<String> viewerUserIds) {
+        if (ownerIds == null || ownerIds.isEmpty() || viewerUserIds == null || viewerUserIds.isEmpty()) {
+            return Map.of();
+        }
+        List<ActivitySubEventResource> records = activitySubEventResourcesRepository
+                .findByOwnerIdInAndAssetOwnerUserIdInAndStatusNot(
+                        ownerIds,
+                        viewerUserIds,
+                        RUNTIME_STATUS_DELETED);
+        Map<String, List<ActivitySubEventResource>> result = new LinkedHashMap<>();
+        for (ActivitySubEventResource record : records == null ? List.<ActivitySubEventResource>of() : records) {
+            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
+            String subEventId = normalizeId(record == null ? null : record.getSubEventId());
+            if (!StringUtils.hasText(ownerId) || !StringUtils.hasText(subEventId)) {
+                continue;
+            }
+            String assetOwnerUserId = normalizeId(record.getAssetOwnerUserId());
+            if (StringUtils.hasText(assetOwnerUserId)) {
+                result.computeIfAbsent(
+                        assetOwnerUserId + ":" + ownerId + ":" + subEventId,
+                        ignored -> new ArrayList<>()).add(record);
+            }
+        }
+        return result;
+    }
+
+    private Map<String, Asset> assetsByOwnerAndId(Collection<List<ActivitySubEventResource>> resourceBuckets) {
+        Set<String> ownerUserIds = new LinkedHashSet<>();
+        Set<String> assetIds = new LinkedHashSet<>();
+        for (List<ActivitySubEventResource> bucket : resourceBuckets == null
+                ? List.<List<ActivitySubEventResource>>of()
+                : resourceBuckets) {
+            for (ActivitySubEventResource record : bucket == null ? List.<ActivitySubEventResource>of() : bucket) {
+                String ownerUserId = normalizeId(record == null ? null : record.getAssetOwnerUserId());
+                if (StringUtils.hasText(ownerUserId)) {
+                    ownerUserIds.add(ownerUserId);
+                }
+                if (record != null && record.getAssetAssignmentIds() != null) {
+                    record.getAssetAssignmentIds().values().stream()
+                            .filter(Objects::nonNull)
+                            .flatMap(Collection::stream)
+                            .map(this::normalizeId)
+                            .filter(StringUtils::hasText)
+                            .forEach(assetIds::add);
+                }
+            }
+        }
+        if (ownerUserIds.isEmpty() || assetIds.isEmpty()) {
+            return Map.of();
+        }
+        Query query = new Query(Criteria.where("ownerUserId").in(ownerUserIds).and("assetId").in(assetIds));
+        Map<String, Asset> result = new LinkedHashMap<>();
+        for (Asset asset : mongoTemplate.find(query, Asset.class)) {
+            String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
+            String assetId = normalizeId(asset == null ? null : asset.getAssetId());
+            if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(assetId)) {
+                result.put(ownerUserId + ":" + assetId, asset);
+            }
+        }
+        return result;
+    }
+
+    private Map<String, ActivitySubEventStageRuntime> stageRuntimeByMetricKey(Set<String> ownerIds) {
+        if (ownerIds == null || ownerIds.isEmpty()) {
+            return Map.of();
+        }
+        List<ActivitySubEventStageRuntime> records = activitySubEventStageRuntimeRepository.findByOwnerIdInAndStatusNot(ownerIds, RUNTIME_STATUS_DELETED);
+        Map<String, ActivitySubEventStageRuntime> result = new LinkedHashMap<>();
+        for (ActivitySubEventStageRuntime record : records == null ? List.<ActivitySubEventStageRuntime>of() : records) {
+            String ownerId = normalizeId(record == null ? null : record.getOwnerId());
+            String subEventId = normalizeId(record == null ? null : record.getSubEventId());
+            if (StringUtils.hasText(ownerId) && StringUtils.hasText(subEventId)) {
+                result.put(ownerId + ":" + subEventId, record);
+            }
+        }
+        return result;
+    }
+
+    private List<ActivitySubEventResource> metricResourceRecords(
+            Map<String, List<ActivitySubEventResource>> recordsByKey,
+            String viewerUserId,
+            String eventId,
+            String ownerId,
+            String subEventId) {
+        Map<String, ActivitySubEventResource> result = new LinkedHashMap<>();
+        List<String> keys = new ArrayList<>();
+        if (StringUtils.hasText(eventId)) {
+            keys.add(viewerUserId + ":" + eventId + ":" + subEventId);
+        }
+        if (StringUtils.hasText(ownerId)) {
+            keys.add(viewerUserId + ":" + ownerId + ":" + subEventId);
+        }
+        for (String key : keys) {
+            for (ActivitySubEventResource record : recordsByKey.getOrDefault(key, List.of())) {
+                String recordKey = firstNonBlank(
+                        record == null ? null : record.getRecordId(),
+                        record == null ? null : record.getId(),
+                        key + ":" + normalizeId(record == null ? null : record.getAssetOwnerUserId()));
+                if (StringUtils.hasText(recordKey)) {
+                    result.put(recordKey, record);
+                }
+            }
+        }
+        return new ArrayList<>(result.values());
+    }
+
+    private ActivitySubEventStageRuntime firstStageRuntime(
+            Map<String, ActivitySubEventStageRuntime> recordsByKey,
+            String eventId,
+            String ownerId,
+            String subEventId) {
+        if (StringUtils.hasText(eventId)) {
+            ActivitySubEventStageRuntime record = recordsByKey.get(eventId + ":" + subEventId);
+            if (record != null) {
+                return record;
+            }
+        }
+        return StringUtils.hasText(ownerId) ? recordsByKey.get(ownerId + ":" + subEventId) : null;
+    }
+
+    private ChatMetricBucketDto memberBucket(List<ActivityMember> records) {
+        int accepted = 0;
+        int pending = 0;
+        for (ActivityMember record : records == null ? List.<ActivityMember>of() : records) {
+            String status = safeText(record == null ? null : record.getStatus()).toLowerCase(Locale.ROOT);
+            if (MEMBER_STATUS_ACCEPTED.equals(status)) {
+                accepted += 1;
+            } else if (MEMBER_STATUS_PENDING.equals(status)) {
+                pending += 1;
+            }
+        }
+        return new ChatMetricBucketDto(accepted, pending, 0, Math.max(accepted, accepted + pending));
+    }
+
+    private ChatMetricBucketDto assetBucket(
+            List<ActivitySubEventResource> records,
+            String type,
+            Map<String, Asset> assetsByOwnerAndId) {
+        int accepted = 0;
+        int pending = 0;
+        int capacityMin = 0;
+        int capacityMax = 0;
+        for (ActivitySubEventResource record : records == null ? List.<ActivitySubEventResource>of() : records) {
+            Map<String, Map<String, SubEventAssignedAssetSettingsRecord>> settingsByType =
+                    record == null || record.getAssetSettingsByType() == null
+                            ? Map.of()
+                            : record.getAssetSettingsByType();
+            Map<String, SubEventAssignedAssetSettingsRecord> settingsByAssetId = settingsByType.getOrDefault(type, Map.of());
+            List<String> assignedIds = record == null || record.getAssetAssignmentIds() == null
+                    ? List.of()
+                    : record.getAssetAssignmentIds().getOrDefault(type, List.of());
+            List<String> assetIds = assignedIds == null || assignedIds.isEmpty()
+                    ? new ArrayList<>(settingsByAssetId.keySet())
+                    : assignedIds;
+            for (String assetId : assetIds) {
+                SubEventAssignedAssetSettingsRecord settings = settingsByAssetId.get(assetId);
+                capacityMin += countValue(settings == null ? null : settings.capacityMin());
+                Asset asset = assetsByOwnerAndId.get(
+                        normalizeId(record.getAssetOwnerUserId()) + ":" + normalizeId(assetId));
+                capacityMax += countValue(settings != null && settings.capacityMax() != null
+                        ? settings.capacityMax()
+                        : asset == null ? null : asset.getCapacityTotal());
+                if (ASSET_TYPE_SUPPLIES.equals(type)) {
+                    accepted += supplyContributionQuantity(record, assetId);
+                } else if (asset != null) {
+                    int[] requestCounts = assetRequestCountsForMetric(
+                            asset,
+                            record.getSubEventId(),
+                            record.getOwnerId());
+                    accepted += requestCounts[0];
+                    pending += requestCounts[1];
+                }
+            }
+        }
+        return new ChatMetricBucketDto(
+                accepted,
+                pending,
+                capacityMin,
+                Math.max(Math.max(capacityMin, capacityMax), accepted + pending));
+    }
+
+    private int[] assetRequestCountsForMetric(Asset asset, String subEventId, String ownerId) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedOwnerId = normalizeId(ownerId);
+        Map<String, String> statusByMemberIdentity = new LinkedHashMap<>();
+        for (AssetRequestRecord request : asset == null || asset.getRequests() == null
+                ? List.<AssetRequestRecord>of()
+                : asset.getRequests()) {
+            String bookingSubEventId = normalizeId(
+                    request == null || request.booking() == null ? null : request.booking().subEventId());
+            String bookingOwnerId = normalizeId(
+                    request == null || request.booking() == null ? null : request.booking().eventId());
+            if (!normalizedSubEventId.equals(bookingSubEventId)
+                    || !normalizedOwnerId.equals(bookingOwnerId)) {
+                continue;
+            }
+            String status = safeText(request.status()).toLowerCase(Locale.ROOT);
+            if (!MEMBER_STATUS_ACCEPTED.equals(status) && !MEMBER_STATUS_PENDING.equals(status)) {
+                continue;
+            }
+            String identity = firstNonBlank(
+                    normalizeId(request.id()),
+                    normalizeId(request.userId()));
+            if (!StringUtils.hasText(identity)) {
+                continue;
+            }
+            String existing = statusByMemberIdentity.get(identity);
+            if (!MEMBER_STATUS_ACCEPTED.equals(existing) || MEMBER_STATUS_ACCEPTED.equals(status)) {
+                statusByMemberIdentity.put(identity, status);
+            }
+        }
+        int accepted = (int) statusByMemberIdentity.values().stream()
+                .filter(MEMBER_STATUS_ACCEPTED::equals)
+                .count();
+        int pending = (int) statusByMemberIdentity.values().stream()
+                .filter(MEMBER_STATUS_PENDING::equals)
+                .count();
+        return new int[] {accepted, pending};
+    }
+
+    private int supplyContributionQuantity(ActivitySubEventResource record, String assetId) {
+        if (record == null || record.getSupplyContributionEntriesByAssetId() == null) {
+            return 0;
+        }
+        int total = 0;
+        for (SubEventSupplyContributionEntryRecord entry : record.getSupplyContributionEntriesByAssetId()
+                .getOrDefault(assetId, List.of())) {
+            total += countValue(entry == null ? null : entry.quantity());
+        }
+        return total;
+    }
+
+    private ChatMessage buildMessage(
+            Users sender,
+            String senderUserId,
+            String text,
+            String clientId,
+            ChatMessageReplyRecord replyTo,
+            List<ChatMessageAttachmentRecord> attachments) {
+        Instant sentAt = Instant.now();
+        ChatMessage message = new ChatMessage();
+        message.setId(StringUtils.hasText(clientId)
+                ? UUID.nameUUIDFromBytes((senderUserId + "\n" + clientId.trim()).getBytes(StandardCharsets.UTF_8)).toString()
+                : UUID.randomUUID().toString());
+        message.setClientId(normalizeText(clientId));
+        message.setSender(resolveUserName(sender, senderUserId));
+        message.setSenderAvatar(buildSenderAvatarRecord(sender, senderUserId));
+        message.setText(text);
+        message.setTime(CHAT_TIME_FORMATTER.format(sentAt));
+        message.setSentAtIso(sentAt.toString());
+        message.setMine(Boolean.FALSE);
+        message.setReadBy(new ArrayList<>());
+        message.setReplyTo(copyReplyRecord(replyTo));
+        message.setReactions(new ArrayList<>());
+        message.setAttachments(copyAttachmentRecords(attachments));
+        return message;
+    }
+
+    private ChatMessage buildSystemMessage(String text, String systemType) {
+        Instant sentAt = Instant.now();
+        ChatAvatarRecord avatar = new ChatAvatarRecord();
+        avatar.setId("");
+        avatar.setInitials("MS");
+        avatar.setGender("system");
+        ChatMessage message = new ChatMessage();
+        message.setId(UUID.randomUUID().toString());
+        message.setClientId(firstNonBlank(systemType, "system"));
+        message.setSender("System");
+        message.setSenderAvatar(avatar);
+        message.setText(text);
+        message.setTime(CHAT_TIME_FORMATTER.format(sentAt));
+        message.setSentAtIso(sentAt.toString());
+        message.setMine(Boolean.FALSE);
+        message.setReadBy(new ArrayList<>());
+        message.setReplyTo(null);
+        message.setReactions(new ArrayList<>());
+        message.setAttachments(new ArrayList<>());
+        return message;
+    }
+
+    private ChatStreamEvent toReadEvent(String chatId, ChatReadUpdate readUpdate) {
+        return ChatStreamEvent.read(
+                chatId,
+                readUpdate.reader().id(),
+                readUpdate.reader().initials(),
+                readUpdate.reader().gender(),
+                readUpdate.reader().imageUrl(),
+                readUpdate.readMessageIds(),
+                readUpdate.readAtIso(),
+                readUpdate.unread());
+    }
+
+    private ChatReadReceiptDto toReadReceiptDto(ChatReadUpdate readUpdate) {
+        if (readUpdate == null || !readUpdate.changed()) {
+            return null;
+        }
+        return new ChatReadReceiptDto(
+                readUpdate.reader().id(),
+                readUpdate.reader().initials(),
+                readUpdate.reader().gender(),
+                readUpdate.reader().imageUrl(),
+                readUpdate.readMessageIds(),
+                readUpdate.readAtIso(),
+                readUpdate.unread());
+    }
+
+    private void publishChatEvent(ChatStreamEvent streamEvent) {
+        chatStreamPublisher.publish(streamEvent);
+    }
+
+    private CompletableFuture<Boolean> publishChatEventAsync(ChatStreamEvent streamEvent) {
+        return CompletableFuture.supplyAsync(() -> chatStreamPublisher.publish(streamEvent), chatWriteExecutor);
+    }
+
+    private void observeChatEventPublish(CompletableFuture<Boolean> redisPublish, ChatStreamEvent streamEvent) {
+        if (redisPublish == null) {
+            return;
+        }
+        redisPublish.whenComplete((published, exception) -> {
+            if (exception != null) {
+                LOGGER.warn("Unable to publish chat event to Redis for chat {}.", streamEvent == null ? null : streamEvent.chatId(), exception);
+                return;
+            }
+            if (!Boolean.TRUE.equals(published)) {
+                LOGGER.warn("Chat event was persisted to Mongo but not published to Redis for chat {}.", streamEvent == null ? null : streamEvent.chatId());
+            }
+        });
+    }
+
+    private Chat findOwnerChat(List<Chat> chats, String ownerUserId) {
+        String normalizedOwnerUserId = normalizeId(ownerUserId);
+        Chat selected = null;
+        for (Chat chat : chats) {
+            if (chat == null || !normalizedOwnerUserId.equals(normalizeId(chat.getOwnerUserId()))) {
+                continue;
+            }
+            if (selected == null) {
+                selected = chat;
+                continue;
+            }
+
+            long candidateDate = sortableDate(chat.getDateIso());
+            long selectedDate = sortableDate(selected.getDateIso());
+            if (candidateDate > selectedDate) {
+                selected = chat;
+                continue;
+            }
+            if (candidateDate < selectedDate) {
+                continue;
+            }
+
+            int candidateMessageCount = messageCount(chat);
+            int selectedMessageCount = messageCount(selected);
+            if (candidateMessageCount > selectedMessageCount) {
+                selected = chat;
+            }
+        }
+        return selected;
+    }
+
+    private int messageCount(Chat chat) {
+        if (chat == null) {
+            return 0;
+        }
+        int transientMessageCount = safeMessages(chat.getMessages()).size();
+        if (transientMessageCount > 0) {
+            return transientMessageCount;
+        }
+        String chatId = normalizeId(chat.getChatId());
+        if (!StringUtils.hasText(chatId)) {
+            return 0;
+        }
+        return normalizeLongCount(chatMessagesRepository.countByChatId(chatId));
+    }
+
+    private boolean hasChatAccess(Chat chat, String userId) {
+        if (chat == null || !StringUtils.hasText(userId)) {
+            return false;
+        }
+        String normalizedUserId = normalizeId(userId);
+        if ("case".equals(chat.getChannelType()) && !caseChatAccess(
+                mongoTemplate.findById(chat.getOwnerId(), ServiceCase.class), findUser(normalizedUserId), chat.getCaseOfferId())) return false;
+        if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
+            return true;
+        }
+        Users admin = isSupportCaseChat(chat) ? findUser(normalizedUserId) : null;
+        if (isSupportCaseChat(chat) && isAdminUser(admin)) {
+            return Objects.equals(admin.getWorkspaceGroupId(), chat.getSupportBaseGroupId());
+        }
+        if (chat.getMemberIds() == null) {
+            return false;
+        }
+        return chat.getMemberIds().stream()
+                .map(this::normalizeId)
+                .anyMatch(normalizedUserId::equals);
+    }
+
+    private Chat createOwnerCopy(Chat baseChat, String ownerUserId) {
+        Chat copy = copyChat(baseChat);
+        copy.setMongoId(buildMongoId(ownerUserId, baseChat.getChatId()));
+        copy.setOwnerUserId(ownerUserId);
+        copy.setUnread(countUnreadMessages(baseChat.getChatId(), ownerUserId));
+        return copy;
+    }
+
+    private int countUnreadMessages(String chatId, String viewerUserId) {
+        String normalizedChatId = normalizeId(chatId);
+        String normalizedViewerUserId = normalizeId(viewerUserId);
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedViewerUserId)) {
+            return 0;
+        }
+        Query unreadQuery = Query.query(Criteria.where("chatId").is(normalizedChatId)
+                .and("senderAvatar.id").ne(normalizedViewerUserId)
+                .and("readBy.id").ne(normalizedViewerUserId));
+        return normalizeLongCount(mongoTemplate.count(unreadQuery, ChatMessage.class));
+    }
+
+    private Chat copyChat(Chat source) {
+        Chat copy = new Chat();
+        copy.setMongoId(source.getMongoId());
+        copy.setChatId(source.getChatId());
+        copy.setOwnerUserId(source.getOwnerUserId());
+        copy.setAvatar(source.getAvatar());
+        copy.setTitle(source.getTitle());
+        copy.setLastMessage(source.getLastMessage());
+        copy.setLastSenderId(source.getLastSenderId());
+        copy.setMemberIds(new ArrayList<>(source.getMemberIds() == null ? List.of() : source.getMemberIds()));
+        copy.setUnread(source.getUnread());
+        copy.setDateIso(source.getDateIso());
+        copy.setContextStartAtIso(source.getContextStartAtIso());
+        copy.setContextEndAtIso(source.getContextEndAtIso());
+        copy.setChannelType(source.getChannelType());
+        copy.setOwnerId(source.getOwnerId());
+        copy.setEventId(source.getEventId());
+        copy.setOwnerStatus(source.getOwnerStatus());
+        copy.setRevision(normalizeChatRevision(source.getRevision()));
+        copy.setSubEventId(source.getSubEventId());
+        copy.setGroupId(source.getGroupId());
+        copy.setDistanceKm(null);
+        copy.setDistanceMetersExact(null);
+        copy.setSupportCase(copySupportCase(source.getSupportCase()));
+        copy.setSupportBaseGroupId(source.getSupportBaseGroupId());
+        return copy;
+    }
+
+    private long normalizeChatRevision(Long value) {
+        return value == null || value < 1L ? 1L : value;
+    }
+
+    private long nextChatRevision(Chat chat) {
+        long current = normalizeChatRevision(chat == null ? null : chat.getRevision());
+        return current + 1L;
+    }
+
+    private ChatMessageReplyRecord normalizeReply(ChatMessageReplyDto replyTo) {
+        if (replyTo == null || !StringUtils.hasText(replyTo.id())) {
+            return null;
+        }
+        ChatMessageReplyRecord record = new ChatMessageReplyRecord();
+        record.setId(safeText(replyTo.id()));
+        record.setSender(safeText(replyTo.sender()));
+        record.setText(safeText(replyTo.text()));
+        return record;
+    }
+
+    private ChatMessageReplyRecord copyReplyRecord(ChatMessageReplyRecord source) {
+        if (source == null) {
+            return null;
+        }
+        ChatMessageReplyRecord copy = new ChatMessageReplyRecord();
+        copy.setId(source.getId());
+        copy.setSender(source.getSender());
+        copy.setText(source.getText());
+        return copy;
+    }
+
+    private List<ChatMessageAttachmentRecord> normalizeAttachments(List<ChatMessageAttachmentDto> attachments) {
+        if (attachments == null || attachments.isEmpty()) {
+            return List.of();
+        }
+        List<ChatMessageAttachmentRecord> normalized = new ArrayList<>();
+        for (ChatMessageAttachmentDto attachment : attachments) {
+            if (attachment == null) {
+                continue;
+            }
+            String type = safeText(attachment.type());
+            String title = safeText(attachment.title());
+            String url = safeText(attachment.url());
+            String previewUrl = safeText(attachment.previewUrl());
+            if (!StringUtils.hasText(type) || (!StringUtils.hasText(title) && !StringUtils.hasText(url) && !StringUtils.hasText(previewUrl))) {
+                continue;
+            }
+            ChatMessageAttachmentRecord record = new ChatMessageAttachmentRecord();
+            record.setId(StringUtils.hasText(attachment.id()) ? safeText(attachment.id()) : UUID.randomUUID().toString());
+            record.setType(type);
+            record.setTitle(title);
+            record.setEntityId(safeText(attachment.entityId()));
+            record.setAssetType(safeText(attachment.assetType()));
+            record.setOwnerUserId(safeText(attachment.ownerUserId()));
+            record.setStatus(normalizeAttachmentStatus(attachment.status()));
+            record.setUnavailableReason(safeText(attachment.unavailableReason()));
+            record.setSubtitle(safeText(attachment.subtitle()));
+            record.setDescription(safeText(attachment.description()));
+            record.setUrl(url);
+            record.setPreviewUrl(previewUrl);
+            record.setMimeType(safeText(attachment.mimeType()));
+            record.setSizeBytes(attachment.sizeBytes() == null ? null : Math.max(0L, attachment.sizeBytes()));
+            normalized.add(record);
+        }
+        canonicalizePollVotePresentations(normalized);
+        return normalized;
+    }
+
+    private void canonicalizePollVotePresentations(List<ChatMessageAttachmentRecord> attachments) {
+        Map<ChatMessageAttachmentRecord, Document> pollDocuments = new LinkedHashMap<>();
+        Set<String> voterUserIds = new LinkedHashSet<>();
+        for (ChatMessageAttachmentRecord attachment : safeAttachments(attachments)) {
+            if (attachment == null || !"poll".equalsIgnoreCase(safeText(attachment.getType()))) {
+                continue;
+            }
+            try {
+                Document root = Document.parse(safeText(attachment.getDescription()));
+                Object optionsValue = root.get("options");
+                if (!(optionsValue instanceof List<?> optionNodes)) {
+                    continue;
+                }
+                pollDocuments.put(attachment, root);
+                for (Object optionNode : optionNodes) {
+                    if (!(optionNode instanceof Document optionDocument)) {
+                        continue;
+                    }
+                    Object votesValue = optionDocument.get("votes");
+                    if (!(votesValue instanceof List<?> voteNodes)) {
+                        continue;
+                    }
+                    for (Object voteNode : voteNodes) {
+                        if (voteNode instanceof Document voteDocument) {
+                            String voterUserId = normalizeId(Objects.toString(voteDocument.get("userId"), ""));
+                            if (StringUtils.hasText(voterUserId)) {
+                                voterUserIds.add(voterUserId);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+                // Preserve malformed legacy poll payloads; normal attachment validation remains authoritative.
+            }
+        }
+        if (pollDocuments.isEmpty() || voterUserIds.isEmpty()) {
+            return;
+        }
+        Map<String, Users> usersById = new LinkedHashMap<>();
+        for (Users user : usersRepository.findByUserIdIn(voterUserIds)) {
+            String userId = user == null ? "" : normalizeId(user.getUserId());
+            if (StringUtils.hasText(userId)) {
+                usersById.put(userId, user);
+            }
+        }
+        for (Map.Entry<ChatMessageAttachmentRecord, Document> entry : pollDocuments.entrySet()) {
+            Object optionsValue = entry.getValue().get("options");
+            if (!(optionsValue instanceof List<?> optionNodes)) {
+                continue;
+            }
+            for (Object optionNode : optionNodes) {
+                if (!(optionNode instanceof Document optionDocument)) {
+                    continue;
+                }
+                Object votesValue = optionDocument.get("votes");
+                if (!(votesValue instanceof List<?> voteNodes)) {
+                    continue;
+                }
+                for (Object voteNode : voteNodes) {
+                    if (!(voteNode instanceof Document voteDocument)) {
+                        continue;
+                    }
+                    String voterUserId = normalizeId(Objects.toString(voteDocument.get("userId"), ""));
+                    if (!StringUtils.hasText(voterUserId)) {
+                        continue;
+                    }
+                    Users voter = usersById.get(voterUserId);
+                    boolean deleted = voter == null
+                            || "D".equalsIgnoreCase(safeText(voter.getStatus()))
+                            || "deleted".equalsIgnoreCase(safeText(voter.getProfileStatus()));
+                    voteDocument.put("name", deleted ? "Deleted user" : resolveUserName(voter, voterUserId));
+                    voteDocument.put("initials", deleted ? "DU" : resolveUserInitials(voter, voterUserId));
+                    voteDocument.put("gender", deleted ? "deleted" : resolveUserGender(voter));
+                    voteDocument.put("imageUrl", deleted ? "" : resolveUserImageUrl(voter));
+                }
+            }
+            entry.getKey().setDescription(entry.getValue().toJson());
+        }
+    }
+
+    private List<ChatMessageAttachmentRecord> copyAttachmentRecords(List<ChatMessageAttachmentRecord> attachments) {
+        List<ChatMessageAttachmentRecord> copied = new ArrayList<>();
+        for (ChatMessageAttachmentRecord attachment : safeAttachments(attachments)) {
+            ChatMessageAttachmentRecord copy = new ChatMessageAttachmentRecord();
+            copy.setId(attachment.getId());
+            copy.setType(attachment.getType());
+            copy.setTitle(attachment.getTitle());
+            copy.setEntityId(attachment.getEntityId());
+            copy.setAssetType(attachment.getAssetType());
+            copy.setOwnerUserId(attachment.getOwnerUserId());
+            copy.setStatus(normalizeAttachmentStatus(attachment.getStatus()));
+            copy.setUnavailableReason(attachment.getUnavailableReason());
+            copy.setSubtitle(attachment.getSubtitle());
+            copy.setDescription(attachment.getDescription());
+            copy.setUrl(attachment.getUrl());
+            copy.setPreviewUrl(attachment.getPreviewUrl());
+            copy.setMimeType(attachment.getMimeType());
+            copy.setSizeBytes(attachment.getSizeBytes());
+            copied.add(copy);
+        }
+        return copied;
+    }
+
+    private List<ChatMessageReactionRecord> copyReactionRecords(List<ChatMessageReactionRecord> reactions) {
+        List<ChatMessageReactionRecord> copied = new ArrayList<>();
+        for (ChatMessageReactionRecord reaction : safeReactions(reactions)) {
+            ChatMessageReactionRecord copy = new ChatMessageReactionRecord();
+            copy.setEmoji(reaction.getEmoji());
+            copy.setUserId(reaction.getUserId());
+            copy.setUserName(reaction.getUserName());
+            copy.setUserInitials(reaction.getUserInitials());
+            copy.setUserGender(reaction.getUserGender());
+            copy.setReactedAtIso(reaction.getReactedAtIso());
+            copied.add(copy);
+        }
+        return copied;
+    }
+
+    private ChatAvatarRecord buildSenderAvatarRecord(Users sender, String senderUserId) {
+        ChatAvatarRecord avatar = new ChatAvatarRecord();
+        avatar.setId(senderUserId);
+        avatar.setInitials(resolveUserInitials(sender, senderUserId));
+        avatar.setGender(resolveUserGender(sender));
+        return avatar;
+    }
+
+    private ChatAvatarRecord copySenderAvatarRecord(ChatAvatarRecord source) {
+        if (source == null) {
+            return null;
+        }
+        ChatAvatarRecord copy = new ChatAvatarRecord();
+        copy.setId(source.getId());
+        copy.setInitials(source.getInitials());
+        copy.setGender(source.getGender());
+        return copy;
+    }
+
+    private ChatReadAvatarRecord buildReadAvatarRecord(Users user, String userId) {
+        ChatReadAvatarRecord record = new ChatReadAvatarRecord();
+        record.setId(userId);
+        record.setInitials(resolveUserInitials(user, userId));
+        record.setGender(resolveUserGender(user));
+        return record;
+    }
+
+    private ChatReadAvatarRecord copyReadAvatarRecord(ChatReadAvatarRecord source) {
+        if (source == null) {
+            return null;
+        }
+        ChatReadAvatarRecord copy = new ChatReadAvatarRecord();
+        copy.setId(source.getId());
+        copy.setInitials(source.getInitials());
+        copy.setGender(source.getGender());
+        return copy;
+    }
+
+    private Users findUser(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            return null;
+        }
+        return usersRepository.findByUserId(userId).orElse(null);
+    }
+
+    private String accountUserId(String profileId) {
+        Users profile = findUser(profileId);
+        return profile != null && StringUtils.hasText(profile.getAccountUserId())
+                ? profile.getAccountUserId() : profileId;
+    }
+
+    private String resolveChatActor(String chatId, String profileId) {
+        return accessControlService.resolveChatActorUserId(chatId, profileId);
+    }
+
+    private String requireResolvedUserId(String requestedUserId) {
+        String userId = resolveUserId(requestedUserId);
+        if (!StringUtils.hasText(userId)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing authenticated user.");
+        }
+        return userId;
+    }
+
+    private String resolveUserId(String requestedUserId) {
+        String resolvedUserId = normalizeId(homeUserProfileService.resolveSelectedUserId(requestedUserId));
+        if (StringUtils.hasText(resolvedUserId)) {
+            return resolvedUserId;
+        }
+        String normalizedRequestedUserId = normalizeId(requestedUserId);
+        if (MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO
+                && normalizedRequestedUserId.startsWith("admin-demo-")) {
+            return normalizedRequestedUserId;
+        }
+        return "";
+    }
+
+    private String resolveUserName(Users user, String fallbackUserId) {
+        if (user != null && StringUtils.hasText(user.getName())) {
+            return user.getName().trim();
+        }
+        return StringUtils.hasText(fallbackUserId) ? fallbackUserId.trim() : "User";
+    }
+
+    private String resolveUserInitials(Users user, String fallbackUserId) {
+        if (user != null && StringUtils.hasText(user.getInitials())) {
+            return user.getInitials().trim();
+        }
+        if (user != null && StringUtils.hasText(user.getName())) {
+            return buildInitials(user.getName());
+        }
+        return buildInitials(fallbackUserId);
+    }
+
+    private String resolveUserGender(Users user) {
+        return normalizeGender(user == null ? null : user.getGender());
+    }
+
+    private String resolveUserImageUrl(Users user) {
+        if (user == null || user.getImages() == null) {
+            return "";
+        }
+        return user.getImages().stream()
+                .map(this::safeText)
+                .filter(StringUtils::hasText)
+                .findFirst()
+                .orElse("");
+    }
+
+    private String buildInitials(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return "CH";
+        }
+        String[] parts = normalized.split("\\s+");
+        if (parts.length == 1) {
+            return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase(Locale.US);
+        }
+        return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1)).toUpperCase(Locale.US);
+    }
+
+    private String normalizeGender(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.US);
+        if ("deleted".equals(normalized)) {
+            return "deleted";
+        }
+        if (normalized.startsWith("w") || normalized.startsWith("f")) {
+            return "woman";
+        }
+        return "man";
+    }
+
+    private String normalizeAttachmentStatus(String value) {
+        return "unavailable".equals(safeText(value)) ? "unavailable" : "available";
+    }
+
+    private List<? extends ChatMessage> safeMessages(List<? extends ChatMessage> messages) {
+        return messages == null ? List.of() : messages;
+    }
+
+    private List<String> safeMemberIds(List<String> memberIds) {
+        return memberIds == null ? List.of() : memberIds;
+    }
+
+    private List<ChatReadAvatarRecord> safeReadBy(List<ChatReadAvatarRecord> readBy) {
+        return readBy == null ? List.of() : readBy;
+    }
+
+    private List<ChatMessageAttachmentRecord> safeAttachments(List<ChatMessageAttachmentRecord> attachments) {
+        return attachments == null ? List.of() : attachments;
+    }
+
+    private List<ChatMessageReactionRecord> safeReactions(List<ChatMessageReactionRecord> reactions) {
+        return reactions == null ? List.of() : reactions;
+    }
+
+    private int normalizeCount(Integer value) {
+        return Math.max(0, value == null ? 0 : value);
+    }
+
+    private int normalizeLongCount(long value) {
+        if (value <= 0L) {
+            return 0;
+        }
+        return value > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) value;
+    }
+
+    private int normalizeChatMessagesPageSize(Integer value) {
+        if (value == null) {
+            return DEFAULT_CHAT_MESSAGES_PAGE_SIZE;
+        }
+        return Math.max(1, Math.min(MAX_CHAT_MESSAGES_PAGE_SIZE, value));
+    }
+
+    private int normalizeChatMessagesCursor(String cursor) {
+        if (!StringUtils.hasText(cursor)) {
+            return 0;
+        }
+        try {
+            return Math.max(0, Integer.parseInt(cursor.trim()));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
+
+    private String normalizeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String normalizeId(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String firstNonBlank(String... values) {
+        for (String value : values == null ? new String[0] : values) {
+            String normalized = safeText(value);
+            if (StringUtils.hasText(normalized)) {
+                return normalized;
+            }
+        }
+        return "";
+    }
+
+    private boolean supportsChatMetrics(String channelType) {
+        return CHAT_CHANNEL_MAIN_EVENT.equals(channelType)
+                || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
+                || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType);
+    }
+
+    private boolean metricChatRecord(Chat record) {
+        return StringUtils.hasText(normalizeId(record == null ? null : record.getOwnerId()))
+                && supportsChatMetrics(chatChannelType(record));
+    }
+
+    private String memberOwnerType(String channelType) {
+        if (CHAT_CHANNEL_MAIN_EVENT.equals(channelType)) {
+            return OWNER_TYPE_EVENT;
+        }
+        if (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)) {
+            return OWNER_TYPE_SUB_EVENT;
+        }
+        if (CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)) {
+            return OWNER_TYPE_GROUP;
+        }
+        return "";
+    }
+
+    private String chatChannelType(Chat record) {
+        String channelType = safeText(record == null ? null : record.getChannelType());
+        if ("campaign".equals(channelType) || "case".equals(channelType) || "contact".equals(channelType)
+                || CHAT_CHANNEL_MAIN_EVENT.equals(channelType)
+                || CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)
+                || CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)
+                || CHAT_CHANNEL_SERVICE_EVENT.equals(channelType)
+                || CHAT_CHANNEL_GROUP_SUPPORT.equals(channelType)
+                || CHAT_CHANNEL_APP_SUPPORT.equals(channelType)
+                || CHAT_CHANNEL_SUPPORT_CASE.equals(channelType)) {
+            return channelType;
+        }
+        List<String> parts = splitOwnerId(record == null ? null : record.getOwnerId());
+        if (parts.size() >= 3) {
+            return CHAT_CHANNEL_GROUP_SUB_EVENT;
+        }
+        if (parts.size() == 2) {
+            return CHAT_CHANNEL_OPTIONAL_SUB_EVENT;
+        }
+        return parts.size() == 1 ? CHAT_CHANNEL_MAIN_EVENT : "general";
+    }
+
+    private ChatOwnerParts chatOwnerParts(Chat record) {
+        String channelType = chatChannelType(record);
+        String ownerId = normalizeId(record == null ? null : record.getOwnerId());
+        String eventId = normalizeId(record == null ? null : record.getEventId());
+        String subEventId = normalizeId(record == null ? null : record.getSubEventId());
+        String groupId = normalizeId(record == null ? null : record.getGroupId());
+        List<String> parts = splitOwnerId(ownerId);
+        if (CHAT_CHANNEL_GROUP_SUB_EVENT.equals(channelType)) {
+            return new ChatOwnerParts(
+                    StringUtils.hasText(eventId) ? eventId : parts.isEmpty() ? "" : parts.get(0),
+                    StringUtils.hasText(subEventId) ? subEventId : parts.size() > 1 ? parts.get(1) : "",
+                    StringUtils.hasText(groupId)
+                            ? groupId
+                            : parts.size() > 2 ? String.join(":", parts.subList(2, parts.size())) : "");
+        }
+        if (CHAT_CHANNEL_OPTIONAL_SUB_EVENT.equals(channelType)) {
+            return new ChatOwnerParts(
+                    StringUtils.hasText(eventId) ? eventId : parts.size() > 1 ? parts.get(0) : "",
+                    StringUtils.hasText(subEventId)
+                            ? subEventId
+                            : parts.size() > 1 ? String.join(":", parts.subList(1, parts.size())) : ownerId,
+                    "");
+        }
+        if (CHAT_CHANNEL_MAIN_EVENT.equals(channelType)) {
+            return new ChatOwnerParts(StringUtils.hasText(eventId) ? eventId : ownerId, "", "");
+        }
+        return new ChatOwnerParts("", "", "");
+    }
+
+    private List<String> splitOwnerId(String ownerId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerId)) {
+            return List.of();
+        }
+        List<String> parts = new ArrayList<>();
+        for (String part : normalizedOwnerId.split(":")) {
+            String normalizedPart = normalizeId(part);
+            if (StringUtils.hasText(normalizedPart)) {
+                parts.add(normalizedPart);
+            }
+        }
+        return parts;
+    }
+
+    private int countValue(Integer value) {
+        return normalizeCount(value);
+    }
+
+    private String normalizeChatContextFilter(String value) {
+        String normalized = safeText(value);
+        if ("event".equalsIgnoreCase(normalized)
+                || "subEvent".equalsIgnoreCase(normalized)
+                || "group".equalsIgnoreCase(normalized)
+                || "service".equalsIgnoreCase(normalized)
+                || "campaign".equalsIgnoreCase(normalized)
+                || "cases".equalsIgnoreCase(normalized)
+                || "contacts".equalsIgnoreCase(normalized)
+                || "groupSupport".equalsIgnoreCase(normalized)
+                || "appSupport".equalsIgnoreCase(normalized)) {
+            return normalized;
+        }
+        return "all";
+    }
+
+    private boolean matchesChatContextFilter(ChatDto item, String contextFilter) {
+        if (!StringUtils.hasText(contextFilter) || "all".equalsIgnoreCase(contextFilter)) {
+            return true;
+        }
+        String channelType = safeText(item == null ? null : item.channelType());
+        if ("event".equalsIgnoreCase(contextFilter)) {
+            return "mainEvent".equalsIgnoreCase(channelType);
+        }
+        if ("subEvent".equalsIgnoreCase(contextFilter)) {
+            return "optionalSubEvent".equalsIgnoreCase(channelType);
+        }
+        if ("group".equalsIgnoreCase(contextFilter)) {
+            return "groupSubEvent".equalsIgnoreCase(channelType);
+        }
+        if ("service".equalsIgnoreCase(contextFilter)) {
+            return "serviceEvent".equalsIgnoreCase(channelType);
+        }
+        if ("campaign".equals(contextFilter)) return "campaign".equals(channelType);
+        if ("cases".equals(contextFilter)) return "case".equals(channelType);
+        if ("contacts".equalsIgnoreCase(contextFilter)) return "contact".equals(channelType);
+        if ("groupSupport".equalsIgnoreCase(contextFilter)) return CHAT_CHANNEL_GROUP_SUPPORT.equals(channelType);
+        if ("appSupport".equalsIgnoreCase(contextFilter)) {
+            return "appSupport".equalsIgnoreCase(channelType)
+                    || "supportCase".equalsIgnoreCase(channelType);
+        }
+        return true;
+    }
+
+    private boolean matchesSupportCaseFilter(ChatDto item, String supportCaseFilter) {
+        String normalizedFilter = normalizeSupportCaseFilter(supportCaseFilter);
+        if (SUPPORT_CASE_FILTER_ALL.equals(normalizedFilter)) {
+            return true;
+        }
+        return normalizedFilter.equals(normalizeSupportCaseStatus(item == null || item.supportCase() == null
+                ? null
+                : item.supportCase().status()));
+    }
+
+    private boolean isSupportCaseChat(Chat chat) {
+        if (chat == null) {
+            return false;
+        }
+        return "supportCase".equalsIgnoreCase(safeText(chat.getChannelType()))
+                || StringUtils.hasText(supportStatus(chat))
+                || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
+    }
+
+    private boolean isAdminUser(Users user) {
+        return adminMenuCounterService.isAdminUser(user);
+    }
+
+    private SupportCaseRecord toSupportCaseRecord(SupportCaseState state) {
+        SupportCaseRecord supportCase = new SupportCaseRecord();
+        supportCase.setStatus(normalizeSupportCaseStatus(state == null ? null : state.status()));
+        supportCase.setUpdatedAtIso(state == null ? "" : safeText(state.updatedAtIso()));
+        String assigneeUserId = normalizeId(state == null ? null : state.assigneeUserId());
+        if (StringUtils.hasText(assigneeUserId)) {
+            SupportCaseAssigneeRecord assignee = new SupportCaseAssigneeRecord();
+            assignee.setUserId(assigneeUserId);
+            assignee.setName(state == null ? "" : safeText(state.assigneeName()));
+            assignee.setInitials(state == null ? "" : safeText(state.assigneeInitials()));
+            supportCase.setAssignee(assignee);
+        }
+        return supportCase;
+    }
+
+    private SupportCaseRecord copySupportCase(SupportCaseRecord source) {
+        if (source == null) {
+            return null;
+        }
+        SupportCaseRecord copy = new SupportCaseRecord();
+        copy.setStatus(source.getStatus());
+        copy.setUpdatedAtIso(source.getUpdatedAtIso());
+        SupportCaseAssigneeRecord sourceAssignee = source.getAssignee();
+        if (sourceAssignee != null) {
+            SupportCaseAssigneeRecord assignee = new SupportCaseAssigneeRecord();
+            assignee.setUserId(sourceAssignee.getUserId());
+            assignee.setName(sourceAssignee.getName());
+            assignee.setInitials(sourceAssignee.getInitials());
+            copy.setAssignee(assignee);
+        }
+        return copy;
+    }
+
+    private String supportStatus(Chat chat) {
+        SupportCaseRecord supportCase = chat == null ? null : chat.getSupportCase();
+        return safeText(supportCase == null ? null : supportCase.getStatus());
+    }
+
+    private String normalizeSupportCaseStatus(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            default -> SUPPORT_CASE_STATUS_PENDING;
+        };
+    }
+
+    private String normalizeSupportCaseFilter(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
+            default -> SUPPORT_CASE_FILTER_ALL;
+        };
+    }
+
+    private String normalizeSupportCaseAction(String value) {
+        String normalized = safeText(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "pick", "unpick", "solve", "block", "reopen" -> normalized;
+            default -> "";
+        };
+    }
+
+    private SupportCaseState nextSupportCaseState(String action, String actorUserId, Users actor) {
+        String nowIso = Instant.now().toString();
+        return switch (action) {
+            case "pick" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_PICKED, actorUserId, actor, nowIso);
+            case "solve" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_SOLVED, actorUserId, actor, nowIso);
+            case "block" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_BLOCKED, actorUserId, actor, nowIso);
+            case "unpick", "reopen" -> new SupportCaseState(SUPPORT_CASE_STATUS_PENDING, "", "", "", nowIso);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
+        };
+    }
+
+    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, Users actor, String nowIso) {
+        return new SupportCaseState(
+                status,
+                normalizeId(actorUserId),
+                resolveUserName(actor, actorUserId),
+                resolveUserInitials(actor, actorUserId),
+                nowIso);
+    }
+
+    private void applySupportCaseState(Chat chat, SupportCaseState state) {
+        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
+        if (!StringUtils.hasText(normalizeId(chat.getOwnerId()))) {
+            chat.setOwnerId(normalizeId(chat.getChatId()));
+        }
+        chat.setSupportCase(toSupportCaseRecord(state));
+    }
+
+    private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
+        String normalizedSort = safeText(sortValue).toLowerCase(Locale.ROOT);
+        if ("relevance".equals(normalizedSort)) {
+            return normalizedSort;
+        }
+        if ("relevant".equalsIgnoreCase(safeText(secondaryFilterValue))) {
+            return "relevance";
+        }
+        return "date";
+    }
+
+    private boolean resolveChatSortAscending(String sort, String sortDirectionValue) {
+        String normalizedDirection = safeText(sortDirectionValue);
+        if ("asc".equalsIgnoreCase(normalizedDirection)) {
+            return true;
+        }
+        if ("desc".equalsIgnoreCase(normalizedDirection)) {
+            return false;
+        }
+        return false;
+    }
+
+    private int normalizeChatPageLimit(Integer limitValue) {
+        if (limitValue == null || limitValue.intValue() <= 0) {
+            return 10;
+        }
+        return Math.min(100, limitValue.intValue());
+    }
+
+    private Criteria chatPageCriteria(
+            String userId,
+            String contextFilter,
+            String rangeStartIso,
+            String rangeEndIso,
+            boolean supportCasesOnly,
+            String supportCaseFilter) {
+        List<Criteria> criteria = new ArrayList<>();
+        criteria.add(Criteria.where("ownerUserId").is(normalizeId(userId)));
+        String normalizedContext = normalizeChatContextFilter(contextFilter);
+        if ("event".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_MAIN_EVENT));
+        } else if ("subEvent".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_OPTIONAL_SUB_EVENT));
+        } else if ("group".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_GROUP_SUB_EVENT));
+        } else if ("service".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_SERVICE_EVENT));
+        } else if ("campaign".equals(normalizedContext) || "cases".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is("cases".equals(normalizedContext) ? "case" : "campaign"));
+        } else if ("contacts".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is("contact"));
+        } else if ("groupSupport".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").is(CHAT_CHANNEL_GROUP_SUPPORT));
+        } else if ("appSupport".equals(normalizedContext)) {
+            criteria.add(Criteria.where("channelType").in(CHAT_CHANNEL_APP_SUPPORT, CHAT_CHANNEL_SUPPORT_CASE));
+        }
+        if (supportCasesOnly) {
+            criteria.add(Criteria.where("supportCase.status").exists(true));
+            String normalizedSupportFilter = normalizeSupportCaseFilter(supportCaseFilter);
+            if (!SUPPORT_CASE_FILTER_ALL.equals(normalizedSupportFilter)) {
+                criteria.add(Criteria.where("supportCase.status").is(normalizedSupportFilter));
+            }
+        }
+        String normalizedRangeStart = safeText(rangeStartIso);
+        String normalizedRangeEnd = safeText(rangeEndIso);
+        if (StringUtils.hasText(normalizedRangeStart) || StringUtils.hasText(normalizedRangeEnd)) {
+            Criteria dateCriteria = Criteria.where("dateIso");
+            if (StringUtils.hasText(normalizedRangeStart)) {
+                dateCriteria = dateCriteria.gte(normalizedRangeStart);
+            }
+            if (StringUtils.hasText(normalizedRangeEnd)) {
+                dateCriteria = dateCriteria.lte(normalizedRangeEnd);
+            }
+            criteria.add(dateCriteria);
+        }
+        return new Criteria().andOperator(criteria.toArray(Criteria[]::new));
+    }
+
+    private Sort chatPageSort(String sort, boolean ascending) {
+        if ("relevance".equals(sort)) {
+            Sort.Direction relevanceDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+            return Sort.by(
+                    new Sort.Order(relevanceDirection, "unread"),
+                    new Sort.Order(Sort.Direction.DESC, "dateIso"),
+                    new Sort.Order(Sort.Direction.ASC, "chatId"));
+        }
+        Sort.Direction dateDirection = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        return Sort.by(
+                new Sort.Order(dateDirection, "dateIso"),
+                new Sort.Order(Sort.Direction.ASC, "chatId"));
+    }
+
+    private Document chatPageSortDocument(String sort, boolean ascending) {
+        if ("relevance".equals(sort)) {
+            return new Document()
+                    .append("unread", ascending ? 1 : -1)
+                    .append("dateIso", -1)
+                    .append("id", 1);
+        }
+        return new Document()
+                .append("dateIso", ascending ? 1 : -1)
+                .append("id", 1);
+    }
+
+    private Document supportCaseSelectionMatchDocument(
+            long rangeStartMs,
+            long rangeEndMs,
+            String supportCaseFilter) {
+        List<Document> criteria = new ArrayList<>();
+        String normalizedSupportFilter = normalizeSupportCaseFilter(supportCaseFilter);
+        if (!SUPPORT_CASE_FILTER_ALL.equals(normalizedSupportFilter)) {
+            criteria.add(new Document("supportCase.status", normalizedSupportFilter));
+        }
+        Document dateRange = new Document();
+        String rangeStartIso = rangeStartIsoFromMillis(rangeStartMs);
+        String rangeEndIso = rangeEndIsoFromMillis(rangeEndMs);
+        if (StringUtils.hasText(rangeStartIso)) {
+            dateRange.append("$gte", rangeStartIso);
+        }
+        if (StringUtils.hasText(rangeEndIso)) {
+            dateRange.append("$lte", rangeEndIso);
+        }
+        if (!dateRange.isEmpty()) {
+            criteria.add(new Document("dateIso", dateRange));
+        }
+        if (criteria.isEmpty()) {
+            return new Document();
+        }
+        return criteria.size() == 1
+                ? criteria.get(0)
+                : new Document("$and", criteria);
+    }
+
+    private List<Document> aggregationDocuments(Object value) {
+        if (!(value instanceof List<?> values)) {
+            return List.of();
+        }
+        return values.stream()
+                .filter(Document.class::isInstance)
+                .map(Document.class::cast)
+                .toList();
+    }
+
+    private long aggregationNumber(Object value) {
+        return value instanceof Number number ? Math.max(0L, number.longValue()) : 0L;
+    }
+
+    private int parseChatCursorOffset(String cursor) {
+        try {
+            return Math.max(0, Integer.parseInt(safeText(cursor)));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
+
+    private int safePageTotal(long total) {
+        return total >= Integer.MAX_VALUE ? Integer.MAX_VALUE : Math.max(0, (int) total);
+    }
+
+    private String rangeStartIsoFromMillis(long value) {
+        return value == Long.MIN_VALUE ? null : Instant.ofEpochMilli(value).toString();
+    }
+
+    private String rangeEndIsoFromMillis(long value) {
+        return value == Long.MAX_VALUE ? null : Instant.ofEpochMilli(value).toString();
+    }
+
+    private long sortableDate(String value) {
+        String normalized = safeText(value);
+        if (!StringUtils.hasText(normalized)) {
+            return 0L;
+        }
+        try {
+            return Instant.parse(normalized).toEpochMilli();
+        } catch (Exception exception) {
+            // Some Mongo seed dates are stored as ISO local date-times without a zone.
+        }
+        try {
+            return OffsetDateTime.parse(normalized).toInstant().toEpochMilli();
+        } catch (Exception exception) {
+            // Fall through to local date-time parsing.
+        }
+        try {
+            return LocalDateTime.parse(normalized, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    .toInstant(ZoneOffset.UTC)
+                    .toEpochMilli();
+        } catch (Exception exception) {
+            return 0L;
+        }
+    }
+
+    private long parseIsoMillis(String value, long fallback) {
+        if (!StringUtils.hasText(value)) {
+            return fallback;
+        }
+        try {
+            return Instant.parse(value.trim()).toEpochMilli();
+        } catch (Exception exception) {
+            return fallback;
+        }
+    }
+
+    private String stableDeviceId(String firebaseToken) {
+        return UUID.nameUUIDFromBytes(normalizeText(firebaseToken).getBytes()).toString();
+    }
+
+    private String buildMongoId(String ownerUserId, String chatId) {
+        String stableKey = normalizeId(ownerUserId) + "|" + normalizeId(chatId);
+        return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public record PublishedMainEventChatResult(String chatId, Set<String> createdOwnerUserIds) {
+        public PublishedMainEventChatResult {
+            createdOwnerUserIds = createdOwnerUserIds == null ? Set.of() : Set.copyOf(createdOwnerUserIds);
+        }
+    }
+
+    private record MainEventChatDocumentsResult(String chatId, List<Chat> createdDocuments) {
+    }
+
+    private record InitialSystemMessageResult(ChatMessageDto message, boolean inserted) {
+    }
+
+    private record ChatMetricLookup(
+            String channelType,
+            String ownerId,
+            String viewerUserId,
+            ChatOwnerParts parts) {
+    }
+
+    private record MemberOwnerLookup(
+            String ownerType,
+            String ownerId) {
+    }
+
+    private record ChatOwnerParts(
+            String eventId,
+            String subEventId,
+            String groupId) {
+    }
+
+    private record ChatReadUpdate(
+            Chat viewerChat,
+            List<String> readMessageIds,
+            ChatReadAvatarDto reader,
+            String readAtIso,
+            Integer unread,
+            boolean changed) {
+    }
+
+    private record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {
+    }
+
+    private record SupportCaseState(
+            String status,
+            String assigneeUserId,
+            String assigneeName,
+            String assigneeInitials,
+            String updatedAtIso) {
+    }
+}

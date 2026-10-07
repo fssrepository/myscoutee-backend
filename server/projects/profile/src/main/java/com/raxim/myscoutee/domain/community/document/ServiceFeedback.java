@@ -1,0 +1,16 @@
+package com.raxim.myscoutee.domain.community.document;
+
+import java.util.Map;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+
+@Document("serviceFeedback")
+@CompoundIndexes({
+    @CompoundIndex(name="service_feedback_viewer", def="{'viewerAccountId':1,'status':1,'createdAtIso':-1,'_id':1}"),
+    @CompoundIndex(name="service_feedback_provider", def="{'providerAccountId':1,'status':1,'createdAtIso':-1,'_id':1}")
+})
+public record ServiceFeedback(@Id String id, String baseGroupId, String caseId, String caseTitle,
+        String serviceId, String providerAccountId, String viewerAccountId, String status,
+        Map<String, Double> criteria, Double average, String comment, String createdAtIso, String submittedAtIso) {}

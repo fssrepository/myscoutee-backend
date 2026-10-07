@@ -14,11 +14,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.repository.AffiliateRevenueRepository;
-import com.raxim.myscoutee.profile.service.exchange.ExchangeRateSource;
-import com.raxim.myscoutee.profile.service.AffiliateRevenueService;
-import com.raxim.myscoutee.profile.service.PaymentService;
-import com.raxim.myscoutee.profile.data.document.Payment;
+import com.raxim.myscoutee.domain.payments.repository.AffiliateRevenueRepository;
+import com.raxim.myscoutee.domain.payments.service.ExchangeRateSource;
+import com.raxim.myscoutee.domain.payments.service.AffiliateRevenueService;
+import com.raxim.myscoutee.domain.payments.service.PaymentService;
+import com.raxim.myscoutee.domain.payments.document.Payment;
 
 /** Focused QA against the watcher's compiled classes; no Spring server or Gradle build. */
 class FinanceVersionProbe {
@@ -84,24 +84,24 @@ class FinanceVersionProbe {
         String prefix = "qaRefundIntent_" + UUID.randomUUID().toString().replace("-", "") + "_";
         var isolated = isolatedTemplate(client, prefix, null);
         var repository = new org.springframework.data.mongodb.repository.support.MongoRepositoryFactory(isolated)
-                .getRepository(com.raxim.myscoutee.profile.repository.PaymentsRepository.class);
+                .getRepository(com.raxim.myscoutee.domain.payments.repository.PaymentsRepository.class);
         try {
             for (String scenario : List.of("normal", "timeout", "late-receipt", "legacy", "cash")) {
-                var receipts = new java.util.concurrent.ConcurrentHashMap<String, com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult>();
+                var receipts = new java.util.concurrent.ConcurrentHashMap<String, com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundResult>();
                 var calls = new java.util.concurrent.atomic.AtomicInteger();
                 var first = new java.util.concurrent.atomic.AtomicBoolean(true);
                 var arrived = new java.util.concurrent.CountDownLatch(1);
                 var release = new java.util.concurrent.CountDownLatch(1);
-                var processor = (com.raxim.myscoutee.profile.service.PaymentProcessor) Proxy.newProxyInstance(
-                        com.raxim.myscoutee.profile.service.PaymentProcessor.class.getClassLoader(),
-                        new Class<?>[]{com.raxim.myscoutee.profile.service.PaymentProcessor.class}, (proxy, method, arguments) -> {
+                var processor = (com.raxim.myscoutee.domain.payments.service.PaymentProcessor) Proxy.newProxyInstance(
+                        com.raxim.myscoutee.domain.payments.service.PaymentProcessor.class.getClassLoader(),
+                        new Class<?>[]{com.raxim.myscoutee.domain.payments.service.PaymentProcessor.class}, (proxy, method, arguments) -> {
                     if (method.getName().equals("getType")) return "stripe";
                     if (!method.getName().equals("refundCapturedPayment")) throw new UnsupportedOperationException(method.getName());
                     calls.incrementAndGet();
                     String key = (String) arguments[3];
-                    var receipt = receipts.computeIfAbsent(key, k -> new com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult(
+                    var receipt = receipts.computeIfAbsent(key, k -> new com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundResult(
                             "stripe", (String) arguments[0], "receipt-" + k,
-                            com.raxim.myscoutee.profile.service.PaymentGateway.RefundStatus.SUCCEEDED,
+                            com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundStatus.SUCCEEDED,
                             (java.math.BigDecimal) arguments[1], (String) arguments[2], "succeeded"));
                     if (first.compareAndSet(true, false)) {
                         if (scenario.equals("timeout")) throw new IllegalStateException("Injected response loss after provider commit");
@@ -124,9 +124,9 @@ class FinanceVersionProbe {
                     payment.setRefundedAtIso("2026-09-23T00:00:00Z"); payment.setRefundCurrency("EUR");
                     payment.setGatewayRefundStatus("succeeded"); payment.setGatewayRefundId("legacy-refund-receipt");
                     payment = repository.save(payment);
-                    receipts.put("legacy", new com.raxim.myscoutee.profile.service.PaymentGateway.RefundResult(
+                    receipts.put("legacy", new com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundResult(
                             "stripe", scenario, "legacy-refund-receipt",
-                            com.raxim.myscoutee.profile.service.PaymentGateway.RefundStatus.SUCCEEDED,
+                            com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundStatus.SUCCEEDED,
                             java.math.BigDecimal.valueOf(25), "EUR", "succeeded"));
                 }
                 final Payment original = payment;
@@ -187,8 +187,8 @@ class FinanceVersionProbe {
         var isolated = isolatedTemplate(client, prefix, null);
         try {
             isolated.getCollection("exchangeRates").insertOne(seed);
-            var store = new com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore(isolated);
-            var service = new com.raxim.myscoutee.profile.service.exchange.PaymentEuroService(store, isolated);
+            var store = new com.raxim.myscoutee.domain.payments.service.ExchangeRateStore(isolated);
+            var service = new com.raxim.myscoutee.domain.payments.service.PaymentEuroService(store, isolated);
             var payment = new Payment(); payment.setAuditKind("payment"); payment.setStatus("captured");
             payment.setCurrency("HUF"); payment.setAmount(5000D); payment.setCreatedDate("2026-09-24T00:00:00Z");
             service.prepare(payment);
@@ -198,15 +198,15 @@ class FinanceVersionProbe {
             isolated.getCollection("exchangeRates").insertOne(new Document("_id", "2026-09-24")
                     .append("source", "qa-daily").append("rates", new Document("HUF", "500")));
             // A cold store reads persisted observations; daily values win for new payments.
-            var cold = new com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore(isolated);
-            var quote = com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore.quote(
+            var cold = new com.raxim.myscoutee.domain.payments.service.ExchangeRateStore(isolated);
+            var quote = com.raxim.myscoutee.domain.payments.service.ExchangeRateStore.quote(
                     cold.observations(), java.time.LocalDate.parse("2026-09-24"), "HUF");
             if (!"qa-daily".equals(quote.source())) throw new AssertionError("Daily rate did not win.");
-            var outage = com.raxim.myscoutee.profile.service.exchange.ExchangeRateStore.quote(
+            var outage = com.raxim.myscoutee.domain.payments.service.ExchangeRateStore.quote(
                     cold.observations(), java.time.LocalDate.parse("2026-12-01"), "HUF");
             if (!"seed-default-v1".equals(outage.source())) throw new AssertionError("Outage lost default.");
             payment.setRefundedAmount(1250D); payment.setRefundedAtIso("2026-09-24T01:00:00Z");
-            new com.raxim.myscoutee.profile.service.exchange.PaymentEuroService(cold, isolated).prepare(payment);
+            new com.raxim.myscoutee.domain.payments.service.PaymentEuroService(cold, isolated).prepare(payment);
             if (payment.getEuro().refundedMinor() != 313 || !"default-v1".equals(payment.getEuro().rateDate()))
                 throw new AssertionError("Refund changed original seeded basis.");
             isolated.getCollection("users").insertOne(new Document("userId", prefix).append("summaryCurrency", "CZK"));

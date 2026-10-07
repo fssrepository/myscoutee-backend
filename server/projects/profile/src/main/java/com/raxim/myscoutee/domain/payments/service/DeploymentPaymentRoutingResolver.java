@@ -1,0 +1,145 @@
+package com.raxim.myscoutee.domain.payments.service;
+
+import java.util.Locale;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
+import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
+import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+
+@Service
+public class DeploymentPaymentRoutingResolver {
+    private final DeploymentConfigurationRepository repository;
+    private final boolean simulatorEnabled;
+    private final String simulatorApplicationBaseUrl;
+    private final String simulatorBarionMerchantAccount;
+
+    @Autowired
+    public DeploymentPaymentRoutingResolver(
+            DeploymentConfigurationRepository repository,
+            @Value("${payment.simulator.enabled:false}") boolean simulatorEnabled,
+            @Value("${payment.simulator.applicationBaseUrl:}") String simulatorApplicationBaseUrl,
+            @Value("${payment.simulator.barionMerchantAccount:}") String simulatorBarionMerchantAccount) {
+        this.repository = Objects.requireNonNull(repository);
+        this.simulatorEnabled = simulatorEnabled;
+        this.simulatorApplicationBaseUrl = trimTrailingSlashes(simulatorApplicationBaseUrl);
+        this.simulatorBarionMerchantAccount = trim(simulatorBarionMerchantAccount);
+    }
+
+    DeploymentPaymentRoutingResolver(
+            DeploymentConfigurationRepository repository) {
+        this(repository, false, "", "");
+    }
+
+    public PaymentRouting require(String providerId) {
+        String normalizedProvider = normalize(providerId);
+        if (simulatorEnabled
+                && MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO) {
+            if (!StringUtils.hasText(simulatorApplicationBaseUrl)) {
+                throw unavailable(
+                        "The payment simulator application URL is not configured.");
+            }
+            if ("barion".equals(normalizedProvider)
+                    && !StringUtils.hasText(simulatorBarionMerchantAccount)) {
+                throw unavailable(
+                        "The payment simulator Barion merchant account is not configured.");
+            }
+            return new PaymentRouting(
+                    simulatorApplicationBaseUrl,
+                    "barion".equals(normalizedProvider)
+                            ? simulatorBarionMerchantAccount
+                            : null);
+        }
+        DeploymentConfiguration configuration = repository
+                .findById(DeploymentConfiguration.SINGLETON_ID)
+                .orElseThrow(() -> unavailable(
+                        "Deployment payment routing is unavailable."));
+        DeploymentConfiguration.Payment payment = configuration.getPayment();
+        if (payment == null
+                || !normalizedProvider.equals(normalize(payment.getProviderId()))) {
+            throw unavailable(
+                    "Payment routing is not configured for " + normalizedProvider + ".");
+        }
+        String publicBaseUrl = trim(payment.getPublicBaseUrl());
+        if (!StringUtils.hasText(publicBaseUrl)) {
+            throw unavailable(
+                    "The operator has not configured the public deployment URL "
+                            + "for payment callbacks.");
+        }
+        String merchantAccount = trim(payment.getMerchantAccount());
+        if ("barion".equals(normalizedProvider)
+                && !StringUtils.hasText(merchantAccount)) {
+            throw unavailable(
+                    "The operator has not configured the Barion merchant account.");
+        }
+        return new PaymentRouting(
+                publicBaseUrl,
+                StringUtils.hasText(merchantAccount) ? merchantAccount : null);
+    }
+
+    private String normalize(String value) {
+        return value == null
+                ? ""
+                : value.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String trim(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String trimTrailingSlashes(String value) {
+        String normalized = trim(value);
+        while (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        return normalized;
+    }
+
+    private ResponseStatusException unavailable(String message) {
+        return new ResponseStatusException(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                message);
+    }
+
+    public record PaymentRouting(
+            String publicBaseUrl,
+            String merchantAccount) {
+        public String successUrl() {
+            return publicBaseUrl + "/payment/success";
+        }
+
+        public String cancelUrl() {
+            return publicBaseUrl + "/payment/cancel";
+        }
+
+        public String callbackUrl() {
+            return publicBaseUrl + "/api/payment/callback";
+        }
+
+        public String successUrl(String providerId) {
+            return "stripe".equalsIgnoreCase(providerId)
+                    ? publicBaseUrl + "/game?payment=success&session_id={CHECKOUT_SESSION_ID}"
+                    : publicBaseUrl + "/game?payment=success";
+        }
+
+        public String cancelUrl(String providerId) {
+            return publicBaseUrl + "/game?payment=cancel";
+        }
+
+        public String callbackUrl(String providerId) {
+            String normalizedProvider = providerId == null ? "" : providerId.trim().toLowerCase(Locale.ROOT);
+            if (!"stripe".equals(normalizedProvider) && !"barion".equals(normalizedProvider)) {
+                throw new IllegalArgumentException("Unsupported payment callback provider: " + providerId);
+            }
+            return publicBaseUrl + "/api/payment/webhooks/" + normalizedProvider;
+        }
+    }
+}

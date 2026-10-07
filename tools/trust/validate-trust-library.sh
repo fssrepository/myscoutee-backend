@@ -164,9 +164,9 @@ references=(
   frontend/src/app/asset/components/asset-popup/asset-popup.component.ts
   frontend/src/app/asset/components/asset-availability-popup/asset-availability-popup.component.ts
   frontend/src/app/operator/components/operator-page/operator-page.component.ts
-  server/projects/profile/src/main/java/com/raxim/myscoutee/profile/controller/operator/OperatorRegistryController.java
-  server/projects/profile/src/main/java/com/raxim/myscoutee/profile/service/operator/OperatorRegistryService.java
-  server/projects/profile/src/main/java/com/raxim/myscoutee/registry/RegistryOperatorNetworkService.java
+  server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/controller/OperatorRegistryController.java
+  server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRegistryService.java
+  server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryOperatorNetworkService.java
   guides/plans/PROJECT_CONTEXT.md
   guides/plans/PRODUCTION_QUALIFICATION.md
   e2e/README.md

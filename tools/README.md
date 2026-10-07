@@ -5,6 +5,15 @@ The `tools` folder contains source-checkout-only developer helpers. The helper
 names describe their scope, so general-purpose development tools live directly
 in this directory:
 
+- `run-backend-junit.sh [local|standard|embedded|integration]` runs backend JUnit
+  in separate build and project-cache directories, without signaling DevTools.
+  `local` (default) includes standard and embedded tests, excluding integration
+  and qualification tests. It can run alongside the existing backend server.
+  Both environment packages live in `src/e2eTest/java/com/raxim/myscoutee`:
+  `e2e` uses `@Tag("e2e")`, and `dev` uses `@Tag("dev")`. The existing `e2eTest`
+  task defaults to E2E; `-Pe2eTestTag=dev` selects dev fixtures instead. Their
+  explicit environment opt-ins still apply.
+
 - `purge-local-datastores.sh` destructively resets local MongoDB, Redis, and
   MinIO state. Use `--dry-run` before destructive use.
 - `seeds/` contains canonical static demo/E2E seed maintenance and generation

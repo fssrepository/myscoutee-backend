@@ -1,0 +1,1601 @@
+package com.raxim.myscoutee.domain.events.service;
+
+import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import org.bson.types.ObjectId;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.raxim.myscoutee.domain.events.algorithm.gen.EventGeneratorByScore;
+import com.raxim.myscoutee.domain.events.algorithm.gen.GeneratorModels;
+import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventGroup;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
+import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
+import com.raxim.myscoutee.domain.events.document.EventLeaderboardEntry;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardFifaMatchDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardFifaStandingRowDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardGroupDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardMemberDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardScoreEntryDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardScoreStandingRowDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardStateDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventTournamentGroupDeleteRequestDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventTournamentGroupDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventTournamentGroupUpsertRequestDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventTournamentGroupsStateDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventTournamentResourceMetricDto;
+import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventTournamentStageDto;
+import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberEntryDto;
+import com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto;
+import com.raxim.myscoutee.domain.events.document.SubEventItem;
+import com.raxim.myscoutee.common.dto.SharedDtos.SubEventDefinitionDto;
+import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
+import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsRepository;
+import com.raxim.myscoutee.domain.events.repository.ActivitySubEventGroupsRepository;
+import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
+import com.raxim.myscoutee.domain.events.repository.EventLeaderboardEntriesRepository;
+import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService.StoredMemberState;
+
+@Service
+public class ActivitiesEventLeaderboardService {
+    private static final String STATUS_ACTIVE = "A";
+    private static final String STATUS_DELETED = "D";
+    private static final String MEMBER_STATUS_ACCEPTED = "accepted";
+    private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
+    private static final String MEMBER_STATUS_REMOVED = "removed";
+    private static final String PARTICIPANT_STATE_ACTIVE = "A";
+    private static final String PARTICIPANT_STATE_DISQUALIFIED = "DQ";
+    private static final String PARTICIPANT_STATE_REMOVED = "R";
+    private static final String PARTICIPANT_STATE_VACANT = "V";
+    private static final String MEMBER_OWNER_TYPE_EVENT = "event";
+    private static final String MEMBER_OWNER_TYPE_GROUP = "group";
+
+    private final ActivityEventsRepository activityEventsRepository;
+    private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
+    private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
+    private final EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
+    private final ActivitiesMembersService activitiesMembersService;
+    private final AccessControlService accessControlService;
+    private AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private ActivityMingleRoundsRepository activityMingleRoundsRepository;
+    private final EventGeneratorByScore scoreGenerator = new EventGeneratorByScore();
+
+    public ActivitiesEventLeaderboardService(
+            ActivityEventsRepository activityEventsRepository,
+            ActivitySubEventGroupsRepository activitySubEventGroupsRepository,
+            ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
+            EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository,
+            ActivitiesMembersService activitiesMembersService,
+            AccessControlService accessControlService) {
+        this.activityEventsRepository = activityEventsRepository;
+        this.activitySubEventGroupsRepository = activitySubEventGroupsRepository;
+        this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
+        this.eventLeaderboardEntriesRepository = eventLeaderboardEntriesRepository;
+        this.activitiesMembersService = activitiesMembersService;
+        this.accessControlService = accessControlService;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void setAffinityRecomputeTaskService(AffinityRecomputeTaskService affinityRecomputeTaskService) {
+        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setActivityMingleRoundsRepository(ActivityMingleRoundsRepository activityMingleRoundsRepository) {
+        this.activityMingleRoundsRepository = activityMingleRoundsRepository;
+    }
+
+    public EventLeaderboardStateDto queryState(String eventId, String subEventId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return new EventLeaderboardStateDto(normalizedEventId, normalizedSubEventId, "", "Score", List.of());
+        }
+
+        ActivityEvent event = resolveCanonicalEvent(definitionEventId(normalizedEventId));
+        SubEventItem subEvent = resolveSubEvent(event, normalizedSubEventId);
+        if (event == null || subEvent == null) {
+            return new EventLeaderboardStateDto(normalizedEventId, normalizedSubEventId, "", "Score", List.of());
+        }
+
+        List<EventLeaderboardEntry> entries = eventLeaderboardEntriesRepository.findByEventIdAndSubEventId(normalizedEventId, normalizedSubEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        String leaderboardType = normalizeLeaderboardType(subEvent.tournamentLeaderboardType());
+
+        List<SubEventGroupItemDto> resolvedGroups = resolveGroups(normalizedEventId, event, subEvent);
+        List<GeneratorModels.ScoreGeneratorGroup> generatorGroups = resolvedGroups.stream()
+                .map(group -> toGeneratorGroup(normalizedEventId, normalizedSubEventId, leaderboardType, subEvent, group, entries))
+                .toList();
+        Map<String, GeneratorModels.ScoreGeneratorResult> resultsByGroupId = scoreGenerator.generate(generatorGroups).stream()
+                .collect(LinkedHashMap::new, (map, item) -> map.put(item.groupId(), item), Map::putAll);
+
+        List<EventLeaderboardGroupDto> groups = resolvedGroups.stream()
+                .map(group -> toGroupDto(normalizedEventId, normalizedSubEventId, leaderboardType, subEvent, group, entries, resultsByGroupId.get(normalizeId(group.id()))))
+                .toList();
+
+        return new EventLeaderboardStateDto(
+                normalizedEventId,
+                normalizedSubEventId,
+                safeText(subEvent.name()),
+                leaderboardType,
+                groups);
+    }
+
+    public EventLeaderboardStateDto upsertEntry(EventLeaderboardEntryUpsertRequestDto request) {
+        if (request == null) {
+            return new EventLeaderboardStateDto("", "", "", "Score", List.of());
+        }
+
+        String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSubEventId = normalizeId(request.subEventId());
+        String normalizedGroupId = normalizeId(request.groupId());
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId) || !StringUtils.hasText(normalizedGroupId)) {
+            return queryState(normalizedEventId, normalizedSubEventId);
+        }
+
+        String mode = normalizeLeaderboardType(request.mode());
+        String nowIso = Instant.now().toString();
+        String actorUserId = normalizeId(request.actorUserId());
+        if (!accessControlService.canCurrentActorSubmitLeaderboardEntry(actorUserId, definitionEventId(normalizedEventId))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit leaderboard entry for this event.");
+        }
+        if ("Fifa".equalsIgnoreCase(mode)) {
+            String pairKey = pairKey(request.homeMemberId(), request.awayMemberId());
+            if (!StringUtils.hasText(pairKey)) {
+                return queryState(normalizedEventId, normalizedSubEventId);
+            }
+            EventLeaderboardEntry record = eventLeaderboardEntriesRepository
+                    .findByEventIdAndSubEventIdAndGroupIdAndEntryTypeAndPairKey(normalizedEventId, normalizedSubEventId, normalizedGroupId, "fifa", pairKey)
+                    .orElseGet(EventLeaderboardEntry::new);
+            record.setId(StringUtils.hasText(record.getId()) ? record.getId() : new ObjectId().toHexString());
+            record.setSyncKey(StringUtils.hasText(record.getSyncKey()) ? record.getSyncKey() : UUID.randomUUID().toString());
+            record.setEventId(normalizedEventId);
+            record.setSubEventId(normalizedSubEventId);
+            record.setGroupId(normalizedGroupId);
+            record.setEntryType("fifa");
+            record.setHomeMemberId(normalizeId(request.homeMemberId()));
+            record.setAwayMemberId(normalizeId(request.awayMemberId()));
+            record.setHomeScore(Math.max(0, request.homeScore() == null ? 0 : request.homeScore()));
+            record.setAwayScore(Math.max(0, request.awayScore() == null ? 0 : request.awayScore()));
+            record.setPairKey(pairKey);
+            record.setNote(safeText(request.note()));
+            record.setCreatedAtIso(nowIso);
+            record.setCreatedUser(actorUserId);
+            record.setUpdatedDate(nowIso);
+            record.setUpdatedUser(actorUserId);
+            eventLeaderboardEntriesRepository.save(record);
+            enqueueTournamentInputChanged(normalizedEventId, actorUserId);
+            return queryState(normalizedEventId, normalizedSubEventId);
+        }
+
+        String memberId = normalizeId(request.memberId());
+        if (!StringUtils.hasText(memberId) || request.scoreValue() == null) {
+            return queryState(normalizedEventId, normalizedSubEventId);
+        }
+        EventLeaderboardEntry record = new EventLeaderboardEntry();
+        record.setId(new ObjectId().toHexString());
+        record.setSyncKey(UUID.randomUUID().toString());
+        record.setEventId(normalizedEventId);
+        record.setSubEventId(normalizedSubEventId);
+        record.setGroupId(normalizedGroupId);
+        record.setEntryType("score");
+        record.setMemberId(memberId);
+        record.setScoreValue(request.scoreValue());
+        record.setNote(safeText(request.note()));
+        record.setCreatedAtIso(nowIso);
+        record.setCreatedUser(actorUserId);
+        record.setUpdatedDate(nowIso);
+        record.setUpdatedUser(actorUserId);
+        eventLeaderboardEntriesRepository.save(record);
+        enqueueTournamentInputChanged(normalizedEventId, actorUserId);
+        return queryState(normalizedEventId, normalizedSubEventId);
+    }
+
+    public EventTournamentGroupsStateDto queryTournamentGroups(String userId, String eventId) {
+        String normalizedEventId = normalizeId(eventId);
+        if (!StringUtils.hasText(normalizedEventId)) {
+            return new EventTournamentGroupsStateDto("", "", "", false, List.of());
+        }
+        ActivityEvent event = resolveCanonicalEvent(normalizedEventId);
+        if (event == null) {
+            return new EventTournamentGroupsStateDto(normalizedEventId, "", "", false, List.of());
+        }
+        return tournamentGroupsState(normalizedEventId, event, userId);
+    }
+
+    public List<EventTournamentGroupDto> queryTournamentStageGroups(
+            String eventId,
+            String slotId,
+            String stageId,
+            String userId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSlotId = normalizeId(slotId);
+        String normalizedStageId = normalizeId(stageId);
+        String ownerSourceId = StringUtils.hasText(normalizedSlotId) ? normalizedSlotId : normalizedEventId;
+        if (!StringUtils.hasText(ownerSourceId) || !StringUtils.hasText(normalizedStageId)) {
+            return List.of();
+        }
+        ActivityEvent event = resolveCanonicalEvent(ownerSourceId);
+        SubEventItem subEvent = resolveSubEvent(event, normalizedStageId);
+        if (subEvent == null && StringUtils.hasText(normalizedSlotId)) {
+            event = resolveCanonicalEvent(normalizedEventId);
+            subEvent = resolveSubEvent(event, normalizedStageId);
+        }
+        return tournamentGroups(ownerSourceId, event, subEvent, userId);
+    }
+
+    public List<EventTournamentGroupDto> queryTournamentStageGroups(
+            String eventId,
+            String slotId,
+            String stageId) {
+        return queryTournamentStageGroups(eventId, slotId, stageId, null);
+    }
+
+    public EventTournamentGroupsStateDto saveTournamentGroup(EventTournamentGroupUpsertRequestDto request) {
+        if (request == null) {
+            return new EventTournamentGroupsStateDto("", "", "", false, List.of());
+        }
+        String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSlotId = normalizeId(request.slotId());
+        String ownerSourceId = StringUtils.hasText(normalizedSlotId) ? normalizedSlotId : normalizedEventId;
+        String normalizedSubEventId = normalizeId(request.subEventId());
+        String actorUserId = effectiveActorUserId(request.actorUserId());
+        String groupName = safeText(request.name());
+        if (!StringUtils.hasText(ownerSourceId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(actorUserId)
+                || !StringUtils.hasText(groupName)) {
+            return queryTournamentGroups(actorUserId, ownerSourceId);
+        }
+
+        List<ActivityEvent> documents = loadEventDocuments(ownerSourceId);
+        List<ActivityEvent> permissionDocuments = StringUtils.hasText(normalizedEventId)
+                ? loadEventDocuments(normalizedEventId)
+                : documents;
+        ActivityEvent canonical = resolvePreferredEvent(permissionDocuments.isEmpty() ? documents : permissionDocuments);
+        if (!canManageTournamentGroups(actorUserId, canonical)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage tournament groups for this event.");
+        }
+
+        String groupId = normalizeId(request.groupId());
+        int capacityMin = Math.max(0, request.capacityMin() == null ? 0 : request.capacityMin());
+        int capacityMax = Math.max(capacityMin, request.capacityMax() == null ? capacityMin : request.capacityMax());
+        String nowIso = Instant.now().toString();
+        ActivityEvent ownerEvent = resolvePreferredEvent(documents);
+        ActivityEvent definitionEvent = ownerEvent == null ? canonical : ownerEvent;
+        SubEventItem stage = resolveSubEvent(definitionEvent, normalizedSubEventId);
+        ActivitySubEventStageRuntime runtimeRecord = upsertStageRuntimeGroupsCount(
+                ownerSourceId,
+                normalizedSubEventId,
+                definitionEvent,
+                stage,
+                actorUserId);
+        String groupOwnerId = normalizeId(runtimeRecord == null ? null : runtimeRecord.getId());
+        List<ActivitySubEventGroup> existingGroups = manualGroupRecords(groupOwnerId);
+        String nextGroupId = StringUtils.hasText(groupId)
+                ? groupId
+                : nextManualGroupId(groupOwnerId, existingGroups);
+        ActivitySubEventGroup group = activitySubEventGroupsRepository
+                .findByOwnerIdAndGroupId(groupOwnerId, nextGroupId)
+                .orElseGet(ActivitySubEventGroup::new);
+        group.setId(StringUtils.hasText(group.getId()) ? group.getId() : new ObjectId().toHexString());
+        group.setSyncKey(StringUtils.hasText(group.getSyncKey()) ? group.getSyncKey() : UUID.randomUUID().toString());
+        group.setRecordId(manualGroupRecordId(groupOwnerId, nextGroupId));
+        group.setStatus(STATUS_ACTIVE);
+        group.setOwnerId(groupOwnerId);
+        group.setGroupId(nextGroupId);
+        group.setName(groupName);
+        group.setCapacityMin(capacityMin);
+        group.setCapacityMax(capacityMax);
+        group.setCreatedDate(StringUtils.hasText(group.getCreatedDate()) ? group.getCreatedDate() : nowIso);
+        group.setCreatedUser(StringUtils.hasText(group.getCreatedUser()) ? group.getCreatedUser() : actorUserId);
+        group.setUpdatedDate(nowIso);
+        group.setUpdatedUser(actorUserId);
+        activitySubEventGroupsRepository.save(group);
+        upsertStageRuntimeGroupsCount(ownerSourceId, normalizedSubEventId, definitionEvent, stage, actorUserId);
+        enqueueTournamentInputChanged(ownerSourceId, actorUserId);
+        return tournamentGroupsState(ownerSourceId, definitionEvent, actorUserId);
+    }
+
+    public EventTournamentGroupsStateDto deleteTournamentGroup(EventTournamentGroupDeleteRequestDto request) {
+        if (request == null) {
+            return new EventTournamentGroupsStateDto("", "", "", false, List.of());
+        }
+        String normalizedEventId = normalizeId(request.eventId());
+        String normalizedSlotId = normalizeId(request.slotId());
+        String ownerSourceId = StringUtils.hasText(normalizedSlotId) ? normalizedSlotId : normalizedEventId;
+        String normalizedSubEventId = normalizeId(request.subEventId());
+        String normalizedGroupId = normalizeId(request.groupId());
+        String actorUserId = effectiveActorUserId(request.actorUserId());
+        if (!StringUtils.hasText(ownerSourceId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedGroupId)
+                || !StringUtils.hasText(actorUserId)) {
+            return queryTournamentGroups(actorUserId, ownerSourceId);
+        }
+
+        List<ActivityEvent> documents = loadEventDocuments(ownerSourceId);
+        List<ActivityEvent> permissionDocuments = StringUtils.hasText(normalizedEventId)
+                ? loadEventDocuments(normalizedEventId)
+                : documents;
+        ActivityEvent canonical = resolvePreferredEvent(permissionDocuments.isEmpty() ? documents : permissionDocuments);
+        if (!canManageTournamentGroups(actorUserId, canonical)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage tournament groups for this event.");
+        }
+
+        String nowIso = Instant.now().toString();
+        ActivityEvent ownerEvent = resolvePreferredEvent(documents);
+        ActivityEvent definitionEvent = ownerEvent == null ? canonical : ownerEvent;
+        SubEventItem stage = resolveSubEvent(definitionEvent, normalizedSubEventId);
+        ActivitySubEventStageRuntime runtimeRecord = upsertStageRuntimeGroupsCount(
+                ownerSourceId,
+                normalizedSubEventId,
+                definitionEvent,
+                stage,
+                actorUserId);
+        String groupOwnerId = normalizeId(runtimeRecord == null ? null : runtimeRecord.getId());
+        ActivitySubEventGroup group = activitySubEventGroupsRepository
+                .findByOwnerIdAndGroupId(groupOwnerId, normalizedGroupId)
+                .orElse(null);
+        if (group != null) {
+            group.setStatus(STATUS_DELETED);
+            group.setUpdatedDate(nowIso);
+            group.setUpdatedUser(actorUserId);
+            activitySubEventGroupsRepository.save(group);
+            enqueueTournamentInputChanged(ownerSourceId, actorUserId);
+        }
+        upsertStageRuntimeGroupsCount(ownerSourceId, normalizedSubEventId, definitionEvent, stage, actorUserId);
+        return tournamentGroupsState(ownerSourceId, definitionEvent, actorUserId);
+    }
+
+    public List<SubEventGroupItemDto> materializeGeneratedGroups(String eventId, String subEventId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return List.of();
+        }
+
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedEventId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        return materializeGeneratedGroups(normalizedEventId, normalizedSubEventId, documents);
+    }
+
+    public List<SubEventGroupItemDto> materializeGeneratedGroups(
+            String eventId,
+            String subEventId,
+            List<ActivityEvent> sourceDocuments) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return List.of();
+        }
+        List<ActivityEvent> documents = sourceDocuments == null
+                ? List.of()
+                : sourceDocuments.stream()
+                        .filter(Objects::nonNull)
+                        .filter(document -> normalizedEventId.equals(normalizeId(document.getSourceId())))
+                        .toList();
+        if (documents.isEmpty()) {
+            return List.of();
+        }
+
+        ActivityEvent canonical = resolvePreferredEvent(documents);
+        SubEventItem subEvent = resolveSubEvent(canonical, normalizedSubEventId);
+        if (subEvent == null) {
+            return List.of();
+        }
+
+        List<SubEventGroupItemDto> groups = resolveGeneratedGroups(canonical, subEvent);
+        if (groups.isEmpty()) {
+            return List.of();
+        }
+        return groups;
+    }
+
+    private EventTournamentGroupsStateDto tournamentGroupsState(String ownerId, ActivityEvent event, String userId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerId) || event == null) {
+            return new EventTournamentGroupsStateDto(normalizedOwnerId, "", "", false, List.of());
+        }
+        return new EventTournamentGroupsStateDto(
+                normalizedOwnerId,
+                safeText(event.getTitle()),
+                safeText(event.getSubtitle()),
+                canManageTournamentGroups(userId, event),
+                tournamentStages(normalizedOwnerId, event, userId));
+    }
+
+    private List<EventTournamentStageDto> tournamentStages(String ownerId, ActivityEvent event, String userId) {
+        List<SubEventItem> subEvents = runtimeStageSequence(event);
+        List<EventTournamentStageDto> stages = new ArrayList<>();
+        for (int index = 0; index < subEvents.size(); index += 1) {
+            SubEventItem subEvent = subEvents.get(index);
+            if (subEvent == null || !isTournamentStage(subEvent)) {
+                continue;
+            }
+            stages.add(new EventTournamentStageDto(
+                    normalizeId(subEvent.id()),
+                    safeText(subEvent.name()),
+                    safeText(subEvent.description()),
+                    safeText(subEvent.location()),
+                    safeText(subEvent.startAt()),
+                    safeText(subEvent.endAt()),
+                    index + 1,
+                    safeText(subEvent.stageStatus()),
+                    normalizeLeaderboardType(subEvent.tournamentLeaderboardType()),
+                    Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
+                    tournamentGroups(ownerId, event, subEvent, userId)));
+        }
+        return stages;
+    }
+
+    private List<EventTournamentGroupDto> tournamentGroups(
+            String ownerId,
+            ActivityEvent event,
+            SubEventItem subEvent,
+            String userId) {
+        List<SubEventGroupItemDto> groups = resolveGroups(ownerId, event, subEvent);
+        String normalizedSubEventId = normalizeId(subEvent == null ? null : subEvent.id());
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> randomRoomSnapshots =
+                activitiesMembersService.buildBatchOwnerSnapshots(
+                        MEMBER_OWNER_TYPE_EVENT,
+                        groups.stream()
+                                .map(group -> randomRoomMemberOwnerId(ownerId, normalizedSubEventId, normalizeId(group == null ? null : group.id())))
+                                .filter(StringUtils::hasText)
+                                .toList());
+        Map<String, ActivitiesMembersService.OwnerMembersSnapshot> groupSnapshots =
+                activitiesMembersService.buildBatchOwnerSnapshots(
+                        MEMBER_OWNER_TYPE_GROUP,
+                        groups.stream()
+                                .map(group -> groupMemberOwnerId(ownerId, normalizedSubEventId, normalizeId(group == null ? null : group.id())))
+                                .filter(StringUtils::hasText)
+                                .toList());
+        ActivitySubEventStageRuntime stageRuntime = subEvent == null
+                ? null
+                : activitySubEventStageRuntimeRepository
+                        .findByOwnerIdAndSubEventId(normalizeId(ownerId), normalizeId(subEvent.id()))
+                        .orElse(null);
+        List<EventTournamentGroupDto> result = new ArrayList<>();
+        for (int index = 0; index < groups.size(); index += 1) {
+            SubEventGroupItemDto group = groups.get(index);
+            if (group == null) {
+                continue;
+            }
+            String groupId = normalizeId(group.id());
+            if (!StringUtils.hasText(groupId)) {
+                groupId = normalizeId(subEvent.id()) + ":group:" + (index + 1);
+            }
+            int capacityMin = Math.max(0, group.capacityMin() == null ? 0 : group.capacityMin());
+            int capacityMax = Math.max(capacityMin, group.capacityMax() == null ? capacityMin : group.capacityMax());
+            GroupMembershipScope membership = resolveGroupMembershipScope(
+                    ownerId,
+                    normalizedSubEventId,
+                    groupId,
+                    randomRoomSnapshots,
+                    groupSnapshots);
+            result.add(new EventTournamentGroupDto(
+                    groupId,
+                    safeText(group.name()),
+                    safeText(group.source()).isBlank() ? "manual" : safeText(group.source()),
+                    capacityMin,
+                    capacityMax,
+                    membership.accepted(),
+                    membership.pending(),
+                    membership.ownerType(),
+                    membership.ownerId(),
+                    membership.acceptedMemberUserIds().contains(normalizeId(userId)),
+                    groupResourceMetrics(stageRuntime, groupId, userId)));
+        }
+        return result;
+    }
+
+    private GroupMembershipScope resolveGroupMembershipScope(
+            String eventId,
+            String subEventId,
+            String groupId,
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> randomRoomSnapshots,
+            Map<String, ActivitiesMembersService.OwnerMembersSnapshot> groupSnapshots) {
+        String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, groupId);
+        ActivitiesMembersService.OwnerMembersSnapshot randomRoomSnapshot =
+                randomRoomSnapshots == null ? null : randomRoomSnapshots.get(randomRoomOwnerId);
+        if (hasMaterializedMembership(randomRoomSnapshot)) {
+            return membershipScope(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId, randomRoomSnapshot);
+        }
+        String groupOwnerId = groupMemberOwnerId(eventId, subEventId, groupId);
+        ActivitiesMembersService.OwnerMembersSnapshot groupSnapshot =
+                groupSnapshots == null ? null : groupSnapshots.get(groupOwnerId);
+        return membershipScope(MEMBER_OWNER_TYPE_GROUP, groupOwnerId, groupSnapshot);
+    }
+
+    private boolean hasMaterializedMembership(ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return snapshot != null && (
+                !snapshot.acceptedMemberUserIds().isEmpty()
+                        || !snapshot.pendingMemberUserIds().isEmpty()
+                        || !snapshot.invitedMemberUserIds().isEmpty()
+                        || !snapshot.pendingRequestMemberUserIds().isEmpty());
+    }
+
+    private GroupMembershipScope membershipScope(
+            String ownerType,
+            String ownerId,
+            ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        return new GroupMembershipScope(
+                ownerType,
+                ownerId,
+                snapshot == null ? 0 : snapshot.acceptedMemberUserIds().size(),
+                snapshot == null ? 0 : snapshot.pendingMemberUserIds().size(),
+                snapshot == null ? Set.of() : Set.copyOf(snapshot.acceptedMemberUserIds()));
+    }
+
+    private Map<String, EventTournamentResourceMetricDto> groupResourceMetrics(
+            ActivitySubEventStageRuntime runtime,
+            String groupId,
+            String userId) {
+        Map<String, Map<String, Map<String, GroupResourceMetricRecord>>> byGroup = runtime == null
+                || runtime.getGroupResourceMetricsByAssetOwnerId() == null
+                ? Map.of()
+                : runtime.getGroupResourceMetricsByAssetOwnerId();
+        Map<String, Map<String, GroupResourceMetricRecord>> byAssetOwner = byGroup.getOrDefault(
+                normalizeId(groupId),
+                Map.of());
+        Map<String, int[]> totalsByType = new LinkedHashMap<>();
+        for (Map<String, GroupResourceMetricRecord> metricsByType : byAssetOwner.values()) {
+            for (Map.Entry<String, GroupResourceMetricRecord> entry :
+                    (metricsByType == null ? Map.<String, GroupResourceMetricRecord>of() : metricsByType).entrySet()) {
+                GroupResourceMetricRecord metric = entry.getValue();
+                if (metric == null) {
+                    continue;
+                }
+                int[] totals = totalsByType.computeIfAbsent(entry.getKey(), ignored -> new int[4]);
+                totals[0] += safeCount(metric.accepted());
+                totals[1] += safeCount(metric.pending());
+                totals[2] += safeCount(metric.capacityMin());
+                totals[3] += safeCount(metric.capacityMax());
+            }
+        }
+        Map<String, EventTournamentResourceMetricDto> result = new LinkedHashMap<>();
+        for (Map.Entry<String, int[]> entry : totalsByType.entrySet()) {
+            int[] totals = entry.getValue();
+            result.put(entry.getKey(), new EventTournamentResourceMetricDto(
+                    totals[0],
+                    totals[1],
+                    totals[2],
+                    Math.max(totals[2], totals[3])));
+        }
+        return result;
+    }
+
+    private boolean isTournamentStage(SubEventItem subEvent) {
+        return subEvent != null
+                && !Boolean.TRUE.equals(subEvent.optional())
+                && (autoTournamentGroupCount(subEvent) > 0
+                        || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
+                        || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
+    }
+
+    private EventLeaderboardGroupDto toGroupDto(
+            String eventId,
+            String subEventId,
+            String leaderboardType,
+            SubEventItem subEvent,
+            SubEventGroupItemDto group,
+            List<EventLeaderboardEntry> entries,
+        GeneratorModels.ScoreGeneratorResult result) {
+        String groupId = normalizeId(group.id());
+        List<EventLeaderboardMemberDto> members = resolveLeaderboardMembers(eventId, subEventId, group, entries);
+        Map<String, StoredMemberState> memberStatesById = resolveGroupMemberStates(eventId, subEventId, groupId);
+        Map<String, String> memberStatusesById = new LinkedHashMap<>();
+        memberStatesById.forEach((memberId, state) -> memberStatusesById.put(memberId, state.status()));
+        Map<String, String> memberNameById = members.stream()
+                .collect(LinkedHashMap::new, (map, member) -> map.put(member.memberId(), member.memberName()), Map::putAll);
+        memberStatesById.forEach((memberId, state) -> {
+            if (StringUtils.hasText(state.name())) {
+                memberNameById.put(memberId, state.name());
+            }
+        });
+
+        List<EventLeaderboardScoreEntryDto> scoreEntries = entries.stream()
+                .filter(entry -> "score".equals(normalizeId(entry.getEntryType())))
+                .filter(entry -> groupId.equals(normalizeId(entry.getGroupId())))
+                .sorted(Comparator.comparingLong((EventLeaderboardEntry entry) -> toEpochMillis(entry.getCreatedAtIso())).reversed())
+                .map(entry -> new EventLeaderboardScoreEntryDto(
+                        normalizeId(entry.getId()),
+                        normalizeId(entry.getMemberId()),
+                        entry.getScoreValue() == null ? 0 : entry.getScoreValue(),
+                        safeText(entry.getNote()),
+                        toEpochMillis(entry.getCreatedAtIso())))
+                .toList();
+
+        List<EventLeaderboardFifaMatchDto> fifaMatches = entries.stream()
+                .filter(entry -> "fifa".equals(normalizeId(entry.getEntryType())))
+                .filter(entry -> groupId.equals(normalizeId(entry.getGroupId())))
+                .sorted(Comparator.comparingLong((EventLeaderboardEntry entry) -> toEpochMillis(entry.getCreatedAtIso())).reversed())
+                .map(entry -> new EventLeaderboardFifaMatchDto(
+                        normalizeId(entry.getId()),
+                        normalizeId(entry.getHomeMemberId()),
+                        normalizeId(entry.getAwayMemberId()),
+                        entry.getHomeScore() == null ? 0 : entry.getHomeScore(),
+                        entry.getAwayScore() == null ? 0 : entry.getAwayScore(),
+                        safeText(entry.getNote()),
+                        toEpochMillis(entry.getCreatedAtIso())))
+                .toList();
+
+        List<EventLeaderboardScoreStandingRowDto> scoreRows = result == null
+                ? List.of()
+                : result.scoreRows().stream()
+                        .map(row -> new EventLeaderboardScoreStandingRowDto(
+                                row.memberId(),
+                                memberNameById.getOrDefault(row.memberId(), row.memberName()),
+                                row.total(),
+                                row.updates(),
+                                "",
+                                participantState(memberStatusesById.get(row.memberId()), row.memberId(), groupId)))
+                        .toList();
+
+        List<EventLeaderboardFifaStandingRowDto> fifaRows = result == null
+                ? List.of()
+                : result.fifaRows().stream()
+                        .map(row -> new EventLeaderboardFifaStandingRowDto(
+                                row.memberId(),
+                                memberNameById.getOrDefault(row.memberId(), row.memberName()),
+                                row.points(),
+                                row.played(),
+                                row.wins(),
+                                row.draws(),
+                                row.losses(),
+                                row.goalsFor(),
+                                row.goalsAgainst(),
+                                row.goalDiff(),
+                                "",
+                                participantState(memberStatusesById.get(row.memberId()), row.memberId(), groupId)))
+                        .toList();
+
+        Set<String> persistedMemberIds = members.stream()
+                .filter(member -> !"-----".equals(member.memberName()))
+                .map(EventLeaderboardMemberDto::memberId)
+                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+        scoreRows = acceptedMembersFirst(scoreRows, persistedMemberIds, EventLeaderboardScoreStandingRowDto::memberId);
+        fifaRows = acceptedMembersFirst(fifaRows, persistedMemberIds, EventLeaderboardFifaStandingRowDto::memberId);
+        scoreRows = appendTerminalScoreRows(scoreRows, scoreEntries, memberStatusesById, memberNameById);
+        fifaRows = appendTerminalFifaRows(fifaRows, fifaMatches, memberStatusesById, memberNameById);
+        scoreRows = sortScoreRowsByParticipantState(scoreRows);
+        fifaRows = sortFifaRowsByParticipantState(fifaRows);
+
+        return new EventLeaderboardGroupDto(
+                groupId,
+                safeText(group.name()),
+                members.size(),
+                Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
+                result == null ? List.of() : result.advancingMemberIds().stream()
+                        .filter(memberId -> PARTICIPANT_STATE_ACTIVE.equals(
+                                participantState(memberStatusesById.get(memberId), memberId, groupId)))
+                        .toList(),
+                members,
+                scoreEntries,
+                fifaMatches,
+                scoreRows,
+                fifaRows);
+    }
+
+    private Map<String, StoredMemberState> resolveGroupMemberStates(
+            String eventId,
+            String subEventId,
+            String groupId) {
+        String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, groupId);
+        Map<String, StoredMemberState> randomRoomStates = activitiesMembersService
+                .queryStoredMemberStates(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId);
+        if (!randomRoomStates.isEmpty()
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId)) {
+            return randomRoomStates;
+        }
+        String memberOwnerId = groupMemberOwnerId(eventId, subEventId, groupId);
+        Map<String, StoredMemberState> canonicalStates = activitiesMembersService
+                .queryStoredMemberStates(MEMBER_OWNER_TYPE_GROUP, memberOwnerId);
+        if (!canonicalStates.isEmpty()
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId)
+                || memberOwnerId.equals(normalizeId(groupId))) {
+            return canonicalStates;
+        }
+        return activitiesMembersService.queryStoredMemberStates(MEMBER_OWNER_TYPE_GROUP, normalizeId(groupId));
+    }
+
+    private String participantState(String membershipStatus) {
+        String normalizedStatus = safeText(membershipStatus);
+        if (MEMBER_STATUS_DISQUALIFIED.equalsIgnoreCase(normalizedStatus)) {
+            return PARTICIPANT_STATE_DISQUALIFIED;
+        }
+        if (MEMBER_STATUS_REMOVED.equalsIgnoreCase(normalizedStatus)) {
+            return PARTICIPANT_STATE_REMOVED;
+        }
+        return PARTICIPANT_STATE_ACTIVE;
+    }
+
+    private String participantState(String membershipStatus, String memberId, String groupId) {
+        String normalizedGroupId = normalizeId(groupId);
+        String placeholderPrefix = normalizedGroupId + "-member-";
+        if (StringUtils.hasText(normalizedGroupId)
+                && normalizeId(memberId).startsWith(placeholderPrefix)) {
+            return PARTICIPANT_STATE_VACANT;
+        }
+        return participantState(membershipStatus);
+    }
+
+    private List<EventLeaderboardScoreStandingRowDto> appendTerminalScoreRows(
+            List<EventLeaderboardScoreStandingRowDto> rows,
+            List<EventLeaderboardScoreEntryDto> scoreEntries,
+            Map<String, String> memberStatusesById,
+            Map<String, String> memberNameById) {
+        Map<String, int[]> totalsByMemberId = new LinkedHashMap<>();
+        for (EventLeaderboardScoreEntryDto entry : scoreEntries) {
+            String memberId = normalizeId(entry.memberId());
+            String participantState = participantState(memberStatusesById.get(memberId));
+            if (PARTICIPANT_STATE_ACTIVE.equals(participantState)) {
+                continue;
+            }
+            int[] totals = totalsByMemberId.computeIfAbsent(memberId, ignored -> new int[2]);
+            totals[0] += entry.value() == null ? 0 : entry.value();
+            totals[1] += 1;
+        }
+        Set<String> existingIds = rows.stream()
+                .map(EventLeaderboardScoreStandingRowDto::memberId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toSet());
+        List<EventLeaderboardScoreStandingRowDto> combined = new ArrayList<>(rows);
+        for (Map.Entry<String, int[]> entry : totalsByMemberId.entrySet()) {
+            String memberId = entry.getKey();
+            if (existingIds.contains(memberId)) {
+                continue;
+            }
+            int[] totals = entry.getValue();
+            combined.add(new EventLeaderboardScoreStandingRowDto(
+                    memberId,
+                    memberNameById.getOrDefault(memberId, fallbackMemberName("", memberId)),
+                    totals[0],
+                    totals[1],
+                    "",
+                    participantState(memberStatusesById.get(memberId))));
+        }
+        return combined;
+    }
+
+    private List<EventLeaderboardFifaStandingRowDto> appendTerminalFifaRows(
+            List<EventLeaderboardFifaStandingRowDto> rows,
+            List<EventLeaderboardFifaMatchDto> fifaMatches,
+            Map<String, String> memberStatusesById,
+            Map<String, String> memberNameById) {
+        Map<String, FifaStandingTotals> totalsByMemberId = new LinkedHashMap<>();
+        for (EventLeaderboardFifaMatchDto match : fifaMatches) {
+            String homeMemberId = normalizeId(match.homeMemberId());
+            String awayMemberId = normalizeId(match.awayMemberId());
+            int homeScore = match.homeScore() == null ? 0 : match.homeScore();
+            int awayScore = match.awayScore() == null ? 0 : match.awayScore();
+            if (!PARTICIPANT_STATE_ACTIVE.equals(participantState(memberStatusesById.get(homeMemberId)))) {
+                totalsByMemberId.computeIfAbsent(homeMemberId, ignored -> new FifaStandingTotals())
+                        .record(homeScore, awayScore);
+            }
+            if (!PARTICIPANT_STATE_ACTIVE.equals(participantState(memberStatusesById.get(awayMemberId)))) {
+                totalsByMemberId.computeIfAbsent(awayMemberId, ignored -> new FifaStandingTotals())
+                        .record(awayScore, homeScore);
+            }
+        }
+        Set<String> existingIds = rows.stream()
+                .map(EventLeaderboardFifaStandingRowDto::memberId)
+                .map(this::normalizeId)
+                .filter(StringUtils::hasText)
+                .collect(java.util.stream.Collectors.toSet());
+        List<EventLeaderboardFifaStandingRowDto> combined = new ArrayList<>(rows);
+        for (Map.Entry<String, FifaStandingTotals> entry : totalsByMemberId.entrySet()) {
+            String memberId = entry.getKey();
+            if (existingIds.contains(memberId)) {
+                continue;
+            }
+            FifaStandingTotals totals = entry.getValue();
+            combined.add(new EventLeaderboardFifaStandingRowDto(
+                    memberId,
+                    memberNameById.getOrDefault(memberId, fallbackMemberName("", memberId)),
+                    totals.points,
+                    totals.played,
+                    totals.wins,
+                    totals.draws,
+                    totals.losses,
+                    totals.goalsFor,
+                    totals.goalsAgainst,
+                    totals.goalsFor - totals.goalsAgainst,
+                    "",
+                    participantState(memberStatusesById.get(memberId))));
+        }
+        return combined;
+    }
+
+    private List<EventLeaderboardScoreStandingRowDto> sortScoreRowsByParticipantState(
+            List<EventLeaderboardScoreStandingRowDto> rows) {
+        List<EventLeaderboardScoreStandingRowDto> sorted = rows.stream()
+                .sorted(Comparator.comparing(EventLeaderboardScoreStandingRowDto::participantState)
+                        .thenComparing(EventLeaderboardScoreStandingRowDto::total, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardScoreStandingRowDto::memberName))
+                .toList();
+        List<EventLeaderboardScoreStandingRowDto> positioned = new ArrayList<>();
+        int activePosition = 0;
+        for (EventLeaderboardScoreStandingRowDto row : sorted) {
+            String positionLabel = PARTICIPANT_STATE_ACTIVE.equals(row.participantState())
+                    ? String.valueOf(++activePosition)
+                    : row.participantState();
+            positioned.add(new EventLeaderboardScoreStandingRowDto(
+                    row.memberId(), row.memberName(), row.total(), row.updates(), positionLabel, row.participantState()));
+        }
+        return positioned;
+    }
+
+    private List<EventLeaderboardFifaStandingRowDto> sortFifaRowsByParticipantState(
+            List<EventLeaderboardFifaStandingRowDto> rows) {
+        List<EventLeaderboardFifaStandingRowDto> sorted = rows.stream()
+                .sorted(Comparator.comparing(EventLeaderboardFifaStandingRowDto::participantState)
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::points, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::goalDiff, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::goalsFor, Comparator.reverseOrder())
+                        .thenComparing(EventLeaderboardFifaStandingRowDto::memberName))
+                .toList();
+        List<EventLeaderboardFifaStandingRowDto> positioned = new ArrayList<>();
+        int activePosition = 0;
+        for (EventLeaderboardFifaStandingRowDto row : sorted) {
+            String positionLabel = PARTICIPANT_STATE_ACTIVE.equals(row.participantState())
+                    ? String.valueOf(++activePosition)
+                    : row.participantState();
+            positioned.add(new EventLeaderboardFifaStandingRowDto(
+                    row.memberId(), row.memberName(), row.points(), row.played(), row.wins(), row.draws(),
+                    row.losses(), row.goalsFor(), row.goalsAgainst(), row.goalDiff(), positionLabel, row.participantState()));
+        }
+        return positioned;
+    }
+
+    private static final class FifaStandingTotals {
+        private int points;
+        private int played;
+        private int wins;
+        private int draws;
+        private int losses;
+        private int goalsFor;
+        private int goalsAgainst;
+
+        private void record(int goalsFor, int goalsAgainst) {
+            played += 1;
+            this.goalsFor += goalsFor;
+            this.goalsAgainst += goalsAgainst;
+            if (goalsFor > goalsAgainst) {
+                wins += 1;
+                points += 3;
+            } else if (goalsFor == goalsAgainst) {
+                draws += 1;
+                points += 1;
+            } else {
+                losses += 1;
+            }
+        }
+    }
+
+    private GeneratorModels.ScoreGeneratorGroup toGeneratorGroup(
+            String eventId,
+            String subEventId,
+            String leaderboardType,
+            SubEventItem subEvent,
+            SubEventGroupItemDto group,
+        List<EventLeaderboardEntry> entries) {
+        String groupId = normalizeId(group.id());
+        List<GeneratorModels.LeaderboardMember> members = resolveRankingMembers(eventId, subEventId, group).stream()
+                .map(member -> new GeneratorModels.LeaderboardMember(member.memberId(), member.memberName()))
+                .toList();
+        List<GeneratorModels.ScoreLeaderboardEntry> scoreEntries = entries.stream()
+                .filter(entry -> groupId.equals(normalizeId(entry.getGroupId())))
+                .filter(entry -> "score".equals(normalizeId(entry.getEntryType())))
+                .map(entry -> new GeneratorModels.ScoreLeaderboardEntry(
+                        normalizeId(entry.getMemberId()),
+                        entry.getScoreValue() == null ? 0 : entry.getScoreValue(),
+                        toEpochMillis(entry.getCreatedAtIso())))
+                .toList();
+        List<GeneratorModels.FifaMatch> fifaMatches = entries.stream()
+                .filter(entry -> groupId.equals(normalizeId(entry.getGroupId())))
+                .filter(entry -> "fifa".equals(normalizeId(entry.getEntryType())))
+                .map(entry -> new GeneratorModels.FifaMatch(
+                        normalizeId(entry.getHomeMemberId()),
+                        normalizeId(entry.getAwayMemberId()),
+                        entry.getHomeScore() == null ? 0 : entry.getHomeScore(),
+                        entry.getAwayScore() == null ? 0 : entry.getAwayScore(),
+                        toEpochMillis(entry.getCreatedAtIso())))
+                .toList();
+        return new GeneratorModels.ScoreGeneratorGroup(
+                groupId,
+                leaderboardType,
+                Math.max(0, subEvent.tournamentAdvancePerGroup() == null ? 0 : subEvent.tournamentAdvancePerGroup()),
+                members,
+                scoreEntries,
+                fifaMatches);
+    }
+
+    private List<EventLeaderboardMemberDto> resolveRankingMembers(
+            String eventId,
+            String subEventId,
+            SubEventGroupItemDto group) {
+        String groupId = normalizeId(group == null ? null : group.id());
+        Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
+        for (EventLeaderboardMemberDto member : resolveMembers(eventId, subEventId, groupId)) {
+            membersById.put(member.memberId(), member);
+        }
+        int intendedMemberCount = Math.max(2, safeCount(group == null ? null : group.capacityMax()));
+        for (int index = 1; membersById.size() < intendedMemberCount; index += 1) {
+            String memberId = groupId + "-member-" + index;
+            membersById.putIfAbsent(memberId, new EventLeaderboardMemberDto(memberId, "-----"));
+        }
+        return new ArrayList<>(membersById.values());
+    }
+
+    private List<EventLeaderboardMemberDto> resolveMembers(String eventId, String subEventId, String groupId) {
+        List<ActivityMemberEntryDto> entries = resolveGroupMemberEntries(eventId, subEventId, groupId);
+        List<EventLeaderboardMemberDto> members = new ArrayList<>();
+        for (ActivityMemberEntryDto entry : entries) {
+            if (!MEMBER_STATUS_ACCEPTED.equalsIgnoreCase(safeText(entry.status()))) {
+                continue;
+            }
+            String memberId = normalizeId(entry.userId());
+            if (!StringUtils.hasText(memberId)) {
+                continue;
+            }
+            members.add(new EventLeaderboardMemberDto(
+                    memberId,
+                    safeText(entry.name()),
+                    safeText(entry.initials()),
+                    StringUtils.hasText(safeText(entry.avatarUrl())) ? safeText(entry.avatarUrl()) : null));
+        }
+        return members;
+    }
+
+    private List<EventLeaderboardMemberDto> resolveLeaderboardMembers(
+            String eventId,
+            String subEventId,
+            SubEventGroupItemDto group,
+            List<EventLeaderboardEntry> entries) {
+        String groupId = normalizeId(group == null ? null : group.id());
+        List<EventLeaderboardMemberDto> persistedMembers = resolveMembers(eventId, subEventId, groupId);
+        Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
+        for (EventLeaderboardMemberDto member : persistedMembers) {
+            membersById.put(member.memberId(), member);
+        }
+        for (EventLeaderboardMemberDto member : resolveMembersFromEntries(groupId, entries)) {
+            membersById.putIfAbsent(member.memberId(), member);
+        }
+        int intendedMemberCount = Math.max(2, safeCount(group == null ? null : group.capacityMax()));
+        for (int index = 1; membersById.size() < intendedMemberCount; index += 1) {
+            String memberId = groupId + "-member-" + index;
+            membersById.putIfAbsent(memberId, new EventLeaderboardMemberDto(memberId, "-----"));
+        }
+        return new ArrayList<>(membersById.values());
+    }
+
+    private <T> List<T> acceptedMembersFirst(
+            List<T> rows,
+            Set<String> acceptedMemberIds,
+            java.util.function.Function<T, String> memberId) {
+        if (rows == null || rows.isEmpty() || acceptedMemberIds == null || acceptedMemberIds.isEmpty()) {
+            return rows == null ? List.of() : rows;
+        }
+        return rows.stream()
+                .sorted(Comparator.comparingInt(row -> acceptedMemberIds.contains(normalizeId(memberId.apply(row))) ? 0 : 1))
+                .toList();
+    }
+
+    private List<ActivityMemberEntryDto> resolveGroupMemberEntries(
+            String eventId,
+            String subEventId,
+            String groupId) {
+        String normalizedGroupId = normalizeId(groupId);
+        String randomRoomOwnerId = randomRoomMemberOwnerId(eventId, subEventId, normalizedGroupId);
+        List<ActivityMemberEntryDto> randomRoomMembers = activitiesMembersService.queryMembers(
+                MEMBER_OWNER_TYPE_EVENT,
+                randomRoomOwnerId,
+                false,
+                eventId,
+                subEventId);
+        if ((randomRoomMembers != null && !randomRoomMembers.isEmpty())
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_EVENT, randomRoomOwnerId)) {
+            return randomRoomMembers == null ? List.of() : randomRoomMembers;
+        }
+        String memberOwnerId = groupMemberOwnerId(eventId, subEventId, normalizedGroupId);
+        if (!StringUtils.hasText(memberOwnerId)) {
+            return List.of();
+        }
+        List<ActivityMemberEntryDto> canonicalMembers =
+                activitiesMembersService.queryMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId);
+        if ((canonicalMembers != null && !canonicalMembers.isEmpty())
+                || activitiesMembersService.hasStoredOwnerMembers(MEMBER_OWNER_TYPE_GROUP, memberOwnerId)
+                || memberOwnerId.equals(normalizedGroupId)) {
+            return canonicalMembers == null ? List.of() : canonicalMembers;
+        }
+        List<ActivityMemberEntryDto> legacyMembers =
+                activitiesMembersService.queryMembers(MEMBER_OWNER_TYPE_GROUP, normalizedGroupId);
+        return legacyMembers == null ? List.of() : legacyMembers;
+    }
+
+    private void enqueueTournamentInputChanged(String eventId, String actorUserId) {
+        if (affinityRecomputeTaskService != null && StringUtils.hasText(normalizeId(eventId))) {
+            affinityRecomputeTaskService.enqueueEventChanged(eventId, actorUserId);
+        }
+    }
+
+    private String groupMemberOwnerId(String eventId, String subEventId, String groupId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedGroupId)) {
+            return "";
+        }
+        if (StringUtils.hasText(normalizedEventId)
+                && (normalizedGroupId.equals(normalizedEventId) || normalizedGroupId.startsWith(normalizedEventId + ":"))) {
+            return normalizedGroupId;
+        }
+        if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return normalizedGroupId;
+        }
+        return normalizedEventId + ":" + normalizedSubEventId + ":" + normalizedGroupId;
+    }
+
+    private String randomRoomMemberOwnerId(String eventId, String subEventId, String groupId) {
+        String normalizedEventId = normalizeId(eventId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        String normalizedGroupId = normalizeId(groupId);
+        if (!StringUtils.hasText(normalizedEventId)
+                || !StringUtils.hasText(normalizedSubEventId)
+                || !StringUtils.hasText(normalizedGroupId)) {
+            return "";
+        }
+        return "random-room:"
+                + normalizedEventId
+                + ":"
+                + normalizedSubEventId
+                + ":"
+                + normalizedGroupId;
+    }
+
+    private record GroupMembershipScope(
+            String ownerType,
+            String ownerId,
+            int accepted,
+            int pending,
+            Set<String> acceptedMemberUserIds) {
+    }
+
+    private List<EventLeaderboardMemberDto> resolveMembersFromEntries(String groupId, List<EventLeaderboardEntry> entries) {
+        Map<String, EventLeaderboardMemberDto> membersById = new LinkedHashMap<>();
+        for (EventLeaderboardEntry entry : entries) {
+            if (!groupId.equals(normalizeId(entry.getGroupId()))) {
+                continue;
+            }
+            if (StringUtils.hasText(normalizeId(entry.getMemberId()))) {
+                String memberId = normalizeId(entry.getMemberId());
+                membersById.put(memberId, new EventLeaderboardMemberDto(memberId, fallbackMemberName(groupId, memberId)));
+            }
+            if (StringUtils.hasText(normalizeId(entry.getHomeMemberId()))) {
+                String memberId = normalizeId(entry.getHomeMemberId());
+                membersById.put(memberId, new EventLeaderboardMemberDto(memberId, fallbackMemberName(groupId, memberId)));
+            }
+            if (StringUtils.hasText(normalizeId(entry.getAwayMemberId()))) {
+                String memberId = normalizeId(entry.getAwayMemberId());
+                membersById.put(memberId, new EventLeaderboardMemberDto(memberId, fallbackMemberName(groupId, memberId)));
+            }
+        }
+        return new ArrayList<>(membersById.values());
+    }
+
+    private String fallbackMemberName(String groupId, String memberId) {
+        String placeholderPrefix = normalizeId(groupId) + "-member-";
+        String normalizedMemberId = normalizeId(memberId);
+        if (normalizedMemberId.startsWith(placeholderPrefix)) {
+            String suffix = normalizedMemberId.substring(placeholderPrefix.length());
+            if (suffix.matches("\\d+")) {
+                return "-----";
+            }
+        }
+        return normalizedMemberId;
+    }
+
+    private List<ActivityEvent> loadEventDocuments(String sourceId) {
+        String normalizedSourceId = normalizeId(sourceId);
+        if (!StringUtils.hasText(normalizedSourceId)) {
+            return List.of();
+        }
+        List<ActivityEvent> documents = activityEventsRepository.findBySourceId(normalizedSourceId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+        if (!documents.isEmpty()) {
+            return documents;
+        }
+        return activityEventsRepository.findById(normalizedSourceId).stream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private ActivityEvent resolveCanonicalEvent(String sourceId) {
+        return resolvePreferredEvent(loadEventDocuments(sourceId));
+    }
+
+    private String definitionEventId(String runtimeEventId) {
+        String normalizedEventId = normalizeId(runtimeEventId);
+        int slotMarker = normalizedEventId.indexOf(":slot:");
+        return slotMarker > 0 ? normalizedEventId.substring(0, slotMarker) : normalizedEventId;
+    }
+
+    private SubEventItem resolveSubEvent(ActivityEvent event, String subEventId) {
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+        for (SubEventItem item : runtimeStageSequence(event)) {
+            if (item != null && normalizedSubEventId.equals(normalizeId(item.id()))) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private List<SubEventGroupItemDto> resolveGroups(String ownerId, ActivityEvent event, SubEventItem subEvent) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEvent == null ? null : subEvent.id());
+        List<ActivitySubEventGroup> manualGroups = StringUtils.hasText(normalizedOwnerId)
+                && StringUtils.hasText(normalizedSubEventId)
+                ? activitySubEventStageRuntimeRepository
+                        .findByOwnerIdAndSubEventId(normalizedOwnerId, normalizedSubEventId)
+                        .map(ActivitySubEventStageRuntime::getId)
+                        .map(this::manualGroupRecords)
+                        .orElse(List.of())
+                : List.of();
+        return mergeGroups(resolveGeneratedGroups(event, subEvent), manualGroups);
+    }
+
+    private List<SubEventGroupItemDto> mergeGroups(
+            List<SubEventGroupItemDto> generatedGroups,
+            List<ActivitySubEventGroup> manualGroups) {
+        Map<String, SubEventGroupItemDto> groupsById = new LinkedHashMap<>();
+        for (SubEventGroupItemDto group : generatedGroups == null
+                ? List.<SubEventGroupItemDto>of()
+                : generatedGroups) {
+            String groupId = normalizeId(group == null ? null : group.id());
+            if (StringUtils.hasText(groupId)) {
+                groupsById.put(groupId, group);
+            }
+        }
+        (manualGroups == null ? List.<ActivitySubEventGroup>of() : manualGroups).stream()
+                .map(this::toManualSubEventGroup)
+                .filter(Objects::nonNull)
+                .forEach(group -> groupsById.put(normalizeId(group.id()), group));
+        return new ArrayList<>(groupsById.values());
+    }
+
+    private List<SubEventGroupItemDto> resolveGeneratedGroups(ActivityEvent event, SubEventItem subEvent) {
+        if (subEvent == null) {
+            return List.of();
+        }
+        if (isMingleEvent(event)) {
+            int roundNumber = mingleRoundNumber(subEvent.id());
+            ActivityMingleRound round = activityMingleRoundsRepository == null || roundNumber <= 0
+                    ? null
+                    : activityMingleRoundsRepository
+                            .findByEventIdAndRoundNumber(normalizeId(event.getSourceId()), roundNumber)
+                            .orElse(null);
+            if (round == null || round.getTables() == null) {
+                return List.of();
+            }
+            return round.getTables().stream()
+                    .filter(Objects::nonNull)
+                    .sorted(Comparator.comparingInt(table -> safeCount(table.tableNumber())))
+                    .map(table -> {
+                        int tableNumber = Math.max(1, safeCount(table.tableNumber()));
+                        int memberCount = table.memberUserIds() == null ? 0 : table.memberUserIds().size();
+                        return new SubEventGroupItemDto(
+                                mingleGroupId(event.getSourceId(), roundNumber, tableNumber),
+                                "Table " + tableNumber,
+                                memberCount,
+                                memberCount,
+                                "generated");
+                    })
+                    .toList();
+        }
+        int groupCount = autoTournamentGroupCount(event, subEvent);
+        List<SubEventGroupItemDto> groups = new ArrayList<>();
+        for (int index = 0; index < groupCount; index += 1) {
+            char suffix = (char) ('A' + index);
+            groups.add(new SubEventGroupItemDto(
+                    subEvent.id() + ":group:" + (index + 1),
+                    "Group " + suffix,
+                    subEvent.tournamentGroupCapacityMin(),
+                    subEvent.tournamentGroupCapacityMax(),
+                    "generated"));
+        }
+        return groups;
+    }
+
+    private List<ActivitySubEventGroup> manualGroupRecords(String ownerId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        if (!StringUtils.hasText(normalizedOwnerId)) {
+            return List.of();
+        }
+        List<ActivitySubEventGroup> records = activitySubEventGroupsRepository
+                .findByOwnerIdAndStatusNot(normalizedOwnerId, STATUS_DELETED);
+        return (records == null ? List.<ActivitySubEventGroup>of() : records)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(group -> StringUtils.hasText(normalizeId(group.getGroupId())))
+                .sorted(Comparator
+                        .comparing((ActivitySubEventGroup group) -> safeText(group.getCreatedDate()))
+                        .thenComparing(group -> safeText(group.getGroupId())))
+                .toList();
+    }
+
+    private SubEventGroupItemDto toManualSubEventGroup(ActivitySubEventGroup group) {
+        if (group == null || STATUS_DELETED.equals(safeText(group.getStatus()))) {
+            return null;
+        }
+        String groupId = normalizeId(group.getGroupId());
+        if (!StringUtils.hasText(groupId)) {
+            return null;
+        }
+        int capacityMin = Math.max(0, group.getCapacityMin() == null ? 0 : group.getCapacityMin());
+        int capacityMax = Math.max(capacityMin, group.getCapacityMax() == null ? capacityMin : group.getCapacityMax());
+        return new SubEventGroupItemDto(
+                groupId,
+                safeText(group.getName()),
+                capacityMin,
+                capacityMax,
+                "manual");
+    }
+
+    private ActivitySubEventStageRuntime upsertStageRuntimeGroupsCount(
+            String ownerId,
+            String subEventId,
+            ActivityEvent event,
+            SubEventItem stage,
+            String actorUserId) {
+        String normalizedOwnerId = normalizeId(ownerId);
+        String normalizedSubEventId = normalizeId(subEventId);
+        if (!StringUtils.hasText(normalizedOwnerId) || !StringUtils.hasText(normalizedSubEventId)) {
+            return null;
+        }
+        String nowIso = Instant.now().toString();
+        ActivitySubEventStageRuntime record = activitySubEventStageRuntimeRepository
+                .findByOwnerIdAndSubEventId(normalizedOwnerId, normalizedSubEventId)
+                .orElseGet(ActivitySubEventStageRuntime::new);
+        record.setId(StringUtils.hasText(record.getId()) ? record.getId() : new ObjectId().toHexString());
+        int groupsCount = mergeGroups(
+                resolveGeneratedGroups(event, stage),
+                manualGroupRecords(record.getId())).size();
+        record.setSyncKey(StringUtils.hasText(record.getSyncKey()) ? record.getSyncKey() : UUID.randomUUID().toString());
+        record.setRecordId(normalizedOwnerId + ":" + normalizedSubEventId);
+        record.setStatus(STATUS_ACTIVE);
+        record.setOwnerId(normalizedOwnerId);
+        record.setSubEventId(normalizedSubEventId);
+        record.setGroupsCount(Math.max(0, groupsCount));
+        record.setCreatedDate(StringUtils.hasText(record.getCreatedDate()) ? record.getCreatedDate() : nowIso);
+        record.setCreatedUser(StringUtils.hasText(record.getCreatedUser()) ? record.getCreatedUser() : normalizeId(actorUserId));
+        record.setUpdatedDate(nowIso);
+        record.setUpdatedUser(normalizeId(actorUserId));
+        return activitySubEventStageRuntimeRepository.save(record);
+    }
+
+    private String nextManualGroupId(String ownerId, List<ActivitySubEventGroup> groups) {
+        String prefix = normalizeId(ownerId) + ":manual-group:";
+        int index = Math.max(1, groups == null ? 1 : groups.size() + 1);
+        while (containsManualGroupId(groups, prefix + index)) {
+            index += 1;
+        }
+        return prefix + index;
+    }
+
+    private boolean containsManualGroupId(List<ActivitySubEventGroup> groups, String groupId) {
+        if (groups == null) {
+            return false;
+        }
+        for (ActivitySubEventGroup group : groups) {
+            if (groupId.equals(normalizeId(group == null ? null : group.getGroupId()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String manualGroupRecordId(String ownerId, String groupId) {
+        return normalizeId(ownerId) + ":" + normalizeId(groupId);
+    }
+
+    private int autoTournamentGroupCount(SubEventItem subEvent) {
+        return autoTournamentGroupCountForIncoming(subEvent, subEvent == null ? 0 : safeCount(subEvent.capacityMax()));
+    }
+
+    private int autoTournamentGroupCount(ActivityEvent event, SubEventItem targetStage) {
+        if (targetStage == null) {
+            return 0;
+        }
+        List<SubEventItem> stages = runtimeStageSequence(event);
+        if (stages.isEmpty()) {
+            stages = List.of(targetStage);
+        }
+        int incomingCapacityMax = safeCount(event == null ? null : event.getCapacityMax());
+        for (SubEventItem stage : stages == null ? List.<SubEventItem>of() : stages) {
+            if (stage == null) {
+                continue;
+            }
+            int groupCount = autoTournamentGroupCountForIncoming(stage, incomingCapacityMax);
+            if (sameStage(stage, targetStage)) {
+                return groupCount;
+            }
+            if (hasTournamentStageConfig(stage) && groupCount > 0) {
+                int advancePerGroup = safeCount(stage.tournamentAdvancePerGroup());
+                incomingCapacityMax = advancePerGroup > 0 ? groupCount * advancePerGroup : 0;
+            }
+        }
+        return autoTournamentGroupCountForIncoming(targetStage, incomingCapacityMax);
+    }
+
+    private int autoTournamentGroupCountForIncoming(SubEventItem subEvent, int incomingCapacityMax) {
+        if (subEvent == null) {
+            return 0;
+        }
+        return TournamentGroupCountPolicy.countForIncoming(
+                subEvent.tournamentGroupCapacityMin(),
+                subEvent.tournamentGroupCapacityMax(),
+                incomingCapacityMax,
+                subEvent.capacityMax());
+    }
+
+    private boolean hasTournamentGroupCapacityRule(SubEventItem subEvent) {
+        return safeCount(subEvent == null ? null : subEvent.tournamentGroupCapacityMin()) > 0
+                || safeCount(subEvent == null ? null : subEvent.tournamentGroupCapacityMax()) > 0;
+    }
+
+    private boolean hasTournamentStageConfig(SubEventItem subEvent) {
+        return subEvent != null
+                && !Boolean.TRUE.equals(subEvent.optional())
+                && (safeCount(subEvent.tournamentGroupCapacityMin()) > 0
+                        || safeCount(subEvent.tournamentGroupCapacityMax()) > 0
+                        || "Score".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType()))
+                        || "Fifa".equalsIgnoreCase(safeText(subEvent.tournamentLeaderboardType())));
+    }
+
+    private boolean sameStage(SubEventItem left, SubEventItem right) {
+        if (left == null || right == null) {
+            return false;
+        }
+        String leftId = normalizeId(left.id());
+        String rightId = normalizeId(right.id());
+        return StringUtils.hasText(leftId) && leftId.equals(rightId);
+    }
+
+    private int safeCount(Integer value) {
+        return Math.max(0, value == null ? 0 : value);
+    }
+
+    private List<SubEventItem> runtimeStageSequence(ActivityEvent event) {
+        if (event == null) {
+            return List.of();
+        }
+        if (isMingleEvent(event)) {
+            MingleConfigurationDto config = event.getMingleConfiguration();
+            int plannedRounds = Math.max(1, safeCount(config == null ? null : config.plannedRounds()));
+            int groupSize = Math.max(2, safeCount(config == null ? null : config.groupSize()));
+            int roundDuration = Math.max(1, safeCount(config == null ? null : config.roundDurationMinutes()));
+            int breakDuration = Math.max(0, safeCount(config == null ? null : config.breakDurationMinutes()));
+            int configuredCapacity = safeCount(event.getCapacityMax());
+            List<SubEventItem> rounds = new ArrayList<>();
+            for (int index = 0; index < plannedRounds; index += 1) {
+                rounds.add(new SubEventItem(
+                        "mingle-round-" + (index + 1),
+                        "Round " + (index + 1),
+                        "Table assignment round",
+                        null,
+                        null,
+                        safeText(event.getLocation()),
+                        normalizeId(event.getCreatorUserId()),
+                        groupSize,
+                        groupSize,
+                        null,
+                        null,
+                        false,
+                        null,
+                        groupSize,
+                        configuredCapacity,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        index == 0 ? 0 : breakDuration,
+                        roundDuration));
+            }
+            return rounds;
+        }
+        List<SubEventItem> subEvents = event.getSubEvents();
+        if (subEvents != null && !subEvents.isEmpty()) {
+            return subEvents;
+        }
+        List<SubEventDefinitionDto> definitions = event.getSubEventDefinitions();
+        if (definitions == null || definitions.isEmpty()) {
+            return List.of();
+        }
+        List<SubEventItem> stages = new ArrayList<>();
+        for (int index = 0; index < definitions.size(); index += 1) {
+            SubEventDefinitionDto definition = definitions.get(index);
+            if (definition == null) {
+                continue;
+            }
+            stages.add(new SubEventItem(
+                    firstNonBlank(definition.id(), fallbackSubEventId(index)),
+                    firstNonBlank(definition.name(), "Sub Event " + (index + 1)),
+                    safeText(definition.description()),
+                    null,
+                    null,
+                    safeText(definition.location()),
+                    null,
+                    definition.tournamentGroupCapacityMin(),
+                    definition.tournamentGroupCapacityMax(),
+                    definition.tournamentLeaderboardType(),
+                    definition.tournamentAdvancePerGroup(),
+                    definition.optional(),
+                    null,
+                    definition.capacityMin(),
+                    definition.capacityMax(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    safeCount(definition.offsetMinutes()),
+                    safeCount(definition.durationMinutes())));
+        }
+        return stages;
+    }
+
+    private boolean isMingleEvent(ActivityEvent event) {
+        return event != null && "Mingle".equalsIgnoreCase(safeText(event.getMode()));
+    }
+
+    private int mingleRoundNumber(String subEventId) {
+        String value = normalizeId(subEventId);
+        String prefix = "mingle-round-";
+        if (!value.startsWith(prefix)) {
+            return 0;
+        }
+        try {
+            return Math.max(0, Integer.parseInt(value.substring(prefix.length())));
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
+
+    private String mingleGroupId(String eventId, int roundNumber, int tableNumber) {
+        return normalizeId(eventId) + ":mingle-round-" + roundNumber + ":table:" + tableNumber;
+    }
+
+    private String fallbackSubEventId(int index) {
+        return "subevent-" + Math.max(1, index + 1);
+    }
+
+    private String firstNonBlank(String primary, String fallback) {
+        String normalized = safeText(primary);
+        return StringUtils.hasText(normalized) ? normalized : safeText(fallback);
+    }
+
+    private ActivityEvent resolvePreferredEvent(List<ActivityEvent> records) {
+        ActivityEvent preferred = null;
+        for (ActivityEvent record : records) {
+            if (record == null) {
+                continue;
+            }
+            if (preferred == null) {
+                preferred = record;
+                continue;
+            }
+            if (!Objects.equals(Boolean.TRUE.equals(record.getPublished()), Boolean.TRUE.equals(preferred.getPublished()))
+                    && Boolean.TRUE.equals(record.getPublished())) {
+                preferred = record;
+                continue;
+            }
+            if ((record.getAcceptedMembers() == null ? 0 : record.getAcceptedMembers())
+                    >= (preferred.getAcceptedMembers() == null ? 0 : preferred.getAcceptedMembers())) {
+                preferred = record;
+            }
+        }
+        return preferred;
+    }
+
+    private boolean canManageTournamentGroups(String requestedActorUserId, ActivityEvent event) {
+        return isEventOwnerOrAdmin(event, effectiveActorUserId(requestedActorUserId));
+    }
+
+    private String effectiveActorUserId(String requestedActorUserId) {
+        if (!accessControlService.requiresAuthenticatedActor()) {
+            return normalizeId(requestedActorUserId);
+        }
+        return normalizeId(accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication()));
+    }
+
+    private boolean isEventOwnerOrAdmin(ActivityEvent event, String actorUserId) {
+        String normalizedActorUserId = normalizeId(actorUserId);
+        if (event == null || !StringUtils.hasText(normalizedActorUserId)) {
+            return false;
+        }
+        if (normalizedActorUserId.equals(normalizeId(event.getOwnerUserId()))
+                || normalizedActorUserId.equals(normalizeId(event.getCreatorUserId()))) {
+            return true;
+        }
+        for (String adminUserId : event.getAdmins() == null ? List.<String>of() : event.getAdmins()) {
+            if (normalizedActorUserId.equals(normalizeId(adminUserId))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String normalizeLeaderboardType(String value) {
+        return "Fifa".equalsIgnoreCase(normalizeId(value)) ? "Fifa" : "Score";
+    }
+
+    private String pairKey(String first, String second) {
+        String left = normalizeId(first);
+        String right = normalizeId(second);
+        if (!StringUtils.hasText(left) || !StringUtils.hasText(right) || left.equals(right)) {
+            return null;
+        }
+        return left.compareTo(right) <= 0 ? left + ":" + right : right + ":" + left;
+    }
+
+    private long toEpochMillis(String value) {
+        try {
+            return Instant.parse(safeText(value)).toEpochMilli();
+        } catch (Exception ignored) {
+            return 0L;
+        }
+    }
+
+    private String normalizeId(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private String safeText(String value) {
+        return value == null ? "" : value.trim();
+    }
+}
