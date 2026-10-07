@@ -15,12 +15,19 @@ public final class McpDtos {
             String scope) {}
     public record Client(IntegrationTokenDto token, String redirectUri, boolean manual, String clientId) {}
     public record Created(Client client, String secret) {}
-    public record Settings(String resource, int maxClients, boolean remoteEnabled, List<Client> clients) {}
+    public record Settings(String resource, int maxClients, boolean remoteEnabled, List<Client> clients,
+            com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode accessMode) {
+        public Settings(String resource, int maxClients, boolean remoteEnabled, List<Client> clients) {
+            this(resource, maxClients, remoteEnabled, clients,
+                    com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.WRITE);
+        }
+    }
     public record Authorization(String clientId, String redirectUri, String resource, String scope,
             String responseType, String codeChallenge, String codeChallengeMethod, String state) {}
     public record Consent(Authorization authorization, boolean approve, String profileId) {
         public Consent(Authorization authorization, boolean approve) { this(authorization, approve, null); }
     }
-    public record Context(String clientName, String profileName, String groupName, String redirectUri, String profileId) {}
+    public record Context(String clientName, String profileName, String groupName, String redirectUri, String profileId,
+            com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode accessMode) {}
     public record Redirect(String url) {}
 }

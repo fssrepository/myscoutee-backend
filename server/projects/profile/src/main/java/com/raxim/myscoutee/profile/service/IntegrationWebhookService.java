@@ -22,10 +22,10 @@ import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -72,6 +72,9 @@ public class IntegrationWebhookService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private McpEventsService mcpEvents;
+
     public static final String EVENT_CHANGED = "event.changed";
     public static final String EVENT_ENCOUNTERS = "event.encounters";
     public static final String ASSET_CHANGED = "asset.changed";
@@ -94,7 +97,8 @@ public class IntegrationWebhookService {
     private final HttpClient httpClient;
     private final boolean allowHttp;
     private final boolean allowPrivateAddresses;
-    private final ThreadPoolExecutor deliveryExecutor;
+    private final ExecutorService deliveryExecutor;
+    private final Semaphore deliverySlots;
     private final int deliveryBatchSize;
 
     public IntegrationWebhookService(
@@ -120,21 +124,9 @@ public class IntegrationWebhookService {
         this.allowPrivateAddresses = allowPrivateAddresses;
         int effectiveMaxWorkerCount = Math.max(1, Math.min(maxWorkerCount, 100));
         this.deliveryBatchSize = Math.max(1, Math.min(deliveryBatchSize, 1_000));
-        AtomicInteger threadSequence = new AtomicInteger();
-        this.deliveryExecutor = new ThreadPoolExecutor(
-                0,
-                effectiveMaxWorkerCount,
-                60L,
-                TimeUnit.SECONDS,
-                new SynchronousQueue<>(),
-                runnable -> {
-                    Thread thread = new Thread(
-                            runnable,
-                            "integration-webhook-worker-" + threadSequence.incrementAndGet());
-                    thread.setDaemon(true);
-                    return thread;
-                },
-                new ThreadPoolExecutor.AbortPolicy());
+        this.deliverySlots = new Semaphore(effectiveMaxWorkerCount);
+        this.deliveryExecutor = Executors.newThreadPerTaskExecutor(
+                Thread.ofVirtual().name("integration-webhook-worker-", 0).factory());
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))
                 .followRedirects(HttpClient.Redirect.NEVER)
@@ -149,7 +141,7 @@ public class IntegrationWebhookService {
     @PostConstruct
     void recoverInterruptedDeliveries() {
         mongoTemplate.updateMulti(
-                Query.query(Criteria.where("status").is(STATUS_SENDING)),
+                Query.query(Criteria.where("status").is(STATUS_SENDING).and("nextAttemptAtIso").lte(Instant.now().toString())),
                 new Update()
                         .set("status", STATUS_RETRY)
                         .set("nextAttemptAtIso", Instant.now().toString()),
@@ -340,25 +332,41 @@ public class IntegrationWebhookService {
     }
 
     private void deliverPendingInGroup() {
-        int availableSlots = deliveryExecutor.getMaximumPoolSize() - deliveryExecutor.getActiveCount();
+        int availableSlots = deliverySlots.availablePermits();
         if (availableSlots <= 0) {
             return;
         }
         String now = Instant.now().toString();
+        // A lease recovers interrupted work in every configured database, not just the startup DB.
+        mongoTemplate.updateMulti(Query.query(Criteria.where("status").is(STATUS_SENDING)
+                        .and("nextAttemptAtIso").lte(now)),
+                new Update().set("status", STATUS_RETRY), IntegrationWebhookDelivery.class);
         Query due = Query.query(new Criteria().andOperator(
                 Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY),
                 Criteria.where("nextAttemptAtIso").lte(now)));
         due.with(Sort.by(Sort.Order.asc("createdAtIso")));
         due.limit(Math.min(deliveryBatchSize, availableSlots));
         for (IntegrationWebhookDelivery candidate : jobGroupScope.findOwned(due, IntegrationWebhookDelivery.class, "ownerUserId")) {
-            IntegrationWebhookDelivery claimed = mongoTemplate.findAndModify(
+            var permit = McpEventsService.PROTOCOL.equals(candidate.getProtocol()) ? mcpEvents.reserveDelivery() : null;
+            if (McpEventsService.PROTOCOL.equals(candidate.getProtocol()) && permit == null) continue;
+            if (!deliverySlots.tryAcquire()) {
+                if (permit != null) permit.close();
+                break;
+            }
+            IntegrationWebhookDelivery claimed;
+            try {
+                claimed = mongoTemplate.findAndModify(
                     Query.query(new Criteria().andOperator(
                             Criteria.where("_id").is(candidate.getId()),
                             Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY),
                             Criteria.where("nextAttemptAtIso").lte(now))),
-                    new Update().set("status", STATUS_SENDING),
+                    new Update().set("status", STATUS_SENDING).set("nextAttemptAtIso", Instant.now().plusSeconds(60).toString()),
                     FindAndModifyOptions.options().returnNew(true),
                     IntegrationWebhookDelivery.class);
+            } catch (RuntimeException error) {
+                deliverySlots.release(); if (permit != null) permit.close(); throw error;
+            }
+            if (claimed == null) { deliverySlots.release(); if (permit != null) permit.close(); }
             if (claimed != null) {
                 try {
                     var groupId = com.raxim.myscoutee.profile.service.JobGroupContext.groupId();
@@ -367,10 +375,16 @@ public class IntegrationWebhookService {
                         var previousMode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
                         try {
                             com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
-                            com.raxim.myscoutee.profile.service.JobGroupContext.run(groupId, () -> deliver(claimed));
-                        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previousMode); }
+                            com.raxim.myscoutee.profile.service.JobGroupContext.run(groupId, () -> deliver(claimed, permit));
+                        } finally {
+                            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previousMode);
+                            deliverySlots.release();
+                            if (permit != null) permit.close();
+                        }
                     });
                 } catch (RejectedExecutionException exception) {
+                    deliverySlots.release();
+                    if (permit != null) permit.close();
                     claimed.setStatus(STATUS_RETRY);
                     claimed.setNextAttemptAtIso(Instant.now().toString());
                     claimed.setLastError("worker_pool_busy");
@@ -392,14 +406,15 @@ public class IntegrationWebhookService {
     }
 
     private List<IntegrationWebhookSubscription> activeSubscriptions(String ownerUserId, String eventType) {
+        var access = integrationAccess(ownerUserId);
         return subscriptionsRepository.findByOwnerUserIdAndEnabledTrue(ownerUserId).stream()
                 .filter(subscription -> subscription.getEventTypes() != null && subscription.getEventTypes().contains(eventType))
-                .filter(subscription -> tokenIsActive(subscription.getTokenId(), ownerUserId)).toList();
+                .filter(subscription -> tokenIsActive(subscription.getTokenId(), ownerUserId, access)).toList();
     }
 
     public void enqueueEncounters(String ownerUserId, Supplier<IntegrationEncountersDto> result) {
         List<IntegrationWebhookSubscription> subscriptions = activeSubscriptions(ownerUserId, EVENT_ENCOUNTERS);
-        if (subscriptions.isEmpty()) return;
+        if (subscriptions.isEmpty() && (mcpEvents == null || !mcpEvents.hasSubscriptions(ownerUserId, EVENT_ENCOUNTERS))) return;
         IntegrationEncountersDto all = result.get();
         for (int offset = 0; offset < Math.max(1, all.total()); offset += 1000) {
             IntegrationEncountersDto page = IntegrationEventQueryService.page(all, offset, 1000);
@@ -418,6 +433,13 @@ public class IntegrationWebhookService {
 
     private void enqueue(String ownerUserId, String eventType, String resourceType, String externalId,
             Map<String, Object> resource, String idempotencyKey, List<IntegrationWebhookSubscription> subscriptions) {
+        // Encounter pages share one availability summary; the read tool owns pagination.
+        if (mcpEvents != null && (!EVENT_ENCOUNTERS.equals(eventType) || Integer.valueOf(0).equals(resource.get("offset")))) {
+            for (var delivery : mcpEvents.deliveries(ownerUserId, eventType, resourceType, externalId, resource, idempotencyKey)) {
+                try { deliveriesRepository.insert(delivery); }
+                catch (DuplicateKeyException alreadyQueued) { /* Preserve prior delivery and retry state. */ }
+            }
+        }
         for (IntegrationWebhookSubscription subscription : subscriptions) {
             String deliveryId = idempotencyKey == null ? UUID.randomUUID().toString()
                     : UUID.nameUUIDFromBytes((eventType + ":" + subscription.getId() + ":" + idempotencyKey)
@@ -466,11 +488,31 @@ public class IntegrationWebhookService {
         return resource;
     }
 
-    private void deliver(IntegrationWebhookDelivery delivery) {
+    private void deliver(IntegrationWebhookDelivery delivery) { deliver(delivery, null); }
+    private void deliver(IntegrationWebhookDelivery delivery, McpEventCallbackClient.DeliveryPermit permit) {
+        if (McpEventsService.PROTOCOL.equals(delivery.getProtocol())) {
+            try {
+                int status = mcpEvents.deliver(delivery, permit);
+                if (status >= 200 && status < 300) {
+                    delivery.setStatus(STATUS_SENT); delivery.setSentAtIso(Instant.now().toString());
+                    delivery.setLastError(null); deliveriesRepository.save(delivery);
+                } else if (status == 410 || status == 413 || (status >= 400 && status < 500 && status != 429)) {
+                    markFailed(delivery, "http_" + status);
+                } else scheduleRetry(delivery, "http_" + status);
+            } catch (McpEventCallbackClient.Throttled throttled) {
+                // Local backpressure is scheduling, not a failed remote attempt.
+                delivery.setStatus(STATUS_RETRY);
+                delivery.setNextAttemptAtIso(Instant.now().plusSeconds(1).toString());
+                delivery.setLastError("throttled"); deliveriesRepository.save(delivery);
+            } catch (RuntimeException | java.io.IOException failure) {
+                scheduleRetry(delivery, failure.getClass().getSimpleName());
+            }
+            return;
+        }
         IntegrationWebhookSubscription subscription = subscriptionsRepository
                 .findById(delivery.getSubscriptionId())
                 .filter(value -> Boolean.TRUE.equals(value.getEnabled()))
-                .filter(value -> tokenIsActive(value.getTokenId(), delivery.getOwnerUserId()))
+                .filter(value -> tokenIsActive(value.getTokenId(), delivery.getOwnerUserId(), integrationAccess(delivery.getOwnerUserId())))
                 .orElse(null);
         if (subscription == null) {
             markFailed(delivery, "subscription_inactive");
@@ -549,13 +591,21 @@ public class IntegrationWebhookService {
         deliveriesRepository.save(delivery);
     }
 
-    private boolean tokenIsActive(String tokenId, String ownerUserId) {
+    private com.raxim.myscoutee.profile.data.document.IntegrationAccess integrationAccess(String ownerUserId) {
+        return usersRepository.findByUserId(ownerUserId).map(owner -> owner.getIntegrationAccess() == null
+                ? com.raxim.myscoutee.profile.data.document.IntegrationAccess.initial() : owner.getIntegrationAccess()).orElse(null);
+    }
+
+    private boolean tokenIsActive(String tokenId, String ownerUserId, com.raxim.myscoutee.profile.data.document.IntegrationAccess access) {
+        if (access == null) return false;
         IntegrationToken token = tokensRepository.findByIdAndOwnerUserId(tokenId, ownerUserId).orElse(null);
         if (token == null || StringUtils.hasText(token.getRevokedAtIso())) {
             return false;
         }
         try {
-            return Instant.parse(token.getExpiresAtIso()).isAfter(Instant.now());
+            return Instant.parse(token.getExpiresAtIso()).isAfter(Instant.now())
+                    && access.effective(tokenId, IntegrationTokenService.MCP_SCOPE.equals(token.getScope()))
+                        != com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.BLOCKED;
         } catch (RuntimeException ignored) {
             return false;
         }

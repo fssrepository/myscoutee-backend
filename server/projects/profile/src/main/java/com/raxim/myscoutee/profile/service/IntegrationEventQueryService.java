@@ -80,7 +80,7 @@ public class IntegrationEventQueryService {
                 all.total(), end < all.total() ? end : null);
     }
 
-    private ActivityEvent requireOwnedEvent(String ownerUserId, String eventId) {
+    ActivityEvent requireOwnedEvent(String ownerUserId, String eventId) {
         return events.findByOwnerUserIdAndSourceId(ownerUserId, eventId)
                 .filter(event -> Boolean.TRUE.equals(event.getIsAdmin()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));

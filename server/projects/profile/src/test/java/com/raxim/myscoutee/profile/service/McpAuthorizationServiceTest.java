@@ -15,6 +15,14 @@ import com.raxim.myscoutee.profile.data.document.*;
 import com.raxim.myscoutee.profile.data.dto.integration.McpDtos;
 
 class McpAuthorizationServiceTest {
+    @Test void blockedMainPackPreventsNewGrantsEvenForAFullClient() {
+        var owner = users.findByUserId("owner").orElseThrow();
+        owner.setIntegrationAccess(new IntegrationAccess(1, IntegrationAccess.Mode.BLOCKED, Map.of(id, IntegrationAccess.Mode.FULL)));
+        assertThat(service.context("owner", request()).accessMode()).isEqualTo(IntegrationAccess.Mode.BLOCKED);
+        assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(request(), true)))
+                .isInstanceOf(ResponseStatusException.class);
+        verifyNoInteractions(grants);
+    }
     final IntegrationTokensRepository tokens = mock(IntegrationTokensRepository.class);
     final McpAuthorizationRepository grants = mock(McpAuthorizationRepository.class);
     final UsersRepository users = mock(UsersRepository.class);
@@ -164,6 +172,34 @@ class McpAuthorizationServiceTest {
         when(users.findByUserId("foreign")).thenReturn(Optional.of(foreign));
         assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(publicRequest(publicId), true, "foreign"))).hasMessageContaining("access_denied");
         verifyNoInteractions(grants);
+        verify(keys, never()).create(anyString(), any(), anyString());
+    }
+    @Test void eventsReuseTheExistingManualGrantBindingAndRejectAnotherToken() {
+        var grant = new McpAuthorization(); grant.id = "grant"; grant.kind = "grant";
+        grant.ownerUserId = "owner"; grant.clientId = id;
+        // Existing manual grants identify their key through clientId; tokenId may be absent.
+        when(grants.activeGrant("grant", "owner", id, service.resource())).thenReturn(grant);
+        assertThat(service.activeSubscriptionGrant("grant", "owner", id, id)).isTrue();
+        assertThat(service.activeSubscriptionGrant("grant", "owner", "foreign-token", id)).isFalse();
+        client.setRevokedAtIso(Instant.now().toString());
+        assertThat(service.activeSubscriptionGrant("grant", "owner", id, id)).isFalse();
+    }
+    @Test void sharedDcrRegistrationKeepsTwoUnrelatedUsersGrantsAndRevocationIndependent() {
+        String publicId = publicClient();
+        client.setOauthClientId(publicId);
+        var second = new IntegrationToken(); second.setId("bob-token"); second.setOwnerUserId("bob");
+        second.setScope("mcp"); second.setOauthClientId(publicId); second.setExpiresAtIso(client.getExpiresAtIso());
+        var bob = new Users(); bob.setUserId("bob");
+        when(users.findByUserId("bob")).thenReturn(Optional.of(bob));
+        when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner")).thenReturn(List.of(client));
+        when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("bob")).thenReturn(List.of(second));
+        service.authorize("owner", new McpDtos.Consent(publicRequest(publicId), true, "owner"));
+        service.authorize("bob", new McpDtos.Consent(publicRequest(publicId), true, "bob"));
+        var captured = org.mockito.ArgumentCaptor.forClass(McpAuthorization.class);
+        verify(grants, times(2)).save(captured.capture());
+        assertThat(captured.getAllValues()).extracting(g -> g.clientId).containsExactly(publicId, publicId);
+        assertThat(captured.getAllValues()).extracting(g -> g.ownerUserId).containsExactly("owner", "bob");
+        assertThat(captured.getAllValues()).extracting(g -> g.tokenId).containsExactly(id, "bob-token");
         verify(keys, never()).create(anyString(), any(), anyString());
     }
     @Test void publicCodeUsesPkceAndOwnerConnectionWithoutASecretAndRevocationWins() {

@@ -58,10 +58,18 @@ public class IntegrationTokenService {
     }
 
     public IntegrationSettingsDto settings(String ownerUserId, String baseUrl, String scope) {
-        String owner = requireOwner(ownerUserId);
-        List<IntegrationTokenDto> activeTokens = tokensRepository
-                .findByOwnerUserIdOrderByCreatedAtIsoDesc(owner).stream()
-                .filter(this::isActive).filter(token -> matchesScope(token, scope))
+        return settings(ownerUserId, baseUrl, scope, activeTokens(ownerUserId));
+    }
+
+    List<IntegrationToken> activeTokens(String ownerUserId) {
+        return tokensRepository.findByOwnerUserIdOrderByCreatedAtIsoDesc(requireOwner(ownerUserId)).stream()
+                .filter(this::isActive).toList();
+    }
+
+    IntegrationSettingsDto settings(String ownerUserId, String baseUrl, String scope, List<IntegrationToken> active) {
+        requireOwner(ownerUserId);
+        List<IntegrationTokenDto> activeTokens = active.stream()
+                .filter(token -> matchesScope(token, scope))
                 .map(this::toDto)
                 .toList();
         return new IntegrationSettingsDto(
@@ -186,7 +194,7 @@ public class IntegrationTokenService {
         return new AuthenticatedIntegrationClient(
                 normalize(token.getOwnerUserId()),
                 token.getId(),
-                normalizedClientId);
+                normalizedClientId, scope);
     }
 
     public boolean isActiveForOwner(String ownerUserId, String tokenId) {
@@ -280,6 +288,23 @@ public class IntegrationTokenService {
     public record AuthenticatedIntegrationClient(
             String ownerUserId,
             String tokenId,
-            String clientId) {
+            String clientId,
+            String scope,
+            com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode accessMode,
+            String grantId) {
+        public AuthenticatedIntegrationClient(String ownerUserId, String tokenId, String clientId, String scope,
+                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode accessMode) {
+            this(ownerUserId, tokenId, clientId, scope, accessMode, null);
+        }
+        public AuthenticatedIntegrationClient(String ownerUserId, String tokenId, String clientId) {
+            this(ownerUserId, tokenId, clientId, INTEGRATION_SCOPE);
+        }
+        public AuthenticatedIntegrationClient(String ownerUserId, String tokenId, String clientId, String scope) {
+            this(ownerUserId, tokenId, clientId, scope,
+                    com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.WRITE);
+        }
+        public AuthenticatedIntegrationClient withAccess(com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode mode) {
+            return new AuthenticatedIntegrationClient(ownerUserId, tokenId, clientId, scope, mode, grantId);
+        }
     }
 }

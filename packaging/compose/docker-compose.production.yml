@@ -8,7 +8,7 @@ secrets:
 
 services:
   mcp:
-    image: ${MCP_IMAGE:-myscoutee-mcp:1.3.0-prod}
+    image: ${MCP_IMAGE:-myscoutee-mcp:1.4.0-prod}
     pull_policy: never
     container_name: mcp
     hostname: mcp

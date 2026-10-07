@@ -3,6 +3,8 @@
 This directory keeps QA execution material separate from project plans.
 
 Event-format follow-up: [EVENT-MODE-REGRESSION-001](checklists/event/EVENT-MODE-REGRESSION-001.md).
+MSC-116 follow-up: [INTEGRATION-ACCESS-001](checklists/api/INTEGRATION-ACCESS-001.md) and [SERVICE-FEEDBACK-UI-001](checklists/general/SERVICE-FEEDBACK-UI-001.md).
+
 Partner invitation/encounter extension: [INTEGRATION-API-001](checklists/api/INTEGRATION-API-001.md).
 Both support explicitly delegated CDP execution using the versioned managed
 browser launcher; their dated results remain separate from the stable guides.

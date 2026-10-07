@@ -30,6 +30,7 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 - [ADMIN-CLIENT-API-001](api/ADMIN-CLIENT-API-001.md) — Private admin API and Linux monitor.
 - [AFFILIATE-INVITATION-001](api/AFFILIATE-INVITATION-001.md) — Referral and imported-participant counters.
 - [AFFILIATE-REVENUE-001](api/AFFILIATE-REVENUE-001.md) — referral turnover and refunds.
+- [INTEGRATION-ACCESS-001](api/INTEGRATION-ACCESS-001.md) — API/MCP packs, live permissions and human-decision boundaries.
 - [INTEGRATION-API-001](api/INTEGRATION-API-001.md) — API resources and callback.
 - [INTEGRATION-API-GROUP-001](api/INTEGRATION-API-GROUP-001.md) — Group participant links.
 
@@ -87,6 +88,8 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 - [ADMIN-PARAMETERS-001](administration/ADMIN-PARAMETERS-001.md) — Section-specific persistence, effects and validation.
 
 ## General UI
+
+- [SERVICE-FEEDBACK-UI-001](general/SERVICE-FEEDBACK-UI-001.md) — Service image, event-style switch blocks and EN/HU guide extension.
 
 - [EXPLANATION-GUIDE-001](general/EXPLANATION-GUIDE-001.md) — Application-wide compact explanations, guide navigation and floating controls.
 

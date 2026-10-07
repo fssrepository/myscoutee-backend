@@ -10,6 +10,11 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.profile.data.document.Users;
 
 public interface UsersRepository extends MongoRepository<Users, String> {
+    @Query("{ 'userId': ?0, '$or': [ { 'integrationAccess.revision': ?1 }, { 'integrationAccess': null, '$expr': { '$eq': [?1, 0] } } ] }")
+    @org.springframework.data.mongodb.repository.Update("{ '$set': { 'integrationAccess': ?2 } }")
+    long updateIntegrationAccess(String userId, long expectedRevision,
+            com.raxim.myscoutee.profile.data.document.IntegrationAccess value);
+
     @Query("{ 'userId': ?0, 'workspaceGroupId': null }")
     @org.springframework.data.mongodb.repository.Update("{ '$set': { 'activeWorkspaceGroupId': ?1 } }")
     long updateActiveWorkspace(String accountId, String groupId);

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,34 +14,35 @@ import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.Integrat
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationTokenCreateRequestDto;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationTokenCreatedDto;
 import com.raxim.myscoutee.profile.security.AccessControlService;
-import com.raxim.myscoutee.profile.service.IntegrationPublicEndpointResolver;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
-import com.raxim.myscoutee.profile.service.AffiliateService;
+import com.raxim.myscoutee.profile.service.IntegrationSettingsService;
+import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationSettingsUpdateDto;
 
 @RestController
 @RequestMapping("/integrations")
 public class IntegrationSettingsController {
     private final IntegrationTokenService tokenService;
-    private final AffiliateService affiliates;
     private final AccessControlService accessControlService;
-    private final IntegrationPublicEndpointResolver publicEndpointResolver;
+    private final IntegrationSettingsService settingsService;
 
     public IntegrationSettingsController(
             IntegrationTokenService tokenService,
             AccessControlService accessControlService,
-            IntegrationPublicEndpointResolver publicEndpointResolver, AffiliateService affiliates) {
+            IntegrationSettingsService settingsService) {
         this.tokenService = tokenService;
-        this.affiliates = affiliates;
         this.accessControlService = accessControlService;
-        this.publicEndpointResolver = publicEndpointResolver;
+        this.settingsService = settingsService;
     }
 
     @GetMapping("/settings")
     public IntegrationSettingsDto settings(Authentication authentication) {
-        String actor = actorUserId(authentication);
-        var settings = tokenService.settings(actor, publicEndpointResolver.resolve());
-        return new IntegrationSettingsDto(settings.baseUrl(), settings.maxActiveTokens(), settings.maxBatchSize(),
-                settings.tokens(), affiliates.summary(actor), affiliates.participantSummary(actor));
+        return settingsService.load(actorUserId(authentication));
+    }
+
+    @PutMapping("/settings")
+    public IntegrationSettingsDto saveSettings(Authentication authentication,
+            @RequestBody IntegrationSettingsUpdateDto request) {
+        return settingsService.save(actorUserId(authentication), request);
     }
 
     @PostMapping("/tokens")

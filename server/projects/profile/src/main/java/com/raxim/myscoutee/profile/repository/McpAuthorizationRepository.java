@@ -14,6 +14,12 @@ public class McpAuthorizationRepository {
     private final MongoTemplate mongo;
     public McpAuthorizationRepository(MongoTemplate mongo) { this.mongo = mongo; }
     public void save(McpAuthorization value) { mongo.insert(value); }
+    public McpAuthorization activeGrant(String id, String owner, String clientId, String resource) {
+        if (id == null) return null;
+        return mongo.findOne(Query.query(active().and("_id").is(id).and("kind").is("grant")
+                .and("ownerUserId").is(owner).and("clientId").is(clientId)
+                .and("resource").is(resource)), McpAuthorization.class);
+    }
     private Criteria active() {
         return Criteria.where("revoked").ne(true).and("expiresAt").gt(Instant.now());
     }

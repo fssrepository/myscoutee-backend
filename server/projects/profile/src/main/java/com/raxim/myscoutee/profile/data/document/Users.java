@@ -24,6 +24,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
 public class Users {
+    private IntegrationAccess integrationAccess;
+    public IntegrationAccess getIntegrationAccess() { return integrationAccess; }
+    public void setIntegrationAccess(IntegrationAccess value) { integrationAccess = value; }
+
     private String activeWorkspaceGroupId;
     public String getActiveWorkspaceGroupId() { return activeWorkspaceGroupId; }
     public void setActiveWorkspaceGroupId(String value) { activeWorkspaceGroupId = value; }

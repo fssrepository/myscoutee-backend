@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.profile.data.dto.integration;
 
 import java.util.List;
+import com.raxim.myscoutee.profile.data.document.IntegrationAccess;
 import com.raxim.myscoutee.profile.data.dto.shared.SharedDtos.MingleConfigurationDto;
 
 public final class IntegrationDtos {
@@ -15,7 +16,15 @@ public final class IntegrationDtos {
             String expiresAt,
             String claimedAt,
             String claimedAddress,
-            String lastUsedAt) {
+            String lastUsedAt,
+            IntegrationAccess.Mode accessMode) {
+        public IntegrationTokenDto(String id, String name, String prefix, String createdAt, String expiresAt,
+                String claimedAt, String claimedAddress, String lastUsedAt) {
+            this(id, name, prefix, createdAt, expiresAt, claimedAt, claimedAddress, lastUsedAt, IntegrationAccess.Mode.WRITE);
+        }
+        public IntegrationTokenDto withAccess(IntegrationAccess.Mode mode) {
+            return new IntegrationTokenDto(id, name, prefix, createdAt, expiresAt, claimedAt, claimedAddress, lastUsedAt, mode);
+        }
     }
 
     public record IntegrationSettingsDto(
@@ -24,12 +33,22 @@ public final class IntegrationDtos {
             Integer maxBatchSize,
             List<IntegrationTokenDto> tokens,
             AffiliateSummaryDto affiliate,
-            IntegrationParticipantSummaryDto participants) {
+            IntegrationParticipantSummaryDto participants,
+            McpDtos.Settings mcp,
+            long accessRevision) {
+        public IntegrationSettingsDto(String baseUrl, Integer maxActiveTokens, Integer maxBatchSize,
+                List<IntegrationTokenDto> tokens, AffiliateSummaryDto affiliate, IntegrationParticipantSummaryDto participants) {
+            this(baseUrl, maxActiveTokens, maxBatchSize, tokens, affiliate, participants, null, 0);
+        }
         public IntegrationSettingsDto(String baseUrl, Integer maxActiveTokens, Integer maxBatchSize,
                 List<IntegrationTokenDto> tokens) {
             this(baseUrl, maxActiveTokens, maxBatchSize, tokens, null, null);
         }
     }
+
+    public record IntegrationClientAccessDto(String id, IntegrationAccess.Mode accessMode) { }
+    public record IntegrationSettingsUpdateDto(long accessRevision, IntegrationAccess.Mode mcpAccess,
+            List<IntegrationClientAccessDto> clients) { }
 
     public record AffiliateCurrencyRevenueDto(double gross, double refunded, double net) { }
     public record AffiliateRevenueDto(java.util.Map<String, AffiliateCurrencyRevenueDto> currencies,
@@ -62,7 +81,12 @@ public final class IntegrationDtos {
             String groupId,
             String groupName,
             List<String> operations,
-            List<IntegrationGroupScopeDto> inviteGroups) {
+            List<IntegrationGroupScopeDto> inviteGroups,
+            IntegrationAccess.Mode accessMode) {
+        public IntegrationConnectDto(Boolean connected, Integer maxBatchSize, String profileId, String profileName,
+                String groupId, String groupName, List<String> operations, List<IntegrationGroupScopeDto> inviteGroups) {
+            this(connected, maxBatchSize, profileId, profileName, groupId, groupName, operations, inviteGroups, IntegrationAccess.Mode.WRITE);
+        }
     }
 
     public record IntegrationGroupScopeDto(String id, String name) { }

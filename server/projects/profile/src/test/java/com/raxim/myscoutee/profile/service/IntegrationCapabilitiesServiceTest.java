@@ -17,6 +17,21 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
 class IntegrationCapabilitiesServiceTest {
+    @Test void fullPackAddsReadsButCannotChangeProfileDomainOrBypassIdentity() {
+        var profile = new Users(); profile.setUserId("base");
+        when(groups.actor("base")).thenReturn(profile);
+        when(groups.administeredGroups(profile)).thenReturn(List.of());
+        var auth = authentication(profile);
+        assertThatThrownBy(() -> service.requireFull(auth, null)).isInstanceOf(ResponseStatusException.class);
+        auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
+                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.FULL));
+        assertThat(service.describe(auth).operations()).contains("listEvents", "chatMessages", "listRatings")
+                .doesNotContain("listCampaigns", "listCases", "saveAnnouncement");
+        assertThatThrownBy(() -> service.requireFull(auth, "work")).isInstanceOf(ResponseStatusException.class);
+        auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
+                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.BLOCKED));
+        assertThatThrownBy(() -> service.describe(auth)).isInstanceOf(ResponseStatusException.class);
+    }
     private final CommunityGroupsService groups = mock(CommunityGroupsService.class);
     private final CommunityGroupsRepository repository = mock(CommunityGroupsRepository.class);
     private final AccessControlService access = mock(AccessControlService.class);
@@ -64,7 +79,7 @@ class IntegrationCapabilitiesServiceTest {
         when(groups.actor("work-profile")).thenReturn(profile);
         when(groups.administeredGroups(profile)).thenReturn(List.of());
         when(repository.findById("myscoutee-work")).thenReturn(Optional.of(group));
-        assertThat(service.describe(authentication(profile)).operations()).contains("createCampaigns").doesNotContain("listCampaigns");
+        assertThat(service.describe(authentication(profile)).operations()).contains("createCampaigns", "updateCampaign", "campaignAction").doesNotContain("listCampaigns", "campaignDetails");
     }
 
     @Test void rejectsNonIntegrationOrMismatchedIdentity() {

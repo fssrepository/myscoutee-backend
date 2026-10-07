@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
 import com.raxim.myscoutee.profile.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
+import com.raxim.myscoutee.profile.data.document.IntegrationAccess;
 import com.raxim.myscoutee.common.config.firebase.dto.FirebasePrincipal;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
@@ -77,6 +78,14 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+        var permissions = owner.getIntegrationAccess() == null ? IntegrationAccess.initial() : owner.getIntegrationAccess();
+        var mode = permissions.effective(client.tokenId(), IntegrationTokenService.MCP_SCOPE.equals(client.scope()));
+        if (mode == IntegrationAccess.Mode.BLOCKED) {
+            response.setHeader("Cache-Control", "no-store");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Integration access is blocked.");
+            return;
+        }
+        client = client.withAccess(mode);
         try {
             if (StringUtils.hasText(owner.getWorkspaceGroupId())) {
                 owner = profiles.select(owner.getAccountUserId(), owner.getWorkspaceGroupId());

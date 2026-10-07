@@ -130,6 +130,8 @@ class IntegrationWebhookServiceTest {
     }
 
     private IntegrationWebhookSubscription deliverySubscription(String callback) {
+        Users callbackOwner = new Users(); callbackOwner.setUserId("owner-timeout");
+        when(usersRepository.findByUserId("owner-timeout")).thenReturn(Optional.of(callbackOwner));
         var subscription = new IntegrationWebhookSubscription();
         subscription.setId("watch-timeout");
         subscription.setTokenId("token-timeout");
@@ -141,6 +143,38 @@ class IntegrationWebhookServiceTest {
         when(tokensRepository.findByIdAndOwnerUserId("token-timeout", "owner-timeout"))
                 .thenReturn(Optional.of(token));
         return subscription;
+    }
+
+    @Test
+    void blockingAClientStopsAnAlreadyQueuedCallbackBeforeNetworkDelivery() {
+        // Invalid callback deliberately proves rejection occurs before URL resolution/delivery.
+        deliverySubscription("not-a-url");
+        var owner = new Users(); owner.setUserId("owner-timeout");
+        owner.setIntegrationAccess(new com.raxim.myscoutee.profile.data.document.IntegrationAccess(1,
+                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.WRITE,
+                java.util.Map.of("token-timeout", com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.BLOCKED)));
+        when(usersRepository.findByUserId("owner-timeout")).thenReturn(Optional.of(owner));
+        var delivery = pendingDelivery();
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", delivery);
+        assertThat(delivery.getStatus()).isEqualTo("FAILED");
+        assertThat(delivery.getLastError()).isEqualTo("subscription_inactive");
+        assertThat(delivery.getSentAtIso()).isNull();
+        org.mockito.Mockito.verify(deliveriesRepository).save(delivery);
+    }
+
+    @Test
+    void localEventsThrottlingDefersWithoutSpendingAnAttemptAndPermanentResponsesDoNotRetry() throws Exception {
+        var events = org.mockito.Mockito.mock(McpEventsService.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "mcpEvents", events);
+        var delivery = pendingDelivery(); delivery.setProtocol(McpEventsService.PROTOCOL); delivery.setAttemptCount(1);
+        when(events.deliver(org.mockito.ArgumentMatchers.eq(delivery), org.mockito.ArgumentMatchers.isNull()))
+                .thenThrow(new McpEventCallbackClient.Throttled()).thenReturn(413);
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", delivery);
+        assertThat(delivery.getStatus()).isEqualTo("RETRY");
+        assertThat(delivery.getAttemptCount()).isEqualTo(1);
+        org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", delivery);
+        assertThat(delivery.getStatus()).isEqualTo("FAILED");
+        assertThat(delivery.getLastError()).isEqualTo("http_413");
     }
 
     private IntegrationWebhookDelivery pendingDelivery() {
@@ -191,6 +225,8 @@ class IntegrationWebhookServiceTest {
         when(subscriptionsRepository.findByOwnerUserIdAndEnabledTrue("owner")).thenReturn(List.of(subscription));
         var token = new IntegrationToken(); token.setOwnerUserId("owner"); token.setExpiresAtIso(Instant.now().plus(1, ChronoUnit.DAYS).toString());
         when(tokensRepository.findByIdAndOwnerUserId("token", "owner")).thenReturn(Optional.of(token));
+        Users callbackOwner = new Users(); callbackOwner.setUserId("owner");
+        when(usersRepository.findByUserId("owner")).thenReturn(Optional.of(callbackOwner));
         var result = new com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationEncountersDto(
                 "partner-event", "event", 9, List.of(), 0, null);
         when(deliveriesRepository.insert(any(IntegrationWebhookDelivery.class)))
@@ -207,6 +243,8 @@ class IntegrationWebhookServiceTest {
 
     @Test
     void participantChangeUsesMappedIdsAndOmitsEmailAndInternalUserId() {
+        Users callbackOwner = new Users(); callbackOwner.setUserId("owner-1");
+        when(usersRepository.findByUserId("owner-1")).thenReturn(Optional.of(callbackOwner));
         ActivityEvent event = new ActivityEvent();
         event.setId("event-record-1");
         event.setSourceId("10000000-0000-4000-8000-000000000001");

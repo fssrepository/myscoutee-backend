@@ -2911,7 +2911,7 @@
     "lang": "en",
     "languageLabel": "English",
     "version": 3,
-    "active": true,
+    "active": false,
     "title": "MyScoutee help",
     "summary": "A practical guide by topic",
     "description": "Profiles, communities, events, chats and tools: find the relevant topic and follow the steps.",
@@ -3048,7 +3048,7 @@
     "lang": "hu",
     "languageLabel": "Magyar",
     "version": 3,
-    "active": true,
+    "active": false,
     "title": "MyScoutee súgó",
     "summary": "Gyakorlati útmutató témánként",
     "description": "Profilok, közösségek, események, beszélgetések és eszközök: válassz témát, és kövesd a lépéseket.",
@@ -16521,7 +16521,7 @@
     "lang": "en",
     "languageLabel": "English",
     "version": 4,
-    "active": true,
+    "active": false,
     "title": "Connect apps and manage access",
     "summary": "Use integration links and keys to connect trusted tools.",
     "description": "The base URL and client keys let supported apps exchange data with your account. Create a key only for a tool you trust, keep its secret private, and revoke it when it is no longer needed.",
@@ -16725,7 +16725,7 @@
     "lang": "hu",
     "languageLabel": "Magyar",
     "version": 4,
-    "active": true,
+    "active": false,
     "title": "Alkalmazások és hozzáférések",
     "summary": "Integrációs linkekkel és kulcsokkal kapcsolhatsz össze megbízható eszközöket.",
     "description": "Az alapcím és a klienskulcsok teszik lehetővé, hogy a támogatott alkalmazások adatot cseréljenek a fiókoddal. Csak megbízható eszközhöz készíts kulcsot, őrizd titokban, és vond vissza, ha már nincs rá szükség.",
@@ -19846,11 +19846,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:help-default-v3",
+    "_id": "work:help-default-v4",
     "documentType": "help",
     "lang": "en",
     "languageLabel": "English",
-    "version": 3,
+    "version": 4,
     "active": true,
     "title": "MyScoutee Work help",
     "summary": "Campaigns, mutual interest and organized meetings.",
@@ -19858,7 +19858,7 @@
     "headerColor": "amber",
     "createdDate": "2026-09-26T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-26T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -19880,7 +19880,7 @@
         "icon": "api",
         "title": "API and AI assistance",
         "blurb": "Use the existing profile permissions for integrations.",
-        "contentHtml": "<ul><li>Copy the MCP URL from Profile editor → Affiliate → Client keys → AI / MCP connections into your AI client and choose Connect.</li><li>The client opens MyScoutee sign-in. Use the installation’s normal sign-in method, check the displayed profile and group, and approve access. Return to the client and enable the connection in your conversation. Automatic registration needs no manually copied client ID or secret.</li><li>Advanced contains the manual MCP client-key table. Generate immediately adds a row with a client ID and one-time secret; copy these into the client’s configuration. No name or callback form is needed. Its badge counts these keys. URL-based OAuth permissions remain in the main popup, with their own Revoke action and connection details. Never paste credentials into chat.</li><li>Anonymous /mcp reads the current help without login. Personal /mcp/private calls use only the approved profile’s existing API permissions. Each connection stays bound to that profile; an app group switch or a group name in a prompt cannot retarget it.</li><li>Asset creation requires a base-profile connection. Event operations follow the approved profile and group; invitation tools additionally require the appropriate administrator role. Discovery lists the currently allowed operations without probing write endpoints.</li><li>Connections expire after 90 days. Revoke in the same AI / MCP list to invalidate access and refresh tokens. Browser logout alone does not revoke an existing connection.</li><li>Browser-only local mode cannot receive external OAuth. Development with the backend running supports demo sign-in; deployed installations use their configured sign-in. The separate development client and setup commands are in the <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repository</a>.</li></ul>"
+        "contentHtml": "<ul><li>Copy the MCP URL from Profile editor → Affiliate → Client keys → AI / MCP connections into your AI client and choose Connect.</li><li>The client opens MyScoutee sign-in. Use the installation’s normal sign-in method, check the displayed profile and group, and approve access. Return to the client and enable the connection in your conversation. Automatic registration needs no manually copied client ID or secret.</li><li>Advanced contains the manual MCP client-key table. Generate immediately adds a row with a client ID and one-time secret; copy these into the client’s configuration. No name or callback form is needed. Its badge counts these keys. URL-based OAuth permissions remain in the main popup, with their own Revoke action and connection details. Never paste credentials into chat.</li><li>Anonymous /mcp reads the current help without login. Personal /mcp/private calls use only the approved profile’s existing API permissions. Each connection stays bound to that profile; an app group switch or a group name in a prompt cannot retarget it.</li><li>Asset creation requires a base-profile connection. Event operations follow the approved profile and group; invitation tools additionally require the appropriate administrator role. Discovery lists the currently allowed operations without probing write endpoints.</li><li>Connections expire after 90 days. Revoke in the same AI / MCP list to invalidate access and refresh tokens. Browser logout alone does not revoke an existing connection.</li><li>Browser-only local mode cannot receive external OAuth. Development with the backend running supports demo sign-in; deployed installations use their configured sign-in. The separate development client and setup commands are in the <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repository</a>.</li><li>With Full access on both the main MCP link and the connected client, an Events-capable AI host can monitor an event you organize or a base-profile asset you own. In ChatGPT use a supported Work/Cloud chat and name the resource and what to monitor. Updates carry short summaries, including completed Mingle results; ask for permitted details when needed. Each person authorizes their own MyScoutee profile through OAuth 2.1 with PKCE. Stop monitoring in the AI client, or revoke the connection here. Expired or overloaded intervals are not replayed. Personal ratings and decisions stay in the application.</li></ul>"
       },
       {
         "id": "profiles",
@@ -19991,11 +19991,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:help-default-hu-v3",
+    "_id": "work:help-default-hu-v4",
     "documentType": "help",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 3,
+    "version": 4,
     "active": true,
     "title": "MyScoutee Work – súgó",
     "summary": "Campaignök, kölcsönös érdeklődés és szervezett találkozók.",
@@ -20003,7 +20003,7 @@
     "headerColor": "amber",
     "createdDate": "2026-09-26T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-26T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -20025,7 +20025,7 @@
         "icon": "api",
         "title": "API és AI-segítség",
         "blurb": "Az integrációk a meglévő profiljogosultságokat használják.",
-        "contentHtml": "<ul><li>A profilszerkesztő → Affiliate → Klienskulcsok → AI / MCP-kapcsolatok részből másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget.</li><li>A kliens megnyitja a MyScoutee belépését. Használd a telepítés szokásos belépési módját, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést. A kliensbe visszatérve kapcsold be a kapcsolatot a beszélgetéshez. Automatikus regisztrációnál nem kell kézzel kliensazonosítót vagy titkot másolni.</li><li>A Haladó ablakban találod a kézzel generált MCP-klienskulcsok táblázatát. A Generálás azonnal új sort hoz létre kliensazonosítóval és egyszer megjelenő titokkal; ezeket másold a kliens beállításaiba. Név- vagy visszahívásicím-űrlap nincs. A gomb számlálója ezeket a kulcsokat mutatja. Az URL-en csatlakozott OAuth-engedélyek külön, a főablakban maradnak, saját visszavonással és kapcsolatadatokkal. Hitelesítési adatot ne másolj csevegésbe.</li><li>Az anonim /mcp belépés nélkül olvassa az aktuális súgót. A személyes /mcp/private kizárólag a jóváhagyott profil meglévő API-jogosultságait használja. A kapcsolat ehhez a profilhoz kötött; az alkalmazás csoportváltója vagy a csoport nevének megadása nem irányítja át.</li><li>Eszköz létrehozásához alapprofilhoz tartozó kapcsolat kell. Az eseményműveletek a jóváhagyott profil és csoport jogosultságait követik; meghíváshoz a megfelelő adminszerep is kell. A kliens a pillanatnyilag engedélyezett műveleteket kapja meg, próbafeltöltés nélkül.</li><li>A kapcsolat 90 nap után lejár. Ugyanebben az AI / MCP-listában a visszavonás érvényteleníti a hozzáférési és megújítási tokeneket is. A böngészős kijelentkezés önmagában nem vonja vissza a kapcsolatot.</li><li>A kizárólag böngészős local mód nem fogad külső OAuth-kérést. Devben futó backend mellett demóbelépés is használható; telepítéskor az ott beállított belépés érvényes. A külön fejlesztői kliens és az indítás lépései a <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repóban</a> találhatók.</li></ul>"
+        "contentHtml": "<ul><li>A profilszerkesztő → Affiliate → Klienskulcsok → AI / MCP-kapcsolatok részből másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget.</li><li>A kliens megnyitja a MyScoutee belépését. Használd a telepítés szokásos belépési módját, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést. A kliensbe visszatérve kapcsold be a kapcsolatot a beszélgetéshez. Automatikus regisztrációnál nem kell kézzel kliensazonosítót vagy titkot másolni.</li><li>A Haladó ablakban találod a kézzel generált MCP-klienskulcsok táblázatát. A Generálás azonnal új sort hoz létre kliensazonosítóval és egyszer megjelenő titokkal; ezeket másold a kliens beállításaiba. Név- vagy visszahívásicím-űrlap nincs. A gomb számlálója ezeket a kulcsokat mutatja. Az URL-en csatlakozott OAuth-engedélyek külön, a főablakban maradnak, saját visszavonással és kapcsolatadatokkal. Hitelesítési adatot ne másolj csevegésbe.</li><li>Az anonim /mcp belépés nélkül olvassa az aktuális súgót. A személyes /mcp/private kizárólag a jóváhagyott profil meglévő API-jogosultságait használja. A kapcsolat ehhez a profilhoz kötött; az alkalmazás csoportváltója vagy a csoport nevének megadása nem irányítja át.</li><li>Eszköz létrehozásához alapprofilhoz tartozó kapcsolat kell. Az eseményműveletek a jóváhagyott profil és csoport jogosultságait követik; meghíváshoz a megfelelő adminszerep is kell. A kliens a pillanatnyilag engedélyezett műveleteket kapja meg, próbafeltöltés nélkül.</li><li>A kapcsolat 90 nap után lejár. Ugyanebben az AI / MCP-listában a visszavonás érvényteleníti a hozzáférési és megújítási tokeneket is. A böngészős kijelentkezés önmagában nem vonja vissza a kapcsolatot.</li><li>A kizárólag böngészős local mód nem fogad külső OAuth-kérést. Devben futó backend mellett demóbelépés is használható; telepítéskor az ott beállított belépés érvényes. A külön fejlesztői kliens és az indítás lépései a <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repóban</a> találhatók.</li><li>Ha a fő MCP-link és a kapcsolódó kliens is Teljes hozzáférésű, Events-képes AI-klienssel figyeltetheted az általad szervezett eseményt vagy az alapprofilod saját eszközét. ChatGPT-ben támogatott Work/Cloud beszélgetésben nevezd meg, mit és milyen célból figyeljen. Rövid összefoglalók érkeznek, a lezárt Mingle eredményekről is; a részleteket az engedélyezett olvasási műveletekkel kérheted le. Mindenki a saját MyScoutee-profilját engedélyezi OAuth 2.1 és PKCE használatával. A figyelést az AI-kliensben állítsd le, vagy itt vond vissza a kapcsolatot. A lejárt vagy túlterhelt időszakok kimaradásait nem játssza vissza. A személyes értékelések és döntések az alkalmazásban maradnak.</li></ul>"
       },
       {
         "id": "profiles",
@@ -33192,11 +33192,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:explanation-profile-integrations-default-en-v4",
+    "_id": "work:explanation-profile-integrations-default-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 4,
+    "version": 6,
     "active": true,
     "title": "Connect apps and manage access",
     "summary": "Use integration links and keys to connect trusted tools.",
@@ -33204,15 +33204,15 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-29T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
         "id": "guide-affiliate-link",
         "guideStepId": "affiliate-link",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Registration attribution",
+        "blurb": "",
         "contentHtml": "<p>People who register through your link are attributed to you. The badge counts those registrations; it does not grant access to their accounts.</p>"
       },
       {
@@ -33259,64 +33259,64 @@
         "id": "guide-mcp-purpose",
         "guideStepId": "mcp-purpose",
         "icon": "help_outline",
-        "blurb": "",
         "title": "What an AI client can do",
-        "contentHtml": "<p>MCP lets an AI client read help. With approved access, it can also use permitted event, encounter, creation and invitation actions.</p>"
+        "blurb": "",
+        "contentHtml": "<p>MCP reads public help anonymously. Your approved connection can use supported organizing actions. Full adds permitted reads and background summaries for events you organize and assets you own. Every person connects their own profile.</p>"
       },
       {
         "id": "guide-mcp-url",
         "guideStepId": "mcp-url",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Connect through the URL",
+        "blurb": "",
         "contentHtml": "<p>Paste this MCP URL into your AI client and choose Connect. Sign in and check the displayed profile and group before approving access.</p>"
       },
       {
         "id": "guide-mcp-permissions",
         "guideStepId": "mcp-permissions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Approved AI clients",
+        "blurb": "",
         "contentHtml": "<p>These are URL-based connections you approved. Each acts within the displayed account’s permissions; access does not bypass ownership rules.</p>"
       },
       {
         "id": "guide-mcp-connection",
         "guideStepId": "mcp-connection",
         "icon": "help_outline",
-        "blurb": "",
         "title": "When access was used",
+        "blurb": "",
         "contentHtml": "<p>Check the client name, last use and expiry to recognize active access. An expired permission must be renewed before the client can use it again.</p>"
       },
       {
         "id": "guide-mcp-connection-actions",
         "guideStepId": "mcp-connection-actions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Inspect or revoke access",
-        "contentHtml": "<p>Details identify the client and callback address. Revoke ends this connection’s access after confirmation.</p>"
+        "blurb": "",
+        "contentHtml": "<p>Details identify the client and callback. Revoke ends its access, refresh tokens and event subscriptions. Browser logout alone does not revoke this separate authorization.</p>"
       },
       {
         "id": "guide-mcp-advanced",
         "guideStepId": "mcp-advanced",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Manual client setup",
+        "blurb": "",
         "contentHtml": "<p>Use Advanced only for a client that needs an ID and secret. Normal URL-based Connect does not need a manually generated key.</p>"
       },
       {
         "id": "guide-mcp-manual-keys",
         "guideStepId": "mcp-manual-keys",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Manual MCP credentials",
+        "blurb": "",
         "contentHtml": "<p>These keys belong to manually configured MCP clients. URL-based OAuth permissions are managed separately on the previous screen.</p>"
       },
       {
         "id": "guide-mcp-generate",
         "guideStepId": "mcp-generate",
         "icon": "help_outline",
-        "blurb": "",
         "title": "One-time client secret",
+        "blurb": "",
         "contentHtml": "<p>Generation creates a client ID and a one-time secret. Copy both into the intended client’s settings; do not paste the secret into chat.</p>"
       },
       {
@@ -33339,57 +33339,89 @@
         "id": "guide-affiliate-revenue",
         "guideStepId": "affiliate-revenue",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Referral purchases",
+        "blurb": "",
         "contentHtml": "<p>Revenue summarizes paid purchases attributed to your referrals, including refunds. These amounts are not your earned commission.</p>"
       },
       {
         "id": "guide-revenue-purchases",
         "guideStepId": "revenue-purchases",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Paid purchase count",
+        "blurb": "",
         "contentHtml": "<p>Counts paid purchases attributed to people you invited. It is a purchase count, so it need not equal the number of invited users.</p>"
       },
       {
         "id": "guide-revenue-bookings",
         "guideStepId": "revenue-bookings",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Paid event bookings",
+        "blurb": "",
         "contentHtml": "<p>Counts attributed paid event bookings. This separates event booking activity from the overall purchase count.</p>"
       },
       {
         "id": "guide-revenue-gross",
         "guideStepId": "revenue-gross",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Before refunds",
+        "blurb": "",
         "contentHtml": "<p>The total attributed purchase amount before refunds. The selected display currency converts the summary; it does not change any payment.</p>"
       },
       {
         "id": "guide-revenue-refunds",
         "guideStepId": "revenue-refunds",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Returned amounts",
+        "blurb": "",
         "contentHtml": "<p>Refunds reduce the attributed purchase total. Compare them with the original total to understand the amount remaining after refunds.</p>"
       },
       {
         "id": "guide-revenue-net",
         "guideStepId": "revenue-net",
         "icon": "help_outline",
-        "blurb": "",
         "title": "After refunds",
+        "blurb": "",
         "contentHtml": "<p>This is attributed purchase revenue minus refunds. It is not a payout balance or earned affiliate commission.</p>"
       },
       {
         "id": "guide-revenue-commission",
         "guideStepId": "revenue-commission",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Commission is not set",
+        "blurb": "",
         "contentHtml": "<p>The affiliate commission rate and eligibility rules are not set. This summary measures referral revenue, not money currently owed to you.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API client access",
+        "blurb": "",
+        "contentHtml": "<p>Use this colored icon to set Blocked, Write or Full for this API key. Each key has its own setting. Confirming the small popup stages the value; the parent tick saves it.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "Main MCP access",
+        "blurb": "",
+        "contentHtml": "<p>This is the upper limit for all MCP clients of this profile. Background Events requires Full here and on the client. Write stops those summaries; Blocked stops private access. Stop an individual monitoring subscription in your AI client.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP client access",
+        "blurb": "",
+        "contentHtml": "<p>Set this client’s own level. Its effective access also follows the main MCP limit. The other clients keep their own selected levels.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Save permissions",
+        "blurb": "",
+        "contentHtml": "<p>The tick appears when permissions change. It saves all staged API and MCP levels together and closes this window after success. Closing with X discards unsaved permission changes.</p>"
       }
     ],
     "contextKey": "profile.integrations",
@@ -33397,11 +33429,11 @@
     "baseGroupId": "myscoutee-work"
   },
   {
-    "_id": "work:explanation-profile-integrations-default-hu-v4",
+    "_id": "work:explanation-profile-integrations-default-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 4,
+    "version": 6,
     "active": true,
     "title": "Alkalmazások és hozzáférések",
     "summary": "Integrációs linkekkel és kulcsokkal kapcsolhatsz össze megbízható eszközöket.",
@@ -33409,15 +33441,15 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-29T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
         "id": "guide-affiliate-link",
         "guideStepId": "affiliate-link",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Regisztráció hozzárendelése",
+        "blurb": "",
         "contentHtml": "<p>A linkeden regisztrálókat hozzád rendeljük. A jelvény ezeket a regisztrációkat számolja; a fiókjukhoz nem ad hozzáférést.</p>"
       },
       {
@@ -33464,64 +33496,64 @@
         "id": "guide-mcp-purpose",
         "guideStepId": "mcp-purpose",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Mit tud az AI-kliens?",
-        "contentHtml": "<p>MCP-vel az AI-kliens súgót olvashat. Jóváhagyott hozzáféréssel az engedélyezett esemény-, találkozási, létrehozási és meghívási műveleteket is eléri.</p>"
+        "blurb": "",
+        "contentHtml": "<p>MCP-vel belépés nélkül olvasható a súgó. Jóváhagyott kapcsolattal az engedélyezett szervezési műveletek is elérhetők. A Teljes hozzáférés további olvasást és háttérjelzéseket enged a szervezett eseményeidről és saját eszközeidről. Mindenki a saját profilját kapcsolja össze.</p>"
       },
       {
         "id": "guide-mcp-url",
         "guideStepId": "mcp-url",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Kapcsolódás a címmel",
+        "blurb": "",
         "contentHtml": "<p>Másold az MCP-címet az AI-kliensbe, majd kapcsolódj. Bejelentkezés után ellenőrizd a megjelenő profilt és csoportot, mielőtt engedélyezed.</p>"
       },
       {
         "id": "guide-mcp-permissions",
         "guideStepId": "mcp-permissions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Engedélyezett AI-kliensek",
+        "blurb": "",
         "contentHtml": "<p>Itt vannak a címen keresztül engedélyezett kapcsolatok. A fiók jogaival működnek; a hozzáférés nem kerüli meg a tulajdonosi korlátokat.</p>"
       },
       {
         "id": "guide-mcp-connection",
         "guideStepId": "mcp-connection",
         "icon": "help_outline",
-        "blurb": "",
         "title": "A hozzáférés használata",
+        "blurb": "",
         "contentHtml": "<p>A név, utolsó használat és lejárat alapján ellenőrizheted a hozzáférést. Lejárt engedéllyel a kliens csak újbóli engedélyezés után működik.</p>"
       },
       {
         "id": "guide-mcp-connection-actions",
         "guideStepId": "mcp-connection-actions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Ellenőrzés vagy visszavonás",
-        "contentHtml": "<p>A részletek a klienst és visszahívási címét azonosítják. A visszavonás megerősítés után megszünteti ennek a kapcsolatnak a hozzáférését.</p>"
+        "blurb": "",
+        "contentHtml": "<p>A részletek megmutatják a klienst és a visszahívási címet. A visszavonás megszünteti a hozzáférését, a tokenmegújítást és az eseményfigyeléseit. A böngészős kijelentkezés önmagában nem vonja vissza ezt a külön engedélyt.</p>"
       },
       {
         "id": "guide-mcp-advanced",
         "guideStepId": "mcp-advanced",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Kézi kliensbeállítás",
+        "blurb": "",
         "contentHtml": "<p>Haladó beállítás akkor kell, ha a kliens azonosítót és titkot kér. A szokásos, címen keresztüli kapcsolódáshoz nem kell kézi kulcs.</p>"
       },
       {
         "id": "guide-mcp-manual-keys",
         "guideStepId": "mcp-manual-keys",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Kézi MCP-hitelesítés",
+        "blurb": "",
         "contentHtml": "<p>Ezek a kézzel beállított MCP-kliensek kulcsai. A címen át létrehozott OAuth-engedélyeket az előző képernyőn, külön kezeled.</p>"
       },
       {
         "id": "guide-mcp-generate",
         "guideStepId": "mcp-generate",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Egyszer látható kliens-titok",
+        "blurb": "",
         "contentHtml": "<p>Létrehozáskor kliensazonosítót és egyszer látható titkot kapsz. A kliens beállításaiba másold őket; a titkot ne írd chatbe.</p>"
       },
       {
@@ -33544,57 +33576,89 @@
         "id": "guide-affiliate-revenue",
         "guideStepId": "affiliate-revenue",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Meghívottak vásárlásai",
+        "blurb": "",
         "contentHtml": "<p>A Revenue a meghívásaidhoz rendelt fizetett vásárlásokat és visszatérítéseket összesíti. Ezek az összegek nem a te jutalékbevételed.</p>"
       },
       {
         "id": "guide-revenue-purchases",
         "guideStepId": "revenue-purchases",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Fizetett vásárlások száma",
+        "blurb": "",
         "contentHtml": "<p>A meghívottaidhoz rendelt fizetett vásárlások száma. Vásárlásokat számol, ezért eltérhet a meghívott felhasználók számától.</p>"
       },
       {
         "id": "guide-revenue-bookings",
         "guideStepId": "revenue-bookings",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Fizetett eseményfoglalások",
+        "blurb": "",
         "contentHtml": "<p>A hozzárendelt fizetett eseményfoglalásokat számolja. Így az eseményfoglalásokat az összes vásárlástól külön láthatod.</p>"
       },
       {
         "id": "guide-revenue-gross",
         "guideStepId": "revenue-gross",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Visszatérítés előtt",
+        "blurb": "",
         "contentHtml": "<p>A hozzárendelt vásárlások összege visszatérítések előtt. A megjelenítési pénznem csak az összesítést váltja át, a fizetéseket nem módosítja.</p>"
       },
       {
         "id": "guide-revenue-refunds",
         "guideStepId": "revenue-refunds",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Visszatérített összegek",
+        "blurb": "",
         "contentHtml": "<p>A visszatérítések csökkentik a hozzárendelt vásárlások összegét. Az eredeti összeggel összevetve látható, mennyi maradt meg.</p>"
       },
       {
         "id": "guide-revenue-net",
         "guideStepId": "revenue-net",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Visszatérítés után",
+        "blurb": "",
         "contentHtml": "<p>A hozzárendelt vásárlások összege a visszatérítések levonása után. Nem kifizethető egyenleg és nem megszerzett affiliate-jutalék.</p>"
       },
       {
         "id": "guide-revenue-commission",
         "guideStepId": "revenue-commission",
         "icon": "help_outline",
-        "blurb": "",
         "title": "A jutalék még nincs meghatározva",
+        "blurb": "",
         "contentHtml": "<p>Az affiliate-jutalék mértéke és jogosultsági szabályai még nincsenek meghatározva. Az összesítés nem a jelenleg neked járó pénzt mutatja.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Ezzel a színes ikonnal választhatod ki az adott API-kulcs Tiltva, Írás vagy Teljes szintjét. Minden kulcsnak külön beállítása van. A kis popup pipája előkészíti a változtatást; a szülőablak pipája menti el.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "MCP fő jogosultság",
+        "blurb": "",
+        "contentHtml": "<p>Ez a profil összes MCP-kliensének felső jogosultsági korlátja. A háttérben futó Events-figyeléshez itt és a kliensnél is Teljes kell. Az Írás leállítja ezeket a jelzéseket; a Tiltott a személyes hozzáférést is. Egyetlen figyelést az AI-kliensben állíts le.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Állítsd be ennek a kliensnek a saját szintjét. A tényleges hozzáférésére az MCP fő korlátja is érvényes. A többi kliens saját választott szintje megmarad.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Jogosultságok mentése",
+        "blurb": "",
+        "contentHtml": "<p>A pipa akkor jelenik meg, ha jogosultságot módosítottál. Együtt menti az előkészített API- és MCP-szinteket, majd siker esetén bezárja az ablakot. Az X elveti az el nem mentett jogosultságmódosításokat.</p>"
       }
     ],
     "contextKey": "profile.integrations",
@@ -35708,11 +35772,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:help-default-v3",
+    "_id": "community:help-default-v4",
     "documentType": "help",
     "lang": "en",
     "languageLabel": "English",
-    "version": 3,
+    "version": 4,
     "active": true,
     "title": "MyScoutee Work help",
     "summary": "Campaigns, mutual interest and organized meetings.",
@@ -35720,7 +35784,7 @@
     "headerColor": "amber",
     "createdDate": "2026-09-26T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-26T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -35742,7 +35806,7 @@
         "icon": "api",
         "title": "API and AI assistance",
         "blurb": "Use the existing profile permissions for integrations.",
-        "contentHtml": "<ul><li>Copy the MCP URL from Profile editor → Affiliate → Client keys → AI / MCP connections into your AI client and choose Connect.</li><li>The client opens MyScoutee sign-in. Use the installation’s normal sign-in method, check the displayed profile and group, and approve access. Return to the client and enable the connection in your conversation. Automatic registration needs no manually copied client ID or secret.</li><li>Advanced contains the manual MCP client-key table. Generate immediately adds a row with a client ID and one-time secret; copy these into the client’s configuration. No name or callback form is needed. Its badge counts these keys. URL-based OAuth permissions remain in the main popup, with their own Revoke action and connection details. Never paste credentials into chat.</li><li>Anonymous /mcp reads the current help without login. Personal /mcp/private calls use only the approved profile’s existing API permissions. Each connection stays bound to that profile; an app group switch or a group name in a prompt cannot retarget it.</li><li>Asset creation requires a base-profile connection. Event operations follow the approved profile and group; invitation tools additionally require the appropriate administrator role. Discovery lists the currently allowed operations without probing write endpoints.</li><li>Connections expire after 90 days. Revoke in the same AI / MCP list to invalidate access and refresh tokens. Browser logout alone does not revoke an existing connection.</li><li>Browser-only local mode cannot receive external OAuth. Development with the backend running supports demo sign-in; deployed installations use their configured sign-in. The separate development client and setup commands are in the <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repository</a>.</li></ul>"
+        "contentHtml": "<ul><li>Copy the MCP URL from Profile editor → Affiliate → Client keys → AI / MCP connections into your AI client and choose Connect.</li><li>The client opens MyScoutee sign-in. Use the installation’s normal sign-in method, check the displayed profile and group, and approve access. Return to the client and enable the connection in your conversation. Automatic registration needs no manually copied client ID or secret.</li><li>Advanced contains the manual MCP client-key table. Generate immediately adds a row with a client ID and one-time secret; copy these into the client’s configuration. No name or callback form is needed. Its badge counts these keys. URL-based OAuth permissions remain in the main popup, with their own Revoke action and connection details. Never paste credentials into chat.</li><li>Anonymous /mcp reads the current help without login. Personal /mcp/private calls use only the approved profile’s existing API permissions. Each connection stays bound to that profile; an app group switch or a group name in a prompt cannot retarget it.</li><li>Asset creation requires a base-profile connection. Event operations follow the approved profile and group; invitation tools additionally require the appropriate administrator role. Discovery lists the currently allowed operations without probing write endpoints.</li><li>Connections expire after 90 days. Revoke in the same AI / MCP list to invalidate access and refresh tokens. Browser logout alone does not revoke an existing connection.</li><li>Browser-only local mode cannot receive external OAuth. Development with the backend running supports demo sign-in; deployed installations use their configured sign-in. The separate development client and setup commands are in the <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repository</a>.</li><li>With Full access on both the main MCP link and the connected client, an Events-capable AI host can monitor an event you organize or a base-profile asset you own. In ChatGPT use a supported Work/Cloud chat and name the resource and what to monitor. Updates carry short summaries, including completed Mingle results; ask for permitted details when needed. Each person authorizes their own MyScoutee profile through OAuth 2.1 with PKCE. Stop monitoring in the AI client, or revoke the connection here. Expired or overloaded intervals are not replayed. Personal ratings and decisions stay in the application.</li></ul>"
       },
       {
         "id": "profiles",
@@ -35853,11 +35917,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:help-default-hu-v3",
+    "_id": "community:help-default-hu-v4",
     "documentType": "help",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 3,
+    "version": 4,
     "active": true,
     "title": "MyScoutee Work – súgó",
     "summary": "Campaignök, kölcsönös érdeklődés és szervezett találkozók.",
@@ -35865,7 +35929,7 @@
     "headerColor": "amber",
     "createdDate": "2026-09-26T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-26T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
@@ -35887,7 +35951,7 @@
         "icon": "api",
         "title": "API és AI-segítség",
         "blurb": "Az integrációk a meglévő profiljogosultságokat használják.",
-        "contentHtml": "<ul><li>A profilszerkesztő → Affiliate → Klienskulcsok → AI / MCP-kapcsolatok részből másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget.</li><li>A kliens megnyitja a MyScoutee belépését. Használd a telepítés szokásos belépési módját, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést. A kliensbe visszatérve kapcsold be a kapcsolatot a beszélgetéshez. Automatikus regisztrációnál nem kell kézzel kliensazonosítót vagy titkot másolni.</li><li>A Haladó ablakban találod a kézzel generált MCP-klienskulcsok táblázatát. A Generálás azonnal új sort hoz létre kliensazonosítóval és egyszer megjelenő titokkal; ezeket másold a kliens beállításaiba. Név- vagy visszahívásicím-űrlap nincs. A gomb számlálója ezeket a kulcsokat mutatja. Az URL-en csatlakozott OAuth-engedélyek külön, a főablakban maradnak, saját visszavonással és kapcsolatadatokkal. Hitelesítési adatot ne másolj csevegésbe.</li><li>Az anonim /mcp belépés nélkül olvassa az aktuális súgót. A személyes /mcp/private kizárólag a jóváhagyott profil meglévő API-jogosultságait használja. A kapcsolat ehhez a profilhoz kötött; az alkalmazás csoportváltója vagy a csoport nevének megadása nem irányítja át.</li><li>Eszköz létrehozásához alapprofilhoz tartozó kapcsolat kell. Az eseményműveletek a jóváhagyott profil és csoport jogosultságait követik; meghíváshoz a megfelelő adminszerep is kell. A kliens a pillanatnyilag engedélyezett műveleteket kapja meg, próbafeltöltés nélkül.</li><li>A kapcsolat 90 nap után lejár. Ugyanebben az AI / MCP-listában a visszavonás érvényteleníti a hozzáférési és megújítási tokeneket is. A böngészős kijelentkezés önmagában nem vonja vissza a kapcsolatot.</li><li>A kizárólag böngészős local mód nem fogad külső OAuth-kérést. Devben futó backend mellett demóbelépés is használható; telepítéskor az ott beállított belépés érvényes. A külön fejlesztői kliens és az indítás lépései a <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repóban</a> találhatók.</li></ul>"
+        "contentHtml": "<ul><li>A profilszerkesztő → Affiliate → Klienskulcsok → AI / MCP-kapcsolatok részből másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget.</li><li>A kliens megnyitja a MyScoutee belépését. Használd a telepítés szokásos belépési módját, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést. A kliensbe visszatérve kapcsold be a kapcsolatot a beszélgetéshez. Automatikus regisztrációnál nem kell kézzel kliensazonosítót vagy titkot másolni.</li><li>A Haladó ablakban találod a kézzel generált MCP-klienskulcsok táblázatát. A Generálás azonnal új sort hoz létre kliensazonosítóval és egyszer megjelenő titokkal; ezeket másold a kliens beállításaiba. Név- vagy visszahívásicím-űrlap nincs. A gomb számlálója ezeket a kulcsokat mutatja. Az URL-en csatlakozott OAuth-engedélyek külön, a főablakban maradnak, saját visszavonással és kapcsolatadatokkal. Hitelesítési adatot ne másolj csevegésbe.</li><li>Az anonim /mcp belépés nélkül olvassa az aktuális súgót. A személyes /mcp/private kizárólag a jóváhagyott profil meglévő API-jogosultságait használja. A kapcsolat ehhez a profilhoz kötött; az alkalmazás csoportváltója vagy a csoport nevének megadása nem irányítja át.</li><li>Eszköz létrehozásához alapprofilhoz tartozó kapcsolat kell. Az eseményműveletek a jóváhagyott profil és csoport jogosultságait követik; meghíváshoz a megfelelő adminszerep is kell. A kliens a pillanatnyilag engedélyezett műveleteket kapja meg, próbafeltöltés nélkül.</li><li>A kapcsolat 90 nap után lejár. Ugyanebben az AI / MCP-listában a visszavonás érvényteleníti a hozzáférési és megújítási tokeneket is. A böngészős kijelentkezés önmagában nem vonja vissza a kapcsolatot.</li><li>A kizárólag böngészős local mód nem fogad külső OAuth-kérést. Devben futó backend mellett demóbelépés is használható; telepítéskor az ott beállított belépés érvényes. A külön fejlesztői kliens és az indítás lépései a <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repóban</a> találhatók.</li><li>Ha a fő MCP-link és a kapcsolódó kliens is Teljes hozzáférésű, Events-képes AI-klienssel figyeltetheted az általad szervezett eseményt vagy az alapprofilod saját eszközét. ChatGPT-ben támogatott Work/Cloud beszélgetésben nevezd meg, mit és milyen célból figyeljen. Rövid összefoglalók érkeznek, a lezárt Mingle eredményekről is; a részleteket az engedélyezett olvasási műveletekkel kérheted le. Mindenki a saját MyScoutee-profilját engedélyezi OAuth 2.1 és PKCE használatával. A figyelést az AI-kliensben állítsd le, vagy itt vond vissza a kapcsolatot. A lejárt vagy túlterhelt időszakok kimaradásait nem játssza vissza. A személyes értékelések és döntések az alkalmazásban maradnak.</li></ul>"
       },
       {
         "id": "profiles",
@@ -49054,11 +49118,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:explanation-profile-integrations-default-en-v4",
+    "_id": "community:explanation-profile-integrations-default-en-v6",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 4,
+    "version": 6,
     "active": true,
     "title": "Connect apps and manage access",
     "summary": "Use integration links and keys to connect trusted tools.",
@@ -49066,15 +49130,15 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-29T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
         "id": "guide-affiliate-link",
         "guideStepId": "affiliate-link",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Registration attribution",
+        "blurb": "",
         "contentHtml": "<p>People who register through your link are attributed to you. The badge counts those registrations; it does not grant access to their accounts.</p>"
       },
       {
@@ -49121,64 +49185,64 @@
         "id": "guide-mcp-purpose",
         "guideStepId": "mcp-purpose",
         "icon": "help_outline",
-        "blurb": "",
         "title": "What an AI client can do",
-        "contentHtml": "<p>MCP lets an AI client read help. With approved access, it can also use permitted event, encounter, creation and invitation actions.</p>"
+        "blurb": "",
+        "contentHtml": "<p>MCP reads public help anonymously. Your approved connection can use supported organizing actions. Full adds permitted reads and background summaries for events you organize and assets you own. Every person connects their own profile.</p>"
       },
       {
         "id": "guide-mcp-url",
         "guideStepId": "mcp-url",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Connect through the URL",
+        "blurb": "",
         "contentHtml": "<p>Paste this MCP URL into your AI client and choose Connect. Sign in and check the displayed profile and group before approving access.</p>"
       },
       {
         "id": "guide-mcp-permissions",
         "guideStepId": "mcp-permissions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Approved AI clients",
+        "blurb": "",
         "contentHtml": "<p>These are URL-based connections you approved. Each acts within the displayed account’s permissions; access does not bypass ownership rules.</p>"
       },
       {
         "id": "guide-mcp-connection",
         "guideStepId": "mcp-connection",
         "icon": "help_outline",
-        "blurb": "",
         "title": "When access was used",
+        "blurb": "",
         "contentHtml": "<p>Check the client name, last use and expiry to recognize active access. An expired permission must be renewed before the client can use it again.</p>"
       },
       {
         "id": "guide-mcp-connection-actions",
         "guideStepId": "mcp-connection-actions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Inspect or revoke access",
-        "contentHtml": "<p>Details identify the client and callback address. Revoke ends this connection’s access after confirmation.</p>"
+        "blurb": "",
+        "contentHtml": "<p>Details identify the client and callback. Revoke ends its access, refresh tokens and event subscriptions. Browser logout alone does not revoke this separate authorization.</p>"
       },
       {
         "id": "guide-mcp-advanced",
         "guideStepId": "mcp-advanced",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Manual client setup",
+        "blurb": "",
         "contentHtml": "<p>Use Advanced only for a client that needs an ID and secret. Normal URL-based Connect does not need a manually generated key.</p>"
       },
       {
         "id": "guide-mcp-manual-keys",
         "guideStepId": "mcp-manual-keys",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Manual MCP credentials",
+        "blurb": "",
         "contentHtml": "<p>These keys belong to manually configured MCP clients. URL-based OAuth permissions are managed separately on the previous screen.</p>"
       },
       {
         "id": "guide-mcp-generate",
         "guideStepId": "mcp-generate",
         "icon": "help_outline",
-        "blurb": "",
         "title": "One-time client secret",
+        "blurb": "",
         "contentHtml": "<p>Generation creates a client ID and a one-time secret. Copy both into the intended client’s settings; do not paste the secret into chat.</p>"
       },
       {
@@ -49201,57 +49265,89 @@
         "id": "guide-affiliate-revenue",
         "guideStepId": "affiliate-revenue",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Referral purchases",
+        "blurb": "",
         "contentHtml": "<p>Revenue summarizes paid purchases attributed to your referrals, including refunds. These amounts are not your earned commission.</p>"
       },
       {
         "id": "guide-revenue-purchases",
         "guideStepId": "revenue-purchases",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Paid purchase count",
+        "blurb": "",
         "contentHtml": "<p>Counts paid purchases attributed to people you invited. It is a purchase count, so it need not equal the number of invited users.</p>"
       },
       {
         "id": "guide-revenue-bookings",
         "guideStepId": "revenue-bookings",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Paid event bookings",
+        "blurb": "",
         "contentHtml": "<p>Counts attributed paid event bookings. This separates event booking activity from the overall purchase count.</p>"
       },
       {
         "id": "guide-revenue-gross",
         "guideStepId": "revenue-gross",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Before refunds",
+        "blurb": "",
         "contentHtml": "<p>The total attributed purchase amount before refunds. The selected display currency converts the summary; it does not change any payment.</p>"
       },
       {
         "id": "guide-revenue-refunds",
         "guideStepId": "revenue-refunds",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Returned amounts",
+        "blurb": "",
         "contentHtml": "<p>Refunds reduce the attributed purchase total. Compare them with the original total to understand the amount remaining after refunds.</p>"
       },
       {
         "id": "guide-revenue-net",
         "guideStepId": "revenue-net",
         "icon": "help_outline",
-        "blurb": "",
         "title": "After refunds",
+        "blurb": "",
         "contentHtml": "<p>This is attributed purchase revenue minus refunds. It is not a payout balance or earned affiliate commission.</p>"
       },
       {
         "id": "guide-revenue-commission",
         "guideStepId": "revenue-commission",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Commission is not set",
+        "blurb": "",
         "contentHtml": "<p>The affiliate commission rate and eligibility rules are not set. This summary measures referral revenue, not money currently owed to you.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API client access",
+        "blurb": "",
+        "contentHtml": "<p>Use this colored icon to set Blocked, Write or Full for this API key. Each key has its own setting. Confirming the small popup stages the value; the parent tick saves it.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "Main MCP access",
+        "blurb": "",
+        "contentHtml": "<p>This is the upper limit for all MCP clients of this profile. Background Events requires Full here and on the client. Write stops those summaries; Blocked stops private access. Stop an individual monitoring subscription in your AI client.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP client access",
+        "blurb": "",
+        "contentHtml": "<p>Set this client’s own level. Its effective access also follows the main MCP limit. The other clients keep their own selected levels.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Save permissions",
+        "blurb": "",
+        "contentHtml": "<p>The tick appears when permissions change. It saves all staged API and MCP levels together and closes this window after success. Closing with X discards unsaved permission changes.</p>"
       }
     ],
     "contextKey": "profile.integrations",
@@ -49259,11 +49355,11 @@
     "baseGroupId": "myscoutee-community"
   },
   {
-    "_id": "community:explanation-profile-integrations-default-hu-v4",
+    "_id": "community:explanation-profile-integrations-default-hu-v6",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 4,
+    "version": 6,
     "active": true,
     "title": "Alkalmazások és hozzáférések",
     "summary": "Integrációs linkekkel és kulcsokkal kapcsolhatsz össze megbízható eszközöket.",
@@ -49271,15 +49367,15 @@
     "headerColor": "violet",
     "createdDate": "2026-09-29T00:00:00.000Z",
     "createdUser": "system",
-    "updatedDate": "2026-09-29T00:00:00.000Z",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
     "updatedUser": "system",
     "sections": [
       {
         "id": "guide-affiliate-link",
         "guideStepId": "affiliate-link",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Regisztráció hozzárendelése",
+        "blurb": "",
         "contentHtml": "<p>A linkeden regisztrálókat hozzád rendeljük. A jelvény ezeket a regisztrációkat számolja; a fiókjukhoz nem ad hozzáférést.</p>"
       },
       {
@@ -49326,64 +49422,64 @@
         "id": "guide-mcp-purpose",
         "guideStepId": "mcp-purpose",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Mit tud az AI-kliens?",
-        "contentHtml": "<p>MCP-vel az AI-kliens súgót olvashat. Jóváhagyott hozzáféréssel az engedélyezett esemény-, találkozási, létrehozási és meghívási műveleteket is eléri.</p>"
+        "blurb": "",
+        "contentHtml": "<p>MCP-vel belépés nélkül olvasható a súgó. Jóváhagyott kapcsolattal az engedélyezett szervezési műveletek is elérhetők. A Teljes hozzáférés további olvasást és háttérjelzéseket enged a szervezett eseményeidről és saját eszközeidről. Mindenki a saját profilját kapcsolja össze.</p>"
       },
       {
         "id": "guide-mcp-url",
         "guideStepId": "mcp-url",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Kapcsolódás a címmel",
+        "blurb": "",
         "contentHtml": "<p>Másold az MCP-címet az AI-kliensbe, majd kapcsolódj. Bejelentkezés után ellenőrizd a megjelenő profilt és csoportot, mielőtt engedélyezed.</p>"
       },
       {
         "id": "guide-mcp-permissions",
         "guideStepId": "mcp-permissions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Engedélyezett AI-kliensek",
+        "blurb": "",
         "contentHtml": "<p>Itt vannak a címen keresztül engedélyezett kapcsolatok. A fiók jogaival működnek; a hozzáférés nem kerüli meg a tulajdonosi korlátokat.</p>"
       },
       {
         "id": "guide-mcp-connection",
         "guideStepId": "mcp-connection",
         "icon": "help_outline",
-        "blurb": "",
         "title": "A hozzáférés használata",
+        "blurb": "",
         "contentHtml": "<p>A név, utolsó használat és lejárat alapján ellenőrizheted a hozzáférést. Lejárt engedéllyel a kliens csak újbóli engedélyezés után működik.</p>"
       },
       {
         "id": "guide-mcp-connection-actions",
         "guideStepId": "mcp-connection-actions",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Ellenőrzés vagy visszavonás",
-        "contentHtml": "<p>A részletek a klienst és visszahívási címét azonosítják. A visszavonás megerősítés után megszünteti ennek a kapcsolatnak a hozzáférését.</p>"
+        "blurb": "",
+        "contentHtml": "<p>A részletek megmutatják a klienst és a visszahívási címet. A visszavonás megszünteti a hozzáférését, a tokenmegújítást és az eseményfigyeléseit. A böngészős kijelentkezés önmagában nem vonja vissza ezt a külön engedélyt.</p>"
       },
       {
         "id": "guide-mcp-advanced",
         "guideStepId": "mcp-advanced",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Kézi kliensbeállítás",
+        "blurb": "",
         "contentHtml": "<p>Haladó beállítás akkor kell, ha a kliens azonosítót és titkot kér. A szokásos, címen keresztüli kapcsolódáshoz nem kell kézi kulcs.</p>"
       },
       {
         "id": "guide-mcp-manual-keys",
         "guideStepId": "mcp-manual-keys",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Kézi MCP-hitelesítés",
+        "blurb": "",
         "contentHtml": "<p>Ezek a kézzel beállított MCP-kliensek kulcsai. A címen át létrehozott OAuth-engedélyeket az előző képernyőn, külön kezeled.</p>"
       },
       {
         "id": "guide-mcp-generate",
         "guideStepId": "mcp-generate",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Egyszer látható kliens-titok",
+        "blurb": "",
         "contentHtml": "<p>Létrehozáskor kliensazonosítót és egyszer látható titkot kapsz. A kliens beállításaiba másold őket; a titkot ne írd chatbe.</p>"
       },
       {
@@ -49406,57 +49502,89 @@
         "id": "guide-affiliate-revenue",
         "guideStepId": "affiliate-revenue",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Meghívottak vásárlásai",
+        "blurb": "",
         "contentHtml": "<p>A Revenue a meghívásaidhoz rendelt fizetett vásárlásokat és visszatérítéseket összesíti. Ezek az összegek nem a te jutalékbevételed.</p>"
       },
       {
         "id": "guide-revenue-purchases",
         "guideStepId": "revenue-purchases",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Fizetett vásárlások száma",
+        "blurb": "",
         "contentHtml": "<p>A meghívottaidhoz rendelt fizetett vásárlások száma. Vásárlásokat számol, ezért eltérhet a meghívott felhasználók számától.</p>"
       },
       {
         "id": "guide-revenue-bookings",
         "guideStepId": "revenue-bookings",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Fizetett eseményfoglalások",
+        "blurb": "",
         "contentHtml": "<p>A hozzárendelt fizetett eseményfoglalásokat számolja. Így az eseményfoglalásokat az összes vásárlástól külön láthatod.</p>"
       },
       {
         "id": "guide-revenue-gross",
         "guideStepId": "revenue-gross",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Visszatérítés előtt",
+        "blurb": "",
         "contentHtml": "<p>A hozzárendelt vásárlások összege visszatérítések előtt. A megjelenítési pénznem csak az összesítést váltja át, a fizetéseket nem módosítja.</p>"
       },
       {
         "id": "guide-revenue-refunds",
         "guideStepId": "revenue-refunds",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Visszatérített összegek",
+        "blurb": "",
         "contentHtml": "<p>A visszatérítések csökkentik a hozzárendelt vásárlások összegét. Az eredeti összeggel összevetve látható, mennyi maradt meg.</p>"
       },
       {
         "id": "guide-revenue-net",
         "guideStepId": "revenue-net",
         "icon": "help_outline",
-        "blurb": "",
         "title": "Visszatérítés után",
+        "blurb": "",
         "contentHtml": "<p>A hozzárendelt vásárlások összege a visszatérítések levonása után. Nem kifizethető egyenleg és nem megszerzett affiliate-jutalék.</p>"
       },
       {
         "id": "guide-revenue-commission",
         "guideStepId": "revenue-commission",
         "icon": "help_outline",
-        "blurb": "",
         "title": "A jutalék még nincs meghatározva",
+        "blurb": "",
         "contentHtml": "<p>Az affiliate-jutalék mértéke és jogosultsági szabályai még nincsenek meghatározva. Az összesítés nem a jelenleg neked járó pénzt mutatja.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Ezzel a színes ikonnal választhatod ki az adott API-kulcs Tiltva, Írás vagy Teljes szintjét. Minden kulcsnak külön beállítása van. A kis popup pipája előkészíti a változtatást; a szülőablak pipája menti el.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "MCP fő jogosultság",
+        "blurb": "",
+        "contentHtml": "<p>Ez a profil összes MCP-kliensének felső jogosultsági korlátja. A háttérben futó Events-figyeléshez itt és a kliensnél is Teljes kell. Az Írás leállítja ezeket a jelzéseket; a Tiltott a személyes hozzáférést is. Egyetlen figyelést az AI-kliensben állíts le.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Állítsd be ennek a kliensnek a saját szintjét. A tényleges hozzáférésére az MCP fő korlátja is érvényes. A többi kliens saját választott szintje megmarad.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Jogosultságok mentése",
+        "blurb": "",
+        "contentHtml": "<p>A pipa akkor jelenik meg, ha jogosultságot módosítottál. Együtt menti az előkészített API- és MCP-szinteket, majd siker esetén bezárja az ablakot. Az X elveti az el nem mentett jogosultságmódosításokat.</p>"
       }
     ],
     "contextKey": "profile.integrations",
@@ -70834,6 +70962,2096 @@
         "title": "Kérdezz a szervezőtől",
         "blurb": "",
         "contentHtml": "<p>A közzétett kampány pozitív értékelésének mentése után innen nyithatod meg a közvetlen beszélgetést a szervezővel. A beszélgetés ehhez a kampányhoz tartozik akkor is, ha az összesített értékelési előzményekből indítod.</p>"
+      }
+    ]
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": true,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-service-feedback-quality",
+        "guideStepId": "service-feedback-quality",
+        "icon": "help_outline",
+        "title": "Quality of work",
+        "blurb": "",
+        "contentHtml": "<p>Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average.</p>"
+      },
+      {
+        "id": "guide-service-feedback-reliability",
+        "guideStepId": "service-feedback-reliability",
+        "icon": "help_outline",
+        "title": "Reliability",
+        "blurb": "",
+        "contentHtml": "<p>Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average.</p>"
+      },
+      {
+        "id": "guide-service-feedback-communication",
+        "guideStepId": "service-feedback-communication",
+        "icon": "help_outline",
+        "title": "Communication",
+        "blurb": "",
+        "contentHtml": "<p>Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average.</p>"
+      },
+      {
+        "id": "guide-service-feedback-value",
+        "guideStepId": "service-feedback-value",
+        "icon": "help_outline",
+        "title": "Value for money",
+        "blurb": "",
+        "contentHtml": "<p>Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average.</p>"
+      },
+      {
+        "id": "guide-form-save",
+        "guideStepId": "form-save",
+        "icon": "help_outline",
+        "title": "Overview",
+        "blurb": "",
+        "contentHtml": "<p>Review all selected answers before submitting. Submitted feedback is read-only.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Close",
+        "blurb": "",
+        "contentHtml": "<p>Close the feedback form without submitting.</p>"
+      }
+    ],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Service feedback",
+    "summary": "Review the service image and choose an answer for each question.",
+    "description": "Use the same picture, answer blocks and overview as event feedback. No written comment is collected.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": true,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-service-feedback-quality",
+        "guideStepId": "service-feedback-quality",
+        "icon": "help_outline",
+        "title": "A munka minősége",
+        "blurb": "",
+        "contentHtml": "<p>Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga.</p>"
+      },
+      {
+        "id": "guide-service-feedback-reliability",
+        "guideStepId": "service-feedback-reliability",
+        "icon": "help_outline",
+        "title": "Megbízhatóság",
+        "blurb": "",
+        "contentHtml": "<p>Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga.</p>"
+      },
+      {
+        "id": "guide-service-feedback-communication",
+        "guideStepId": "service-feedback-communication",
+        "icon": "help_outline",
+        "title": "Kommunikáció",
+        "blurb": "",
+        "contentHtml": "<p>Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga.</p>"
+      },
+      {
+        "id": "guide-service-feedback-value",
+        "guideStepId": "service-feedback-value",
+        "icon": "help_outline",
+        "title": "Ár-érték arány",
+        "blurb": "",
+        "contentHtml": "<p>Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga.</p>"
+      },
+      {
+        "id": "guide-form-save",
+        "guideStepId": "form-save",
+        "icon": "help_outline",
+        "title": "Összegzés",
+        "blurb": "",
+        "contentHtml": "<p>Elküldés előtt nézd át a kiválasztott válaszokat. Az elküldött visszajelzés már csak megtekinthető.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Bezárás",
+        "blurb": "",
+        "contentHtml": "<p>Zárd be a visszajelzést elküldés nélkül.</p>"
+      }
+    ],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-community-service-feedback-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Szolgáltatói visszajelzés",
+    "summary": "Nézd meg a szolgáltatás képét, és minden kérdésnél válassz egy választ.",
+    "description": "Ugyanaz a képes fejléc, válaszblokk és összegzés segít, mint az eseményértékelésnél. Szöveges megjegyzést nem kérünk.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "community.service-feedback",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": true,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-integration-access-level",
+        "guideStepId": "integration-access-level",
+        "icon": "help_outline",
+        "title": "Three access levels",
+        "blurb": "",
+        "contentHtml": "<p>Choose one access pack: red Blocked, amber Write, or green Full. The colored shield and the state label follow your draft immediately. These are complete packs; there are no separate operation switches.</p>"
+      },
+      {
+        "id": "guide-integration-access-apply",
+        "guideStepId": "integration-access-apply",
+        "icon": "help_outline",
+        "title": "Confirm selection",
+        "blurb": "",
+        "contentHtml": "<p>The tick appears when the level differs from the opening value. It closes this popup and updates the parent draft. Save that parent draft to persist the change.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Discard this selection",
+        "blurb": "",
+        "contentHtml": "<p>Close without confirming to keep the parent draft unchanged.</p>"
+      }
+    ],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-en-v1",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 1,
+    "active": false,
+    "title": "Connection access",
+    "summary": "Choose the access level and confirm the draft.",
+    "description": "API and MCP permissions stay within the selected profile’s existing rights.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": true,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-integration-access-level",
+        "guideStepId": "integration-access-level",
+        "icon": "help_outline",
+        "title": "Három jogosultsági szint",
+        "blurb": "",
+        "contentHtml": "<p>Válassz egy jogosultságcsomagot: piros Tiltva, borostyán Írás vagy zöld Teljes. A pajzs színe és az állapotfelirat azonnal követi a piszkozatot. Ezek teljes csomagok, műveletenkénti kapcsolók nincsenek.</p>"
+      },
+      {
+        "id": "guide-integration-access-apply",
+        "guideStepId": "integration-access-apply",
+        "icon": "help_outline",
+        "title": "Választás megerősítése",
+        "blurb": "",
+        "contentHtml": "<p>A pipa akkor jelenik meg, ha eltérsz a megnyitáskor érvényes szinttől. Bezárja ezt a popupot, és frissíti a szülőablak piszkozatát. A véglegesítéshez azt a piszkozatot is mentsd el.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Választás elvetése",
+        "blurb": "",
+        "contentHtml": "<p>Megerősítés nélkül bezárva a szülőablak piszkozata változatlan marad.</p>"
+      }
+    ],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integration-access-default-hu-v1",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 1,
+    "active": false,
+    "title": "Kapcsolat jogosultsága",
+    "summary": "Válaszd ki a jogosultsági szintet, majd erősítsd meg a piszkozatot.",
+    "description": "Az API- és MCP-jogosultságok a kiválasztott profil meglévő jogain belül maradnak.",
+    "headerColor": "violet",
+    "createdDate": "2026-10-06T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [],
+    "contextKey": "profile.integration-access",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integrations-default-en-v5",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 5,
+    "active": false,
+    "title": "Connect apps and manage access",
+    "summary": "Use integration links and keys to connect trusted tools.",
+    "description": "The base URL and client keys let supported apps exchange data with your account. Create a key only for a tool you trust, keep its secret private, and revoke it when it is no longer needed.",
+    "headerColor": "violet",
+    "createdDate": "2026-09-29T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-affiliate-link",
+        "guideStepId": "affiliate-link",
+        "icon": "help_outline",
+        "title": "Registration attribution",
+        "blurb": "",
+        "contentHtml": "<p>People who register through your link are attributed to you. The badge counts those registrations; it does not grant access to their accounts.</p>"
+      },
+      {
+        "id": "guide-integration-base-url",
+        "guideStepId": "integration-base-url",
+        "icon": "touch_app",
+        "title": "API destination",
+        "blurb": "",
+        "contentHtml": "<p>Your client sends API requests to this address. Use this installation’s exact URL; the client key determines which account it acts for.</p>"
+      },
+      {
+        "id": "guide-integration-tokens",
+        "guideStepId": "integration-tokens",
+        "icon": "touch_app",
+        "title": "Separate client access",
+        "blurb": "",
+        "contentHtml": "<p>Each key connects a client to the issuing profile or group. Keep separate keys so one client’s access can be revoked independently.</p>"
+      },
+      {
+        "id": "guide-generate-integration-token",
+        "guideStepId": "generate-integration-token",
+        "icon": "help_outline",
+        "title": "Create client access",
+        "blurb": "",
+        "contentHtml": "<p>A new key allows a supported client to connect. Its secret appears once: copy it into that client’s settings, never into a public message.</p>"
+      },
+      {
+        "id": "guide-integration-token-row",
+        "guideStepId": "integration-token-row",
+        "icon": "touch_app",
+        "title": "Connection and expiry",
+        "blurb": "",
+        "contentHtml": "<p>Connected means this key has been claimed by a client. Expiry ends its validity; the prefix identifies the key without revealing its secret.</p>"
+      },
+      {
+        "id": "guide-integration-token-actions",
+        "guideStepId": "integration-token-actions",
+        "icon": "help_outline",
+        "title": "End client access",
+        "blurb": "",
+        "contentHtml": "<p>Revoking invalidates this key. That client loses API access with it; the other keys remain independently managed.</p>"
+      },
+      {
+        "id": "guide-mcp-purpose",
+        "guideStepId": "mcp-purpose",
+        "icon": "help_outline",
+        "title": "What an AI client can do",
+        "blurb": "",
+        "contentHtml": "<p>MCP lets an AI client read public help. Approved connections use the chosen access pack: Blocked, Write or Full. Full also provides permitted domain queries and actions. The key belongs to the displayed profile.</p>"
+      },
+      {
+        "id": "guide-mcp-url",
+        "guideStepId": "mcp-url",
+        "icon": "help_outline",
+        "title": "Connect through the URL",
+        "blurb": "",
+        "contentHtml": "<p>Paste this MCP URL into your AI client and choose Connect. Sign in and check the displayed profile and group before approving access.</p>"
+      },
+      {
+        "id": "guide-mcp-permissions",
+        "guideStepId": "mcp-permissions",
+        "icon": "help_outline",
+        "title": "Approved AI clients",
+        "blurb": "",
+        "contentHtml": "<p>These are URL-based connections you approved. Each acts within the displayed account’s permissions; access does not bypass ownership rules.</p>"
+      },
+      {
+        "id": "guide-mcp-connection",
+        "guideStepId": "mcp-connection",
+        "icon": "help_outline",
+        "title": "When access was used",
+        "blurb": "",
+        "contentHtml": "<p>Check the client name, last use and expiry to recognize active access. An expired permission must be renewed before the client can use it again.</p>"
+      },
+      {
+        "id": "guide-mcp-connection-actions",
+        "guideStepId": "mcp-connection-actions",
+        "icon": "help_outline",
+        "title": "Inspect or revoke access",
+        "blurb": "",
+        "contentHtml": "<p>Details identify the client and callback address. Revoke ends this connection’s access after confirmation.</p>"
+      },
+      {
+        "id": "guide-mcp-advanced",
+        "guideStepId": "mcp-advanced",
+        "icon": "help_outline",
+        "title": "Manual client setup",
+        "blurb": "",
+        "contentHtml": "<p>Use Advanced only for a client that needs an ID and secret. Normal URL-based Connect does not need a manually generated key.</p>"
+      },
+      {
+        "id": "guide-mcp-manual-keys",
+        "guideStepId": "mcp-manual-keys",
+        "icon": "help_outline",
+        "title": "Manual MCP credentials",
+        "blurb": "",
+        "contentHtml": "<p>These keys belong to manually configured MCP clients. URL-based OAuth permissions are managed separately on the previous screen.</p>"
+      },
+      {
+        "id": "guide-mcp-generate",
+        "guideStepId": "mcp-generate",
+        "icon": "help_outline",
+        "title": "One-time client secret",
+        "blurb": "",
+        "contentHtml": "<p>Generation creates a client ID and a one-time secret. Copy both into the intended client’s settings; do not paste the secret into chat.</p>"
+      },
+      {
+        "id": "guide-integration-help",
+        "guideStepId": "integration-help",
+        "icon": "help_outline",
+        "title": "Integration help",
+        "blurb": "",
+        "contentHtml": "<p>Open the help panel for connection guidance. It explains what information a client needs and where to configure it.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Close integrations",
+        "blurb": "",
+        "contentHtml": "<p>Close these settings and return to the previous screen. Existing client keys keep their current access until you revoke them.</p>"
+      },
+      {
+        "id": "guide-affiliate-revenue",
+        "guideStepId": "affiliate-revenue",
+        "icon": "help_outline",
+        "title": "Referral purchases",
+        "blurb": "",
+        "contentHtml": "<p>Revenue summarizes paid purchases attributed to your referrals, including refunds. These amounts are not your earned commission.</p>"
+      },
+      {
+        "id": "guide-revenue-purchases",
+        "guideStepId": "revenue-purchases",
+        "icon": "help_outline",
+        "title": "Paid purchase count",
+        "blurb": "",
+        "contentHtml": "<p>Counts paid purchases attributed to people you invited. It is a purchase count, so it need not equal the number of invited users.</p>"
+      },
+      {
+        "id": "guide-revenue-bookings",
+        "guideStepId": "revenue-bookings",
+        "icon": "help_outline",
+        "title": "Paid event bookings",
+        "blurb": "",
+        "contentHtml": "<p>Counts attributed paid event bookings. This separates event booking activity from the overall purchase count.</p>"
+      },
+      {
+        "id": "guide-revenue-gross",
+        "guideStepId": "revenue-gross",
+        "icon": "help_outline",
+        "title": "Before refunds",
+        "blurb": "",
+        "contentHtml": "<p>The total attributed purchase amount before refunds. The selected display currency converts the summary; it does not change any payment.</p>"
+      },
+      {
+        "id": "guide-revenue-refunds",
+        "guideStepId": "revenue-refunds",
+        "icon": "help_outline",
+        "title": "Returned amounts",
+        "blurb": "",
+        "contentHtml": "<p>Refunds reduce the attributed purchase total. Compare them with the original total to understand the amount remaining after refunds.</p>"
+      },
+      {
+        "id": "guide-revenue-net",
+        "guideStepId": "revenue-net",
+        "icon": "help_outline",
+        "title": "After refunds",
+        "blurb": "",
+        "contentHtml": "<p>This is attributed purchase revenue minus refunds. It is not a payout balance or earned affiliate commission.</p>"
+      },
+      {
+        "id": "guide-revenue-commission",
+        "guideStepId": "revenue-commission",
+        "icon": "help_outline",
+        "title": "Commission is not set",
+        "blurb": "",
+        "contentHtml": "<p>The affiliate commission rate and eligibility rules are not set. This summary measures referral revenue, not money currently owed to you.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API client access",
+        "blurb": "",
+        "contentHtml": "<p>Use this colored icon to set Blocked, Write or Full for this API key. Each key has its own setting. Confirming the small popup stages the value; the parent tick saves it.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "Main MCP access",
+        "blurb": "",
+        "contentHtml": "<p>This is the upper access limit for this profile’s MCP connections, including already connected clients. Blocking it stops all authenticated MCP operations for this profile.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP client access",
+        "blurb": "",
+        "contentHtml": "<p>Set this client’s own level. Its effective access also follows the main MCP limit. The other clients keep their own selected levels.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Save permissions",
+        "blurb": "",
+        "contentHtml": "<p>The tick appears when permissions change. It saves all staged API and MCP levels together and closes this window after success. Closing with X discards unsaved permission changes.</p>"
+      }
+    ],
+    "contextKey": "profile.integrations",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integrations-default-hu-v5",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 5,
+    "active": false,
+    "title": "Alkalmazások és hozzáférések",
+    "summary": "Integrációs linkekkel és kulcsokkal kapcsolhatsz össze megbízható eszközöket.",
+    "description": "Az alapcím és a klienskulcsok teszik lehetővé, hogy a támogatott alkalmazások adatot cseréljenek a fiókoddal. Csak megbízható eszközhöz készíts kulcsot, őrizd titokban, és vond vissza, ha már nincs rá szükség.",
+    "headerColor": "violet",
+    "createdDate": "2026-09-29T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-affiliate-link",
+        "guideStepId": "affiliate-link",
+        "icon": "help_outline",
+        "title": "Regisztráció hozzárendelése",
+        "blurb": "",
+        "contentHtml": "<p>A linkeden regisztrálókat hozzád rendeljük. A jelvény ezeket a regisztrációkat számolja; a fiókjukhoz nem ad hozzáférést.</p>"
+      },
+      {
+        "id": "guide-integration-base-url",
+        "guideStepId": "integration-base-url",
+        "icon": "touch_app",
+        "title": "Az API célcíme",
+        "blurb": "",
+        "contentHtml": "<p>A kliens ide küldi az API-kéréseket. Ennek a telepítésnek a címét használd; a kulcs határozza meg, melyik fiók nevében jár el.</p>"
+      },
+      {
+        "id": "guide-integration-tokens",
+        "guideStepId": "integration-tokens",
+        "icon": "touch_app",
+        "title": "Külön klienshozzáférések",
+        "blurb": "",
+        "contentHtml": "<p>Minden kulcs a kiadó profilhoz vagy csoporthoz köti a klienst. Külön kulcsokkal az egyes kliensek hozzáférése külön vonható vissza.</p>"
+      },
+      {
+        "id": "guide-generate-integration-token",
+        "guideStepId": "generate-integration-token",
+        "icon": "help_outline",
+        "title": "Klienshozzáférés létrehozása",
+        "blurb": "",
+        "contentHtml": "<p>Az új kulccsal támogatott kliens kapcsolódhat. A titok egyszer látható: a kliens beállításaiba másold, ne nyilvános üzenetbe.</p>"
+      },
+      {
+        "id": "guide-integration-token-row",
+        "guideStepId": "integration-token-row",
+        "icon": "touch_app",
+        "title": "Kapcsolódás és lejárat",
+        "blurb": "",
+        "contentHtml": "<p>A kapcsolódott kulcsot már használatba vette egy kliens. Lejáratkor érvényét veszti; az előtag a titok megjelenítése nélkül azonosítja.</p>"
+      },
+      {
+        "id": "guide-integration-token-actions",
+        "guideStepId": "integration-token-actions",
+        "icon": "help_outline",
+        "title": "Klienshozzáférés megszüntetése",
+        "blurb": "",
+        "contentHtml": "<p>A visszavonás érvényteleníti ezt a kulcsot, így a kliens ezzel már nem éri el az API-t. A többi kulcs külön kezelhető.</p>"
+      },
+      {
+        "id": "guide-mcp-purpose",
+        "guideStepId": "mcp-purpose",
+        "icon": "help_outline",
+        "title": "Mit tud az AI-kliens?",
+        "blurb": "",
+        "contentHtml": "<p>Az MCP-n keresztül az AI-kliens nyilvános súgót olvashat. A jóváhagyott kapcsolatok a kiválasztott csomagot használják: Tiltva, Írás vagy Teljes. A Teljes az engedélyezett lekérdezéseket és további műveleteket is biztosítja. A kulcs a megjelenített profilhoz tartozik.</p>"
+      },
+      {
+        "id": "guide-mcp-url",
+        "guideStepId": "mcp-url",
+        "icon": "help_outline",
+        "title": "Kapcsolódás a címmel",
+        "blurb": "",
+        "contentHtml": "<p>Másold az MCP-címet az AI-kliensbe, majd kapcsolódj. Bejelentkezés után ellenőrizd a megjelenő profilt és csoportot, mielőtt engedélyezed.</p>"
+      },
+      {
+        "id": "guide-mcp-permissions",
+        "guideStepId": "mcp-permissions",
+        "icon": "help_outline",
+        "title": "Engedélyezett AI-kliensek",
+        "blurb": "",
+        "contentHtml": "<p>Itt vannak a címen keresztül engedélyezett kapcsolatok. A fiók jogaival működnek; a hozzáférés nem kerüli meg a tulajdonosi korlátokat.</p>"
+      },
+      {
+        "id": "guide-mcp-connection",
+        "guideStepId": "mcp-connection",
+        "icon": "help_outline",
+        "title": "A hozzáférés használata",
+        "blurb": "",
+        "contentHtml": "<p>A név, utolsó használat és lejárat alapján ellenőrizheted a hozzáférést. Lejárt engedéllyel a kliens csak újbóli engedélyezés után működik.</p>"
+      },
+      {
+        "id": "guide-mcp-connection-actions",
+        "guideStepId": "mcp-connection-actions",
+        "icon": "help_outline",
+        "title": "Ellenőrzés vagy visszavonás",
+        "blurb": "",
+        "contentHtml": "<p>A részletek a klienst és visszahívási címét azonosítják. A visszavonás megerősítés után megszünteti ennek a kapcsolatnak a hozzáférését.</p>"
+      },
+      {
+        "id": "guide-mcp-advanced",
+        "guideStepId": "mcp-advanced",
+        "icon": "help_outline",
+        "title": "Kézi kliensbeállítás",
+        "blurb": "",
+        "contentHtml": "<p>Haladó beállítás akkor kell, ha a kliens azonosítót és titkot kér. A szokásos, címen keresztüli kapcsolódáshoz nem kell kézi kulcs.</p>"
+      },
+      {
+        "id": "guide-mcp-manual-keys",
+        "guideStepId": "mcp-manual-keys",
+        "icon": "help_outline",
+        "title": "Kézi MCP-hitelesítés",
+        "blurb": "",
+        "contentHtml": "<p>Ezek a kézzel beállított MCP-kliensek kulcsai. A címen át létrehozott OAuth-engedélyeket az előző képernyőn, külön kezeled.</p>"
+      },
+      {
+        "id": "guide-mcp-generate",
+        "guideStepId": "mcp-generate",
+        "icon": "help_outline",
+        "title": "Egyszer látható kliens-titok",
+        "blurb": "",
+        "contentHtml": "<p>Létrehozáskor kliensazonosítót és egyszer látható titkot kapsz. A kliens beállításaiba másold őket; a titkot ne írd chatbe.</p>"
+      },
+      {
+        "id": "guide-integration-help",
+        "guideStepId": "integration-help",
+        "icon": "help_outline",
+        "title": "Integrációs súgó",
+        "blurb": "",
+        "contentHtml": "<p>Nyisd meg a csatlakozási útmutatót. Megmutatja, milyen adatokra van szüksége a kliensnek, és hol kell beállítani őket.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Integrációk bezárása",
+        "blurb": "",
+        "contentHtml": "<p>Zárd be a beállításokat az előző képernyőhöz való visszatéréshez. A meglévő klienskulcsok visszavonásig megtartják a hozzáférésüket.</p>"
+      },
+      {
+        "id": "guide-affiliate-revenue",
+        "guideStepId": "affiliate-revenue",
+        "icon": "help_outline",
+        "title": "Meghívottak vásárlásai",
+        "blurb": "",
+        "contentHtml": "<p>A Revenue a meghívásaidhoz rendelt fizetett vásárlásokat és visszatérítéseket összesíti. Ezek az összegek nem a te jutalékbevételed.</p>"
+      },
+      {
+        "id": "guide-revenue-purchases",
+        "guideStepId": "revenue-purchases",
+        "icon": "help_outline",
+        "title": "Fizetett vásárlások száma",
+        "blurb": "",
+        "contentHtml": "<p>A meghívottaidhoz rendelt fizetett vásárlások száma. Vásárlásokat számol, ezért eltérhet a meghívott felhasználók számától.</p>"
+      },
+      {
+        "id": "guide-revenue-bookings",
+        "guideStepId": "revenue-bookings",
+        "icon": "help_outline",
+        "title": "Fizetett eseményfoglalások",
+        "blurb": "",
+        "contentHtml": "<p>A hozzárendelt fizetett eseményfoglalásokat számolja. Így az eseményfoglalásokat az összes vásárlástól külön láthatod.</p>"
+      },
+      {
+        "id": "guide-revenue-gross",
+        "guideStepId": "revenue-gross",
+        "icon": "help_outline",
+        "title": "Visszatérítés előtt",
+        "blurb": "",
+        "contentHtml": "<p>A hozzárendelt vásárlások összege visszatérítések előtt. A megjelenítési pénznem csak az összesítést váltja át, a fizetéseket nem módosítja.</p>"
+      },
+      {
+        "id": "guide-revenue-refunds",
+        "guideStepId": "revenue-refunds",
+        "icon": "help_outline",
+        "title": "Visszatérített összegek",
+        "blurb": "",
+        "contentHtml": "<p>A visszatérítések csökkentik a hozzárendelt vásárlások összegét. Az eredeti összeggel összevetve látható, mennyi maradt meg.</p>"
+      },
+      {
+        "id": "guide-revenue-net",
+        "guideStepId": "revenue-net",
+        "icon": "help_outline",
+        "title": "Visszatérítés után",
+        "blurb": "",
+        "contentHtml": "<p>A hozzárendelt vásárlások összege a visszatérítések levonása után. Nem kifizethető egyenleg és nem megszerzett affiliate-jutalék.</p>"
+      },
+      {
+        "id": "guide-revenue-commission",
+        "guideStepId": "revenue-commission",
+        "icon": "help_outline",
+        "title": "A jutalék még nincs meghatározva",
+        "blurb": "",
+        "contentHtml": "<p>Az affiliate-jutalék mértéke és jogosultsági szabályai még nincsenek meghatározva. Az összesítés nem a jelenleg neked járó pénzt mutatja.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Ezzel a színes ikonnal választhatod ki az adott API-kulcs Tiltva, Írás vagy Teljes szintjét. Minden kulcsnak külön beállítása van. A kis popup pipája előkészíti a változtatást; a szülőablak pipája menti el.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "MCP fő jogosultság",
+        "blurb": "",
+        "contentHtml": "<p>Ez a profil MCP-kapcsolatainak felső jogosultsági korlátja, a már kapcsolódott kliensekre is érvényes. A tiltás a profil összes bejelentkezést igénylő MCP-műveletét leállítja.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Állítsd be ennek a kliensnek a saját szintjét. A tényleges hozzáférésére az MCP fő korlátja is érvényes. A többi kliens saját választott szintje megmarad.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Jogosultságok mentése",
+        "blurb": "",
+        "contentHtml": "<p>A pipa akkor jelenik meg, ha jogosultságot módosítottál. Együtt menti az előkészített API- és MCP-szinteket, majd siker esetén bezárja az ablakot. Az X elveti az el nem mentett jogosultságmódosításokat.</p>"
+      }
+    ],
+    "contextKey": "profile.integrations",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integrations-default-en-v6",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 6,
+    "active": true,
+    "title": "Connect apps and manage access",
+    "summary": "Use integration links and keys to connect trusted tools.",
+    "description": "The base URL and client keys let supported apps exchange data with your account. Create a key only for a tool you trust, keep its secret private, and revoke it when it is no longer needed.",
+    "headerColor": "violet",
+    "createdDate": "2026-09-29T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-affiliate-link",
+        "guideStepId": "affiliate-link",
+        "icon": "help_outline",
+        "title": "Registration attribution",
+        "blurb": "",
+        "contentHtml": "<p>People who register through your link are attributed to you. The badge counts those registrations; it does not grant access to their accounts.</p>"
+      },
+      {
+        "id": "guide-integration-base-url",
+        "guideStepId": "integration-base-url",
+        "icon": "touch_app",
+        "title": "API destination",
+        "blurb": "",
+        "contentHtml": "<p>Your client sends API requests to this address. Use this installation’s exact URL; the client key determines which account it acts for.</p>"
+      },
+      {
+        "id": "guide-integration-tokens",
+        "guideStepId": "integration-tokens",
+        "icon": "touch_app",
+        "title": "Separate client access",
+        "blurb": "",
+        "contentHtml": "<p>Each key connects a client to the issuing profile or group. Keep separate keys so one client’s access can be revoked independently.</p>"
+      },
+      {
+        "id": "guide-generate-integration-token",
+        "guideStepId": "generate-integration-token",
+        "icon": "help_outline",
+        "title": "Create client access",
+        "blurb": "",
+        "contentHtml": "<p>A new key allows a supported client to connect. Its secret appears once: copy it into that client’s settings, never into a public message.</p>"
+      },
+      {
+        "id": "guide-integration-token-row",
+        "guideStepId": "integration-token-row",
+        "icon": "touch_app",
+        "title": "Connection and expiry",
+        "blurb": "",
+        "contentHtml": "<p>Connected means this key has been claimed by a client. Expiry ends its validity; the prefix identifies the key without revealing its secret.</p>"
+      },
+      {
+        "id": "guide-integration-token-actions",
+        "guideStepId": "integration-token-actions",
+        "icon": "help_outline",
+        "title": "End client access",
+        "blurb": "",
+        "contentHtml": "<p>Revoking invalidates this key. That client loses API access with it; the other keys remain independently managed.</p>"
+      },
+      {
+        "id": "guide-mcp-purpose",
+        "guideStepId": "mcp-purpose",
+        "icon": "help_outline",
+        "title": "What an AI client can do",
+        "blurb": "",
+        "contentHtml": "<p>MCP reads public help anonymously. Your approved connection can use supported organizing actions. Full adds permitted reads and background summaries for events you organize and assets you own. Every person connects their own profile.</p>"
+      },
+      {
+        "id": "guide-mcp-url",
+        "guideStepId": "mcp-url",
+        "icon": "help_outline",
+        "title": "Connect through the URL",
+        "blurb": "",
+        "contentHtml": "<p>Paste this MCP URL into your AI client and choose Connect. Sign in and check the displayed profile and group before approving access.</p>"
+      },
+      {
+        "id": "guide-mcp-permissions",
+        "guideStepId": "mcp-permissions",
+        "icon": "help_outline",
+        "title": "Approved AI clients",
+        "blurb": "",
+        "contentHtml": "<p>These are URL-based connections you approved. Each acts within the displayed account’s permissions; access does not bypass ownership rules.</p>"
+      },
+      {
+        "id": "guide-mcp-connection",
+        "guideStepId": "mcp-connection",
+        "icon": "help_outline",
+        "title": "When access was used",
+        "blurb": "",
+        "contentHtml": "<p>Check the client name, last use and expiry to recognize active access. An expired permission must be renewed before the client can use it again.</p>"
+      },
+      {
+        "id": "guide-mcp-connection-actions",
+        "guideStepId": "mcp-connection-actions",
+        "icon": "help_outline",
+        "title": "Inspect or revoke access",
+        "blurb": "",
+        "contentHtml": "<p>Details identify the client and callback. Revoke ends its access, refresh tokens and event subscriptions. Browser logout alone does not revoke this separate authorization.</p>"
+      },
+      {
+        "id": "guide-mcp-advanced",
+        "guideStepId": "mcp-advanced",
+        "icon": "help_outline",
+        "title": "Manual client setup",
+        "blurb": "",
+        "contentHtml": "<p>Use Advanced only for a client that needs an ID and secret. Normal URL-based Connect does not need a manually generated key.</p>"
+      },
+      {
+        "id": "guide-mcp-manual-keys",
+        "guideStepId": "mcp-manual-keys",
+        "icon": "help_outline",
+        "title": "Manual MCP credentials",
+        "blurb": "",
+        "contentHtml": "<p>These keys belong to manually configured MCP clients. URL-based OAuth permissions are managed separately on the previous screen.</p>"
+      },
+      {
+        "id": "guide-mcp-generate",
+        "guideStepId": "mcp-generate",
+        "icon": "help_outline",
+        "title": "One-time client secret",
+        "blurb": "",
+        "contentHtml": "<p>Generation creates a client ID and a one-time secret. Copy both into the intended client’s settings; do not paste the secret into chat.</p>"
+      },
+      {
+        "id": "guide-integration-help",
+        "guideStepId": "integration-help",
+        "icon": "help_outline",
+        "title": "Integration help",
+        "blurb": "",
+        "contentHtml": "<p>Open the help panel for connection guidance. It explains what information a client needs and where to configure it.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Close integrations",
+        "blurb": "",
+        "contentHtml": "<p>Close these settings and return to the previous screen. Existing client keys keep their current access until you revoke them.</p>"
+      },
+      {
+        "id": "guide-affiliate-revenue",
+        "guideStepId": "affiliate-revenue",
+        "icon": "help_outline",
+        "title": "Referral purchases",
+        "blurb": "",
+        "contentHtml": "<p>Revenue summarizes paid purchases attributed to your referrals, including refunds. These amounts are not your earned commission.</p>"
+      },
+      {
+        "id": "guide-revenue-purchases",
+        "guideStepId": "revenue-purchases",
+        "icon": "help_outline",
+        "title": "Paid purchase count",
+        "blurb": "",
+        "contentHtml": "<p>Counts paid purchases attributed to people you invited. It is a purchase count, so it need not equal the number of invited users.</p>"
+      },
+      {
+        "id": "guide-revenue-bookings",
+        "guideStepId": "revenue-bookings",
+        "icon": "help_outline",
+        "title": "Paid event bookings",
+        "blurb": "",
+        "contentHtml": "<p>Counts attributed paid event bookings. This separates event booking activity from the overall purchase count.</p>"
+      },
+      {
+        "id": "guide-revenue-gross",
+        "guideStepId": "revenue-gross",
+        "icon": "help_outline",
+        "title": "Before refunds",
+        "blurb": "",
+        "contentHtml": "<p>The total attributed purchase amount before refunds. The selected display currency converts the summary; it does not change any payment.</p>"
+      },
+      {
+        "id": "guide-revenue-refunds",
+        "guideStepId": "revenue-refunds",
+        "icon": "help_outline",
+        "title": "Returned amounts",
+        "blurb": "",
+        "contentHtml": "<p>Refunds reduce the attributed purchase total. Compare them with the original total to understand the amount remaining after refunds.</p>"
+      },
+      {
+        "id": "guide-revenue-net",
+        "guideStepId": "revenue-net",
+        "icon": "help_outline",
+        "title": "After refunds",
+        "blurb": "",
+        "contentHtml": "<p>This is attributed purchase revenue minus refunds. It is not a payout balance or earned affiliate commission.</p>"
+      },
+      {
+        "id": "guide-revenue-commission",
+        "guideStepId": "revenue-commission",
+        "icon": "help_outline",
+        "title": "Commission is not set",
+        "blurb": "",
+        "contentHtml": "<p>The affiliate commission rate and eligibility rules are not set. This summary measures referral revenue, not money currently owed to you.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API client access",
+        "blurb": "",
+        "contentHtml": "<p>Use this colored icon to set Blocked, Write or Full for this API key. Each key has its own setting. Confirming the small popup stages the value; the parent tick saves it.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "Main MCP access",
+        "blurb": "",
+        "contentHtml": "<p>This is the upper limit for all MCP clients of this profile. Background Events requires Full here and on the client. Write stops those summaries; Blocked stops private access. Stop an individual monitoring subscription in your AI client.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP client access",
+        "blurb": "",
+        "contentHtml": "<p>Set this client’s own level. Its effective access also follows the main MCP limit. The other clients keep their own selected levels.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Save permissions",
+        "blurb": "",
+        "contentHtml": "<p>The tick appears when permissions change. It saves all staged API and MCP levels together and closes this window after success. Closing with X discards unsaved permission changes.</p>"
+      }
+    ],
+    "contextKey": "profile.integrations",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-profile-integrations-default-hu-v6",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 6,
+    "active": true,
+    "title": "Alkalmazások és hozzáférések",
+    "summary": "Integrációs linkekkel és kulcsokkal kapcsolhatsz össze megbízható eszközöket.",
+    "description": "Az alapcím és a klienskulcsok teszik lehetővé, hogy a támogatott alkalmazások adatot cseréljenek a fiókoddal. Csak megbízható eszközhöz készíts kulcsot, őrizd titokban, és vond vissza, ha már nincs rá szükség.",
+    "headerColor": "violet",
+    "createdDate": "2026-09-29T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-affiliate-link",
+        "guideStepId": "affiliate-link",
+        "icon": "help_outline",
+        "title": "Regisztráció hozzárendelése",
+        "blurb": "",
+        "contentHtml": "<p>A linkeden regisztrálókat hozzád rendeljük. A jelvény ezeket a regisztrációkat számolja; a fiókjukhoz nem ad hozzáférést.</p>"
+      },
+      {
+        "id": "guide-integration-base-url",
+        "guideStepId": "integration-base-url",
+        "icon": "touch_app",
+        "title": "Az API célcíme",
+        "blurb": "",
+        "contentHtml": "<p>A kliens ide küldi az API-kéréseket. Ennek a telepítésnek a címét használd; a kulcs határozza meg, melyik fiók nevében jár el.</p>"
+      },
+      {
+        "id": "guide-integration-tokens",
+        "guideStepId": "integration-tokens",
+        "icon": "touch_app",
+        "title": "Külön klienshozzáférések",
+        "blurb": "",
+        "contentHtml": "<p>Minden kulcs a kiadó profilhoz vagy csoporthoz köti a klienst. Külön kulcsokkal az egyes kliensek hozzáférése külön vonható vissza.</p>"
+      },
+      {
+        "id": "guide-generate-integration-token",
+        "guideStepId": "generate-integration-token",
+        "icon": "help_outline",
+        "title": "Klienshozzáférés létrehozása",
+        "blurb": "",
+        "contentHtml": "<p>Az új kulccsal támogatott kliens kapcsolódhat. A titok egyszer látható: a kliens beállításaiba másold, ne nyilvános üzenetbe.</p>"
+      },
+      {
+        "id": "guide-integration-token-row",
+        "guideStepId": "integration-token-row",
+        "icon": "touch_app",
+        "title": "Kapcsolódás és lejárat",
+        "blurb": "",
+        "contentHtml": "<p>A kapcsolódott kulcsot már használatba vette egy kliens. Lejáratkor érvényét veszti; az előtag a titok megjelenítése nélkül azonosítja.</p>"
+      },
+      {
+        "id": "guide-integration-token-actions",
+        "guideStepId": "integration-token-actions",
+        "icon": "help_outline",
+        "title": "Klienshozzáférés megszüntetése",
+        "blurb": "",
+        "contentHtml": "<p>A visszavonás érvényteleníti ezt a kulcsot, így a kliens ezzel már nem éri el az API-t. A többi kulcs külön kezelhető.</p>"
+      },
+      {
+        "id": "guide-mcp-purpose",
+        "guideStepId": "mcp-purpose",
+        "icon": "help_outline",
+        "title": "Mit tud az AI-kliens?",
+        "blurb": "",
+        "contentHtml": "<p>MCP-vel belépés nélkül olvasható a súgó. Jóváhagyott kapcsolattal az engedélyezett szervezési műveletek is elérhetők. A Teljes hozzáférés további olvasást és háttérjelzéseket enged a szervezett eseményeidről és saját eszközeidről. Mindenki a saját profilját kapcsolja össze.</p>"
+      },
+      {
+        "id": "guide-mcp-url",
+        "guideStepId": "mcp-url",
+        "icon": "help_outline",
+        "title": "Kapcsolódás a címmel",
+        "blurb": "",
+        "contentHtml": "<p>Másold az MCP-címet az AI-kliensbe, majd kapcsolódj. Bejelentkezés után ellenőrizd a megjelenő profilt és csoportot, mielőtt engedélyezed.</p>"
+      },
+      {
+        "id": "guide-mcp-permissions",
+        "guideStepId": "mcp-permissions",
+        "icon": "help_outline",
+        "title": "Engedélyezett AI-kliensek",
+        "blurb": "",
+        "contentHtml": "<p>Itt vannak a címen keresztül engedélyezett kapcsolatok. A fiók jogaival működnek; a hozzáférés nem kerüli meg a tulajdonosi korlátokat.</p>"
+      },
+      {
+        "id": "guide-mcp-connection",
+        "guideStepId": "mcp-connection",
+        "icon": "help_outline",
+        "title": "A hozzáférés használata",
+        "blurb": "",
+        "contentHtml": "<p>A név, utolsó használat és lejárat alapján ellenőrizheted a hozzáférést. Lejárt engedéllyel a kliens csak újbóli engedélyezés után működik.</p>"
+      },
+      {
+        "id": "guide-mcp-connection-actions",
+        "guideStepId": "mcp-connection-actions",
+        "icon": "help_outline",
+        "title": "Ellenőrzés vagy visszavonás",
+        "blurb": "",
+        "contentHtml": "<p>A részletek megmutatják a klienst és a visszahívási címet. A visszavonás megszünteti a hozzáférését, a tokenmegújítást és az eseményfigyeléseit. A böngészős kijelentkezés önmagában nem vonja vissza ezt a külön engedélyt.</p>"
+      },
+      {
+        "id": "guide-mcp-advanced",
+        "guideStepId": "mcp-advanced",
+        "icon": "help_outline",
+        "title": "Kézi kliensbeállítás",
+        "blurb": "",
+        "contentHtml": "<p>Haladó beállítás akkor kell, ha a kliens azonosítót és titkot kér. A szokásos, címen keresztüli kapcsolódáshoz nem kell kézi kulcs.</p>"
+      },
+      {
+        "id": "guide-mcp-manual-keys",
+        "guideStepId": "mcp-manual-keys",
+        "icon": "help_outline",
+        "title": "Kézi MCP-hitelesítés",
+        "blurb": "",
+        "contentHtml": "<p>Ezek a kézzel beállított MCP-kliensek kulcsai. A címen át létrehozott OAuth-engedélyeket az előző képernyőn, külön kezeled.</p>"
+      },
+      {
+        "id": "guide-mcp-generate",
+        "guideStepId": "mcp-generate",
+        "icon": "help_outline",
+        "title": "Egyszer látható kliens-titok",
+        "blurb": "",
+        "contentHtml": "<p>Létrehozáskor kliensazonosítót és egyszer látható titkot kapsz. A kliens beállításaiba másold őket; a titkot ne írd chatbe.</p>"
+      },
+      {
+        "id": "guide-integration-help",
+        "guideStepId": "integration-help",
+        "icon": "help_outline",
+        "title": "Integrációs súgó",
+        "blurb": "",
+        "contentHtml": "<p>Nyisd meg a csatlakozási útmutatót. Megmutatja, milyen adatokra van szüksége a kliensnek, és hol kell beállítani őket.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "close",
+        "title": "Integrációk bezárása",
+        "blurb": "",
+        "contentHtml": "<p>Zárd be a beállításokat az előző képernyőhöz való visszatéréshez. A meglévő klienskulcsok visszavonásig megtartják a hozzáférésüket.</p>"
+      },
+      {
+        "id": "guide-affiliate-revenue",
+        "guideStepId": "affiliate-revenue",
+        "icon": "help_outline",
+        "title": "Meghívottak vásárlásai",
+        "blurb": "",
+        "contentHtml": "<p>A Revenue a meghívásaidhoz rendelt fizetett vásárlásokat és visszatérítéseket összesíti. Ezek az összegek nem a te jutalékbevételed.</p>"
+      },
+      {
+        "id": "guide-revenue-purchases",
+        "guideStepId": "revenue-purchases",
+        "icon": "help_outline",
+        "title": "Fizetett vásárlások száma",
+        "blurb": "",
+        "contentHtml": "<p>A meghívottaidhoz rendelt fizetett vásárlások száma. Vásárlásokat számol, ezért eltérhet a meghívott felhasználók számától.</p>"
+      },
+      {
+        "id": "guide-revenue-bookings",
+        "guideStepId": "revenue-bookings",
+        "icon": "help_outline",
+        "title": "Fizetett eseményfoglalások",
+        "blurb": "",
+        "contentHtml": "<p>A hozzárendelt fizetett eseményfoglalásokat számolja. Így az eseményfoglalásokat az összes vásárlástól külön láthatod.</p>"
+      },
+      {
+        "id": "guide-revenue-gross",
+        "guideStepId": "revenue-gross",
+        "icon": "help_outline",
+        "title": "Visszatérítés előtt",
+        "blurb": "",
+        "contentHtml": "<p>A hozzárendelt vásárlások összege visszatérítések előtt. A megjelenítési pénznem csak az összesítést váltja át, a fizetéseket nem módosítja.</p>"
+      },
+      {
+        "id": "guide-revenue-refunds",
+        "guideStepId": "revenue-refunds",
+        "icon": "help_outline",
+        "title": "Visszatérített összegek",
+        "blurb": "",
+        "contentHtml": "<p>A visszatérítések csökkentik a hozzárendelt vásárlások összegét. Az eredeti összeggel összevetve látható, mennyi maradt meg.</p>"
+      },
+      {
+        "id": "guide-revenue-net",
+        "guideStepId": "revenue-net",
+        "icon": "help_outline",
+        "title": "Visszatérítés után",
+        "blurb": "",
+        "contentHtml": "<p>A hozzárendelt vásárlások összege a visszatérítések levonása után. Nem kifizethető egyenleg és nem megszerzett affiliate-jutalék.</p>"
+      },
+      {
+        "id": "guide-revenue-commission",
+        "guideStepId": "revenue-commission",
+        "icon": "help_outline",
+        "title": "A jutalék még nincs meghatározva",
+        "blurb": "",
+        "contentHtml": "<p>Az affiliate-jutalék mértéke és jogosultsági szabályai még nincsenek meghatározva. Az összesítés nem a jelenleg neked járó pénzt mutatja.</p>"
+      },
+      {
+        "id": "guide-integration-token-access",
+        "guideStepId": "integration-token-access",
+        "icon": "help_outline",
+        "title": "API-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Ezzel a színes ikonnal választhatod ki az adott API-kulcs Tiltva, Írás vagy Teljes szintjét. Minden kulcsnak külön beállítása van. A kis popup pipája előkészíti a változtatást; a szülőablak pipája menti el.</p>"
+      },
+      {
+        "id": "guide-mcp-main-access",
+        "guideStepId": "mcp-main-access",
+        "icon": "help_outline",
+        "title": "MCP fő jogosultság",
+        "blurb": "",
+        "contentHtml": "<p>Ez a profil összes MCP-kliensének felső jogosultsági korlátja. A háttérben futó Events-figyeléshez itt és a kliensnél is Teljes kell. Az Írás leállítja ezeket a jelzéseket; a Tiltott a személyes hozzáférést is. Egyetlen figyelést az AI-kliensben állíts le.</p>"
+      },
+      {
+        "id": "guide-mcp-client-access",
+        "guideStepId": "mcp-client-access",
+        "icon": "help_outline",
+        "title": "MCP-kliens jogosultsága",
+        "blurb": "",
+        "contentHtml": "<p>Állítsd be ennek a kliensnek a saját szintjét. A tényleges hozzáférésére az MCP fő korlátja is érvényes. A többi kliens saját választott szintje megmarad.</p>"
+      },
+      {
+        "id": "guide-integration-access-save",
+        "guideStepId": "integration-access-save",
+        "icon": "help_outline",
+        "title": "Jogosultságok mentése",
+        "blurb": "",
+        "contentHtml": "<p>A pipa akkor jelenik meg, ha jogosultságot módosítottál. Együtt menti az előkészített API- és MCP-szinteket, majd siker esetén bezárja az ablakot. Az X elveti az el nem mentett jogosultságmódosításokat.</p>"
+      }
+    ],
+    "contextKey": "profile.integrations",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "help-default-hu-v4",
+    "documentType": "help",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 4,
+    "active": true,
+    "title": "MyScoutee súgó",
+    "summary": "Gyakorlati útmutató témánként",
+    "description": "Profilok, közösségek, események, beszélgetések és eszközök: válassz témát, és kövesd a lépéseket.",
+    "headerColor": "amber",
+    "createdDate": "2026-09-26T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "start",
+        "icon": "explore",
+        "title": "Kezdés",
+        "blurb": "Válassz profilt, és fedezd fel a lehetőségeket.",
+        "contentHtml": "<ul><li>Az avatarról nyisd meg a profilodat, és töltsd ki az alapadatokat. A készültségi jelvény segít megtalálni a hiányzó információkat.</li><li>Az oldalsó menüben találod a Közösség, Benyomások, Tevékenységek és Eszközeim részeket. A műveletek a szerepkörödtől és az adott elemtől függenek.</li><li>A kérdőjel az adott felület magyarázatát nyitja meg. A mobil alsó menüket a fejlécükben lévő X-szel is bezárhatod.</li></ul>"
+      },
+      {
+        "id": "integrations",
+        "icon": "api",
+        "title": "API és AI-segítség",
+        "blurb": "Az integrációk a meglévő profiljogosultságokat használják.",
+        "contentHtml": "<ul><li>A profilszerkesztő → Affiliate → Klienskulcsok → AI / MCP-kapcsolatok részből másold az MCP URL-t az AI-kliensbe, és válaszd a Connect lehetőséget.</li><li>A kliens megnyitja a MyScoutee belépését. Használd a telepítés szokásos belépési módját, ellenőrizd a megjelenő profilt és csoportot, majd engedélyezd a hozzáférést. A kliensbe visszatérve kapcsold be a kapcsolatot a beszélgetéshez. Automatikus regisztrációnál nem kell kézzel kliensazonosítót vagy titkot másolni.</li><li>A Haladó ablakban találod a kézzel generált MCP-klienskulcsok táblázatát. A Generálás azonnal új sort hoz létre kliensazonosítóval és egyszer megjelenő titokkal; ezeket másold a kliens beállításaiba. Név- vagy visszahívásicím-űrlap nincs. A gomb számlálója ezeket a kulcsokat mutatja. Az URL-en csatlakozott OAuth-engedélyek külön, a főablakban maradnak, saját visszavonással és kapcsolatadatokkal. Hitelesítési adatot ne másolj csevegésbe.</li><li>Az anonim /mcp belépés nélkül olvassa az aktuális súgót. A személyes /mcp/private kizárólag a jóváhagyott profil meglévő API-jogosultságait használja. A kapcsolat ehhez a profilhoz kötött; az alkalmazás csoportváltója vagy a csoport nevének megadása nem irányítja át.</li><li>Eszköz létrehozásához alapprofilhoz tartozó kapcsolat kell. Az eseményműveletek a jóváhagyott profil és csoport jogosultságait követik; meghíváshoz a megfelelő adminszerep is kell. A kliens a pillanatnyilag engedélyezett műveleteket kapja meg, próbafeltöltés nélkül.</li><li>A kapcsolat 90 nap után lejár. Ugyanebben az AI / MCP-listában a visszavonás érvényteleníti a hozzáférési és megújítási tokeneket is. A böngészős kijelentkezés önmagában nem vonja vissza a kapcsolatot.</li><li>A kizárólag böngészős local mód nem fogad külső OAuth-kérést. Devben futó backend mellett demóbelépés is használható; telepítéskor az ott beállított belépés érvényes. A külön fejlesztői kliens és az indítás lépései a <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repóban</a> találhatók.</li><li>Ha a fő MCP-link és a kapcsolódó kliens is Teljes hozzáférésű, Events-képes AI-klienssel figyeltetheted az általad szervezett eseményt vagy az alapprofilod saját eszközét. ChatGPT-ben támogatott Work/Cloud beszélgetésben nevezd meg, mit és milyen célból figyeljen. Rövid összefoglalók érkeznek, a lezárt Mingle eredményekről is; a részleteket az engedélyezett olvasási műveletekkel kérheted le. Mindenki a saját MyScoutee-profilját engedélyezi OAuth 2.1 és PKCE használatával. A figyelést az AI-kliensben állítsd le, vagy itt vond vissza a kapcsolatot. A lejárt vagy túlterhelt időszakok kimaradásait nem játssza vissza. A személyes értékelések és döntések az alkalmazásban maradnak.</li></ul>"
+      },
+      {
+        "id": "profiles",
+        "icon": "person",
+        "title": "Profilok és láthatóság",
+        "blurb": "A kiválasztott közösséghez tartozó profilodat szerkesztheted.",
+        "contentHtml": "<ul><li>Profil, képek vagy láthatóság szerkesztése előtt ellenőrizd az aktív csoportot. A csoportprofilok beállításai elkülönülnek.</li><li>A láthatósági kapcsolókkal választhatod ki, mely profiladatokat osztod meg. A csoportszabályok bizonyos adatokat kötelezővé tehetnek a részvételhez.</li><li>A szerkesztőt a pipával mentheted. A belső szabályszerkesztő módosításait a külső szerkesztő mentése véglegesíti.</li></ul>"
+      },
+      {
+        "id": "groups",
+        "icon": "groups",
+        "title": "Csoportok és váltás",
+        "blurb": "Elkülönülő közösségek, közös fiókeszközök.",
+        "contentHtml": "<ul><li>A fejléc választójával az alapprofil és azok a csoportok között válthatsz, amelyeknek tagja vagy. Egymásba ágyazott közösségi alcsoportok nincsenek.</li><li>A Közösség, Benyomások és Tevékenységek blokkok és belső ablakaik a kiválasztott csoporthoz tartoznak. Az eseményfelfedezés is ezt követi.</li><li>Az Eszközeim és a fejléc általános funkciói csoportváltás után is elérhetők. Az eszközök és az eszközfelfedezés az alapprofilhoz tartoznak.</li><li>Várd meg a csoportváltás végét. Sikertelen váltáskor visszaáll az előző választás, így újrapróbálhatod.</li></ul>"
+      },
+      {
+        "id": "group-membership",
+        "icon": "group_add",
+        "title": "Csatlakozás és csoportkezelés",
+        "blurb": "A felfedezés, a függő kérelem és a tagság külön állapot.",
+        "contentHtml": "<ul><li>A Felfedezés azokat a csoportokat mutatja, amelyekkel még nincs kapcsolatod. A Részvételbe a függő kérelmek is beletartoznak; a saját csoportok külön kezelhetők.</li><li>A csoportkártyán nézd meg a szabályokat, majd jelentkezz. A taglista csak akkor látható, ha a csoport ezt engedélyezi.</li><li>A közösségen belüli moderációt a csoport adminja kezeli. A csoport létrehozásának alkalmazásszintű moderációja konfigurációfüggő.</li><li>A meghívólink a regisztrációhoz csoportcsatlakozást is kapcsolhat, és utána a meghívott csoportot választhatja ki. A teljes regisztrációt a kapott linkről indítsd.</li></ul>"
+      },
+      {
+        "id": "ratings",
+        "icon": "star",
+        "title": "Felfedezés, értékelések és szűrők",
+        "blurb": "Állítsd be, kit látsz, és kövesd az interakcióidat.",
+        "contentHtml": "<ul><li>A kezdőlap szűrőivel állítsd be, milyen profilokat szeretnél látni. Az értékelés az érdeklődésedet jelzi, nem garantál kölcsönösséget.</li><li>A Benyomások és Tevékenységek részekben az adott csoport értékeléseit és visszajelzéseit találod.</li><li>A többválasztós menük címe jelzi a beállított maximumot. A korlát elérésekor előbb vegyél ki egy elemet, majd válassz másikat.</li></ul>"
+      },
+      {
+        "id": "events",
+        "icon": "event_note",
+        "title": "Események és részvétel",
+        "blurb": "Fedezz fel, csatlakozz vagy szervezz az aktív csoportban.",
+        "contentHtml": "<ul><li>Jelentkezés előtt nézd meg a kártyán az időpontot, helyszínt, létszámot, árat és csatlakozási szabályokat.</li><li>A jelentkezés függőben maradhat a szükséges jóváhagyás vagy fizetési lépés befejezéséig. Az állapotot a kártyán ellenőrizheted.</li><li>A szervezők az eseménymenükben kezelhetik a meghívásokat, tagokat és részleteket. A hozzáférés az eseményben betöltött szerepedtől függ.</li><li>A naptárexport az exportálható közelgő eseményeket tartalmazza. Ha nincs ilyen, üres fájl helyett tájékoztató ablak jelenik meg.</li></ul>"
+      },
+      {
+        "id": "stages",
+        "icon": "account_tree",
+        "title": "Alesemények és versenyek",
+        "blurb": "Bontsd az eseményt ütemezhető, kezelhető szakaszokra.",
+        "contentHtml": "<ul><li>Az egyes szakaszokhoz, mellékprogramokhoz vagy opcionális alkalmakhoz használj aleseményeket. Ezekhez külön időzítés és erőforrás is tartozhat.</li><li>A versenybeállításokban találod a támogatott szakasz- és ranglistaopciókat. A résztvevők beosztásakor kövesd az esemény beállításait.</li><li>Az eseményszakasz vagy résztvevői csoport nem közösségi alcsoport. A belső elemek kezelésekor a fő esemény környezetében maradsz.</li></ul>"
+      },
+      {
+        "id": "resources",
+        "icon": "inventory_2",
+        "title": "Eszközök és kölcsönzés",
+        "blurb": "Szállítás, szállás, kellékek és eseményhez rendelés.",
+        "contentHtml": "<ul><li>Az eszközeid az alapprofilhoz tartoznak, és csoportváltáskor is látszanak. Az eszközfelfedezés nem függ az aktív csoporttól.</li><li>Létrehozáskor add meg az elérhetőséget, kapacitást és a szükséges adatokat. A kérelmeket az eszköz menüiben kezelheted.</li><li>Egy esemény a közösségén kívülről származó eszközt is használhat. Az eseményhez és résztvevőihez való hozzáférést továbbra is az esemény jogosultságai szabályozzák.</li><li>Az eszközkölcsönzés fizetése a fizető profiljához kapcsolódik. A tulajdonos a saját eszközeihez tartozó fizetéseket szintén láthatja a fizetési előzményekben.</li></ul>"
+      },
+      {
+        "id": "tickets",
+        "icon": "qr_code",
+        "title": "Jegyek",
+        "blurb": "Keresd meg és ellenőrizd a jogosultságodhoz tartozó jegyeket.",
+        "contentHtml": "<ul><li>Az Eszközeim / Jegy alatt találod az elérhető jegyműveleteket. A jegyek csoportváltás után is hozzáférhetők.</li><li>QR-kód használata előtt ellenőrizd az eseményt és a jegy állapotát. Az érvényesítés az eseményjogosultságtól és a jegy aktuális állapotától függ.</li><li>Ha a beolvasás tiltva van, ellenőrizd a böngésző vagy eszköz kameraengedélyét, majd próbáld újra.</li></ul>"
+      },
+      {
+        "id": "activities",
+        "icon": "forum",
+        "title": "Csevegések és megosztás",
+        "blurb": "Tartsd külön az esemény-, kapcsolati és támogatási beszélgetéseket.",
+        "contentHtml": "<ul><li>A chatlista szűrőivel keresd meg a megfelelő csatornát. Az eseménybeszélgetésekben az esemény jogosultságai érvényesek.</li><li>Az eszköz- vagy eseménymegosztóban jelöld ki a kártyákat, majd nyomd meg a kosár pipáját. Az új kijelölések külön chatüzenetként kerülnek be.</li><li>Egy korábban megosztott kijelölés kivétele visszavonja a megosztást; a régi üzenet töröltként jelenhet meg akkor is, ha nincs az első oldalon.</li><li>A külső meghívólink másolása és a kártya belső chatbe küldése külön művelet. Ellenőrizd, melyiket használod.</li></ul>"
+      },
+      {
+        "id": "contacts",
+        "icon": "contacts",
+        "title": "Kapcsolatok és chatengedély",
+        "blurb": "A kapcsolat mentése önmagában nem ad közvetlen chatengedélyt.",
+        "contentHtml": "<ul><li>Telefont, e-mailt vagy közösségi elérhetőséget külön is menthetsz. A MyScoutee közvetlen chathez külön kérelmet kell küldeni.</li><li>A MyScoutee chatjelvényre kattintva kérhetsz hozzáférést. A kérelem a másik fél döntéséig függőben marad.</li><li>A Kérelmek szűrőben az új beérkező kérések vannak elöl. Jóváhagyáskor létrejön a kapcsolat; elutasításkor módosul az engedély állapota.</li><li>Az oldalsó piros jelvény a beérkező függő kérelmeket számolja, nem a mentett kapcsolatokat. Az értesítést a megfelelő másik fél kapja. A kapcsolati meghívóban csak a kapcsolataid hívhatók meg.</li></ul>"
+      },
+      {
+        "id": "notifications",
+        "icon": "notifications",
+        "title": "Értesítések és jelvények",
+        "blurb": "Lásd, mi változott, és melyik közösséghez tartozik.",
+        "contentHtml": "<ul><li>Az értesítési sáv az egész fiókhoz tartozik. A csoportjelölés segít azonosítani az elem eredetét az elérhető szűrők használatakor.</li><li>Az olvasatlan és a függő műveleteket jelző számok eltérő dolgokat jelentenek. A részletekhez nyisd meg a megfelelő listát.</li><li>A böngészős pushértesítésekhez engedély kell. A push kikapcsolása nem törli az alkalmazáson belüli értesítési előzményeket.</li></ul>"
+      },
+      {
+        "id": "payments",
+        "icon": "payments",
+        "title": "Fizetések és előzmények",
+        "blurb": "Ellenőrizd a tranzakciót, a címzettet és az állapotot.",
+        "contentHtml": "<ul><li>A fizetési előzmények a kiválasztott profilhoz/csoporthoz tartoznak. A saját eszközeid fizetései tulajdonosi alapon is megjelenhetnek.</li><li>Ellenőrizd, hogy fizetésről, visszatérítésről vagy készpénzes bejegyzésről van-e szó. A készpénzes bejegyzés nem online átutalási bizonylat, és nem keletkeztet affiliate jutalékot.</li><li>A függő vagy sikertelen fizetés még nem befejezett foglalás. Kövesd az állapotot és az elérhető újrapróbálási vagy visszatérítési műveletet.</li></ul>"
+      },
+      {
+        "id": "invitations",
+        "icon": "share",
+        "title": "Meghívólinkek és affiliate",
+        "blurb": "A profilhoz, eseményhez vagy csoporthoz illő linket oszd meg.",
+        "contentHtml": "<ul><li>A személyes meghívólink a vonatkozó szabályok szerint rögzíti a meghívót a regisztráció befejezésekor.</li><li>Az esemény- és csoportmeghívók a céljukat is tartalmazzák. Ne helyettesítsd őket egy egyszerű oldalhivatkozással.</li><li>Az API résztvevő-meghívása is támogatja a meghívóhoz rendelést. A létrehozott linkeket juttasd el a meghívni kívánt embereknek.</li><li>Az affiliate-adatok a kiválasztott profilhoz tartoznak. Készpénzes bejegyzésből nem keletkezik jutalék.</li></ul>"
+      },
+      {
+        "id": "safety",
+        "icon": "verified_user",
+        "title": "Biztonság, moderáció és támogatás",
+        "blurb": "A problémát a hozzá tartozó elemnél jelezd.",
+        "contentHtml": "<ul><li>Az érintett kártya vagy üzenet jelentési műveletét használd, és írd le érthetően a problémát.</li><li>A csoportmoderációt a csoport adminjai, az alkalmazásszintű feladatokat a konfigurációnak megfelelő alkalmazásadminok kezelik. A moderátori szerep nem ad hozzáférést idegen csoportokhoz.</li><li>A moderációs állapot és a függő jelvények mutatják, ha teendő van. A támogatási beszélgetéseket a megfelelő csatornában és szűrővel keresd.</li><li>Csak a vizsgálathoz szükséges adatokat oszd meg. Jelszót, API-kulcsot vagy fizetési titkot ne írj jelentésbe.</li></ul>"
+      },
+      {
+        "id": "permissions",
+        "icon": "settings",
+        "title": "Telepítés, helyadat és értesítések",
+        "blurb": "A szükséges engedélyeket add meg; a tiltás a rendszerbeállításokban oldható fel.",
+        "contentHtml": "<ul><li>A telepítés, a helyadat és a pushértesítés külön döntés. A beállítóablak súgója mindegyiket elmagyarázza.</li><li>A mentett helyadattal az alkalmazás akkor is tovább működhet, ha később letiltod a helyhozzáférést. Bekapcsolt követésnél a távolsági szabály alapján frissülhet.</li><li>Android: ellenőrizd a böngésző webhelyengedélyeit és az Android alkalmazásbeállítások értesítési engedélyeit. A telepített webappnak külön alkalmazásbeállítása is lehet.</li><li>iPhone/iPad: a helyhozzáférést az Adatvédelem és biztonság, a telepített webapp értesítéseit a Beállítások alatt ellenőrizd. A push működése a telepítéstől és a platform támogatásától függ.</li><li>Engedélymódosítás után térj vissza az apphoz, és próbáld újra. Az alkalmazás nem tudja felülírni a böngésző vagy az operációs rendszer tiltását.</li></ul>"
+      }
+    ]
+  },
+  {
+    "_id": "help-default-v4",
+    "documentType": "help",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 4,
+    "active": true,
+    "title": "MyScoutee help",
+    "summary": "A practical guide by topic",
+    "description": "Profiles, communities, events, chats and tools: find the relevant topic and follow the steps.",
+    "headerColor": "amber",
+    "createdDate": "2026-09-26T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-06T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "start",
+        "icon": "explore",
+        "title": "Getting started",
+        "blurb": "Choose a profile and discover the available activities.",
+        "contentHtml": "<ul><li>Open your profile from the avatar and complete the basic fields. The completion badge helps you find missing information.</li><li>Use the side menu for Community, Impressions, Activities and My tools. Available actions depend on your role and the current item.</li><li>A question-mark button opens contextual help. Mobile sheet menus have a close button in their header.</li></ul>"
+      },
+      {
+        "id": "integrations",
+        "icon": "api",
+        "title": "API and AI assistance",
+        "blurb": "Use the existing profile permissions for integrations.",
+        "contentHtml": "<ul><li>Copy the MCP URL from Profile editor → Affiliate → Client keys → AI / MCP connections into your AI client and choose Connect.</li><li>The client opens MyScoutee sign-in. Use the installation’s normal sign-in method, check the displayed profile and group, and approve access. Return to the client and enable the connection in your conversation. Automatic registration needs no manually copied client ID or secret.</li><li>Advanced contains the manual MCP client-key table. Generate immediately adds a row with a client ID and one-time secret; copy these into the client’s configuration. No name or callback form is needed. Its badge counts these keys. URL-based OAuth permissions remain in the main popup, with their own Revoke action and connection details. Never paste credentials into chat.</li><li>Anonymous /mcp reads the current help without login. Personal /mcp/private calls use only the approved profile’s existing API permissions. Each connection stays bound to that profile; an app group switch or a group name in a prompt cannot retarget it.</li><li>Asset creation requires a base-profile connection. Event operations follow the approved profile and group; invitation tools additionally require the appropriate administrator role. Discovery lists the currently allowed operations without probing write endpoints.</li><li>Connections expire after 90 days. Revoke in the same AI / MCP list to invalidate access and refresh tokens. Browser logout alone does not revoke an existing connection.</li><li>Browser-only local mode cannot receive external OAuth. Development with the backend running supports demo sign-in; deployed installations use their configured sign-in. The separate development client and setup commands are in the <a href=\"https://github.com/fssrepository/myscoutee-mcp\">MyScoutee MCP repository</a>.</li><li>With Full access on both the main MCP link and the connected client, an Events-capable AI host can monitor an event you organize or a base-profile asset you own. In ChatGPT use a supported Work/Cloud chat and name the resource and what to monitor. Updates carry short summaries, including completed Mingle results; ask for permitted details when needed. Each person authorizes their own MyScoutee profile through OAuth 2.1 with PKCE. Stop monitoring in the AI client, or revoke the connection here. Expired or overloaded intervals are not replayed. Personal ratings and decisions stay in the application.</li></ul>"
+      },
+      {
+        "id": "profiles",
+        "icon": "person",
+        "title": "Profiles and visibility",
+        "blurb": "Edit the profile belonging to your selected community.",
+        "contentHtml": "<ul><li>Check the active group before editing your profile, photos or visibility settings. Group profiles keep their own settings.</li><li>Visibility controls determine which profile details you share. Group rules can require particular details before participation.</li><li>Save the editor with its tick button. A nested rules editor belongs to the surrounding editor; finish by saving that editor too.</li></ul>"
+      },
+      {
+        "id": "groups",
+        "icon": "groups",
+        "title": "Groups and switching",
+        "blurb": "Separate communities, shared account tools.",
+        "contentHtml": "<ul><li>The header selector switches between your base profile and groups you belong to. Nested community groups are not supported.</li><li>Community, Impressions, Activities and their popups use the selected group. Event discovery also follows that group.</li><li>My tools and the general header controls remain available across groups. Assets and asset discovery belong to your base profile.</li><li>Wait for a group switch to finish. If switching fails, the previous selection is restored so you can try again.</li></ul>"
+      },
+      {
+        "id": "group-membership",
+        "icon": "group_add",
+        "title": "Joining and managing groups",
+        "blurb": "Discovery, pending requests and membership are different states.",
+        "contentHtml": "<ul><li>Discovery shows groups you have not interacted with. Participation includes pending requests; your own groups are managed separately.</li><li>Open a group card to review its rules and apply. The member list is visible only when the group permits it.</li><li>Group admins handle their community moderation. Platform moderation of group creation depends on the application configuration.</li><li>Invitation links can carry group membership into registration and select the invited group afterward. Follow the link through the complete registration flow.</li></ul>"
+      },
+      {
+        "id": "ratings",
+        "icon": "star",
+        "title": "Discovery, ratings and filters",
+        "blurb": "Adjust what you see and review your interactions.",
+        "contentHtml": "<ul><li>Use the home filters to choose the profiles relevant to you. Ratings express your interest; they do not guarantee mutual interest.</li><li>The Impressions and Activities sections show the related ratings and feedback in the selected group.</li><li>Multi-select menus show their configured maximum in the title. Clear an existing selection before adding another when you reach the limit.</li></ul>"
+      },
+      {
+        "id": "events",
+        "icon": "event_note",
+        "title": "Events and participation",
+        "blurb": "Discover, join or organize an event in the active group.",
+        "contentHtml": "<ul><li>Review the date, location, capacity, price and joining rules on the event card before applying.</li><li>An application can remain pending until the required approval or payment step is complete. Check the participation status on the card.</li><li>Organizers manage invitations, members and event details through the existing event menus. Access depends on your event role.</li><li>Calendar export includes exportable upcoming events. If none are available, an information popup appears instead of downloading an empty calendar.</li></ul>"
+      },
+      {
+        "id": "stages",
+        "icon": "account_tree",
+        "title": "Sub events and tournaments",
+        "blurb": "Break an event into a schedule and manageable stages.",
+        "contentHtml": "<ul><li>Use sub events for individual stages, side activities or optional sessions. Each can have its own schedule and resources.</li><li>Tournament setup provides the supported stage and leaderboard options. Follow the event settings when assigning participants.</li><li>An event stage or participant group is not a nested community group. Keep the main event context when managing its children.</li></ul>"
+      },
+      {
+        "id": "resources",
+        "icon": "inventory_2",
+        "title": "Assets and borrowing",
+        "blurb": "Transport, accommodation, supplies and event assignments.",
+        "contentHtml": "<ul><li>Your assets belong to the base profile and remain visible when you switch groups. Asset discovery is independent of the active group.</li><li>Provide availability, capacity and the relevant details when creating an asset. Review requests through its existing menus.</li><li>An event may use an asset from outside its community. Access to the event and its participants still follows event permissions.</li><li>Asset borrowing payments remain associated with the payer profile. The owner can also see payments for their own assets in payment history.</li></ul>"
+      },
+      {
+        "id": "tickets",
+        "icon": "qr_code",
+        "title": "Tickets",
+        "blurb": "Find and validate the tickets you are allowed to manage.",
+        "contentHtml": "<ul><li>Open Tickets in My tools to find your available ticket actions. Tickets remain accessible across group switches.</li><li>Check the event and ticket status before using a QR code. Validation depends on event permissions and the current ticket state.</li><li>If scanning is blocked, check the browser or device camera permission before trying again.</li></ul>"
+      },
+      {
+        "id": "activities",
+        "icon": "forum",
+        "title": "Chats and sharing",
+        "blurb": "Keep event, contact and support conversations in context.",
+        "contentHtml": "<ul><li>Use the chat list filters to find the relevant channel. Event conversations retain their event permissions.</li><li>In Share assets or Share events, select cards and confirm with the basket tick. Newly selected items are sent as separate chat messages.</li><li>Removing a previously shared selection withdraws that share; an older message can show as deleted even when it is outside the first page.</li><li>Copying an external invitation link is different from sharing a card inside an existing chat. Review which action you are using.</li></ul>"
+      },
+      {
+        "id": "contacts",
+        "icon": "contacts",
+        "title": "Contacts and chat permission",
+        "blurb": "Saving a contact does not automatically grant direct chat access.",
+        "contentHtml": "<ul><li>You can save phone, email or social contact details independently. MyScoutee direct chat requires a separate request.</li><li>Choose the MyScoutee chat badge to request access. A pending request stays pending until the other member decides.</li><li>The Requests filter shows incoming requests with newest first. Approving adds the contact; declining changes the permission state.</li><li>The side-menu red badge counts pending incoming requests, not saved contacts. The other member receives the relevant notification. Only contacts can be invited through the contact invitation flow.</li></ul>"
+      },
+      {
+        "id": "notifications",
+        "icon": "notifications",
+        "title": "Notifications and badges",
+        "blurb": "Find what changed and which community it belongs to.",
+        "contentHtml": "<ul><li>The notification bar is account-wide. Group references help identify the origin of an item while you use the available filters.</li><li>Unread and pending badges indicate different things. Open the corresponding list to review the action or message.</li><li>Browser push notifications require permission. Turning push off does not mean the in-app notification history disappears.</li></ul>"
+      },
+      {
+        "id": "payments",
+        "icon": "payments",
+        "title": "Payments and history",
+        "blurb": "Review the transaction, recipient and status.",
+        "contentHtml": "<ul><li>Payment history follows the selected profile/group. Payments for assets you own can also appear through ownership.</li><li>Check whether an item is a payment, refund or cash record. A cash record is not proof of an online transfer and does not create affiliate commission.</li><li>A pending or failed payment is not a completed booking. Follow the status and the available retry or refund action.</li></ul>"
+      },
+      {
+        "id": "invitations",
+        "icon": "share",
+        "title": "Invitation links and affiliate",
+        "blurb": "Share the right link for a profile, event or group.",
+        "contentHtml": "<ul><li>A personal invitation link records the inviter when registration completes under the applicable rules.</li><li>Event and group invitation links also carry the relevant destination. Do not replace them with a plain page URL.</li><li>The API participant invitation flow also supports invitation attribution. Return the generated links to the people you intend to invite.</li><li>Affiliate information follows the selected profile. Cash records do not generate commission.</li></ul>"
+      },
+      {
+        "id": "safety",
+        "icon": "verified_user",
+        "title": "Safety, moderation and support",
+        "blurb": "Report a problem through the relevant item.",
+        "contentHtml": "<ul><li>Use the report action on the affected card or message and provide a clear explanation.</li><li>Group admins handle group moderation; application admins handle platform responsibilities according to configuration. A moderator does not gain unrelated group access.</li><li>Moderation status and pending badges show when attention is needed. Support conversations use their relevant channel and filters.</li><li>Share only the information needed to investigate. Never include passwords, API keys or payment secrets in a report.</li></ul>"
+      },
+      {
+        "id": "permissions",
+        "icon": "settings",
+        "title": "Installation, location and notifications",
+        "blurb": "Allow what you need; recover blocked permissions in device settings.",
+        "contentHtml": "<ul><li>Installation, location and push notifications are separate choices. The setup help explains each one.</li><li>The saved location lets the application continue when later location access is disabled. Enabled location tracking can update it under the distance rule.</li><li>Android: check the site permissions in your browser and the notification permissions in Android app settings. Installed web apps may also have their own app settings.</li><li>iPhone/iPad: check location access under Privacy &amp; Security and notifications for the installed web app under Settings. Available push behavior depends on installation and platform support.</li><li>After changing a permission, return to the app and retry. The application cannot override a browser or operating-system block.</li></ul>"
       }
     ]
   }

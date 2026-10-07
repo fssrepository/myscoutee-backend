@@ -1005,6 +1005,13 @@ public class ChatService {
     public ChatMessagesPageResponseDto queryMessagesPage(
             String chatId, String requestedUserId, Integer limit, String cursor,
             String targetMessageId) {
+        return queryMessagesPage(chatId, requestedUserId, limit, cursor, targetMessageId, true);
+    }
+
+    /** Integration reads do not imply that the person has viewed the messages. */
+    public ChatMessagesPageResponseDto queryMessagesPage(
+            String chatId, String requestedUserId, Integer limit, String cursor,
+            String targetMessageId, boolean markViewed) {
         String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
         String targetId = normalizeId(targetMessageId);
@@ -1038,12 +1045,12 @@ public class ChatService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .toList();
-        ChatReadUpdate readUpdate = target != null
+        ChatReadUpdate readUpdate = !markViewed ? null : target != null
                 ? markMessagesRead(snapshot, userId, List.of(targetId), messages)
                 : startIndex == 0
                         ? markChannelRead(snapshot, userId, messages)
                         : markMessagesRead(snapshot, userId, loadedMessageIds, messages);
-        if (readUpdate.changed() && !readUpdate.readMessageIds().isEmpty()) {
+        if (readUpdate != null && readUpdate.changed() && !readUpdate.readMessageIds().isEmpty()) {
             publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
         }
         Map<String, Users> userCache = new LinkedHashMap<>();
@@ -1055,7 +1062,7 @@ public class ChatService {
                 items,
                 total,
                 nextIndex < total ? String.valueOf(nextIndex) : null,
-                toReadReceiptDto(readUpdate),
+                readUpdate == null ? null : toReadReceiptDto(readUpdate),
                 userNotificationService.currentUnreadCount(userId));
     }
 
