@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
+import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
@@ -180,7 +180,7 @@ public class ActivitiesEventsService {
     @org.springframework.context.annotation.Lazy
     private ContentModerationService contentModeration;
 
-    private final CampaignsService campaigns;
+    private final Campaigns campaigns;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
@@ -219,7 +219,7 @@ public class ActivitiesEventsService {
     private final ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper;
 
     public ActivitiesEventsService(
-            CampaignsService campaigns,
+            Campaigns campaigns,
             ActivityEventsRepository activityEventsRepository,
             ActivitySubEventGroupsRepository activitySubEventGroupsRepository,
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
@@ -7065,7 +7065,7 @@ public class ActivitiesEventsService {
         document.setFull(directRecordFull(document));
         String campaignId = normalizeId(request.campaignId());
         if (StringUtils.hasText(campaignId) && !campaignId.equals(existing == null ? null : existing.getCampaignId())) {
-            Users campaignActor = campaigns.actor(request.userId());
+            var campaignActor = campaigns.actor(request.userId());
             var campaign = campaigns.visible(campaignActor, campaignId);
             if (!campaign.ownerUserId().equals(campaignActor.getUserId()) || !"published".equals(campaign.status()))
                 throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);

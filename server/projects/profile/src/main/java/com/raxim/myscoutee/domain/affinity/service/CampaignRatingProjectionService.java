@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.campaigns.service;
+package com.raxim.myscoutee.domain.affinity.service;
 
 import com.raxim.myscoutee.domain.affinity.service.AffinityCalculationService;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import com.raxim.myscoutee.domain.campaigns.document.CampaignRatingSummary;
+import com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 
 @Service

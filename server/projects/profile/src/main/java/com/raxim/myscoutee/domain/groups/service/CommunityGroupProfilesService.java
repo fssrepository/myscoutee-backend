@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.groups.mapper.CommunityGroupProfileMapper;
 
 @Service
-public class CommunityGroupProfilesService {
+public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain.groups.api.WorkspaceMembership {
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final UsersRepository users;

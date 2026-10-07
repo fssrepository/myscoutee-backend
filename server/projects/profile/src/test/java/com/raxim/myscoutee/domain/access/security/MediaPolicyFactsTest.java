@@ -19,7 +19,7 @@ class MediaPolicyFactsTest {
     }
     @Test void serviceImagesRequirePublishedOfferingAndCommunityMembership() {
         var mongo = mock(MongoTemplate.class);
-        var policy = new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class));
+        var policy = campaignAware(new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class)), mongo);
         var service = new Document("baseGroupId", "myscoutee-community").append("status", "published");
         when(mongo.findOne(any(Query.class), eq(Document.class), eq("serviceOfferings"))).thenReturn(service);
         when(mongo.findOne(any(Query.class), eq(Document.class), eq("users"))).thenReturn(new Document("accountUserId", "viewer"));
@@ -31,13 +31,13 @@ class MediaPolicyFactsTest {
     }
     @Test void workspaceAuthorCanPreviewAnUnsavedDocumentUsingTheCanonicalStorageOwner() {
         MongoTemplate mongo = mock(MongoTemplate.class);
-        var policy = new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class));
+        var policy = campaignAware(new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class)), mongo);
         assertThat(policy.canRead("group:homes:author", "private/documents/group-homes-author/draft/file.pdf")).isTrue();
         verifyNoInteractions(mongo);
     }
     @Test void announcementDocumentsRequireCurrentMembershipAndPublishedOrAdminAccess() {
         MongoTemplate mongo = mock(MongoTemplate.class);
-        var policy = new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class));
+        var policy = campaignAware(new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class)), mongo);
         var announcement = new Document("communityId", "homes").append("status", "published");
         when(mongo.findOne(any(Query.class), eq(Document.class), eq("communityAnnouncements"))).thenReturn(announcement);
         var group = new Document("lifecycleStatus", "active");
@@ -55,7 +55,7 @@ class MediaPolicyFactsTest {
     void profileStatusControlsImageAccessRegardlessOfProtectedStoragePath() {
         MongoTemplate mongo = mock(MongoTemplate.class);
         FriendshipFacts friendships = mock(FriendshipFacts.class);
-        MediaPolicyFacts policy = new MediaPolicyFacts(mongo, friendships, mock(ChatPolicyFacts.class));
+        MediaPolicyFacts policy = campaignAware(new MediaPolicyFacts(mongo, friendships, mock(ChatPolicyFacts.class)), mongo);
         String key = "private/images/owner/owner/upload/large.webp";
         Document profile = new Document("profileStatus", "public");
         when(mongo.findOne(any(Query.class), eq(Document.class), eq("users"))).thenReturn(profile);
@@ -72,10 +72,10 @@ class MediaPolicyFactsTest {
     @Test
     void activePublicEventImageDoesNotRequireLegacyPublishedField() {
         MongoTemplate mongo = mock(MongoTemplate.class);
-        MediaPolicyFacts policy = new MediaPolicyFacts(
+        MediaPolicyFacts policy = campaignAware(new MediaPolicyFacts(
                 mongo,
                 mock(FriendshipFacts.class),
-                mock(ChatPolicyFacts.class));
+                mock(ChatPolicyFacts.class)), mongo);
         String key = "private/images/owner/event-event-id/upload/large.webp";
         Document event = new Document("creatorUserId", "owner")
                 .append("visibility", "Public")
@@ -87,7 +87,7 @@ class MediaPolicyFactsTest {
     }
     @Test void galleryImagesUseTheSameVisibilityRulesAsTheCover() {
         MongoTemplate mongo = mock(MongoTemplate.class);
-        MediaPolicyFacts policy = new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class));
+        MediaPolicyFacts policy = campaignAware(new MediaPolicyFacts(mongo, mock(FriendshipFacts.class), mock(ChatPolicyFacts.class)), mongo);
         Document event = new Document("creatorUserId", "owner").append("visibility", "Public").append("status", "A");
         when(mongo.findOne(any(Query.class), eq(Document.class), eq("events"))).thenReturn(event);
         assertThat(policy.canRead("viewer", "private/images/owner/event/second/large.webp")).isTrue();
@@ -100,4 +100,10 @@ class MediaPolicyFactsTest {
         assertThat(policy.canRead("viewer", "private/images/owner/event/second/large.webp")).isTrue();
     }
 
+
+    private static MediaPolicyFacts campaignAware(MediaPolicyFacts service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        return service;
+    }
 }

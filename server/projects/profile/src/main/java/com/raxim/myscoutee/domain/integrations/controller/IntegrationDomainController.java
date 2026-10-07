@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.controller;
 
-import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
+import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.community.dto.CommunityAnnouncementDtos;
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos;
 import com.raxim.myscoutee.domain.community.dto.ServiceOfferingDtos;
@@ -23,13 +23,13 @@ import com.raxim.myscoutee.domain.campaigns.dto.CampaignDtos;
 @RequestMapping("/integrations/v1")
 public class IntegrationDomainController {
     private final IntegrationCapabilitiesService access;
-    private final CampaignsService campaigns;
+    private final Campaigns campaigns;
     private final CommunityCasesService cases;
     private final CommunityAnnouncementsService announcements;
     private final CommunityScheduledTasksService tasks;
     private final ServiceOfferingsService services;
 
-    public IntegrationDomainController(IntegrationCapabilitiesService access, CampaignsService campaigns,
+    public IntegrationDomainController(IntegrationCapabilitiesService access, Campaigns campaigns,
             CommunityCasesService cases, CommunityAnnouncementsService announcements,
             CommunityScheduledTasksService tasks, ServiceOfferingsService services) {
         this.access = access; this.campaigns = campaigns; this.cases = cases;

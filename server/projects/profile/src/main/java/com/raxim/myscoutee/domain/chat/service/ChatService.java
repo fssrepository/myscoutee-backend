@@ -56,7 +56,6 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.campaigns.document.Campaign;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
@@ -113,6 +112,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
 public class ChatService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     public static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
     public static final String RANDOM_ROOM_WELCOME_MESSAGE_ID =
             "system:" + RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
@@ -672,7 +673,7 @@ public class ChatService {
     }
 
     private ChatDto ensureCampaignChat(ChatServiceEnsureRequestDto request, String userId) {
-        Campaign campaign = mongoTemplate.findById(normalizeId(request.campaignId()), Campaign.class);
+        var campaign = campaignCatalog.find(normalizeId(request.campaignId()));
         Users actor = findUser(userId);
         if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
                 || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))

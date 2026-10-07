@@ -26,7 +26,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 def = "{'name': 1, 'userId': 1}",
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
-public class Users {
+public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile {
     private IntegrationAccess integrationAccess;
     public IntegrationAccess getIntegrationAccess() { return integrationAccess; }
     public void setIntegrationAccess(IntegrationAccess value) { integrationAccess = value; }
@@ -571,7 +571,7 @@ public class Users {
 
     public record LocationCoordinatesRecord(
             Double latitude,
-            Double longitude) {
+            Double longitude) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.Coordinates {
     }
 
     public record UserActivitiesRecord(

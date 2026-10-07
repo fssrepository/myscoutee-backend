@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.campaigns.service.CampaignRatingProjectionService;
+import com.raxim.myscoutee.domain.affinity.service.CampaignRatingProjectionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ public class UserAffinityEdgeService {
         }
     }
 
-    public List<com.raxim.myscoutee.domain.campaigns.document.CampaignRatingSummary> ratingSummaries(String userId) {
+    public List<com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary> ratingSummaries(String userId) {
         return campaignRatings.forUser(userId);
     }
 

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.campaigns.service.CampaignRatingProjectionService;
+import com.raxim.myscoutee.domain.affinity.service.CampaignRatingProjectionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import static org.assertj.core.api.Assertions.assertThat;

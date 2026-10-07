@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import com.raxim.myscoutee.domain.community.dto.ServiceOfferingDtos.*;
 import com.raxim.myscoutee.domain.community.dto.CommunityAnnouncementDtos.Page;
 
-import com.raxim.myscoutee.domain.campaigns.mapper.CampaignMapper;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDistances;
 import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
 
 @Service
@@ -80,7 +80,7 @@ public class ServiceOfferingsService {
     private Item dto(String actor,ServiceOffering s,Users owner,Users viewer,Map<String,Double> ratings) {
         if(!s.ownerAccountId().equals(actor)&&Set.of("inactive","blocked","deleted").contains(Objects.toString(owner.getProfileStatus(),"")))throw error(HttpStatus.NOT_FOUND);
         return new Item(s,owner.getUserId(),owner.getName(),owner.getImages()==null||owner.getImages().isEmpty()?null:owner.getImages().getFirst(),
-            CampaignMapper.distance(owner,viewer),ratings.getOrDefault(owner.getUserId(),0d),s.ownerAccountId().equals(actor));
+            ProfileDistances.distance(owner,viewer),ratings.getOrDefault(owner.getUserId(),0d),s.ownerAccountId().equals(actor));
     }
     public Item save(String actor,Save r) {
         validate(actor,r);var old=r.id()==null?null:visible(actor,r.id());

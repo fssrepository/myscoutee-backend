@@ -17,4 +17,8 @@ public class GroupDirectoryService implements GroupDirectory {
     public Optional<GroupName> name(String groupId) {
         return groups.findById(groupId).map(group -> new GroupName(group.name()));
     }
+    @Override public java.util.Optional<GroupType> type(String groupId) {
+        return groups.findById(groupId).map(group -> new GroupType(group.id(), group.effectiveType()));
+    }
+
 }

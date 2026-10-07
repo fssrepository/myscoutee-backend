@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
+import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.media.api.MediaStorage;
 
@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.campaigns.document.Campaign;
 import com.raxim.myscoutee.domain.campaigns.dto.CampaignDtos;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationCampaignSyncItemDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationCampaignSyncRequestDto;
@@ -50,10 +49,12 @@ import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @Service
 public class IntegrationSyncService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final String RESOURCE_ASSET = "asset";
     private static final String RESOURCE_EVENT = "event";
     private static final String RESOURCE_CAMPAIGN = "campaign";
-    private final CampaignsService campaignsService;
+    private final Campaigns campaignsService;
 
     private final IntegrationExternalIdsRepository externalIdsRepository;
     private final MongoTemplate mongoTemplate;
@@ -66,7 +67,7 @@ public class IntegrationSyncService {
             MongoTemplate mongoTemplate,
             AssetsService assetsService,
             ActivitiesEventsService eventsService,
-            MediaStorage mediaStorageService, CampaignsService campaignsService) {
+            MediaStorage mediaStorageService, Campaigns campaignsService) {
         this.externalIdsRepository = externalIdsRepository;
         this.mongoTemplate = mongoTemplate;
         this.assetsService = assetsService;
@@ -318,8 +319,7 @@ public class IntegrationSyncService {
             String resourceType,
             String internalId) {
         if (RESOURCE_CAMPAIGN.equals(resourceType)) {
-            return mongoTemplate.exists(Query.query(Criteria.where("ownerUserId").is(ownerUserId)
-                    .and("_id").is(internalId)), Campaign.class);
+            return campaignCatalog.ownedExists(ownerUserId, internalId);
         }
         if (RESOURCE_ASSET.equals(resourceType)) {
             return mongoTemplate.exists(

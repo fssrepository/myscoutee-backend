@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.campaigns.service;
+package com.raxim.myscoutee.domain.affinity.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;

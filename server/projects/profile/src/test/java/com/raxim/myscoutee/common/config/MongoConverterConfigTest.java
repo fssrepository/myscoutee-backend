@@ -179,6 +179,21 @@ class MongoConverterConfigTest {
         assertThat(converter.read(Payload.class, document).value()).isEqualTo(attachment);
     }
 
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void campaignRatingProjectionRetainsItsNestedEvidenceIdentity() {
+        var converter = domainConverter();
+        var rate = new com.raxim.myscoutee.domain.affinity.document.UserRate();
+        rate.setOwnerUserId("left"); rate.setRelatedUserId("right"); rate.setScoreGiven(6);
+        var summary = new com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary("pair", "left", "right", rate, 1);
+        var document = new Document();
+        converter.write(summary, document);
+        assertThat(document.getString("_class")).isEqualTo("com.raxim.myscoutee.profile.data.document.CampaignRatingSummary");
+        var restored = (com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary) converter.read(Object.class, document);
+        assertThat(restored.rate().getScoreGiven()).isEqualTo(6d);
+        assertThat(restored.rate().getOwnerUserId()).isEqualTo("left");
+    }
+
     private MappingMongoConverter domainConverter() {
         var converter = mappingMongoConverter();
         MongoConverterConfig.preserveDottedMongoMapKeys()

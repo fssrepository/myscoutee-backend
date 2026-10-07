@@ -30,8 +30,8 @@ class IntegrationCampaignCreateTest {
     private final IntegrationExternalIdsRepository mappings = mock(IntegrationExternalIdsRepository.class);
     private final MongoTemplate mongo = mock(MongoTemplate.class);
     private final CampaignsService campaigns = mock(CampaignsService.class);
-    private final IntegrationSyncService service = new IntegrationSyncService(mappings, mongo,
-            mock(AssetsService.class), mock(ActivitiesEventsService.class), mock(MediaStorageService.class), campaigns);
+    private final IntegrationSyncService service = campaignAware(new IntegrationSyncService(mappings, mongo,
+            mock(AssetsService.class), mock(ActivitiesEventsService.class), mock(MediaStorageService.class), campaigns), mongo);
     private final String externalId = UUID.randomUUID().toString();
     private final IntegrationCampaignSyncItemDto item = new IntegrationCampaignSyncItemDto(externalId,
             "Build a useful tool", "Looking for collaborators", "business", "technology");
@@ -69,5 +69,11 @@ class IntegrationCampaignCreateTest {
         assertThat(service.createCampaigns("work-profile", new IntegrationCampaignSyncRequestDto(List.of(invalid))).items().getFirst().error())
                 .isEqualTo("id_must_be_uuid");
         verifyNoInteractions(mongo, mappings);
+    }
+
+    private static IntegrationSyncService campaignAware(IntegrationSyncService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        return service;
     }
 }

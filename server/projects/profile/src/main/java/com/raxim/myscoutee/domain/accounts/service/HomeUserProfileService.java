@@ -119,7 +119,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 
 @Service
-public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile {
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.CurrentProfile {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 

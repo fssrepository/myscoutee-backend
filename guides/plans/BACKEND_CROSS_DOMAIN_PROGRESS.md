@@ -45,7 +45,7 @@ may need changes together.
 | 6 | assets | 1 | 2 | Pending | — |
 | 7 | affinity | 6 | 11 | Pending | — |
 | 8 | community | 6 | 10 | Pending | — |
-| 9 | campaigns | 1 | 4 | Pending | — |
+| 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; campaigns checkpoint |
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
 | 12 | content | 2 | 5 | Pending; existing admin-access methods exposed through interface | Whole domain not separated |
@@ -55,11 +55,11 @@ may need changes together.
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
-| 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; media checkpoint |
+| 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; `2bb3bd0ae` |
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 4/21 — #2 notifications, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 5/21 — #2 notifications, #9 campaigns, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -541,3 +541,89 @@ after save/reload and indexed media authorization.
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/controller/MediaControllerTest.java` | Verification only | Low; same operations |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/service/MediaAccessPathsTest.java` | Verification only | Low; same operations |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/service/MediaSessionAccessServiceTest.java` | Verification only | Low; same operations |
+
+## #9 campaigns checkpoint
+
+Campaign operations now expose `Campaigns` and a read-only `CampaignView`.
+`CampaignCatalog` owns the exact existing campaign lookups used by chat, rating
+synchronization, integration retries and media authorization. No foreign domain
+reads the campaign collection or names its persistence classes.
+
+Campaigns consumes accounts' current-profile/directory contracts, groups' type
+and membership contracts, affinity's detached campaign-rating evidence, and
+chat's campaign interaction values. Owner and rating reads remain batched before
+filtering/paging; history keeps the original evidence and visibility order.
+`WorkspaceProfile` is an explicitly read-only local view implemented by Users.
+It is not a detached snapshot or a remote transport. Persisted profile fields
+and nested coordinate types are unchanged.
+
+The campaign rating projection was stored under campaigns but is written/read
+exclusively by the affinity pipeline and embeds UserRate evidence. Its existing
+service and document move to affinity, retaining the collection, indexes,
+algorithm, and original stored Mongo type name. A BSON round-trip covers the
+projection and nested rating. The existing distance calculation now belongs to
+the profile API and is shared by campaign/service-offering DTO mapping.
+
+Verification: 145 campaign/affinity/chat/access/integration/boundary tests passed,
+then 101 event/integration/campaign/serialization consumer tests passed. Actor
+resolution additionally verifies Work group/account requirements and membership
+selection. Existing lifecycle/version, cross-workspace and campaign-rating
+assertions were preserved. No E2E or latency measurement performed.
+
+Break risk: medium for workspace visibility, campaign chat/rating eligibility
+and integration retry wiring. Severe slowdown risk: low: same query counts,
+batch sizes, projections and indexes; only in-memory transfer values are added.
+E2E focus: publish/unpublish/trash/restore, workspace isolation, history/rating
+paging, campaign-linked events, rating-gated questions, idempotent campaign
+imports, private attachments, and saved rating projection reload.
+
+| File | Break risk | Severe slowdown risk |
+| --- | --- | --- |
+| `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md` | Documentation only | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/MediaPolicyFacts.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/CurrentProfile.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDistances.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/document/Users.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileDirectoryService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/CampaignRatings.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/document/CampaignRatingSummary.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/CampaignRatingEvidenceService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/CampaignRatingProjectionService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserAffinityEdgeService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserRatesService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/api/CampaignCatalog.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/api/CampaignView.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/api/Campaigns.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/document/Campaign.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/document/CampaignRatingSummary.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/dto/CampaignDtos.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/mapper/CampaignMapper.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/service/CampaignCatalogService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/service/CampaignRatingProjectionService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/service/CampaignsService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/CampaignConversations.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/CampaignConversationService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceOfferingsService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupDirectory.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/WorkspaceMembership.java` | Low: explicit contract | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityGroupProfilesService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/GroupDirectoryService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationDomainController.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationReadController.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationSyncService.java` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/main/resources/mongo-domain-types.properties` | Medium: ownership, authorization or persistence boundary | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/MediaPolicyFactsTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/CampaignRatingProjectionServiceTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/UserAffinityEdgeServiceTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/UserRatesServiceTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/campaigns/service/CampaignRatingProjectionServiceTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/campaigns/service/CampaignsServiceTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java` | Verification only | Low; same queries and batching |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationCampaignCreateTest.java` | Verification only | Low; same queries and batching |

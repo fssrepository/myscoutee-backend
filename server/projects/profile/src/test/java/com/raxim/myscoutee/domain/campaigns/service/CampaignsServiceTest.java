@@ -31,7 +31,10 @@ class CampaignsServiceTest {
     Users owner = user("owner", "work");
     Users member = user("member", "work");
     @BeforeEach void setup() {
-        service = new CampaignsService(rates, chats, repository, users, mock(CommunityGroupsRepository.class),
+        service = new CampaignsService(new com.raxim.myscoutee.domain.affinity.service.CampaignRatingEvidenceService(rates),
+                new com.raxim.myscoutee.domain.chat.service.CampaignConversationService(chats), repository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(mock(CommunityGroupsRepository.class)),
                 mock(CommunityGroupProfilesService.class), mock(HomeUserProfileService.class));
         when(repository.findById(anyString())).thenAnswer(call -> Optional.ofNullable(records.get(call.getArgument(0))));
         when(repository.save(any())).thenAnswer(call -> {
@@ -86,6 +89,28 @@ class CampaignsServiceTest {
         verify(rates, times(1)).findEvidenceForPair("member", "owner");
         verify(rates, never()).findByOwnerUserId(anyString());
     }
+    @Test void actorResolutionKeepsWorkMembershipAndAccountChecks() {
+        var profiles = mock(com.raxim.myscoutee.domain.accounts.api.CurrentProfile.class);
+        var groups = mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class);
+        var workspaces = mock(com.raxim.myscoutee.domain.groups.api.WorkspaceMembership.class);
+        var isolated = new CampaignsService(mock(com.raxim.myscoutee.domain.affinity.api.CampaignRatings.class),
+                mock(com.raxim.myscoutee.domain.chat.api.CampaignConversations.class), repository,
+                mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class), groups, workspaces, profiles);
+        when(profiles.resolveCurrentUser("owner")).thenReturn(owner);
+        when(groups.type("work")).thenReturn(Optional.of(new com.raxim.myscoutee.domain.groups.api.GroupDirectory.GroupType("work", "community")));
+        assertThatThrownBy(() -> isolated.actor("owner")).isInstanceOfSatisfying(ResponseStatusException.class,
+                error -> assertThat(error.getStatusCode().value()).isEqualTo(403));
+        verifyNoInteractions(workspaces);
+        when(groups.type("work")).thenReturn(Optional.of(new com.raxim.myscoutee.domain.groups.api.GroupDirectory.GroupType("work", "work")));
+        owner.setAccountUserId("account");
+        when(workspaces.select("account", "work")).thenReturn(owner);
+        assertThat(isolated.actor("owner")).isSameAs(owner);
+        owner.setAccountUserId(null);
+        assertThatThrownBy(() -> isolated.actor("owner")).isInstanceOfSatisfying(ResponseStatusException.class,
+                error -> assertThat(error.getStatusCode().value()).isEqualTo(403));
+        verify(workspaces, times(1)).select("account", "work");
+    }
+
     private static UserRate rating(String actor, String target, String campaignId, int score, String date) {
         UserRate rate = new UserRate(); rate.setOwnerUserId(actor); rate.setRelatedUserId(target);
         rate.setMode("single"); rate.setCampaignId(campaignId); rate.setScoreGiven(score); rate.setUpdatedDate(date);

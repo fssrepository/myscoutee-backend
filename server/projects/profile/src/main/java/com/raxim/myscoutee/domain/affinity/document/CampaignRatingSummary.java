@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.campaigns.document;
+package com.raxim.myscoutee.domain.affinity.document;
 
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 

@@ -16,6 +16,8 @@ import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 @Component
 public class MediaPolicyFacts {
     @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
+    @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
     private com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService adminCounters;
     private final MongoTemplate mongo;
@@ -53,11 +55,11 @@ public class MediaPolicyFacts {
                     .and("userId").is(account).and("status").is("accepted"), "role");
             return membership != null && ("published".equals(announcement.getString("status")) || "Admin".equals(membership.getString("role")));
         }
-        Document campaign = find("campaigns", new Criteria().orOperator(Criteria.where("imageUrls").in(urls), Criteria.where("attachments.url").in(urls)), "workspaceGroupId", "status");
+        var campaign = campaignCatalog.mediaReference(urls);
         if (campaign != null) {
             var profile = find("users", Criteria.where("userId").is(viewer), "workspaceGroupId");
-            return "published".equals(campaign.getString("status")) && profile != null
-                    && java.util.Objects.equals(profile.getString("workspaceGroupId"), campaign.getString("workspaceGroupId"));
+            return "published".equals(campaign.status()) && profile != null
+                    && java.util.Objects.equals(profile.getString("workspaceGroupId"), campaign.workspaceGroupId());
         }
         Document service = find("serviceOfferings", Criteria.where("imageUrls").in(urls), "baseGroupId", "status");
         if (service != null) {

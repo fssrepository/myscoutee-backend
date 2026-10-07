@@ -59,6 +59,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class UserRatesService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final RateDistance ZERO_DISTANCE = new RateDistance(0);
 
     private final UserRatesRepository userRatesRepository;
@@ -235,9 +237,7 @@ public class UserRatesService {
                 .map(Users::getUserId).collect(java.util.stream.Collectors.toSet());
         Set<String> campaignIds = request.rates().stream().filter(Objects::nonNull).map(UserRateRecordDto::campaignId)
                 .filter(StringUtils::hasText).collect(java.util.stream.Collectors.toSet());
-        var campaigns = campaignIds.isEmpty() ? Map.<String, com.raxim.myscoutee.domain.campaigns.document.Campaign>of()
-                : mongoTemplate.find(Query.query(Criteria.where("_id").in(campaignIds)), com.raxim.myscoutee.domain.campaigns.document.Campaign.class)
-                    .stream().collect(java.util.stream.Collectors.toMap(com.raxim.myscoutee.domain.campaigns.document.Campaign::id, c -> c));
+        var campaigns = campaignCatalog.findByIds(campaignIds);
         for (UserRateRecordDto rate : request.rates()) {
             if (rate != null && StringUtils.hasText(rate.campaignId())) {
                 var campaign = campaigns.get(rate.campaignId());

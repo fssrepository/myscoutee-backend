@@ -111,7 +111,7 @@ class ChatServiceTest {
     void setUp() {
         org.mockito.Mockito.lenient().when(accessControlService.resolveChatActorUserId(any(), any()))
                 .thenAnswer(call -> call.getArgument(1));
-        service = new ChatService(
+        service = campaignAware(new ChatService(
                 chatsRepository,
                 chatMessagesRepository,
                 mongoTemplate,
@@ -128,7 +128,7 @@ class ChatServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 new ChatMapper(),
-                new ChatMessageMapper(usersRepository));
+                new ChatMessageMapper(usersRepository)), mongoTemplate);
     }
 
     @AfterEach
@@ -1355,5 +1355,11 @@ class ChatServiceTest {
         user.setStatus("A");
         user.setProfileStatus("public");
         return user;
+    }
+
+    private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        return service;
     }
 }
