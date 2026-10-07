@@ -1168,7 +1168,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         }
         Set<String> graphUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
         campaignGraphs.values().forEach(value -> graphUserIds.addAll(value.getNodes().keySet()));
-        Map<String, WorkspaceProfile> graphUsers = usersRepository.findAllById(graphUserIds).stream()
+        Map<String, WorkspaceProfile> graphUsers = usersRepository.findByUserIdIn(graphUserIds).stream()
                 .collect(Collectors.toMap(WorkspaceProfile::getUserId, user -> user, (first, second) -> first));
 
         // THREAD SAFETY: Synchronized list for parallel addition
@@ -1776,7 +1776,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         }
 
         Map<String, Node> nodesByUserId = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findAllById(discoveredUserIds)) {
+        for (WorkspaceProfile user : usersRepository.findByUserIdIn(discoveredUserIds)) {
             incrementObservedQueries(observedQueries);
             if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
                 continue;

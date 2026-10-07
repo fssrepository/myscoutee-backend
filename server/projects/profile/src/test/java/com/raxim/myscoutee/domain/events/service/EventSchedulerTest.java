@@ -275,7 +275,7 @@ class EventSchedulerTest {
                 .thenReturn(List.of(event));
         Users workCandidate = user("work-candidate");
         workCandidate.setWorkspaceGroupId("myscoutee-work");
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("candidate-1"), workCandidate));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
@@ -328,7 +328,7 @@ class EventSchedulerTest {
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
         var candidates = List.of(user("organizer"), user("other-campaign"), user("candidate-a"));
         candidates.forEach(user -> user.setWorkspaceGroupId("myscoutee-work"));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(candidates);
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(candidates);
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(rate("organizer", "other-campaign", 1d)));
         when(affinityEdgeService.campaignGraphs(Set.of("campaign-a"))).thenReturn(Map.of("campaign-a",
             new com.raxim.myscoutee.domain.affinity.api.CampaignGraphs.Snapshot(List.of("candidate-a", "organizer"), List.of(rate("organizer", "candidate-a", .8d)))));
@@ -396,7 +396,7 @@ class EventSchedulerTest {
         event.setLocation("Bratislava");
 
         when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("locked-1"),
                 user("pending-1"),
@@ -452,7 +452,7 @@ class EventSchedulerTest {
         event.setTitle("Board Game Night");
 
         when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("accepted-1"),
                 user("request-1"),
@@ -501,7 +501,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(subEvent("sub-1", 2, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3"),
@@ -655,7 +655,7 @@ class EventSchedulerTest {
         Users privateUser = user("private-user");
         privateUser.setProfileStatus("friends only");
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("public-1"),
                 user("public-2"),
                 privateUser));
@@ -735,7 +735,7 @@ class EventSchedulerTest {
         when(activityEventsRepository.findBySourceIdIn(argThat(sourceIds ->
                 sourceIds.size() == 1 && sourceIds.contains("event-stage-start"))))
                 .thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 nonPublicAcceptedUser,
                 user("nova"),
                 user("riley")));
@@ -782,7 +782,10 @@ class EventSchedulerTest {
         assertThat(notificationOrder.get(0)).isEqualTo("Tournament started");
         assertThat(notificationOrder.subList(1, notificationOrder.size()))
                 .allSatisfy(title -> assertThat(title).matches("Tournament Group R[12] is ready"));
-        verify(usersRepository, never()).findByUserIdIn(anyCollection());
+        // One graph batch for all accepted members, without reloading profiles for each generated room.
+        verify(usersRepository).findByUserIdIn(argThat(ids -> ids.size() == 3
+                && ids.containsAll(List.of("casey", "nova", "riley"))));
+        verify(usersRepository, times(1)).findByUserIdIn(anyCollection());
         verify(activityEventsRepository, never()).findAll();
         ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
         verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
@@ -863,7 +866,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(subEvent("stage-partial", 3, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("a1"),
                 user("a2"),
                 user("b1"),
@@ -972,7 +975,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(explicitSubEvent("sub-2")));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3"),
@@ -1102,7 +1105,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1209,7 +1212,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1298,7 +1301,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         2));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups("event-no-winners", "qualifier"))
                 .thenReturn(List.of(group("qualifier-a", "A")));
@@ -1370,7 +1373,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         2));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 "event-capacity-overflow", "qualifier"))
@@ -1428,7 +1431,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         2));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
@@ -1485,7 +1488,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         1));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("u1")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.queryState("event-locked-final", "qualifier"))
                 .thenReturn(qualifierState);
@@ -1529,7 +1532,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"), user("u2"), user("u3")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
@@ -1647,7 +1650,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1735,7 +1738,7 @@ class EventSchedulerTest {
                                 List.of())));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1794,7 +1797,7 @@ class EventSchedulerTest {
                 nonTournamentSubEvent("second", "A")));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
@@ -1843,7 +1846,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(subEvent("sub-4", 1, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
