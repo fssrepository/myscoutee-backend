@@ -1,7 +1,8 @@
 # MSC-120: Cross-domain separation progress
 
 Status: **21/21 domains implemented and locally verified**, 2026-10-07.
-E2E behavior and performance verification started on 2026-10-07 at the user's request.
+Backend verification completed on 2026-10-07: 1,733 local tests, 44 Java HTTP
+E2E cases and 95 deployed HTTP cases pass; all recorded failures are reconciled.
 See [the E2E report](BACKEND_CROSS_DOMAIN_E2E.md) for runtime evidence and remaining limits.
 This file tracks the cross-domain implementation.
 The earlier package reorganization remains documented in the
@@ -2305,7 +2306,7 @@ also available in each named commit's complete diff.
 ## Final local closeout — 2026-10-07
 
 This records the local-only checkpoint before the later E2E run. Current HTTP,
-load results and remaining Java E2E failures are in [the E2E report](BACKEND_CROSS_DOMAIN_E2E.md).
+load results and the expanded failure investigation are in [the E2E report](BACKEND_CROSS_DOMAIN_E2E.md).
 
 All **21 domains** have an individual `[MSC-120]` checkpoint commit on
 `refactor/MSC-120-backend-domain-segregation`. No cross-domain commit has been

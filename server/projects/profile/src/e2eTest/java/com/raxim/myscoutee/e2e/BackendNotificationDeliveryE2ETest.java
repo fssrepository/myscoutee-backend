@@ -72,7 +72,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-notify-sender@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -155,6 +155,7 @@ class BackendNotificationDeliveryE2ETest {
     void chatNotificationGoesToRightRecipientsInOneFirebaseMulticast() {
         registerDevicesOverHttp();
 
+        configProperties.setFirebaseEnabled(true);
         JsonNode postedMessage = postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
                 Map.of("text", "Backend notification e2e blast"));
         assertThat(postedMessage.path("senderId").asString()).isEqualTo(SENDER_ID);
@@ -169,7 +170,7 @@ class BackendNotificationDeliveryE2ETest {
         assertThat(pending.getDeliveryStrategy()).isEqualTo("multicast");
         assertThat(pending.getPayload()).containsEntry("chatId", CHAT_ID).containsEntry("senderId", SENDER_ID);
 
-        configProperties.setFirebaseEnabled(true);
+        withReal(() -> E2eScheduledJobTestSupport.enable(mongoTemplate, "notification-outbox"));
 
         await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
             NotificationOutboxItem sent = findNotification();
@@ -195,11 +196,12 @@ class BackendNotificationDeliveryE2ETest {
         registerDevicesOverHttp(Set.of(disabledUserId));
         firebaseGateway.failInvalidTokens(tokenFor(invalidTokenUserId));
 
+        configProperties.setFirebaseEnabled(true);
         postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
                 Map.of("text", "Backend notification partial failure e2e"));
         awaitOutboxItem(NotificationOutboxItem.STATUS_PENDING);
 
-        configProperties.setFirebaseEnabled(true);
+        withReal(() -> E2eScheduledJobTestSupport.enable(mongoTemplate, "notification-outbox"));
 
         await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
             NotificationOutboxItem sent = findNotification();
@@ -228,11 +230,12 @@ class BackendNotificationDeliveryE2ETest {
 
     @Test
     void notificationWorkerMarksNoTokenRecipientsSentWithoutCallingFirebase() {
+        configProperties.setFirebaseEnabled(true);
         postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
                 Map.of("text", "Backend notification without registered devices"));
         awaitOutboxItem(NotificationOutboxItem.STATUS_PENDING);
 
-        configProperties.setFirebaseEnabled(true);
+        withReal(() -> E2eScheduledJobTestSupport.enable(mongoTemplate, "notification-outbox"));
 
         await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
             NotificationOutboxItem sent = findNotification();
@@ -268,13 +271,14 @@ class BackendNotificationDeliveryE2ETest {
                 "firebaseToken", tokenFor(recipientUserId),
                 "notificationsEnabled", true));
 
+        configProperties.setFirebaseEnabled(true);
         postJson("/activities/chats/" + CHAT_ID + "/messages?userId=" + SENDER_ID,
                 Map.of("text", "Backend notification direct delivery"));
         NotificationOutboxItem pending = awaitOutboxItem(NotificationOutboxItem.STATUS_PENDING);
         assertThat(pending.getRecipientUserIds()).containsExactly(recipientUserId);
         assertThat(pending.getDeliveryStrategy()).isEqualTo("direct");
 
-        configProperties.setFirebaseEnabled(true);
+        withReal(() -> E2eScheduledJobTestSupport.enable(mongoTemplate, "notification-outbox"));
 
         await().atMost(Duration.ofSeconds(8)).pollInterval(Duration.ofMillis(150)).untilAsserted(() -> {
             NotificationOutboxItem sent = findNotification();
@@ -324,6 +328,7 @@ class BackendNotificationDeliveryE2ETest {
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
+        mongoTemplate.remove(new Query(), com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig.class);
         mongoTemplate.remove(new Query(), Chat.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
     }
@@ -392,6 +397,7 @@ class BackendNotificationDeliveryE2ETest {
         HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer sender-token")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build());
         assertOk(path, response.statusCode(), response.body());
@@ -478,6 +484,8 @@ class BackendNotificationDeliveryE2ETest {
         embeddedMongo = Mongod.instance().start(Version.Main.V6_0);
         ServerAddress serverAddress = embeddedMongo.current().getServerAddress();
         mongoBaseUri = "mongodb://" + serverAddress.getHost() + ":" + serverAddress.getPort();
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, REAL_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, DEMO_DB);
         seedCountryPartition(REAL_DB);
         seedCountryPartition(DEMO_DB);
         seedFastPlatformConfig(REAL_DB);
@@ -549,6 +557,18 @@ class BackendNotificationDeliveryE2ETest {
 
     @TestConfiguration(proxyBeanMethods = false)
     static class E2eInfrastructure {
+        @Bean
+        @Primary
+        com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier firebaseTokenVerifier() {
+            return value -> {
+                if (!"sender-token".equals(value)) throw new IllegalArgumentException("Unknown test token");
+                var token = mock(com.google.firebase.auth.FirebaseToken.class);
+                org.mockito.Mockito.when(token.getEmail()).thenReturn(SENDER_ID + "@example.test");
+                org.mockito.Mockito.when(token.getClaims()).thenReturn(Map.of());
+                return new com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential(token);
+            };
+        }
+
         @Bean
         @Primary
         StringRedisTemplate stringRedisTemplate() {

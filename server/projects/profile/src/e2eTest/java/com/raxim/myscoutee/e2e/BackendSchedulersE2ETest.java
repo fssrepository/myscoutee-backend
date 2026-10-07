@@ -67,7 +67,7 @@ import de.flapdoodle.reverse.TransitionWalker;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=member1@myscoutee.local",
                 "admin.stats.enabled=false",
                 "admin.stats.telemetry-window-ms=600000",
                 "assets.source-refresh.enabled=false",
@@ -132,6 +132,7 @@ class BackendSchedulersE2ETest {
             seedStageReminderEventAndTemplate();
             seedDueScheduledTasks();
             seedDueAffinityWorkerTask();
+            E2eScheduledJobTestSupport.enable(mongoTemplate, "scheduled-messages", "affinity-recompute");
         });
     }
 

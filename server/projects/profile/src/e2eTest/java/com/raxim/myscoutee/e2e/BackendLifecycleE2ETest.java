@@ -71,7 +71,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-life-u01@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -240,8 +240,10 @@ class BackendLifecycleE2ETest {
         assertThat(paidOverlay.getIsTrashed()).isTrue();
         assertThat(getJson("/assets/tickets?userId=" + PAID_MEMBER_ID).path("total").asInt()).isZero();
 
+        assertThat(findPayment(paymentSessionId).getRefundStatus()).isEqualTo("none");
+        requestAndApproveRefund(paymentSessionId, PAID_MEMBER_ID);
         Payment cancelledPayment = findPayment(paymentSessionId);
-        assertThat(cancelledPayment.getBookingStatus()).isEqualTo("cancelled");
+        assertThat(cancelledPayment.getBookingStatus()).isEqualTo("joined");
         assertThat(cancelledPayment.getRefundStatus()).isEqualTo("full");
         assertThat(cancelledPayment.getRefundedAmount()).isEqualTo(42.5d);
         assertThat(cancelledPayment.getRefundRuleId()).isEqualTo("refund-full-1d");
@@ -281,7 +283,7 @@ class BackendLifecycleE2ETest {
                 .doesNotContain(MANAGED_ASSET_ID);
 
         NotificationOutboxItem unavailableNotification = findOnlyNotification("asset-unavailable", MANAGED_ASSET_ID);
-        assertThat(unavailableNotification.getRecipientUserIds()).containsExactly(ASSET_MANAGER_ID);
+        assertThat(unavailableNotification.getRecipientUserIds()).containsExactlyInAnyOrder(ASSET_MANAGER_ID, userId(7));
         assertThat(unavailableNotification.getPayload()).containsEntry("assetStatus", "T");
 
         JsonNode restored = postJson("/assets/restore", Map.of(
@@ -291,17 +293,15 @@ class BackendLifecycleE2ETest {
         assertThat(findAsset(MANAGED_ASSET_ID).getStatus()).isEqualTo("A");
 
         NotificationOutboxItem restoredNotification = findOnlyNotification("asset-restored", MANAGED_ASSET_ID);
-        assertThat(restoredNotification.getRecipientUserIds()).containsExactly(ASSET_MANAGER_ID);
+        assertThat(restoredNotification.getRecipientUserIds()).containsExactlyInAnyOrder(ASSET_MANAGER_ID, userId(7));
         assertThat(restoredNotification.getPayload()).containsEntry("assetStatus", "A");
 
-        withReal(() -> {
-            Asset current = findAsset(MANAGED_ASSET_ID);
-            current.setStatus("UR");
-            current.setStatusBeforeSuppression("A");
-            current.setUpdatedDate(Instant.now().toString());
-            current.setUpdatedUser("e2e-moderation");
-            mongoTemplate.save(current);
-        });
+        postJson("/assets/make-manager", Map.of(
+                "userId", ASSET_OWNER_ID, "assetId", MANAGED_ASSET_ID, "targetUserId", userId(7)));
+        postJson("/assets/leave-ownership", Map.of(
+                "userId", ASSET_OWNER_ID,
+                "assetId", MANAGED_ASSET_ID));
+        assertThat(findAsset(MANAGED_ASSET_ID).getOwnerReleasedAtIso()).isNotBlank();
 
         JsonNode takenOver = postJson("/assets/take-over", Map.of(
                 "userId", ASSET_MANAGER_ID,
@@ -315,7 +315,7 @@ class BackendLifecycleE2ETest {
         assertThat(transferred.getStatusBeforeSuppression()).isNull();
 
         NotificationOutboxItem takeOverNotification = findOnlyNotification("asset-takeover", MANAGED_ASSET_ID);
-        assertThat(takeOverNotification.getRecipientUserIds()).containsExactly(ASSET_OWNER_ID);
+        assertThat(takeOverNotification.getRecipientUserIds()).containsExactly(userId(7));
         assertThat(takeOverNotification.getPayload())
                 .containsEntry("previousOwnerUserId", ASSET_OWNER_ID)
                 .containsEntry("ownerUserId", ASSET_MANAGER_ID);
@@ -336,13 +336,15 @@ class BackendLifecycleE2ETest {
         postOk("/activities/events/trash", Map.of(
                 "userId", userId(7),
                 "sourceId", partialEventId));
+        assertThat(findPayment(partialSessionId).getRefundStatus()).isEqualTo("none");
+        requestAndApproveRefund(partialSessionId, userId(7));
         Payment partialPayment = findPayment(partialSessionId);
-        assertThat(partialPayment.getBookingStatus()).isEqualTo("cancelled");
+        assertThat(partialPayment.getBookingStatus()).isEqualTo("joined");
         assertThat(partialPayment.getRefundStatus()).isEqualTo("partial");
         assertThat(partialPayment.getRefundedAmount()).isEqualTo(40.0d);
         assertThat(partialPayment.getRefundCurrency()).isEqualTo("EUR");
         assertThat(partialPayment.getRefundRuleId()).isEqualTo("edge-partial-1d");
-        assertThat(partialPayment.getStatus()).isEqualTo("partially_refunded");
+        assertThat(partialPayment.getStatus()).isEqualTo("approved");
         assertThat(getJson("/assets/tickets?userId=" + userId(7)).path("total").asInt()).isZero();
 
         publishPaymentEdgeEvent(noRefundEventId, Instant.now().plus(Duration.ofHours(10)), true);
@@ -350,10 +352,13 @@ class BackendLifecycleE2ETest {
         postOk("/activities/events/trash", Map.of(
                 "userId", userId(8),
                 "sourceId", noRefundEventId));
+        HttpResponse<String> ineligibleRefund = postRaw("/payment-methods/history/"
+                + findPayment(noRefundSessionId).getId() + "/refund-request?userId=" + userId(8), Map.of());
+        assertThat(ineligibleRefund.statusCode()).as(ineligibleRefund.body()).isEqualTo(409);
         Payment noRefundPayment = findPayment(noRefundSessionId);
-        assertThat(noRefundPayment.getBookingStatus()).isEqualTo("cancelled");
-        assertThat(noRefundPayment.getRefundStatus()).isEqualTo("not_eligible");
-        assertThat(noRefundPayment.getRefundedAmount()).isZero();
+        assertThat(noRefundPayment.getBookingStatus()).isEqualTo("joined");
+        assertThat(noRefundPayment.getRefundStatus()).isEqualTo("none");
+        assertThat(noRefundPayment.getRefundedAmount()).isNull();
         assertThat(noRefundPayment.getRefundedAtIso()).isNull();
         assertThat(noRefundPayment.getStatus()).isEqualTo("approved");
 
@@ -434,8 +439,11 @@ class BackendLifecycleE2ETest {
 
     @Test
     void eventExploreFriendsOnlyUsesBackendFriendGateThroughHttp() {
-        String friendUserId = firstUserWithFriendshipToHost(true);
-        String nonFriendUserId = firstUserWithFriendshipToHost(false);
+        String friendUserId = userId(2);
+        String nonFriendUserId = userId(3);
+        withReal(() -> mongoTemplate.save(new com.raxim.myscoutee.domain.accounts.document.UserFriendship(
+                HOST_ID.length() + ":" + HOST_ID + friendUserId, HOST_ID, friendUserId,
+                Instant.now(), "e2e-prior-event", Instant.now(), "e2e-prior-event", "Previous meeting")));
         String publicEvent = "e2e-life-friend-public";
         String friendsOnlyEvent = "e2e-life-friend-only";
 
@@ -528,9 +536,9 @@ class BackendLifecycleE2ETest {
         postJson("/activities/events/pay?paymentSessionId=" + paymentSessionId, checkoutPayload(PAID_MEMBER_ID));
         postJson("/activities/events/join", joinPayload(PAID_MEMBER_ID, paymentSessionId, true, null));
 
-        JsonNode afterOutsiderAction = postJson("/activities/events/members/action",
+        HttpResponse<String> outsiderAction = postRaw("/activities/events/members/action",
                 memberActionByActor(OUTSIDER_ID, PAID_MEMBER_ID, "disqualify"));
-        assertThat(memberStatus(afterOutsiderAction, PAID_MEMBER_ID)).isEqualTo("accepted");
+        assertThat(outsiderAction.statusCode()).as(outsiderAction.body()).isEqualTo(403);
         assertThat(findMember("event", EVENT_ID, PAID_MEMBER_ID).getStatus()).isEqualTo("accepted");
         assertThat(getJson("/assets/tickets?userId=" + PAID_MEMBER_ID).path("total").asInt()).isEqualTo(1);
     }
@@ -558,6 +566,7 @@ class BackendLifecycleE2ETest {
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
+        mongoTemplate.remove(new Query(), com.raxim.myscoutee.domain.accounts.document.UserFriendship.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), ActivitySubEventResource.class);
@@ -858,31 +867,6 @@ class BackendLifecycleE2ETest {
                 "action", action);
     }
 
-    private String firstUserWithFriendshipToHost(boolean expectedFriend) {
-        for (int index = 2; index <= 50; index += 1) {
-            String candidate = userId(index);
-            if (hasDeterministicFriendship(HOST_ID, candidate) == expectedFriend) {
-                return candidate;
-            }
-        }
-        throw new AssertionError("Missing " + (expectedFriend ? "friend" : "non-friend") + " fixture for " + HOST_ID);
-    }
-
-    private boolean hasDeterministicFriendship(String leftUserId, String rightUserId) {
-        String firstId = leftUserId.compareTo(rightUserId) <= 0 ? leftUserId : rightUserId;
-        String secondId = leftUserId.compareTo(rightUserId) <= 0 ? rightUserId : leftUserId;
-        int seed = hashText("friend-pair:" + firstId + ":" + secondId);
-        return (seed % 100) < 32;
-    }
-
-    private int hashText(String value) {
-        int hash = 0;
-        for (int index = 0; index < value.length(); index += 1) {
-            hash = (hash * 31 + value.charAt(index)) % 104729;
-        }
-        return Math.abs(hash);
-    }
-
     private Map<String, Object> resourceAssetCard() {
         Map<String, Object> asset = new LinkedHashMap<>();
         asset.put("id", RESOURCE_ASSET_ID);
@@ -939,7 +923,11 @@ class BackendLifecycleE2ETest {
                 "status", "pending",
                 "note", "Can manage the transport",
                 "requestKind", "borrow",
-                "requestedAtIso", BASE_TIME.minus(Duration.ofDays(1)).toString())));
+                "requestedAtIso", BASE_TIME.minus(Duration.ofDays(1)).toString()),
+                Map.of("id", "managed-request-2", "userId", userId(7), "name", "Lifecycle User 07",
+                        "initials", "LU", "gender", "man", "status", "pending",
+                        "note", "Second manager", "requestKind", "borrow",
+                        "requestedAtIso", BASE_TIME.minus(Duration.ofDays(1)).toString())));
         return asset;
     }
 
@@ -1030,7 +1018,7 @@ class BackendLifecycleE2ETest {
     }
 
     private String memberField(JsonNode members, String userId, String field) {
-        for (JsonNode member : members) {
+        for (JsonNode member : members.isArray() ? members : members.path("members")) {
             if (userId.equals(member.path("userId").asString())) {
                 return member.path(field).asString();
             }
@@ -1052,6 +1040,16 @@ class BackendLifecycleE2ETest {
         return parse(response.body());
     }
 
+    private void requestAndApproveRefund(String paymentSessionId, String payerId) {
+        String paymentId = findPayment(paymentSessionId).getId();
+        // Removing an event from the participant's list does not authorize a refund.
+        // Exercise the existing payer request and recipient approval as separate HTTP actions.
+        JsonNode requested = postJson("/payment-methods/history/" + paymentId + "/refund-request?userId=" + payerId, Map.of());
+        assertThat(requested.path("item").path("refundRequestStatus").asString()).isEqualTo("pending");
+        JsonNode approved = postJson("/payment-methods/history/" + paymentId + "/refund-approve?userId=" + HOST_ID, Map.of());
+        assertThat(approved.path("item").path("refundRequestStatus").asString()).isEqualTo("approved");
+    }
+
     private void postOk(String path, Object body) {
         post(path, body);
     }
@@ -1063,6 +1061,13 @@ class BackendLifecycleE2ETest {
     }
 
     private HttpResponse<String> postRaw(String path, Object body) {
+        // Select the request actor through the existing Firebase-disabled test mode.
+        if (body instanceof Map<?, ?> payload) {
+            Object actor = payload.containsKey("actorUserId") ? payload.get("actorUserId") : payload.get("userId");
+            if (actor instanceof String actorId) {
+                path += (path.contains("?") ? "&" : "?") + "userId=" + actorId;
+            }
+        }
         String json = writeJson(body);
         return send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
