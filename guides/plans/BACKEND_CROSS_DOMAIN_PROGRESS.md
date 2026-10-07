@@ -54,12 +54,12 @@ may need changes together.
 | 15 | administration | 4 | 7 | Pending; telemetry interface and notification counters touched | Whole domain not separated |
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
-| 18 | help | 1 | 1 | Pending | — |
+| 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; help checkpoint |
 | 19 | media | 0 | 0 | Pending: raw Mongo and service-boundary review | — |
-| 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; localization checkpoint commit |
+| 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 2/21 — #2 notifications and #20 localization.** A domain is complete when foreign
+**Completed domains: 3/21 — #2 notifications, #18 help and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -384,3 +384,83 @@ low. The shared architecture test changes only verification.
 - `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/service/EventCheckoutPricingService.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/notifications/NotificationDomainBoundaryTest.java`
+
+## #18 help checkpoint
+
+The existing help implementation now implements `HelpCenter`; its administration
+and landing-content callers use that interface. Account-owned consent storage
+moves to `AccountConsentService` through `AccountConsents`, returning detached
+values. Help retains revision validation, optional-section filtering and the
+existing HTTP DTO mapping. Exact-revision lookup still precedes latest-consent
+fallback; reaccepting the same version retains its original acceptance timestamp.
+Help owns revision indexes and author anonymization. The account purge calls the
+help owner in the same position as the previous Mongo operations.
+
+Existing authorization annotations and policy keys move to the access API; the
+interceptor and policy checks remain the same. This is declarative contract
+exposure, not another authorization mechanism. Base-group identifiers and their
+existing type mapping are exposed by the groups API. Persisted document classes
+and Mongo type identities are unchanged.
+
+Verification: 138 focused help/access/purge/boundary tests passed. Three additional
+consent tests cover lazy fallback, detached values and acceptance timestamp
+preservation/upgrades. The initial compile caught a removed ObjectId import still
+needed by help audit creation; restored before the passing runs. No E2E or latency
+measurement has been performed. Queries and index definitions are unchanged.
+
+Break risk: medium for consent validation/storage and authorization wiring; high
+impact if author anonymization were wrong. Severe slowdown risk: low, because
+query counts, bounds and update shapes are retained; no network hops added.
+E2E focus: privacy accept/reaccept, optional-section selection, wrong-user denial,
+workspace-scoped help administration, revision activation/deletion and account
+erasure. Existing privacy and permission regression assertions remain in place.
+
+Exact checkpoint files follow. Most authorization callers only change imports.
+
+| File | Break risk | Severe slowdown risk |
+| --- | --- | --- |
+| `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md` | Documentation only | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/AccessPolicyKeys.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/ConsentAuthorization.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/RequiresPolicies.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/RequiresPolicy.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/AccessControlService.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/AccessPolicyKeys.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/RequiresPolicies.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/RequiresPolicy.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/RequiresPolicyMethodInterceptor.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/RequiresPolicySupport.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountConsents.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/controller/AuthController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/AccountConsentService.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/controller/AdminController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/controller/AssetsController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/controller/ChatsController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/controller/LandingContentController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/controller/ActivitiesEventLeaderboardController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/controller/ActivitiesEventsController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/controller/ActivitiesResourcesController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/BaseGroups.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/config/AdminGroupIndexInitializer.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/document/CommunityGroup.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/help/api/HelpCenter.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/help/api/HelpPrivacy.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/help/config/HelpCenterIndexInitializer.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/help/controller/HelpCenterController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/help/service/HelpCenterService.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/help/service/HelpPrivacyService.java` | Medium: consent or privacy ownership | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/controller/MediaController.java` | Low: contract/import/index ownership | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/AccessControlServiceTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/AccessPolicySeedTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/BoundaryPolicyAnnotationTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/RequiresPolicyMethodInterceptorTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/RequiresPolicyRegistrationTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/AccountConsentServiceTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeServiceTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/controller/ActivitiesResourcesControllerPolicyTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesServiceTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/help/service/HelpCenterServiceTest.java` | Verification only | Low; same operations |

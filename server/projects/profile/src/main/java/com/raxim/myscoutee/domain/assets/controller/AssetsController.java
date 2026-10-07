@@ -27,8 +27,8 @@ import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketSyncResponseD
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketValidationDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketValidationRequestDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetUpsertRequestDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.assets.service.AssetAvailabilityService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 

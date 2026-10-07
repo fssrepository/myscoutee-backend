@@ -15,13 +15,11 @@ public record CommunityGroup(
         @Version Long version, String moderationStatus, Long moderationVersion,
         Long moderationPending, Long moderationQueueRevision, Long pendingMembers,
         String lifecycleStatus, String ownerReleasedAtIso, List<String> takeoverCandidates, String groupType) {
-    public static final String WORK_BASE_ID = "myscoutee-work";
-    public static final String COMMUNITY_BASE_ID = "myscoutee-community";
-    public static final List<String> BASE_IDS = List.of(WORK_BASE_ID, COMMUNITY_BASE_ID);
-    public static boolean isBaseId(String id) { return id != null && BASE_IDS.contains(id); }
-    public static String baseIdForType(String type) {
-        return "work".equals(type) ? WORK_BASE_ID : "community".equals(type) ? COMMUNITY_BASE_ID : null;
-    }
+    public static final String WORK_BASE_ID = com.raxim.myscoutee.domain.groups.api.BaseGroups.WORK_BASE_ID;
+    public static final String COMMUNITY_BASE_ID = com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID;
+    public static final List<String> BASE_IDS = com.raxim.myscoutee.domain.groups.api.BaseGroups.BASE_IDS;
+    public static boolean isBaseId(String id) { return com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(id); }
+    public static String baseIdForType(String type) { return com.raxim.myscoutee.domain.groups.api.BaseGroups.baseIdForType(type); }
     public boolean priorityEnabled() { return !"community".equals(effectiveType()) || COMMUNITY_BASE_ID.equals(id); }
     public String baseId() { return baseIdForType(effectiveType()); }
     public CommunityGroup(String id, String ownerUserId, String name, String description,

@@ -29,8 +29,8 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserReportUserSubmitRequ
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginResponseDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponseDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
 import jakarta.servlet.http.HttpServletResponse;

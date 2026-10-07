@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardEntryUpsertRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardStateDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventLeaderboardService;
 
 @RestController

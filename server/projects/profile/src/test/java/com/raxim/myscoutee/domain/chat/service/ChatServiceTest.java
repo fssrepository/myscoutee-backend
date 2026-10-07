@@ -62,7 +62,7 @@ import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMapper;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;

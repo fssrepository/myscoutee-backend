@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.domain.access.api.RequiresPolicies;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;

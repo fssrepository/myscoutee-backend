@@ -1,11 +1,12 @@
 package com.raxim.myscoutee.domain.help.service;
 
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
-import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.time.Instant;
+import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.dao.DuplicateKeyException;
@@ -32,7 +32,7 @@ import com.raxim.myscoutee.domain.help.document.HelpCenterAuditEntry;
 import com.raxim.myscoutee.domain.help.document.HelpCenterGuideField;
 import com.raxim.myscoutee.domain.help.document.HelpCenterRevision;
 import com.raxim.myscoutee.domain.help.document.HelpCenterRevision.HelpCenterSection;
-import com.raxim.myscoutee.domain.accounts.document.PrivacyConsent;
+import com.raxim.myscoutee.domain.accounts.api.AccountConsents.Consent;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterAuditEntryDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterGuideFieldDto;
@@ -45,13 +45,13 @@ import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentSaveRequ
 import com.raxim.myscoutee.domain.help.repository.HelpCenterAuditRepository;
 import com.raxim.myscoutee.domain.help.repository.HelpCenterGuideFieldsRepository;
 import com.raxim.myscoutee.domain.help.repository.HelpCenterRevisionsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.PrivacyConsentsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.accounts.api.AccountConsents;
+import com.raxim.myscoutee.domain.access.api.ConsentAuthorization;
 
 @Service
-public class HelpCenterService {
+public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.HelpCenter {
     @org.springframework.beans.factory.annotation.Autowired
-    private AdminModerationService adminModerationService;
+    private AdministrativeAccess adminModerationService;
     private static final String DOCUMENT_HELP = "help";
     private static final String DOCUMENT_PRIVACY = "privacy";
     private static final String DOCUMENT_TERMS = "terms";
@@ -71,25 +71,25 @@ public class HelpCenterService {
     private final HelpCenterRevisionsRepository revisionsRepository;
     private final HelpCenterAuditRepository auditRepository;
     private final HelpCenterGuideFieldsRepository guideFieldsRepository;
-    private final PrivacyConsentsRepository privacyConsentsRepository;
-    private final AdminTelemetryService adminTelemetryService;
-    private final AppSettingsService appSettingsService;
-    private final AccessControlService accessControlService;
+    private final AccountConsents accountConsents;
+    private final OperationalTelemetry adminTelemetryService;
+    private final AdministratorSettings appSettingsService;
+    private final ConsentAuthorization accessControlService;
 
     public HelpCenterService(
             ConfigProperties configProperties,
             HelpCenterRevisionsRepository revisionsRepository,
             HelpCenterAuditRepository auditRepository,
             HelpCenterGuideFieldsRepository guideFieldsRepository,
-            PrivacyConsentsRepository privacyConsentsRepository,
-            AdminTelemetryService adminTelemetryService,
-            AppSettingsService appSettingsService,
-            AccessControlService accessControlService) {
+            AccountConsents accountConsents,
+            OperationalTelemetry adminTelemetryService,
+            AdministratorSettings appSettingsService,
+            ConsentAuthorization accessControlService) {
         this.configProperties = configProperties;
         this.revisionsRepository = revisionsRepository;
         this.auditRepository = auditRepository;
         this.guideFieldsRepository = guideFieldsRepository;
-        this.privacyConsentsRepository = privacyConsentsRepository;
+        this.accountConsents = accountConsents;
         this.adminTelemetryService = adminTelemetryService;
         this.appSettingsService = appSettingsService;
         this.accessControlService = accessControlService;
@@ -112,7 +112,7 @@ public class HelpCenterService {
     }
 
     public HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage, String contextKey, String baseGroupId) {
-        if (baseGroupId != null && !com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(baseGroupId)) {
+        if (baseGroupId != null && !com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(baseGroupId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown base group.");
         }
         return JobGroupContext.call(contentScope(documentType, baseGroupId), () -> activeState(documentType, lang, acceptLanguage, contextKey));
@@ -330,8 +330,7 @@ public class HelpCenterService {
         if (!StringUtils.hasText(normalizedUserId) || !StringUtils.hasText(normalizedRevisionId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and privacy revision are required.");
         }
-        return privacyConsentsRepository.findByUserIdAndRevisionId(normalizedUserId, normalizedRevisionId)
-                .or(() -> privacyConsentsRepository.findTopByUserIdOrderByUpdatedAtIsoDesc(normalizedUserId))
+        return accountConsents.forRevisionOrLatest(normalizedUserId, normalizedRevisionId)
                 .map(this::toPrivacyConsentDto)
                 .orElse(null);
     }
@@ -352,26 +351,10 @@ public class HelpCenterService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Privacy revision not found.");
         }
 
-        String nowIso = Instant.now().toString();
-        PrivacyConsent consent = privacyConsentsRepository.findByUserIdAndRevisionId(userId, revisionId)
-                .orElseGet(PrivacyConsent::new);
-        int revisionVersion = Math.max(1, revision.getVersion() == null ? 1 : revision.getVersion());
-        int currentConsentVersion = consent.getRevisionVersion() == null ? 0 : consent.getRevisionVersion();
-        if (!StringUtils.hasText(consent.getId())) {
-            consent.setId(new ObjectId().toHexString());
-        }
-        if (!StringUtils.hasText(consent.getAcceptedAtIso()) || currentConsentVersion < revisionVersion) {
-            consent.setAcceptedAtIso(nowIso);
-        }
-        consent.setUserId(userId);
-        consent.setRevisionId(revisionId);
-        consent.setRevisionVersion(revisionVersion);
-        consent.setApprovedOptionalSectionIds(normalizeOptionalConsentSectionIds(
-                request == null ? null : request.approvedOptionalSectionIds(),
-                revision));
-        consent.setUpdatedAtIso(nowIso);
-        consent.setSource(privacyConsentSource(request == null ? null : request.source()));
-        return toPrivacyConsentDto(privacyConsentsRepository.save(consent));
+        return toPrivacyConsentDto(accountConsents.record(userId, revisionId,
+                Math.max(1, revision.getVersion() == null ? 1 : revision.getVersion()),
+                normalizeOptionalConsentSectionIds(request == null ? null : request.approvedOptionalSectionIds(), revision),
+                privacyConsentSource(request == null ? null : request.source())));
     }
 
     private void ensureEditableRevision(HelpCenterRevision revision) {
@@ -594,23 +577,23 @@ public class HelpCenterService {
                 normalize(entry.getMessage()));
     }
 
-    private PrivacyConsentDto toPrivacyConsentDto(PrivacyConsent consent) {
+    private PrivacyConsentDto toPrivacyConsentDto(Consent consent) {
         return new PrivacyConsentDto(
-                normalize(consent.getId()),
-                normalize(consent.getUserId()),
-                normalize(consent.getRevisionId()),
-                Math.max(1, consent.getRevisionVersion() == null ? 1 : consent.getRevisionVersion()),
-                consent.getApprovedOptionalSectionIds() == null
+                normalize(consent.id()),
+                normalize(consent.userId()),
+                normalize(consent.revisionId()),
+                Math.max(1, consent.revisionVersion() == null ? 1 : consent.revisionVersion()),
+                consent.approvedOptionalSectionIds() == null
                         ? List.of()
-                        : consent.getApprovedOptionalSectionIds().stream()
+                        : consent.approvedOptionalSectionIds().stream()
                                 .map(this::normalize)
                                 .filter(StringUtils::hasText)
                                 .distinct()
                                 .sorted()
                                 .toList(),
-                normalize(consent.getAcceptedAtIso()),
-                normalize(consent.getUpdatedAtIso()),
-                privacyConsentSource(consent.getSource()));
+                normalize(consent.acceptedAtIso()),
+                normalize(consent.updatedAtIso()),
+                privacyConsentSource(consent.source()));
     }
 
     private List<String> normalizeOptionalConsentSectionIds(List<String> sectionIds, HelpCenterRevision revision) {

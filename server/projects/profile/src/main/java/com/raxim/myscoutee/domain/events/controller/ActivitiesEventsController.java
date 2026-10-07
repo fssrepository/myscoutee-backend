@@ -38,8 +38,8 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventStageActionRequestD
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventStageActionResultDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventsExploreQueryDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventsFilterRequestDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventFeedbackService;
 
 @RestController

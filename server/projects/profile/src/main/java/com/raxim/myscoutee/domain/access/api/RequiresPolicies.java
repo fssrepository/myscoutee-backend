@@ -1,5 +1,6 @@
-package com.raxim.myscoutee.domain.access.security;
+package com.raxim.myscoutee.domain.access.api;
 
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

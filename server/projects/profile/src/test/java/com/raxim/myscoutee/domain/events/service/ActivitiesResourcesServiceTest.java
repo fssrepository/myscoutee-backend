@@ -69,7 +69,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntime
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.security.AccessPolicyTestSupport;
 import com.raxim.myscoutee.domain.access.security.ChatPolicyFacts;
 import com.raxim.myscoutee.domain.access.security.MemberPolicyFacts;

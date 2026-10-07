@@ -16,20 +16,20 @@ import com.raxim.myscoutee.domain.content.dto.LandingContentDtos.SupportedCountr
 import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostPublicPageDto;
-import com.raxim.myscoutee.domain.help.service.HelpCenterService;
+import com.raxim.myscoutee.domain.help.api.HelpCenter;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.content.service.IdeaPostsService;
 
 @RestController
 @RequestMapping("/landing")
 public class LandingContentController {
-    private final HelpCenterService helpCenterService;
+    private final HelpCenter helpCenterService;
     private final IdeaPostsService ideaPostsService;
     private final HomeUserProfileService homeUserProfileService;
     private final CountryPartitionService countryPartitionService;
 
     public LandingContentController(
-            HelpCenterService helpCenterService,
+            HelpCenter helpCenterService,
             IdeaPostsService ideaPostsService,
             HomeUserProfileService homeUserProfileService,
             CountryPartitionService countryPartitionService) {

@@ -68,7 +68,7 @@ class HelpCenterServiceTest {
                 revisionsRepository,
                 auditRepository,
                 guideFieldsRepository,
-                privacyConsentsRepository,
+                new com.raxim.myscoutee.domain.accounts.service.AccountConsentService(privacyConsentsRepository),
                 adminTelemetryService,
                 appSettingsService,
                 accessControlService);

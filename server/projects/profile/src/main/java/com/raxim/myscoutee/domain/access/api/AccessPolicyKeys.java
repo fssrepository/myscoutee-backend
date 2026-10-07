@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.access.security;
+package com.raxim.myscoutee.domain.access.api;
 
 public final class AccessPolicyKeys {
     private AccessPolicyKeys() {

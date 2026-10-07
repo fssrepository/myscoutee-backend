@@ -61,6 +61,8 @@ import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService
 public class DeletedAccountPurgeService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.help.api.HelpPrivacy helpPrivacy;
 
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
@@ -772,8 +774,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("affinityRecomputeTasks", List.of("targetId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("affinityRecomputeTasks", List.of("targetId"), "USER:" + userId);
         deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId);
-        anonymizeUserFieldsByAnyField("helpCenterAudit", List.of("actorUserId"), userId);
-        anonymizeUserFieldsByAnyField("helpCenterRevisions", List.of("createdUser", "updatedUser"), userId);
+        helpPrivacy.anonymizeAuthors(userId);
         anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId);
         anonymizeUserFieldsByAnyField("emailTemplates", List.of("createdUser", "updatedUser"), userId);
         anonymizeUserFieldsByAnyField("emailCampaignRules", List.of("createdUser", "updatedUser"), userId);

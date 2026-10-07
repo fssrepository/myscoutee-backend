@@ -41,7 +41,7 @@ import com.raxim.myscoutee.domain.administration.service.AdminMonitoringService;
 import com.raxim.myscoutee.domain.administration.service.AdminParamsService;
 import com.raxim.myscoutee.domain.administration.service.AdminStatsService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeMetricsService;
-import com.raxim.myscoutee.domain.help.service.HelpCenterService;
+import com.raxim.myscoutee.domain.help.api.HelpCenter;
 import com.raxim.myscoutee.domain.content.service.IdeaPostsService;
 import com.raxim.myscoutee.domain.notifications.api.NotificationAdministration;
 
@@ -51,7 +51,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminModerationService adminModerationService;
-    private final HelpCenterService helpCenterService;
+    private final HelpCenter helpCenterService;
     private final IdeaPostsService ideaPostsService;
     private final NotificationAdministration adminNotificationService;
     private final AdminStatsService adminStatsService;
@@ -62,7 +62,7 @@ public class AdminController {
 
     public AdminController(
             AdminModerationService adminModerationService,
-            HelpCenterService helpCenterService,
+            HelpCenter helpCenterService,
             IdeaPostsService ideaPostsService,
             NotificationAdministration adminNotificationService,
             AdminStatsService adminStatsService,

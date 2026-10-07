@@ -26,10 +26,11 @@ class DomainServiceBoundaryTest {
     private static final Pattern REFERENCES = Pattern.compile(DOMAIN + "[\\w/$]+");
     private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.of(
             "notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs"),
-            "localization", Set.of("i18n_messages", "i18n_bundles"));
+            "localization", Set.of("i18n_messages", "i18n_bundles"),
+            "help", Set.of("helpCenterRevisions", "helpCenterAudit", "helpCenterGuideFields"));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization"})
+    @ValueSource(strings = {"notifications", "localization", "help"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -62,7 +63,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization"})
+    @ValueSource(strings = {"notifications", "localization", "help"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;
