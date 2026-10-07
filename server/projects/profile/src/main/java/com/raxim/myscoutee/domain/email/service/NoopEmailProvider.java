@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.email.service;
 
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
 import java.util.UUID;
 
 import org.slf4j.Logger;

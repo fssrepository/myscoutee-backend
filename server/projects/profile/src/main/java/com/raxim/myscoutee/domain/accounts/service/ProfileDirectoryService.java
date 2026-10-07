@@ -12,6 +12,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 public class ProfileDirectoryService implements ProfileDirectory {
     private final UsersRepository users;
     public ProfileDirectoryService(UsersRepository users) { this.users = users; }
+    @Override public List<Users> findAll() { return users.findAll(); }
     @Override public Optional<Users> findByUserId(String userId) { return users.findByUserId(userId); }
     @Override public List<Users> findByEmailIn(Collection<String> emails) { return users.findByEmailIn(emails); }
     @Override public List<Users> findByUserIdIn(Collection<String> userIds) { return users.findByUserIdIn(userIds); }

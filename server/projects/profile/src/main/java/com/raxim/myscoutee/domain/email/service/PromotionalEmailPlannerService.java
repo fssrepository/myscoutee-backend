@@ -32,14 +32,14 @@ import com.raxim.myscoutee.domain.email.document.EmailCampaignRule;
 import com.raxim.myscoutee.domain.email.document.EmailOutboxItem;
 import com.raxim.myscoutee.domain.email.document.EmailTemplate;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.email.repository.EmailCampaignRulesRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.events.api.MemberAudience;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
 import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 import jakarta.annotation.PreDestroy;
@@ -49,7 +49,7 @@ public class PromotionalEmailPlannerService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
@@ -63,15 +63,15 @@ public class PromotionalEmailPlannerService {
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EmailCampaignRulesRepository emailCampaignRulesRepository;
     private final EmailOutboxRepository emailOutboxRepository;
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory profiles;
     private final NotificationCatalog notificationTemplatesRepository;
-    private final ActivitiesMembersService activitiesMembersService;
+    private final MemberAudience activitiesMembersService;
     private final ScheduledNotificationDeliveryService scheduledNotificationDeliveryService;
     private final ScheduledMessageAuditService scheduledMessageAuditService;
     private final EmailTemplateRenderer emailTemplateRenderer;
     private final PromotionalEmailRuleEvaluator ruleEvaluator;
     private final EmailProviderGateway emailProviderGateway;
-    private DeploymentBrandingResolver deploymentBrandingResolver;
+    private DeploymentBranding deploymentBrandingResolver;
     private final ExecutorService ruleExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private final Map<String, Future<?>> runningRuleTasks = new ConcurrentHashMap<>();
 
@@ -80,9 +80,9 @@ public class PromotionalEmailPlannerService {
             EmailTemplatesRepository emailTemplatesRepository,
             EmailCampaignRulesRepository emailCampaignRulesRepository,
             EmailOutboxRepository emailOutboxRepository,
-            UsersRepository usersRepository,
+            ProfileDirectory profiles,
             NotificationCatalog notificationTemplatesRepository,
-            ActivitiesMembersService activitiesMembersService,
+            MemberAudience activitiesMembersService,
             ScheduledNotificationDeliveryService scheduledNotificationDeliveryService,
             ScheduledMessageAuditService scheduledMessageAuditService,
             EmailTemplateRenderer emailTemplateRenderer,
@@ -92,7 +92,7 @@ public class PromotionalEmailPlannerService {
         this.emailTemplatesRepository = emailTemplatesRepository;
         this.emailCampaignRulesRepository = emailCampaignRulesRepository;
         this.emailOutboxRepository = emailOutboxRepository;
-        this.usersRepository = usersRepository;
+        this.profiles = profiles;
         this.notificationTemplatesRepository = notificationTemplatesRepository;
         this.activitiesMembersService = activitiesMembersService;
         this.scheduledNotificationDeliveryService = scheduledNotificationDeliveryService;
@@ -104,7 +104,7 @@ public class PromotionalEmailPlannerService {
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void setDeploymentBrandingResolver(
-            DeploymentBrandingResolver deploymentBrandingResolver) {
+            DeploymentBranding deploymentBrandingResolver) {
         this.deploymentBrandingResolver = deploymentBrandingResolver;
     }
 
@@ -248,7 +248,7 @@ public class PromotionalEmailPlannerService {
         int notificationCount = 0;
         int emailQueuedCount = 0;
         int failedCount = 0;
-        for (Users user : resolveAudience(rule)) {
+        for (WorkspaceProfile user : resolveAudience(rule)) {
             if (!jobGroupScope.matchesWorkspace(user.getWorkspaceGroupId())) continue;
             if (Thread.currentThread().isInterrupted()) {
                 throw new IllegalStateException("Scheduled email campaign was cancelled.");
@@ -346,13 +346,13 @@ public class PromotionalEmailPlannerService {
                 .orElse(null);
     }
 
-    private List<Users> resolveAudience(EmailCampaignRule rule) {
+    private List<? extends WorkspaceProfile> resolveAudience(EmailCampaignRule rule) {
         String eventId = safeText(rule == null ? null : rule.getEventId());
         if (!StringUtils.hasText(eventId)) {
-            return usersRepository.findAll();
+            return profiles.findAll();
         }
 
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        MemberAudience.Audience snapshot = activitiesMembersService.queryNotificationAudience(OWNER_TYPE_EVENT, eventId);
         if (snapshot == null) {
             return List.of();
         }
@@ -365,7 +365,7 @@ public class PromotionalEmailPlannerService {
             userIds.addAll(snapshot.pendingMemberUserIds());
         }
         userIds.removeIf(userId -> !StringUtils.hasText(safeText(userId)));
-        return userIds.isEmpty() ? List.of() : usersRepository.findByUserIdIn(userIds);
+        return userIds.isEmpty() ? List.of() : profiles.findByUserIdIn(userIds);
     }
 
     private boolean isDue(EmailCampaignRule rule, Instant now) {
@@ -514,7 +514,7 @@ public class PromotionalEmailPlannerService {
     private void recordDelivery(
             String runId,
             EmailCampaignRule rule,
-            Users user,
+            WorkspaceProfile user,
             String channel,
             String status,
             String detail) {
@@ -544,7 +544,7 @@ public class PromotionalEmailPlannerService {
     }
 
     private EmailOutboxItem buildOutboxItem(
-            Users user,
+            WorkspaceProfile user,
             EmailCampaignRule rule,
             EmailTemplate template,
             Map<String, String> variables,

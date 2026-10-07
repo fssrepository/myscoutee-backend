@@ -59,7 +59,7 @@ class ScheduledMessageTaskServiceTest {
     @Mock
     private ScheduledMessageTasksRepository scheduledMessageTasksRepository;
     @Mock
-    private UsersRepository usersRepository;
+    private UsersRepository profiles;
     @Mock
     private UserSessionActionsRepository userSessionActionsRepository;
     @Mock
@@ -71,7 +71,7 @@ class ScheduledMessageTaskServiceTest {
     @Mock
     private NotificationCatalog notificationTemplatesRepository;
     @Mock
-    private ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
+    private ObjectProvider<com.raxim.myscoutee.domain.events.api.MemberAudience> activitiesMembersServiceProvider;
     @Mock
     private ObjectProvider<ScheduledNotificationDeliveryService> scheduledNotificationDeliveryServiceProvider;
     @Mock
@@ -99,14 +99,16 @@ class ScheduledMessageTaskServiceTest {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().doCallRealMethod().when(activitiesMembersService)
+                .queryNotificationAudience(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyString());
         emailProperties.setEnabled(true);
         emailProperties.setBaseUrl("https://myscoutee.test");
         configProperties.setFirebaseEnabled(false);
         service = new ScheduledMessageTaskService(
                 mongoTemplate,
                 scheduledMessageTasksRepository,
-                usersRepository,
-                userSessionActionsRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles),
+                new com.raxim.myscoutee.domain.accounts.service.AccountInactivityService(profiles, userSessionActionsRepository, affinityRecomputeTaskService),
                 scheduledMessageAuditService,
                 emailOutboxRepository,
                 emailTemplatesRepository,
@@ -116,8 +118,7 @@ class ScheduledMessageTaskServiceTest {
                 emailTemplateRendererProvider,
                 emailProviderGatewayProvider,
                 emailPropertiesProvider,
-                configPropertiesProvider,
-                affinityRecomputeTaskService);
+                configPropertiesProvider);
 
         notificationTemplate = new NotificationTemplate();
         notificationTemplate.setTemplateKey("notification-template");
@@ -373,7 +374,7 @@ class ScheduledMessageTaskServiceTest {
                 .thenAnswer(call -> Optional.of(com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(notificationTemplate)));
         when(emailTemplatesRepository.findByTemplateKey("email-template"))
                 .thenReturn(Optional.of(emailTemplate));
-        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(recipient));
+        when(profiles.findByUserIdIn(anyCollection())).thenReturn(List.of(recipient));
         when(scheduledNotificationDeliveryService.send(
                 eq(recipient),
                 org.mockito.ArgumentMatchers.argThat(template -> template.equals(

@@ -1,4 +1,10 @@
-package com.raxim.myscoutee.domain.email.service;
+package com.raxim.myscoutee.domain.accounts.service;
+
+import com.raxim.myscoutee.domain.email.service.EmailTemplateRenderer;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;

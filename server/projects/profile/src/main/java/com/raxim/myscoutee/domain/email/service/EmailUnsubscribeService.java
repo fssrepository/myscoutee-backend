@@ -19,8 +19,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
-import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+import com.raxim.myscoutee.domain.platform.api.SecretEncryption;
 import tools.jackson.databind.ObjectMapper;
 
 /** Recipient-level suppression survives profile deletion and needs no login. */
@@ -29,12 +29,12 @@ public class EmailUnsubscribeService {
     private static final String PURPOSE = "email-unsubscribe-v1";
     private static final String COLLECTION = "emailUnsubscriptions";
     private final MongoTemplate mongo;
-    private final DeploymentConfigurationCrypto crypto;
+    private final SecretEncryption crypto;
     private final ObjectMapper mapper;
     private final EmailProperties properties;
     public record Ticket(String recipientHash, String mode) {}
 
-    public EmailUnsubscribeService(MongoTemplate mongo, DeploymentConfigurationCrypto crypto,
+    public EmailUnsubscribeService(MongoTemplate mongo, SecretEncryption crypto,
             ObjectMapper mapper, EmailProperties properties) {
         this.mongo = mongo; this.crypto = crypto; this.mapper = mapper; this.properties = properties;
     }

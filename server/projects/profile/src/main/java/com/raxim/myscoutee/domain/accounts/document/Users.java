@@ -593,7 +593,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             Integer adminJobs,
             Integer adminMetrics,
             Integer notifications,
-            Integer serviceFeedbackPending) {
+            Integer serviceFeedbackPending) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ActivityCounts {
         public UserActivitiesRecord(
                 Integer game,
                 Integer chats,
@@ -763,7 +763,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             List<String> options) {
     }
 
-    public static class UserDeviceRecord {
+    public static class UserDeviceRecord implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.Device {
         private String deviceId;
         private String platform;
         private String firebaseToken;

@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
@@ -51,7 +53,7 @@ class McpEventsServiceTest {
         owner.setIntegrationAccess(new IntegrationAccess(1, IntegrationAccess.Mode.FULL, Map.of("token-a", IntegrationAccess.Mode.FULL)));
         when(users.findByUserId("alice")).thenReturn(Optional.of(owner));
         when(oauth.activeSubscriptionGrant("grant-a", "alice", "token-a", "shared-chatgpt")).thenReturn(true);
-        when(crypto.encrypt(anyString(), anyString())).thenReturn(new DeploymentConfiguration.EncryptedSecret());
+        when(crypto.encrypt(anyString(), anyString())).thenReturn(new EncryptedSecret());
         when(subscriptions.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(callbacks.send(anyString(), anyString(), anyString(), any(), anyString(), isNull(), eq(true)))
                 .thenAnswer(invocation -> new McpEventCallbackClient.Response(200,
@@ -98,7 +100,7 @@ class McpEventsServiceTest {
     @Test void refreshRotatesKeysAndRestartedServiceUsesPersistedVerification() throws Exception {
         var existing = new McpEventSubscription(); existing.id = McpEventsService.identity(client, request(null));
         existing.enabled = true; existing.grantId = "grant-a"; existing.generation = "generation"; existing.expiresAt = Instant.now().plusSeconds(3600);
-        existing.secretHash = "old"; existing.secret = new DeploymentConfiguration.EncryptedSecret();
+        existing.secretHash = "old"; existing.secret = new EncryptedSecret();
         existing.verifiedUntil = Instant.now().plusSeconds(120);
         when(subscriptions.findById(existing.id)).thenReturn(Optional.of(existing));
         when(subscriptions.findFirstByOwnerUserIdAndTokenIdAndClientIdAndCallbackUrlAndSecretHashAndVerifiedUntilAfter(

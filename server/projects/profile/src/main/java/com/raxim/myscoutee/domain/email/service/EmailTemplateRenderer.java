@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
 @Service
-public class EmailTemplateRenderer {
+public class EmailTemplateRenderer implements com.raxim.myscoutee.domain.email.api.EmailRendering {
     private static final Pattern BRACED_PLACEHOLDER = Pattern.compile("\\{\\{\\s*([a-zA-Z0-9_.-]+)\\s*\\}\\}");
     private static final Pattern TOKEN_PLACEHOLDER = Pattern.compile(
             "(?<![\\p{Alnum}._%+-])@([a-zA-Z][a-zA-Z0-9_-]*(?:\\.[a-zA-Z0-9_-]+)*)");

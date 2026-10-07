@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.email.service;
 
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +26,7 @@ public class PromotionalEmailDeliveryProcessor {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 

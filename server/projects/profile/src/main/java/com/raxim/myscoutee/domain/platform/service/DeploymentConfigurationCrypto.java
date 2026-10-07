@@ -33,10 +33,10 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
 @Component
-public class DeploymentConfigurationCrypto {
+public class DeploymentConfigurationCrypto implements com.raxim.myscoutee.domain.platform.api.SecretEncryption {
     static final String ALGORITHM = "AES-256-GCM";
     private static final String CIPHER = "AES/GCM/NoPadding";
     private static final int KEY_BYTES = 32;

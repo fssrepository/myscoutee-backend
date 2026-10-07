@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.email.service;
 
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

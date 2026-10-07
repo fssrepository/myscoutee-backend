@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 import com.raxim.myscoutee.domain.email.service.EmailProvider;
 import com.raxim.myscoutee.domain.email.service.OperatorEmailConfigurationService.*;
 import static org.junit.jupiter.api.Assertions.*;

@@ -64,7 +64,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersRepository profiles;
     @Autowired
     private ScheduledMessageTasksRepository scheduledMessageTasksRepository;
     @Autowired
@@ -92,7 +92,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
     void groupOwnedSelectionFiltersBeforeBatchLimit() {
         var dating = activeUser("dating-owner");
         var work = activeUser("work-owner"); work.setWorkspaceGroupId("myscoutee-work");
-        usersRepository.saveAll(List.of(dating, work));
+        profiles.saveAll(List.of(dating, work));
         mongoTemplate.dropCollection(com.raxim.myscoutee.domain.payments.document.Payment.class);
         for (var owner : List.of("dating-owner", "work-owner")) {
             var payment = new com.raxim.myscoutee.domain.payments.document.Payment();
@@ -112,7 +112,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @Test
     void activityRefreshUpdatesControllerStateBeforeOriginalWorkerCanInactivate() throws Exception {
-        usersRepository.save(activeUser("user-refresh"));
+        profiles.save(activeUser("user-refresh"));
         String taskKey = userInactivityTaskKey("user-refresh");
         Instant originalDueAt = Instant.now().plusSeconds(8);
         ScheduledMessageTask task = scheduledMessageTasksRepository.save(inactivityTask(
@@ -126,7 +126,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         scheduledMessageTaskService.touchUserActivity("user-refresh");
         Thread.sleep(Duration.ofSeconds(5).toMillis());
 
-        Users user = usersRepository.findByUserId("user-refresh").orElseThrow();
+        Users user = profiles.findByUserId("user-refresh").orElseThrow();
         ScheduledMessageTask refreshedTask = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseThrow();
 
         assertThat(user.getStatus()).isEqualTo("A");
@@ -139,7 +139,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @Test
     void dueControllerWorkerInactivatesProfileWhenThereWasNoActivityRefresh() {
-        usersRepository.save(activeUser("user-due"));
+        profiles.save(activeUser("user-due"));
         ScheduledMessageTask task = scheduledMessageTasksRepository.save(inactivityTask(
                 userInactivityTaskKey("user-due"),
                 "user-due",
@@ -148,7 +148,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         scheduledMessageTaskService.acceptTaskMetadata(task);
 
         await().atMost(Duration.ofSeconds(12)).pollInterval(Duration.ofMillis(250)).untilAsserted(() -> {
-            Users user = usersRepository.findByUserId("user-due").orElseThrow();
+            Users user = profiles.findByUserId("user-due").orElseThrow();
             assertThat(user.getStatus()).isEqualTo("I");
             assertThat(user.getProfileStatus()).isEqualTo("inactive");
             assertThat(scheduledMessageTasksRepository
@@ -164,7 +164,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @Test
     void pollReconciliationCancelsSuspendedWorkerBeforeDueTime() throws Exception {
-        usersRepository.save(activeUser("user-suspend"));
+        profiles.save(activeUser("user-suspend"));
         ScheduledMessageTask task = scheduledMessageTasksRepository.save(inactivityTask(
                 userInactivityTaskKey("user-suspend"),
                 "user-suspend",
@@ -182,7 +182,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         scheduledMessageTaskService.runDueTasks();
         Thread.sleep(Duration.ofSeconds(7).toMillis());
 
-        Users user = usersRepository.findByUserId("user-suspend").orElseThrow();
+        Users user = profiles.findByUserId("user-suspend").orElseThrow();
         ScheduledMessageTask retainedTask = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElseThrow();
 
         assertThat(user.getStatus()).isEqualTo("A");
@@ -370,6 +370,8 @@ class ScheduledMessageTaskServiceIntegrationTest {
     @EnableMongoRepositories(basePackages = "com.raxim.myscoutee.domain")
     @Import({
             ScheduledMessageTaskService.class,
+            com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService.class,
+            com.raxim.myscoutee.domain.accounts.service.AccountInactivityService.class,
             ScheduledMessageAuditService.class,
             com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.class,
             com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.class,

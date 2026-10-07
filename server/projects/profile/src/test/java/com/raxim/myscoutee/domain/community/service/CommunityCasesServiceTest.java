@@ -18,7 +18,6 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
 
 @org.junit.jupiter.api.Tag("standard")
@@ -90,12 +89,19 @@ class CommunityCasesServiceTest {
         var service = new CommunityCasesService(cases, mock(CommunityAccessService.class), mock(CommunityGroupsRepository.class),
                 mock(UsersRepository.class), mock(NotificationOutboxService.class), mock(ChatService.class), mock(ServiceOfferingsRepository.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "scheduledMessages", worker);
+        var mapper = tools.jackson.databind.json.JsonMapper.builder().build();
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "objectMapper", mapper);
         when(cases.findById("case")).thenReturn(Optional.of(record()));
         when(cases.save(any(ServiceCase.class))).thenAnswer(invocation -> invocation.getArgument(0));
         service.action("owner", "case", command("complete"));
         var order = inOrder(cases, worker);
         order.verify(cases).save(argThat(c -> "completed".equals(c.status())));
-        order.verify(worker).scheduleCaseFeedback(argThat(c -> "completed".equals(c.status()) && c.activeParticipantAccountIds().contains("owner")));
+        order.verify(worker).scheduleCaseFeedback(argThat(request -> {
+            var closed = mapper.readValue(request.snapshot(), ServiceCase.class);
+            return "completed".equals(closed.status()) && closed.activeParticipantAccountIds().contains("owner")
+                    && request.caseId().equals(closed.id()) && request.version() == closed.version()
+                    && request.baseGroupId().equals(closed.baseGroupId());
+        }));
     }
     private com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.Command command(String action) {
         return new com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.Command(

@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentCredentialResolver;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,7 +104,7 @@ class DeploymentConfigurationCryptoTest {
     }
 
     private DeploymentConfiguration configuration(
-            DeploymentConfiguration.EncryptedSecret envelope) {
+            EncryptedSecret envelope) {
         DeploymentConfiguration configuration = new DeploymentConfiguration();
         DeploymentConfiguration.Payment payment =
                 new DeploymentConfiguration.Payment();

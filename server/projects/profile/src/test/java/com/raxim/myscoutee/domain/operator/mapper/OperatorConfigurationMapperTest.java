@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.operator.mapper;
 
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
@@ -157,7 +159,7 @@ class OperatorConfigurationMapperTest {
         configuration.getFirebase().setMessagingCredentialEnvelope(null);
         assertThat(mapper.toPublicConfiguration(configuration).firebaseMessagingConfigured()).isFalse();
 
-        DeploymentConfiguration.EncryptedSecret credential = new DeploymentConfiguration.EncryptedSecret();
+        EncryptedSecret credential = new EncryptedSecret();
         credential.setCiphertext("private-messaging-credential");
         configuration.getFirebase().setMessagingCredentialEnvelope(credential);
         configuration.getFirebase().getPublicClient().setVapidKey(null);
@@ -170,8 +172,8 @@ class OperatorConfigurationMapperTest {
     @Test
     void operatorMappingReportsOnlySecretPresenceAndSafeMask() throws Exception {
         DeploymentConfiguration configuration = seededConfiguration();
-        DeploymentConfiguration.EncryptedSecret encrypted =
-                new DeploymentConfiguration.EncryptedSecret();
+        EncryptedSecret encrypted =
+                new EncryptedSecret();
         encrypted.setAlgorithm("AES-256-GCM");
         encrypted.setKeyId("sha256:key");
         encrypted.setNonce("nonce");

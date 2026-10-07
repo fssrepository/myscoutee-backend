@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +74,7 @@ class DeploymentFirebaseRuntimeTest {
 
     @Test
     void activatedDeploymentCredentialOverridesTheLegacyStartupApp() {
-        DeploymentConfiguration.EncryptedSecret envelope =
+        EncryptedSecret envelope =
                 encryptedSecret("authentication");
         DeploymentConfiguration.Firebase firebase = runtimeReadyFirebase(
                 envelope,
@@ -137,8 +139,8 @@ class DeploymentFirebaseRuntimeTest {
     }
 
     private DeploymentConfiguration.Firebase runtimeReadyFirebase(
-            DeploymentConfiguration.EncryptedSecret authentication,
-            DeploymentConfiguration.EncryptedSecret messaging) {
+            EncryptedSecret authentication,
+            EncryptedSecret messaging) {
         DeploymentConfiguration.Firebase firebase =
                 new DeploymentConfiguration.Firebase();
         firebase.setProjectId("activated-project");
@@ -159,10 +161,10 @@ class DeploymentFirebaseRuntimeTest {
         return firebase;
     }
 
-    private DeploymentConfiguration.EncryptedSecret encryptedSecret(
+    private EncryptedSecret encryptedSecret(
             String suffix) {
-        DeploymentConfiguration.EncryptedSecret envelope =
-                new DeploymentConfiguration.EncryptedSecret();
+        EncryptedSecret envelope =
+                new EncryptedSecret();
         envelope.setAlgorithm("AES-256-GCM");
         envelope.setKeyId("test-key");
         envelope.setNonce("test-nonce-" + suffix);

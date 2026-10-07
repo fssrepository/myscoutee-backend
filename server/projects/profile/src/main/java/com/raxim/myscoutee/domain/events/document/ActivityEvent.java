@@ -48,7 +48,7 @@ import com.raxim.myscoutee.domain.events.document.SubEventItem;
         @CompoundIndex(name = "event_feedback_counter_due", def = "{'feedbackCountersProjected': 1, 'endAtIso': 1, 'sourceId': 1}"),
         @CompoundIndex(name = "event_qmau_host_window", def = "{'status': 1, 'generated': 1, 'createdDate': 1, 'creatorUserId': 1}")
 })
-public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.EventOwnership.Event {
+public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.EventOwnership.Event, com.raxim.myscoutee.domain.events.api.EventSchedule {
     private String campaignId;
     public String getCampaignId() { return campaignId; }
     public void setCampaignId(String value) { campaignId = value; }

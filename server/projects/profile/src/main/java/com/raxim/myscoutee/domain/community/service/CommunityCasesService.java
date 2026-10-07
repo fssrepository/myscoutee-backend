@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository;
-import com.raxim.myscoutee.domain.email.service.ScheduledMessageTaskService;
+import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
@@ -31,7 +31,7 @@ import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.e
 public class CommunityCasesService {
     public static final List<String> TYPES = List.of("fault", "maintenance", "meter-replacement", "chimney-sweep", "renovation", "other");
     @org.springframework.beans.factory.annotation.Autowired
-    private ScheduledMessageTaskService scheduledMessages;
+    private ScheduledMessages scheduledMessages;
     private final ServiceCasesRepository cases;
     private final CommunityAccessService access;
     private final CommunityGroupsRepository groups;
@@ -42,6 +42,14 @@ public class CommunityCasesService {
     public CommunityCasesService(ServiceCasesRepository cases, CommunityAccessService access, CommunityGroupsRepository groups,
             UsersRepository users, NotificationDelivery notifications, ChatService chats, ServiceOfferingsRepository offerings) {
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private tools.jackson.databind.ObjectMapper objectMapper;
+    private void scheduleFeedback(ServiceCase closed) {
+        try {
+            scheduledMessages.scheduleCaseFeedback(new com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.Request(
+                    closed.id(), closed.version(), closed.baseGroupId(), objectMapper.writeValueAsString(closed)));
+        } catch (tools.jackson.core.JacksonException error) { throw new IllegalStateException(error); }
     }
     public String actor(String id) { return access.actor(id); }
     public boolean canManage(ServiceCase c, String actor) {
@@ -229,7 +237,7 @@ public class CommunityCasesService {
         var saved = persist(new ServiceCase(c.id(), c.baseGroupId(), c.communityId(), owner, c.title(), c.description(), c.caseType(), status,
                 c.audienceAll(), c.audienceAccountIds(), List.copyOf(participants), participants.stream().filter(v -> !actor.equals(v) && !List.of("removed", "left", "declined").contains(memberStates.getOrDefault(v, c.membershipStatus(v) == null ? "invited" : c.membershipStatus(v)))).toList(),
                 support, recommendations, offers, c.scheduledTaskId(), c.dueAtIso(), c.createdAtIso(), Instant.now().toString(), c.version(), memberStates, boardTasks, List.copyOf(chatAccounts)));
-        if ("complete".equals(action) && !"completed".equals(c.status())) scheduledMessages.scheduleCaseFeedback(saved);
+        if ("complete".equals(action) && !"completed".equals(c.status())) scheduleFeedback(saved);
         notifyChange(saved, actor, "leave".equals(action) && manager ? "owner-left" : List.of("join", "decline", "leave", "invite-members", "remove-member", "invite-chat", "save-board-task", "delete-board-task", "edit-offer", "pending-offer").contains(action) ? "updated" : action, saved.id() + ":" + saved.version());
         return dto(actor, saved);
     }

@@ -1,6 +1,10 @@
 package com.raxim.myscoutee.domain.email.service;
 
-import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
+import com.raxim.myscoutee.domain.platform.api.SecretEncryption;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,11 +18,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
-
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
 @Service
-public class OperatorEmailConfigurationService {
+public class OperatorEmailConfigurationService implements com.raxim.myscoutee.domain.email.api.EmailSending {
     private static final String PURPOSE = "operator-email-provider";
     @Document("operatorEmailConfigurations")
     public record Configuration(@Id String id, long revision, boolean enabled, String providerId,
@@ -30,10 +33,10 @@ public class OperatorEmailConfigurationService {
             @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY) String credential,
             boolean clearCredential) {}
     private final MongoTemplate mongo;
-    private final DeploymentConfigurationCrypto crypto;
+    private final SecretEncryption crypto;
     private final List<EmailProvider> providers;
     private final EmailProviderGateway gateway;
-    public OperatorEmailConfigurationService(MongoTemplate mongo, DeploymentConfigurationCrypto crypto, List<EmailProvider> providers, EmailProviderGateway gateway) {
+    public OperatorEmailConfigurationService(MongoTemplate mongo, SecretEncryption crypto, List<EmailProvider> providers, EmailProviderGateway gateway) {
         this.mongo = mongo; this.crypto = crypto; this.providers = providers; this.gateway = gateway;
     }
     private Configuration configuration() {

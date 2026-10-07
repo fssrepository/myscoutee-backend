@@ -1,4 +1,10 @@
-package com.raxim.myscoutee.domain.email.service;
+package com.raxim.myscoutee.domain.accounts.service;
+
+import com.raxim.myscoutee.domain.email.api.EmailRendering;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
 
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import java.time.Instant;
@@ -20,7 +26,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.localization.api.TranslationBundles;
 import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
-import com.raxim.myscoutee.domain.email.service.OperatorEmailConfigurationService;
+import com.raxim.myscoutee.domain.email.api.EmailSending;
 
 /** A deletion episode has one durable delivery claim, independent of subsequent Job runs. */
 @Service
@@ -36,14 +42,14 @@ public class DeletedAccountWarningWorker {
     private long initialRetryDelaySeconds = 60;
     private final MongoTemplate mongo;
     private final PlatformParametersService parameters;
-    private final OperatorEmailConfigurationService email;
+    private final EmailSending email;
     private final NotificationJobs jobs;
     private final ScheduledMongoSessionRunner databases;
     private final TranslationBundles i18n;
-    private final EmailTemplateRenderer templates;
+    private final EmailRendering templates;
     public DeletedAccountWarningWorker(MongoTemplate mongo, PlatformParametersService parameters,
-            OperatorEmailConfigurationService email, NotificationJobs jobs, ScheduledMongoSessionRunner databases,
-            TranslationBundles i18n, EmailTemplateRenderer templates) {
+            EmailSending email, NotificationJobs jobs, ScheduledMongoSessionRunner databases,
+            TranslationBundles i18n, EmailRendering templates) {
         this.mongo = mongo; this.parameters = parameters; this.email = email; this.jobs = jobs; this.databases = databases;
         this.i18n = i18n; this.templates = templates;
     }

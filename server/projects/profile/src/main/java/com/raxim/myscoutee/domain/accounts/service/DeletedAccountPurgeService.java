@@ -63,6 +63,8 @@ public class DeletedAccountPurgeService {
     private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.help.api.HelpPrivacy helpPrivacy;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.email.api.EmailPrivacy emailPrivacy;
 
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
@@ -759,10 +761,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("userSessionActions", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("photoFeedViews", List.of("userId"), userId);
         deleteDocumentsByAnyField("payments", List.of("userId"), userId);
-        deleteDocumentsByAnyField("scheduledMessageTasks", List.of("userId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("scheduledMessageDeliveries", List.of("userId", "createdUser"), userId);
-        deleteDocumentsByAnyField("scheduledMessageRuns", List.of("createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("emailOutbox", List.of("userId", "createdUser", "updatedUser"), userId);
+        emailPrivacy.purgeDeliveryData(userId);
         notificationPrivacy.purgeDeliveryData(userId);
         anonymizeUserFieldsByAnyField(
                 "eventTicketAudit",
@@ -776,8 +775,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId);
         helpPrivacy.anonymizeAuthors(userId);
         anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId);
-        anonymizeUserFieldsByAnyField("emailTemplates", List.of("createdUser", "updatedUser"), userId);
-        anonymizeUserFieldsByAnyField("emailCampaignRules", List.of("createdUser", "updatedUser"), userId);
+        emailPrivacy.anonymizeAuthors(userId);
         notificationPrivacy.anonymizeRuleAuthors(userId);
         anonymizeUserFieldsByAnyField("affinityConfigs", List.of("changedUser"), userId);
     }

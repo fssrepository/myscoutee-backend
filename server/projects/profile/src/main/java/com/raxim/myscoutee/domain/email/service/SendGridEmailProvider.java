@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.email.service;
 
+import com.raxim.myscoutee.domain.email.api.EmailSendResult;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;

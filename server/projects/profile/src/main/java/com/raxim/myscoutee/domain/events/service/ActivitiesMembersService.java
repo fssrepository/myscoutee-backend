@@ -68,7 +68,7 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
-public class ActivitiesMembersService {
+public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.MemberAudience {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 
@@ -5826,6 +5826,12 @@ public class ActivitiesMembersService {
     }
 
     public record StoredMemberState(String status, String name) {
+    }
+
+    @Override public Audience queryNotificationAudience(String ownerType, String ownerId) {
+        var snapshot = queryOwnerSnapshot(ownerType, ownerId);
+        return snapshot == null ? null : new Audience(snapshot.acceptedMemberUserIds(), snapshot.pendingMemberUserIds(),
+                snapshot.invitedMemberUserIds(), snapshot.pendingRequestMemberUserIds());
     }
 
     public record OwnerMembersSnapshot(

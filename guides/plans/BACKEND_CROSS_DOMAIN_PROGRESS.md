@@ -49,9 +49,9 @@ may need changes together.
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
 | 12 | content | 2 | 5 | Pending; existing admin-access methods exposed through interface | Whole domain not separated |
-| 13 | email | 2 | 5 | Pending; process catalog and notification template boundary touched | Whole domain not separated |
+| 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; email checkpoint |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
-| 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; administration checkpoint |
+| 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; `c5dceafa1` |
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 7/21 — #2 notifications, #9 campaigns, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 8/21 — #2 notifications, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -781,7 +781,7 @@ private media and forwarded attachments, moderation privileges and revocation.
 - Public views and record payloads describe the in-process boundary; they do not prove
   remote deployment or measured latency equivalence.
 
-Exact files in the administration checkpoint (including owner and consumer updates):
+Exact files in the `c5dceafa1` (including owner and consumer updates):
 
 - `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AdminCounterRefresh.java`
 - `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java`
@@ -842,3 +842,121 @@ Exact files in the administration checkpoint (including owner and consumer updat
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AdminParamsServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/AdminModerationServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/AdminClientServiceTest.java`
+
+### #13 email complete
+
+- `ScheduledMessages` exposes the existing task scheduler. Accounts and events use
+  scheduling receipts, account profile views and event schedule views; persisted
+  account, event, stage and task classes retain their identities.
+- Account-owned `AccountInactivityService` performs the existing activity lookup and
+  profile transition before email audit/rescheduling resumes. It retains the device
+  and session activity rules, save-before-affinity ordering and already-inactive guard.
+- `DeletedAccountWarningWorker` moved to accounts, which owns deletion lifecycle and
+  the `accountDeletionWarnings` claims. Email sending/rendering use the existing email
+  services through interfaces; retries, claim ordering, cancellation and unknown-send
+  suppression are unchanged.
+- Community owns serialization/deserialization of the saved closed-case snapshot.
+  Email stores the same opaque JSON task payload and calls the existing feedback
+  preparation through its operation contract, without loading community documents.
+- Existing branding and job scope services are consumed through their interfaces.
+  Profile audiences remain batched and membership queries retain the existing service's
+  accepted/pending/invited semantics. No new remote call or per-recipient query was added.
+- Email owns its template/rule indexes and account-purge/anonymization operations.
+  Index definitions, both database targets, purge filters and operation order are retained.
+- `EncryptedSecret` moved from the nested platform document class to a platform transfer
+  type. Its fields, encryption purpose, algorithm and wire JSON are unchanged. The Mongo
+  compatibility mapper now checks explicit nested overrides before the existing root
+  fallback, preserving `DeploymentConfiguration$EncryptedSecret` as its historical stored
+  identity. Other nested identities continue to use the existing root mapping.
+- Break risk: medium for scheduler/provider injection, account inactivity, case snapshot
+  replay, privacy purge and encrypted configuration round trips. Severe slowdown risk: low
+  from this change because the same batch lookups, worker limits, claim filters and scans
+  remain. Existing scans and asynchronous scheduling remain E2E observation points.
+- Verification so far: 814 focused standard/embedded tests passed, including the embedded
+  scheduler's timed inactivity, refresh cancellation, republish and pre-limit group filters;
+  three new inactivity tests; warning retries; Mongo nested-envelope round trip; community
+  snapshot handoff; event, platform and operator regressions. Final 67 focused tests also passed with
+  no failures, errors or skips. The dev watcher compiled and the application restarted successfully.
+- E2E and measured latency equivalence are not yet proven. Local read-only views are not
+  detached remote contracts; extracting a process still requires transport mapping.
+
+Exact files in the email checkpoint (including moves, shared value and consumer changes):
+
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/MongoConverterConfig.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountInactivity.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/document/Users.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/AccountInactivityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountWarningWorker.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/FacebookDataDeletionService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AffinityStatusChanges.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/document/AffinityRecomputeTask.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeTaskService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/CaseFeedbackPreparation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityCasesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceFeedbackService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/EmailLinks.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/EmailPrivacy.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/EmailRendering.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/EmailSendRequest.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/EmailSendResult.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/EmailSending.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/api/ScheduledMessages.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/config/EmailGroupIndexInitializer.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/config/EmailProperties.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/controller/PublicEmailUnsubscribeController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/document/ScheduledMessageTask.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/DeletedAccountWarningWorker.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailPresentationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailPrivacyService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailProvider.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailProviderGateway.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailSendRequest.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailSendResult.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailTemplateRenderer.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailUnsubscribeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/NoopEmailProvider.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/OperatorEmailConfigurationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/PromotionalEmailDeliveryProcessor.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/PromotionalEmailPlannerService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/PromotionalEmailRuleEvaluator.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageAuditService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/ScheduledNotificationDeliveryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/SendGridEmailProvider.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventSchedule.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/MemberAudience.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/ActivityEvent.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/SubEventItem.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/config/AdminGroupIndexInitializer.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/document/McpEventSubscription.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/JobAudience.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/SecretEncryption.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/document/DeploymentConfiguration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/dto/EncryptedSecret.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/DeploymentConfigurationCrypto.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/DeploymentFirebaseRuntime.java`
+- `server/projects/profile/src/main/resources/mongo-domain-types.properties`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/AccountInactivityServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountWarningWorkerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityCasesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/DeletedAccountWarningWorkerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/EmailProviderGatewayTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/OperatorEmailConfigurationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/PromotionalEmailDeliveryProcessorTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskServiceIntegrationTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/SendGridConfiguredEmailTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/McpEventsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/mapper/OperatorConfigurationMapperTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/DeploymentConfigurationCryptoTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/DeploymentFirebaseRuntimeTest.java`

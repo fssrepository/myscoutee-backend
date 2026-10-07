@@ -168,6 +168,21 @@ class MongoConverterConfigTest {
 
     @Test
     @org.junit.jupiter.api.Tag("standard")
+    void encryptedEnvelopeRetainsHistoricalNestedIdentityAndFieldValues() {
+        var converter = domainConverter();
+        var envelope = new com.raxim.myscoutee.domain.platform.dto.EncryptedSecret();
+        envelope.setAlgorithm("A256GCM"); envelope.setKeyId("key");
+        envelope.setNonce("nonce"); envelope.setCiphertext("ciphertext");
+        var document = new Document();
+        converter.write(new Payload(envelope), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.document.DeploymentConfiguration$EncryptedSecret");
+        var restored = (com.raxim.myscoutee.domain.platform.dto.EncryptedSecret) converter.read(Payload.class, document).value();
+        assertThat(restored).usingRecursiveComparison().isEqualTo(envelope);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
     void attachmentContractRetainsStoredTypeIdentity() {
         var converter = domainConverter();
         var attachment = new com.raxim.myscoutee.domain.media.dto.DocumentAttachment(

@@ -33,7 +33,7 @@ import com.raxim.myscoutee.domain.affinity.repository.AffinityRecomputeTasksRepo
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class AffinityRecomputeTaskService {
+public class AffinityRecomputeTaskService implements com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges {
     public static final String TARGET_USER = "USER";
     public static final String TARGET_EVENT = "EVENT";
     public static final String TARGET_ASSET = "ASSET";

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
 /** Protocol state only. The existing integration webhook queue owns deliveries. */
 @Document("mcpEventSubscriptions")

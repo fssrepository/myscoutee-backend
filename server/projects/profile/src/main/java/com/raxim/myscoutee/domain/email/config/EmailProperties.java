@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.email.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("email")
-public class EmailProperties {
+public class EmailProperties implements com.raxim.myscoutee.domain.email.api.EmailLinks {
     private boolean enabled = false;
     private String provider = "noop";
     private String fromEmail = "no-reply@myscoutee.local";

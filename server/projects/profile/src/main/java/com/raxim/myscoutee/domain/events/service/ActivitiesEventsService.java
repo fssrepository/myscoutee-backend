@@ -10,7 +10,7 @@ import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
-import com.raxim.myscoutee.domain.email.service.ScheduledMessageTaskService;
+import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
@@ -197,7 +197,7 @@ public class ActivitiesEventsService {
     private final PaymentService paymentService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final EventCheckoutPricingService eventCheckoutPricingService;
-    private final ScheduledMessageTaskService scheduledMessageTaskService;
+    private final ScheduledMessages scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
@@ -236,7 +236,7 @@ public class ActivitiesEventsService {
             PaymentService paymentService,
             EventCheckoutBasketService eventCheckoutBasketService,
             EventCheckoutPricingService eventCheckoutPricingService,
-            ScheduledMessageTaskService scheduledMessageTaskService,
+            ScheduledMessages scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,

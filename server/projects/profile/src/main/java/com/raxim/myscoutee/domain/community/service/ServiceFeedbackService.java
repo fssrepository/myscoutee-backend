@@ -25,7 +25,7 @@ import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.e
 
 /** Completion workers create feedback eligibility; reads never synthesize missing eligibility. */
 @Service
-public class ServiceFeedbackService {
+public class ServiceFeedbackService implements com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation {
     public static final Set<String> CRITERIA = Set.of("quality", "reliability", "communication", "value");
     private final MongoTemplate mongo;
     private final UsersRepository users;
@@ -37,6 +37,10 @@ public class ServiceFeedbackService {
     public record Item(ServiceFeedback feedback, String providerName, String reviewerName, String serviceTitle, String serviceImageUrl) {}
     public record Command(String userId, String action, Map<String,Double> criteria, String comment) {}
     public record Stats(long count, double average, Map<String,Double> criteria) {}
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private tools.jackson.databind.ObjectMapper objectMapper;
+    @Override public int prepareSnapshot(String snapshot) { return prepare(objectMapper.readValue(snapshot, ServiceCase.class)); }
 
     public int prepare(ServiceCase closed) {
         int count=0;

@@ -1,20 +1,22 @@
 package com.raxim.myscoutee.domain.email.service;
 
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 import com.raxim.myscoutee.domain.localization.api.TranslationBundles;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
 
 @Service
 public class EmailPresentationService {
     private static final Pattern BODY = Pattern.compile("(?is)<body[^>]*>(.*?)</body>");
-    private final DeploymentBrandingResolver branding;
+    private final DeploymentBranding branding;
     private final TranslationBundles i18n;
     private final EmailUnsubscribeService subscriptions;
-    public EmailPresentationService(DeploymentBrandingResolver branding, TranslationBundles i18n, EmailUnsubscribeService subscriptions) {
+    public EmailPresentationService(DeploymentBranding branding, TranslationBundles i18n, EmailUnsubscribeService subscriptions) {
         this.branding = branding; this.i18n = i18n; this.subscriptions = subscriptions;
     }
 

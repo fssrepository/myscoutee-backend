@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.groups.config;
+package com.raxim.myscoutee.domain.email.config;
 
 import java.util.List;
 import org.bson.Document;
@@ -9,10 +9,10 @@ import com.mongodb.client.model.IndexOptions;
 import jakarta.annotation.PostConstruct;
 
 @Component
-public class AdminGroupIndexInitializer {
+public class EmailGroupIndexInitializer {
     private final List<MongoDatabaseFactory> databases;
 
-    public AdminGroupIndexInitializer(@Qualifier("realMongoDatabaseFactory") MongoDatabaseFactory real,
+    public EmailGroupIndexInitializer(@Qualifier("realMongoDatabaseFactory") MongoDatabaseFactory real,
             @Qualifier("demoMongoDatabaseFactory") MongoDatabaseFactory demo) {
         databases = List.of(real, demo);
     }
@@ -30,7 +30,6 @@ public class AdminGroupIndexInitializer {
                     if (spec.get(2).equals(index.getString("name"))) { records.dropIndex(spec.get(2)); break; }
                 }
             }
-
 
         }
     }

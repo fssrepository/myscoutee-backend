@@ -71,6 +71,8 @@ public class MongoConverterConfig {
         }
 
         private static String translate(String name, Map<String, String> names) {
+            String exact = names.get(name);
+            if (exact != null) return exact;
             int nested = name.indexOf('$');
             String root = nested < 0 ? name : name.substring(0, nested);
             String replacement = names.get(root);

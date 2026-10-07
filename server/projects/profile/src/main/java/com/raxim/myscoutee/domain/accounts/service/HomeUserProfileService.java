@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
-import com.raxim.myscoutee.domain.email.service.ScheduledMessageTaskService;
+import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
 import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
@@ -249,7 +249,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
     private final UserReportSubmissionsRepository userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
-    private final ScheduledMessageTaskService scheduledMessageTaskService;
+    private final ScheduledMessages scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurity regionSecurityProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
@@ -291,7 +291,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
             UserReportSubmissionsRepository userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
-            ScheduledMessageTaskService scheduledMessageTaskService,
+            ScheduledMessages scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
             RegionSecurity regionSecurityProperties,
             AbsoluteAffinityService absoluteAffinityService,
