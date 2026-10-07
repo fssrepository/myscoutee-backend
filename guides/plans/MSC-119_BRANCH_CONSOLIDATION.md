@@ -15,7 +15,7 @@ archive the branches and execute full QA tomorrow on master.
 
 The backend's own final hash is the MSC-119 commit containing this record;
 `git log -1 --format=%H` identifies it immediately after integration. Original
-feature history and the old master are retained independently, including the
+feature history and the old master were retained independently, including the
 previous master-only frontend/backend documentation publication.
 
 ## History construction and verification
@@ -38,7 +38,8 @@ previous master-only frontend/backend documentation publication.
   commit. Used explicit expected-commit leases for remote updates, including the
   frontend/backend master documentation commits incorporated into MSC-119.
 - Verify remote branch/master equality before deleting the feature references.
-  Archived tags preserve the original histories and do not create active branches.
+  Archived tags initially preserved the original histories; the later cleanup
+  below records their user-requested removal.
   Final README branch-link cleanup is folded into the same MSC-119 commits; it
   does not add another task commit or alter application behavior.
 - Registry and administrator client were already on master and were not rewritten.
@@ -50,32 +51,74 @@ Resulting task groups:
 - mcp: MSC-115, MSC-116, MSC-117, MSC-119.
 - backend: MSC-115, MSC-116, MSC-117, MSC-118, MSC-119.
 
-## Archives and recovery
+## Archive removal and recovery
 
-Each affected repository has these annotated tags on origin:
+The user subsequently requested removal of all `archive/*` tags locally and
+on GitHub, and of every branch except master and the backend's
+`refactor/MSC-120-backend-domain-segregation`. The archive tags named in the
+original consolidation are no longer available from origin.
 
-- Backend/frontend: `archive/20261007/plan/multi-group-product-experiment`.
-- Java client/MCP: `archive/20261007/feat/work-campaign-create`.
-- Each repository's previous master: `archive/20261007/master-before-msc-consolidation`.
-
-Verified full-history bundles and the exact old/new map are retained locally at
+Previously verified full-history bundles and the exact old/new map remain at
 `/home/raxim/workspace/.msc119-integration-20261007/`: `backend-original.bundle`,
 `frontend-original.bundle`, `client-original.bundle`, `mcp-original.bundle`,
-and `state.json`. Temporary merge worktrees can be removed; keep these archives.
+and `state.json`. Their presence was checked again during cleanup; no replacement
+archive branch or tag was created.
 
-To inspect or restore an original feature history, use the relevant repository:
+If historical recovery is explicitly requested, inspect the relevant bundle:
 
 ```sh
-git fetch origin 'refs/tags/archive/20261007/*:refs/tags/archive/20261007/*'
-git show archive/20261007/plan/multi-group-product-experiment
-# Only when restoration is actually requested:
-git switch -c recovered/pre-consolidation archive/20261007/plan/multi-group-product-experiment
+git bundle verify <repository>-original.bundle
+git bundle list-heads <repository>-original.bundle
 ```
 
-For client/MCP substitute `archive/20261007/feat/work-campaign-create`.
-The bundle is an independent fallback: `git bundle verify <repository>-original.bundle`,
-then fetch its named tag refs into a recovery checkout. Do not force-push an old
-history over newer master work merely to inspect it.
+Choose the reference actually listed by the bundle. Do not force-push an old
+history over newer master work or recreate archive references merely to inspect it.
+
+## Independent cleanup verification — 2026-10-07
+
+All ten local MyScoutee repositories and their GitHub branches/tags were checked.
+Twenty-one archive tags were removed from both locations. Twelve Dependabot
+branches (five frontend, seven Registry, including `backup/dependabot/*`) were
+deleted with explicit user authorization; their pending dependency upgrades were
+not merged into master.
+
+The 21 archived commit identities were checked again after deletion using their
+recorded object IDs, rather than relying on the rewritten commit names:
+
+- Seventeen archived snapshots match a snapshot already in master history or
+  are its ancestors. Backend comparisons resolve frontend gitlinks to their actual
+  source trees, so a changed submodule commit ID is not treated as lost content.
+- The remaining four snapshots are the older frontend/backend documentation-only
+  masters and their feature tips. Their application source is preserved in master
+  history. Both published PDF files, HTML sources and the manual builder match
+  current master. The remaining README differences replace retired branch URLs
+  with master; this consolidation document is an addition, not omitted work.
+- The later backend/frontend guide-review consolidation was independently checked
+  at every retained task-group boundary: each resulting source snapshot is
+  identical to the corresponding old group end. The domain compatibility and
+  guide/dialog corrections remain in master.
+
+One actual omission was found outside the archives: payment simulator branch
+`fix/group-admin-authorizations`, original commit
+`26b623403475b5d63f0082f7d42d9504ee32ae10`, had not reached master. Its group-scoped
+authorization list and configuration-access restriction already match the scope
+sent by the backend. The exact source tree was integrated as
+`21c7bea879191ebdebaf6600d28877e487061b73` with a normalized `[MSC-115]` title; the
+remote master update and branch deletion were atomic, followed by local deletion.
+
+The full payment-simulator `go test -p 1 -count=1 ./...` run, including vet,
+passed in the existing `myscoutee-payment-simulator-build:qa` image, with one CPU,
+1536 MiB memory and disposable test state. A first 768 MiB run passed the simulator
+tests but killed the SQLite dependency's vet process; it was not recorded as a
+successful suite. No running application container, dev database or browser was
+changed by this verification.
+
+Nine further unbracketed MSC titles were normalized across the Java client,
+administrator client, MCP and Registry masters. Every rewritten commit retains
+its exact source tree. Release tags were preserved. The backend domain branch
+remains synchronized with master as the baseline for subsequent cross-domain
+work; cross-domain interfaces and their later E2E/performance checks are not part
+of this cleanup.
 
 ## Publication continuation and verification boundary
 
