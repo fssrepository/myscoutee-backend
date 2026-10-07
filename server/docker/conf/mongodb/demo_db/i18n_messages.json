@@ -29931,7 +29931,7 @@
     "_id": "i18n-message-en-guide-profile-integrations-mcp-purpose-description",
     "key": "guide.profile.integrations.mcp-purpose.description",
     "lang": "en",
-    "value": "MCP reads public help anonymously. Your approved connection can use supported organizing actions. Full adds permitted reads and background summaries for events you organize and assets you own. Every person connects their own profile."
+    "value": "Public MCP help is anonymous. Your approved connection can use permitted organizing actions; Read adds queries and Full adds requested background Events. Personal decisions stay in MyScoutee. Role profiles expose statistics only."
   },
   {
     "_id": "i18n-message-en-guide-profile-integrations-mcp-url-label",
@@ -67113,7 +67113,7 @@
     "_id": "i18n-message-hu-guide-profile-integrations-mcp-purpose-description",
     "key": "guide.profile.integrations.mcp-purpose.description",
     "lang": "hu",
-    "value": "MCP-vel belépés nélkül olvasható a súgó. Jóváhagyott kapcsolattal az engedélyezett szervezési műveletek is elérhetők. A Teljes hozzáférés további olvasást és háttérjelzéseket enged a szervezett eseményeidről és saját eszközeidről. Mindenki a saját profilját kapcsolja össze."
+    "value": "A nyilvános MCP-súgó névtelenül olvasható. A jóváhagyott kapcsolat az engedélyezett szervezési műveleteket használhatja; az Olvasás lekérdezéseket, a Teljes kérésre induló Events-figyelést ad hozzá. A személyes döntések a MyScoutee-ban maradnak. A szerepköri profilok csak statisztikát adnak."
   },
   {
     "_id": "i18n-message-hu-guide-profile-integrations-mcp-url-label",
@@ -75843,7 +75843,7 @@
     "_id": "i18n-message-en-guide-community-services-home-rates-description",
     "key": "guide.community.services.home.rates.description",
     "lang": "en",
-    "value": "Review your given, received and mutual ratings. The ordinary Work list uses the average across campaign contexts."
+    "value": "Review given, received and mutual service-interest ratings with the available filters."
   },
   {
     "_id": "i18n-message-en-guide-community-services-home-rates-label",
@@ -76737,7 +76737,7 @@
     "_id": "i18n-message-en-guide-work-campaign-history-attachments-description",
     "key": "guide.work.campaign.history.attachments.description",
     "lang": "en",
-    "value": "Select several documents with plus. Editing lists their names separated by commas; the saved details show a table with download actions."
+    "value": "Open the campaign’s attached documents to review the additional information."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-attachments-label",
@@ -76749,25 +76749,25 @@
     "_id": "i18n-message-en-guide-work-campaign-history-category-description",
     "key": "guide.work.campaign.history.category.description",
     "lang": "en",
-    "value": "Choose the subject area. This controls the category filter and the card color."
+    "value": "The category identifies the campaign’s topic."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-category-label",
     "key": "guide.work.campaign.history.category.label",
     "lang": "en",
-    "value": "Category"
+    "value": "Campaign category"
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-description-description",
     "key": "guide.work.campaign.history.description.description",
     "lang": "en",
-    "value": "Explain the purpose, who you want to meet and what the next conversation would cover. Only a short excerpt appears on the card."
+    "value": "Read the full description behind the short card advertisement."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-description-label",
     "key": "guide.work.campaign.history.description.label",
     "lang": "en",
-    "value": "Full description"
+    "value": "Campaign description"
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-history-campaign-description",
@@ -76797,19 +76797,19 @@
     "_id": "i18n-message-en-guide-work-campaign-history-images-description",
     "key": "guide.work.campaign.history.images.description",
     "lang": "en",
-    "value": "Upload pictures or open the existing gallery. Choose a clear first image: it is the campaign card cover."
+    "value": "Browse the campaign images to understand the advertised opportunity."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-images-label",
     "key": "guide.work.campaign.history.images.label",
     "lang": "en",
-    "value": "Pictures"
+    "value": "Campaign images"
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-kind-description",
     "key": "guide.work.campaign.history.kind.description",
     "lang": "en",
-    "value": "Choose work, business or both. This classification appears on management cards and in discovery filters."
+    "value": "The campaign’s type distinguishes work and business opportunities."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-kind-label",
@@ -76821,13 +76821,13 @@
     "_id": "i18n-message-en-guide-work-campaign-history-title-description",
     "key": "guide.work.campaign.history.title.description",
     "lang": "en",
-    "value": "Give the campaign a short, specific name that explains the opportunity."
+    "value": "This is the campaign connected to this interaction."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-title-label",
     "key": "guide.work.campaign.history.title.label",
     "lang": "en",
-    "value": "Name"
+    "value": "Campaign title"
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-view-trigger-description",
@@ -78141,7 +78141,7 @@
     "_id": "i18n-message-hu-guide-community-services-home-rates-description",
     "key": "guide.community.services.home.rates.description",
     "lang": "hu",
-    "value": "Nézd meg az adott, kapott és kölcsönös értékeléseket. A szokásos Work lista a kampányok átlagával számol."
+    "value": "Nézd meg az adott, kapott és kölcsönös szolgáltatásérdeklődési értékeléseket az elérhető szűrőkkel."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-home-rates-label",
@@ -79035,7 +79035,7 @@
     "_id": "i18n-message-hu-guide-work-campaign-history-attachments-description",
     "key": "guide.work.campaign.history.attachments.description",
     "lang": "hu",
-    "value": "A plusz gombbal több dokumentumot is választhatsz. Szerkesztéskor vesszővel elválasztott fájlnevek látszanak, a mentett részletekben letölthető táblázat jelenik meg."
+    "value": "Nyisd meg a kampány csatolt dokumentumait a további tudnivalók áttekintéséhez."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-attachments-label",
@@ -79047,25 +79047,25 @@
     "_id": "i18n-message-hu-guide-work-campaign-history-category-description",
     "key": "guide.work.campaign.history.category.description",
     "lang": "hu",
-    "value": "Válaszd ki a témakört. Ez határozza meg a kategóriaszűrőt és a kártya alapszínét."
+    "value": "A kategória jelzi a kampány témakörét."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-category-label",
     "key": "guide.work.campaign.history.category.label",
     "lang": "hu",
-    "value": "Kategória"
+    "value": "Kampány kategóriája"
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-description-description",
     "key": "guide.work.campaign.history.description.description",
     "lang": "hu",
-    "value": "Írd le a célt, kit szeretnél megismerni, és miről szólna az első beszélgetés. A kártyán csak rövid részlet látszik."
+    "value": "Olvasd el a rövid kártyahirdetéshez tartozó teljes leírást."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-description-label",
     "key": "guide.work.campaign.history.description.label",
     "lang": "hu",
-    "value": "Teljes leírás"
+    "value": "Kampányleírás"
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-history-campaign-description",
@@ -79095,19 +79095,19 @@
     "_id": "i18n-message-hu-guide-work-campaign-history-images-description",
     "key": "guide.work.campaign.history.images.description",
     "lang": "hu",
-    "value": "Tölts fel képeket, vagy nyisd meg a meglévő galériát. Az első képet gondosan válaszd ki: ez lesz a kampánykártya borítója."
+    "value": "Nézd át a kampány képeit, hogy megismerd a hirdetett lehetőséget."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-images-label",
     "key": "guide.work.campaign.history.images.label",
     "lang": "hu",
-    "value": "Képek"
+    "value": "Kampányképek"
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-kind-description",
     "key": "guide.work.campaign.history.kind.description",
     "lang": "hu",
-    "value": "Válassz munkalehetőséget, üzleti lehetőséget vagy mindkettőt. Ez a besorolás jelenik meg a kezelőlista kártyáin és a felfedezés szűrőiben."
+    "value": "A kampány típusa megkülönbözteti a munka- és üzleti lehetőségeket."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-kind-label",
@@ -79119,13 +79119,13 @@
     "_id": "i18n-message-hu-guide-work-campaign-history-title-description",
     "key": "guide.work.campaign.history.title.description",
     "lang": "hu",
-    "value": "Adj rövid, konkrét nevet, amelyből érthető, milyen lehetőséget mutatsz be."
+    "value": "Ehhez a kampányhoz tartozik az interakció."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-title-label",
     "key": "guide.work.campaign.history.title.label",
     "lang": "hu",
-    "value": "Név"
+    "value": "Kampány neve"
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-view-trigger-description",
@@ -79791,7 +79791,7 @@
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-communication-descript",
     "key": "guide.community.service-feedback.service-feedback-communication.description",
     "lang": "en",
-    "value": "Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average."
+    "value": "Choose how clear and useful communication with the provider was during the work. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
   },
   {
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-communication-label",
@@ -79803,19 +79803,19 @@
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-quality-description",
     "key": "guide.community.service-feedback.service-feedback-quality.description",
     "lang": "en",
-    "value": "Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average."
+    "value": "Choose the labelled answer that matches the quality of the completed work you experienced. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
   },
   {
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-quality-label",
     "key": "guide.community.service-feedback.service-feedback-quality.label",
     "lang": "en",
-    "value": "Quality of work"
+    "value": "Quality of the work"
   },
   {
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-reliability-descriptio",
     "key": "guide.community.service-feedback.service-feedback-reliability.description",
     "lang": "en",
-    "value": "Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average."
+    "value": "Choose how reliably the provider kept the agreed commitments. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
   },
   {
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-reliability-label",
@@ -79827,7 +79827,7 @@
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-value-description",
     "key": "guide.community.service-feedback.service-feedback-value.description",
     "lang": "en",
-    "value": "Choose one named answer about the completed service. Only this question changes; other answers stay as selected. The five choices run from the least to the most positive experience, stored as 2, 4, 6, 8 and 10 on the existing ten-point scale. Your overall result is their average."
+    "value": "Choose how the delivered work compared with the agreed price. Each question has one answer; the five choices represent 2, 4, 6, 8 and 10 points. The result is their average."
   },
   {
     "_id": "i18n-message-en-guide-community-service-feedback-service-feedback-value-label",
@@ -79899,13 +79899,13 @@
     "_id": "i18n-message-en-guide-profile-integration-access-integration-access-level-description",
     "key": "guide.profile.integration-access.integration-access-level.description",
     "lang": "en",
-    "value": "Choose one access pack: red Blocked, amber Write, or green Full. The colored shield and the state label follow your draft immediately. These are complete packs; there are no separate operation switches."
+    "value": "Choose a complete pack: red Blocked, amber Write, blue Read or green Full. The shield and label follow the draft. Read includes Write; Full additionally permits MCP Events. No per-operation switches are needed."
   },
   {
     "_id": "i18n-message-en-guide-profile-integration-access-integration-access-level-label",
     "key": "guide.profile.integration-access.integration-access-level.label",
     "lang": "en",
-    "value": "Three access levels"
+    "value": "Four access levels"
   },
   {
     "_id": "i18n-message-en-guide-profile-integrations-integration-access-save-description",
@@ -79923,7 +79923,7 @@
     "_id": "i18n-message-en-guide-profile-integrations-integration-token-access-description",
     "key": "guide.profile.integrations.integration-token-access.description",
     "lang": "en",
-    "value": "Use this colored icon to set Blocked, Write or Full for this API key. Each key has its own setting. Confirming the small popup stages the value; the parent tick saves it."
+    "value": "The shield opens four packs: Blocked, Write, Read and Full. Read includes Write and permitted queries. Events only works through OAuth MCP, not an API key. Confirm stages the choice; the parent tick saves it."
   },
   {
     "_id": "i18n-message-en-guide-profile-integrations-integration-token-access-label",
@@ -79935,7 +79935,7 @@
     "_id": "i18n-message-en-guide-profile-integrations-mcp-client-access-description",
     "key": "guide.profile.integrations.mcp-client-access.description",
     "lang": "en",
-    "value": "Set this client’s own level. Its effective access also follows the main MCP limit. The other clients keep their own selected levels."
+    "value": "Set this client independently. Its effective access is the lower of this choice and the main MCP setting. A Full client cannot receive Events while the main link is Read, Write or Blocked."
   },
   {
     "_id": "i18n-message-en-guide-profile-integrations-mcp-client-access-label",
@@ -79947,7 +79947,7 @@
     "_id": "i18n-message-en-guide-profile-integrations-mcp-main-access-description",
     "key": "guide.profile.integrations.mcp-main-access.description",
     "lang": "en",
-    "value": "This is the upper limit for all MCP clients of this profile. Background Events requires Full here and on the client. Write stops those summaries; Blocked stops private access. Stop an individual monitoring subscription in your AI client."
+    "value": "The main link starts Blocked and caps every MCP client of this profile. Enable and save it deliberately. Read permits queries without Events. Full is needed here and on the client for requested background monitoring."
   },
   {
     "_id": "i18n-message-en-guide-profile-integrations-mcp-main-access-label",
@@ -80001,7 +80001,7 @@
     "_id": "i18n-message-en-integration-access-full-description",
     "key": "integration.access.full.description",
     "lang": "en",
-    "value": "Write plus reading accessible events, campaigns, community data, messages and existing ratings. Full MCP connections can also monitor owned events and assets."
+    "value": "Read plus MCP Events: receive updates about resources you choose to monitor. Requires an approved MCP connection and a compatible AI client."
   },
   {
     "_id": "i18n-message-en-integration-access-full-open",
@@ -80025,7 +80025,7 @@
     "_id": "i18n-message-en-integration-access-mcp-limit",
     "key": "integration.access.mcp.limit",
     "lang": "en",
-    "value": "This client cannot exceed the main MCP link’s access."
+    "value": "An MCP client is limited by both its own pack and the main MCP link. Events requires Full on both. API keys do not receive MCP Events."
   },
   {
     "_id": "i18n-message-en-integration-access-save-failed",
@@ -80199,7 +80199,7 @@
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-communication-descript",
     "key": "guide.community.service-feedback.service-feedback-communication.description",
     "lang": "hu",
-    "value": "Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga."
+    "value": "Válaszd ki, mennyire volt érthető és használható a szolgáltatóval való kommunikáció a munka során. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-communication-label",
@@ -80211,7 +80211,7 @@
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-quality-description",
     "key": "guide.community.service-feedback.service-feedback-quality.description",
     "lang": "hu",
-    "value": "Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga."
+    "value": "Válaszd azt a feliratos választ, amely az általad tapasztalt elvégzett munka minőségét írja le. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-quality-label",
@@ -80223,7 +80223,7 @@
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-reliability-descriptio",
     "key": "guide.community.service-feedback.service-feedback-reliability.description",
     "lang": "hu",
-    "value": "Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga."
+    "value": "Válaszd ki, mennyire tartotta be a szolgáltató a megbeszélt vállalásokat. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-reliability-label",
@@ -80235,7 +80235,7 @@
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-value-description",
     "key": "guide.community.service-feedback.service-feedback-value.description",
     "lang": "hu",
-    "value": "Válassz egy feliratos választ az elvégzett szolgáltatásról. Csak ez a kérdés változik, a többi válaszod megmarad. Az öt lehetőség a legkedvezőtlenebbtől a legkedvezőbb tapasztalatig halad; a meglévő tízpontos skálán 2, 4, 6, 8 és 10 pontot jelent. Az összesített eredmény ezek átlaga."
+    "value": "Válaszd ki, hogyan viszonyult az elvégzett munka a megbeszélt árhoz. Kérdésenként egy válasz jelölhető; az öt lehetőség 2, 4, 6, 8 és 10 pontot jelent. Az eredmény ezek átlaga."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-feedback-service-feedback-value-label",
@@ -80307,13 +80307,13 @@
     "_id": "i18n-message-hu-guide-profile-integration-access-integration-access-level-description",
     "key": "guide.profile.integration-access.integration-access-level.description",
     "lang": "hu",
-    "value": "Válassz egy jogosultságcsomagot: piros Tiltva, borostyán Írás vagy zöld Teljes. A pajzs színe és az állapotfelirat azonnal követi a piszkozatot. Ezek teljes csomagok, műveletenkénti kapcsolók nincsenek."
+    "value": "Teljes csomagot válassz: piros Tiltva, borostyán Írás, kék Olvasás vagy zöld Teljes. A pajzs és a felirat követi a piszkozatot. Az Olvasás tartalmazza az Írást; a Teljes ezen felül MCP Events-et enged. Műveletenkénti kapcsolók nincsenek."
   },
   {
     "_id": "i18n-message-hu-guide-profile-integration-access-integration-access-level-label",
     "key": "guide.profile.integration-access.integration-access-level.label",
     "lang": "hu",
-    "value": "Három jogosultsági szint"
+    "value": "Négy jogosultsági szint"
   },
   {
     "_id": "i18n-message-hu-guide-profile-integrations-integration-access-save-description",
@@ -80331,7 +80331,7 @@
     "_id": "i18n-message-hu-guide-profile-integrations-integration-token-access-description",
     "key": "guide.profile.integrations.integration-token-access.description",
     "lang": "hu",
-    "value": "Ezzel a színes ikonnal választhatod ki az adott API-kulcs Tiltva, Írás vagy Teljes szintjét. Minden kulcsnak külön beállítása van. A kis popup pipája előkészíti a változtatást; a szülőablak pipája menti el."
+    "value": "A pajzs négy csomagot nyit: Tiltva, Írás, Olvasás és Teljes. Az Olvasás tartalmazza az Írást és a jogosult lekérdezéseket. Events csak OAuth MCP-n keresztül működik, API-kulccsal nem. A megerősítés piszkozatba teszi a választást; a szülőablak pipája menti."
   },
   {
     "_id": "i18n-message-hu-guide-profile-integrations-integration-token-access-label",
@@ -80343,7 +80343,7 @@
     "_id": "i18n-message-hu-guide-profile-integrations-mcp-client-access-description",
     "key": "guide.profile.integrations.mcp-client-access.description",
     "lang": "hu",
-    "value": "Állítsd be ennek a kliensnek a saját szintjét. A tényleges hozzáférésére az MCP fő korlátja is érvényes. A többi kliens saját választott szintje megmarad."
+    "value": "Ezt a klienst önállóan állítod. A tényleges jog a választás és az MCP-főkapcsolat közül az alacsonyabb. A Teljes kliens sem kap Events-jelzést, ha a főkapcsolat Olvasás, Írás vagy Tiltva állású."
   },
   {
     "_id": "i18n-message-hu-guide-profile-integrations-mcp-client-access-label",
@@ -80355,7 +80355,7 @@
     "_id": "i18n-message-hu-guide-profile-integrations-mcp-main-access-description",
     "key": "guide.profile.integrations.mcp-main-access.description",
     "lang": "hu",
-    "value": "Ez a profil összes MCP-kliensének felső jogosultsági korlátja. A háttérben futó Events-figyeléshez itt és a kliensnél is Teljes kell. Az Írás leállítja ezeket a jelzéseket; a Tiltott a személyes hozzáférést is. Egyetlen figyelést az AI-kliensben állíts le."
+    "value": "A főkapcsolat alapból Tiltva van, és korlátozza a profil összes MCP-kliensét. Tudatosan engedélyezd és mentsd el. Az Olvasás Events nélkül engedi a lekérdezéseket. A kért háttérfigyeléshez itt és a kliensnél is Teljes szint szükséges."
   },
   {
     "_id": "i18n-message-hu-guide-profile-integrations-mcp-main-access-label",
@@ -80409,7 +80409,7 @@
     "_id": "i18n-message-hu-integration-access-full-description",
     "key": "integration.access.full.description",
     "lang": "hu",
-    "value": "Írás, továbbá az elérhető események, kampányok, közösségi adatok, üzenetek és meglévő értékelések olvasása. Teljes MCP-kapcsolattal saját eseményt és eszközt is figyeltethetsz."
+    "value": "Az Olvasás mellett MCP Events: frissítések fogadása az általad figyelésre kiválasztott erőforrásokról. Jóváhagyott MCP-kapcsolat és ezt támogató AI-kliens szükséges."
   },
   {
     "_id": "i18n-message-hu-integration-access-full-open",
@@ -80433,7 +80433,7 @@
     "_id": "i18n-message-hu-integration-access-mcp-limit",
     "key": "integration.access.mcp.limit",
     "lang": "hu",
-    "value": "A kliens legfeljebb a fő MCP-link jogosultságát kaphatja."
+    "value": "Az MCP-kliens jogait a saját csomagja és az MCP-főkapcsolat együtt korlátozza. Az Events mindkettőnél Teljes szintet igényel. Az API-kulcsok nem fogadnak MCP Events-jelzéseket."
   },
   {
     "_id": "i18n-message-hu-integration-access-save-failed",
@@ -86218,5 +86218,3485 @@
     "key": "notification.kind.report-submitted.title",
     "lang": "hu",
     "value": "Új bejelentés"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-integration-help-description",
+    "key": "guide.context.profile.integration-help.description",
+    "lang": "en",
+    "value": "Follow the connection steps, choose access and understand Events before using it."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-integration-help-summary",
+    "key": "guide.context.profile.integration-help.summary",
+    "lang": "en",
+    "value": "Connection, permissions and background updates."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-integration-help-title",
+    "key": "guide.context.profile.integration-help.title",
+    "lang": "en",
+    "value": "API / MCP help"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-access-integration-access-description-descript",
+    "key": "guide.profile.integration-access.integration-access-description.description",
+    "lang": "en",
+    "value": "Read this short explanation before confirming. Full allows a compatible AI client to subscribe to resources you request; it does not start a subscription itself. Admin/operator rights stay read-only."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-access-integration-access-description-label",
+    "key": "guide.profile.integration-access.integration-access-description.label",
+    "lang": "en",
+    "value": "What this pack permits"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-close-description",
+    "key": "guide.profile.integration-help.close.description",
+    "lang": "en",
+    "value": "Return to connection settings. Reading this help does not save a permission change."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-close-label",
+    "key": "guide.profile.integration-help.close.label",
+    "lang": "en",
+    "value": "Close help"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-events-description",
+    "key": "guide.profile.integration-help.integration-help-events.description",
+    "lang": "en",
+    "value": "Set the main MCP link and the chosen client to Full and save. In the AI client, specify what to monitor and what to do when it changes: for example, watch an event you organize for Mingle results. Events also supports changes to your assets. The client subscribes after your request; enabling Full alone does not start monitoring. Ask the client to stop monitoring, lower either pack or revoke the connection to stop delivery. Missed updates are not replayed. Ratings, votes and personal decisions remain yours in the app."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-events-label",
+    "key": "guide.profile.integration-help.integration-help-events.label",
+    "lang": "en",
+    "value": "Choose what to monitor"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-levels-description",
+    "key": "guide.profile.integration-help.integration-help-levels.description",
+    "lang": "en",
+    "value": "Choose a complete pack: red Blocked, amber Write, blue Read or green Full. The shield and label follow the draft. Read includes Write; Full additionally permits MCP Events. No per-operation switches are needed."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-levels-label",
+    "key": "guide.profile.integration-help.integration-help-levels.label",
+    "lang": "en",
+    "value": "Four permission packs"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-manual-description",
+    "key": "guide.profile.integration-help.integration-help-manual.description",
+    "lang": "en",
+    "value": "Generate creates a client ID and a one-time secret. Copy them into your client’s settings, never into chat."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-manual-label",
+    "key": "guide.profile.integration-help.integration-help-manual.label",
+    "lang": "en",
+    "value": "Manual client credentials"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-roles-description",
+    "key": "guide.profile.integration-help.integration-help-roles.description",
+    "lang": "en",
+    "value": "Use your role profile’s API/MCP settings. An administrator can read the existing profile/registration statistics and attention counts. An operator can read paged measurement and revenue reports. Full MCP access can signal new registrations, admin reports/feedback or operator releases. The client may read the authorized summaries after a signal; it cannot moderate, approve updates, synchronize reports, pay or change configuration. Current role membership is checked again for requests and deliveries. The existing desktop admin key keeps its overview endpoint."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-roles-label",
+    "key": "guide.profile.integration-help.integration-help-roles.label",
+    "lang": "en",
+    "value": "Role statistics and alerts"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-setup-description",
+    "key": "guide.profile.integration-help.integration-help-setup.description",
+    "lang": "en",
+    "value": "The main MCP link starts Blocked. Open its shield, choose a pack, confirm, then save with the tick in the integration window. Client generation stays separate."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-integration-help-integration-help-setup-label",
+    "key": "guide.profile.integration-help.integration-help-setup.label",
+    "lang": "en",
+    "value": "Enable and connect"
+  },
+  {
+    "_id": "i18n-message-en-integration-access-read",
+    "key": "integration.access.read",
+    "lang": "en",
+    "value": "Read"
+  },
+  {
+    "_id": "i18n-message-en-integration-access-read-description",
+    "key": "integration.access.read.description",
+    "lang": "en",
+    "value": "Write plus reading accessible events, campaigns, community data, messages and existing ratings. No background Events monitoring."
+  },
+  {
+    "_id": "i18n-message-en-integration-access-read-open",
+    "key": "integration.access.read.open",
+    "lang": "en",
+    "value": "Access: read. Change permissions."
+  },
+  {
+    "_id": "i18n-message-en-integration-roles-help",
+    "key": "integration.roles.help",
+    "lang": "en",
+    "value": "Use your role profile’s API/MCP settings. An administrator can read the existing profile/registration statistics and attention counts. An operator can read paged measurement and revenue reports. Full MCP access can signal new registrations, admin reports/feedback or operator releases. The client may read the authorized summaries after a signal; it cannot moderate, approve updates, synchronize reports, pay or change configuration. Current role membership is checked again for requests and deliveries. The existing desktop admin key keeps its overview endpoint."
+  },
+  {
+    "_id": "i18n-message-en-integration-roles-summary",
+    "key": "integration.roles.summary",
+    "lang": "en",
+    "value": "Admin and operator connections are read-only. Read enables permitted statistics; Full adds role alerts through MCP Events."
+  },
+  {
+    "_id": "i18n-message-en-integration-roles-title",
+    "key": "integration.roles.title",
+    "lang": "en",
+    "value": "API / MCP statistics"
+  },
+  {
+    "_id": "i18n-message-en-mcp-events-availability",
+    "key": "mcp.events.availability",
+    "lang": "en",
+    "value": "Events support, subscription plans and workspace permissions depend on the AI provider. ChatGPT documents Events in Work chats on the web and in desktop Cloud mode. Ordinary MCP connectivity, including Claude connectors, does not by itself prove Events support. MyScoutee does not check your AI subscription."
+  },
+  {
+    "_id": "i18n-message-en-mcp-events-help",
+    "key": "mcp.events.help",
+    "lang": "en",
+    "value": "Set the main MCP link and the chosen client to Full and save. In the AI client, specify what to monitor and what to do when it changes: for example, watch an event you organize for Mingle results. Events also supports changes to your assets. The client subscribes after your request; enabling Full alone does not start monitoring. Ask the client to stop monitoring, lower either pack or revoke the connection to stop delivery. Missed updates are not replayed. Ratings, votes and personal decisions remain yours in the app."
+  },
+  {
+    "_id": "i18n-message-en-mcp-events-title",
+    "key": "mcp.events.title",
+    "lang": "en",
+    "value": "Background monitoring · MCP Events"
+  },
+  {
+    "_id": "i18n-message-en-mcp-setup-enable",
+    "key": "mcp.setup.enable",
+    "lang": "en",
+    "value": "The main MCP link starts Blocked. Open its shield, choose a pack, confirm, then save with the tick in the integration window. Client generation stays separate."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-integration-help-description",
+    "key": "guide.context.profile.integration-help.description",
+    "lang": "hu",
+    "value": "Kövesd a csatlakozás lépéseit, válassz jogosultságot, és ismerd meg az Events működését a használat előtt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-integration-help-summary",
+    "key": "guide.context.profile.integration-help.summary",
+    "lang": "hu",
+    "value": "Csatlakozás, jogosultságok és háttérjelzések."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-integration-help-title",
+    "key": "guide.context.profile.integration-help.title",
+    "lang": "hu",
+    "value": "API / MCP súgó"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-access-integration-access-description-descript",
+    "key": "guide.profile.integration-access.integration-access-description.description",
+    "lang": "hu",
+    "value": "Megerősítés előtt olvasd el ezt a rövid magyarázatot. A Teljes szint engedi, hogy egy megfelelő AI-kliens a kérésedre feliratkozzon; önmagában nem hoz létre feliratkozást. Az admin- és operátori jogok csak olvasásra szólnak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-access-integration-access-description-label",
+    "key": "guide.profile.integration-access.integration-access-description.label",
+    "lang": "hu",
+    "value": "Mit enged ez a csomag?"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-close-description",
+    "key": "guide.profile.integration-help.close.description",
+    "lang": "hu",
+    "value": "Visszatérés a kapcsolat beállításaihoz. A súgó olvasása nem ment jogosultságváltozást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-close-label",
+    "key": "guide.profile.integration-help.close.label",
+    "lang": "hu",
+    "value": "Súgó bezárása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-events-description",
+    "key": "guide.profile.integration-help.integration-help-events.description",
+    "lang": "hu",
+    "value": "Állítsd az MCP-főkapcsolatot és a kiválasztott klienst Teljes szintre, majd ments. Az AI-kliensnek mondd meg, mit figyeljen és mit tegyen változáskor: például jelezze, ha elkészülnek az általad szervezett esemény Mingle-eredményei. A saját eszközeid változásai is figyelhetők. A kliens a kérésedre iratkozik fel; a Teljes szint önmagában nem indít figyelést. A leállítást kérheted a kliensben, csökkentheted bármelyik csomagot, vagy visszavonhatod a kapcsolatot. A kimaradt jelzéseket nem játsszuk vissza. Az értékelés, szavazás és személyes döntés továbbra is a tiéd az alkalmazásban."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-events-label",
+    "key": "guide.profile.integration-help.integration-help-events.label",
+    "lang": "hu",
+    "value": "Válaszd ki, mit figyeljen"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-levels-description",
+    "key": "guide.profile.integration-help.integration-help-levels.description",
+    "lang": "hu",
+    "value": "Teljes csomagot válassz: piros Tiltva, borostyán Írás, kék Olvasás vagy zöld Teljes. A pajzs és a felirat követi a piszkozatot. Az Olvasás tartalmazza az Írást; a Teljes ezen felül MCP Events-et enged. Műveletenkénti kapcsolók nincsenek."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-levels-label",
+    "key": "guide.profile.integration-help.integration-help-levels.label",
+    "lang": "hu",
+    "value": "Négy jogosultsági csomag"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-manual-description",
+    "key": "guide.profile.integration-help.integration-help-manual.description",
+    "lang": "hu",
+    "value": "A Generálás kliensazonosítót és egyszer megjelenő titkot készít. A kliens beállításaiba másold őket, ne a csevegésbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-manual-label",
+    "key": "guide.profile.integration-help.integration-help-manual.label",
+    "lang": "hu",
+    "value": "Kézi kliensadatok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-roles-description",
+    "key": "guide.profile.integration-help.integration-help-roles.description",
+    "lang": "hu",
+    "value": "A szerepköri profilod API/MCP-beállításait használd. Az admin a meglévő profil- és regisztrációs statisztikákat, valamint a teendők darabszámait olvashatja. Az operátor a lapozott mérési és bevételi jelentéseket olvashatja. A Teljes MCP-hozzáférés új regisztrációról, adminjelentésről vagy visszajelzésről, illetve operátori kiadásról küldhet jelzést. A kliens ezután lekérdezheti a jogosult összesítőket; nem moderálhat, nem hagyhat jóvá frissítést, nem szinkronizálhat jelentést, nem fizethet és nem állíthat át konfigurációt. A jelenlegi szerepkört kéréskor és kiküldéskor is ellenőrizzük. A meglévő asztali adminkulcs összesítő végpontja megmarad."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-roles-label",
+    "key": "guide.profile.integration-help.integration-help-roles.label",
+    "lang": "hu",
+    "value": "Szerepköri statisztikák és jelzések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-setup-description",
+    "key": "guide.profile.integration-help.integration-help-setup.description",
+    "lang": "hu",
+    "value": "Az MCP-főkapcsolat alapból Tiltva van. A pajzsnál válassz csomagot, erősítsd meg, majd az integrációs ablak pipájával mentsd el. A kliensgenerálás ettől független művelet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-integration-help-integration-help-setup-label",
+    "key": "guide.profile.integration-help.integration-help-setup.label",
+    "lang": "hu",
+    "value": "Engedélyezés és csatlakozás"
+  },
+  {
+    "_id": "i18n-message-hu-integration-access-read",
+    "key": "integration.access.read",
+    "lang": "hu",
+    "value": "Olvasás"
+  },
+  {
+    "_id": "i18n-message-hu-integration-access-read-description",
+    "key": "integration.access.read.description",
+    "lang": "hu",
+    "value": "Az Írás műveletei mellett az elérhető események, kampányok, közösségi adatok, üzenetek és meglévő értékelések olvasása. Háttérben futó Events-figyelés nélkül."
+  },
+  {
+    "_id": "i18n-message-hu-integration-access-read-open",
+    "key": "integration.access.read.open",
+    "lang": "hu",
+    "value": "Hozzáférés: olvasás. Jogosultság módosítása."
+  },
+  {
+    "_id": "i18n-message-hu-integration-roles-help",
+    "key": "integration.roles.help",
+    "lang": "hu",
+    "value": "A szerepköri profilod API/MCP-beállításait használd. Az admin a meglévő profil- és regisztrációs statisztikákat, valamint a teendők darabszámait olvashatja. Az operátor a lapozott mérési és bevételi jelentéseket olvashatja. A Teljes MCP-hozzáférés új regisztrációról, adminjelentésről vagy visszajelzésről, illetve operátori kiadásról küldhet jelzést. A kliens ezután lekérdezheti a jogosult összesítőket; nem moderálhat, nem hagyhat jóvá frissítést, nem szinkronizálhat jelentést, nem fizethet és nem állíthat át konfigurációt. A jelenlegi szerepkört kéréskor és kiküldéskor is ellenőrizzük. A meglévő asztali adminkulcs összesítő végpontja megmarad."
+  },
+  {
+    "_id": "i18n-message-hu-integration-roles-summary",
+    "key": "integration.roles.summary",
+    "lang": "hu",
+    "value": "Az admin- és operátori kapcsolatok csak olvasnak. Az Olvasás engedi a jogosult statisztikákat; a Teljes az MCP Events szerepköri jelzéseit is."
+  },
+  {
+    "_id": "i18n-message-hu-integration-roles-title",
+    "key": "integration.roles.title",
+    "lang": "hu",
+    "value": "API / MCP statisztikák"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-events-availability",
+    "key": "mcp.events.availability",
+    "lang": "hu",
+    "value": "Az Events támogatása, az előfizetési feltételek és a munkaterület engedélyei az AI-szolgáltatótól függnek. A ChatGPT dokumentációja webes Work-beszélgetésben és asztali Cloud módban írja le az Events használatát. A szokásos MCP-kapcsolat — így a Claude-konnektor is — önmagában nem igazolja az Events támogatását. A MyScoutee nem ellenőrzi az AI-előfizetésedet."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-events-help",
+    "key": "mcp.events.help",
+    "lang": "hu",
+    "value": "Állítsd az MCP-főkapcsolatot és a kiválasztott klienst Teljes szintre, majd ments. Az AI-kliensnek mondd meg, mit figyeljen és mit tegyen változáskor: például jelezze, ha elkészülnek az általad szervezett esemény Mingle-eredményei. A saját eszközeid változásai is figyelhetők. A kliens a kérésedre iratkozik fel; a Teljes szint önmagában nem indít figyelést. A leállítást kérheted a kliensben, csökkentheted bármelyik csomagot, vagy visszavonhatod a kapcsolatot. A kimaradt jelzéseket nem játsszuk vissza. Az értékelés, szavazás és személyes döntés továbbra is a tiéd az alkalmazásban."
+  },
+  {
+    "_id": "i18n-message-hu-mcp-events-title",
+    "key": "mcp.events.title",
+    "lang": "hu",
+    "value": "Háttérben futó figyelés · MCP Events"
+  },
+  {
+    "_id": "i18n-message-hu-mcp-setup-enable",
+    "key": "mcp.setup.enable",
+    "lang": "hu",
+    "value": "Az MCP-főkapcsolat alapból Tiltva van. A pajzsnál válassz csomagot, erősítsd meg, majd az integrációs ablak pipájával mentsd el. A kliensgenerálás ettől független művelet."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-announcement-editor-close-description",
+    "key": "guide.community.announcement.editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-announcement-editor-close-label",
+    "key": "guide.community.announcement.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-delete-description",
+    "key": "guide.community.case.board.card-actions:task-delete.description",
+    "lang": "en",
+    "value": "Remove this task after reviewing the confirmation."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-delete-label",
+    "key": "guide.community.case.board.card-actions:task-delete.label",
+    "lang": "en",
+    "value": "Delete task"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-members-description",
+    "key": "guide.community.case.board.card-actions:task-members.description",
+    "lang": "en",
+    "value": "Open the people assigned to this task."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-members-label",
+    "key": "guide.community.case.board.card-actions:task-members.label",
+    "lang": "en",
+    "value": "Task members"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-progress-description",
+    "key": "guide.community.case.board.card-actions:task-progress.description",
+    "lang": "en",
+    "value": "The available action follows the task’s current state: start, complete or reopen. Review dependencies before proceeding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-progress-label",
+    "key": "guide.community.case.board.card-actions:task-progress.label",
+    "lang": "en",
+    "value": "Change progress"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-view-description",
+    "key": "guide.community.case.board.card-actions:task-view.description",
+    "lang": "en",
+    "value": "Review or edit this task according to your current permissions."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-card-actions-task-view-label",
+    "key": "guide.community.case.board.card-actions:task-view.label",
+    "lang": "en",
+    "value": "Task details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-close-description",
+    "key": "guide.community.case.board.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-close-label",
+    "key": "guide.community.case.board.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-create-description",
+    "key": "guide.community.case.board.create.description",
+    "lang": "en",
+    "value": "Create a board task with its own description, assignees, dates, accepted quotations and dependencies."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-create-label",
+    "key": "guide.community.case.board.create.label",
+    "lang": "en",
+    "value": "Add task"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-basket-description",
+    "key": "guide.community.case.board.dependencies.basket.description",
+    "lang": "en",
+    "value": "Review the selected items and remove an item from the basket if needed."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-basket-label",
+    "key": "guide.community.case.board.dependencies.basket.label",
+    "lang": "en",
+    "value": "Current selection"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-board-dependency-selection-descr",
+    "key": "guide.community.case.board.dependencies.board-dependency-selection.description",
+    "lang": "en",
+    "value": "Select tasks that must precede this task. Review the names and descriptions; the application rejects invalid dependency relationships on save."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-board-dependency-selection-label",
+    "key": "guide.community.case.board.dependencies.board-dependency-selection.label",
+    "lang": "en",
+    "value": "Preceding tasks"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-close-description",
+    "key": "guide.community.case.board.dependencies.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous screen."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-close-label",
+    "key": "guide.community.case.board.dependencies.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-confirm-description",
+    "key": "guide.community.case.board.dependencies.confirm.description",
+    "lang": "en",
+    "value": "Apply the selection to the task form, then save the task with its header tick."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-dependencies-confirm-label",
+    "key": "guide.community.case.board.dependencies.confirm.label",
+    "lang": "en",
+    "value": "Apply selection"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-basket-description",
+    "key": "guide.community.case.board.offers.basket.description",
+    "lang": "en",
+    "value": "Review the selected items and remove an item from the basket if needed."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-basket-label",
+    "key": "guide.community.case.board.offers.basket.label",
+    "lang": "en",
+    "value": "Current selection"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-board-offer-selection-description",
+    "key": "guide.community.case.board.offers.board-offer-selection.description",
+    "lang": "en",
+    "value": "Select the quotations to link to the task. Only accepted quotations from this case are offered; inspect their details before selecting."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-board-offer-selection-label",
+    "key": "guide.community.case.board.offers.board-offer-selection.label",
+    "lang": "en",
+    "value": "Accepted quotations"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-card-actions-view-description",
+    "key": "guide.community.case.board.offers.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-card-actions-view-label",
+    "key": "guide.community.case.board.offers.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-close-description",
+    "key": "guide.community.case.board.offers.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous screen."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-close-label",
+    "key": "guide.community.case.board.offers.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-confirm-description",
+    "key": "guide.community.case.board.offers.confirm.description",
+    "lang": "en",
+    "value": "Apply the selection to the task form, then save the task with its header tick."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-offers-confirm-label",
+    "key": "guide.community.case.board.offers.confirm.label",
+    "lang": "en",
+    "value": "Apply selection"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-task-close-description",
+    "key": "guide.community.case.board.task.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-board-task-close-label",
+    "key": "guide.community.case.board.task.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-editor-close-description",
+    "key": "guide.community.case.editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-editor-close-label",
+    "key": "guide.community.case.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotation-editor-close-description",
+    "key": "guide.community.case.quotation.editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotation-editor-close-label",
+    "key": "guide.community.case.quotation.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotation-editor-refund-policies-description",
+    "key": "guide.community.case.quotation.editor.refund-policies.description",
+    "lang": "en",
+    "value": "Read or prepare the refund terms before the quotation is accepted. Save the quotation to store edits."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotation-editor-refund-policies-label",
+    "key": "guide.community.case.quotation.editor.refund-policies.label",
+    "lang": "en",
+    "value": "Refund terms"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotation-editor-work-policies-description",
+    "key": "guide.community.case.quotation.editor.work-policies.description",
+    "lang": "en",
+    "value": "Read or prepare the terms of the offered work here. Changes are stored when you save the quotation."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotation-editor-work-policies-label",
+    "key": "guide.community.case.quotation.editor.work-policies.label",
+    "lang": "en",
+    "value": "Work terms"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-accept-offer-description",
+    "key": "guide.community.case.quotations.card-actions:accept-offer.description",
+    "lang": "en",
+    "value": "Review the price and conditions, then accept the quotation through the confirmation."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-accept-offer-label",
+    "key": "guide.community.case.quotations.card-actions:accept-offer.label",
+    "lang": "en",
+    "value": "Accept quotation"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-chat-description",
+    "key": "guide.community.case.quotations.card-actions:chat.description",
+    "lang": "en",
+    "value": "Open the conversation belonging to this item. Check the participants before sending a message."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-chat-label",
+    "key": "guide.community.case.quotations.card-actions:chat.label",
+    "lang": "en",
+    "value": "Conversation"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-edit-description",
+    "key": "guide.community.case.quotations.card-actions:edit.description",
+    "lang": "en",
+    "value": "Open the editor. Changes take effect when you save that form."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-edit-label",
+    "key": "guide.community.case.quotations.card-actions:edit.label",
+    "lang": "en",
+    "value": "Edit"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-invite-chat-description",
+    "key": "guide.community.case.quotations.card-actions:invite-chat.description",
+    "lang": "en",
+    "value": "Add this provider to the case conversation when the action is available."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-invite-chat-label",
+    "key": "guide.community.case.quotations.card-actions:invite-chat.label",
+    "lang": "en",
+    "value": "Invite to conversation"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-pending-offer-description",
+    "key": "guide.community.case.quotations.card-actions:pending-offer.description",
+    "lang": "en",
+    "value": "Return the quotation to pending for a new review."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-pending-offer-label",
+    "key": "guide.community.case.quotations.card-actions:pending-offer.label",
+    "lang": "en",
+    "value": "Return to pending"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-reject-offer-description",
+    "key": "guide.community.case.quotations.card-actions:reject-offer.description",
+    "lang": "en",
+    "value": "Reject this quotation after checking its provider and terms."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-reject-offer-label",
+    "key": "guide.community.case.quotations.card-actions:reject-offer.label",
+    "lang": "en",
+    "value": "Reject quotation"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-view-description",
+    "key": "guide.community.case.quotations.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-card-actions-view-label",
+    "key": "guide.community.case.quotations.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-close-description",
+    "key": "guide.community.case.quotations.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-close-label",
+    "key": "guide.community.case.quotations.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-quotation-provider-help-description",
+    "key": "guide.community.case.quotations.quotation-provider-help.description",
+    "lang": "en",
+    "value": "This message explains the quotation view available to you. Use the offered controls for your own quotation."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-case-quotations-quotation-provider-help-label",
+    "key": "guide.community.case.quotations.quotation-provider-help.label",
+    "lang": "en",
+    "value": "Provider access"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-cancel-description",
+    "key": "guide.community.cases.card-actions:cancel.description",
+    "lang": "en",
+    "value": "Cancel this item using the confirmation dialog. Review the affected item first."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-cancel-label",
+    "key": "guide.community.cases.card-actions:cancel.label",
+    "lang": "en",
+    "value": "Cancel"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-chat-description",
+    "key": "guide.community.cases.card-actions:chat.description",
+    "lang": "en",
+    "value": "Open the conversation belonging to this item. Check the participants before sending a message."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-chat-label",
+    "key": "guide.community.cases.card-actions:chat.label",
+    "lang": "en",
+    "value": "Conversation"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-complete-description",
+    "key": "guide.community.cases.card-actions:complete.description",
+    "lang": "en",
+    "value": "Mark the case as completed after reviewing the work and outstanding tasks."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-complete-label",
+    "key": "guide.community.cases.card-actions:complete.label",
+    "lang": "en",
+    "value": "Complete case"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-decline-description",
+    "key": "guide.community.cases.card-actions:decline.description",
+    "lang": "en",
+    "value": "Decline participation in this case. Review which invitation you are declining."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-decline-label",
+    "key": "guide.community.cases.card-actions:decline.label",
+    "lang": "en",
+    "value": "Decline invitation"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-edit-description",
+    "key": "guide.community.cases.card-actions:edit.description",
+    "lang": "en",
+    "value": "Open the editor. Changes take effect when you save that form."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-edit-label",
+    "key": "guide.community.cases.card-actions:edit.label",
+    "lang": "en",
+    "value": "Edit"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-invite-provider-description",
+    "key": "guide.community.cases.card-actions:invite-provider.description",
+    "lang": "en",
+    "value": "Choose a provider for this case through the service selection window."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-invite-provider-label",
+    "key": "guide.community.cases.card-actions:invite-provider.label",
+    "lang": "en",
+    "value": "Invite provider"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-join-description",
+    "key": "guide.community.cases.card-actions:join.description",
+    "lang": "en",
+    "value": "Accept participation in this case after reviewing its purpose and the people involved."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-join-label",
+    "key": "guide.community.cases.card-actions:join.label",
+    "lang": "en",
+    "value": "Join case"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-leave-description",
+    "key": "guide.community.cases.card-actions:leave.description",
+    "lang": "en",
+    "value": "Leave this case after checking your outstanding responsibilities."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-leave-label",
+    "key": "guide.community.cases.card-actions:leave.label",
+    "lang": "en",
+    "value": "Leave case"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-members-description",
+    "key": "guide.community.cases.card-actions:members.description",
+    "lang": "en",
+    "value": "Review the people involved in this case and their current participation states."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-members-label",
+    "key": "guide.community.cases.card-actions:members.label",
+    "lang": "en",
+    "value": "Members"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-offers-description",
+    "key": "guide.community.cases.card-actions:offers.description",
+    "lang": "en",
+    "value": "Open this case’s quotations. Review price, work terms and refund terms before deciding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-offers-label",
+    "key": "guide.community.cases.card-actions:offers.label",
+    "lang": "en",
+    "value": "Quotations"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-reopen-description",
+    "key": "guide.community.cases.card-actions:reopen.description",
+    "lang": "en",
+    "value": "Reopen this case when more work is needed."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-reopen-label",
+    "key": "guide.community.cases.card-actions:reopen.label",
+    "lang": "en",
+    "value": "Reopen"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-start-description",
+    "key": "guide.community.cases.card-actions:start.description",
+    "lang": "en",
+    "value": "Move the open case into progress after confirming the action."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-start-label",
+    "key": "guide.community.cases.card-actions:start.label",
+    "lang": "en",
+    "value": "Start work"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-take-over-description",
+    "key": "guide.community.cases.card-actions:take-over.description",
+    "lang": "en",
+    "value": "Take over the management of this case when this action is offered. Review the confirmation first."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-take-over-label",
+    "key": "guide.community.cases.card-actions:take-over.label",
+    "lang": "en",
+    "value": "Take over"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-trash-description",
+    "key": "guide.community.cases.card-actions:trash.description",
+    "lang": "en",
+    "value": "Move this item to the trash. Read the confirmation before proceeding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-trash-label",
+    "key": "guide.community.cases.card-actions:trash.label",
+    "lang": "en",
+    "value": "Move to trash"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-view-description",
+    "key": "guide.community.cases.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-card-actions-view-label",
+    "key": "guide.community.cases.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-close-description",
+    "key": "guide.community.cases.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-cases-close-label",
+    "key": "guide.community.cases.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-close-description",
+    "key": "guide.community.home.card-actions:close.description",
+    "lang": "en",
+    "value": "Close this voting round after reviewing the confirmation."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-close-label",
+    "key": "guide.community.home.card-actions:close.label",
+    "lang": "en",
+    "value": "Close voting"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-edit-description",
+    "key": "guide.community.home.card-actions:edit.description",
+    "lang": "en",
+    "value": "Open the editor. Changes take effect when you save that form."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-edit-label",
+    "key": "guide.community.home.card-actions:edit.label",
+    "lang": "en",
+    "value": "Edit"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-feedback-description",
+    "key": "guide.community.home.card-actions:feedback.description",
+    "lang": "en",
+    "value": "Open the conversation about this notice to ask a question or give feedback."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-feedback-label",
+    "key": "guide.community.home.card-actions:feedback.label",
+    "lang": "en",
+    "value": "Discuss notice"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-publish-description",
+    "key": "guide.community.home.card-actions:publish.description",
+    "lang": "en",
+    "value": "Publish the prepared item so the intended audience can discover it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-publish-label",
+    "key": "guide.community.home.card-actions:publish.label",
+    "lang": "en",
+    "value": "Publish"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-restore-description",
+    "key": "guide.community.home.card-actions:restore.description",
+    "lang": "en",
+    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-restore-label",
+    "key": "guide.community.home.card-actions:restore.label",
+    "lang": "en",
+    "value": "Restore"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-results-description",
+    "key": "guide.community.home.card-actions:results.description",
+    "lang": "en",
+    "value": "Open the closed vote’s results."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-results-label",
+    "key": "guide.community.home.card-actions:results.label",
+    "lang": "en",
+    "value": "Results"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-trash-description",
+    "key": "guide.community.home.card-actions:trash.description",
+    "lang": "en",
+    "value": "Move this item to the trash. Read the confirmation before proceeding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-trash-label",
+    "key": "guide.community.home.card-actions:trash.label",
+    "lang": "en",
+    "value": "Move to trash"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-unpublish-description",
+    "key": "guide.community.home.card-actions:unpublish.description",
+    "lang": "en",
+    "value": "Return the published item to draft from this menu."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-unpublish-label",
+    "key": "guide.community.home.card-actions:unpublish.label",
+    "lang": "en",
+    "value": "Return to draft"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-view-description",
+    "key": "guide.community.home.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-view-label",
+    "key": "guide.community.home.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-vote-description",
+    "key": "guide.community.home.card-actions:vote.description",
+    "lang": "en",
+    "value": "Read the proposal and its attachments before giving your own vote. The window shows the available choices."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-card-actions-vote-label",
+    "key": "guide.community.home.card-actions:vote.label",
+    "lang": "en",
+    "value": "Vote"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-create-description",
+    "key": "guide.community.home.create.description",
+    "lang": "en",
+    "value": "Open a new item in the current group. Prepare the text, attachments and voting settings before publishing."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-home-create-label",
+    "key": "guide.community.home.create.label",
+    "lang": "en",
+    "value": "Create notice or vote"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-card-actions-cancel-description",
+    "key": "guide.community.service.calendar.card-actions:cancel.description",
+    "lang": "en",
+    "value": "Cancel this appointment through its confirmation. Check its date and customer before proceeding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-card-actions-cancel-label",
+    "key": "guide.community.service.calendar.card-actions:cancel.label",
+    "lang": "en",
+    "value": "Cancel appointment"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-card-actions-case-description",
+    "key": "guide.community.service.calendar.card-actions:case.description",
+    "lang": "en",
+    "value": "Open the case belonging to this appointment or assigned task."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-card-actions-case-label",
+    "key": "guide.community.service.calendar.card-actions:case.label",
+    "lang": "en",
+    "value": "Open case"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-close-description",
+    "key": "guide.community.service.calendar.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-close-label",
+    "key": "guide.community.service.calendar.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-view-trigger-description",
+    "key": "guide.community.service.calendar.view:trigger.description",
+    "lang": "en",
+    "value": "Switch between the list, weekly and monthly service calendar."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-calendar-view-trigger-label",
+    "key": "guide.community.service.calendar.view:trigger.label",
+    "lang": "en",
+    "value": "Calendar view"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-editor-close-description",
+    "key": "guide.community.service.editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-editor-close-label",
+    "key": "guide.community.service.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-feedback-form-navigation-description",
+    "key": "guide.community.service-feedback.form-navigation.description",
+    "lang": "en",
+    "value": "Use the arrows to move to the summary or back to your answers before submitting."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-feedback-form-navigation-label",
+    "key": "guide.community.service-feedback.form-navigation.label",
+    "lang": "en",
+    "value": "Review answers"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-feedback-form-progress-description",
+    "key": "guide.community.service-feedback.form-progress.description",
+    "lang": "en",
+    "value": "The counter shows this questionnaire’s current page. Review the service image and your answers."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-service-feedback-form-progress-label",
+    "key": "guide.community.service-feedback.form-progress.label",
+    "lang": "en",
+    "value": "Feedback pages"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-basket-description",
+    "key": "guide.community.services.basket.description",
+    "lang": "en",
+    "value": "Review the selected service; remove it from the basket to choose another."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-basket-label",
+    "key": "guide.community.services.basket.label",
+    "lang": "en",
+    "value": "Selected service"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-author-description",
+    "key": "guide.community.services.card-actions:author.description",
+    "lang": "en",
+    "value": "Open the provider’s profile to learn who offers the service."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-author-label",
+    "key": "guide.community.services.card-actions:author.label",
+    "lang": "en",
+    "value": "Provider profile"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-edit-description",
+    "key": "guide.community.services.card-actions:edit.description",
+    "lang": "en",
+    "value": "Open the editor. Changes take effect when you save that form."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-edit-label",
+    "key": "guide.community.services.card-actions:edit.label",
+    "lang": "en",
+    "value": "Edit"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-publish-description",
+    "key": "guide.community.services.card-actions:publish.description",
+    "lang": "en",
+    "value": "Publish the prepared item so the intended audience can discover it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-publish-label",
+    "key": "guide.community.services.card-actions:publish.label",
+    "lang": "en",
+    "value": "Publish"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-restore-description",
+    "key": "guide.community.services.card-actions:restore.description",
+    "lang": "en",
+    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-restore-label",
+    "key": "guide.community.services.card-actions:restore.label",
+    "lang": "en",
+    "value": "Restore"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-trash-description",
+    "key": "guide.community.services.card-actions:trash.description",
+    "lang": "en",
+    "value": "Move this item to the trash. Read the confirmation before proceeding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-trash-label",
+    "key": "guide.community.services.card-actions:trash.label",
+    "lang": "en",
+    "value": "Move to trash"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-unpublish-description",
+    "key": "guide.community.services.card-actions:unpublish.description",
+    "lang": "en",
+    "value": "Return the published item to draft from this menu."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-unpublish-label",
+    "key": "guide.community.services.card-actions:unpublish.label",
+    "lang": "en",
+    "value": "Return to draft"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-view-description",
+    "key": "guide.community.services.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-actions-view-label",
+    "key": "guide.community.services.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-badge-end-description",
+    "key": "guide.community.services.card-badge-end.description",
+    "lang": "en",
+    "value": "In a service picker, use the plus to select this service. Review the basket and confirm the selection."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-card-badge-end-label",
+    "key": "guide.community.services.card-badge-end.label",
+    "lang": "en",
+    "value": "Select service"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-close-description",
+    "key": "guide.community.services.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-close-label",
+    "key": "guide.community.services.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-confirm-description",
+    "key": "guide.community.services.confirm.description",
+    "lang": "en",
+    "value": "Return the selected service to the case or task that opened this picker."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-services-confirm-label",
+    "key": "guide.community.services.confirm.label",
+    "lang": "en",
+    "value": "Confirm service"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-task-editor-close-description",
+    "key": "guide.community.task.editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-task-editor-close-label",
+    "key": "guide.community.task.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-card-actions-edit-description",
+    "key": "guide.community.tasks.card-actions:edit.description",
+    "lang": "en",
+    "value": "Open the editor. Changes take effect when you save that form."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-card-actions-edit-label",
+    "key": "guide.community.tasks.card-actions:edit.label",
+    "lang": "en",
+    "value": "Edit"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-card-actions-restore-description",
+    "key": "guide.community.tasks.card-actions:restore.description",
+    "lang": "en",
+    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-card-actions-restore-label",
+    "key": "guide.community.tasks.card-actions:restore.label",
+    "lang": "en",
+    "value": "Restore"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-card-actions-view-description",
+    "key": "guide.community.tasks.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-card-actions-view-label",
+    "key": "guide.community.tasks.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-close-description",
+    "key": "guide.community.tasks.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-tasks-close-label",
+    "key": "guide.community.tasks.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-close-description",
+    "key": "guide.community.voting.card-actions:close.description",
+    "lang": "en",
+    "value": "Close this voting round after reviewing the confirmation."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-close-label",
+    "key": "guide.community.voting.card-actions:close.label",
+    "lang": "en",
+    "value": "Close voting"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-edit-description",
+    "key": "guide.community.voting.card-actions:edit.description",
+    "lang": "en",
+    "value": "Open the editor. Changes take effect when you save that form."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-edit-label",
+    "key": "guide.community.voting.card-actions:edit.label",
+    "lang": "en",
+    "value": "Edit"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-feedback-description",
+    "key": "guide.community.voting.card-actions:feedback.description",
+    "lang": "en",
+    "value": "Open the conversation about this notice to ask a question or give feedback."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-feedback-label",
+    "key": "guide.community.voting.card-actions:feedback.label",
+    "lang": "en",
+    "value": "Discuss notice"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-publish-description",
+    "key": "guide.community.voting.card-actions:publish.description",
+    "lang": "en",
+    "value": "Publish the prepared item so the intended audience can discover it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-publish-label",
+    "key": "guide.community.voting.card-actions:publish.label",
+    "lang": "en",
+    "value": "Publish"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-restore-description",
+    "key": "guide.community.voting.card-actions:restore.description",
+    "lang": "en",
+    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-restore-label",
+    "key": "guide.community.voting.card-actions:restore.label",
+    "lang": "en",
+    "value": "Restore"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-results-description",
+    "key": "guide.community.voting.card-actions:results.description",
+    "lang": "en",
+    "value": "Open the closed vote’s results."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-results-label",
+    "key": "guide.community.voting.card-actions:results.label",
+    "lang": "en",
+    "value": "Results"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-trash-description",
+    "key": "guide.community.voting.card-actions:trash.description",
+    "lang": "en",
+    "value": "Move this item to the trash. Read the confirmation before proceeding."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-trash-label",
+    "key": "guide.community.voting.card-actions:trash.label",
+    "lang": "en",
+    "value": "Move to trash"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-unpublish-description",
+    "key": "guide.community.voting.card-actions:unpublish.description",
+    "lang": "en",
+    "value": "Return the published item to draft from this menu."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-unpublish-label",
+    "key": "guide.community.voting.card-actions:unpublish.label",
+    "lang": "en",
+    "value": "Return to draft"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-view-description",
+    "key": "guide.community.voting.card-actions:view.description",
+    "lang": "en",
+    "value": "Open the selected item and review its details."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-view-label",
+    "key": "guide.community.voting.card-actions:view.label",
+    "lang": "en",
+    "value": "Details"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-vote-description",
+    "key": "guide.community.voting.card-actions:vote.description",
+    "lang": "en",
+    "value": "Read the proposal and its attachments before giving your own vote. The window shows the available choices."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-card-actions-vote-label",
+    "key": "guide.community.voting.card-actions:vote.label",
+    "lang": "en",
+    "value": "Vote"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-close-description",
+    "key": "guide.community.voting.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-close-label",
+    "key": "guide.community.voting.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-create-description",
+    "key": "guide.community.voting.create.description",
+    "lang": "en",
+    "value": "Open a new item in the current group. Prepare the text, attachments and voting settings before publishing."
+  },
+  {
+    "_id": "i18n-message-en-guide-community-voting-create-label",
+    "key": "guide.community.voting.create.label",
+    "lang": "en",
+    "value": "Create notice or vote"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-community-case-board-dependencies-description",
+    "key": "guide.context.community.case.board.dependencies.description",
+    "lang": "en",
+    "value": "Choose which tasks must be completed first."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-community-case-board-dependencies-summary",
+    "key": "guide.context.community.case.board.dependencies.summary",
+    "lang": "en",
+    "value": "Choose which tasks must be completed first."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-community-case-board-dependencies-title",
+    "key": "guide.context.community.case.board.dependencies.title",
+    "lang": "en",
+    "value": "Task dependencies"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-community-case-board-offers-description",
+    "key": "guide.context.community.case.board.offers.description",
+    "lang": "en",
+    "value": "Choose accepted quotations for this board task."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-community-case-board-offers-summary",
+    "key": "guide.context.community.case.board.offers.summary",
+    "lang": "en",
+    "value": "Choose accepted quotations for this board task."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-community-case-board-offers-title",
+    "key": "guide.context.community.case.board.offers.title",
+    "lang": "en",
+    "value": "Link quotations"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-advanced-description",
+    "key": "guide.context.profile.mcp-advanced.description",
+    "lang": "en",
+    "value": "Create and manage credentials for clients that require manual setup."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-advanced-summary",
+    "key": "guide.context.profile.mcp-advanced.summary",
+    "lang": "en",
+    "value": "Create and manage credentials for clients that require manual setup."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-advanced-title",
+    "key": "guide.context.profile.mcp-advanced.title",
+    "lang": "en",
+    "value": "Manual MCP clients"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-authorization-description",
+    "key": "guide.context.profile.mcp-authorization.description",
+    "lang": "en",
+    "value": "Review the client, active profile and requested access before consenting."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-authorization-summary",
+    "key": "guide.context.profile.mcp-authorization.summary",
+    "lang": "en",
+    "value": "Review the client, active profile and requested access before consenting."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-authorization-title",
+    "key": "guide.context.profile.mcp-authorization.title",
+    "lang": "en",
+    "value": "Connect an AI client"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-details-description",
+    "key": "guide.context.profile.mcp-details.description",
+    "lang": "en",
+    "value": "Inspect this client and its callback address."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-details-summary",
+    "key": "guide.context.profile.mcp-details.summary",
+    "lang": "en",
+    "value": "Inspect this client and its callback address."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-profile-mcp-details-title",
+    "key": "guide.context.profile.mcp-details.title",
+    "lang": "en",
+    "value": "MCP connection details"
+  },
+  {
+    "_id": "i18n-message-en-guide-members-select-close-description",
+    "key": "guide.members.select.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-members-select-close-label",
+    "key": "guide.members.select.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-close-description",
+    "key": "guide.profile.mcp-advanced.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous screen."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-close-label",
+    "key": "guide.profile.mcp-advanced.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-access-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-access.description",
+    "lang": "en",
+    "value": "Set the access pack for this client. The tick stages the change; save it with the tick in the parent API / MCP window. The main MCP limit still applies."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-access-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-access.label",
+    "lang": "en",
+    "value": "Client access"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-id-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-id.description",
+    "lang": "en",
+    "value": "Copy this identifier when the client’s setup asks for a client ID. It identifies this credential."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-id-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-id.label",
+    "lang": "en",
+    "value": "Client identifier"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-revoke-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-revoke.description",
+    "lang": "en",
+    "value": "Remove this client after confirming the dialog. It will no longer be able to authenticate with these credentials."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-revoke-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-revoke.label",
+    "lang": "en",
+    "value": "Revoke client"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-secret-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-secret.description",
+    "lang": "en",
+    "value": "Copy the new secret now into the client’s secure setup. The complete value is shown only after generation."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-client-secret-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-secret.label",
+    "lang": "en",
+    "value": "Client secret"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-generate-description",
+    "key": "guide.profile.mcp-advanced.mcp-generate.description",
+    "lang": "en",
+    "value": "Generate a client key with the existing Write default. Creation happens immediately; copy the secret before closing. You may then stage a different access pack."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-generate-label",
+    "key": "guide.profile.mcp-advanced.mcp-generate.label",
+    "lang": "en",
+    "value": "Create client"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-manual-keys-description",
+    "key": "guide.profile.mcp-advanced.mcp-manual-keys.description",
+    "lang": "en",
+    "value": "Use this section only when your AI client asks for manual credentials. Ordinary OAuth connections are listed in the parent window."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-advanced-mcp-manual-keys-label",
+    "key": "guide.profile.mcp-advanced.mcp-manual-keys.label",
+    "lang": "en",
+    "value": "Manual client keys"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-close-description",
+    "key": "guide.profile.mcp-authorization.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous screen."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-close-label",
+    "key": "guide.profile.mcp-authorization.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-access-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-access.description",
+    "lang": "en",
+    "value": "Blocked prevents access. Write allows the supported organizing actions; Read adds permitted queries; Full also enables MCP Events. The main MCP limit and this client’s limit both apply."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-access-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-access.label",
+    "lang": "en",
+    "value": "Access pack"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-actions-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-actions.description",
+    "lang": "en",
+    "value": "Approve grants this client the displayed access for this profile. Cancel returns without granting access. You can revoke a granted connection later under API / MCP."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-actions-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-actions.label",
+    "lang": "en",
+    "value": "Approve or cancel"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-client-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-client.description",
+    "lang": "en",
+    "value": "Check the name of the AI client requesting access. Continue only if this is the connection you started."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-client-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-client.label",
+    "lang": "en",
+    "value": "Requesting client"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-profile-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-profile.description",
+    "lang": "en",
+    "value": "This connection belongs to the profile and workspace shown here. Check both before approving."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-authorization-mcp-authorize-profile-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-profile.label",
+    "lang": "en",
+    "value": "Profile and workspace"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-close-description",
+    "key": "guide.profile.mcp-details.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous screen."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-close-label",
+    "key": "guide.profile.mcp-details.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-access-description",
+    "key": "guide.profile.mcp-details.mcp-client-access.description",
+    "lang": "en",
+    "value": "Set the access pack for this client. The tick stages the change; save it with the tick in the parent API / MCP window. The main MCP limit still applies."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-access-label",
+    "key": "guide.profile.mcp-details.mcp-client-access.label",
+    "lang": "en",
+    "value": "Client access"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-callback-description",
+    "key": "guide.profile.mcp-details.mcp-client-callback.description",
+    "lang": "en",
+    "value": "This is the return address registered by the AI client for authorization. It is a technical connection detail, not the MCP address to add to your client."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-callback-label",
+    "key": "guide.profile.mcp-details.mcp-client-callback.label",
+    "lang": "en",
+    "value": "Callback address"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-id-description",
+    "key": "guide.profile.mcp-details.mcp-client-id.description",
+    "lang": "en",
+    "value": "Copy this identifier when the client’s setup asks for a client ID. It identifies this credential."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-id-label",
+    "key": "guide.profile.mcp-details.mcp-client-id.label",
+    "lang": "en",
+    "value": "Client identifier"
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-secret-description",
+    "key": "guide.profile.mcp-details.mcp-client-secret.description",
+    "lang": "en",
+    "value": "Copy the new secret now into the client’s secure setup. The complete value is shown only after generation."
+  },
+  {
+    "_id": "i18n-message-en-guide-profile-mcp-details-mcp-client-secret-label",
+    "key": "guide.profile.mcp-details.mcp-client-secret.label",
+    "lang": "en",
+    "value": "Client secret"
+  },
+  {
+    "_id": "i18n-message-en-guide-work-campaign-editor-close-description",
+    "key": "guide.work.campaign.editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-work-campaign-editor-close-label",
+    "key": "guide.work.campaign.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-work-campaign-history-close-description",
+    "key": "guide.work.campaign.history.close.description",
+    "lang": "en",
+    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+  },
+  {
+    "_id": "i18n-message-en-guide-work-campaign-history-close-label",
+    "key": "guide.work.campaign.history.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-announcement-editor-close-description",
+    "key": "guide.community.announcement.editor.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-announcement-editor-close-label",
+    "key": "guide.community.announcement.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-delete-description",
+    "key": "guide.community.case.board.card-actions:task-delete.description",
+    "lang": "hu",
+    "value": "A megerősítés áttekintése után töröld ezt a részfeladatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-delete-label",
+    "key": "guide.community.case.board.card-actions:task-delete.label",
+    "lang": "hu",
+    "value": "Részfeladat törlése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-members-description",
+    "key": "guide.community.case.board.card-actions:task-members.description",
+    "lang": "hu",
+    "value": "Nyisd meg a részfeladathoz rendelt személyeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-members-label",
+    "key": "guide.community.case.board.card-actions:task-members.label",
+    "lang": "hu",
+    "value": "A részfeladat résztvevői"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-progress-description",
+    "key": "guide.community.case.board.card-actions:task-progress.description",
+    "lang": "hu",
+    "value": "A feladat állapota szerint indítás, befejezés vagy újranyitás érhető el. Előbb nézd át a függőségeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-progress-label",
+    "key": "guide.community.case.board.card-actions:task-progress.label",
+    "lang": "hu",
+    "value": "Haladás módosítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-view-description",
+    "key": "guide.community.case.board.card-actions:task-view.description",
+    "lang": "hu",
+    "value": "Jogosultságod szerint tekintsd meg vagy szerkeszd ezt a részfeladatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-view-label",
+    "key": "guide.community.case.board.card-actions:task-view.label",
+    "lang": "hu",
+    "value": "A részfeladat részletei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-close-description",
+    "key": "guide.community.case.board.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-close-label",
+    "key": "guide.community.case.board.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-create-description",
+    "key": "guide.community.case.board.create.description",
+    "lang": "hu",
+    "value": "Hozz létre részfeladatot saját leírással, felelősökkel, időpontokkal, elfogadott ajánlatokkal és függőségekkel."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-create-label",
+    "key": "guide.community.case.board.create.label",
+    "lang": "hu",
+    "value": "Részfeladat hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-basket-description",
+    "key": "guide.community.case.board.dependencies.basket.description",
+    "lang": "hu",
+    "value": "Nézd át a kijelölt elemeket; a kosárból egyenként törölheted a kijelölést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-basket-label",
+    "key": "guide.community.case.board.dependencies.basket.label",
+    "lang": "hu",
+    "value": "Aktuális kijelölés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-board-dependency-selection-descr",
+    "key": "guide.community.case.board.dependencies.board-dependency-selection.description",
+    "lang": "hu",
+    "value": "Válaszd ki a feladat előfeltételeit. Nézd át a neveket és leírásokat; az alkalmazás mentéskor ellenőrzi a függőségi kapcsolatokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-board-dependency-selection-label",
+    "key": "guide.community.case.board.dependencies.board-dependency-selection.label",
+    "lang": "hu",
+    "value": "Előfeltételként szolgáló feladatok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-close-description",
+    "key": "guide.community.case.board.dependencies.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-close-label",
+    "key": "guide.community.case.board.dependencies.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-confirm-description",
+    "key": "guide.community.case.board.dependencies.confirm.description",
+    "lang": "hu",
+    "value": "Alkalmazd a kijelölést a részfeladat űrlapján, majd a részfeladat fejlécének pipájával mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-dependencies-confirm-label",
+    "key": "guide.community.case.board.dependencies.confirm.label",
+    "lang": "hu",
+    "value": "Kijelölés alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-basket-description",
+    "key": "guide.community.case.board.offers.basket.description",
+    "lang": "hu",
+    "value": "Nézd át a kijelölt elemeket; a kosárból egyenként törölheted a kijelölést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-basket-label",
+    "key": "guide.community.case.board.offers.basket.label",
+    "lang": "hu",
+    "value": "Aktuális kijelölés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-board-offer-selection-description",
+    "key": "guide.community.case.board.offers.board-offer-selection.description",
+    "lang": "hu",
+    "value": "Jelöld ki a részfeladathoz tartozó ajánlatokat. Az ügy elfogadott ajánlatai választhatók; kijelölés előtt a menüből nézd meg a részleteiket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-board-offer-selection-label",
+    "key": "guide.community.case.board.offers.board-offer-selection.label",
+    "lang": "hu",
+    "value": "Elfogadott ajánlatok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-card-actions-view-description",
+    "key": "guide.community.case.board.offers.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-card-actions-view-label",
+    "key": "guide.community.case.board.offers.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-close-description",
+    "key": "guide.community.case.board.offers.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-close-label",
+    "key": "guide.community.case.board.offers.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-confirm-description",
+    "key": "guide.community.case.board.offers.confirm.description",
+    "lang": "hu",
+    "value": "Alkalmazd a kijelölést a részfeladat űrlapján, majd a részfeladat fejlécének pipájával mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-offers-confirm-label",
+    "key": "guide.community.case.board.offers.confirm.label",
+    "lang": "hu",
+    "value": "Kijelölés alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-task-close-description",
+    "key": "guide.community.case.board.task.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-board-task-close-label",
+    "key": "guide.community.case.board.task.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-editor-close-description",
+    "key": "guide.community.case.editor.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-editor-close-label",
+    "key": "guide.community.case.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotation-editor-close-description",
+    "key": "guide.community.case.quotation.editor.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotation-editor-close-label",
+    "key": "guide.community.case.quotation.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotation-editor-refund-policies-description",
+    "key": "guide.community.case.quotation.editor.refund-policies.description",
+    "lang": "hu",
+    "value": "Elfogadás előtt olvasd el vagy készítsd el a visszatérítési szabályokat. A változtatásokat az ajánlat mentésével tárolod."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotation-editor-refund-policies-label",
+    "key": "guide.community.case.quotation.editor.refund-policies.label",
+    "lang": "hu",
+    "value": "Visszatérítési szabályok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotation-editor-work-policies-description",
+    "key": "guide.community.case.quotation.editor.work-policies.description",
+    "lang": "hu",
+    "value": "Itt olvashatod vagy készítheted el az ajánlott munka feltételeit. A módosításokat az ajánlat mentése tárolja."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotation-editor-work-policies-label",
+    "key": "guide.community.case.quotation.editor.work-policies.label",
+    "lang": "hu",
+    "value": "Munkafeltételek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-accept-offer-description",
+    "key": "guide.community.case.quotations.card-actions:accept-offer.description",
+    "lang": "hu",
+    "value": "Nézd át az árat és a feltételeket, majd a megerősítésben fogadd el az ajánlatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-accept-offer-label",
+    "key": "guide.community.case.quotations.card-actions:accept-offer.label",
+    "lang": "hu",
+    "value": "Ajánlat elfogadása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-chat-description",
+    "key": "guide.community.case.quotations.card-actions:chat.description",
+    "lang": "hu",
+    "value": "Nyisd meg az elemhez tartozó beszélgetést. Üzenetküldés előtt ellenőrizd a résztvevőket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-chat-label",
+    "key": "guide.community.case.quotations.card-actions:chat.label",
+    "lang": "hu",
+    "value": "Beszélgetés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-edit-description",
+    "key": "guide.community.case.quotations.card-actions:edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-edit-label",
+    "key": "guide.community.case.quotations.card-actions:edit.label",
+    "lang": "hu",
+    "value": "Szerkesztés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-invite-chat-description",
+    "key": "guide.community.case.quotations.card-actions:invite-chat.description",
+    "lang": "hu",
+    "value": "Vond be ezt a szolgáltatót az ügy beszélgetésébe, amikor a művelet elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-invite-chat-label",
+    "key": "guide.community.case.quotations.card-actions:invite-chat.label",
+    "lang": "hu",
+    "value": "Meghívás a beszélgetésbe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-pending-offer-description",
+    "key": "guide.community.case.quotations.card-actions:pending-offer.description",
+    "lang": "hu",
+    "value": "Tedd vissza az ajánlatot függő állapotba az újabb áttekintéshez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-pending-offer-label",
+    "key": "guide.community.case.quotations.card-actions:pending-offer.label",
+    "lang": "hu",
+    "value": "Vissza függőbe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-reject-offer-description",
+    "key": "guide.community.case.quotations.card-actions:reject-offer.description",
+    "lang": "hu",
+    "value": "A szolgáltató és a feltételek ellenőrzése után utasítsd el ezt az ajánlatot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-reject-offer-label",
+    "key": "guide.community.case.quotations.card-actions:reject-offer.label",
+    "lang": "hu",
+    "value": "Ajánlat elutasítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-view-description",
+    "key": "guide.community.case.quotations.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-view-label",
+    "key": "guide.community.case.quotations.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-close-description",
+    "key": "guide.community.case.quotations.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-close-label",
+    "key": "guide.community.case.quotations.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-quotation-provider-help-description",
+    "key": "guide.community.case.quotations.quotation-provider-help.description",
+    "lang": "hu",
+    "value": "Ez a szöveg jelzi, milyen ajánlatnézet érhető el számodra. A megjelenő vezérlőkkel kezelheted a saját ajánlatodat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-case-quotations-quotation-provider-help-label",
+    "key": "guide.community.case.quotations.quotation-provider-help.label",
+    "lang": "hu",
+    "value": "Szolgáltatói hozzáférés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-cancel-description",
+    "key": "guide.community.cases.card-actions:cancel.description",
+    "lang": "hu",
+    "value": "A megerősítő ablakban szakítsd meg ezt az elemet. Előbb ellenőrizd, melyik elemről van szó."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-cancel-label",
+    "key": "guide.community.cases.card-actions:cancel.label",
+    "lang": "hu",
+    "value": "Megszakítás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-chat-description",
+    "key": "guide.community.cases.card-actions:chat.description",
+    "lang": "hu",
+    "value": "Nyisd meg az elemhez tartozó beszélgetést. Üzenetküldés előtt ellenőrizd a résztvevőket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-chat-label",
+    "key": "guide.community.cases.card-actions:chat.label",
+    "lang": "hu",
+    "value": "Beszélgetés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-complete-description",
+    "key": "guide.community.cases.card-actions:complete.description",
+    "lang": "hu",
+    "value": "A munka és a hátralévő feladatok áttekintése után jelöld az ügyet befejezettnek."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-complete-label",
+    "key": "guide.community.cases.card-actions:complete.label",
+    "lang": "hu",
+    "value": "Ügy befejezése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-decline-description",
+    "key": "guide.community.cases.card-actions:decline.description",
+    "lang": "hu",
+    "value": "Utasítsd el az ügyben való részvételt. Ellenőrizd, melyik meghívásról döntesz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-decline-label",
+    "key": "guide.community.cases.card-actions:decline.label",
+    "lang": "hu",
+    "value": "Meghívás elutasítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-edit-description",
+    "key": "guide.community.cases.card-actions:edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-edit-label",
+    "key": "guide.community.cases.card-actions:edit.label",
+    "lang": "hu",
+    "value": "Szerkesztés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-invite-provider-description",
+    "key": "guide.community.cases.card-actions:invite-provider.description",
+    "lang": "hu",
+    "value": "A szolgáltatásválasztó ablakból válassz szolgáltatót ehhez az ügyhöz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-invite-provider-label",
+    "key": "guide.community.cases.card-actions:invite-provider.label",
+    "lang": "hu",
+    "value": "Szolgáltató meghívása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-join-description",
+    "key": "guide.community.cases.card-actions:join.description",
+    "lang": "hu",
+    "value": "Az ügy céljának és érintettjeinek megismerése után fogadd el a részvételt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-join-label",
+    "key": "guide.community.cases.card-actions:join.label",
+    "lang": "hu",
+    "value": "Csatlakozás az ügyhöz"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-leave-description",
+    "key": "guide.community.cases.card-actions:leave.description",
+    "lang": "hu",
+    "value": "A folyamatban lévő vállalásaid áttekintése után lépj ki az ügyből."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-leave-label",
+    "key": "guide.community.cases.card-actions:leave.label",
+    "lang": "hu",
+    "value": "Kilépés az ügyből"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-members-description",
+    "key": "guide.community.cases.card-actions:members.description",
+    "lang": "hu",
+    "value": "Nézd meg az ügy érintettjeit és a részvételük aktuális állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-members-label",
+    "key": "guide.community.cases.card-actions:members.label",
+    "lang": "hu",
+    "value": "Tagok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-offers-description",
+    "key": "guide.community.cases.card-actions:offers.description",
+    "lang": "hu",
+    "value": "Nyisd meg az ügy ajánlatait. Döntés előtt nézd át az árat, a munkafeltételeket és a visszatérítési szabályokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-offers-label",
+    "key": "guide.community.cases.card-actions:offers.label",
+    "lang": "hu",
+    "value": "Ajánlatok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-reopen-description",
+    "key": "guide.community.cases.card-actions:reopen.description",
+    "lang": "hu",
+    "value": "Nyisd újra az ügyet, ha további munkára van szükség."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-reopen-label",
+    "key": "guide.community.cases.card-actions:reopen.label",
+    "lang": "hu",
+    "value": "Újranyitás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-start-description",
+    "key": "guide.community.cases.card-actions:start.description",
+    "lang": "hu",
+    "value": "Megerősítés után állítsd a nyitott ügyet folyamatban lévőre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-start-label",
+    "key": "guide.community.cases.card-actions:start.label",
+    "lang": "hu",
+    "value": "Munka indítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-take-over-description",
+    "key": "guide.community.cases.card-actions:take-over.description",
+    "lang": "hu",
+    "value": "Vedd át az ügy kezelését, amikor ez a művelet elérhető. Előbb olvasd el a megerősítést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-take-over-label",
+    "key": "guide.community.cases.card-actions:take-over.label",
+    "lang": "hu",
+    "value": "Átvétel"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-trash-description",
+    "key": "guide.community.cases.card-actions:trash.description",
+    "lang": "hu",
+    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-trash-label",
+    "key": "guide.community.cases.card-actions:trash.label",
+    "lang": "hu",
+    "value": "Törlés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-view-description",
+    "key": "guide.community.cases.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-card-actions-view-label",
+    "key": "guide.community.cases.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-close-description",
+    "key": "guide.community.cases.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-cases-close-label",
+    "key": "guide.community.cases.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-close-description",
+    "key": "guide.community.home.card-actions:close.description",
+    "lang": "hu",
+    "value": "A megerősítés áttekintése után zárd le ezt a szavazást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-close-label",
+    "key": "guide.community.home.card-actions:close.label",
+    "lang": "hu",
+    "value": "Szavazás lezárása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-edit-description",
+    "key": "guide.community.home.card-actions:edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-edit-label",
+    "key": "guide.community.home.card-actions:edit.label",
+    "lang": "hu",
+    "value": "Szerkesztés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-feedback-description",
+    "key": "guide.community.home.card-actions:feedback.description",
+    "lang": "hu",
+    "value": "Nyisd meg a hirdetményhez tartozó beszélgetést kérdéshez vagy visszajelzéshez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-feedback-label",
+    "key": "guide.community.home.card-actions:feedback.label",
+    "lang": "hu",
+    "value": "Hirdetmény megbeszélése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-publish-description",
+    "key": "guide.community.home.card-actions:publish.description",
+    "lang": "hu",
+    "value": "Tedd közzé az előkészített elemet, hogy az érintettek megtalálhassák."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-publish-label",
+    "key": "guide.community.home.card-actions:publish.label",
+    "lang": "hu",
+    "value": "Közzététel"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-restore-description",
+    "key": "guide.community.home.card-actions:restore.description",
+    "lang": "hu",
+    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-restore-label",
+    "key": "guide.community.home.card-actions:restore.label",
+    "lang": "hu",
+    "value": "Visszaállítás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-results-description",
+    "key": "guide.community.home.card-actions:results.description",
+    "lang": "hu",
+    "value": "Nyisd meg a lezárt szavazás eredményét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-results-label",
+    "key": "guide.community.home.card-actions:results.label",
+    "lang": "hu",
+    "value": "Eredmények"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-trash-description",
+    "key": "guide.community.home.card-actions:trash.description",
+    "lang": "hu",
+    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-trash-label",
+    "key": "guide.community.home.card-actions:trash.label",
+    "lang": "hu",
+    "value": "Törlés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-unpublish-description",
+    "key": "guide.community.home.card-actions:unpublish.description",
+    "lang": "hu",
+    "value": "Ezzel a művelettel a közzétett elem visszakerül a piszkozatok közé."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-unpublish-label",
+    "key": "guide.community.home.card-actions:unpublish.label",
+    "lang": "hu",
+    "value": "Vissza piszkozatba"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-view-description",
+    "key": "guide.community.home.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-view-label",
+    "key": "guide.community.home.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-vote-description",
+    "key": "guide.community.home.card-actions:vote.description",
+    "lang": "hu",
+    "value": "Saját szavazatod megadása előtt olvasd el a javaslatot és mellékleteit. Az ablak mutatja a választható lehetőségeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-card-actions-vote-label",
+    "key": "guide.community.home.card-actions:vote.label",
+    "lang": "hu",
+    "value": "Szavazás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-create-description",
+    "key": "guide.community.home.create.description",
+    "lang": "hu",
+    "value": "Nyiss új elemet az aktuális csoportban. Közzététel előtt készítsd el a szöveget, a mellékleteket és a szavazási beállításokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-home-create-label",
+    "key": "guide.community.home.create.label",
+    "lang": "hu",
+    "value": "Hirdetmény vagy szavazás létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-cancel-description",
+    "key": "guide.community.service.calendar.card-actions:cancel.description",
+    "lang": "hu",
+    "value": "A megerősítő ablakban mondd le az időpontot. Előbb ellenőrizd a dátumot és az ügyfelet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-cancel-label",
+    "key": "guide.community.service.calendar.card-actions:cancel.label",
+    "lang": "hu",
+    "value": "Időpont lemondása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-case-description",
+    "key": "guide.community.service.calendar.card-actions:case.description",
+    "lang": "hu",
+    "value": "Nyisd meg az időponthoz vagy hozzád rendelt részfeladathoz tartozó ügyet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-case-label",
+    "key": "guide.community.service.calendar.card-actions:case.label",
+    "lang": "hu",
+    "value": "Ügy megnyitása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-close-description",
+    "key": "guide.community.service.calendar.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-close-label",
+    "key": "guide.community.service.calendar.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-view-trigger-description",
+    "key": "guide.community.service.calendar.view:trigger.description",
+    "lang": "hu",
+    "value": "Válts a szolgáltatáslista, a heti és a havi naptár között."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-calendar-view-trigger-label",
+    "key": "guide.community.service.calendar.view:trigger.label",
+    "lang": "hu",
+    "value": "Naptárnézet"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-editor-close-description",
+    "key": "guide.community.service.editor.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-editor-close-label",
+    "key": "guide.community.service.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-feedback-form-navigation-description",
+    "key": "guide.community.service-feedback.form-navigation.description",
+    "lang": "hu",
+    "value": "A nyilakkal lépj az összegzéshez, vagy térj vissza a válaszokhoz elküldés előtt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-feedback-form-navigation-label",
+    "key": "guide.community.service-feedback.form-navigation.label",
+    "lang": "hu",
+    "value": "Válaszok áttekintése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-feedback-form-progress-description",
+    "key": "guide.community.service-feedback.form-progress.description",
+    "lang": "hu",
+    "value": "A számláló a kérdőív aktuális oldalát jelzi. Ellenőrizd a szolgáltatás képét és a válaszaidat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-service-feedback-form-progress-label",
+    "key": "guide.community.service-feedback.form-progress.label",
+    "lang": "hu",
+    "value": "A visszajelzés oldalai"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-basket-description",
+    "key": "guide.community.services.basket.description",
+    "lang": "hu",
+    "value": "Nézd át a kijelölt szolgáltatást; másik választásához töröld a kosárból."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-basket-label",
+    "key": "guide.community.services.basket.label",
+    "lang": "hu",
+    "value": "Kijelölt szolgáltatás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-author-description",
+    "key": "guide.community.services.card-actions:author.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szolgáltató profilját, és ismerd meg, ki hirdeti a szolgáltatást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-author-label",
+    "key": "guide.community.services.card-actions:author.label",
+    "lang": "hu",
+    "value": "A szolgáltató profilja"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-edit-description",
+    "key": "guide.community.services.card-actions:edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-edit-label",
+    "key": "guide.community.services.card-actions:edit.label",
+    "lang": "hu",
+    "value": "Szerkesztés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-publish-description",
+    "key": "guide.community.services.card-actions:publish.description",
+    "lang": "hu",
+    "value": "Tedd közzé az előkészített elemet, hogy az érintettek megtalálhassák."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-publish-label",
+    "key": "guide.community.services.card-actions:publish.label",
+    "lang": "hu",
+    "value": "Közzététel"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-restore-description",
+    "key": "guide.community.services.card-actions:restore.description",
+    "lang": "hu",
+    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-restore-label",
+    "key": "guide.community.services.card-actions:restore.label",
+    "lang": "hu",
+    "value": "Visszaállítás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-trash-description",
+    "key": "guide.community.services.card-actions:trash.description",
+    "lang": "hu",
+    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-trash-label",
+    "key": "guide.community.services.card-actions:trash.label",
+    "lang": "hu",
+    "value": "Törlés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-unpublish-description",
+    "key": "guide.community.services.card-actions:unpublish.description",
+    "lang": "hu",
+    "value": "Ezzel a művelettel a közzétett elem visszakerül a piszkozatok közé."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-unpublish-label",
+    "key": "guide.community.services.card-actions:unpublish.label",
+    "lang": "hu",
+    "value": "Vissza piszkozatba"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-view-description",
+    "key": "guide.community.services.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-actions-view-label",
+    "key": "guide.community.services.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-badge-end-description",
+    "key": "guide.community.services.card-badge-end.description",
+    "lang": "hu",
+    "value": "A szolgáltatásválasztóban a plusz jelöli ki ezt a szolgáltatást. Nézd át a kosarat, majd erősítsd meg a választást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-card-badge-end-label",
+    "key": "guide.community.services.card-badge-end.label",
+    "lang": "hu",
+    "value": "Szolgáltatás kiválasztása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-close-description",
+    "key": "guide.community.services.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-close-label",
+    "key": "guide.community.services.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-confirm-description",
+    "key": "guide.community.services.confirm.description",
+    "lang": "hu",
+    "value": "Add vissza a kiválasztott szolgáltatást a választót megnyitó ügynek vagy feladatnak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-services-confirm-label",
+    "key": "guide.community.services.confirm.label",
+    "lang": "hu",
+    "value": "Szolgáltatás megerősítése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-task-editor-close-description",
+    "key": "guide.community.task.editor.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-task-editor-close-label",
+    "key": "guide.community.task.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-card-actions-edit-description",
+    "key": "guide.community.tasks.card-actions:edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-card-actions-edit-label",
+    "key": "guide.community.tasks.card-actions:edit.label",
+    "lang": "hu",
+    "value": "Szerkesztés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-card-actions-restore-description",
+    "key": "guide.community.tasks.card-actions:restore.description",
+    "lang": "hu",
+    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-card-actions-restore-label",
+    "key": "guide.community.tasks.card-actions:restore.label",
+    "lang": "hu",
+    "value": "Visszaállítás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-card-actions-view-description",
+    "key": "guide.community.tasks.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-card-actions-view-label",
+    "key": "guide.community.tasks.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-close-description",
+    "key": "guide.community.tasks.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-tasks-close-label",
+    "key": "guide.community.tasks.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-close-description",
+    "key": "guide.community.voting.card-actions:close.description",
+    "lang": "hu",
+    "value": "A megerősítés áttekintése után zárd le ezt a szavazást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-close-label",
+    "key": "guide.community.voting.card-actions:close.label",
+    "lang": "hu",
+    "value": "Szavazás lezárása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-edit-description",
+    "key": "guide.community.voting.card-actions:edit.description",
+    "lang": "hu",
+    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-edit-label",
+    "key": "guide.community.voting.card-actions:edit.label",
+    "lang": "hu",
+    "value": "Szerkesztés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-feedback-description",
+    "key": "guide.community.voting.card-actions:feedback.description",
+    "lang": "hu",
+    "value": "Nyisd meg a hirdetményhez tartozó beszélgetést kérdéshez vagy visszajelzéshez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-feedback-label",
+    "key": "guide.community.voting.card-actions:feedback.label",
+    "lang": "hu",
+    "value": "Hirdetmény megbeszélése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-publish-description",
+    "key": "guide.community.voting.card-actions:publish.description",
+    "lang": "hu",
+    "value": "Tedd közzé az előkészített elemet, hogy az érintettek megtalálhassák."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-publish-label",
+    "key": "guide.community.voting.card-actions:publish.label",
+    "lang": "hu",
+    "value": "Közzététel"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-restore-description",
+    "key": "guide.community.voting.card-actions:restore.description",
+    "lang": "hu",
+    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-restore-label",
+    "key": "guide.community.voting.card-actions:restore.label",
+    "lang": "hu",
+    "value": "Visszaállítás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-results-description",
+    "key": "guide.community.voting.card-actions:results.description",
+    "lang": "hu",
+    "value": "Nyisd meg a lezárt szavazás eredményét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-results-label",
+    "key": "guide.community.voting.card-actions:results.label",
+    "lang": "hu",
+    "value": "Eredmények"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-trash-description",
+    "key": "guide.community.voting.card-actions:trash.description",
+    "lang": "hu",
+    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-trash-label",
+    "key": "guide.community.voting.card-actions:trash.label",
+    "lang": "hu",
+    "value": "Törlés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-unpublish-description",
+    "key": "guide.community.voting.card-actions:unpublish.description",
+    "lang": "hu",
+    "value": "Ezzel a művelettel a közzétett elem visszakerül a piszkozatok közé."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-unpublish-label",
+    "key": "guide.community.voting.card-actions:unpublish.label",
+    "lang": "hu",
+    "value": "Vissza piszkozatba"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-view-description",
+    "key": "guide.community.voting.card-actions:view.description",
+    "lang": "hu",
+    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-view-label",
+    "key": "guide.community.voting.card-actions:view.label",
+    "lang": "hu",
+    "value": "Részletek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-vote-description",
+    "key": "guide.community.voting.card-actions:vote.description",
+    "lang": "hu",
+    "value": "Saját szavazatod megadása előtt olvasd el a javaslatot és mellékleteit. Az ablak mutatja a választható lehetőségeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-card-actions-vote-label",
+    "key": "guide.community.voting.card-actions:vote.label",
+    "lang": "hu",
+    "value": "Szavazás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-close-description",
+    "key": "guide.community.voting.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-close-label",
+    "key": "guide.community.voting.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-create-description",
+    "key": "guide.community.voting.create.description",
+    "lang": "hu",
+    "value": "Nyiss új elemet az aktuális csoportban. Közzététel előtt készítsd el a szöveget, a mellékleteket és a szavazási beállításokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-community-voting-create-label",
+    "key": "guide.community.voting.create.label",
+    "lang": "hu",
+    "value": "Hirdetmény vagy szavazás létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-community-case-board-dependencies-description",
+    "key": "guide.context.community.case.board.dependencies.description",
+    "lang": "hu",
+    "value": "Válaszd ki, mely feladatoknak kell előbb elkészülniük."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-community-case-board-dependencies-summary",
+    "key": "guide.context.community.case.board.dependencies.summary",
+    "lang": "hu",
+    "value": "Válaszd ki, mely feladatoknak kell előbb elkészülniük."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-community-case-board-dependencies-title",
+    "key": "guide.context.community.case.board.dependencies.title",
+    "lang": "hu",
+    "value": "Feladatfüggőségek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-community-case-board-offers-description",
+    "key": "guide.context.community.case.board.offers.description",
+    "lang": "hu",
+    "value": "Válassz elfogadott ajánlatokat ehhez a részfeladathoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-community-case-board-offers-summary",
+    "key": "guide.context.community.case.board.offers.summary",
+    "lang": "hu",
+    "value": "Válassz elfogadott ajánlatokat ehhez a részfeladathoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-community-case-board-offers-title",
+    "key": "guide.context.community.case.board.offers.title",
+    "lang": "hu",
+    "value": "Ajánlatok hozzárendelése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-advanced-description",
+    "key": "guide.context.profile.mcp-advanced.description",
+    "lang": "hu",
+    "value": "Hozz létre és kezelj hitelesítő adatokat a kézi beállítást igénylő kliensekhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-advanced-summary",
+    "key": "guide.context.profile.mcp-advanced.summary",
+    "lang": "hu",
+    "value": "Hozz létre és kezelj hitelesítő adatokat a kézi beállítást igénylő kliensekhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-advanced-title",
+    "key": "guide.context.profile.mcp-advanced.title",
+    "lang": "hu",
+    "value": "Kézi MCP-kliensek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-authorization-description",
+    "key": "guide.context.profile.mcp-authorization.description",
+    "lang": "hu",
+    "value": "Jóváhagyás előtt ellenőrizd a klienst, az aktív profilt és a kért hozzáférést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-authorization-summary",
+    "key": "guide.context.profile.mcp-authorization.summary",
+    "lang": "hu",
+    "value": "Jóváhagyás előtt ellenőrizd a klienst, az aktív profilt és a kért hozzáférést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-authorization-title",
+    "key": "guide.context.profile.mcp-authorization.title",
+    "lang": "hu",
+    "value": "AI-kliens csatlakoztatása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-details-description",
+    "key": "guide.context.profile.mcp-details.description",
+    "lang": "hu",
+    "value": "Ellenőrizd ezt a klienst és a visszahívási címét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-details-summary",
+    "key": "guide.context.profile.mcp-details.summary",
+    "lang": "hu",
+    "value": "Ellenőrizd ezt a klienst és a visszahívási címét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-profile-mcp-details-title",
+    "key": "guide.context.profile.mcp-details.title",
+    "lang": "hu",
+    "value": "Az MCP-kapcsolat részletei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-members-select-close-description",
+    "key": "guide.members.select.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-members-select-close-label",
+    "key": "guide.members.select.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-close-description",
+    "key": "guide.profile.mcp-advanced.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-close-label",
+    "key": "guide.profile.mcp-advanced.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-access-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-access.description",
+    "lang": "hu",
+    "value": "Állítsd be ennek a kliensnek a csomagját. A pipa előkészíti a módosítást; az API / MCP főablak pipájával mented el. A fő MCP-korlát is érvényes marad."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-access-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-access.label",
+    "lang": "hu",
+    "value": "A kliens hozzáférése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-id-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-id.description",
+    "lang": "hu",
+    "value": "Ezt az azonosítót másold be, amikor a kliens beállítása kliensazonosítót kér."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-id-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-id.label",
+    "lang": "hu",
+    "value": "Kliensazonosító"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-revoke-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-revoke.description",
+    "lang": "hu",
+    "value": "A megerősítő ablak jóváhagyása visszavonja ezt a klienst. Ezekkel az adatokkal többé nem tud hitelesíteni."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-revoke-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-revoke.label",
+    "lang": "hu",
+    "value": "Kliens visszavonása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-secret-description",
+    "key": "guide.profile.mcp-advanced.mcp-client-secret.description",
+    "lang": "hu",
+    "value": "Az új titkot most másold a kliens biztonságos beállításába. A teljes érték csak létrehozás után látható."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-client-secret-label",
+    "key": "guide.profile.mcp-advanced.mcp-client-secret.label",
+    "lang": "hu",
+    "value": "Kliens titka"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-generate-description",
+    "key": "guide.profile.mcp-advanced.mcp-generate.description",
+    "lang": "hu",
+    "value": "Hozz létre klienskulcsot az alap Írás csomaggal. A létrehozás azonnali; bezárás előtt másold ki a titkot. Utána másik hozzáférési csomagot is beállíthatsz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-generate-label",
+    "key": "guide.profile.mcp-advanced.mcp-generate.label",
+    "lang": "hu",
+    "value": "Kliens létrehozása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-manual-keys-description",
+    "key": "guide.profile.mcp-advanced.mcp-manual-keys.description",
+    "lang": "hu",
+    "value": "Akkor használd ezt a részt, ha az AI-kliens kézi hitelesítő adatokat kér. A szokásos OAuth-kapcsolatokat a főablak sorolja fel."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-advanced-mcp-manual-keys-label",
+    "key": "guide.profile.mcp-advanced.mcp-manual-keys.label",
+    "lang": "hu",
+    "value": "Kézi klienskulcsok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-close-description",
+    "key": "guide.profile.mcp-authorization.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-close-label",
+    "key": "guide.profile.mcp-authorization.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-access-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-access.description",
+    "lang": "hu",
+    "value": "A Tiltás megakadályozza a hozzáférést. Az Írás a támogatott szervezési műveleteket, az Olvasás a lekérdezéseket is, a Teljes az MCP Events értesítéseket is engedi. A fő MCP-beállítás és a kliens korlátja együtt érvényes."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-access-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-access.label",
+    "lang": "hu",
+    "value": "Hozzáférési csomag"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-actions-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-actions.description",
+    "lang": "hu",
+    "value": "A jóváhagyás az itt jelzett hozzáférést adja ehhez a profilhoz. A Mégse nem ad hozzáférést. A létrejött kapcsolat később visszavonható az API / MCP ablakban."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-actions-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-actions.label",
+    "lang": "hu",
+    "value": "Jóváhagyás vagy megszakítás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-client-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-client.description",
+    "lang": "hu",
+    "value": "Ellenőrizd a hozzáférést kérő AI-kliens nevét. Akkor folytasd, ha ezt a kapcsolódást indítottad."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-client-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-client.label",
+    "lang": "hu",
+    "value": "Kapcsolódó kliens"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-profile-description",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-profile.description",
+    "lang": "hu",
+    "value": "A kapcsolat az itt látható profilhoz és munkatérhez tartozik. Jóváhagyás előtt mindkettőt ellenőrizd."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-authorization-mcp-authorize-profile-label",
+    "key": "guide.profile.mcp-authorization.mcp-authorize-profile.label",
+    "lang": "hu",
+    "value": "Profil és munkatér"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-close-description",
+    "key": "guide.profile.mcp-details.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-close-label",
+    "key": "guide.profile.mcp-details.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-access-description",
+    "key": "guide.profile.mcp-details.mcp-client-access.description",
+    "lang": "hu",
+    "value": "Állítsd be ennek a kliensnek a csomagját. A pipa előkészíti a módosítást; az API / MCP főablak pipájával mented el. A fő MCP-korlát is érvényes marad."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-access-label",
+    "key": "guide.profile.mcp-details.mcp-client-access.label",
+    "lang": "hu",
+    "value": "A kliens hozzáférése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-callback-description",
+    "key": "guide.profile.mcp-details.mcp-client-callback.description",
+    "lang": "hu",
+    "value": "Ide irányít vissza az engedélyezés a kliens regisztrált beállítása szerint. Ez technikai kapcsolati adat; az AI-klienshez a főablak MCP-címét kell felvenned."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-callback-label",
+    "key": "guide.profile.mcp-details.mcp-client-callback.label",
+    "lang": "hu",
+    "value": "Visszahívási cím"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-id-description",
+    "key": "guide.profile.mcp-details.mcp-client-id.description",
+    "lang": "hu",
+    "value": "Ezt az azonosítót másold be, amikor a kliens beállítása kliensazonosítót kér."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-id-label",
+    "key": "guide.profile.mcp-details.mcp-client-id.label",
+    "lang": "hu",
+    "value": "Kliensazonosító"
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-secret-description",
+    "key": "guide.profile.mcp-details.mcp-client-secret.description",
+    "lang": "hu",
+    "value": "Az új titkot most másold a kliens biztonságos beállításába. A teljes érték csak létrehozás után látható."
+  },
+  {
+    "_id": "i18n-message-hu-guide-profile-mcp-details-mcp-client-secret-label",
+    "key": "guide.profile.mcp-details.mcp-client-secret.label",
+    "lang": "hu",
+    "value": "Kliens titka"
+  },
+  {
+    "_id": "i18n-message-hu-guide-work-campaign-editor-close-description",
+    "key": "guide.work.campaign.editor.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-work-campaign-editor-close-label",
+    "key": "guide.work.campaign.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-work-campaign-history-close-description",
+    "key": "guide.work.campaign.history.close.description",
+    "lang": "hu",
+    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+  },
+  {
+    "_id": "i18n-message-hu-guide-work-campaign-history-close-label",
+    "key": "guide.work.campaign.history.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-policies-editor-description",
+    "key": "guide.context.policies.editor.description",
+    "lang": "en",
+    "value": "Read and prepare terms in the existing form."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-policies-editor-summary",
+    "key": "guide.context.policies.editor.summary",
+    "lang": "en",
+    "value": "Read and prepare terms in the existing form."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-policies-editor-title",
+    "key": "guide.context.policies.editor.title",
+    "lang": "en",
+    "value": "Term details"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-policies-list-description",
+    "key": "guide.context.policies.list.description",
+    "lang": "en",
+    "value": "Read and prepare terms in the existing form."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-policies-list-summary",
+    "key": "guide.context.policies.list.summary",
+    "lang": "en",
+    "value": "Read and prepare terms in the existing form."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-policies-list-title",
+    "key": "guide.context.policies.list.title",
+    "lang": "en",
+    "value": "Terms"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-close-description",
+    "key": "guide.policies.editor.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous form."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-close-label",
+    "key": "guide.policies.editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-description-description",
+    "key": "guide.policies.editor.policy-description.description",
+    "lang": "en",
+    "value": "Read or write the complete conditions here, including practical details needed for a decision."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-description-label",
+    "key": "guide.policies.editor.policy-description.label",
+    "lang": "en",
+    "value": "Full terms"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-required-description",
+    "key": "guide.policies.editor.policy-required.description",
+    "lang": "en",
+    "value": "The label identifies whether acceptance is required in the owning workflow. In editable mode you may change it; view mode preserves the saved setting."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-required-label",
+    "key": "guide.policies.editor.policy-required.label",
+    "lang": "en",
+    "value": "Required acceptance"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-save-description",
+    "key": "guide.policies.editor.policy-save.description",
+    "lang": "en",
+    "value": "Apply this term to the open form. Save the owning form afterwards to persist the complete edit."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-save-label",
+    "key": "guide.policies.editor.policy-save.label",
+    "lang": "en",
+    "value": "Apply term"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-title-description",
+    "key": "guide.policies.editor.policy-title.description",
+    "lang": "en",
+    "value": "Use a short title that identifies what this term covers. In view mode, read the saved title."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-editor-policy-title-label",
+    "key": "guide.policies.editor.policy-title.label",
+    "lang": "en",
+    "value": "Term title"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-card-actions-delete-description",
+    "key": "guide.policies.list.card-actions:delete.description",
+    "lang": "en",
+    "value": "Remove this term from the current draft. Save the owning form to keep the change."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-card-actions-delete-label",
+    "key": "guide.policies.list.card-actions:delete.label",
+    "lang": "en",
+    "value": "Remove term"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-close-description",
+    "key": "guide.policies.list.close.description",
+    "lang": "en",
+    "value": "Close this window and return to the previous form."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-close-label",
+    "key": "guide.policies.list.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-policy-add-description",
+    "key": "guide.policies.list.policy-add.description",
+    "lang": "en",
+    "value": "Open a blank term editor. Give the term a clear title and description."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-policy-add-label",
+    "key": "guide.policies.list.policy-add.label",
+    "lang": "en",
+    "value": "Add term"
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-policy-list-description",
+    "key": "guide.policies.list.policy-list.description",
+    "lang": "en",
+    "value": "Open a row to read its full text. In an editable form you can also prepare or remove terms; save the owning form afterwards."
+  },
+  {
+    "_id": "i18n-message-en-guide-policies-list-policy-list-label",
+    "key": "guide.policies.list.policy-list.label",
+    "lang": "en",
+    "value": "Terms list"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-policies-editor-description",
+    "key": "guide.context.policies.editor.description",
+    "lang": "hu",
+    "value": "Olvasd el vagy készítsd el a feltételeket az űrlapban."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-policies-editor-summary",
+    "key": "guide.context.policies.editor.summary",
+    "lang": "hu",
+    "value": "Olvasd el vagy készítsd el a feltételeket az űrlapban."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-policies-editor-title",
+    "key": "guide.context.policies.editor.title",
+    "lang": "hu",
+    "value": "A feltétel részletei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-policies-list-description",
+    "key": "guide.context.policies.list.description",
+    "lang": "hu",
+    "value": "Olvasd el vagy készítsd el a feltételeket az űrlapban."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-policies-list-summary",
+    "key": "guide.context.policies.list.summary",
+    "lang": "hu",
+    "value": "Olvasd el vagy készítsd el a feltételeket az űrlapban."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-policies-list-title",
+    "key": "guide.context.policies.list.title",
+    "lang": "hu",
+    "value": "Feltételek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-close-description",
+    "key": "guide.policies.editor.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző űrlaphoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-close-label",
+    "key": "guide.policies.editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-description-description",
+    "key": "guide.policies.editor.policy-description.description",
+    "lang": "hu",
+    "value": "Itt olvashatod vagy írhatod a teljes feltételt, a döntéshez szükséges gyakorlati részletekkel."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-description-label",
+    "key": "guide.policies.editor.policy-description.label",
+    "lang": "hu",
+    "value": "A feltétel teljes szövege"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-required-description",
+    "key": "guide.policies.editor.policy-required.description",
+    "lang": "hu",
+    "value": "A felirat jelzi, hogy a kapcsolódó folyamat kötelező elfogadást kér-e. Szerkesztéskor módosíthatod; megtekintéskor a mentett beállítás látszik."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-required-label",
+    "key": "guide.policies.editor.policy-required.label",
+    "lang": "hu",
+    "value": "Kötelező elfogadás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-save-description",
+    "key": "guide.policies.editor.policy-save.description",
+    "lang": "hu",
+    "value": "Alkalmazd a feltételt a nyitott űrlapon. A teljes módosítás tárolásához utána mentsd a befoglaló űrlapot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-save-label",
+    "key": "guide.policies.editor.policy-save.label",
+    "lang": "hu",
+    "value": "Feltétel alkalmazása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-title-description",
+    "key": "guide.policies.editor.policy-title.description",
+    "lang": "hu",
+    "value": "Rövid címmel jelezd, miről szól a feltétel. Megtekintéskor a mentett cím olvasható."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-editor-policy-title-label",
+    "key": "guide.policies.editor.policy-title.label",
+    "lang": "hu",
+    "value": "Feltétel címe"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-card-actions-delete-description",
+    "key": "guide.policies.list.card-actions:delete.description",
+    "lang": "hu",
+    "value": "Távolítsd el ezt a feltételt az aktuális űrlapból. A változás megtartásához mentsd a befoglaló űrlapot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-card-actions-delete-label",
+    "key": "guide.policies.list.card-actions:delete.label",
+    "lang": "hu",
+    "value": "Feltétel eltávolítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-close-description",
+    "key": "guide.policies.list.close.description",
+    "lang": "hu",
+    "value": "Zárd be ezt az ablakot, és térj vissza az előző űrlaphoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-close-label",
+    "key": "guide.policies.list.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-policy-add-description",
+    "key": "guide.policies.list.policy-add.description",
+    "lang": "hu",
+    "value": "Nyiss üres feltételszerkesztőt. Adj egyértelmű címet és leírást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-policy-add-label",
+    "key": "guide.policies.list.policy-add.label",
+    "lang": "hu",
+    "value": "Feltétel hozzáadása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-policy-list-description",
+    "key": "guide.policies.list.policy-list.description",
+    "lang": "hu",
+    "value": "Egy sor megnyitásával elolvashatod a teljes szövegét. Szerkeszthető űrlapon új feltételt is készíthetsz vagy törölhetsz; utána mentsd a befoglaló űrlapot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-policies-list-policy-list-label",
+    "key": "guide.policies.list.policy-list.label",
+    "lang": "hu",
+    "value": "Feltételek listája"
   }
 ]

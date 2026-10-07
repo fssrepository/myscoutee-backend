@@ -25,18 +25,28 @@ public class IntegrationCapabilitiesService {
     private final CommunityGroupsService groups;
     private final CommunityGroupsRepository groupRepository;
     private final AccessControlService access;
+    private final IntegrationRoleAccessService roles;
 
     public IntegrationCapabilitiesService(CommunityGroupsService groups,
-            CommunityGroupsRepository groupRepository, AccessControlService access) {
+            CommunityGroupsRepository groupRepository, AccessControlService access, IntegrationRoleAccessService roles) {
         this.groups = groups;
         this.groupRepository = groupRepository;
-        this.access = access;
+        this.access = access; this.roles = roles;
     }
 
     public IntegrationConnectDto describe(Authentication authentication) {
         var profile = profile(authentication);
         var client = (AuthenticatedIntegrationClient) authentication.getDetails();
         String profileId = profile.getUserId();
+        if (roles.privileged(profile)) {
+            var operations = new ArrayList<String>();
+            if (client.accessMode().allowsRead()) {
+                if (roles.admin(profile)) operations.add("adminOverview");
+                if (roles.operator(profile)) operations.addAll(List.of("operatorMeasurements", "operatorRevenueReports"));
+            }
+            return new IntegrationConnectDto(true, IntegrationTokenService.MAX_BATCH_SIZE,
+                    profileId, profile.getName(), null, null, List.copyOf(operations), List.of(), client.accessMode());
+        }
         String groupId = StringUtils.hasText(profile.getWorkspaceGroupId()) ? profile.getWorkspaceGroupId() : null;
         var group = groupId == null ? null : groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
@@ -54,7 +64,7 @@ public class IntegrationCapabilitiesService {
             operations.addAll(List.of("saveCase", "caseAction", "saveAnnouncement", "announcementAction",
                     "saveScheduledTask", "scheduledTaskAction", "serviceAction"));
         if (!inviteGroups.isEmpty()) operations.add("inviteGroupParticipants");
-        if (client.accessMode() == IntegrationAccess.Mode.FULL) {
+        if (client.accessMode().allowsRead()) {
             operations.addAll(List.of("listEvents", "eventDetails", "listGroups", "groupDetails",
                     "listChats", "chatDetails", "chatMessages", "listNotifications", "listRatings"));
             if (groupId == null) operations.addAll(List.of("listAssets", "assetDetails"));
@@ -68,20 +78,34 @@ public class IntegrationCapabilitiesService {
                 profileId, profile.getName(), groupId, groupName, List.copyOf(operations), inviteGroups, client.accessMode());
     }
 
-    public String requireFull(Authentication authentication, String domain) {
+    public String requireRead(Authentication authentication, String domain) {
         String actor = requireWrite(authentication, domain);
-        if (((AuthenticatedIntegrationClient) authentication.getDetails()).accessMode() != IntegrationAccess.Mode.FULL)
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Full integration access is required.");
+        if (!((AuthenticatedIntegrationClient) authentication.getDetails()).accessMode().allowsRead())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Read or Full integration access is required.");
         return actor;
     }
 
     public String requireWrite(Authentication authentication, String domain) {
         var profile = profile(authentication);
+        if (roles.privileged(profile)) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Role integrations are read-only.");
         if (domain != null) {
             String groupId = profile.getWorkspaceGroupId();
             var group = groupId == null ? null : groupRepository.findById(groupId).orElse(null);
             if (group == null || !domain.equals(group.effectiveType())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+        return profile.getUserId();
+    }
+
+    public AuthenticatedIntegrationClient requireClient(Authentication authentication) {
+        profile(authentication);
+        return (AuthenticatedIntegrationClient) authentication.getDetails();
+    }
+
+    public String requireRoleRead(Authentication authentication, String role) {
+        var profile = profile(authentication);
+        var client = (AuthenticatedIntegrationClient) authentication.getDetails();
+        if (!client.accessMode().allowsRead() || !("admin".equals(role) ? roles.admin(profile) : roles.operator(profile)))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return profile.getUserId();
     }
 
@@ -94,6 +118,7 @@ public class IntegrationCapabilitiesService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         if (client.accessMode() == IntegrationAccess.Mode.BLOCKED) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        roles.requireActive(principal.getUser());
         return principal.getUser();
     }
 }

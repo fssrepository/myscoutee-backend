@@ -2,9 +2,19 @@
 
 **The platform behind meetings, not swipes.**
 
-MyScoutee Backend powers group- and event-centred social experiences. It turns
-editable 1–10 priorities and mutual affinity into compatible groups, then
-supports their journey through chat, events, coordination, and feedback.
+MyScoutee Backend supports Dating, Work and Community experiences: mutual
+priorities, group and event coordination, work campaigns, service offerings,
+community cases, announcements and voting. Ratings remain human decisions;
+API/MCP exposes the permitted organizing operations and scoped queries.
+
+MSC-115 through MSC-119 development is consolidated on **master**.
+The Java client and MCP adapter are **1.6.0** on their master branches,
+with Blocked / Write / Read / Full access packs, OAuth Events and read-only
+administrator/operator statistics. Execution QA for the extensions remains pending.
+
+See the [consolidation and recovery record](guides/plans/MSC-119_BRANCH_CONSOLIDATION.md)
+and the MCP repository's
+[publication handoff](https://github.com/fssrepository/myscoutee-mcp/blob/master/plugins/PUBLICATION_HANDOFF.md).
 
 Its goal is a **completed, mutually welcomed real-world meeting**—not simply a
 match or a message.
@@ -13,17 +23,15 @@ match or a message.
 
 ### Installer
 
-The next feature release is **1.3.0**, with Git tag `v1.3.0`. See the
-[1.3.0 release preparation](guides/releases/v1.3.0.md); it is not published yet.
+The latest tagged application source is **1.3.3**. The latest complete installer
+release remains **1.3.0**, with its Debian package, client tools, checksums,
+container references and release metadata available from
+[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.3.0).
 
-The **MyScoutee 1.0.2** client tools, partial-update prerequisites, container
-references, checksums and signed metadata are available from
-[GitHub Releases](https://github.com/fssrepository/myscoutee/releases/tag/v1.0.2).
-The signed amd64 Debian installer is built; its upload is handled separately
-by the release owner.
-
-See the [installation guide](packaging/README.md) and
-[release notes](guides/releases/v1.0.2.md) for the partial-update scope and evidence.
+See the [installation guide](packaging/README.md),
+[1.3.0 installer release notes](guides/releases/v1.3.0.md) and
+[1.3.3 application update notes](guides/releases/v1.3.3.md).
+The later application updates do not replace the full installer release.
 
 ### Documentation PDFs
 
@@ -32,7 +40,11 @@ See the [installation guide](packaging/README.md) and
 | Operations Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf) |
 | Administrator Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
 | User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
-| Integration API Guide | 1.0.1 | MyScoutee 1.0.1 | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
+| Integration API Guide | 1.0.1 | 1.0.1 + MSC-119 source extensions | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
+| MCP User Guide | 1.0.0 | MCP / client 1.6.0 · MSC-119 | [PDF](guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf) |
+
+Document versions are independent of software versions. The MCP guide documents
+MSC-119 source behavior, including its pending live-host QA.
 
 Editable manual sources and PDF build instructions are in
 [`guides/manuals`](guides/manuals/README.md).
@@ -89,7 +101,7 @@ for adding signed local packages and simulating interrupted downloads.
 
 ## Verification and project history
 
-The [QA matrix (XLSX)](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
+The [development QA matrix (XLSX)](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.xlsx)
 and its [CSV source](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
 record test results, evidence and the scope of each case.
 
@@ -98,8 +110,14 @@ contains the task history, workstream effort and measurement method.
 
 ## Manual QA status
 
-As of 2026-10-06, the [canonical QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
-contains 141 cases: 120 passed and 21 NOT RUN. The existing explanation-guide
-case is reopened for the expanded Work/Community scope; its earlier evidence
-remains historical. Continue from the [current handoff](guides/qa/handoffs/CURRENT_QA_SESSION.md)
-and [MSC-115 checklist and conversation review](guides/qa/checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md).
+As of **2026-10-07**, the [development QA ledger](guides/qa/matrices/ADMIN_DYNAMIC_SURFACES_QA_MATRIX.csv)
+contains **146 scenarios**, excluding four legend rows: **120 with recorded
+PASS results, 25 NOT RUN and one reopened explanation-guide case**. Those
+results apply to their recorded scope; they do not establish that the new
+Work/Community and API/MCP extensions have passed.
+
+Full QA includes additions from the other Codex session. Reconcile the latest
+shared ledger and checklists before execution. Use the
+[current handoff](guides/qa/handoffs/CURRENT_QA_SESSION.md),
+[Work/Community checklist](guides/qa/checklists/MSC-115_WORK_COMMUNITY_PAIR_QA.md)
+and [MSC-119 implementation record](guides/plans/MSC-119_MCP_READ_EVENTS_ROLE_GUIDANCE.md).

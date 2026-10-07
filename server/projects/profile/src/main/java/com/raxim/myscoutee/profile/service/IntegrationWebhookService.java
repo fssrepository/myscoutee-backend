@@ -395,6 +395,20 @@ public class IntegrationWebhookService {
         }
     }
 
+    /** MSC-118 role notifications feed the existing durable Events queue, without a polling worker. */
+    public void enqueueRoleAttention(com.raxim.myscoutee.profile.data.document.NotificationOutboxItem notification) {
+        String name = switch (String.valueOf(notification.getEntityType())) {
+            case "app-admin" -> McpEventsService.ADMIN_ATTENTION;
+            case "operator" -> McpEventsService.OPERATOR_ATTENTION;
+            default -> null;
+        };
+        if (name == null || !McpEventsService.roleKinds(name).contains(notification.getNotificationType())) return;
+        for (String owner : notification.getRecipientUserIds()) {
+            enqueue(owner, name, notification.getEntityType(), "node", Map.of("kind", notification.getNotificationType()),
+                    notification.getId(), List.of());
+        }
+    }
+
     private void enqueue(
             String ownerUserId,
             String eventType,

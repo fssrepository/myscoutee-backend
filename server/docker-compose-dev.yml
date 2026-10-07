@@ -13,7 +13,7 @@ services:
       - myscoutee
 
   mcp:
-    image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.5.0-dev}
+    image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.6.0-dev}
     build:
       context: ../../myscoutee-mcp
       dockerfile: Dockerfile

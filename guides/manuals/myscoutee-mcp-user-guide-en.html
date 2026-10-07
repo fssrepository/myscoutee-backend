@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MyScoutee MCP User Guide: clients, access packs, ChatGPT and Claude setup, Events and scheduled tasks.">
+  <title>MyScoutee MCP User Guide · MSC-MCP-001</title>
+  <link rel="stylesheet" href="manuals.css">
+</head>
+<body>
+<article class="manual">
+  <section class="cover" aria-labelledby="document-title">
+    <div class="cover-brand">
+      <div class="cover-brand-name" aria-label="MyScoutee">
+        <img src="../../frontend/src/assets/logo/heart.png" alt="" aria-hidden="true">
+        <span>yScoutee</span>
+      </div>
+      <div class="cover-brand-subtitle">Official Product Documentation</div>
+    </div>
+    <div class="cover-title-block">
+      <div class="cover-kicker">AI Connections</div>
+      <h1 id="document-title">MyScoutee<br>MCP User Guide</h1>
+      <p class="cover-lead">Connect your own account to ChatGPT or Claude. Set client permissions, use supported tools, follow changes with Events, and manage recurring work.</p>
+    </div>
+    <div class="cover-meta" aria-label="Document metadata">
+      <div><strong>Document ID</strong><span>MSC-MCP-001</span></div>
+      <div><strong>Document version</strong><span>1.0.0</span></div>
+      <div><strong>Applicable software version</strong><span>MCP / Java client 1.6.0<br>MyScoutee MSC-119 source revision</span></div>
+      <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Released documentation</span></div>
+      <div><strong>Release date</strong><time datetime="2026-10-07">2026-10-07</time></div>
+      <div><strong>Source revision</strong><span>MSC-119 · 2026-10-07</span></div>
+      <div><strong>Language</strong><span>EN</span></div>
+    </div>
+  </section>
+
+  <section class="document-control" id="document-control" aria-labelledby="document-control-title">
+    <h2 id="document-control-title">Document Control</h2>
+    <table>
+      <caption>Scope and applicability</caption>
+      <tbody>
+        <tr><th scope="row">Document owner</th><td>MyScoutee project — product and integration documentation</td></tr>
+        <tr><th scope="row">Audience</th><td>Members, organizers, community administrators, installation administrators and operators connecting an AI assistant</td></tr>
+        <tr><th scope="row">Companion guide</th><td>MSC-API-001, <a href="MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf">Integration API Guide</a>, for request formats, batch IDs and the Java client</td></tr>
+        <tr><th scope="row">Implementation</th><td>Four access packs; profile-bound OAuth; 40 supported API operations; anonymous help; member and role Events</td></tr>
+        <tr><th scope="row">Provider instructions checked</th><td>7 October 2026. Provider names, menus, plans and workspace controls can change; official references appear in section 16.</td></tr>
+        <tr><th scope="row">Verification boundary</th><td>Based on the implemented source and current provider documentation. Live ChatGPT/Claude connection, callback, security and load QA for this extension remains pending. A PDF release does not certify a deployment or publish a marketplace plugin.</td></tr>
+      </tbody>
+    </table>
+    <h3>Version History</h3>
+    <table>
+      <thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead>
+      <tbody><tr><td>1.0.0</td><td>2026-10-07</td><td>Initial complete MCP user guide: connection types, generation, access tables, ChatGPT/Claude setup, role reports, Events, schedules, examples and troubleshooting.</td></tr></tbody>
+    </table>
+    <aside class="callout note"><strong>Use your installation’s address</strong>Copy the MCP URL from MyScoutee. The marketing website address, API Base URL and MCP URL have different purposes. Examples in this guide use placeholders and contain no working credentials.</aside>
+  </section>
+
+  <nav class="toc page-break" aria-labelledby="contents-title">
+    <h2 id="contents-title">Table of Contents</h2>
+    <ol>
+      <li><a href="#start">1. Start Here</a></li>
+      <li><a href="#connections">2. Connection and Credential Types</a></li>
+      <li><a href="#permissions">3. Access Packs and Effective Permissions</a></li>
+      <li><a href="#generate">4. Generate and Manage Clients</a></li>
+      <li><a href="#chatgpt">5. Connect ChatGPT</a></li>
+      <li><a href="#claude">6. Connect Claude</a></li>
+      <li><a href="#first-use">7. Check Your First Connection</a></li>
+      <li><a href="#capabilities">8. What You Can Do</a></li>
+      <li><a href="#roles">9. Administrator and Operator Access</a></li>
+      <li><a href="#events">10. Follow Changes with MCP Events</a></li>
+      <li><a href="#schedules">11. Scheduled Tasks: Where and How</a></li>
+      <li><a href="#examples">12. Practical Prompts and Workflows</a></li>
+      <li><a href="#lifecycle">13. Change, Stop or Replace a Connection</a></li>
+      <li><a href="#troubleshooting">14. Troubleshooting</a></li>
+      <li><a href="#local">15. Local Clients and Technical Reference</a></li>
+      <li><a href="#references">16. Glossary and References</a></li>
+    </ol>
+  </nav>
+
+  <section id="start" class="page-break" aria-labelledby="start-title">
+    <h2 id="start-title">1. Start Here</h2>
+    <p class="keep-together">MCP connects an AI assistant to MyScoutee’s existing tools. You describe a task in chat; the assistant calls the operations available to the connected profile. MyScoutee still checks permissions, ownership, group membership and the current state of each record.</p>
+    <p class="keep-together">For normal ChatGPT or Claude use, choose a <strong>remote OAuth connection</strong>. Each person signs in to their own MyScoutee account and approves a profile. You do not need the publisher’s account, a shared password or a manually copied API secret.</p>
+    <div class="architecture flow-3" aria-label="Personal connection flow">
+      <div class="node"><strong>Your AI client</strong><span>ChatGPT or Claude</span></div><div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><strong>MyScoutee consent</strong><span>Your profile and saved permissions</span></div><div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><strong>Existing app services</strong><span>Authorized tools and records</span></div>
+    </div>
+    <div class="procedure">
+      <h3>Your first connection</h3>
+      <ol>
+        <li>Sign in to the intended MyScoutee installation and select the profile or workspace you want to connect.</li>
+        <li>Open the profile editor’s <strong>Affiliate / API</strong> popup and locate <strong>AI / MCP connections</strong>. Administrators use their existing API settings entry.</li>
+        <li>Set the main MCP access pack. Its initial value is <strong>Blocked</strong>. Save the parent settings after confirming the permission selector.</li>
+        <li>Copy the <strong>MCP URL</strong>. Add it in ChatGPT or Claude using sections 5–6.</li>
+        <li>Complete MyScoutee sign-in and approval. Read the profile/group shown on the consent screen.</li>
+        <li>Review the new entry under <strong>OAuth permissions</strong>. Its initial client pack is <strong>Write</strong>; set Read or Full if needed and save.</li>
+        <li>Ask the assistant to identify the connected profile and list available capabilities before performing your intended task.</li>
+      </ol>
+    </div>
+    <aside class="callout note"><strong>Which pack should I choose?</strong>Write supports organizing commands. Read adds application queries. Full adds change subscriptions through MCP Events. Read and Full include Write; Read is not a separate read-only member connection.</aside>
+    <p class="keep-together">The browser-only local demonstration can show settings but cannot provide an external OAuth service. Use a deployed backend with a reachable HTTPS endpoint. Your installation operator provides that address.</p>
+  </section>
+
+  <section id="connections" class="page-break" aria-labelledby="connections-title">
+    <h2 id="connections-title">2. Connection and Credential Types</h2>
+    <table>
+      <caption>Choose one connection method</caption>
+      <thead><tr><th>Method</th><th>What you provide</th><th>Where it belongs</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Remote OAuth</strong><br>Normal AI setup</td><td>MCP URL, then MyScoutee sign-in and approval. Automatic registration needs no copied secret.</td><td>ChatGPT custom MCP plugin or Claude custom connector. Manage the authorization under OAuth permissions.</td></tr>
+        <tr><td><strong>Manual MCP client</strong><br>Predefined OAuth identity</td><td>Generated MCP client ID and one-time client secret, plus MCP URL.</td><td>A client requiring predefined OAuth credentials. Generate in MCP Advanced. Callback must match the deployment’s registered configuration.</td></tr>
+        <tr><td><strong>API client</strong><br>Local MCP or external software</td><td>Generated API token and one stable client UUID; API Base URL.</td><td>Java client, external API software, or local MCP stdio configuration. This token is not a remote OAuth bearer token.</td></tr>
+        <tr><td><strong>Anonymous help</strong></td><td>Public help endpoint, usually <code>/mcp</code>; no private key.</td><td>Read current help in English or Hungarian. Personal queries, writes and Events are unavailable.</td></tr>
+      </tbody>
+    </table>
+    <h3>Addresses are not interchangeable</h3>
+    <table>
+      <thead><tr><th>Address</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Copied MCP URL<br>Usually <code>/mcp/private</code></td><td>Authenticated remote MCP connection. Paste the complete value into the AI client.</td></tr>
+        <tr><td>API Base URL<br>Usually <code>/api/integrations/v1</code></td><td>Direct integration requests described in the API Guide.</td></tr>
+        <tr><td>Local adapter API root<br>Ends in <code>/api</code></td><td>Configuration of the optional local MCP process; see section 15.</td></tr>
+        <tr><td>Website or landing page</td><td>Human browsing and sign-in. Pasting a landing-page URL does not configure MCP.</td></tr>
+      </tbody>
+    </table>
+    <h3>The identity stays fixed</h3>
+    <p class="keep-together">A connection belongs to the issuing profile and, where applicable, its workspace. Switching groups in the MyScoutee interface later does not retarget that connection. To work in another group, authorize a separate connection for that group and give it an identifiable name in your AI client.</p>
+    <p class="keep-together">Registration identifies the external software. Authorization gives that software access to one person’s profile. Registering a client alone grants no member data. Every other user must sign in and approve their own connection.</p>
+  </section>
+
+  <section id="permissions" aria-labelledby="permissions-title">
+    <h2 id="permissions-title">3. Access Packs and Effective Permissions</h2>
+    <p class="keep-together">The shield button next to a copied address or credential opens the shared permission popup. Its color follows the selected pack. The popup shows a short explanation under the four-position control.</p>
+    <table>
+      <caption>Cumulative packs for an ordinary member profile</caption>
+      <thead><tr><th>Pack / color</th><th>What it permits</th><th>Typical use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Blocked</strong><br>Red</td><td>No authenticated integration operations. Separate anonymous help remains available.</td><td>Disable a connection or leave the main MCP link off.</td></tr>
+        <tr><td><strong>Write</strong><br>Amber</td><td>Supported organizing commands and their necessary results, including managed-event links and completed encounter exports.</td><td>Create a draft campaign or organize an event from information you supply.</td></tr>
+        <tr><td><strong>Read</strong><br>Blue</td><td>Write plus permitted queries: lists, details, messages, notifications, ratings and domain history.</td><td>Summaries and assistance that need existing application information.</td></tr>
+        <tr><td><strong>Full</strong><br>Green</td><td>Read and Write plus authenticated MCP Events when the AI client supports them.</td><td>Monitor an owned resource and respond to a supported change.</td></tr>
+      </tbody>
+    </table>
+    <aside class="callout warning"><strong>Read makes more information available</strong>Read and Full let the connected assistant retrieve information the profile may access. This can include conversation content and ratings. Select the pack with that data access in mind. Full does not grant human-decision or administrative write operations.</aside>
+    <h3>Main MCP limit and individual clients</h3>
+    <p class="keep-together">The main MCP pack limits all MCP clients for the selected profile. Each client also has its own pack. The effective permission is the lower of the two. A regular API key uses its own saved client pack; the main MCP switch is not a global API switch.</p>
+    <table>
+      <thead><tr><th>Main MCP</th><th>MCP client</th><th>Effective result</th></tr></thead>
+      <tbody>
+        <tr><td>Blocked</td><td>Full</td><td>Blocked — generating or enabling a client cannot open the main gate.</td></tr>
+        <tr><td>Full</td><td>Write</td><td>Write — no application query pack or Events.</td></tr>
+        <tr><td>Read</td><td>Full</td><td>Read — queries available, Events unavailable.</td></tr>
+        <tr><td>Full</td><td>Full</td><td>Full — supported tools and eligible Events.</td></tr>
+      </tbody>
+    </table>
+    <h3>Confirm the selector, then save the parent</h3>
+    <p class="keep-together">Choose a pack and press the permission popup’s <strong>tick</strong>. This updates the parent draft and button color. Press the <strong>parent settings tick</strong> to persist all access changes together. Closing the selector with X discards its unconfirmed change; closing the parent without saving does not apply the staged packs.</p>
+    <p class="keep-together">For an administrator or operator integration, role rules further restrict these packs to the statistics described in section 9.</p>
+  </section>
+
+  <section id="generate" aria-labelledby="generate-title">
+    <h2 id="generate-title">4. Generate and Manage Clients</h2>
+    <table>
+      <caption>Where a client comes from and how it is saved</caption>
+      <thead><tr><th>Client</th><th>Creation</th><th>What you see</th><th>Initial access</th></tr></thead>
+      <tbody>
+        <tr><td>Remote OAuth permission</td><td>Start connection in the AI client, sign in, approve the profile.</td><td>A connected application under OAuth permissions, with its details and revoke action.</td><td>Write; capped by main MCP.</td></tr>
+        <tr><td>Manual MCP client</td><td>Open MCP Advanced → Generate key.</td><td>Client ID, one-time secret, expiry, permission button and revoke action.</td><td>Write; capped by main MCP.</td></tr>
+        <tr><td>API client key</td><td>Use Generate key in the API client-key section.</td><td>One-time token, masked prefix later, expiry and connection status.</td><td>Write; controlled by its own pack.</td></tr>
+      </tbody>
+    </table>
+    <p class="keep-together">Generation creates a credential immediately. Access-pack editing is a separate staged settings change. A new key does not change the main MCP switch. The active-client counter shows remaining capacity; the backend allows up to three active keys in each relevant scope. Automatic and manual MCP connections share the MCP scope.</p>
+    <div class="procedure">
+      <h3>Manual MCP client, when explicitly required</h3>
+      <ol>
+        <li>Open <strong>MCP Advanced</strong> from AI / MCP connections.</li>
+        <li>Press <strong>Generate key</strong>. The new row appears directly; no extra name/callback form is required.</li>
+        <li>Copy the client ID and secret into the external client’s OAuth credential fields. The complete secret is shown only at creation.</li>
+        <li>Check the callback requirements with your installation operator. The client must return to an exact callback already allowed by this deployment.</li>
+        <li>Set the row’s pack and the main MCP pack, then save the parent settings. Complete sign-in and profile approval in the external client.</li>
+      </ol>
+    </div>
+    <h3>API keys for local software</h3>
+    <p class="keep-together">Copy a newly generated API token into the software’s credential configuration. The external API client supplies a stable UUID of its own. The first successful connection binds the key to that client ID; a different UUID cannot reuse it. Retain the same UUID when restarting or upgrading that client.</p>
+    <p class="keep-together">The prefix shown after the one-time reveal is an identifier, not a usable token. If you lose a secret, revoke the old credential and generate a replacement. Do not paste tokens, OAuth codes or secrets into a chat prompt.</p>
+    <p class="keep-together">MCP connections and manually generated MCP credentials use a 90-day lifetime in this revision. Always check the expiry shown in the row. Revocation and expiry stop access even if a copy of the credential remains in the AI client.</p>
+  </section>
+
+  <section id="chatgpt" aria-labelledby="chatgpt-title">
+    <h2 id="chatgpt-title">5. Connect ChatGPT</h2>
+    <p class="keep-together">Prepare MyScoutee first: choose the issuing profile, enable the main MCP pack, save, and copy its complete HTTPS MCP URL.</p>
+    <div class="procedure">
+      <h3>Add the custom connection</h3>
+      <ol>
+        <li>Open <a href="https://chatgpt.com/plugins">ChatGPT Plugins</a>. Use <strong>+</strong> → <strong>Add custom MCP server</strong>.</li>
+        <li>Enter a recognizable name and the copied MCP URL. Select the OAuth option offered for the server.</li>
+        <li>Review the connection notice, acknowledge it if you agree, then choose <strong>Create as a plugin</strong>.</li>
+        <li>Complete the MyScoutee sign-in and approval when prompted. Review the displayed profile/group.</li>
+        <li>Install the plugin. In a new chat, use <strong>@</strong> to select it and ask for available MyScoutee capabilities.</li>
+      </ol>
+    </div>
+    <p class="source-note">ChatGPT menu sequence: <a href="https://developers.openai.com/plugins/build/app-quickstart#connect-your-mcp-server-in-chatgpt">official connection quickstart</a>, checked 7 October 2026. Availability is controlled by the account and workspace.</p>
+    <h3>Finish the MyScoutee permission setup</h3>
+    <p class="keep-together">Open OAuth permissions in MyScoutee and inspect the newly authorized client. For summaries and general queries, set both main and client to at least Read. For MCP Events, set both to Full. Save the settings; then refresh the client’s tool discovery or reconnect if it still shows the old set.</p>
+    <p class="keep-together">Automatic OAuth registration needs no manually generated secret. If this host version requires a predefined OAuth client instead, use section 4 and have the installation operator configure its exact callback. Do not substitute an API token in an OAuth field.</p>
+    <h3>If the option is missing</h3>
+    <p class="keep-together">Check the current official setup page and your workspace’s plugin controls. A MyScoutee Full pack cannot unlock an unavailable feature in ChatGPT. This guide does not promise a public MyScoutee marketplace listing or a particular subscription plan.</p>
+    <aside class="callout note"><strong>Connection success is only the first check</strong>Verify the issuing profile and a permitted read or organizing operation. A plugin showing anonymous help does not prove that personal authentication succeeded.</aside>
+  </section>
+
+  <section id="claude" aria-labelledby="claude-title">
+    <h2 id="claude-title">6. Connect Claude</h2>
+    <p class="keep-together">Use the same deployed HTTPS MCP URL and profile preparation as for ChatGPT. MyScoutee advertises automatic OAuth client registration; its current server does not advertise client-ID metadata documents.</p>
+    <div class="procedure">
+      <h3>Add a remote custom connector</h3>
+      <ol>
+        <li>Open <strong>Customize → Connectors → + Add → Add custom connector</strong>.</li>
+        <li>Enter a name and the copied MCP URL, then continue through the detected authentication settings.</li>
+        <li>Where OAuth identity choices appear, select <strong>Register automatically</strong> for this MyScoutee implementation.</li>
+        <li>Choose sign-in, complete MyScoutee authentication and approve the correct profile.</li>
+        <li>Enable the connector from the chat’s <strong>+</strong> connector controls before using it.</li>
+      </ol>
+    </div>
+    <p class="keep-together">Claude’s remote connectors are cloud connections, including when used from desktop: localhost or a private network address is insufficient. Current documentation includes custom connectors on Free, Pro, Max, Team and Enterprise; Free allows one. Managed organizations may require an owner to add the connector, followed by each member’s own authorization.</p>
+    <p class="source-note"><a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp">Claude: custom connectors using remote MCP</a>, checked 7 October 2026.</p>
+    <h3>After approval</h3>
+    <p class="keep-together">Check the OAuth permission row in MyScoutee. It starts with Write access. Raise it to Read for application summaries and save; the main MCP pack must allow that level too. Confirm the issuing profile before asking Claude to change records.</p>
+    <p class="keep-together">If your environment requires predefined OAuth credentials, select its own-client option and use a generated MCP client from section 4. Callback configuration belongs to the installation operator. Repeatedly generating credentials will not repair an unregistered callback.</p>
+    <aside class="callout warning"><strong>Tools, scheduling and Events are separate capabilities</strong>A working Claude connector establishes tool access. It does not establish support for MyScoutee’s MCP 2.0 Events extension. Use scheduled queries where appropriate; enable an Events workflow only when the host actually discovers and supports it.</aside>
+  </section>
+
+  <section id="first-use" aria-labelledby="first-use-title">
+    <h2 id="first-use-title">7. Check Your First Connection</h2>
+    <p class="keep-together">Start with a small, observable request. The assistant should identify its current scope and available tools rather than guess which profile it represents.</p>
+    <div class="quick-card"><h3>First prompt</h3><p class="keep-together">“Check my MyScoutee connection. Tell me the connected profile and workspace, the effective access pack, and the operations available to this connection. Do not change anything.”</p></div>
+    <p class="keep-together">The backend’s capability response identifies the issuing profile/group and available operation IDs. The MCP adapter uses that response for discovery and checks it again on personal calls. A tool list may shrink when access is reduced, membership changes or a role is removed.</p>
+    <table>
+      <thead><tr><th>Check</th><th>Expected observation</th><th>If different</th></tr></thead>
+      <tbody>
+        <tr><td>Profile / group</td><td>The same scope you approved in MyScoutee.</td><td>Disconnect the wrong connection and authorize the intended profile. A prompt cannot switch its owner.</td></tr>
+        <tr><td>Help</td><td>Current English or Hungarian help can be read.</td><td>Check installation availability; help is fetched from the live active revision.</td></tr>
+        <tr><td>Member query</td><td>With Read/Full, list a small page of records visible to that profile.</td><td>Check both saved packs, workspace type and ordinary app visibility.</td></tr>
+        <tr><td>Role query</td><td>With a qualifying admin/operator profile, only the role report operations appear.</td><td>Check the current server-side role and base-profile identity.</td></tr>
+        <tr><td>Events</td><td>With Full OAuth and host support, eligible event definitions are discovered.</td><td>See section 10; static-key stdio has no Events.</td></tr>
+      </tbody>
+    </table>
+    <h3>Use the live help</h3>
+    <p class="keep-together">Ask “Read the current MyScoutee help for campaigns in Hungarian” or “Find the help topic for community cases.” The help tools list, search and read the active revision. They do not use a separate embedded copy of the manual. Operator changes to the active help therefore remain available to the assistant.</p>
+    <h3>Read the result precisely</h3>
+    <p class="keep-together">A successful discovery does not mean every record is accessible. Normal ownership, visibility, version and lifecycle rules still apply to each operation. An empty list can be a valid result. A permission or connection error is not evidence that no records exist.</p>
+  </section>
+
+  <section id="capabilities" class="page-break" aria-labelledby="capabilities-title">
+    <h2 id="capabilities-title">8. What You Can Do</h2>
+    <p class="keep-together">The adapter supports 40 API operations. Your connection receives the subset allowed by its profile, group, role and pack. The following table groups them by practical use; it is not a grant to access every record.</p>
+    <table>
+      <thead><tr><th>Area</th><th>Supported organizing work — Write and above</th><th>Queries added by Read</th></tr></thead>
+      <tbody>
+        <tr><td>Events</td><td>Create event batches; retrieve their managed organizer links and completed encounter exports; create participant invitation links.</td><td>List visible, hosted, attending, invited or trashed events and read accessible details.</td></tr>
+        <tr><td>Assets</td><td>Create asset batches with a permitted base-profile connection.</td><td>List and read assets visible to that base profile.</td></tr>
+        <tr><td>Work campaigns</td><td>Create drafts; update owned campaigns; publish, unpublish, trash or restore under existing rules.</td><td>List own/discoverable campaigns, read details and accessible campaign interaction history.</td></tr>
+        <tr><td>Groups</td><td>Create claimable participant links for groups the issuing account administers.</td><td>List accessible groups and read permitted group details.</td></tr>
+        <tr><td>Community cases</td><td>Create/update permitted cases; manage supported board tasks, invitations and lifecycle operations.</td><td>List cases and read details, including only offers and participants visible to the actor.</td></tr>
+        <tr><td>Community announcements</td><td>Authorized administrators can create/update announcements or vote definitions and manage their lifecycle.</td><td>Read announcements, documents, eligibility and permitted results.</td></tr>
+        <tr><td>Community recurring tasks</td><td>Create/update permitted task definitions; pause, resume, trash or restore.</td><td>List accessible recurring tasks.</td></tr>
+        <tr><td>Service offerings</td><td>Publish, unpublish, trash or restore an owned offering. Creating an offering is not an MCP operation in this revision.</td><td>List services and read accessible descriptions, schedules and pricing.</td></tr>
+        <tr><td>Conversations / notifications / ratings</td><td>No message-send, personal rating-write or ballot-write operation.</td><td>Read accessible chats, paged messages, notifications and ratings.</td></tr>
+      </tbody>
+    </table>
+    <h3>Decisions that remain with the person</h3>
+    <p class="keep-together">Personal interest scores, granular ratings, ballot choices, personal participation decisions, endorsements and offer decisions stay in the application. These actions depend on the person seeing the relevant context and making their own decision. Full access does not unlock them for an assistant.</p>
+    <p class="keep-together">For ratings queries, omitting a campaign filter returns the aggregate view. Aggregation uses averages, so values such as 8.5 are possible. Reading an aggregate does not authorize writing a rating.</p>
+    <h3>Working with existing records</h3>
+    <p class="keep-together">Updates require the current record version. If another person changes the record, read it again and review the proposed change before retrying. Creating a batch uses stable caller-owned IDs so a retry can return the existing result without duplicating the resource. Do not invent new IDs just because the first response was lost.</p>
+    <p class="keep-together">Multipart image/file uploads and developer webhook configuration are not exposed as MCP tools. Readable records may include attachment metadata, but this does not imply a general document-upload tool. Use the application for the supported attachment workflow.</p>
+  </section>
+
+  <section id="roles" aria-labelledby="roles-title">
+    <h2 id="roles-title">9. Administrator and Operator Access</h2>
+    <p class="keep-together">Installation administrator and operator profiles have a separate read-only integration scope. The server checks the role currently held by the base profile; a role label supplied in chat cannot grant it. Community-group administration remains subject to the ordinary community permissions in section 8.</p>
+    <table>
+      <thead><tr><th>Current role</th><th>Read / Full query</th><th>Full Event</th></tr></thead>
+      <tbody>
+        <tr><td>Installation administrator</td><td><code>adminOverview</code>: current administrator statistics and attention counts.</td><td><code>admin.attention</code>: node-member-joined, report-submitted or feedback-submitted attention signal.</td></tr>
+        <tr><td>Operator</td><td><code>operatorMeasurements</code> and <code>operatorRevenueReports</code>: paged persisted activity and revenue reports.</td><td><code>operator.attention</code>: node-member-joined or release-available attention signal.</td></tr>
+      </tbody>
+    </table>
+    <p class="keep-together">Read is the minimum role-query pack. Full adds the matching role Event; it does not add member queries or write commands to the role connection. Write alone does not expose these role statistics.</p>
+    <p class="keep-together">Report pages default to 25 records and are bounded to 1–100. Ask for a period and a page size rather than an unbounded export. These reads use already persisted reports: they do not trigger synchronization, retry a payment, perform a payout or change configuration.</p>
+    <div class="quick-card"><h3>Operator prompt</h3><p class="keep-together">“Read the first page of available revenue reports, up to 25 records. Summarize the covered periods and totals, and identify missing information. Do not synchronize or change anything.”</p></div>
+    <div class="quick-card"><h3>Administrator prompt</h3><p class="keep-together">“Read the current administrator overview and summarize which attention counts need review. Leave moderation and configuration decisions to me.”</p></div>
+    <p class="keep-together">Role Events carry a bounded signal rather than private member content. The assistant can then query the authorized statistics. It cannot use the signal to bypass role checks or perform moderation. Delivery stops when the current role or required permission is lost.</p>
+    <aside class="callout note"><strong>Existing administrator desktop API</strong>The pre-existing admin-key overview endpoint remains supported and can be blocked. Its compatibility behavior is separate from the new Read/Full role-query contract. See the administrator client’s documentation for that client.</aside>
+  </section>
+
+  <section id="events" aria-labelledby="events-title">
+    <h2 id="events-title">10. Follow Changes with MCP Events</h2>
+    <p class="keep-together">MCP Events lets the host subscribe to a supported change. The server sends a compact notification when it occurs. This differs from asking a scheduled task to reread a list every morning, and from a MyScoutee event that people attend.</p>
+    <p class="keep-together">For MyScoutee, Events requires remote OAuth, <strong>Full on both main MCP and the client</strong>, a supported host, and access to the selected resource. Anonymous help and static API-key stdio do not advertise Events.</p>
+    <table>
+      <caption>Current event catalog</caption>
+      <thead><tr><th>Event</th><th>Who can use it</th><th>Filter / meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>event.changed</code></td><td>Event organizer</td><td>Required <code>resourceId</code>: managed event external ID. Compact change/status summary.</td></tr>
+        <tr><td><code>event.encounters</code></td><td>Event organizer</td><td>Managed event external ID. Completed encounter revision/total; read the paged encounter tool for results.</td></tr>
+        <tr><td><code>asset.changed</code></td><td>Owning base profile</td><td>Managed asset external ID. Compact change/status summary.</td></tr>
+        <tr><td><code>admin.attention</code></td><td>Current installation administrator</td><td><code>resourceId: node</code>. The attention kinds in section 9.</td></tr>
+        <tr><td><code>operator.attention</code></td><td>Current operator</td><td><code>resourceId: node</code>. The attention kinds in section 9.</td></tr>
+      </tbody>
+    </table>
+    <h3>Use Events in ChatGPT</h3>
+    <p class="keep-together">Current OpenAI documentation supports Events in a Work chat on the web, or a desktop Work chat with Cloud selected. Refresh the plugin’s discovery after a capability change. Describe what to watch and what the assistant should do when a matching update arrives. The host supplies the callback and manages subscription refresh; you do not paste a webhook secret into the conversation. <a href="https://developers.openai.com/plugins/build/mcp-events">Official MCP Events guide</a>.</p>
+    <div class="quick-card"><h3>Monitoring prompt</h3><p class="keep-together">“Subscribe to changes for my managed event [external ID]. When it changes, summarize the reported change in this chat. Do not modify the event or send invitations. Stop monitoring when I ask.”</p></div>
+    <h3>Lifetime, stopping and missed changes</h3>
+    <p class="keep-together">MyScoutee subscriptions last at most one day per grant and need host refresh to continue. Ask the host to stop monitoring to unsubscribe. To stop Events from MyScoutee while retaining queries, save Read on the main link or relevant client. To stop the connection entirely, use Blocked or revoke its authorization.</p>
+    <p class="keep-together">Delivery uses a bounded queue and retries; duplicates or delays are possible. There is no replay history. After expiry, an interruption or a reported gap, request the current resource state instead of assuming every change was delivered. The host’s acknowledgement of a notification is not proof that the requested follow-up completed.</p>
+    <p class="keep-together">Changing access, revoking the connection, losing membership, ownership or a required role prevents further eligible delivery. Existing chats and information already retrieved by the host are not erased by revocation.</p>
+    <p class="keep-together">Ordinary connector support is not evidence of MCP Events support in Claude. Its scheduled-query workflow is documented separately below. Live host acceptance still needs the deployment’s pending QA.</p>
+  </section>
+
+  <section id="schedules" aria-labelledby="schedules-title">
+    <h2 id="schedules-title">11. Scheduled Tasks: Where and How</h2>
+    <table>
+      <caption>Three different features</caption>
+      <thead><tr><th>Feature</th><th>What starts it</th><th>Where to manage it</th></tr></thead>
+      <tbody>
+        <tr><td>AI scheduled task</td><td>A time or recurrence you choose; it calls available connector tools.</td><td>The AI provider’s Scheduled area, subject to account/workspace support.</td></tr>
+        <tr><td>MCP Events subscription</td><td>A supported change to an authorized MyScoutee resource.</td><td>The subscribing host/chat; MyScoutee access packs and revocation also control delivery.</td></tr>
+        <tr><td>MyScoutee community recurring task</td><td>The application’s saved recurring task definition and lifecycle.</td><td>The community task interface, or permitted task tools. It is an application record, not a ChatGPT/Claude automation.</td></tr>
+      </tbody>
+    </table>
+    <h3>ChatGPT: Scheduled</h3>
+    <p class="keep-together">When enabled for your workspace, ask ChatGPT to schedule a prompt and specify its cadence and destination. Open <strong>Scheduled</strong> on the web or desktop to review tasks and recent runs. A task can return to the same chat or run independently. Web tasks use connected tools and uploaded context; tasks requiring local projects need the computer and desktop app running. Plugins can be used by supported Work scheduled tasks. Test the prompt in a normal chat first and inspect the initial runs. <a href="https://learn.chatgpt.com/docs/automations">ChatGPT scheduled-task documentation</a>.</p>
+    <h3>Claude: Scheduled / Cowork</h3>
+    <p class="keep-together">Current scheduling is available on Pro, Max, Team and Enterprise. Open <strong>Scheduled</strong> in the sidebar to review runs, edit cadence or instructions, pause, resume or delete a task. In the newer experience, request a schedule in chat and review it before choosing Schedule. Cowork also offers Scheduled → New task. Cloud tasks can run with the app closed; local tasks need the device. Some older Pro/Max tasks created before 6 October 2026 remain local during the rollout. Verify the task’s own execution environment. <a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork">Claude scheduling documentation</a>.</p>
+    <h3>Choose permission by the work performed</h3>
+    <p class="keep-together">A recurring summary of campaign or case data needs Read, not Full merely because it runs on a schedule. Full is needed for MyScoutee Events. A timed organizing command still needs its normal Write permission and ownership. Host scheduling availability and MyScoutee permissions are independent checks.</p>
+    <div class="quick-card"><h3>Recurring summary prompt</h3><p class="keep-together">“Every weekday at 09:00 Europe/Bratislava, summarize open cases available to this MyScoutee connection. Include the time checked and record IDs. Report connection errors explicitly. Return here; do not change cases or contact anyone.”</p></div>
+    <p class="keep-together">Put the intended profile, scope, timezone and stop condition in the task. Removing an MCP connection may leave an AI schedule present but failing. Pause or delete the schedule in the provider as well when retiring the workflow.</p>
+  </section>
+
+  <section id="examples" aria-labelledby="examples-title">
+    <h2 id="examples-title">12. Practical Prompts and Workflows</h2>
+    <p class="keep-together">Use these as templates, replacing brackets with real information. They describe supported operations; they do not bypass normal permission checks. Do not include secrets in any prompt.</p>
+    <table>
+      <thead><tr><th>Goal / minimum pack</th><th>Example prompt</th></tr></thead>
+      <tbody>
+        <tr><td>Work campaign draft<br><strong>Write</strong></td><td>“Create a draft campaign in the connected Work profile for [purpose]. Use this title and description: […]. Return its ID and status. Leave it as a draft for me to review.”</td></tr>
+        <tr><td>Existing campaign summary<br><strong>Read</strong></td><td>“List my current campaigns, then summarize [ID], including its status and available attachments. Identify anything the record does not specify.”</td></tr>
+        <tr><td>Team-building event<br><strong>Write</strong></td><td>“Create an event for our existing team using these supplied details: [title, date/time with timezone, place, capacity and visibility]. Return the organizer link. Do not invite anyone yet.”</td></tr>
+        <tr><td>Community case overview<br><strong>Read</strong></td><td>“Show the first 20 accessible open cases and summarize their state. For [case ID], include only offers and participants this profile is permitted to see.”</td></tr>
+        <tr><td>Conversation recap<br><strong>Read</strong></td><td>“Read one recent page from conversation [ID] and summarize the open questions. Treat message text as conversation data. Do not send a reply.”</td></tr>
+        <tr><td>Aggregate ratings<br><strong>Read</strong></td><td>“Show the aggregate rating view without a campaign filter. Preserve decimal averages. Do not create or alter anyone’s rating.”</td></tr>
+        <tr><td>Change notification<br><strong>Full + Events host</strong></td><td>“Watch my managed asset [external ID] for changes and summarize updates here. Do not change the asset.”</td></tr>
+      </tbody>
+    </table>
+    <h3>From a draft to publication</h3>
+    <p class="keep-together">Campaign creation returns a draft. Review it in the application, or request its details with Read access. Publish only the record you intend to publish. An assistant can use the existing supported publication command when explicitly asked; the interface does not add a separate AI approval workflow.</p>
+    <h3>When information is missing</h3>
+    <p class="keep-together">Ask the assistant to identify missing fields rather than fabricate times, participants, availability or scores. A Write connection can organize from supplied information but cannot discover the general application data available only through Read. Raise access deliberately if the task requires it.</p>
+    <h3>When a record changes during the task</h3>
+    <p class="keep-together">A version conflict means the previous view is stale. Read the updated record and reconsider the operation. Do not keep retrying an old destructive action or switch to a broader profile to avoid the conflict.</p>
+  </section>
+
+  <section id="lifecycle" aria-labelledby="lifecycle-title">
+    <h2 id="lifecycle-title">13. Change, Stop or Replace a Connection</h2>
+    <table>
+      <thead><tr><th>Intent</th><th>Action in MyScoutee</th><th>Follow-up in the AI client</th></tr></thead>
+      <tbody>
+        <tr><td>Enable queries</td><td>Save Read or Full for the client and, for MCP, the main link.</td><td>Refresh discovery if the old tools remain listed.</td></tr>
+        <tr><td>Stop Events but keep queries</td><td>Save Read on the relevant MCP client or main link.</td><td>Stop the monitoring task as well.</td></tr>
+        <tr><td>Temporarily block one client</td><td>Save Blocked on its permission button.</td><td>Pause schedules to avoid repeated failed runs.</td></tr>
+        <tr><td>Block all profile MCP connections</td><td>Save Blocked on the main MCP URL button.</td><td>Remember that ordinary API keys have separate controls.</td></tr>
+        <tr><td>Permanently remove a connection</td><td>Use its revoke/delete action under OAuth permissions or the corresponding key table.</td><td>Remove the connector and schedules no longer needed.</td></tr>
+        <tr><td>Change workspace</td><td>Select the intended profile and authorize a new scoped connection.</td><td>Select the correct connector for the task; retire the old one if no longer needed.</td></tr>
+        <tr><td>Replace an expired/lost secret</td><td>Revoke the old key and generate a replacement; copy it once.</td><td>Update stored credentials, preserving the intended client identity rules.</td></tr>
+      </tbody>
+    </table>
+    <h3>Check what was actually saved</h3>
+    <p class="keep-together">The permission selector’s tick applies to the draft. The parent tick persists it. Reopen the settings when checking a saved change. Generation and revocation act on credentials separately; closing the parent does not undo a key that was generated or revoked.</p>
+    <h3>Existing data in the AI provider</h3>
+    <p class="keep-together">Blocking or revoking stops future authorized access. It does not delete a conversation, summary, scheduled-task output or file already held by the AI provider. Use that provider’s own controls to manage retained material.</p>
+    <h3>Shared devices and organizations</h3>
+    <p class="keep-together">Check which MyScoutee session is active on the consent screen, particularly on a shared device. Organization-level connector installation does not authorize every member as the installer. Each user must connect their own account; do not distribute one person’s key as a team credential.</p>
+  </section>
+
+  <section id="troubleshooting" aria-labelledby="troubleshooting-title">
+    <h2 id="troubleshooting-title">14. Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Symptom</th><th>Check and remedy</th></tr></thead>
+      <tbody>
+        <tr><td>Only help tools appear</td><td>Check that the URL is the copied private endpoint, OAuth completed, and both saved packs allow access. Private discovery also fails closed when the API is unavailable.</td></tr>
+        <tr><td>Connection exists but all private calls fail</td><td>Main MCP starts Blocked. Check the main and client packs, parent save, expiry and revocation. A generated client alone does not enable MCP.</td></tr>
+        <tr><td>Writes work, list/detail queries do not</td><td>The effective pack may be Write. Application queries require Read or Full; a Full main setting does not raise a Write client.</td></tr>
+        <tr><td>Wrong group or missing domain tools</td><td>Read the connection identity. Work and Community tools follow the issuing workspace. Create a correctly scoped connection; changing the app’s group does not retarget the old one.</td></tr>
+        <tr><td>Claude cannot reach localhost</td><td>A cloud connector needs a publicly reachable HTTPS deployment. Use a local stdio client only when your client supports that separate mode.</td></tr>
+        <tr><td>OAuth callback rejected</td><td>Prefer automatic registration. For predefined clients, ask the operator to verify the exact configured callback. Generating another key does not add a callback.</td></tr>
+        <tr><td>OAuth identity registration fails</td><td>Use automatic registration where offered. This MyScoutee revision does not advertise a published client-ID metadata document flow.</td></tr>
+        <tr><td>Key no longer copies or authenticates</td><td>A masked prefix is not the secret. Replace a lost/expired key; for API clients, also check the stable UUID to which the key was bound.</td></tr>
+        <tr><td>No capacity to generate a key</td><td>Review active entries and revoke an unused one. Automatic and manual MCP clients share their scope’s three-key limit.</td></tr>
+        <tr><td>Changes to permissions have no effect</td><td>Confirm the selector tick and parent settings tick. Check which connection the AI host is using, then refresh discovery.</td></tr>
+        <tr><td>No Events appear</td><td>Both packs must be Full, the connection must use OAuth, and the host must support Events. Verify eligible owned resources or the current admin/operator role.</td></tr>
+        <tr><td>Events stop arriving</td><td>Check expiry/refresh, access, ownership and host task state. Ask for the current resource snapshot after interruption; missed events cannot be replayed.</td></tr>
+        <tr><td>Role report query denied</td><td>Check current server-side role, base profile, Read/Full pack and ordinary report access. A community administrator is not automatically an installation administrator.</td></tr>
+        <tr><td>Recurring summary does not run</td><td>Open the provider’s Scheduled area and inspect its run result, connector availability, execution environment and account controls.</td></tr>
+        <tr><td>Version conflict on update</td><td>Read the current record/version and review the intended update. Do not force the old payload.</td></tr>
+      </tbody>
+    </table>
+    <h3>Information to give support</h3>
+    <p class="keep-together">Provide the installation hostname, approximate time and timezone, host/client name, operation name, effective pack and a redacted error. Include whether public help or private calls failed. Never include tokens, secrets, OAuth codes, callback signing secrets or unredacted private messages.</p>
+  </section>
+
+  <section id="local" aria-labelledby="local-title">
+    <h2 id="local-title">15. Local Clients and Technical Reference</h2>
+    <p class="keep-together">This section is for clients that launch an MCP process locally. It is not required for the normal remote ChatGPT/Claude connection. Use the released or installation-provided adapter command in your local MCP client’s configuration.</p>
+    <table>
+      <thead><tr><th>Local process setting</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>MYSCOUTEE_API_BASE_URL</code></td><td>HTTPS API root ending in <code>/api</code>, not the full integration prefix.</td></tr>
+        <tr><td><code>MYSCOUTEE_API_TOKEN</code></td><td>The profile’s ordinary API integration token, stored as a credential.</td></tr>
+        <tr><td><code>MYSCOUTEE_CLIENT_ID</code></td><td>That API client’s stable UUID. Keep it unchanged after first binding.</td></tr>
+      </tbody>
+    </table>
+    <p class="keep-together">Without a key the local adapter provides help only. Supplying only part of the identity fails startup. A static-key stdio connection can use its authorized API operations but cannot subscribe to MCP Events. Do not put one user’s private key into a shared public HTTP MCP process.</p>
+    <h3>OAuth and transport summary</h3>
+    <table>
+      <thead><tr><th>Item</th><th>Current implementation</th></tr></thead>
+      <tbody>
+        <tr><td>Personal remote path</td><td><code>/mcp/private</code>, using deployment-specific HTTPS origin.</td></tr>
+        <tr><td>Authorization</td><td>Authorization code with S256 PKCE, resource-bound access tokens and rotating refresh tokens; each user consents to their own profile.</td></tr>
+        <tr><td>Registration</td><td>Dynamic client registration; predefined clients also supported. CIMD is not advertised.</td></tr>
+        <tr><td>Revocation</td><td>Use the app’s permission/key revoke actions. A separate OAuth revocation protocol endpoint is not advertised.</td></tr>
+        <tr><td>Events methods</td><td><code>events/list</code>, <code>events/subscribe</code>, <code>events/unsubscribe</code>; MCP 2.0 version <code>2026-07-28</code>.</td></tr>
+        <tr><td>Events receiver</td><td>The host supplies a public HTTPS callback and handles challenge/signature verification. A normal user need not run a receiver.</td></tr>
+        <tr><td>Different API callback</td><td>The Integration API Guide’s <code>/watch</code> remains a separate developer callback protocol. It is not the AI host’s Events setup.</td></tr>
+      </tbody>
+    </table>
+    <p class="keep-together">Subscriptions are bounded to 100 per profile. Delivery uses the existing queue with finite retries, concurrency limits and per-process throttling. These controls protect the server; they do not guarantee instant or lossless notification. Installation operators manage limits and deployment health through the existing operational configuration.</p>
+    <p class="keep-together">Creating a plugin package or registering a custom connection does not publish a public marketplace listing. OAuth reachability, provider acceptance and final runtime QA must be verified for the actual deployed installation.</p>
+  </section>
+
+  <section id="references" aria-labelledby="references-title">
+    <h2 id="references-title">16. Glossary and References</h2>
+    <table>
+      <thead><tr><th>Term</th><th>Meaning in this guide</th></tr></thead>
+      <tbody>
+        <tr><td>MCP</td><td>The protocol through which an AI client discovers and uses MyScoutee tools and supported Events.</td></tr>
+        <tr><td>Host / client</td><td>The application connecting to MyScoutee, such as ChatGPT or Claude.</td></tr>
+        <tr><td>OAuth permission</td><td>Your authorization for a particular external client to use the selected profile.</td></tr>
+        <tr><td>Client ID / secret</td><td>An OAuth client’s identifier and, for predefined clients, its credential. These differ from an ordinary API token.</td></tr>
+        <tr><td>Effective pack</td><td>The permission left after the relevant main/client limits and role rules are applied.</td></tr>
+        <tr><td>Resource ID</td><td>The identifier required by an operation. Events for managed assets/events use their integration <code>externalId</code>; role Events use <code>node</code>.</td></tr>
+        <tr><td>Discovery</td><td>Reading the current identity and capabilities. It grants no additional access.</td></tr>
+        <tr><td>Subscription</td><td>A host request to receive a specified supported change until stopped or expired.</td></tr>
+      </tbody>
+    </table>
+    <h3>Official provider references</h3>
+    <ol>
+      <li><a href="https://developers.openai.com/plugins/build/app-quickstart#connect-your-mcp-server-in-chatgpt">OpenAI — Connect an MCP server in ChatGPT</a></li>
+      <li><a href="https://developers.openai.com/plugins/build/mcp-events">OpenAI — MCP Events: availability, subscription lifecycle and host behavior</a></li>
+      <li><a href="https://learn.chatgpt.com/docs/automations">ChatGPT — Scheduled tasks and where to manage them</a></li>
+      <li><a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp">Claude — Custom connectors using remote MCP</a></li>
+      <li><a href="https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork">Claude — Recurring tasks and scheduling environments</a></li>
+    </ol>
+    <h3>MyScoutee references</h3>
+    <ul>
+      <li><a href="MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf">MSC-API-001 — Integration API Guide</a></li>
+      <li><a href="https://github.com/fssrepository/myscoutee-mcp">MCP adapter, deployment notes and plugin packaging</a></li>
+      <li><a href="https://github.com/fssrepository/myscoutee-client">Java client, canonical OpenAPI contract and CLI</a></li>
+      <li>The application’s live Help and Explanations for the currently deployed interface, available in English and Hungarian.</li>
+    </ul>
+  </section>
+</article>
+</body>
+</html>

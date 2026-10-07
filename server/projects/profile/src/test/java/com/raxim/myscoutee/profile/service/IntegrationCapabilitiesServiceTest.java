@@ -17,17 +17,17 @@ import com.raxim.myscoutee.profile.security.AccessControlService;
 import com.raxim.myscoutee.profile.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
 class IntegrationCapabilitiesServiceTest {
-    @Test void fullPackAddsReadsButCannotChangeProfileDomainOrBypassIdentity() {
+    @Test void readPackAddsReadsButCannotChangeProfileDomainOrBypassIdentity() {
         var profile = new Users(); profile.setUserId("base");
         when(groups.actor("base")).thenReturn(profile);
         when(groups.administeredGroups(profile)).thenReturn(List.of());
         var auth = authentication(profile);
-        assertThatThrownBy(() -> service.requireFull(auth, null)).isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.requireRead(auth, null)).isInstanceOf(ResponseStatusException.class);
         auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
-                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.FULL));
+                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.READ));
         assertThat(service.describe(auth).operations()).contains("listEvents", "chatMessages", "listRatings")
                 .doesNotContain("listCampaigns", "listCases", "saveAnnouncement");
-        assertThatThrownBy(() -> service.requireFull(auth, "work")).isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.requireRead(auth, "work")).isInstanceOf(ResponseStatusException.class);
         auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
                 com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.BLOCKED));
         assertThatThrownBy(() -> service.describe(auth)).isInstanceOf(ResponseStatusException.class);
@@ -35,7 +35,8 @@ class IntegrationCapabilitiesServiceTest {
     private final CommunityGroupsService groups = mock(CommunityGroupsService.class);
     private final CommunityGroupsRepository repository = mock(CommunityGroupsRepository.class);
     private final AccessControlService access = mock(AccessControlService.class);
-    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(groups, repository, access);
+    private final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
+    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(groups, repository, access, roles);
 
     private UsernamePasswordAuthenticationToken authentication(Users profile) {
         var auth = new UsernamePasswordAuthenticationToken(new FirebasePrincipal(profile.getUserId(), null, "INTEGRATION", profile), null, List.of());
@@ -90,4 +91,22 @@ class IntegrationCapabilitiesServiceTest {
         assertThatThrownBy(() -> service.describe(auth)).isInstanceOf(ResponseStatusException.class);
         verifyNoInteractions(groups, repository, access);
     }
+    @Test void roleDiscoveryAndExecutionRequireReadAndCurrentRoleWithoutWrites() {
+        var profile = new Users(); profile.setUserId("operator");
+        when(roles.privileged(profile)).thenReturn(true);
+        when(roles.operator(profile)).thenReturn(true);
+        var auth = authentication(profile);
+        assertThat(service.describe(auth).operations()).isEmpty();
+        assertThatThrownBy(() -> service.requireRoleRead(auth, "operator")).isInstanceOf(ResponseStatusException.class);
+        auth.setDetails(new AuthenticatedIntegrationClient("operator", "key", "client").withAccess(
+                com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.READ));
+        assertThat(service.describe(auth).operations()).containsExactly("operatorMeasurements", "operatorRevenueReports");
+        assertThat(service.requireRoleRead(auth, "operator")).isEqualTo("operator");
+        assertThatThrownBy(() -> service.requireWrite(auth, null)).isInstanceOf(ResponseStatusException.class);
+        assertThatThrownBy(() -> service.requireRoleRead(auth, "admin")).isInstanceOf(ResponseStatusException.class);
+        when(roles.operator(profile)).thenReturn(false);
+        assertThatThrownBy(() -> service.requireRoleRead(auth, "operator")).isInstanceOf(ResponseStatusException.class);
+        verifyNoInteractions(groups, repository, access);
+    }
+
 }

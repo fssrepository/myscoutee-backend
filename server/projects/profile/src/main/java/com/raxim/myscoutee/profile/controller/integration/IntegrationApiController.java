@@ -162,6 +162,6 @@ public class IntegrationApiController {
     }
 
     private String actorUserId(Authentication authentication) {
-        return accessControlService.resolveActorUserId(authentication);
+        return capabilities.requireWrite(authentication, null);
     }
 }

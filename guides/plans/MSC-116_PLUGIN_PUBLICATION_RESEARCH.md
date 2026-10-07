@@ -3,6 +3,12 @@
 Checked 2026-10-06. Research only; no submission, publication, new hosted site or
 subscription purchase. Plan availability must be checked again before launch.
 
+**Continuation, 2026-10-07:** publication preparation is now implemented under
+MSC-119 in the MCP repository. Start with `plugins/PUBLICATION_HANDOFF.md` there
+for current artifacts, verification and remaining steps. The user excluded
+embedded interfaces from this work; the section below is historical research,
+not an implementation task. Full QA remains deferred until master consolidation.
+
 ## ChatGPT directory
 
 OpenAI's submission flow requires an organization owner or Apps Management Write
@@ -66,6 +72,10 @@ also did not expose its body. Implementation follows the official Events and
 [OAuth documentation](https://developers.openai.com/plugins/build/auth).
 
 ## Higgsfield and hosting lifetime
+
+**Scope update, 2026-10-07:** the user excluded free-hosting and post-subscription
+hosting-lifetime investigation from further work. The findings below are retained
+as historical research and are not open tasks or publication blockers.
 
 Higgsfield Apps publishes web applications to a Higgsfield subdomain. Building
 uses the creator's credits; visitors use their own credits for generations. Apps

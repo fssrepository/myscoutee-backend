@@ -9,6 +9,7 @@ downloadable PDF releases of the English manuals and integration guide.
 | Administrator Manual | MSC-AM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf) |
 | User Manual | MSC-UM-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 | Integration API Guide | MSC-API-001 | 1.0.1 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
+| MCP User Guide | MSC-MCP-001 | 1.0.0 | [Download PDF](https://raw.githubusercontent.com/fssrepository/myscoutee-backend/master/guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf) |
 
 ## Regenerating the PDFs
 
@@ -20,10 +21,11 @@ and Google Chrome/Chromium or Playwright's bundled browser.
 node guides/manuals/build-manuals.mjs
 ```
 
-To regenerate only the integration guide:
+To regenerate only one integration guide:
 
 ```bash
 node guides/manuals/build-manuals.mjs MSC-API-001
+node guides/manuals/build-manuals.mjs MSC-MCP-001
 ```
 
 For a non-standard browser path:
@@ -48,6 +50,7 @@ pdfinfo guides/manuals/MyScoutee_Operations_Manual_v1.0.0_EN.pdf
 pdfinfo guides/manuals/MyScoutee_Administrator_Manual_v1.0.0_EN.pdf
 pdfinfo guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf
 pdfinfo guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf
+pdfinfo guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf
 ```
 
 The PDF sources document the current state of the user interface, backend,

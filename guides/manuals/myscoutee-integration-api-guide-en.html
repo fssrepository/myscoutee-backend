@@ -52,7 +52,8 @@
       <thead><tr><th scope="col">Version</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col">Change</th></tr></thead>
       <tbody><tr><td>1.0.1</td><td>2026-09-20</td><td>Released</td><td>Initial public batch API, scoped callback watch, and Java client guide.</td></tr>
         <tr><td>1.0.1 + source extensions</td><td>2026-09-21</td><td>Implementation revision</td><td>Organizer event links, Speed meeting configuration, participant links, event reads and completed encounter export/watch. New commands require a client built from this source revision.</td></tr>
-        <tr><td>MSC-116 source extension</td><td>2026-10-06</td><td>Implementation revision; execution QA pending</td><td>Three access packs, application reads and organizing commands. Java client 1.5.0 and MCP 1.5.0. No public plugin release is implied.</td></tr></tbody>
+        <tr><td>MSC-116 source extension</td><td>2026-10-06</td><td>Implementation revision; execution QA pending</td><td>Three access packs, application reads and organizing commands. Java client 1.5.0 and MCP 1.4.0. No public plugin release is implied.</td></tr>
+        <tr><td>MSC-119 source extension</td><td>2026-10-07</td><td>Implementation revision; execution QA pending</td><td>Four cumulative packs, main MCP Blocked default, role statistics and Events guidance. Java client / MCP 1.6.0. See the companion <a href="MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf">MCP User Guide</a> for setup.</td></tr></tbody>
     </table>
 
     <aside class="callout note">
@@ -75,7 +76,7 @@
       <li><a href="#responses">Responses and Errors</a></li>
       <li><a href="#client">Java Client and CLI</a></li>
       <li><a href="#security">Security and Operational Rules</a></li>
-      <li><a href="#access-packs">MSC-116: Access Packs and Application Queries</a></li>
+      <li><a href="#access-packs">Access Packs and Application Queries</a></li>
     </ol>
   </nav>
 
@@ -404,31 +405,36 @@ myscoutee-client unwatch</code></pre>
     <p class="source-note">Normative machine-readable contract: <code>myscoutee-client/openapi.yaml</code>. Reference client and versioned fixtures: <code>myscoutee-client/src/</code>.</p>
   </section>
   <section id="access-packs" aria-labelledby="access-packs-title">
-    <h2 id="access-packs-title">12. MSC-116: Access Packs and Application Queries</h2>
-    <p>This source extension requires the corresponding deployed backend, Java client 1.5.0 and MCP 1.5.0. Consult authenticated <code>connect</code> for the actual installed operation list and effective access.</p>
+    <h2 id="access-packs-title">12. MSC-119: Access Packs and Role Queries</h2>
+    <p>This source extension requires the corresponding deployed backend, Java client 1.6.0 and MCP 1.6.0. Consult authenticated <code>connect</code> for the actual installed operation list and effective access.</p>
     <table><thead><tr><th>Pack</th><th>Meaning</th></tr></thead><tbody>
-      <tr><td>Blocked</td><td>No private integration calls. Already issued OAuth tokens and queued callbacks honor blocking.</td></tr>
-      <tr><td>Write (default)</td><td>Supported creation, invitations and organizing writes, their necessary results and the existing managed-event workflow.</td></tr>
-      <tr><td>Full</td><td>Write plus permitted personal/workspace reads. This exposes more data, including messages and existing ratings, without adding decision authority.</td></tr>
+      <tr><td>Blocked (main MCP default)</td><td>No private integration calls. Already issued OAuth tokens and queued callbacks honor blocking.</td></tr>
+      <tr><td>Write (new client default)</td><td>Supported creation, invitations and organizing writes, their necessary results and the existing managed-event workflow.</td></tr>
+      <tr><td>Read</td><td>Write plus permitted personal/workspace reads. This exposes more data, including messages and existing ratings, without adding decision authority.</td></tr>
+      <tr><td>Full</td><td>Read plus OAuth MCP Events for explicitly requested monitoring in a compatible AI client.</td></tr>
     </tbody></table>
     <p>Use the colored shield beside each API key, each manual/OAuth MCP client and the main MCP URL. The main MCP pack caps its clients; API clients are independent. The small popup tick stages its value. The parent tick saves all staged values in one revision-checked request; X discards the draft.</p>
-    <p>Full reads cover visible events, groups, chats/messages, notifications and ratings, base-profile assets, Work campaigns/history, and Community services/cases/announcements/scheduled tasks. Lists use bounded pages and opaque <code>nextCursor</code>. MCP message reads do not mark a person as having viewed a message.</p>
-    <p>Organizing writes reuse existing domain roles and lifecycle rules. New mutation receipts contain only ID, status and version. A separate Full read is needed for broad details; payload identity cannot change the actor. Use the current version supplied by the user or a prior receipt.</p>
+    <p>Read and Full cover visible events, groups, chats/messages, notifications and ratings, base-profile assets, Work campaigns/history, and Community services/cases/announcements/scheduled tasks. Lists use bounded pages and opaque <code>nextCursor</code>. MCP message reads do not mark a person as having viewed a message.</p>
+    <p>Organizing writes reuse existing domain roles and lifecycle rules. New mutation receipts contain only ID, status and version. A Read or Full query is needed for broad details; payload identity cannot change the actor. Use the current version supplied by the user or a prior receipt.</p>
     <p>Personal viewing and judgment remain in the application: ratings, interest, feedback, ballots, participation responses, endorsements, taking ownership and offer decisions are not integration writes. Their original buttons remain unchanged; there is no added AI approval workflow.</p>
     <pre><code>myscoutee-client query listEvents
 myscoutee-client query listCampaigns parameters.json
 myscoutee-client command updateCampaign campaign-update.json campaign-id</code></pre>
-    <p>The canonical <code>myscoutee-client/openapi.yaml</code> lists every operation, parameter and allowed command. MCP discovery intersects that contract with current permissions on every call. Full-to-Write removes broad reads; blocking removes private access. Anonymous help remains available.</p>
+    <p>The canonical <code>myscoutee-client/openapi.yaml</code> lists every operation, parameter and allowed command. MCP discovery intersects that contract with current permissions on every call. Full-to-Read stops Events while preserving queries; Read-to-Write removes broad reads; blocking removes private access. Anonymous help remains available.</p>
     <p>Embedded UI, directory publication and production artifact qualification are separate follow-ups. Existing <code>/watch</code> callbacks retain their own protocol.</p>
+    <p>Role profiles are read-only. <code>adminOverview</code> reuses administrator registration/profile statistics and attention counts. <code>operatorMeasurements</code> and <code>operatorRevenueReports</code> read stored reports with page/size (1–100) and optional status. Current role plus Read or Full is required. No configuration, moderation, update approval, report synchronization, payment or personal-decision writes are exposed. Existing desktop admin keys retain their overview endpoint; they can now be blocked in settings.</p>
   </section>
   <section id="mcp-events" aria-labelledby="mcp-events-title">
     <h2 id="mcp-events-title">13. MCP Events and OAuth User Isolation</h2>
-    <p>MCP 1.5.0 implements <code>server/discover</code>, <code>events/list</code>, <code>events/subscribe</code> and <code>events/unsubscribe</code> on the authenticated <code>/mcp/private</code> endpoint, using MCP protocol <code>2026-07-28</code>. Both the main MCP link and the client need Full access. Anonymous help and static API-key stdio do not advertise background Events.</p>
+    <p>MCP 1.6.0 implements <code>server/discover</code>, <code>events/list</code>, <code>events/subscribe</code> and <code>events/unsubscribe</code> on the authenticated <code>/mcp/private</code> endpoint, using MCP protocol <code>2026-07-28</code>. Both the main MCP link and the client need Full access. Anonymous help and static API-key stdio do not advertise background Events.</p>
+    <p>Full does not start monitoring by itself. Tell the AI client what to monitor and what to do on a change. ChatGPT documents support in Work chats on web and desktop Cloud. Provider plan/workspace conditions apply; ordinary Claude MCP support does not establish support for this Events extension. MyScoutee does not check AI subscriptions.</p>
     <p>Each person signs in and approves their own profile through OAuth 2.1 authorization code with S256 PKCE. Shared dynamic client registration is client metadata; grants and profile permissions remain separate for each user. Publisher credentials are not reused for other people.</p>
     <table><thead><tr><th>Event</th><th>Filter and payload</th></tr></thead><tbody>
       <tr><td>event.changed</td><td>Required resourceId: an event you organize. Status/title summary, including participation changes.</td></tr>
       <tr><td>event.encounters</td><td>Required resourceId: an event you organize. Completed Mingle result revision/total; retrieve pairs with the paged encounters tool.</td></tr>
       <tr><td>asset.changed</td><td>Required resourceId: an asset you own in the base profile. Status/title summary, including reservation changes.</td></tr>
+      <tr><td>admin.attention</td><td>Current app-admin only; resourceId=node. Kind: node-member-joined, report-submitted or feedback-submitted. Read adminOverview for statistics.</td></tr>
+      <tr><td>operator.attention</td><td>Current operator only; resourceId=node. Kind: node-member-joined or release-available. Read persisted operator reports; no control commands.</td></tr>
     </tbody></table>
     <p>The filter is the API resource's externalId. Callback destinations use public HTTPS on port 443. The receiver supplies a whsec_ signing secret and must echo a signed verification challenge. Delivery uses Standard Webhooks signatures over the exact body, event ID and timestamp. Keys are encrypted with the existing deployment configuration key. The ordinary protected key backup procedure applies.</p>
     <p>The backend reuses its durable webhook queue. Subscriptions default to a maximum one-day lifetime and can be refreshed with the same identity; shorter positive ttlMs values are honored. Secret rotation provides a two-minute overlap. There is no replay: cursor is null. Expiry, unsubscribe, revoked grant/client, access downgrade and loss of ownership or membership stop delivery. Human ratings and decisions remain in the application.</p>
