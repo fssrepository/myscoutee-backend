@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
 

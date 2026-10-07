@@ -10,7 +10,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorTlsProperties;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsCertificateMode;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationUpdateDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsJobDto;

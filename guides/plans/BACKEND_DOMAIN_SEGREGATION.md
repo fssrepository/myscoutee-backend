@@ -8,7 +8,7 @@ Baseline: master `8af73cf0a` (2026-10-07)
 
 The baseline backend has 682 Java source files. The `profile` package groups unrelated
 controllers, documents, repositories and services horizontally. The candidate
-ownership map moves 645 existing classes into 21 domain packages (plus the existing
+ownership map moves 648 existing Java source files into 21 domain packages (plus the existing
 shared DTO contract). This is a modular-monolith package reorganization, preserving
 one application and the current MongoDB deployment. It does not yet make the
 domains independently deployable services.
@@ -51,7 +51,7 @@ objects and documents with default collection naming retain their simple names.
 | `localization` | 10 | 2 | `i18n_bundles`, `i18n_messages` |
 | `media` | 11 | 3 |  |
 | `notifications` | 22 | 10 | `notificationOutbox`, `notificationRuleConfigs`, `notificationTemplates`, `userNotifications` |
-| `operator` | 61 | 31 | `globalIdentityLinkStates`, `globalIdentityPresenceChunkOutbox`, `operatorClaimSubmissionSnapshots`, `operatorRegistryEndpoints`, `operatorRegistrySettings`, `qualifiedMauReportOutbox`, `revenueReportOutbox` |
+| `operator` | 64 | 31 | `globalIdentityLinkStates`, `globalIdentityPresenceChunkOutbox`, `operatorClaimSubmissionSnapshots`, `operatorRegistryEndpoints`, `operatorRegistrySettings`, `qualifiedMauReportOutbox`, `revenueReportOutbox` |
 | `payments` | 52 | 22 | `affiliateLinks`, `affiliateRegistrations`, `eventCheckoutBasketItems`, `paymentMethodRegistrations`, `paymentProviders`, `payment_gateway_operations`, `payments`, `savedPaymentMethods` |
 | `platform` | 21 | 9 | `appSettings`, `countryPartitions`, `deploymentConfigurations`, `schedulerPlanMarkers` |
 | `registry` | 14 | 10 |  |
@@ -195,3 +195,123 @@ for the package-only change. No measured performance claim is made.
 
 Three versioned Java QA probes also follow the relocated domain imports. The
 refactor checkpoint was fast-forward merged and pushed to master on 2026-10-07.
+
+
+## Independent master review — 2026-10-07
+
+Reviewed range: `8af73cf0a` (before domain work) through `6d8c08c26`
+(master before these corrections). The notification UI commits are separate from
+the MSC-120 backend changes. The exact old/new file mapping remains in
+`backend-package-map.json`; aggregate test results are in
+`backend-domain-verification.json` under `independent_master_audit`.
+
+### What actually changed
+
+- Baseline: 682 Java source files under the application root. The reviewed
+  master: 679, after deleting the two opt-in profile-image importer files and
+  the empty `FilterConfig`. The initial mapping moved 645 source files; this
+  correction moves the three operator property classes omitted from that map.
+  One mapped file, `I18nMessageService`, was and remains entirely commented out;
+  it must not be counted as a functioning runtime service.
+- The independent comparison covered all 648 mapped source files. After
+  accounting for package/import/qualified-name relocation and Java `public`
+  visibility, no business-method body changed. Eleven files gained public
+  members/types to preserve calls that formerly relied on a common package.
+  Those are wider Java boundaries, not newly exposed HTTP endpoints.
+- Four remaining common configuration files only changed imports/qualified names.
+  Repository scanning changed from `profile.repository` to `domain`; the custom
+  repository factory remains in use. Shared web security, WebSocket transport,
+  Mongo routing and scheduling infrastructure remain shared.
+- `MongoConverterConfig` is a real runtime change, not just an import edit. It
+  translates historical Mongo `_class` names without database/network calls and
+  keeps the previous early post-processor ordering and dotted-map-key handling.
+- The 63-failure repair commit `3f307476c` changed no production Java or main
+  resources. Most repairs supply missing job-scope collaborators/callbacks,
+  current repository overloads or current authorization/DTO fixtures. It also
+  changes an explicit notification query-count expectation; see below.
+
+### Defects and omissions corrected by this review
+
+1. **Missing persisted type alias.** The old alias generator covered data-package
+   classes but missed `OperatorEmailConfigurationService.Configuration`, a
+   service-nested `@Document` in `operatorEmailConfigurations`. The added test
+   failed before correction because serialization emitted the new Java type name.
+   A single mapping entry now preserves the historical nested name and restores
+   `Object`-typed reads. The service's normal explicitly typed read may have
+   succeeded even without the alias; this finding is not evidence of lost email
+   settings or an observed production outage. The mapping now contains 180 root
+   aliases, including all moved `@Document` owners identified in the source scan.
+2. **Incomplete JUnit isolation.** Direct `e2eTest`/E2E compilation commands did
+   not automatically select `build/junit`. They could write the dev application's
+   normal build output. E2E compilation/test/resource tasks and `check`/`sonar`
+   verification entry tasks now use the same existing isolation selection. The
+   verification ran without `-PisolatedJUnit`, with hot reload explicitly enabled,
+   and asserted isolated output plus a disabled DevTools trigger. The dev fixture
+   opt-in was unset, so its two tests were skipped before connecting to services.
+3. **Incomplete configuration ownership.** `OperatorConfigurationProperties`,
+   `OperatorTlsProperties` and `OperatorUpdateProperties` remained under common.
+   They now live in `domain.operator.config`; only packages and imports changed.
+   Their `operator.configuration`, `operator.tls` and `operator.update` binding
+   prefixes, values and defaults remain identical.
+
+### Findings that must not be hidden by a passing suite
+
+`NotificationDeliveryDecisionTest` formerly expected one recipient batch read;
+the repair accepts two. Both `accountRecipients` and `snapshotFirebaseDevices`
+already read users at `8af73cf0a`. Workspace profile IDs must be resolved to
+account IDs before device lookup, so those batches need not contain the same
+IDs. For base-account recipients they can duplicate the same read. The current
+test checks that the two reads remain bounded, but it no longer enforces the old
+one-read performance expectation. No query optimization was made in this audit;
+carry this into the later cross-domain performance review and preserve account
+resolution, saved delivery decisions and recipient batching there.
+
+The removed profile-image importer was an opt-in remote-image download/rewrite
+operation, enabled only by `media.profile-seed-import.enabled=true`. No versioned
+runtime configuration enables it. The current demo seed contains 229 managed
+image references and no `randomuser.me` references, while the E2E seed still
+contains 348 external `randomuser.me` references. Therefore its removal is an
+intentional loss of that optional maintenance operation, not proof that every
+E2E image has migrated to MinIO. This review neither rewrites those fixtures nor
+restores the obsolete importer. The normal MinIO bootstrap remains unchanged.
+
+Package ownership is not domain isolation. There are still **148 explicit foreign
+repository imports in 77 production source files**; raw Mongo collection access,
+qualified references and cross-domain document/service sharing are additional
+coupling. These existed before the package move. No service interface layer,
+remote transport, database separation or consistency redesign has been completed.
+
+### Verification and risk register
+
+Fresh local run after corrections: **1,623 standard/embedded tests passed, zero
+failures/errors/skips**. The focused new alias test failed before the mapping fix
+and passes in that run. The independent release-signature/OpenSSL selection
+passed **10 tests**. E2E source compilation succeeded; dev fixture discovery found
+**2 tests and skipped both** without its explicit fixture opt-in. This is not a
+functional dev/E2E pass. The existing dev watcher built and restarted successfully
+(the observed restart was 5.205 seconds, not a throughput benchmark).
+
+Commands used the existing `tools/run-backend-junit.sh local` runner with Java 25,
+one Gradle worker and isolated output. The additional selection used the existing
+`integrationTest` and `e2eTest -Pe2eTestTag=dev` tasks with the two named protocol
+test classes and `MediaFriendshipQualificationTest`; no second application
+server was started. Full HTTP/UI E2E, production-database replay, rollback
+execution and before/after latency measurement were **not run**. Do not describe
+this review as proof that no deployment can break.
+
+The ratings below are qualitative review judgments, not measured probabilities
+or latency percentages. Use this table as the single change/risk register and
+extend it when cross-domain work starts.
+
+| Changed area / exact owner | Break risk and evidence | Severe slowdown risk / later E2E focus |
+| --- | --- | --- |
+| All paths in `backend-package-map.json` | Low for external behavior after source comparison, compilation and local tests; Java import/binary consumers must use the new packages. | Low: business bodies, query shapes, batching and scheduling unchanged. |
+| Eleven files with widened public visibility | Low immediate runtime risk; architectural encapsulation remains incomplete. | No new I/O; review transaction/call boundaries during later extraction. |
+| `common/config/RepositoryConfig.java` | Low after repository/context tests and dev startup; factory preserved. | Startup scanning is broader; no request-time query change. |
+| `common/config/MongoConverterConfig.java`, `mongo-domain-types.properties` | Medium compatibility surface; missing nested alias corrected and real converter read/write tested. Production historical data and rollback not replayed. | Low: fixed in-memory maps, no remote/database call. E2E should include root and polymorphic nested document round-trips. |
+| `domain/operator/config/Operator*Properties.java`, importing classes | Low: package/import changes only, prefixes/defaults identical; local and binding tests pass. | No added work. Check operator configuration/update screens in normal QA. |
+| Deleted `bootstrap/ProfileImageSeedImport*`, empty `common/config/FilterConfig` | Normal configured startup unchanged. Optional remote-image import is intentionally unavailable; do not claim universal feature equivalence. | No added work. E2E image fixtures remain a separate known limitation. |
+| `server/projects/profile/build.gradle`, `tools/run-backend-junit.sh` | Medium local-environment surface; direct E2E isolation omission fixed and verified without the override flag. | Separate tests still consume resources; keep them serial. No parallel dev and E2E application servers. |
+| `NotificationDeliveryDecisionTest` query-count repair | Existing production behavior retained; former one-read performance assertion was relaxed, as explicitly recorded above. | Existing duplicate base-account reads deserve focus when cross-domain access changes. No measured percentage claim. |
+| Remaining test repairs and three manual-QA Java probe imports | Local suite and probe compilation evidence; mocks do not prove live authorization, schedulers or lifecycle behavior. | E2E remains necessary for subsequent behavior/data-access changes. |
+| Cross-domain resolution | Not implemented in this checkpoint. | Measure only after actual access boundaries change; stop dev before starting the E2E server. |

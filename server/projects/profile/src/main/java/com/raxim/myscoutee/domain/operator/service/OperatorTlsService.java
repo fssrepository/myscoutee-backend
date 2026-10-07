@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorTlsProperties;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsCertificateMode;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationUpdateDto;

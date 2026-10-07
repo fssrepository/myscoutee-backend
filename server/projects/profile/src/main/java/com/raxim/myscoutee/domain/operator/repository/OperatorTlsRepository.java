@@ -20,7 +20,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorTlsProperties;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationUpdateDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsJobDto;

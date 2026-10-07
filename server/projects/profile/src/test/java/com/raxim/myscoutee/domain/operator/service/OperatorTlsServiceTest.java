@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
-import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorTlsProperties;
 import com.raxim.myscoutee.domain.operator.repository.OperatorTlsRepository;
 
 @org.junit.jupiter.api.Tag("standard")

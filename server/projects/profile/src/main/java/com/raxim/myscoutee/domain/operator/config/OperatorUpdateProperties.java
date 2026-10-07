@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.common.config.properties;
+package com.raxim.myscoutee.domain.operator.config;
 
 import java.nio.file.Path;
 import java.time.Duration;

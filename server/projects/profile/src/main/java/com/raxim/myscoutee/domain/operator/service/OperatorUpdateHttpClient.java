@@ -7,7 +7,7 @@ import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
 
 /** TLS configuration shared by release discovery and package download. */
 final class OperatorUpdateHttpClient {
