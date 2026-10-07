@@ -1,16 +1,15 @@
 package com.raxim.myscoutee.domain.groups.document;
 
+import com.raxim.myscoutee.domain.groups.dto.GroupPolicy;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationParticipantInvite;
 
@@ -23,21 +22,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
-
-
 @org.junit.jupiter.api.Tag("standard")
 class CommunityGroupInviteClaimTest {
     private final CommunityGroupsRepository groups = mock(CommunityGroupsRepository.class);
     private final ActivityMembersRepository members = mock(ActivityMembersRepository.class);
     private final UsersRepository users = mock(UsersRepository.class);
-    private final CommunityGroupProfilesService profiles = mock(CommunityGroupProfilesService.class);
+    private final com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces profiles = mock(com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces.class);
     private final Map<String, ActivityMember> rows = new LinkedHashMap<>();
     private final CommunityGroup group = new CommunityGroup("group", "owner", "Invited group", "", null,
-            "friends", "invitation", true, new CommunityGroup.Policy(true, false, List.of()),
+            "friends", "invitation", true, new GroupPolicy(true, false, List.of()),
             "now", "now", 0L, "accepted", 0L);
-    private final CommunityGroupsService service = new CommunityGroupsService(groups, members, users,
+    private final CommunityGroupsService service = new CommunityGroupsService(groups, new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
             mock(HomeUserProfileService.class), profiles, mock(ContentModerationService.class),
-            mock(UserReportSubmissionsRepository.class), mock(AdminTelemetryService.class), mock(UserActivityCountersService.class),
+            mock(com.raxim.myscoutee.domain.content.api.CommunityReports.class), mock(AdminTelemetryService.class), mock(com.raxim.myscoutee.domain.groups.api.GroupCounters.class),
             mock(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.class));
 
     @BeforeEach void setup() {
@@ -66,7 +63,17 @@ class CommunityGroupInviteClaimTest {
             ActivityMember saved = call.getArgument(0); rows.put(saved.getUserId(), saved); return saved;
         });
         when(members.updateCommunityState(anyString(), any(), any(), any(), any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), anyBoolean()))
-                .thenReturn(1L);
+                .thenAnswer(call -> {
+                    var stored = rows.values().stream().filter(row -> row.getId().equals(call.getArgument(0))).findFirst().orElseThrow();
+                    if (!Objects.equals(stored.getStatus(), call.getArgument(1)) || !Objects.equals(stored.getRole(), call.getArgument(2))
+                            || !Objects.equals(stored.getActionAtIso(), call.getArgument(3))) return 0L;
+                    stored.setStatus(call.getArgument(4)); stored.setRole(call.getArgument(5));
+                    stored.setRequestKind(call.getArgument(6)); stored.setPendingSource(call.getArgument(7));
+                    stored.setOrganizerOnly(call.getArgument(8)); stored.setActionAtIso(call.getArgument(9));
+                    stored.setCommunityAction(call.getArgument(10)); stored.setCommunityActor(call.getArgument(11));
+                    stored.setManagerGrantedByUserId(call.getArgument(12)); stored.setVotingEligible(call.getArgument(13));
+                    return 1L;
+                });
         when(profiles.profilesByGroup(anyString())).thenReturn(Map.of());
     }
 
@@ -134,7 +141,7 @@ class CommunityGroupInviteClaimTest {
         service.action(recipient, new com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto(
                 new com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberOwnerRefDto("community", "group"),
                 "recipient", "recipient", "remove", null));
-        verify(users).clearActiveWorkspace("recipient", "group");
+        verify(profiles).clearActiveWorkspace("recipient", "group");
     }
 
     @Test void ordinaryProfileLoadDoesNotWriteButExplicitBaseSelectionDoes() {

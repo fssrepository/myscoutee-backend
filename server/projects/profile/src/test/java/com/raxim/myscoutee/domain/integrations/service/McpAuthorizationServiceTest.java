@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.integrations.service;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationToken;
 import com.raxim.myscoutee.domain.integrations.document.McpAuthorization;
@@ -23,7 +23,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.mongo.*;
-
 
 import com.raxim.myscoutee.domain.integrations.dto.McpDtos;
 
@@ -47,7 +46,7 @@ class McpAuthorizationServiceTest {
     final McpOAuthClientsRepository registrations = mock(McpOAuthClientsRepository.class);
     final CommunityGroupProfilesService profiles = mock(CommunityGroupProfilesService.class);
     final com.raxim.myscoutee.domain.platform.config.ConfigProperties config = new com.raxim.myscoutee.domain.platform.config.ConfigProperties();
-    final McpAuthorizationService service = new McpAuthorizationService(keys, tokens, grants, users, groups, endpoint, registrations, profiles, config);
+    final McpAuthorizationService service = new McpAuthorizationService(keys, tokens, grants, users, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups), endpoint, registrations, profiles, config);
     final String id = UUID.randomUUID().toString(), verifier = "x".repeat(43);
     IntegrationToken client;
     @BeforeEach void setup() {

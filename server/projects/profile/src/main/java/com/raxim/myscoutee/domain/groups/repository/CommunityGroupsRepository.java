@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.groups.repository;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import java.util.Collection;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -22,7 +24,7 @@ public interface CommunityGroupsRepository extends MongoRepository<CommunityGrou
         var result = new java.util.HashMap<String, String>();
         var custom = new java.util.HashSet<String>();
         for (String id : ids) {
-            if (CommunityGroup.isBaseId(id)) result.put(id, id);
+            if (BaseGroups.isBaseId(id)) result.put(id, id);
             else if (id != null && !id.isBlank()) custom.add(id);
         }
         if (!custom.isEmpty()) findByIdIn(custom).forEach(group -> {
@@ -36,7 +38,7 @@ public interface CommunityGroupsRepository extends MongoRepository<CommunityGrou
         var result = new java.util.HashSet<String>();
         var customIds = new java.util.HashSet<String>();
         for (String id : ids) {
-            if (CommunityGroup.WORK_BASE_ID.equals(id)) result.add(id);
+            if (BaseGroups.WORK_BASE_ID.equals(id)) result.add(id);
             else if (id != null && !id.isBlank()) customIds.add(id);
         }
         if (!customIds.isEmpty()) findByIdIn(customIds).stream()

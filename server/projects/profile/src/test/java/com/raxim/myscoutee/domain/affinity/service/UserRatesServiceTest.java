@@ -341,7 +341,7 @@ class UserRatesServiceTest {
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(first, second));
         when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
         AffinityCalculationService affinity = new AffinityCalculationService(affinityConfigsRepository,
-                usersRepository, userRatesRepository, userExperienceProfilesRepository, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+                usersRepository, userRatesRepository, userExperienceProfilesRepository, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
         UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, usersRepository,
                 homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
@@ -825,7 +825,7 @@ class UserRatesServiceTest {
                 affinityConfigsRepository,
                 usersRepository,
                 userRatesRepository,
-                userExperienceProfilesRepository, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+                userExperienceProfilesRepository, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
         return campaignAware(new UserRatesService(
                 userRatesRepository,
                 usersRepository,
@@ -853,7 +853,7 @@ class UserRatesServiceTest {
                         affinityConfigsRepository,
                         usersRepository,
                         userRatesRepository,
-                userExperienceProfilesRepository, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)),
+                userExperienceProfilesRepository, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class))),
                 userAffinityEdgeService,
                 mongoTemplate,
                 adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);

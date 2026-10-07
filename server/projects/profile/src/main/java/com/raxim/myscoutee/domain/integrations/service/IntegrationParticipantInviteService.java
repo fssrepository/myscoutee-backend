@@ -1,9 +1,11 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 import com.raxim.myscoutee.domain.payments.service.AffiliateService;
 
 import java.net.URI;
@@ -33,6 +35,8 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class IntegrationParticipantInviteService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
     private final MongoTemplate mongo;
     private final ActivityEventsRepository events;
     private final AccessPermissions access;
@@ -40,7 +44,7 @@ public class IntegrationParticipantInviteService {
     private final IntegrationPublicEndpointResolver endpoint;
     private final HomeUserProfileService profiles;
     @org.springframework.beans.factory.annotation.Autowired
-    private CommunityGroupsService groups;
+    private Groups groups;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.accounts.repository.UsersRepository users;
     @org.springframework.beans.factory.annotation.Autowired
@@ -226,8 +230,7 @@ public class IntegrationParticipantInviteService {
     private String invitationLandingType(String actor, String ownerType, String entityId) {
         var profile = users.findByUserId(actor).orElse(null);
         String groupId = "community".equals(ownerType) ? entityId : profile == null ? null : profile.getWorkspaceGroupId();
-        var group = groupId == null ? null : mongo.findById(groupId,
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
+        var group = groupId == null ? null : groupDirectory.findById(groupId).orElse(null);
         return group == null ? "dating" : group.effectiveType();
     }
 

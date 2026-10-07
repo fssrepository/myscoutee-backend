@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.groups.config;
 
+import com.raxim.myscoutee.domain.accounts.config.GroupWorkspaceFilter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import java.util.List;
@@ -15,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationToken;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import jakarta.servlet.FilterChain;
 
 @org.junit.jupiter.api.Tag("standard")

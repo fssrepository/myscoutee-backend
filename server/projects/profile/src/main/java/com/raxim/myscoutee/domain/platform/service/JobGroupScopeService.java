@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
@@ -7,20 +11,21 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 
 /** Resolves stored workspace ownership at job boundaries; never accepts an admin-supplied scope. */
 @Service
 public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform.api.JobAudience {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
     private final MongoTemplate mongo;
 
     public JobGroupScopeService(MongoTemplate mongo) { this.mongo = mongo; }
 
     public String forWorkspace(String workspaceId) {
         if (workspaceId == null || workspaceId.isBlank()) return null;
-        if (CommunityGroup.isBaseId(workspaceId)) return workspaceId;
-        var group = mongo.findById(workspaceId, CommunityGroup.class);
+        if (BaseGroups.isBaseId(workspaceId)) return workspaceId;
+        var group = groupDirectory.findById(workspaceId).orElse(null);
         return group == null ? null : group.baseId();
     }
 
@@ -63,18 +68,7 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     }
 
     private java.util.Map<String, String> workspaces() {
-        return JobGroupContext.memo("workspaceBaseIds", () -> {
-            var ids = new java.util.HashMap<String, String>();
-            CommunityGroup.BASE_IDS.forEach(id -> ids.put(id, id));
-            Query query = Query.query(Criteria.where("groupType").in("work", "community"));
-            query.fields().include("_id").include("groupType");
-            // A partial projection cannot instantiate CommunityGroup's required primitive fields.
-            for (Document group : mongo.find(query, Document.class, "communityGroups")) {
-                String id = group.getString("_id");
-                if (id != null) ids.put(id, CommunityGroup.baseIdForType(group.getString("groupType")));
-            }
-            return ids;
-        });
+        return JobGroupContext.memo("workspaceBaseIds", groupDirectory::workspaceBaseIds);
     }
 
     public boolean matchesWorkspace(String workspaceId) {

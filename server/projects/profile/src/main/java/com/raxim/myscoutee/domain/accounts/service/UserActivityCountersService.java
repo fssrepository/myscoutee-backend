@@ -40,18 +40,6 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService {
-    /** Apply only the successful membership transition, like applyActiveEventMembershipDeltas. */
-    public void applyCommunityMemberDelta(String groupId, int pendingDelta) {
-        if (pendingDelta == 0) return;
-        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
-                new Update().inc("pendingMembers", pendingDelta).inc("version", 1L).set("updatedAtIso", Instant.now().toString()),
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
-    }
-    public void touchCommunityGroup(String groupId, String changedAtIso) {
-        mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is(groupId)),
-                new Update().max("updatedAtIso", changedAtIso).inc("version", 1L),
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
-    }
     private final OrganizerFollowingService organizerFollowingService;
 
     public void expireFollowingCounters(Instant now) {

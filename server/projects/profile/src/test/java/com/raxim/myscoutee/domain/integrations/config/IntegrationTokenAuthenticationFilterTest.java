@@ -21,7 +21,7 @@ import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.A
 class IntegrationTokenAuthenticationFilterTest {
     private final IntegrationTokenService tokenService = org.mockito.Mockito.mock(IntegrationTokenService.class);
     private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class);
-    private final com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.class);
+    private final com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class);
     private final IntegrationTokenAuthenticationFilter filter = new IntegrationTokenAuthenticationFilter(tokenService, users, profiles,
             new com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService(null, null));
 
@@ -101,7 +101,7 @@ class IntegrationTokenAuthenticationFilterTest {
         filter.doFilter(new MockHttpServletRequest("POST", "/integrations/v1/events"), new MockHttpServletResponse(), eventChain);
         assertThat(eventChain.getRequest()).isNotNull();
         assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("profile");
-        assertThat(com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.currentGroupId()).isEqualTo("group");
+        assertThat(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.currentGroupId()).isEqualTo("group");
         for (String path : java.util.List.of("/integrations/v1/assets", "/api/integrations/v1/assets")) {
             for (String contentType : java.util.List.of("application/json", "multipart/form-data")) {
                 var request = new MockHttpServletRequest("POST", path);
@@ -129,7 +129,7 @@ class IntegrationTokenAuthenticationFilterTest {
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(chain.getRequest()).isNotNull();
         assertThat(SecurityContextHolder.getContext().getAuthentication().getName()).isEqualTo("account");
-        assertThat(com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.currentGroupId()).isNull();
+        assertThat(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.currentGroupId()).isNull();
         verifyNoInteractions(profiles);
     }
 

@@ -70,6 +70,14 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository;
     @Mock private UserAffinityEdgeService affinityEdgeService;
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
+    private JobGroupScopeService jobScope() {
+        var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
+        var scope = new JobGroupScopeService(mongo);
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
+        return scope;
+    }
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -1968,7 +1976,7 @@ class EventSchedulerTest {
         EventScheduler scheduler = new EventScheduler(
                 userRatesRepository,
                 affinityEdgeService,
-                groupsRepository,
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository),
                 usersRepository,
                 userAffinityEdgesRepository,
                 activityEventsRepository,
@@ -1986,7 +1994,7 @@ class EventSchedulerTest {
                 notificationOutboxService,
                 new com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper());
         scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
-        org.springframework.test.util.ReflectionTestUtils.setField(scheduler, "jobGroupScope", new JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(scheduler, "jobGroupScope", jobScope());
         return scheduler;
     }
 

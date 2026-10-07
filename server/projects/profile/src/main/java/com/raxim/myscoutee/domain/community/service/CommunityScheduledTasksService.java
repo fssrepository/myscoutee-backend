@@ -1,14 +1,16 @@
 package com.raxim.myscoutee.domain.community.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.community.document.CommunityScheduledTask;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
+import com.raxim.myscoutee.domain.groups.api.GroupView;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+import com.raxim.myscoutee.domain.groups.api.CommunityAuthority;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.time.*;
@@ -23,7 +25,7 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.*;
 
 import com.raxim.myscoutee.domain.community.mapper.CommunityCaseMapper;
-import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
+import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CommunityScheduledTasksService {
@@ -31,12 +33,12 @@ public class CommunityScheduledTasksService {
     public static final int LEAD_DAYS = 45;
     private final CommunityScheduledTasksRepository tasks;
     private final ServiceCasesRepository cases;
-    private final CommunityAccessService access;
-    private final CommunityGroupsRepository groups;
+    private final CommunityAuthority access;
+    private final GroupDirectory groups;
     private final ActivityMembersRepository members;
     private final CommunityCasesService caseService;
     public CommunityScheduledTasksService(CommunityScheduledTasksRepository tasks, ServiceCasesRepository cases,
-            CommunityAccessService access, CommunityGroupsRepository groups, ActivityMembersRepository members, CommunityCasesService caseService) {
+            CommunityAuthority access, GroupDirectory groups, ActivityMembersRepository members, CommunityCasesService caseService) {
         this.tasks = tasks; this.cases = cases; this.access = access; this.groups = groups; this.members = members; this.caseService = caseService;
     }
     public String actor(String id) { return access.actor(id); }
@@ -45,17 +47,17 @@ public class CommunityScheduledTasksService {
         var managed = access.managedGroups(actor);
         var memberIds = members.findByOwnerTypeAndUserId("community", actor).stream().filter(m -> "accepted".equals(m.getStatus())).map(ActivityMember::getOwnerId).toList();
         var joined = memberIds.isEmpty() ? List.<String>of() : groups.findByIdIn(memberIds).stream()
-                .filter(g -> "community".equals(g.effectiveType()) && !CommunityGroup.isBaseId(g.id()) && !g.deleted() && !g.awaitingOwner()).map(CommunityGroup::id).toList();
+                .filter(g -> "community".equals(g.effectiveType()) && !BaseGroups.isBaseId(g.id()) && !g.deleted() && !g.awaitingOwner()).map(GroupView::id).toList();
         int page = CommunityCasesService.page(cursor), limit = Math.max(1, Math.min(50, size));
         var filter = "trash".equals(status) ? new org.bson.Document("deleted", true)
                 : new org.bson.Document("deleted", new org.bson.Document("$ne", true)).append("enabled", "active".equals(status));
-        var records = tasks.visible(CommunityGroup.COMMUNITY_BASE_ID, actor, managed, joined, filter, PageRequest.of(page, limit, Sort.by("nextDueAtIso", "id")));
+        var records = tasks.visible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, joined, filter, PageRequest.of(page, limit, Sort.by("nextDueAtIso", "id")));
         var ids = records.stream().map(CommunityScheduledTask::communityId).filter(Objects::nonNull).distinct().toList();
-        var groupById = ids.isEmpty() ? Map.<String, CommunityGroup>of() : groups.findByIdIn(ids).stream().collect(Collectors.toMap(CommunityGroup::id, g -> g));
+        var groupById = ids.isEmpty() ? Map.<String, GroupView>of() : groups.findByIdIn(ids).stream().collect(Collectors.toMap(GroupView::id, g -> g));
         var roster = ids.isEmpty() ? Map.<String, Set<String>>of() : members.findByOwnerTypeAndOwnerIdIn("community", ids).stream().filter(m -> "accepted".equals(m.getStatus()))
                 .collect(Collectors.groupingBy(ActivityMember::getOwnerId, Collectors.mapping(ActivityMember::getUserId, Collectors.toSet())));
         var context = new HashMap<String, Long>(); for (var key : List.of("active", "paused", "trash")) context.put(key, 0L);
-        tasks.counters(CommunityGroup.COMMUNITY_BASE_ID, actor, managed, joined).forEach(row -> context.put(row.status(), row.count()));
+        tasks.counters(BaseGroups.COMMUNITY_BASE_ID, actor, managed, joined).forEach(row -> context.put(row.status(), row.count()));
         context.put("total", context.get("active") + context.get("paused"));
         long total = context.get(status);
         return new Page<>(records.stream().map(t -> {
@@ -65,13 +67,13 @@ public class CommunityScheduledTasksService {
         }).toList(), total, (long) (page + 1) * limit < total ? Integer.toString(page + 1) : null, context);
     }
     private void requireManage(CommunityScheduledTask task, String actor) {
-        if (!CommunityGroup.COMMUNITY_BASE_ID.equals(task.baseGroupId())) throw error(HttpStatus.NOT_FOUND);
+        if (!BaseGroups.COMMUNITY_BASE_ID.equals(task.baseGroupId())) throw error(HttpStatus.NOT_FOUND);
         if (task.communityId() != null) access.requireAdmin(task.communityId(), actor);
         else if (!actor.equals(task.ownerAccountId())) throw error(HttpStatus.FORBIDDEN);
     }
     private TaskItem dto(CommunityScheduledTask task, String actor) {
         var group = task.communityId() == null ? null : access.group(task.communityId());
-        var accepted = group == null ? Set.of(task.ownerAccountId()) : access.roster(group.id()).stream().map(ActivityMember::getUserId).collect(Collectors.toSet());
+        var accepted = group == null ? Set.of(task.ownerAccountId()) : access.roster(group.id()).stream().map(m -> m.getUserId()).collect(Collectors.toSet());
         int count = task.audienceAll() ? accepted.size() : (int) task.audienceAccountIds().stream().distinct().filter(accepted::contains).count();
         return CommunityCaseMapper.toDto(task, group, count, group == null ? actor.equals(task.ownerAccountId()) : access.admin(group.id(), actor));
     }
@@ -88,7 +90,7 @@ public class CommunityScheduledTasksService {
         if (audience.isEmpty()) throw error(HttpStatus.BAD_REQUEST);
         String now = Instant.now().toString();
         String next = old != null && start.equals(old.startAtIso()) && r.frequency().equals(old.frequency()) ? old.nextDueAtIso() : start;
-        var task = new CommunityScheduledTask(old == null ? UUID.randomUUID().toString() : old.id(), CommunityGroup.COMMUNITY_BASE_ID,
+        var task = new CommunityScheduledTask(old == null ? UUID.randomUUID().toString() : old.id(), BaseGroups.COMMUNITY_BASE_ID,
                 groupId, old == null ? actor : old.ownerAccountId(), r.title().trim(), r.description().trim(), r.caseType(), groupId != null && r.audienceAll(),
                 groupId != null && r.audienceAll() ? List.of() : audience, start, next, r.frequency(), old == null || old.enabled(), false, old == null ? now : old.createdAtIso(), now, old == null ? null : old.version());
         try { return dto(tasks.save(task), actor); }
@@ -106,11 +108,11 @@ public class CommunityScheduledTasksService {
     }
     /** Insert-first identity and advance-after-notification make a interrupted occurrence retryable. */
     public int createDue(Instant now) {
-        if (!CommunityGroup.COMMUNITY_BASE_ID.equals(JobGroupContext.groupId())) return 0;
-        var due = tasks.due(CommunityGroup.COMMUNITY_BASE_ID, iso(now.plus(LEAD_DAYS, ChronoUnit.DAYS)),
+        if (!BaseGroups.COMMUNITY_BASE_ID.equals(JobGroupContext.groupId())) return 0;
+        var due = tasks.due(BaseGroups.COMMUNITY_BASE_ID, iso(now.plus(LEAD_DAYS, ChronoUnit.DAYS)),
                 PageRequest.of(0, 100, Sort.by("nextDueAtIso", "id")));
         var ids = due.stream().map(CommunityScheduledTask::communityId).filter(Objects::nonNull).distinct().toList();
-        var groupById = groups.findByIdIn(ids).stream().collect(Collectors.toMap(CommunityGroup::id, g -> g));
+        var groupById = groups.findByIdIn(ids).stream().collect(Collectors.toMap(GroupView::id, g -> g));
         var rosters = members.findByOwnerTypeAndOwnerIdIn("community", ids).stream().filter(m -> "accepted".equals(m.getStatus()))
                 .collect(Collectors.groupingBy(ActivityMember::getOwnerId));
         int created = 0;
@@ -126,7 +128,7 @@ public class CommunityScheduledTasksService {
             String caseId = occurrenceId(task.id(), task.nextDueAtIso());
             ServiceCase c = cases.findById(caseId).orElse(null);
             if (c == null) {
-                var candidate = new ServiceCase(caseId, CommunityGroup.COMMUNITY_BASE_ID, task.communityId(), task.communityId() == null ? task.ownerAccountId() : null,
+                var candidate = new ServiceCase(caseId, BaseGroups.COMMUNITY_BASE_ID, task.communityId(), task.communityId() == null ? task.ownerAccountId() : null,
                         task.title(), task.description(), task.caseType(), "open", task.audienceAll(), audience, List.copyOf(participants),
                         List.copyOf(participants), List.of(), List.of(), List.of(), task.id(), task.nextDueAtIso(), now.toString(), now.toString(), null, participants.stream().collect(Collectors.toMap(id -> id, id -> task.communityId() == null ? "accepted" : "invited")), List.of(), List.of());
                 try { c = cases.insert(candidate); created++; }

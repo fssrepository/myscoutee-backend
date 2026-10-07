@@ -100,6 +100,9 @@ class ScheduledMessageTaskServiceIntegrationTest {
             mongoTemplate.save(payment);
         }
         var scope = new JobGroupScopeService(mongoTemplate);
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
         var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("status").is("pending"))
                 .with(org.springframework.data.domain.Sort.by("createdDate")).limit(1);
         var result = JobGroupContext.call("myscoutee-work", () -> scope.findOwned(query,
@@ -376,6 +379,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
             com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.class,
             com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.class,
             com.raxim.myscoutee.domain.events.service.MemberAttentionService.class,
+            com.raxim.myscoutee.domain.groups.service.GroupDirectoryService.class,
             JobGroupScopeService.class
     })
     static class Config {

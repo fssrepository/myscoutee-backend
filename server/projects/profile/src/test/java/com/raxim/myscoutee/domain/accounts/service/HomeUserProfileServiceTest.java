@@ -181,12 +181,11 @@ class HomeUserProfileServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
-                assetsService, affiliateService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+                assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
         service.setNotificationCatalog(notificationCatalog);
         lenient().when(notificationCatalog.countUnread("active"))
                 .thenReturn(17L);
     }
-
 
     @Test
     void profileLoadPersistsInitialLocationAsFieldsAndReturnsIt() {

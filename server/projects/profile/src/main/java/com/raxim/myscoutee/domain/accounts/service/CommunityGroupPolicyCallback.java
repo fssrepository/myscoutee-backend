@@ -1,15 +1,16 @@
-package com.raxim.myscoutee.domain.groups.service;
+package com.raxim.myscoutee.domain.accounts.service;
+
 
 import java.util.*;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertCallback;
 import org.springframework.stereotype.Component;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 @Component
 public class CommunityGroupPolicyCallback implements BeforeConvertCallback<Users> {
-    private final org.springframework.beans.factory.ObjectProvider<CommunityGroupsRepository> groups;
-    public CommunityGroupPolicyCallback(org.springframework.beans.factory.ObjectProvider<CommunityGroupsRepository> groups) { this.groups = groups; }
+    private final org.springframework.beans.factory.ObjectProvider<GroupDirectory> groups;
+    public CommunityGroupPolicyCallback(org.springframework.beans.factory.ObjectProvider<GroupDirectory> groups) { this.groups = groups; }
     @Override public Users onBeforeConvert(Users user, String collection) {
         if (user.getWorkspaceGroupId() == null) return user;
         var group = groups.getObject().findById(user.getWorkspaceGroupId()).orElse(null);

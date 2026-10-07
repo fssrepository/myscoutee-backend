@@ -19,8 +19,6 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
-
-
 @org.junit.jupiter.api.Tag("standard")
 class CommunityScheduledTasksServiceTest {
     @Test void createsOneSharedCaseAtTheLeadBoundaryAndRetriesNotificationBeforeAdvancing() {
@@ -29,7 +27,7 @@ class CommunityScheduledTasksServiceTest {
         var groups = mock(CommunityGroupsRepository.class);
         var members = mock(ActivityMembersRepository.class);
         var notifier = mock(CommunityCasesService.class);
-        var service = new CommunityScheduledTasksService(tasks, cases, mock(CommunityAccessService.class), groups, members, notifier);
+        var service = new CommunityScheduledTasksService(tasks, cases, mock(CommunityAccessService.class), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups), members, notifier);
         var now = Instant.parse("2026-10-05T09:00:00Z");
         var due = "2026-11-19T09:00:00.000Z";
         var task = new CommunityScheduledTask("task", CommunityGroup.COMMUNITY_BASE_ID, "homes", "manager", "Inspection", "Organize visits", "chimney-sweep",

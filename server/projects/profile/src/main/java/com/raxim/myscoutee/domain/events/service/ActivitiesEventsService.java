@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.events.service;
 
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
@@ -11,12 +15,10 @@ import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
 import java.util.Map;
-import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
 
 import java.text.Normalizer;
@@ -146,6 +148,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class ActivitiesEventsService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
@@ -6056,7 +6060,7 @@ public class ActivitiesEventsService {
 
     private List<ActivityEvent> queryCanonicalExploreRecords() {
         return mongoTemplate.find(new Query(Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE)
-                .and("generated").ne(true).and("workspaceGroupId").is(CommunityGroupProfilesService.currentGroupId())), ActivityEvent.class).stream()
+                .and("generated").ne(true).and("workspaceGroupId").is(WorkspaceContext.currentGroupId())), ActivityEvent.class).stream()
                 .filter(Objects::nonNull)
                 .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
                 .map(this::cloneDocument)
@@ -6068,7 +6072,7 @@ public class ActivitiesEventsService {
     private List<ActivityEvent> queryCanonicalExplorePageRecords() {
         Query query = new Query(Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE)
                 .and("generated").ne(true)
-                .and("sourceId").exists(true).ne("").and("workspaceGroupId").is(CommunityGroupProfilesService.currentGroupId()));
+                .and("sourceId").exists(true).ne("").and("workspaceGroupId").is(WorkspaceContext.currentGroupId()));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventExplorePageFields(query);
         return mongoTemplate.find(query, ActivityEvent.class).stream()
@@ -6302,7 +6306,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean canViewerLoadEventDetail(ActivityEvent record, String viewerUserId) {
-        if (record == null || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
+        if (record == null || !WorkspaceContext.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
         if (isViewerAdmin(record, viewerUserId) || hasTrackedUserParticipation(record, viewerUserId)) {
@@ -6312,7 +6316,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isVisibleToUntrackedViewer(ActivityEvent record, String activeUserId) {
-        if (!StringUtils.hasText(activeUserId) || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !isCanonicalExploreRecord(record)) {
+        if (!StringUtils.hasText(activeUserId) || !WorkspaceContext.allows(record.getWorkspaceGroupId()) || !isCanonicalExploreRecord(record)) {
             return false;
         }
         String visibility = safeText(record.getVisibility());
@@ -7013,7 +7017,7 @@ public class ActivitiesEventsService {
                 : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         if (StringUtils.hasText(creator.getWorkspaceGroupId())) {
-            var group = mongoTemplate.findById(creator.getWorkspaceGroupId(), com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
+            var group = groupDirectory.findById(creator.getWorkspaceGroupId()).orElse(null);
             if (group != null && !group.priorityEnabled()) document.setAutoInviter(false);
         }
         document.setTicketing(publishedManageMode
@@ -7437,7 +7441,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isViewerAdmin(ActivityEvent record, String viewerUserId) {
-        if (record == null || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
+        if (record == null || !WorkspaceContext.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
         if (viewerUserId.equals(normalizeId(record.getCreatorUserId()))) {

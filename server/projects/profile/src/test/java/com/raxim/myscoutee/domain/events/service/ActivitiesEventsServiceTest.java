@@ -210,6 +210,7 @@ class ActivitiesEventsServiceTest {
                 activityEventSubEventsMapper,
                 activitySubEventResourceMapper,
                 activitySubEventStageRuntimeMapper);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongoTemplate));
         lenient().when(eventCheckoutPricingService.reprice(any())).thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);

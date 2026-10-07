@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import java.text.Normalizer;
 import java.time.Duration;
@@ -37,21 +37,21 @@ import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepo
 public class AbsoluteAffinityService {
     private static final int TOKEN_HASH_MOD = 997;
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
 
     public AbsoluteAffinityService(
             AffinityConfigsRepository affinityConfigsRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups) {
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups) {
         this.communityGroups = communityGroups;
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
     }
 
     public double resolveUserAffinity(UserDto user) {
-        return resolveUserAffinity(user, activeConfig(CommunityGroupProfilesService.currentGroupId()), loadExperienceProfile(user == null ? null : user.id()));
+        return resolveUserAffinity(user, activeConfig(WorkspaceContext.currentGroupId()), loadExperienceProfile(user == null ? null : user.id()));
     }
 
     private double resolveUserAffinity(

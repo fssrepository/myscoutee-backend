@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 @Service
 public class ActivitiesInviteCandidatesService {
     @org.springframework.beans.factory.annotation.Autowired
-    private CommunityGroupsService communityGroups;
+    private Groups communityGroups;
     private final UsersRepository usersRepository;
     private final UserRatesRepository userRatesRepository;
     private final ActivityMembersRepository activityMembersRepository;
@@ -65,7 +65,7 @@ public class ActivitiesInviteCandidatesService {
         }
 
         String ownerType = normalizeOwnerType(request.ownerType());
-        Users activeUser = "community".equals(ownerType)
+        com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile activeUser = "community".equals(ownerType)
                 ? communityGroups.actor(request.activeUserId())
                 : homeUserProfileService.resolveCurrentUser(request.activeUserId());
         String ownerId = normalizeId(request.ownerId());

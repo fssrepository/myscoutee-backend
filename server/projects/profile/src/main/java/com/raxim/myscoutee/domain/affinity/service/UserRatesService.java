@@ -1,10 +1,13 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.community.service.ServiceFeedbackService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -59,6 +62,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class UserRatesService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final RateDistance ZERO_DISTANCE = new RateDistance(0);
@@ -233,7 +238,7 @@ public class UserRatesService {
             addIfText(participantIds, rate.ownerUserId()); addIfText(participantIds, rate.fromUserId()); addIfText(participantIds, rate.toUserId());
         }
         Set<String> workspaceParticipants = usersRepository.findByUserIdIn(participantIds).stream()
-                .filter(user -> CommunityGroupProfilesService.allows(user.getWorkspaceGroupId()))
+                .filter(user -> WorkspaceContext.allows(user.getWorkspaceGroupId()))
                 .map(Users::getUserId).collect(java.util.stream.Collectors.toSet());
         Set<String> campaignIds = request.rates().stream().filter(Objects::nonNull).map(UserRateRecordDto::campaignId)
                 .filter(StringUtils::hasText).collect(java.util.stream.Collectors.toSet());
@@ -242,7 +247,7 @@ public class UserRatesService {
             if (rate != null && StringUtils.hasText(rate.campaignId())) {
                 var campaign = campaigns.get(rate.campaignId());
                 if (campaign == null || !"published".equals(campaign.status()) || !"single".equals(rate.mode())
-                    || !CommunityGroupProfilesService.allows(campaign.workspaceGroupId())
+                    || !WorkspaceContext.allows(campaign.workspaceGroupId())
                     || (!campaign.ownerUserId().equals(rate.ownerUserId()) && !campaign.ownerUserId().equals(rate.toUserId()) && !campaign.ownerUserId().equals(rate.fromUserId()))) {
                     if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
                     continue;
@@ -708,8 +713,7 @@ public class UserRatesService {
                     item.met(), item.ratingSnapshot(), null));
         }
         String workspaceId = currentUser.getWorkspaceGroupId();
-        var group = StringUtils.hasText(workspaceId) ? mongoTemplate.findById(workspaceId,
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class) : null;
+        var group = StringUtils.hasText(workspaceId) ? groupDirectory.findById(workspaceId).orElse(null) : null;
         String defaultDomain = group == null ? "dating" : "work".equals(group.effectiveType()) ? "work"
                 : "community".equals(group.effectiveType()) ? "service-interest" : "dating";
         return filterActivityRateVisibleItems(dedupeRateItems(items.stream().map(item -> item.withRatingDomain(

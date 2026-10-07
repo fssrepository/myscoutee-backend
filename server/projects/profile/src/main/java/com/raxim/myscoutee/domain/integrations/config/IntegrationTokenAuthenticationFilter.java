@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;

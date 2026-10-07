@@ -64,7 +64,7 @@ public class ActivitiesMingleService {
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessPermissions accessControlService;
     private final NotificationDelivery notificationOutboxService;
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     private final EventGeneratorByMingle generator = new EventGeneratorByMingle();
 
     public ActivitiesMingleService(
@@ -75,7 +75,7 @@ public class ActivitiesMingleService {
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
             AccessPermissions accessControlService,
-            NotificationDelivery notificationOutboxService, com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups) {
+            NotificationDelivery notificationOutboxService, com.raxim.myscoutee.domain.groups.api.GroupDirectory groups) {
         this.groups=groups;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMingleSessionsRepository = activityMingleSessionsRepository;
@@ -282,7 +282,7 @@ public class ActivitiesMingleService {
                     Map.of("accepted", eligibleUserIds.size(), "required", 2));
         }
         MingleConfigurationDto config = mingleConfiguration(event);
-        boolean priorityEnabled=event.getWorkspaceGroupId()==null || groups.findById(event.getWorkspaceGroupId()).map(com.raxim.myscoutee.domain.groups.document.CommunityGroup::priorityEnabled).orElse(true);
+        boolean priorityEnabled=event.getWorkspaceGroupId()==null || groups.findById(event.getWorkspaceGroupId()).map(com.raxim.myscoutee.domain.groups.api.GroupView::priorityEnabled).orElse(true);
         MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
                 priorityEnabled?buildPriorityGraph(eligibleUserIds):new FGraph(),
                 eligibleUserIds,

@@ -1,41 +1,40 @@
-package com.raxim.myscoutee.domain.groups.service;
+package com.raxim.myscoutee.domain.accounts.service;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
+import com.raxim.myscoutee.domain.events.api.CommunityMemberships;
+import com.raxim.myscoutee.domain.groups.api.GroupView;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-
-import com.raxim.myscoutee.domain.groups.mapper.CommunityGroupProfileMapper;
+import com.raxim.myscoutee.domain.accounts.mapper.CommunityGroupProfileMapper;
 
 @Service
-public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain.groups.api.WorkspaceMembership {
+public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces {
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final UsersRepository users;
-    private final CommunityGroupsRepository groups;
-    private final ActivityMembersRepository members;
-    public CommunityGroupProfilesService(UsersRepository users, CommunityGroupsRepository groups, ActivityMembersRepository members) {
+    private final GroupDirectory groups;
+    private final CommunityMemberships members;
+    public CommunityGroupProfilesService(UsersRepository users, GroupDirectory groups, CommunityMemberships members) {
         this.users = users; this.groups = groups; this.members = members;
     }
-    public Users admit(CommunityGroup group, String accountId) {
+    public Users admit(GroupView group, String accountId) {
         if (!group.policy().workspace()) return null;
         var existing = users.findByWorkspaceGroupIdAndAccountUserId(group.id(), accountId);
         if (existing.isPresent()) return existing.get();
         var account = users.findByUserId(accountId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return users.save(CommunityGroupProfileMapper.copy(account, group.id()));
     }
-    public void applyPolicy(CommunityGroup group) {
+    public void applyPolicy(GroupView group) {
         if (!group.policy().workspace()) return;
-        var accepted = members.findByOwnerTypeAndOwnerId("community", group.id()).stream()
-                .filter(m -> "accepted".equals(m.getStatus())).map(ActivityMember::getUserId).collect(java.util.stream.Collectors.toSet());
+        var accepted = members.forGroup(group.id()).stream()
+                .filter(m -> "accepted".equals(m.getStatus())).map(CommunityMember::getUserId).collect(java.util.stream.Collectors.toSet());
         var existing = users.findByWorkspaceGroupId(group.id());
         existing.forEach(profile -> accepted.remove(profile.getAccountUserId()));
         if (!accepted.isEmpty()) users.saveAll(users.findByUserIdIn(accepted).stream().map(account -> CommunityGroupProfileMapper.copy(account, group.id())).toList());
@@ -48,11 +47,14 @@ public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain
     }
     public Users select(String accountId, String groupId) {
         var group = groups.findById(groupId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        var member = members.findByOwnerTypeAndOwnerIdAndUserId("community", groupId, accountId).orElse(null);
+        var member = members.member(groupId, accountId).orElse(null);
         if (group.deleted() || !group.policy().workspace() || member == null || !"accepted".equals(member.getStatus()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return users.findByWorkspaceGroupIdAndAccountUserId(groupId, accountId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
+    }
+    @Override public Users activate(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile account, String groupId) {
+        return activate((Users) account, groupId);
     }
     public Users activate(Users account, String groupId) {
         String selectedId = groupId == null || groupId.isBlank() ? null : groupId;
@@ -64,6 +66,10 @@ public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain
     public Users current(Users account) {
         String groupId = account.getActiveWorkspaceGroupId();
         return groupId == null || groupId.isBlank() ? account : select(account.getUserId(), groupId);
+    }
+    @Override public void clearActiveWorkspace(String accountId, String groupId) { users.clearActiveWorkspace(accountId, groupId); }
+    @Override public long attention(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
+        return CommunityGroupProfileMapper.attention((Users) profile);
     }
     public Map<String, Users> profilesByGroup(String accountId) {
         var result = new HashMap<String, Users>();

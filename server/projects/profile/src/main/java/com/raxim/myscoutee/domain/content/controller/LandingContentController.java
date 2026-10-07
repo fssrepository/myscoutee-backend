@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.content.controller;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
@@ -89,7 +91,7 @@ public class LandingContentController {
 
     private String publicGroupId(String groupId) {
         if (groupId == null || groupId.isBlank()) return null;
-        if (com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId)) return groupId;
+        if (com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)) return groupId;
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 

@@ -1,4 +1,6 @@
-package com.raxim.myscoutee.domain.groups.mapper;
+package com.raxim.myscoutee.domain.accounts.mapper;
+
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import java.util.*;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -19,7 +21,7 @@ public final class CommunityGroupProfileMapper {
         user.setProfileDetails(source.getProfileDetails() == null ? List.of() : List.copyOf(source.getProfileDetails()));
         user.setProfileStatus(source.getProfileStatus()); user.setStatus(source.getStatus());
         user.setStatusText(source.getStatusText()); user.setCompletion(source.getCompletion());
-        boolean baseAdmin = com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId)
+        boolean baseAdmin = com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)
                 && "Admin".equalsIgnoreCase(source.getHostTier());
         if (baseAdmin) user.setHostTier("Admin");
         else if ("admin workspace".equalsIgnoreCase(user.getStatusText())) user.setStatusText("");

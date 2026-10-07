@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationParticipantInvite;
@@ -202,7 +202,7 @@ class IntegrationParticipantInviteServiceTest {
             when(profiles.resolveSelectedUserId(actor)).thenReturn(actor);
             when(groups.actor(actor)).thenReturn(recipient);
             assertThat(service.claim(actor, token).groupId()).isEqualTo("group");
-            verify(groups).claimIntegrationInvite(argThat(invite -> invite.reusable() && actor.equals(invite.claimedUserId())), eq(actor));
+            verify(groups).claimIntegrationInvite(argThat(invite -> ((IntegrationParticipantInvite) invite).reusable() && actor.equals(invite.claimedUserId())), eq(actor));
         }
         verify(mongo, never()).findAndModify(any(), any(), any(), any(Class.class));
     }

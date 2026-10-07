@@ -24,6 +24,8 @@ public interface WorkspaceProfile {
     String getHostTier();
     String getStatusText();
     String getEmail();
+    String getInitials();
+    String getGender();
     String getName();
     String getCity();
     List<String> getImages();

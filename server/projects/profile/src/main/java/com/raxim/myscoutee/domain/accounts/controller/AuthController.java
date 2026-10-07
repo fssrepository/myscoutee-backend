@@ -32,7 +32,7 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponse
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 import jakarta.servlet.http.HttpServletResponse;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
 
@@ -44,12 +44,12 @@ import jakarta.validation.Valid;
 public class AuthController {
     private final HomeUserProfileService homeUserProfileService;
     private final UserLoginSessionService userLoginSessionService;
-    private final CommunityGroupsService groups;
+    private final Groups groups;
 
     public AuthController(
             HomeUserProfileService homeUserProfileService,
             UserLoginSessionService userLoginSessionService,
-            CommunityGroupsService groups) {
+            Groups groups) {
         this.groups = groups;
         this.homeUserProfileService = homeUserProfileService;
         this.userLoginSessionService = userLoginSessionService;

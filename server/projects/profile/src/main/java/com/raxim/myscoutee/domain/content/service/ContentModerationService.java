@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.content.service;
 
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
@@ -22,7 +26,11 @@ import static com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.*;
 
 /** Scope-owned write-side counters and durable mutation intents. Reads never rebuild counts from rows. */
 @Service
-public class ContentModerationService {
+public class ContentModerationService implements com.raxim.myscoutee.domain.content.api.ContentRegistration {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.groups.api.GroupModerationProjection groupModeration;
     private final ContentModerationRepository repository;
     private final MongoTemplate mongo;
     private final ChatService chats;
@@ -47,7 +55,7 @@ public class ContentModerationService {
         return page(category, status, cursor, pageSize, null);
     }
     public Page page(String category, String status, String cursor, int pageSize, String groupId) {
-        if (groupId != null && !com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId) && !"all".equals(category) && !GROUP_CATEGORIES.contains(category)) throw invalid();
+        if (groupId != null && !com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId) && !"all".equals(category) && !GROUP_CATEGORIES.contains(category)) throw invalid();
         if (!"all".equals(category)) validate(category, status);
         else if (!STATUSES.contains(status)) throw invalid();
         int limit = Math.max(1, Math.min(50, pageSize));
@@ -63,7 +71,7 @@ public class ContentModerationService {
     public Snapshot settings(SaveSettings request, String groupId) {
         Settings next = request.settings();
         if (next == null || next.delayMinutes() < 0 || next.delayMinutes() > 43200 || next.categories() == null
-                || !(groupId == null || com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId) ? CATEGORIES : GROUP_CATEGORIES).containsAll(next.categories())) throw invalid();
+                || !(groupId == null || com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId) ? CATEGORIES : GROUP_CATEGORIES).containsAll(next.categories())) throw invalid();
         next = new Settings(next.enabled(), next.autoApprove(), next.delayMinutes(), next.categories().stream().distinct().toList());
         State current = state(groupId);
         if (current.revision() != request.expectedRevision() || !repository.compareAndSet(current, next, current.counts(), current.pending())) throw conflict();
@@ -80,7 +88,7 @@ public class ContentModerationService {
         var owner = "group".equals(category) ? null : mongo.findOne(Query.query(Criteria.where("userId").is(ownerId)), com.raxim.myscoutee.domain.accounts.document.Users.class);
         String groupId = owner == null ? null : owner.getWorkspaceGroupId();
         if ("group".equals(category)) {
-            var group = mongo.findById(sourceId, com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
+            var group = groupDirectory.findById(sourceId).orElse(null);
             if (group != null) groupId = group.baseId();
         }
         Settings settings = state(groupId).settings();
@@ -183,19 +191,14 @@ public class ContentModerationService {
         if (item.workspaceGroupId() != null) {
             var state = state(item.workspaceGroupId());
             // Part of the durable write intent: menus read this stored count; they never count content rows.
-            mongo.updateFirst(Query.query(Criteria.where("_id").is(item.workspaceGroupId()).andOperator(new Criteria().orOperator(
-                    Criteria.where("moderationQueueRevision").lt(state.revision()), Criteria.where("moderationQueueRevision").exists(false)))),
-                    new Update().set("moderationPending", snapshot(state).pendingCount())
-                        .set("moderationQueueRevision", state.revision()).inc("version", 1), "communityGroups");
+            groupModeration.queue(item.workspaceGroupId(), state.revision(), snapshot(state).pendingCount());
         }
         if (!mutation.message().isBlank()) chats.sendAdminSupportMessage(item.ownerUserId(), item.reviewedBy(),
                 mutation.adminName(), mutation.adminInitials(), mutation.message(), "warned", "content-moderation:" + mutation.commandId());
     }
     private void applyResource(Item item) {
         if (item.category().equals("group")) {
-            mongo.updateFirst(Query.query(Criteria.where("_id").is(item.sourceId()).andOperator(new Criteria().orOperator(
-                    Criteria.where("moderationVersion").lt(item.version()), Criteria.where("moderationVersion").exists(false)))),
-                    new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version()).inc("version", 1), "communityGroups");
+            groupModeration.resource(item.sourceId(), item.version(), item.status());
             return;
         }
         String collection = switch (item.category()) { case "event" -> "events"; case "asset" -> "assets"; default -> "photoFeedPosts"; };

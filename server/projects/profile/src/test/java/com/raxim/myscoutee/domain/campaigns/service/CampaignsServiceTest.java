@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.campaigns.repository.CampaignsRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,7 +18,6 @@ import com.raxim.myscoutee.domain.campaigns.document.Campaign;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.campaigns.dto.CampaignDtos.*;
-
 
 @org.junit.jupiter.api.Tag("standard")
 class CampaignsServiceTest {

@@ -103,7 +103,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private final com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository;
     private final UserAffinityEdgeService affinityEdgeService;
     private final UsersRepository usersRepository;
@@ -142,7 +142,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     public EventScheduler(
             com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository,
             UserAffinityEdgeService affinityEdgeService,
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups,
             UsersRepository usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
@@ -850,7 +850,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         Set<String> groupIds = events.stream().map(ActivityEvent::getWorkspaceGroupId).filter(StringUtils::hasText)
             .collect(Collectors.toSet());
         Set<String> campaignOrServiceGroupIds = groupIds.isEmpty() ? Set.of() : communityGroups.findByIdIn(groupIds).stream()
-            .filter(group -> !"dating".equals(group.effectiveType())).map(com.raxim.myscoutee.domain.groups.document.CommunityGroup::id)
+            .filter(group -> !"dating".equals(group.effectiveType())).map(com.raxim.myscoutee.domain.groups.api.GroupView::id)
             .collect(Collectors.toSet());
         if (!includeAllAcceptedMembers) events = events.stream().filter(event -> !campaignOrServiceGroupIds.contains(normalizeId(event.getWorkspaceGroupId()))).toList();
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
@@ -1739,7 +1739,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
 
     private Set<String> priorityOffGroups(List<ActivityEvent> events) {
         var ids=events.stream().map(ActivityEvent::getWorkspaceGroupId).filter(StringUtils::hasText).collect(Collectors.toSet());
-        return ids.isEmpty()?Set.of():communityGroups.findByIdIn(ids).stream().filter(g->!g.priorityEnabled()).map(com.raxim.myscoutee.domain.groups.document.CommunityGroup::id).collect(Collectors.toSet());
+        return ids.isEmpty()?Set.of():communityGroups.findByIdIn(ids).stream().filter(g->!g.priorityEnabled()).map(com.raxim.myscoutee.domain.groups.api.GroupView::id).collect(Collectors.toSet());
     }
     private FGraph participantGraph(Set<String> participants) {
         Map<String,Node> nodes=new LinkedHashMap<>();if(participants!=null)participants.forEach(id->nodes.put(id,new Node(id)));return new FGraph(nodes,List.of());

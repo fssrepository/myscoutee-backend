@@ -17,10 +17,9 @@ public class AssetAvailabilityService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository events;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups;
+    private com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.access.api.AccessPermissions access;
-
 
     public AssetAvailabilityService(
             AssetAvailabilityRepository availabilityRepository,

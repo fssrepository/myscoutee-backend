@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.content.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
@@ -58,7 +60,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "admin2@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()));
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     private final ConfigProperties configProperties;
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
@@ -73,7 +75,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private final NotificationDelivery notificationOutboxService;
 
     public AdminModerationService(
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory groups,
             ConfigProperties configProperties,
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
@@ -313,14 +315,14 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         if (!StringUtils.hasText(requestedId) || account.id().equals(requestedId)) return account;
         Users profile = usersRepository.findByUserId(requestedId).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
         if (!account.id().equals(profile.getAccountUserId())
-            || !com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(profile.getWorkspaceGroupId())
+            || !com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(profile.getWorkspaceGroupId())
             || !"Admin".equalsIgnoreCase(profile.getHostTier())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return withStoredAdminProfile(new AdminUserDto(profile.getUserId(), account.name(), account.initials(), account.email(), account.headline(), account.about(), account.images()));
     }
 
     public boolean isBaseAdminProfile(String userId) {
         return usersRepository.findByUserId(userId).map(user ->
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(user.getWorkspaceGroupId())
+                com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(user.getWorkspaceGroupId())
                 && "Admin".equalsIgnoreCase(user.getHostTier())).orElse(false);
     }
 
@@ -342,7 +344,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             String groupId = actor == null ? null : actor.getWorkspaceGroupId();
             // Job summaries belong to their base-group instance. Member activity from an
             // independent workspace remains outside the base-profile statistics.
-            if (groupId != null && !com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId)
+            if (groupId != null && !com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)
                     && !"jobs".equals(event.domain())) continue;
             String jobGroup = event.tags() == null ? null : event.tags().get("baseGroupId");
             if (jobGroup != null) {
@@ -356,8 +358,8 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     private String reportBaseGroup(Users user, Map<String, String> types) {
         String workspace = user == null ? null : user.getWorkspaceGroupId();
-        return com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(workspace) ? workspace
-                : com.raxim.myscoutee.domain.groups.document.CommunityGroup.baseIdForType(types.get(workspace));
+        return com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(workspace) ? workspace
+                : com.raxim.myscoutee.domain.groups.api.BaseGroups.baseIdForType(types.get(workspace));
     }
 
     private void requireScope(String adminId, String userId) {

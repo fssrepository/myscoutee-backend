@@ -76,7 +76,7 @@ class AdminModerationServiceTest {
     void setUp() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new AdminModerationService(
-                org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)),
                 configProperties,
                 reportsRepository,
                 feedbackRepository,

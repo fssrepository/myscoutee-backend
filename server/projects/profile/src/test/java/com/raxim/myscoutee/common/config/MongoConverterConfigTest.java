@@ -168,6 +168,18 @@ class MongoConverterConfigTest {
 
     @Test
     @org.junit.jupiter.api.Tag("standard")
+    void groupPolicyRetainsHistoricalNestedIdentityAndFieldValues() {
+        var converter = domainConverter();
+        var policy = new com.raxim.myscoutee.domain.groups.dto.GroupPolicy(true, true, java.util.List.of("profile.name"));
+        var document = new Document();
+        converter.write(new Payload(policy), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.document.CommunityGroup$Policy");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(policy);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
     void encryptedEnvelopeRetainsHistoricalNestedIdentityAndFieldValues() {
         var converter = domainConverter();
         var envelope = new com.raxim.myscoutee.domain.platform.dto.EncryptedSecret();

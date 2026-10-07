@@ -5,12 +5,11 @@ import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
 import com.raxim.myscoutee.domain.integrations.document.McpEventSubscription;
 import com.raxim.myscoutee.domain.integrations.repository.McpEventSubscriptionsRepository;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;

@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.community.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
@@ -7,10 +9,10 @@ import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
+import com.raxim.myscoutee.domain.groups.api.GroupView;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+import com.raxim.myscoutee.domain.groups.api.CommunityAuthority;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.time.Instant;
@@ -25,7 +27,7 @@ import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.*;
 
 import com.raxim.myscoutee.domain.community.mapper.CommunityCaseMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
-import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
+import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CommunityCasesService {
@@ -33,13 +35,13 @@ public class CommunityCasesService {
     @org.springframework.beans.factory.annotation.Autowired
     private ScheduledMessages scheduledMessages;
     private final ServiceCasesRepository cases;
-    private final CommunityAccessService access;
-    private final CommunityGroupsRepository groups;
+    private final CommunityAuthority access;
+    private final GroupDirectory groups;
     private final UsersRepository users;
     private final NotificationDelivery notifications;
     private final ChatService chats;
     private final ServiceOfferingsRepository offerings;
-    public CommunityCasesService(ServiceCasesRepository cases, CommunityAccessService access, CommunityGroupsRepository groups,
+    public CommunityCasesService(ServiceCasesRepository cases, CommunityAuthority access, GroupDirectory groups,
             UsersRepository users, NotificationDelivery notifications, ChatService chats, ServiceOfferingsRepository offerings) {
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
     }
@@ -57,7 +59,7 @@ public class CommunityCasesService {
     }
     public ServiceCase visible(String actor, String id) {
         var c = cases.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
-        if (!CommunityGroup.COMMUNITY_BASE_ID.equals(c.baseGroupId()) || (!c.participantAccountIds().contains(actor) || "removed".equals(c.membershipStatus(actor))) && !canManage(c, actor) && !(c.communityId() != null && access.admin(c.communityId(), actor)))
+        if (!BaseGroups.COMMUNITY_BASE_ID.equals(c.baseGroupId()) || (!c.participantAccountIds().contains(actor) || "removed".equals(c.membershipStatus(actor))) && !canManage(c, actor) && !(c.communityId() != null && access.admin(c.communityId(), actor)))
             throw error(HttpStatus.NOT_FOUND);
         return c;
     }
@@ -71,16 +73,16 @@ public class CommunityCasesService {
         if (!TYPES.containsAll(types)) throw error(HttpStatus.BAD_REQUEST);
         var managed = access.managedGroups(actor);
         int page = page(cursor), limit = Math.max(1, Math.min(50, size));
-        var rows = cases.visible(CommunityGroup.COMMUNITY_BASE_ID, actor, managed, statuses, types,
+        var rows = cases.visible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, statuses, types,
                 PageRequest.of(page, limit, Sort.by(Sort.Order.desc("updatedAtIso"), Sort.Order.asc("id"))));
-        long total = cases.countVisible(CommunityGroup.COMMUNITY_BASE_ID, actor, managed, statuses, types);
+        long total = cases.countVisible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, statuses, types);
         var groupIds = rows.stream().map(ServiceCase::communityId).filter(Objects::nonNull).distinct().toList();
-        var groupsById = groups.findByIdIn(groupIds).stream().collect(Collectors.toMap(CommunityGroup::id, g -> g));
+        var groupsById = groups.findByIdIn(groupIds).stream().collect(Collectors.toMap(GroupView::id, g -> g));
         var people = users.findByUserIdIn(rows.stream().flatMap(c -> displayAccounts(c).stream()).collect(Collectors.toSet()))
                 .stream().collect(Collectors.toMap(Users::getUserId, u -> u));
         Map<String, Long> context = new java.util.HashMap<>();
         context.put("total", 0L);
-        for (var bucket : cases.bucketCounts(CommunityGroup.COMMUNITY_BASE_ID, actor, managed)) {
+        for (var bucket : cases.bucketCounts(BaseGroups.COMMUNITY_BASE_ID, actor, managed)) {
             context.put(bucket.status() + ":" + bucket.caseType(), bucket.count());
             if (!"trash".equals(bucket.status())) context.merge("total", bucket.count(), Long::sum);
         }
@@ -97,18 +99,18 @@ public class CommunityCasesService {
         String communityId = old == null ? blank(r.communityId()) : old.communityId();
         if (communityId == null && (old == null || old.scheduledTaskId() == null)) throw error(HttpStatus.BAD_REQUEST);
         if (communityId != null) access.requireMember(communityId, actor);
-        var roster = communityId == null ? List.<ActivityMember>of() : access.roster(communityId);
+        var roster = communityId == null ? List.<CommunityMember>of() : access.roster(communityId);
         boolean manager = old == null ? access.admin(communityId, actor) : canManage(old, actor);
         boolean all = r.audienceAll();
         if (!manager && (all || r.audienceAccountIds() != null && r.audienceAccountIds().stream().anyMatch(id -> !actor.equals(id)))) throw error(HttpStatus.FORBIDDEN);
         var audience = communityId == null ? List.of(actor) : access.audience(roster, all, r.audienceAccountIds());
-        var admins = roster.stream().filter(m -> "Admin".equals(m.getRole())).map(ActivityMember::getUserId).toList();
+        var admins = roster.stream().filter(m -> "Admin".equals(m.getRole())).map(CommunityMember::getUserId).toList();
         String now = Instant.now().toString();
         var participants = new LinkedHashSet<>(audience); participants.addAll(admins); participants.add(old == null ? actor : old.ownerAccountId());
         if (old != null) { participants.addAll(old.participantAccountIds()); participants.removeIf(id -> "removed".equals(old.memberStates().get(id))); }
         var memberStates = old == null ? new LinkedHashMap<String, String>() : new LinkedHashMap<>(old.memberStates());
         for (String id : participants) if (old == null || !old.participantAccountIds().contains(id)) memberStates.put(id, id.equals(actor) ? "accepted" : "invited");
-        var saved = persist(new ServiceCase(old == null ? UUID.randomUUID().toString() : old.id(), CommunityGroup.COMMUNITY_BASE_ID,
+        var saved = persist(new ServiceCase(old == null ? UUID.randomUUID().toString() : old.id(), BaseGroups.COMMUNITY_BASE_ID,
                 communityId, old == null ? actor : old.ownerAccountId(), r.title().trim(), r.description().trim(), r.caseType(), old == null ? "open" : old.status(),
                 all, audience, List.copyOf(participants), participants.stream().filter(id -> !actor.equals(id) && (old == null || old.membershipStatus(id) == null || List.of("accepted", "invited").contains(old.membershipStatus(id)))).toList(),
                 old == null ? List.of() : old.support(), old == null ? List.of() : old.recommendations(), old == null ? List.of() : old.offers(),
@@ -187,7 +189,7 @@ public class CommunityCasesService {
                 access.requireBaseMember(r.providerAccountId());
                 if (r.serviceId() != null) {
                     var offering = offerings.findById(r.serviceId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
-                    if (!CommunityGroup.COMMUNITY_BASE_ID.equals(offering.baseGroupId()) || !"published".equals(offering.status())
+                    if (!BaseGroups.COMMUNITY_BASE_ID.equals(offering.baseGroupId()) || !"published".equals(offering.status())
                             || !offering.ownerAccountId().equals(r.providerAccountId()) && !offering.staffAccountIds().contains(r.providerAccountId())) throw error(HttpStatus.BAD_REQUEST);
                 }
                 if ("recommend".equals(action)) {
@@ -244,14 +246,14 @@ public class CommunityCasesService {
     public void notifyChange(ServiceCase c, String actor, String action, String occurrenceKey) {
         chats.syncCaseChat(c);
         var recipientAccounts = c.notifiedParticipantAccountIds().stream().filter(id -> !id.equals(actor)).toList();
-        var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID, recipientAccounts)
+        var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID, recipientAccounts)
                 .stream().map(Users::getUserId).toList();
         if (recipients.isEmpty()) return;
         String kind = "case-" + action;
         var payload = new LinkedHashMap<String, String>();
-        payload.put("workspaceGroupId", CommunityGroup.COMMUNITY_BASE_ID); payload.put("caseId", c.id());
+        payload.put("workspaceGroupId", BaseGroups.COMMUNITY_BASE_ID); payload.put("caseId", c.id());
         payload.put("senderUserId", actor); payload.put("notification_message_key", "notification.kind." + kind + ".message");
-        JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID, () -> notifications.enqueueOnce(kind + ":" + occurrenceKey,
+        JobGroupContext.run(BaseGroups.COMMUNITY_BASE_ID, () -> notifications.enqueueOnce(kind + ":" + occurrenceKey,
                 new NotificationDelivery.NotificationIntent(kind, "case", c.id(), "participants", recipients, c.title(), c.title(),
                         "/game?caseId=" + java.net.URLEncoder.encode(c.id(), java.nio.charset.StandardCharsets.UTF_8), null,
                         "/assets/logo/heart.webp", "case:" + c.id(), payload, actor)));

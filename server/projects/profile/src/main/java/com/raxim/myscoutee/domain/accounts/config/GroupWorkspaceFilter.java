@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.groups.config;
+package com.raxim.myscoutee.domain.accounts.config;
 
 import java.io.IOException;
 import org.springframework.beans.factory.ObjectProvider;
@@ -7,7 +7,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationToken;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 

@@ -1360,6 +1360,7 @@ class ChatServiceTest {
     private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
                 new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
         return service;
     }
 }

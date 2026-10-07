@@ -1,9 +1,11 @@
 package com.raxim.myscoutee.domain.content.controller;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,9 @@ public class ContentModerationController {
     private final MongoTemplate mongo;
     private final AssetsService assets;
     private final ActivityEventDetailMapper events;
-    private final CommunityGroupsService groups;
+    private final Groups groups;
     public ContentModerationController(AdminModerationService admins, ContentModerationService moderation,
-            MongoTemplate mongo, AssetsService assets, ActivityEventDetailMapper events, CommunityGroupsService groups) {
+            MongoTemplate mongo, AssetsService assets, ActivityEventDetailMapper events, Groups groups) {
         this.admins = admins; this.moderation = moderation; this.mongo = mongo; this.assets = assets; this.events = events;
         this.groups = groups;
     }
@@ -71,7 +73,7 @@ public class ContentModerationController {
     }
     private com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto actor(String requestedId, String groupId) {
         if (groupId == null) return admins.resolveAdminActor(requestedId);
-        if (com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId)
+        if (com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)
                 && admins.isBaseAdminProfile(requestedId)) return admins.resolveAdminActor(requestedId);
         var account = groups.actor(requestedId);
         groups.requireAdmin(account, groupId);

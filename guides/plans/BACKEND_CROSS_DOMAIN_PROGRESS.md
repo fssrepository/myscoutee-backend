@@ -39,7 +39,7 @@ may need changes together.
 | ---: | --- | ---: | ---: | --- | --- |
 | 1 | accounts | 4 | 23 | In progress: notification recipient, preference and counter API | First boundary tests passed; remaining account boundaries pending |
 | 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
-| 3 | groups | 4 | 7 | Pending; group-name API and notification index ownership touched | Whole domain not separated |
+| 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests passed; domain checkpoint below |
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
 | 6 | assets | 1 | 2 | Pending | — |
@@ -49,7 +49,7 @@ may need changes together.
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
 | 12 | content | 2 | 5 | Pending; existing admin-access methods exposed through interface | Whole domain not separated |
-| 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; email checkpoint |
+| 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
 | 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; `c5dceafa1` |
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 8/21 — #2 notifications, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 9/21 — #2 notifications, #3 groups, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -880,7 +880,7 @@ Exact files in the `c5dceafa1` (including owner and consumer updates):
 - E2E and measured latency equivalence are not yet proven. Local read-only views are not
   detached remote contracts; extracting a process still requires transport mapping.
 
-Exact files in the email checkpoint (including moves, shared value and consumer changes):
+Exact files in the `636d4c239` (including moves, shared value and consumer changes):
 
 - `server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/MongoConverterConfig.java`
 - `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountInactivity.java`
@@ -960,3 +960,180 @@ Exact files in the email checkpoint (including moves, shared value and consumer 
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/mapper/OperatorConfigurationMapperTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/DeploymentConfigurationCryptoTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/DeploymentFirebaseRuntimeTest.java`
+
+
+### #3 groups complete
+
+Group consumers now use `Groups`, `CommunityAuthority`, `GroupDirectory`,
+`GroupAdministration`, and read-only `GroupView`. The existing group services
+remain the implementation. Group policy values live in `groups.dto`; the Mongo
+alias mapper preserves the historical nested `CommunityGroup$Policy` identity.
+
+Profile admission, selection, policy enforcement, presentation and workspace
+filtering belong to accounts. The event and asset owners now stamp their own
+workspace field through typed Mongo listeners. Both reuse the account directory;
+neither accepts a caller-supplied workspace as authoritative. Group counters and
+moderation projections now write through the group owner, retaining the exact
+conditional revision predicates, increments and timestamps.
+
+`CommunityMemberships` owns the community-member queries and conditional
+transitions in events. Transfer objects are detached from stored members. The
+expected status, role and action timestamp still guard each transition; a lost
+compare-and-set is not reported as a successful transition. Group report
+persistence and duplicate handling move to the content owner. No endpoint or
+external request/response field changes.
+
+The announcement closure query previously joined `communityGroups`. It now reads
+candidate announcements in ordered batches of at most 100 and asks the group
+owner for eligible IDs in one batch. Filtering still happens before the final
+100-result processing limit. No announcement is mutated while candidate pages
+are being collected. Missing, deleted, under-review, base and non-community groups
+remain excluded. This removes the cross-domain Mongo join but adds round trips;
+it is a specific performance target for E2E verification.
+
+| Area | Functional regression risk | Severe slowdown risk | E2E focus |
+| --- | --- | --- | --- |
+| Workspace admission, selected identity and policy | High impact if incorrect | Low; previous profile queries and saves retained | Account/base/private workspace switching, missing membership, profile privacy policy |
+| Invites, restoration and membership transitions | Medium | Low; same conditional update and batch reads, small detached DTO copies | Invitation replay, join approval, removal, concurrent role/status changes, active selection cleanup |
+| Group moderation and pending counters | Medium | Low; identical targeted Mongo updates | Approve/reject, revision races, badges and successful-transition-only increments |
+| Event and asset workspace stamping | Medium | Low; one owner lookup, same as before | Save/reload, missing owner, untrusted workspace field |
+| Group policy serialization | Medium | Low | Historical BSON read, current write and external JSON fields |
+| Announcement voting closure selection | Medium | Medium for a large backlog of ineligible groups; each candidate batch adds one group query | More than 100 ineligible candidates ahead of eligible rows; output limit, retries and notification acknowledgement |
+| Job workspace inventory | Medium | Low; same projected Mongo query and per-job memoization | Dating, Work and Community scope; one inventory read per job |
+| Group report registration | Low | Low; same durable write and duplicate handling | Repeated report key, telemetry and validation |
+
+`WorkspaceProfile` remains an owner-issued local read-only view. Accounts accepts
+that view back for its existing in-memory profile activation/presentation path,
+so no extra read is added. That adapter requires an accounts-issued view and is
+not a detached HTTP contract. A future remote account adapter must replace this
+local identity handoff. `GroupView` is also an in-process read-only contract, not
+a claim of independent deployment.
+
+Verification: **1671 standard + embedded tests passed, zero failures/errors/skips**.
+This includes conditional membership guards, detached member mutation, workspace
+listener ownership, historical policy BSON identity, closure eligibility before
+limit, workspace job memoization, invitation replay, group counters, and both
+incoming/outgoing group boundary checks. The dev watcher compiled successfully
+and the dev application restarted healthy. E2E stability and latency remain
+unmeasured; no E2E application has run alongside dev.
+
+Exact files in this domain checkpoint (paths relative to the repository root;
+removed paths are recorded because their responsibilities moved):
+
+- `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/WebSecurityConfig.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountWorkspaces.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfilePresentation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/config/GroupWorkspaceFilter.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/controller/AuthController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/mapper/CommunityGroupProfileMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/security/firebase/FirebaseAuthenticationToken.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/CommunityGroupPolicyCallback.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/CommunityGroupProfilesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/NavigatorContactsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AbsoluteAffinityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityCalculationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserRatesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetAvailabilityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetWorkspaceDocumentListener.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatWebSocketSessionRegistry.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/mapper/CommunityCaseMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/repository/CommunityAnnouncementsRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CaseAppointmentsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityCasesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityScheduledTasksService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceFeedbackService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceOfferingsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/CommunityReports.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/ContentRegistration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/controller/ContentModerationController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/controller/LandingContentController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/repository/PhotoFeedRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/AdminModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/CommunityReportService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/ContentModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/CommunityMemberships.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/controller/ActivitiesMembersController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/dto/CommunityMember.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesInviteCandidatesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMingleService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/CommunityMembershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventScheduler.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventWorkspaceDocumentListener.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/CommunityAuthority.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupAdministration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupCounters.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupModerationProjection.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupView.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/Groups.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/config/GroupWorkspaceFilter.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/document/CommunityGroup.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/dto/CommunityGroupDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/dto/GroupPolicy.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/mapper/CommunityGroupMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/mapper/CommunityGroupProfileMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/repository/CommunityGroupsRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityAccessService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityGroupPolicyCallback.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityGroupProfilesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityGroupsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityWorkspaceDocumentListener.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/GroupAdministrationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/GroupCounterService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/GroupDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/GroupModerationProjectionService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/api/ParticipantInvitation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/config/IntegrationTokenAuthenticationFilter.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationReadController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/document/IntegrationParticipantInvite.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationCapabilitiesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationParticipantInviteService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/McpAuthorizationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/McpEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/service/PaymentService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeService.java`
+- `server/projects/profile/src/main/resources/mongo-domain-types.properties`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/WebSecurityConfigBootstrapTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountWarningWorkerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AffinityCalculationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeTaskServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/UserRatesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/campaigns/service/CampaignsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityCasesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityScheduledTasksServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/AdminModerationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/ContentModerationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskServiceIntegrationTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesMingleServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/CommunityMembershipServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventSchedulerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/config/GroupWorkspaceFilterTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/document/CommunityGroupInviteClaimTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/document/CommunityGroupWorkspaceSelectionTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/mapper/CommunityGroupMapperTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/service/GroupTestSupport.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/service/WorkspaceOwnershipListenersTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/config/IntegrationTokenAuthenticationFilterTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationCapabilitiesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationParticipantInviteServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/McpAuthorizationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/McpEventsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/notifications/service/NotificationOutboxServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/EventCheckoutBasketServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/ExchangeRateTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeServiceTest.java`

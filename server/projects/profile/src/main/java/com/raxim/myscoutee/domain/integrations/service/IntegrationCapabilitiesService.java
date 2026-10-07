@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationConnectDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationGroupScopeDto;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
@@ -24,13 +24,13 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 /** Describes the authenticated integration, without probing any write endpoint. */
 @Service
 public class IntegrationCapabilitiesService {
-    private final CommunityGroupsService groups;
-    private final CommunityGroupsRepository groupRepository;
+    private final Groups groups;
+    private final GroupDirectory groupRepository;
     private final AccessPermissions access;
     private final IntegrationRoleAccessService roles;
 
-    public IntegrationCapabilitiesService(CommunityGroupsService groups,
-            CommunityGroupsRepository groupRepository, AccessPermissions access, IntegrationRoleAccessService roles) {
+    public IntegrationCapabilitiesService(Groups groups,
+            GroupDirectory groupRepository, AccessPermissions access, IntegrationRoleAccessService roles) {
         this.groups = groups;
         this.groupRepository = groupRepository;
         this.access = access; this.roles = roles;

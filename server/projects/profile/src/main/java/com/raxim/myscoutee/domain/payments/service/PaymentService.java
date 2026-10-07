@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -1441,7 +1441,7 @@ public class PaymentService {
                 .and("deletedAtIso").in(null, "")), Users.class);
         Users payer = participants.stream().filter(user -> payerId.equals(user.getUserId())).findFirst().orElse(null);
         Users recipient = participants.stream().filter(user -> recipientId.equals(user.getUserId())).findFirst().orElse(null);
-        if (!CommunityGroupProfilesService.sameWorkspace(payer, recipient))
+        if (!WorkspaceContext.sameWorkspace(payer, recipient))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member unavailable.");
         String id = "cash:" + recipientId + ":" + request.requestId();
         String note = request.note() == null ? "" : request.note().trim();

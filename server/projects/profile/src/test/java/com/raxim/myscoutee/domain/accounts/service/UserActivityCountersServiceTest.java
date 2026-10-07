@@ -79,8 +79,8 @@ class UserActivityCountersServiceTest {
 
     @Test
     void communityMemberCounterAppliesTheTransitionDeltaWithoutLoadingOrRecountingMembers() {
-        service.applyCommunityMemberDelta("community-a", -1);
-        service.applyCommunityMemberDelta("community-a", 0);
+        new com.raxim.myscoutee.domain.groups.service.GroupCounterService(mongoTemplate).applyCommunityMemberDelta("community-a", -1);
+        new com.raxim.myscoutee.domain.groups.service.GroupCounterService(mongoTemplate).applyCommunityMemberDelta("community-a", 0);
         var query = ArgumentCaptor.forClass(Query.class);
         var update = ArgumentCaptor.forClass(Update.class);
         verify(mongoTemplate).updateFirst(query.capture(), update.capture(),

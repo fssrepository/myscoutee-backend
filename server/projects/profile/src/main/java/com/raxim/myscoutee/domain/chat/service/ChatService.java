@@ -1,10 +1,15 @@
 package com.raxim.myscoutee.domain.chat.service;
 
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 
 import com.raxim.myscoutee.domain.chat.document.ContactChatAccess;
 
@@ -17,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -36,7 +40,6 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -57,7 +60,6 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.assets.document.Asset;
@@ -112,6 +114,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
 public class ChatService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     public static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
@@ -546,7 +550,7 @@ public class ChatService {
                 users.put(user.getUserId(), user);
         }
         Users actor = users.get(actorId);
-        if (targetIds.stream().anyMatch(id -> !CommunityGroupProfilesService.sameWorkspace(actor, users.get(id))))
+        if (targetIds.stream().anyMatch(id -> !WorkspaceContext.sameWorkspace(actor, users.get(id))))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
         return users;
     }
@@ -658,7 +662,7 @@ public class ChatService {
         Users actor = findUser(userId);
         if (a == null || actor == null || !"published".equals(a.status()) || !a.communityId().equals(actor.getWorkspaceGroupId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement unavailable.");
-        var group = mongoTemplate.findById(a.communityId(), CommunityGroup.class);
+        var group = groupDirectory.findById(a.communityId()).orElse(null);
         var roster = activityMembersRepository.findByOwnerTypeAndOwnerId("community", a.communityId());
         String account = firstNonBlank(actor.getAccountUserId(), userId);
         if (group == null || group.deleted() || group.awaitingOwner() || !roster.stream().anyMatch(m -> account.equals(m.getUserId()) && "accepted".equals(m.getStatus())))
@@ -702,8 +706,8 @@ public class ChatService {
 
     private boolean caseChatAccess(ServiceCase serviceCase, Users actor, String caseOfferId) {
         return serviceCase != null && actor != null
-                && CommunityGroup.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
-                && CommunityGroup.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
+                && BaseGroups.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
+                && BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
                 && (StringUtils.hasText(caseOfferId) ? serviceCase.offerChatParticipantAccountIds(caseOfferId) : serviceCase.chatParticipantAccountIds()).contains(
                         StringUtils.hasText(actor.getAccountUserId()) ? actor.getAccountUserId() : actor.getUserId());
     }
@@ -711,7 +715,7 @@ public class ChatService {
     /** Case and quotation groups share the existing Cases channel and membership lifecycle. */
     public List<Chat> syncCaseChat(ServiceCase serviceCase) {
         var profiles = usersRepository.findByWorkspaceGroupIdAndAccountUserIdIn(
-                CommunityGroup.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
+                BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
         var byAccount = profiles.stream().collect(java.util.stream.Collectors.toMap(
                 u -> StringUtils.hasText(u.getAccountUserId()) ? u.getAccountUserId() : u.getUserId(), Users::getUserId, (a,b) -> a));
         java.util.function.Function<List<String>, List<String>> memberProfiles = ids -> ids.stream().map(byAccount::get).filter(Objects::nonNull).toList();
@@ -1301,11 +1305,10 @@ public class ChatService {
         }
         Users adminUser = findUser(normalizedAdminUserId);
         String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
-        var targetGroup = StringUtils.hasText(workspaceGroupId) ? mongoTemplate.findById(workspaceGroupId,
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class) : null;
+        var targetGroup = StringUtils.hasText(workspaceGroupId) ? groupDirectory.findById(workspaceGroupId).orElse(null) : null;
         boolean appModeration = isAdminUser(adminUser);
         if (appModeration) {
-            String targetBase = normalizeId(com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(workspaceGroupId)
+            String targetBase = normalizeId(com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(workspaceGroupId)
                     ? workspaceGroupId : targetGroup == null ? null : targetGroup.baseId());
             if (!targetBase.equals(normalizeId(adminUser.getWorkspaceGroupId())))
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case unavailable in this base group.");

@@ -16,6 +16,9 @@ class JobGroupScopeServiceTest {
         var community = new org.bson.Document("_id", "private-homes").append("groupType", "community");
         when(mongo.find(any(Query.class), eq(org.bson.Document.class), eq("communityGroups"))).thenReturn(List.of(community));
         var service = new JobGroupScopeService(mongo);
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", directory);
         JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID, () -> {
             assertThat(service.matchesWorkspace("private-homes")).isTrue();
             assertThat(service.matchesWorkspace(CommunityGroup.COMMUNITY_BASE_ID)).isTrue();

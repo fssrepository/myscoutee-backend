@@ -39,7 +39,7 @@ class IntegrationCapabilitiesServiceTest {
     private final CommunityGroupsRepository repository = mock(CommunityGroupsRepository.class);
     private final AccessControlService access = mock(AccessControlService.class);
     private final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
-    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(groups, repository, access, roles);
+    private final IntegrationCapabilitiesService service = new IntegrationCapabilitiesService(groups, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(repository), access, roles);
 
     private UsernamePasswordAuthenticationToken authentication(Users profile) {
         var auth = new UsernamePasswordAuthenticationToken(new FirebasePrincipal(profile.getUserId(), null, "INTEGRATION", profile), null, List.of());

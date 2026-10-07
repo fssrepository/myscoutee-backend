@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
@@ -8,8 +12,6 @@ import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
-import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.payments.service.AffiliateService;
 import com.raxim.myscoutee.domain.payments.service.SavedPaymentMethodsService;
 import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
@@ -53,9 +55,7 @@ import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
-import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
 import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
 import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
@@ -119,7 +119,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
-public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.CurrentProfile {
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 
@@ -229,7 +229,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     @org.springframework.context.annotation.Lazy
     private SavedPaymentMethodsService savedPaymentMethods;
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroupsRepository;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository serviceCasesRepository;
     private final UsersRepository usersRepository;
@@ -301,7 +301,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             AccessPermissions accessControlService,
             AssetsService assetsService,
             AffiliateService affiliateService,
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroupsRepository) {
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
@@ -963,7 +963,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return snapshot.visibleGameUsers().stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
-                .filter(user -> CommunityGroupProfilesService.sameWorkspace(activeUser, user))
+                .filter(user -> WorkspaceContext.sameWorkspace(activeUser, user))
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !metUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
@@ -1293,7 +1293,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         String selectorRole = normalizeDemoSelectorRole(role);
         Map<LocationCoordinatesDto, Boolean> locationChecks = new java.util.HashMap<>();
         var allUsers = usersRepository.findAllByOrderByNameAscUserIdAsc();
-        var baseIds = com.raxim.myscoutee.domain.groups.document.CommunityGroup.BASE_IDS;
+        var baseIds = com.raxim.myscoutee.domain.groups.api.BaseGroups.BASE_IDS;
         var baseTypes = new java.util.HashMap<String, String>();
         communityGroupsRepository.findByIdIn(baseIds).stream()
                 .filter(group -> !group.deleted() && group.policy().workspace())
@@ -1341,6 +1341,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    @Override public UserDto present(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
+        return toUserDto((Users) profile);
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.groups.api.GroupAdministration groupAdministration;
 
     public UserDto toUserDto(Users user) {
         return toUserDto(user, true);
@@ -2249,12 +2255,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private int communityCaseCount(Users user) {
         if (serviceCasesRepository == null || user.getWorkspaceGroupId() == null) return 0;
-        boolean community = com.raxim.myscoutee.domain.groups.document.CommunityGroup.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
+        boolean community = com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
                 || communityGroupsRepository.findById(user.getWorkspaceGroupId()).map(g -> "community".equals(g.effectiveType())).orElse(false);
         if (!community) return 0;
         String account = StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId();
-        var managed = CommunityAccessService.managedGroups(account, activityMembersRepository, communityGroupsRepository);
-        long total = serviceCasesRepository.bucketCounts(com.raxim.myscoutee.domain.groups.document.CommunityGroup.COMMUNITY_BASE_ID, account, managed)
+        var managed = groupAdministration.managedGroups(account);
+        long total = serviceCasesRepository.bucketCounts(com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID, account, managed)
                 .stream().filter(bucket -> !"trash".equals(bucket.status())).mapToLong(bucket -> bucket.count()).sum();
         return (int) Math.min(Integer.MAX_VALUE, total);
     }

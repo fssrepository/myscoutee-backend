@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.groups.mapper;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public final class CommunityGroupMapper {
         if ("pending".equals(status)) return "pending";
         return "accepted".equals(status) ? "participation" : "explore";
     }
-    public static Group toDto(CommunityGroup group, Users owner, Users viewer,
-            List<ActivityMember> members, long activity) {
-        ActivityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && (List.of("accepted", "pending").contains(m.getStatus()) || restorableMembership(m))).findFirst().orElse(null);
+    public static Group toDto(CommunityGroup group, WorkspaceProfile owner, WorkspaceProfile viewer,
+            List<CommunityMember> members, long activity) {
+        CommunityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && (List.of("accepted", "pending").contains(m.getStatus()) || restorableMembership(m))).findFirst().orElse(null);
         boolean admin = own != null && "accepted".equals(own.getStatus()) && "Admin".equals(own.getRole());
         return new Group(group.id(), group.ownerUserId(), owner.getName(), avatar(owner),
                 group.name(), group.description(), group.imageUrl(), group.category(), group.visibility(),
@@ -33,39 +33,39 @@ public final class CommunityGroupMapper {
                     + (admin ? group.pendingModerationCount() : 0), distance(owner, viewer), group.moderationStatus(),
                 admin ? group.pendingModerationCount() : 0, admin && group.moderationQueueRevision() != null ? group.moderationQueueRevision() : 0, membersActivity(group, own), group.lifecycleStatus(), canTakeOver(group, members, own), canRestoreGroup(group, own), group.effectiveType());
     }
-    public static boolean restorableMembership(ActivityMember member) {
+    public static boolean restorableMembership(CommunityMember member) {
         return member != null && ("blocked".equals(member.getStatus()) || "deleted".equals(member.getStatus()) && member.getRequestKind() == null
             && "remove".equals(member.getCommunityAction()) && member.getUserId().equals(member.getCommunityActor()));
     }
-    public static boolean canRestoreGroup(CommunityGroup group, ActivityMember own) {
+    public static boolean canRestoreGroup(CommunityGroup group, CommunityMember own) {
         return group.deleted() && restorableMembership(own) && "Admin".equals(own.getRole())
             && "deleted".equals(own.getStatus());
     }
-    public static boolean canTakeOver(CommunityGroup group, List<ActivityMember> members, ActivityMember own) {
+    public static boolean canTakeOver(CommunityGroup group, List<CommunityMember> members, CommunityMember own) {
         return group.awaitingOwner() && own != null && "accepted".equals(own.getStatus())
             && ("Admin".equals(own.getRole()) || members.stream().noneMatch(m -> "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole())));
     }
-    public static long membersActivity(CommunityGroup group, ActivityMember own) {
+    public static long membersActivity(CommunityGroup group, CommunityMember own) {
         if (own == null || !List.of("accepted", "pending").contains(own.getStatus())) return 0;
         long updates = own.getCommunityUpdates() == null ? 0 : Math.max(0, own.getCommunityUpdates());
         return updates + pendingMembers(group, own);
     }
-    private static long pendingMembers(CommunityGroup group, ActivityMember own) {
+    private static long pendingMembers(CommunityGroup group, CommunityMember own) {
         if (own == null) return 0;
         if ("accepted".equals(own.getStatus()) && "Admin".equals(own.getRole())) return group.pendingMemberCount();
         return "pending".equals(own.getStatus()) && "invite".equals(own.getRequestKind()) ? 1 : 0;
     }
-    public static ActivityMemberEntryDto member(ActivityMember m, Users user, String actor) {
+    public static ActivityMemberEntryDto member(CommunityMember m, WorkspaceProfile user, String actor) {
         return new ActivityMemberEntryDto(m.getId(), m.getUserId(), user.getName(), user.getInitials(),
                 user.getGender(), user.getCity(), "", m.getRole(), m.getStatus(), m.getPendingSource(),
                 m.getRequestKind(), m.getInvitedByUserId(), actor.equals(m.getInvitedByUserId()),
                 m.getMetAtIso(), m.getActionAtIso(), m.getMetWhere(), avatar(user), null, List.of(),
                 m.getUpdatedDate(), null, null, null, null, m.getManagerGrantedByUserId(), m.getOrganizerOnly(), m.getVotingEligible());
     }
-    private static String avatar(Users user) {
+    private static String avatar(WorkspaceProfile user) {
         return user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().getFirst();
     }
-    private static Double distance(Users owner, Users viewer) {
+    private static Double distance(WorkspaceProfile owner, WorkspaceProfile viewer) {
         var a = owner.getLocationCoordinates(); var b = viewer.getLocationCoordinates();
         if (a == null || b == null || a.latitude() == null || a.longitude() == null
                 || b.latitude() == null || b.longitude() == null) return null;

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.common.config;
 
-import com.raxim.myscoutee.domain.groups.config.GroupWorkspaceFilter;
+import com.raxim.myscoutee.domain.accounts.config.GroupWorkspaceFilter;
 import com.raxim.myscoutee.domain.integrations.config.AdminClientAuthenticationFilter;
 import com.raxim.myscoutee.domain.integrations.config.IntegrationTokenAuthenticationFilter;
 
@@ -44,7 +44,7 @@ public class WebSecurityConfig {
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
-    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService> groupProfiles;
+    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles;
     @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,

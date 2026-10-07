@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.community.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
@@ -8,8 +10,7 @@ import com.raxim.myscoutee.domain.community.document.ServiceOffering;
 import com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
-import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
+import com.raxim.myscoutee.domain.groups.api.CommunityAuthority;
 
 import java.time.Instant;
 import java.util.*;
@@ -21,25 +22,25 @@ import com.raxim.myscoutee.domain.community.dto.ServiceOfferingDtos.*;
 import com.raxim.myscoutee.domain.community.dto.CommunityAnnouncementDtos.Page;
 
 import com.raxim.myscoutee.domain.accounts.api.ProfileDistances;
-import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
+import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class ServiceOfferingsService {
     public static final List<String> CATEGORIES = List.of("maintenance", "plumbing", "electrical", "cleaning", "renovation", "fitness", "education", "other");
     public static final List<String> FREQUENCIES = List.of("One-time", "Daily", "Weekly", "Bi-weekly", "Monthly", "Yearly");
     private final ServiceOfferingsRepository services;
-    private final CommunityAccessService access;
+    private final CommunityAuthority access;
     private final UsersRepository users;
     private final UserRatesRepository rates;
     private final ActivityMembersRepository members;
-    public ServiceOfferingsService(ServiceOfferingsRepository services, CommunityAccessService access, UsersRepository users, UserRatesRepository rates, ActivityMembersRepository members) {
+    public ServiceOfferingsService(ServiceOfferingsRepository services, CommunityAuthority access, UsersRepository users, UserRatesRepository rates, ActivityMembersRepository members) {
         this.services=services;this.access=access;this.users=users;this.rates=rates;this.members=members;
     }
     public String actor(String userId) {return access.actor(userId);}
-    public String profileId(String account) {return "group:"+CommunityGroup.COMMUNITY_BASE_ID+":"+account;}
+    public String profileId(String account) {return "group:"+BaseGroups.COMMUNITY_BASE_ID+":"+account;}
     public ServiceOffering visible(String actor,String id) {
         var s=services.findById(id).orElseThrow(()->error(HttpStatus.NOT_FOUND));
-        if (!CommunityGroup.COMMUNITY_BASE_ID.equals(s.baseGroupId()) || !s.ownerAccountId().equals(actor) && !"published".equals(s.status())) throw error(HttpStatus.NOT_FOUND);
+        if (!BaseGroups.COMMUNITY_BASE_ID.equals(s.baseGroupId()) || !s.ownerAccountId().equals(actor) && !"published".equals(s.status())) throw error(HttpStatus.NOT_FOUND);
         return s;
     }
     private Users profile(String account) {return users.findByUserId(profileId(account)).orElseThrow(()->error(HttpStatus.NOT_FOUND));}
@@ -53,14 +54,14 @@ public class ServiceOfferingsService {
         boolean own="own".equals(scope);
         if (!Set.of("own","discover","all").contains(scope) || !Set.of("draft","published","trash").contains(status)
             || distance!=null && (!Double.isFinite(distance)||distance<1||distance>20000)) throw error(HttpStatus.BAD_REQUEST);
-        var records=own?services.findByBaseGroupIdAndOwnerAccountIdAndStatus(CommunityGroup.COMMUNITY_BASE_ID,actor,status)
-            :services.findByBaseGroupIdAndStatus(CommunityGroup.COMMUNITY_BASE_ID,"published");
+        var records=own?services.findByBaseGroupIdAndOwnerAccountIdAndStatus(BaseGroups.COMMUNITY_BASE_ID,actor,status)
+            :services.findByBaseGroupIdAndStatus(BaseGroups.COMMUNITY_BASE_ID,"published");
         String needle=search==null?"":search.trim().toLowerCase(Locale.ROOT);
         records=records.stream().filter(s->ids==null||ids.contains(s.id())).filter(s->!"discover".equals(scope)||!actor.equals(s.ownerAccountId()))
             .filter(s->category==null||category.isBlank()||category.equals(s.category()))
             .filter(s->needle.isEmpty()||(s.title()+"\n"+s.description()).toLowerCase(Locale.ROOT).contains(needle)).toList();
         var ownerIds=records.stream().map(ServiceOffering::ownerAccountId).distinct().toList();
-        var owners=users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID,ownerIds).stream()
+        var owners=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,ownerIds).stream()
             .filter(u->!Set.of("inactive","blocked","deleted").contains(Objects.toString(u.getProfileStatus(),"")))
             .collect(Collectors.toMap(Users::getAccountUserId,u->u));
         var viewer=profile(actor);var ratings=ratingByOwner(actor);
@@ -88,7 +89,7 @@ public class ServiceOfferingsService {
         if(old!=null&&!Objects.equals(old.version(),r.version()))throw error(HttpStatus.CONFLICT);
         if (r.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(url, profileId(actor)))) throw error(HttpStatus.BAD_REQUEST);
         String now=Instant.now().toString();
-        var s=persist(new ServiceOffering(old==null?UUID.randomUUID().toString():old.id(),CommunityGroup.COMMUNITY_BASE_ID,actor,
+        var s=persist(new ServiceOffering(old==null?UUID.randomUUID().toString():old.id(),BaseGroups.COMMUNITY_BASE_ID,actor,
             r.title().trim(),r.description().trim(),r.category(),List.copyOf(r.imageUrls()),r.maxDistanceKm(),r.languages().stream().distinct().toList(),r.staffAccountIds().stream().distinct().toList(),
             r.slotsEnabled(),r.slotsEnabled()?Instant.parse(r.startAtIso()).toString():null,r.slotsEnabled()?Instant.parse(r.endAtIso()).toString():null,r.frequency(),r.durationMinutes(),List.copyOf(r.slotTemplates()),r.pricing(),
             old==null?"draft":old.status(),old==null?now:old.createdAtIso(),now,old==null?null:old.version(),Objects.toString(r.sourceLink(), "").trim()));
@@ -115,7 +116,7 @@ public class ServiceOfferingsService {
             ||r.languages()==null||r.languages().size()>20||r.languages().stream().anyMatch(Objects::isNull)||r.staffAccountIds()==null||r.staffAccountIds().isEmpty()||r.staffAccountIds().size()>100
             ||r.maxDistanceKm()!=null&&(!Double.isFinite(r.maxDistanceKm())||r.maxDistanceKm()<1||r.maxDistanceKm()>20000)
             ||r.frequency()==null||!FREQUENCIES.contains(r.frequency())||r.durationMinutes()<5||r.durationMinutes()>1440||r.slotTemplates()==null||r.slotTemplates().size()>366)throw error(HttpStatus.BAD_REQUEST);
-        var roster=members.findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn("community", CommunityGroup.COMMUNITY_BASE_ID, "accepted", r.staffAccountIds(), org.springframework.data.domain.PageRequest.of(0,100)).getContent().stream().map(ActivityMember::getUserId).collect(Collectors.toSet());
+        var roster=members.findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn("community", BaseGroups.COMMUNITY_BASE_ID, "accepted", r.staffAccountIds(), org.springframework.data.domain.PageRequest.of(0,100)).getContent().stream().map(ActivityMember::getUserId).collect(Collectors.toSet());
         if(!roster.containsAll(r.staffAccountIds()))throw error(HttpStatus.BAD_REQUEST);
         if(r.slotsEnabled())try {
             var start=Instant.parse(r.startAtIso());var end=Instant.parse(r.endAtIso());

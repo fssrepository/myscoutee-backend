@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessDto;
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessSnapshot;
@@ -177,7 +177,7 @@ public class NavigatorContactsService {
 
     private boolean availableChatPeer(Users owner, Users peer) {
         return owner != null && peer != null && !StringUtils.hasText(peer.getDeletedAtIso())
-                && !"deleted".equalsIgnoreCase(peer.getProfileStatus()) && CommunityGroupProfilesService.sameWorkspace(owner, peer);
+                && !"deleted".equalsIgnoreCase(peer.getProfileStatus()) && WorkspaceContext.sameWorkspace(owner, peer);
     }
 
     private ContactChatAccessDto chatAccessDto(
@@ -211,7 +211,7 @@ public class NavigatorContactsService {
             return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
         Users record = usersRepository.findByUserId(targetUserId).orElse(null);
-        if (record == null || record.getWorkspaceGroupId() != null && !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId())) {
+        if (record == null || record.getWorkspaceGroupId() != null && !WorkspaceContext.allows(record.getWorkspaceGroupId())) {
             return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
         String viewer = accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());

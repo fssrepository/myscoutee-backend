@@ -85,7 +85,6 @@ import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketValidationReq
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserPaymentTotalsDto;
-import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.AssetRequestBookingDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.AssetMemberRequestDto;
@@ -510,7 +509,7 @@ public class AssetsService {
         var groupIds = snapshots.stream().map(snapshot -> snapshot.event().getWorkspaceGroupId())
                 .filter(Objects::nonNull).distinct().toList();
         if (!groupIds.isEmpty()) mongoTemplate.find(Query.query(Criteria.where("_id").in(groupIds)),
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class)
+                com.raxim.myscoutee.domain.groups.api.GroupView.class)
                 .forEach(group -> workspaceNames.put(group.id(), group.name()));
         List<AssetTicketDto> ordered = snapshots.stream()
                 .map(snapshot -> toAssetTicketDto(snapshot, creatorsByUserId, workspaceNames))

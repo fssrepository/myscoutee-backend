@@ -302,7 +302,7 @@ class AffinityCalculationServiceTest {
                 affinityConfigsRepository,
                 usersRepository,
                 userRatesRepository,
-                userExperienceProfilesRepository, communityGroups);
+                userExperienceProfilesRepository, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups));
     }
 
     private UserExperienceProfile experienceProfile(String userId, String type, String org) {

@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.chat.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -9,7 +11,6 @@ import java.util.Objects;
 import java.util.Set;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import java.util.concurrent.ConcurrentHashMap;
@@ -140,8 +141,8 @@ public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.
         try {
             MongoSessionModeContext.set(mode);
             var serviceCase = cases.findById(chatId.substring("c-case-".length())).orElse(null);
-            if (serviceCase == null || !CommunityGroup.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())) return Set.of();
-            return users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds())
+            if (serviceCase == null || !BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())) return Set.of();
+            return users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds())
                     .stream().map(u -> u.getUserId()).collect(java.util.stream.Collectors.toSet());
         } finally { MongoSessionModeContext.set(previous); }
     }

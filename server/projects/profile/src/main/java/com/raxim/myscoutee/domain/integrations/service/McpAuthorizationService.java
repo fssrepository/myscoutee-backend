@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationTokensRepository;
 import com.raxim.myscoutee.domain.integrations.repository.McpAuthorizationRepository;
 import com.raxim.myscoutee.domain.integrations.repository.McpOAuthClientsRepository;
@@ -43,7 +43,7 @@ public class McpAuthorizationService {
     private final IntegrationTokensRepository tokens;
     private final McpAuthorizationRepository grants;
     private final UsersRepository users;
-    private final CommunityGroupsRepository groups;
+    private final GroupDirectory groups;
     private final IntegrationPublicEndpointResolver endpoint;
     private final McpOAuthClientsRepository registrations;
     private final CommunityGroupProfilesService profiles;
@@ -51,7 +51,7 @@ public class McpAuthorizationService {
     private final SecureRandom random = new SecureRandom();
 
     public McpAuthorizationService(IntegrationTokenService keys, IntegrationTokensRepository tokens,
-            McpAuthorizationRepository grants, UsersRepository users, CommunityGroupsRepository groups,
+            McpAuthorizationRepository grants, UsersRepository users, GroupDirectory groups,
             IntegrationPublicEndpointResolver endpoint, McpOAuthClientsRepository registrations,
             CommunityGroupProfilesService profiles, ConfigProperties config) {
         this.keys = keys; this.tokens = tokens; this.grants = grants; this.users = users;

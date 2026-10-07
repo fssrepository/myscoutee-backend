@@ -29,7 +29,7 @@ public class AffinityCalculationService {
     private static final String SOCIAL_SEPARATED_FRIENDS = "separated-friends";
     private static final double EARTH_RADIUS_METERS = 6_371_000d;
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final UsersRepository usersRepository;
     private final UserRatesRepository userRatesRepository;
@@ -40,7 +40,7 @@ public class AffinityCalculationService {
             UsersRepository usersRepository,
             UserRatesRepository userRatesRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups) {
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups) {
         this.communityGroups = communityGroups;
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.usersRepository = usersRepository;

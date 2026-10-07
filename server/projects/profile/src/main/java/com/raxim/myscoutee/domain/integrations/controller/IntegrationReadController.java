@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.community.service.CommunityCasesService;
 import com.raxim.myscoutee.domain.community.service.CommunityScheduledTasksService;
 import com.raxim.myscoutee.domain.community.service.ServiceOfferingsService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
 
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 public class IntegrationReadController {
     private final IntegrationCapabilitiesService access;
     private final ActivitiesEventsService events;
-    private final CommunityGroupsService groups;
+    private final Groups groups;
     private final ChatService chats;
     private final NotificationInbox notifications;
     private final UserRatesService ratings;
@@ -35,7 +35,7 @@ public class IntegrationReadController {
     private final CommunityCasesService cases;
     private final CommunityAnnouncementsService announcements;
     private final CommunityScheduledTasksService tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, CommunityGroupsService groups, ChatService chats, NotificationInbox notifications, UserRatesService ratings, AssetsService assets, Campaigns campaigns, ServiceOfferingsService services, CommunityCasesService cases, CommunityAnnouncementsService announcements, CommunityScheduledTasksService tasks) {
+    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, Groups groups, ChatService chats, NotificationInbox notifications, UserRatesService ratings, AssetsService assets, Campaigns campaigns, ServiceOfferingsService services, CommunityCasesService cases, CommunityAnnouncementsService announcements, CommunityScheduledTasksService tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

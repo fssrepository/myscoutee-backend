@@ -1,11 +1,12 @@
 package com.raxim.myscoutee.domain.community.service;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.document.ServiceFeedback;
 import com.raxim.myscoutee.domain.community.document.ServiceOffering;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.time.Instant;
@@ -21,7 +22,7 @@ import org.springframework.data.mongodb.core.query.*;
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.Page;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
-import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
+import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 /** Completion workers create feedback eligibility; reads never synthesize missing eligibility. */
 @Service
@@ -46,7 +47,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
         int count=0;
         var reviewers=closed.activeParticipantAccountIds().stream().filter(id -> !closed.support().stream().anyMatch(s -> s.accountId().equals(id))
                 || closed.audienceAccountIds().contains(id) || id.equals(closed.ownerAccountId())).toList();
-        var profiles=users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID,reviewers);
+        var profiles=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,reviewers);
         var profileIds=profiles.stream().collect(Collectors.groupingBy(Users::getAccountUserId,Collectors.mapping(Users::getUserId,Collectors.toList())));
         var active=new HashSet<>(closed.activeParticipantAccountIds());
         var touched=new HashSet<String>();
@@ -55,7 +56,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
             for (String viewer : reviewers) {
                 if (viewer.equals(provider.accountId())) continue;
                 String id=UUID.nameUUIDFromBytes((closed.id()+"\0"+provider.accountId()+"\0"+viewer).getBytes(StandardCharsets.UTF_8)).toString();
-                var update=new Update().setOnInsert("baseGroupId",CommunityGroup.COMMUNITY_BASE_ID)
+                var update=new Update().setOnInsert("baseGroupId",BaseGroups.COMMUNITY_BASE_ID)
                     .setOnInsert("caseId",closed.id()).setOnInsert("caseTitle",closed.title()).setOnInsert("serviceId",provider.serviceId())
                     .setOnInsert("providerAccountId",provider.accountId()).setOnInsert("viewerAccountId",viewer)
                     .setOnInsert("status","pending").setOnInsert("criteria",Map.of()).setOnInsert("comment","")
@@ -66,7 +67,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
             }
         }
         var aggregation=org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation(
-            org.springframework.data.mongodb.core.aggregation.Aggregation.match(Criteria.where("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID).and("viewerAccountId").in(touched).and("status").is("pending")),
+            org.springframework.data.mongodb.core.aggregation.Aggregation.match(Criteria.where("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID).and("viewerAccountId").in(touched).and("status").is("pending")),
             org.springframework.data.mongodb.core.aggregation.Aggregation.group("viewerAccountId").count().as("count"));
         var pending=mongo.aggregate(aggregation,"serviceFeedback",org.bson.Document.class).getMappedResults().stream()
             .collect(Collectors.toMap(r->r.getString("_id"),r->((Number)r.get("count")).intValue()));
@@ -76,7 +77,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
     public Page<Item> page(String actor,String bucket,int pageSize,String cursor) {
         if (!Set.of("pending","feedbacked","removed","received").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
         int page=CommunityCasesService.page(cursor),size=Math.max(1,Math.min(50,pageSize));
-        Criteria scope=Criteria.where("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID)
+        Criteria scope=Criteria.where("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID)
             .and("received".equals(bucket)?"providerAccountId":"viewerAccountId").is(actor)
             .and("status").is("received".equals(bucket)?"feedbacked":bucket);
         long total=mongo.count(Query.query(scope),ServiceFeedback.class);
@@ -85,11 +86,11 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
         var names=users.findByUserIdIn(ids).stream().collect(Collectors.toMap(Users::getUserId,u->Objects.toString(u.getName(),"")));
         var serviceIds=rows.stream().map(ServiceFeedback::serviceId).filter(Objects::nonNull).distinct().toList();
         var offerings=serviceIds.isEmpty() ? Map.<String,ServiceOffering>of() : mongo.find(Query.query(
-            Criteria.where("_id").in(serviceIds).and("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID)
+            Criteria.where("_id").in(serviceIds).and("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID)
                 .orOperator(Criteria.where("status").is("published"), Criteria.where("ownerAccountId").is(actor), Criteria.where("staffAccountIds").is(actor))),
             ServiceOffering.class).stream().collect(Collectors.toMap(ServiceOffering::id,s->s));
         Map<String,Long> context=new LinkedHashMap<>();
-        for(String key:List.of("pending","feedbacked","removed","received")) context.put(key,mongo.count(Query.query(Criteria.where("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID)
+        for(String key:List.of("pending","feedbacked","removed","received")) context.put(key,mongo.count(Query.query(Criteria.where("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID)
             .and("received".equals(key)?"providerAccountId":"viewerAccountId").is(actor).and("status").is("received".equals(key)?"feedbacked":key)),ServiceFeedback.class));
         return new Page<>(rows.stream().map(r->{
             var offering=r.serviceId()==null?null:offerings.get(r.serviceId());
@@ -100,7 +101,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
     }
     public void action(String actor,String id,Command command) {
         ServiceFeedback row=mongo.findById(id,ServiceFeedback.class);
-        if(row==null || !CommunityGroup.COMMUNITY_BASE_ID.equals(row.baseGroupId()) || !actor.equals(row.viewerAccountId())) throw error(HttpStatus.NOT_FOUND);
+        if(row==null || !BaseGroups.COMMUNITY_BASE_ID.equals(row.baseGroupId()) || !actor.equals(row.viewerAccountId())) throw error(HttpStatus.NOT_FOUND);
         var query=Query.query(Criteria.where("_id").is(id).and("status").is(row.status()));
         Update update;
         if("submit".equals(command.action())) {
@@ -121,7 +122,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
             || comment==null || comment.length()>160) throw error(HttpStatus.BAD_REQUEST);
     }
     public Stats stats(String provider) {
-        var match=org.springframework.data.mongodb.core.aggregation.Aggregation.match(Criteria.where("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID).and("providerAccountId").is(provider).and("status").is("feedbacked"));
+        var match=org.springframework.data.mongodb.core.aggregation.Aggregation.match(Criteria.where("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID).and("providerAccountId").is(provider).and("status").is("feedbacked"));
         var group=org.springframework.data.mongodb.core.aggregation.Aggregation.group().count().as("count").avg("average").as("average");
         for(String key:CRITERIA) group=group.avg("criteria."+key).as(key);
         var row=mongo.aggregate(org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation(match,group),"serviceFeedback",org.bson.Document.class).getUniqueMappedResult();
@@ -130,16 +131,16 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
         return new Stats(((Number)row.get("count")).longValue(),((Number)row.get("average")).doubleValue(),values);
     }
     private void refreshCounter(String actor) {
-        int count=(int)mongo.count(Query.query(Criteria.where("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID).and("viewerAccountId").is(actor).and("status").is("pending")),ServiceFeedback.class);
-        for(var profile:users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID,List.of(actor))) counters.updateServiceFeedbackPending(profile.getUserId(),count);
+        int count=(int)mongo.count(Query.query(Criteria.where("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID).and("viewerAccountId").is(actor).and("status").is("pending")),ServiceFeedback.class);
+        for(var profile:users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,List.of(actor))) counters.updateServiceFeedbackPending(profile.getUserId(),count);
     }
     private void notifyOnce(String id,String kind,String actor,String title,String caseId) {
-        var recipients=users.findByWorkspaceGroupIdAndAccountUserIdIn(CommunityGroup.COMMUNITY_BASE_ID,List.of(actor)).stream().map(Users::getUserId).toList();
+        var recipients=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,List.of(actor)).stream().map(Users::getUserId).toList();
         notifyOnce(id,kind,recipients,title,caseId);
     }
     private void notifyOnce(String id,String kind,List<String> recipients,String title,String caseId) {
         if(recipients.isEmpty())return;
-        JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID,()->notifications.enqueueOnce(kind+":"+id,new NotificationDelivery.NotificationIntent(kind,"service-feedback",id,"participant",recipients,title,title,
-            "/game?serviceFeedback=true&workspaceGroupId="+CommunityGroup.COMMUNITY_BASE_ID,null,null,"service-feedback:"+id,Map.of("workspaceGroupId",CommunityGroup.COMMUNITY_BASE_ID,"caseId",caseId,"notification_message_key","notification.kind."+kind+".message"),null)));
+        JobGroupContext.run(BaseGroups.COMMUNITY_BASE_ID,()->notifications.enqueueOnce(kind+":"+id,new NotificationDelivery.NotificationIntent(kind,"service-feedback",id,"participant",recipients,title,title,
+            "/game?serviceFeedback=true&workspaceGroupId="+BaseGroups.COMMUNITY_BASE_ID,null,null,"service-feedback:"+id,Map.of("workspaceGroupId",BaseGroups.COMMUNITY_BASE_ID,"caseId",caseId,"notification_message_key","notification.kind."+kind+".message"),null)));
     }
 }

@@ -25,6 +25,9 @@ class ContentModerationServiceTest {
     State state = new State("global", 0, new Settings(true, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of());
     final AdminUserDto admin = new AdminUserDto("admin", "Admin", "", "", "", "", List.of());
     @BeforeEach void persistence() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
+
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupModeration", new com.raxim.myscoutee.domain.groups.service.GroupModerationProjectionService(mongo));
         when(repository.state()).thenAnswer(call -> state);
         when(repository.state(anyString())).thenAnswer(call -> groupStates.computeIfAbsent(call.getArgument(0),
                 id -> new State("group:" + id, 0, new Settings(false, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of())));
