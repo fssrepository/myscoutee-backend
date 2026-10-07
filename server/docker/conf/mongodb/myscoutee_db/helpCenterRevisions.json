@@ -81340,11 +81340,11 @@
     "isSystem": true
   },
   {
-    "_id": "community:explanation-admin.navigation-en-v1",
+    "_id": "community:explanation-admin.navigation-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Administration menu",
     "summary": "Administration menu",
@@ -81361,15 +81361,7 @@
         "icon": "help_outline",
         "title": "Notifications",
         "blurb": "",
-        "contentHtml": "<p>Open your inbox, mark messages read and manage alert muting.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Notification button",
-        "blurb": "",
-        "contentHtml": "<p>Show or hide the floating notification button. Your inbox and delivery settings remain available.</p>"
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
       },
       {
         "id": "guide-explanations",
@@ -81498,11 +81490,11 @@
     "isSystem": true
   },
   {
-    "_id": "community:explanation-admin.navigation-hu-v1",
+    "_id": "community:explanation-admin.navigation-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Adminisztrációs menü",
     "summary": "Adminisztrációs menü",
@@ -81519,15 +81511,7 @@
         "icon": "help_outline",
         "title": "Értesítések",
         "blurb": "",
-        "contentHtml": "<p>Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Értesítési gomb",
-        "blurb": "",
-        "contentHtml": "<p>A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők.</p>"
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
       },
       {
         "id": "guide-explanations",
@@ -81661,7 +81645,7 @@
     "lang": "en",
     "languageLabel": "English",
     "version": 1,
-    "active": true,
+    "active": false,
     "title": "Administration menu",
     "summary": "Administration menu",
     "description": "Administration menu",
@@ -81819,7 +81803,7 @@
     "lang": "hu",
     "languageLabel": "Magyar",
     "version": 1,
-    "active": true,
+    "active": false,
     "title": "Adminisztrációs menü",
     "summary": "Adminisztrációs menü",
     "description": "Adminisztrációs menü",
@@ -81972,11 +81956,11 @@
     "isSystem": true
   },
   {
-    "_id": "work:explanation-admin.navigation-en-v1",
+    "_id": "work:explanation-admin.navigation-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Administration menu",
     "summary": "Administration menu",
@@ -81993,15 +81977,7 @@
         "icon": "help_outline",
         "title": "Notifications",
         "blurb": "",
-        "contentHtml": "<p>Open your inbox, mark messages read and manage alert muting.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Notification button",
-        "blurb": "",
-        "contentHtml": "<p>Show or hide the floating notification button. Your inbox and delivery settings remain available.</p>"
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
       },
       {
         "id": "guide-explanations",
@@ -82130,11 +82106,11 @@
     "isSystem": true
   },
   {
-    "_id": "work:explanation-admin.navigation-hu-v1",
+    "_id": "work:explanation-admin.navigation-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Adminisztrációs menü",
     "summary": "Adminisztrációs menü",
@@ -82151,15 +82127,7 @@
         "icon": "help_outline",
         "title": "Értesítések",
         "blurb": "",
-        "contentHtml": "<p>Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Értesítési gomb",
-        "blurb": "",
-        "contentHtml": "<p>A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők.</p>"
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
       },
       {
         "id": "guide-explanations",
@@ -87530,11 +87498,11 @@
     "isSystem": true
   },
   {
-    "_id": "community:explanation-operator.navigation-en-v1",
+    "_id": "community:explanation-operator.navigation-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Operator menu",
     "summary": "Operator menu",
@@ -87551,15 +87519,7 @@
         "icon": "help_outline",
         "title": "Notifications",
         "blurb": "",
-        "contentHtml": "<p>Open your inbox, mark messages read and manage alert muting.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Notification button",
-        "blurb": "",
-        "contentHtml": "<p>Show or hide the floating notification button. Your inbox and delivery settings remain available.</p>"
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
       },
       {
         "id": "guide-explanations",
@@ -87584,11 +87544,11 @@
     "isSystem": true
   },
   {
-    "_id": "community:explanation-operator.navigation-hu-v1",
+    "_id": "community:explanation-operator.navigation-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Operátori menü",
     "summary": "Operátori menü",
@@ -87605,15 +87565,7 @@
         "icon": "help_outline",
         "title": "Értesítések",
         "blurb": "",
-        "contentHtml": "<p>Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Értesítési gomb",
-        "blurb": "",
-        "contentHtml": "<p>A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők.</p>"
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
       },
       {
         "id": "guide-explanations",
@@ -87643,7 +87595,7 @@
     "lang": "en",
     "languageLabel": "English",
     "version": 1,
-    "active": true,
+    "active": false,
     "title": "Operator menu",
     "summary": "Operator menu",
     "description": "Operator menu",
@@ -87697,7 +87649,7 @@
     "lang": "hu",
     "languageLabel": "Magyar",
     "version": 1,
-    "active": true,
+    "active": false,
     "title": "Operátori menü",
     "summary": "Operátori menü",
     "description": "Operátori menü",
@@ -87746,11 +87698,11 @@
     "isSystem": true
   },
   {
-    "_id": "work:explanation-operator.navigation-en-v1",
+    "_id": "work:explanation-operator.navigation-en-v2",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Operator menu",
     "summary": "Operator menu",
@@ -87767,15 +87719,7 @@
         "icon": "help_outline",
         "title": "Notifications",
         "blurb": "",
-        "contentHtml": "<p>Open your inbox, mark messages read and manage alert muting.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Notification button",
-        "blurb": "",
-        "contentHtml": "<p>Show or hide the floating notification button. Your inbox and delivery settings remain available.</p>"
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
       },
       {
         "id": "guide-explanations",
@@ -87800,11 +87744,11 @@
     "isSystem": true
   },
   {
-    "_id": "work:explanation-operator.navigation-hu-v1",
+    "_id": "work:explanation-operator.navigation-hu-v2",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 1,
+    "version": 2,
     "active": true,
     "title": "Operátori menü",
     "summary": "Operátori menü",
@@ -87821,15 +87765,7 @@
         "icon": "help_outline",
         "title": "Értesítések",
         "blurb": "",
-        "contentHtml": "<p>Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Értesítési gomb",
-        "blurb": "",
-        "contentHtml": "<p>A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők.</p>"
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
       },
       {
         "id": "guide-explanations",
@@ -88922,11 +88858,11 @@
     "isSystem": true
   },
   {
-    "_id": "community:explanation-navigation.menu-en-v8",
+    "_id": "community:explanation-navigation.menu-en-v9",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 8,
+    "version": 9,
     "active": true,
     "title": "Avatar menu",
     "summary": "Choose a workspace or application section.",
@@ -88959,7 +88895,7 @@
         "icon": "help_outline",
         "title": "Updates requiring attention",
         "blurb": "",
-        "contentHtml": "<p>Open notifications here even after hiding the bell. The badge counts unread updates. Drag the bell or lightbulb to move it; drop on the red X to hide it.</p>"
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
       },
       {
         "id": "guide-explanations",
@@ -89200,14 +89136,6 @@
         "title": "Services",
         "blurb": "",
         "contentHtml": "<p>Manage your service offers and staff, or inspect your provider calendar. Publishing makes an offer available in discovery.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Notification button",
-        "blurb": "",
-        "contentHtml": "<p>Show or hide the floating notification button. Your inbox and delivery settings remain available.</p>"
       }
     ],
     "contextKey": "navigation.menu",
@@ -89216,11 +89144,11 @@
     "isSystem": false
   },
   {
-    "_id": "community:explanation-navigation.menu-hu-v8",
+    "_id": "community:explanation-navigation.menu-hu-v9",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 8,
+    "version": 9,
     "active": true,
     "title": "Avatar menü",
     "summary": "Munkatér és alkalmazásfelület választása.",
@@ -89253,7 +89181,7 @@
         "icon": "help_outline",
         "title": "Figyelmet igénylő frissítések",
         "blurb": "",
-        "contentHtml": "<p>Innen a csengő elrejtése után is eléred az értesítéseket. A jelvény az olvasatlanokat számolja. A csengő és a villanykörte húzható; piros X-re ejtve elrejthető.</p>"
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
       },
       {
         "id": "guide-explanations",
@@ -89494,14 +89422,6 @@
         "title": "Szolgáltatások",
         "blurb": "",
         "contentHtml": "<p>Kezeld a szolgáltatáshirdetéseidet és közreműködőidet, vagy nézd meg a szolgáltatói naptárat. A közzétett hirdetéseket a kereső felület is megjeleníti.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Értesítési gomb",
-        "blurb": "",
-        "contentHtml": "<p>A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők.</p>"
       }
     ],
     "contextKey": "navigation.menu",
@@ -89515,7 +89435,7 @@
     "lang": "en",
     "languageLabel": "English",
     "version": 8,
-    "active": true,
+    "active": false,
     "title": "Avatar menu",
     "summary": "Choose a workspace or application section.",
     "description": "Understand account tools, community features and activity states.",
@@ -89808,7 +89728,7 @@
     "lang": "hu",
     "languageLabel": "Magyar",
     "version": 8,
-    "active": true,
+    "active": false,
     "title": "Avatar menü",
     "summary": "Munkatér és alkalmazásfelület választása.",
     "description": "Fiókeszközök, közösségi funkciók és aktivitási állapotok.",
@@ -90096,11 +90016,11 @@
     "baseGroupId": null
   },
   {
-    "_id": "work:explanation-navigation.menu-en-v8",
+    "_id": "work:explanation-navigation.menu-en-v9",
     "documentType": "explanation",
     "lang": "en",
     "languageLabel": "English",
-    "version": 8,
+    "version": 9,
     "active": true,
     "title": "Avatar menu",
     "summary": "Choose a workspace or application section.",
@@ -90133,7 +90053,7 @@
         "icon": "help_outline",
         "title": "Updates requiring attention",
         "blurb": "",
-        "contentHtml": "<p>Open notifications here even after hiding the bell. The badge counts unread updates. Drag the bell or lightbulb to move it; drop on the red X to hide it.</p>"
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
       },
       {
         "id": "guide-explanations",
@@ -90374,14 +90294,6 @@
         "title": "Services",
         "blurb": "",
         "contentHtml": "<p>Manage your service offers and staff, or inspect your provider calendar. Publishing makes an offer available in discovery.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Notification button",
-        "blurb": "",
-        "contentHtml": "<p>Show or hide the floating notification button. Your inbox and delivery settings remain available.</p>"
       }
     ],
     "contextKey": "navigation.menu",
@@ -90390,11 +90302,11 @@
     "isSystem": false
   },
   {
-    "_id": "work:explanation-navigation.menu-hu-v8",
+    "_id": "work:explanation-navigation.menu-hu-v9",
     "documentType": "explanation",
     "lang": "hu",
     "languageLabel": "Magyar",
-    "version": 8,
+    "version": 9,
     "active": true,
     "title": "Avatar menü",
     "summary": "Munkatér és alkalmazásfelület választása.",
@@ -90427,7 +90339,7 @@
         "icon": "help_outline",
         "title": "Figyelmet igénylő frissítések",
         "blurb": "",
-        "contentHtml": "<p>Innen a csengő elrejtése után is eléred az értesítéseket. A jelvény az olvasatlanokat számolja. A csengő és a villanykörte húzható; piros X-re ejtve elrejthető.</p>"
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
       },
       {
         "id": "guide-explanations",
@@ -90668,14 +90580,6 @@
         "title": "Szolgáltatások",
         "blurb": "",
         "contentHtml": "<p>Kezeld a szolgáltatáshirdetéseidet és közreműködőidet, vagy nézd meg a szolgáltatói naptárat. A közzétett hirdetéseket a kereső felület is megjeleníti.</p>"
-      },
-      {
-        "id": "guide-notification-launcher",
-        "guideStepId": "notification-launcher",
-        "icon": "help_outline",
-        "title": "Értesítési gomb",
-        "blurb": "",
-        "contentHtml": "<p>A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők.</p>"
       }
     ],
     "contextKey": "navigation.menu",
@@ -101424,5 +101328,967 @@
     "contextKey": "profile.integration-access",
     "presentation": "tour",
     "baseGroupId": null
+  },
+  {
+    "_id": "explanation-admin-navigation-default-en-v2",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 2,
+    "active": true,
+    "title": "Administration menu",
+    "summary": "Administration menu",
+    "description": "Administration menu",
+    "headerColor": "violet",
+    "createdDate": "2026-10-07T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-notifications",
+        "guideStepId": "notifications",
+        "icon": "help_outline",
+        "title": "Notifications",
+        "blurb": "",
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
+      },
+      {
+        "id": "guide-explanations",
+        "guideStepId": "explanations",
+        "icon": "help_outline",
+        "title": "Guide button",
+        "blurb": "",
+        "contentHtml": "<p>Switch guides off or on. Both floating buttons can be dragged to a convenient position.</p>"
+      },
+      {
+        "id": "guide-settings",
+        "guideStepId": "settings",
+        "icon": "help_outline",
+        "title": "Settings",
+        "blurb": "",
+        "contentHtml": "<p>Open language, policy, help and sign-out actions.</p>"
+      },
+      {
+        "id": "guide-adminmoderation",
+        "guideStepId": "adminModeration",
+        "icon": "help_outline",
+        "title": "Moderation",
+        "blurb": "",
+        "contentHtml": "<p>Review submitted content.</p>"
+      },
+      {
+        "id": "guide-adminreports",
+        "guideStepId": "adminReports",
+        "icon": "help_outline",
+        "title": "Reports",
+        "blurb": "",
+        "contentHtml": "<p>Review reported users and their evidence.</p>"
+      },
+      {
+        "id": "guide-adminfeedback",
+        "guideStepId": "adminFeedback",
+        "icon": "help_outline",
+        "title": "Feedback",
+        "blurb": "",
+        "contentHtml": "<p>Review user feedback.</p>"
+      },
+      {
+        "id": "guide-adminchat",
+        "guideStepId": "adminChat",
+        "icon": "help_outline",
+        "title": "Chat review",
+        "blurb": "",
+        "contentHtml": "<p>Inspect reports and send appropriate warnings.</p>"
+      },
+      {
+        "id": "guide-adminjobs",
+        "guideStepId": "adminJobs",
+        "icon": "help_outline",
+        "title": "Jobs",
+        "blurb": "",
+        "contentHtml": "<p>Configure delivery rules and scheduled jobs.</p>"
+      },
+      {
+        "id": "guide-adminparams",
+        "guideStepId": "adminParams",
+        "icon": "help_outline",
+        "title": "Parameters",
+        "blurb": "",
+        "contentHtml": "<p>Manage application parameters and their history.</p>"
+      },
+      {
+        "id": "guide-admincontent",
+        "guideStepId": "adminContent",
+        "icon": "help_outline",
+        "title": "Content",
+        "blurb": "",
+        "contentHtml": "<p>Edit help, policies and editable guides; system guides are hidden.</p>"
+      },
+      {
+        "id": "guide-adminarticle",
+        "guideStepId": "adminArticle",
+        "icon": "help_outline",
+        "title": "Articles",
+        "blurb": "",
+        "contentHtml": "<p>Manage article drafts and publications.</p>"
+      },
+      {
+        "id": "guide-adminstats",
+        "guideStepId": "adminStats",
+        "icon": "help_outline",
+        "title": "Statistics",
+        "blurb": "",
+        "contentHtml": "<p>Inspect application statistics.</p>"
+      },
+      {
+        "id": "guide-adminmetrics",
+        "guideStepId": "adminMetrics",
+        "icon": "help_outline",
+        "title": "Monitoring",
+        "blurb": "",
+        "contentHtml": "<p>Inspect operational metrics and activity.</p>"
+      },
+      {
+        "id": "guide-admingraph",
+        "guideStepId": "adminGraph",
+        "icon": "help_outline",
+        "title": "Graph",
+        "blurb": "",
+        "contentHtml": "<p>Explore the affinity graph.</p>"
+      },
+      {
+        "id": "guide-adminpaymentsimulator",
+        "guideStepId": "adminPaymentSimulator",
+        "icon": "help_outline",
+        "title": "Payment simulator",
+        "blurb": "",
+        "contentHtml": "<p>Open the configured payment test environment.</p>"
+      },
+      {
+        "id": "guide-adminpaymentauthorizations",
+        "guideStepId": "adminPaymentAuthorizations",
+        "icon": "help_outline",
+        "title": "Authorizations",
+        "blurb": "",
+        "contentHtml": "<p>Review pending payment authorizations.</p>"
+      }
+    ],
+    "contextKey": "admin.navigation",
+    "presentation": "tour",
+    "baseGroupId": null,
+    "isSystem": true
+  },
+  {
+    "_id": "explanation-admin-navigation-default-hu-v2",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 2,
+    "active": true,
+    "title": "Adminisztrációs menü",
+    "summary": "Adminisztrációs menü",
+    "description": "Adminisztrációs menü",
+    "headerColor": "violet",
+    "createdDate": "2026-10-07T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-notifications",
+        "guideStepId": "notifications",
+        "icon": "help_outline",
+        "title": "Értesítések",
+        "blurb": "",
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
+      },
+      {
+        "id": "guide-explanations",
+        "guideStepId": "explanations",
+        "icon": "help_outline",
+        "title": "Guide gomb",
+        "blurb": "",
+        "contentHtml": "<p>A guide ki- és bekapcsolása. Mindkét lebegő gombot a megfelelő helyre húzhatod.</p>"
+      },
+      {
+        "id": "guide-settings",
+        "guideStepId": "settings",
+        "icon": "help_outline",
+        "title": "Beállítások",
+        "blurb": "",
+        "contentHtml": "<p>Nyelv, szabályzatok, súgó és kijelentkezés.</p>"
+      },
+      {
+        "id": "guide-adminmoderation",
+        "guideStepId": "adminModeration",
+        "icon": "help_outline",
+        "title": "Moderálás",
+        "blurb": "",
+        "contentHtml": "<p>Beküldött tartalmak elbírálása.</p>"
+      },
+      {
+        "id": "guide-adminreports",
+        "guideStepId": "adminReports",
+        "icon": "help_outline",
+        "title": "Bejelentések",
+        "blurb": "",
+        "contentHtml": "<p>Bejelentett felhasználók és bizonyítékok áttekintése.</p>"
+      },
+      {
+        "id": "guide-adminfeedback",
+        "guideStepId": "adminFeedback",
+        "icon": "help_outline",
+        "title": "Visszajelzések",
+        "blurb": "",
+        "contentHtml": "<p>Felhasználói visszajelzések kezelése.</p>"
+      },
+      {
+        "id": "guide-adminchat",
+        "guideStepId": "adminChat",
+        "icon": "help_outline",
+        "title": "Beszélgetések",
+        "blurb": "",
+        "contentHtml": "<p>Bejelentések ellenőrzése és indokolt figyelmeztetések küldése.</p>"
+      },
+      {
+        "id": "guide-adminjobs",
+        "guideStepId": "adminJobs",
+        "icon": "help_outline",
+        "title": "Feladatok",
+        "blurb": "",
+        "contentHtml": "<p>Kézbesítési szabályok és időzített feladatok kezelése.</p>"
+      },
+      {
+        "id": "guide-adminparams",
+        "guideStepId": "adminParams",
+        "icon": "help_outline",
+        "title": "Paraméterek",
+        "blurb": "",
+        "contentHtml": "<p>Alkalmazásparaméterek és előzmények kezelése.</p>"
+      },
+      {
+        "id": "guide-admincontent",
+        "guideStepId": "adminContent",
+        "icon": "help_outline",
+        "title": "Tartalom",
+        "blurb": "",
+        "contentHtml": "<p>Súgók, szabályzatok és szerkeszthető guide-ok; a rendszer-guide-ok rejtettek.</p>"
+      },
+      {
+        "id": "guide-adminarticle",
+        "guideStepId": "adminArticle",
+        "icon": "help_outline",
+        "title": "Cikkek",
+        "blurb": "",
+        "contentHtml": "<p>Cikkvázlatok és publikációk kezelése.</p>"
+      },
+      {
+        "id": "guide-adminstats",
+        "guideStepId": "adminStats",
+        "icon": "help_outline",
+        "title": "Statisztika",
+        "blurb": "",
+        "contentHtml": "<p>Alkalmazásstatisztikák áttekintése.</p>"
+      },
+      {
+        "id": "guide-adminmetrics",
+        "guideStepId": "adminMetrics",
+        "icon": "help_outline",
+        "title": "Megfigyelés",
+        "blurb": "",
+        "contentHtml": "<p>Működési mutatók és események áttekintése.</p>"
+      },
+      {
+        "id": "guide-admingraph",
+        "guideStepId": "adminGraph",
+        "icon": "help_outline",
+        "title": "Gráf",
+        "blurb": "",
+        "contentHtml": "<p>A kapcsolódási gráf megtekintése.</p>"
+      },
+      {
+        "id": "guide-adminpaymentsimulator",
+        "guideStepId": "adminPaymentSimulator",
+        "icon": "help_outline",
+        "title": "Fizetési szimulátor",
+        "blurb": "",
+        "contentHtml": "<p>A beállított fizetési tesztkörnyezet megnyitása.</p>"
+      },
+      {
+        "id": "guide-adminpaymentauthorizations",
+        "guideStepId": "adminPaymentAuthorizations",
+        "icon": "help_outline",
+        "title": "Engedélyezések",
+        "blurb": "",
+        "contentHtml": "<p>Függő fizetési engedélyezések kezelése.</p>"
+      }
+    ],
+    "contextKey": "admin.navigation",
+    "presentation": "tour",
+    "baseGroupId": null,
+    "isSystem": true
+  },
+  {
+    "_id": "explanation-navigation-menu-default-en-v9",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 9,
+    "active": true,
+    "title": "Avatar menu",
+    "summary": "Choose a workspace or application section.",
+    "description": "Understand account tools, community features and activity states.",
+    "headerColor": "violet",
+    "createdDate": "2026-09-29T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-navigation-profile",
+        "guideStepId": "navigation-profile",
+        "icon": "help_outline",
+        "title": "Edit the active profile",
+        "blurb": "",
+        "contentHtml": "<p>The pencil opens the active profile: photos, personal details and preferences. Save in that editor to apply changes.</p>"
+      },
+      {
+        "id": "guide-navigation-workspace",
+        "guideStepId": "navigation-workspace",
+        "icon": "help_outline",
+        "title": "Who you act for",
+        "blurb": "",
+        "contentHtml": "<p>Switch between your personal profile and available group workspaces. The selected workspace determines whose content and permissions you use.</p>"
+      },
+      {
+        "id": "guide-notifications",
+        "guideStepId": "notifications",
+        "icon": "help_outline",
+        "title": "Updates requiring attention",
+        "blurb": "",
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
+      },
+      {
+        "id": "guide-explanations",
+        "guideStepId": "explanations",
+        "icon": "help_outline",
+        "title": "Show contextual guides",
+        "blurb": "",
+        "contentHtml": "<p>Turns the guide button off or back on permanently. The lightbulb offers step-by-step help. Drag the lightbulb or bell to move it; drop on the red X to hide it temporarily.</p>"
+      },
+      {
+        "id": "guide-settings",
+        "guideStepId": "settings",
+        "icon": "help_outline",
+        "title": "Account and application tools",
+        "blurb": "",
+        "contentHtml": "<p>Opens help, privacy, terms and account actions. Read the relevant confirmation before choosing a destructive action such as deleting the account.</p>"
+      },
+      {
+        "id": "guide-feed",
+        "guideStepId": "feed",
+        "icon": "help_outline",
+        "title": "Photos with event context",
+        "blurb": "",
+        "contentHtml": "<p>Browse shared photos or create a post. Each uploaded feed photo needs an event link before the post can be submitted for moderation.</p>"
+      },
+      {
+        "id": "guide-followed",
+        "guideStepId": "followed",
+        "icon": "help_outline",
+        "title": "Keep track of organizers",
+        "blurb": "",
+        "contentHtml": "<p>Shows events from followed organizers. Following helps you find their events; it does not book a place or join those events.</p>"
+      },
+      {
+        "id": "guide-groups",
+        "guideStepId": "groups",
+        "icon": "help_outline",
+        "title": "Community membership",
+        "blurb": "",
+        "contentHtml": "<p>Review your groups, invitations and requests, or explore other communities. Membership and acting in a group workspace are separate choices.</p>"
+      },
+      {
+        "id": "guide-impressions",
+        "guideStepId": "impressions",
+        "icon": "help_outline",
+        "title": "How others experienced you",
+        "blurb": "",
+        "contentHtml": "<p>Shows feedback-based impressions of you as host and attendee. These describe past experiences, rather than editable profile preferences.</p>"
+      },
+      {
+        "id": "guide-navigation-feedback",
+        "guideStepId": "navigation-feedback",
+        "icon": "help_outline",
+        "title": "Reflect on attended events",
+        "blurb": "",
+        "contentHtml": "<p>Review pending and completed event feedback. This is feedback about participation; application support is available separately in Settings.</p>"
+      },
+      {
+        "id": "guide-rates",
+        "guideStepId": "rates",
+        "icon": "help_outline",
+        "title": "Review profile ratings",
+        "blurb": "",
+        "contentHtml": "<p>Shows your rating activity and its available filters. Rating a profile is separate from accepting an invitation or joining an event.</p>"
+      },
+      {
+        "id": "guide-chat",
+        "guideStepId": "chat",
+        "icon": "help_outline",
+        "title": "Conversations by context",
+        "blurb": "",
+        "contentHtml": "<p>Opens conversations for events, groups, contacts and support. Use context filters to find the correct conversation before sending a message.</p>"
+      },
+      {
+        "id": "guide-invitations",
+        "guideStepId": "invitations",
+        "icon": "help_outline",
+        "title": "Requests for your participation",
+        "blurb": "",
+        "contentHtml": "<p>Review invitations and their event details before responding. An invitation alone does not mean your participation or payment is confirmed.</p>"
+      },
+      {
+        "id": "guide-events",
+        "guideStepId": "events",
+        "icon": "help_outline",
+        "title": "Participation and hosting",
+        "blurb": "",
+        "contentHtml": "<p>Find events you attend or manage, plus pending and other states. The scope selector separates these roles and lifecycle states.</p>"
+      },
+      {
+        "id": "guide-payment-history",
+        "guideStepId": "payment-history",
+        "icon": "help_outline",
+        "title": "Payments and refunds",
+        "blurb": "",
+        "contentHtml": "<p>Review payment records and refund states. A pending refund is still in progress; opening this list does not start a payment or refund.</p>"
+      },
+      {
+        "id": "guide-transport",
+        "guideStepId": "transport",
+        "icon": "help_outline",
+        "title": "Vehicles and rides",
+        "blurb": "",
+        "contentHtml": "<p>Manage transport assets and inspect their availability. Owning a vehicle and joining a place on an event’s assigned vehicle are different actions.</p>"
+      },
+      {
+        "id": "guide-accommodation",
+        "guideStepId": "accommodation",
+        "icon": "help_outline",
+        "title": "Places to stay",
+        "blurb": "",
+        "contentHtml": "<p>Manage accommodation assets, capacity and availability. Booking or joining an assigned stay has its own review and confirmation flow.</p>"
+      },
+      {
+        "id": "guide-supplies",
+        "guideStepId": "supplies",
+        "icon": "help_outline",
+        "title": "Equipment and contributions",
+        "blurb": "",
+        "contentHtml": "<p>Manage supply assets and quantities. Event assignments and contributions determine how those supplies are used by a particular activity.</p>"
+      },
+      {
+        "id": "guide-tickets",
+        "guideStepId": "tickets",
+        "icon": "help_outline",
+        "title": "Entry tickets",
+        "blurb": "",
+        "contentHtml": "<p>View available ticket records and their state. Tickets represent entry rights; payment history records the associated financial transactions.</p>"
+      },
+      {
+        "id": "guide-contacts",
+        "guideStepId": "contacts",
+        "icon": "help_outline",
+        "title": "People and contact requests",
+        "blurb": "",
+        "contentHtml": "<p>Review contacts and incoming requests. The badge highlights pending requests, so it can differ from the total number of saved contacts.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "help_outline",
+        "title": "Return to the current screen",
+        "blurb": "",
+        "contentHtml": "<p>Closes the avatar menu without opening another section.</p>"
+      },
+      {
+        "id": "guide-settings-permissions",
+        "guideStepId": "settings:permissions",
+        "icon": "help_outline",
+        "title": "Install and enable device features",
+        "blurb": "",
+        "contentHtml": "<p>Opens application installation and permission settings. Device permissions control which features can use notifications or location.</p>"
+      },
+      {
+        "id": "guide-settings-share",
+        "guideStepId": "settings:share",
+        "icon": "help_outline",
+        "title": "Share the application",
+        "blurb": "",
+        "contentHtml": "<p>Opens sharing options for this application. It shares the application link rather than your private profile settings.</p>"
+      },
+      {
+        "id": "guide-settings-help",
+        "guideStepId": "settings:help",
+        "icon": "help_outline",
+        "title": "Read the full help",
+        "blurb": "",
+        "contentHtml": "<p>Opens the active help document. Its version badge identifies the published help revision available in this installation.</p>"
+      },
+      {
+        "id": "guide-settings-feedback",
+        "guideStepId": "settings:feedback",
+        "icon": "help_outline",
+        "title": "Send application feedback",
+        "blurb": "",
+        "contentHtml": "<p>Opens application feedback for questions or suggestions. Use event feedback separately to describe an attended event.</p>"
+      },
+      {
+        "id": "guide-settings-report-bugs",
+        "guideStepId": "settings:report-bugs",
+        "icon": "help_outline",
+        "title": "Report a reproducible defect",
+        "blurb": "",
+        "contentHtml": "<p>Opens the project’s issue page in another tab. Describe what you did, what happened and what you expected.</p>"
+      },
+      {
+        "id": "guide-settings-privacy",
+        "guideStepId": "settings:privacy",
+        "icon": "help_outline",
+        "title": "Review data handling",
+        "blurb": "",
+        "contentHtml": "<p>Opens the current privacy document. Its version identifies which published data-handling terms you are reading.</p>"
+      },
+      {
+        "id": "guide-settings-terms",
+        "guideStepId": "settings:terms",
+        "icon": "help_outline",
+        "title": "Review usage conditions",
+        "blurb": "",
+        "contentHtml": "<p>Opens the current application terms. These describe application use; individual events and assets may have additional policies.</p>"
+      },
+      {
+        "id": "guide-settings-delete-account",
+        "guideStepId": "settings:delete-account",
+        "icon": "help_outline",
+        "title": "Start account deletion",
+        "blurb": "",
+        "contentHtml": "<p>Opens the account deletion flow. Read its consequences before confirming; closing the guide does not delete the account.</p>"
+      },
+      {
+        "id": "guide-settings-logout",
+        "guideStepId": "settings:logout",
+        "icon": "help_outline",
+        "title": "End this signed-in session",
+        "blurb": "",
+        "contentHtml": "<p>Signs you out of the current session. You must sign in again to continue actions that require your account.</p>"
+      },
+      {
+        "id": "guide-campaigns",
+        "guideStepId": "campaigns",
+        "icon": "help_outline",
+        "title": "Campaigns",
+        "blurb": "",
+        "contentHtml": "<p>Manage your campaigns here. Create a draft, publish it and open its Ratings action to review interest in that campaign.</p>"
+      },
+      {
+        "id": "guide-cases",
+        "guideStepId": "cases",
+        "icon": "help_outline",
+        "title": "Cases",
+        "blurb": "",
+        "contentHtml": "<p>Open cases for the current Community context. Enter a group to create a group case. Scheduled tasks open from the case header.</p>"
+      },
+      {
+        "id": "guide-services",
+        "guideStepId": "services",
+        "icon": "help_outline",
+        "title": "Services",
+        "blurb": "",
+        "contentHtml": "<p>Manage your service offers and staff, or inspect your provider calendar. Publishing makes an offer available in discovery.</p>"
+      }
+    ],
+    "contextKey": "navigation.menu",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-navigation-menu-default-hu-v9",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 9,
+    "active": true,
+    "title": "Avatar menü",
+    "summary": "Munkatér és alkalmazásfelület választása.",
+    "description": "Fiókeszközök, közösségi funkciók és aktivitási állapotok.",
+    "headerColor": "violet",
+    "createdDate": "2026-09-29T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-navigation-profile",
+        "guideStepId": "navigation-profile",
+        "icon": "help_outline",
+        "title": "Az aktív profil szerkesztése",
+        "blurb": "",
+        "contentHtml": "<p>A ceruza az aktív profil képeit, személyes adatait és preferenciáit nyitja meg. A módosításokat abban a szerkesztőben kell menteni.</p>"
+      },
+      {
+        "id": "guide-navigation-workspace",
+        "guideStepId": "navigation-workspace",
+        "icon": "help_outline",
+        "title": "Kinek a nevében dolgozol?",
+        "blurb": "",
+        "contentHtml": "<p>A személyes profil és az elérhető csoportmunkaterek között váltasz. A választás határozza meg, kinek a tartalmával és jogosultságaival dolgozol.</p>"
+      },
+      {
+        "id": "guide-notifications",
+        "guideStepId": "notifications",
+        "icon": "help_outline",
+        "title": "Figyelmet igénylő frissítések",
+        "blurb": "",
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
+      },
+      {
+        "id": "guide-explanations",
+        "guideStepId": "explanations",
+        "icon": "help_outline",
+        "title": "Helyi magyarázatok megjelenítése",
+        "blurb": "",
+        "contentHtml": "<p>A súgógomb tartós ki-/bekapcsolása. A villanykörte lépésenként segít. A villanykörte és a csengő húzható; piros X-re ejtve ideiglenesen elrejthető. Itt visszakapcsolhatod a súgót.</p>"
+      },
+      {
+        "id": "guide-settings",
+        "guideStepId": "settings",
+        "icon": "help_outline",
+        "title": "Fiók- és alkalmazáseszközök",
+        "blurb": "",
+        "contentHtml": "<p>Súgót, adatvédelmet, feltételeket és fiókműveleteket nyit. Végleges művelet, például fióktörlés előtt olvasd el a megerősítést.</p>"
+      },
+      {
+        "id": "guide-feed",
+        "guideStepId": "feed",
+        "icon": "help_outline",
+        "title": "Képek eseményháttérrel",
+        "blurb": "",
+        "contentHtml": "<p>Közös képeket böngészhetsz vagy bejegyzést készíthetsz. Minden feltöltött feed-képhez esemény kell a moderációra beküldés előtt.</p>"
+      },
+      {
+        "id": "guide-followed",
+        "guideStepId": "followed",
+        "icon": "help_outline",
+        "title": "Szervezők követése",
+        "blurb": "",
+        "contentHtml": "<p>A követett szervezők eseményeit mutatja. A követés a megtalálásukat segíti; nem foglal helyet és nem léptet be az eseményekre.</p>"
+      },
+      {
+        "id": "guide-groups",
+        "guideStepId": "groups",
+        "icon": "help_outline",
+        "title": "Közösségi tagság",
+        "blurb": "",
+        "contentHtml": "<p>Áttekintheted csoportjaidat, meghívásaidat és kérelmeidet, vagy közösségeket kereshetsz. A tagság és a csoportmunkatér használata külön döntés.</p>"
+      },
+      {
+        "id": "guide-impressions",
+        "guideStepId": "impressions",
+        "icon": "help_outline",
+        "title": "Mások benyomásai rólad",
+        "blurb": "",
+        "contentHtml": "<p>Megmutatja a rólad mint szervezőről és résztvevőről alkotott benyomásokat. Ezek korábbi tapasztalatok, nem szerkeszthető profilpreferenciák.</p>"
+      },
+      {
+        "id": "guide-navigation-feedback",
+        "guideStepId": "navigation-feedback",
+        "icon": "help_outline",
+        "title": "Visszajelzés eseményekről",
+        "blurb": "",
+        "contentHtml": "<p>A függő és kitöltött eseményértékeléseket éred el. Ez részvételi visszajelzés; az alkalmazástámogatás külön, a Beállításokban található.</p>"
+      },
+      {
+        "id": "guide-rates",
+        "guideStepId": "rates",
+        "icon": "help_outline",
+        "title": "Profilértékelések áttekintése",
+        "blurb": "",
+        "contentHtml": "<p>Az értékelési aktivitásodat és szűrőit mutatja. Egy profil értékelése nem fogad el meghívást, és nem jelentkezik eseményre.</p>"
+      },
+      {
+        "id": "guide-chat",
+        "guideStepId": "chat",
+        "icon": "help_outline",
+        "title": "Beszélgetések témakörönként",
+        "blurb": "",
+        "contentHtml": "<p>Események, csoportok, kapcsolatok és támogatás beszélgetéseit nyitja. Üzenetküldés előtt a témaszűrőkkel keresd meg a megfelelő beszélgetést.</p>"
+      },
+      {
+        "id": "guide-invitations",
+        "guideStepId": "invitations",
+        "icon": "help_outline",
+        "title": "Részvételi meghívások",
+        "blurb": "",
+        "contentHtml": "<p>Válasz előtt nézd meg a meghívást és az esemény részleteit. A meghívás önmagában még nem igazol részvételt vagy rendezett fizetést.</p>"
+      },
+      {
+        "id": "guide-events",
+        "guideStepId": "events",
+        "icon": "help_outline",
+        "title": "Részvétel és szervezés",
+        "blurb": "",
+        "contentHtml": "<p>Résztvevőként vagy szervezőként érintett eseményeidet és függő ügyeidet találod itt. A szűrő elkülöníti a szerepeket és állapotokat.</p>"
+      },
+      {
+        "id": "guide-payment-history",
+        "guideStepId": "payment-history",
+        "icon": "help_outline",
+        "title": "Fizetések és visszatérítések",
+        "blurb": "",
+        "contentHtml": "<p>Fizetési bizonylatokat és visszatérítési állapotokat látsz. A függő visszatérítés még folyamatban van; a lista megnyitása nem indít pénzmozgást.</p>"
+      },
+      {
+        "id": "guide-transport",
+        "guideStepId": "transport",
+        "icon": "help_outline",
+        "title": "Járművek és fuvarok",
+        "blurb": "",
+        "contentHtml": "<p>Közlekedési eszközeidet és elérhetőségüket kezeled. Saját jármű kezelése és egy esemény járművére helyet kérni külön művelet.</p>"
+      },
+      {
+        "id": "guide-accommodation",
+        "guideStepId": "accommodation",
+        "icon": "help_outline",
+        "title": "Szálláshelyek",
+        "blurb": "",
+        "contentHtml": "<p>Szálláshelyeket, kapacitást és elérhetőséget kezelsz. Foglalás vagy eseményhez rendelt szálláshoz csatlakozás külön ellenőrzést és megerősítést igényel.</p>"
+      },
+      {
+        "id": "guide-supplies",
+        "guideStepId": "supplies",
+        "icon": "help_outline",
+        "title": "Felszerelések és hozzájárulások",
+        "blurb": "",
+        "contentHtml": "<p>Felszereléseket és mennyiségeket kezelsz. Az eseményhez rendelés és hozzájárulás szabja meg, hogyan használja őket az adott programrész.</p>"
+      },
+      {
+        "id": "guide-tickets",
+        "guideStepId": "tickets",
+        "icon": "help_outline",
+        "title": "Belépőjegyek",
+        "blurb": "",
+        "contentHtml": "<p>Jegyeidet és állapotukat mutatja. A jegy belépési jogosultságot jelöl; a kapcsolódó pénzmozgás a fizetési előzményekben szerepel.</p>"
+      },
+      {
+        "id": "guide-contacts",
+        "guideStepId": "contacts",
+        "icon": "help_outline",
+        "title": "Kapcsolatok és kérelmek",
+        "blurb": "",
+        "contentHtml": "<p>Kapcsolatokat és bejövő kérelmeket mutat. A jelvény a függő kérelmeket jelzi, ezért eltérhet a mentett kapcsolatok teljes számától.</p>"
+      },
+      {
+        "id": "guide-close",
+        "guideStepId": "close",
+        "icon": "help_outline",
+        "title": "Vissza az aktuális felületre",
+        "blurb": "",
+        "contentHtml": "<p>Másik felület megnyitása nélkül bezárja az avatar menüt.</p>"
+      },
+      {
+        "id": "guide-settings-permissions",
+        "guideStepId": "settings:permissions",
+        "icon": "help_outline",
+        "title": "Telepítés és eszközfunkciók",
+        "blurb": "",
+        "contentHtml": "<p>Az alkalmazás telepítését és engedélyeit nyitja meg. Az eszközengedélyek szabályozzák az értesítések és helyadatok használatát.</p>"
+      },
+      {
+        "id": "guide-settings-share",
+        "guideStepId": "settings:share",
+        "icon": "help_outline",
+        "title": "Az alkalmazás megosztása",
+        "blurb": "",
+        "contentHtml": "<p>Az alkalmazás megosztási lehetőségeit nyitja. Az alkalmazás linkjét osztja meg, nem a privát profilbeállításaidat.</p>"
+      },
+      {
+        "id": "guide-settings-help",
+        "guideStepId": "settings:help",
+        "icon": "help_outline",
+        "title": "A teljes súgó elolvasása",
+        "blurb": "",
+        "contentHtml": "<p>Az aktív súgódokumentumot nyitja. A verziójelvény az ezen a telepítésen közzétett súgóváltozatot azonosítja.</p>"
+      },
+      {
+        "id": "guide-settings-feedback",
+        "guideStepId": "settings:feedback",
+        "icon": "help_outline",
+        "title": "Alkalmazás-visszajelzés küldése",
+        "blurb": "",
+        "contentHtml": "<p>Alkalmazással kapcsolatos kérdést vagy javaslatot küldhetsz. Meglátogatott esemény értékeléséhez a külön esemény-visszajelzést használd.</p>"
+      },
+      {
+        "id": "guide-settings-report-bugs",
+        "guideStepId": "settings:report-bugs",
+        "icon": "help_outline",
+        "title": "Reprodukálható hiba jelentése",
+        "blurb": "",
+        "contentHtml": "<p>Másik lapon megnyitja a projekt hibajegyeit. Írd le a lépéseket, a tapasztalt hibát és az elvárt eredményt.</p>"
+      },
+      {
+        "id": "guide-settings-privacy",
+        "guideStepId": "settings:privacy",
+        "icon": "help_outline",
+        "title": "Adatkezelés áttekintése",
+        "blurb": "",
+        "contentHtml": "<p>Az aktuális adatvédelmi dokumentumot nyitja. A verzió jelzi, melyik közzétett adatkezelési tájékoztatót olvasod.</p>"
+      },
+      {
+        "id": "guide-settings-terms",
+        "guideStepId": "settings:terms",
+        "icon": "help_outline",
+        "title": "Használati feltételek áttekintése",
+        "blurb": "",
+        "contentHtml": "<p>Az alkalmazás aktuális feltételeit nyitja. Ezek az alkalmazáshasználatra vonatkoznak; eseményekhez és eszközökhöz külön szabályok is tartozhatnak.</p>"
+      },
+      {
+        "id": "guide-settings-delete-account",
+        "guideStepId": "settings:delete-account",
+        "icon": "help_outline",
+        "title": "Fióktörlés indítása",
+        "blurb": "",
+        "contentHtml": "<p>Elindítja a fióktörlés folyamatát. Megerősítés előtt olvasd el a következményeket; a guide bezárása nem törli a fiókot.</p>"
+      },
+      {
+        "id": "guide-settings-logout",
+        "guideStepId": "settings:logout",
+        "icon": "help_outline",
+        "title": "A bejelentkezés lezárása",
+        "blurb": "",
+        "contentHtml": "<p>Kijelentkeztet az aktuális munkamenetből. A fiókot igénylő műveletek folytatásához újra be kell jelentkezned.</p>"
+      },
+      {
+        "id": "guide-campaigns",
+        "guideStepId": "campaigns",
+        "icon": "help_outline",
+        "title": "Kampányok",
+        "blurb": "",
+        "contentHtml": "<p>Itt kezelheted a saját kampányaidat: piszkozatot készíthetsz, közzéteheted, majd az Értékelések menüponttal az adott kampány iránti érdeklődést nézheted meg.</p>"
+      },
+      {
+        "id": "guide-cases",
+        "guideStepId": "cases",
+        "icon": "help_outline",
+        "title": "Ügyek",
+        "blurb": "",
+        "contentHtml": "<p>Az aktuális Community környezet ügyeit nyitja meg. Csoportügy létrehozásához előbb lépj be a csoportba. Az ütemezett feladatokat az ügylista fejlécéből éred el.</p>"
+      },
+      {
+        "id": "guide-services",
+        "guideStepId": "services",
+        "icon": "help_outline",
+        "title": "Szolgáltatások",
+        "blurb": "",
+        "contentHtml": "<p>Kezeld a szolgáltatáshirdetéseidet és közreműködőidet, vagy nézd meg a szolgáltatói naptárat. A közzétett hirdetéseket a kereső felület is megjeleníti.</p>"
+      }
+    ],
+    "contextKey": "navigation.menu",
+    "presentation": "tour",
+    "baseGroupId": null
+  },
+  {
+    "_id": "explanation-operator-navigation-default-en-v2",
+    "documentType": "explanation",
+    "lang": "en",
+    "languageLabel": "English",
+    "version": 2,
+    "active": true,
+    "title": "Operator menu",
+    "summary": "Operator menu",
+    "description": "Operator menu",
+    "headerColor": "violet",
+    "createdDate": "2026-10-07T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-notifications",
+        "guideStepId": "notifications",
+        "icon": "help_outline",
+        "title": "Notifications",
+        "blurb": "",
+        "contentHtml": "<p>Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept.</p>"
+      },
+      {
+        "id": "guide-explanations",
+        "guideStepId": "explanations",
+        "icon": "help_outline",
+        "title": "Guide button",
+        "blurb": "",
+        "contentHtml": "<p>Switch guides off or on. Both floating buttons can be dragged to a convenient position.</p>"
+      },
+      {
+        "id": "guide-settings",
+        "guideStepId": "settings",
+        "icon": "help_outline",
+        "title": "Settings",
+        "blurb": "",
+        "contentHtml": "<p>Open language, policy, help and sign-out actions.</p>"
+      }
+    ],
+    "contextKey": "operator.navigation",
+    "presentation": "tour",
+    "baseGroupId": null,
+    "isSystem": true
+  },
+  {
+    "_id": "explanation-operator-navigation-default-hu-v2",
+    "documentType": "explanation",
+    "lang": "hu",
+    "languageLabel": "Magyar",
+    "version": 2,
+    "active": true,
+    "title": "Operátori menü",
+    "summary": "Operátori menü",
+    "description": "Operátori menü",
+    "headerColor": "violet",
+    "createdDate": "2026-10-07T00:00:00.000Z",
+    "createdUser": "system",
+    "updatedDate": "2026-10-07T00:00:00.000Z",
+    "updatedUser": "system",
+    "sections": [
+      {
+        "id": "guide-notifications",
+        "guideStepId": "notifications",
+        "icon": "help_outline",
+        "title": "Értesítések",
+        "blurb": "",
+        "contentHtml": "<p>Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak.</p>"
+      },
+      {
+        "id": "guide-explanations",
+        "guideStepId": "explanations",
+        "icon": "help_outline",
+        "title": "Guide gomb",
+        "blurb": "",
+        "contentHtml": "<p>A guide ki- és bekapcsolása. Mindkét lebegő gombot a megfelelő helyre húzhatod.</p>"
+      },
+      {
+        "id": "guide-settings",
+        "guideStepId": "settings",
+        "icon": "help_outline",
+        "title": "Beállítások",
+        "blurb": "",
+        "contentHtml": "<p>Nyelv, szabályzatok, súgó és kijelentkezés.</p>"
+      }
+    ],
+    "contextKey": "operator.navigation",
+    "presentation": "tour",
+    "baseGroupId": null,
+    "isSystem": true
   }
 ]
