@@ -26,7 +26,7 @@ public class ServiceFeedbackService {
     public ServiceFeedbackService(MongoTemplate mongo, UsersRepository users, NotificationOutboxService notifications, UserActivityCountersService counters) {
         this.mongo=mongo; this.users=users; this.notifications=notifications; this.counters=counters;
     }
-    public record Item(ServiceFeedback feedback, String providerName, String reviewerName) {}
+    public record Item(ServiceFeedback feedback, String providerName, String reviewerName, String serviceTitle, String serviceImageUrl) {}
     public record Command(String userId, String action, Map<String,Double> criteria, String comment) {}
     public record Stats(long count, double average, Map<String,Double> criteria) {}
 
@@ -71,10 +71,19 @@ public class ServiceFeedbackService {
         var rows=mongo.find(Query.query(scope).with(Sort.by(Sort.Order.desc("createdAtIso"),Sort.Order.asc("id"))).skip((long)page*size).limit(size),ServiceFeedback.class);
         var ids=rows.stream().flatMap(r->java.util.stream.Stream.of(r.viewerAccountId(),r.providerAccountId())).collect(Collectors.toSet());
         var names=users.findByUserIdIn(ids).stream().collect(Collectors.toMap(Users::getUserId,u->Objects.toString(u.getName(),"")));
+        var serviceIds=rows.stream().map(ServiceFeedback::serviceId).filter(Objects::nonNull).distinct().toList();
+        var offerings=serviceIds.isEmpty() ? Map.<String,ServiceOffering>of() : mongo.find(Query.query(
+            Criteria.where("_id").in(serviceIds).and("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID)
+                .orOperator(Criteria.where("status").is("published"), Criteria.where("ownerAccountId").is(actor), Criteria.where("staffAccountIds").is(actor))),
+            ServiceOffering.class).stream().collect(Collectors.toMap(ServiceOffering::id,s->s));
         Map<String,Long> context=new LinkedHashMap<>();
         for(String key:List.of("pending","feedbacked","removed","received")) context.put(key,mongo.count(Query.query(Criteria.where("baseGroupId").is(CommunityGroup.COMMUNITY_BASE_ID)
             .and("received".equals(key)?"providerAccountId":"viewerAccountId").is(actor).and("status").is("received".equals(key)?"feedbacked":key)),ServiceFeedback.class));
-        return new Page<>(rows.stream().map(r->new Item(r,names.getOrDefault(r.providerAccountId(),""),names.getOrDefault(r.viewerAccountId(),""))).toList(),total,
+        return new Page<>(rows.stream().map(r->{
+            var offering=r.serviceId()==null?null:offerings.get(r.serviceId());
+            return new Item(r,names.getOrDefault(r.providerAccountId(),""),names.getOrDefault(r.viewerAccountId(),""),
+                offering==null?null:offering.title(), offering==null || offering.imageUrls()==null || offering.imageUrls().isEmpty()?null:offering.imageUrls().get(0));
+        }).toList(),total,
             (long)(page+1)*size<total?Integer.toString(page+1):null,context);
     }
     public void action(String actor,String id,Command command) {

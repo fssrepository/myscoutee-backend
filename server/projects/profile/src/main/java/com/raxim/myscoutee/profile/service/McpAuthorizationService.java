@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.profile.data.document.IntegrationToken;
+import com.raxim.myscoutee.profile.data.document.IntegrationAccess;
 import com.raxim.myscoutee.profile.data.document.McpAuthorization;
 import com.raxim.myscoutee.profile.data.dto.integration.McpDtos;
 import com.raxim.myscoutee.profile.data.dto.integration.IntegrationDtos.IntegrationTokenCreateRequestDto;
@@ -75,10 +76,13 @@ public class McpAuthorizationService {
                 "scopes_supported", List.of(SCOPE), "bearer_methods_supported", List.of("header"));
     }
     public McpDtos.Settings settings(String owner) {
-        var clients = tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc(owner).stream()
-                .filter(this::isClient).map(t -> new McpDtos.Client(keys.toDto(t), t.getRedirectUri(), t.getOauthClientId() == null, t.getOauthClientId() == null ? t.getId() : t.getOauthClientId())).toList();
+        return settings(keys.activeTokens(owner), access(owner));
+    }
+    McpDtos.Settings settings(List<IntegrationToken> active, IntegrationAccess access) {
+        var clients = active.stream()
+                .filter(this::isClient).map(t -> new McpDtos.Client(keys.toDto(t).withAccess(access.clientMode(t.getId())), t.getRedirectUri(), t.getOauthClientId() == null, t.getOauthClientId() == null ? t.getId() : t.getOauthClientId())).toList();
         return new McpDtos.Settings(resource(), IntegrationTokenService.MAX_ACTIVE_TOKENS,
-                realmMatches(), clients);
+                realmMatches(), clients, access.mcpMode());
     }
     public McpDtos.Created create(String owner, McpDtos.ClientRequest input) {
         if (input == null || input.name() == null || input.name().isBlank() || input.name().length() > 80)
@@ -127,7 +131,9 @@ public class McpAuthorizationService {
         var profile = users.findByUserId(owner).orElseThrow(() -> error("access_denied"));
         String group = profile.getWorkspaceGroupId() == null || profile.getWorkspaceGroupId().isBlank() ? null
                 : groups.findById(profile.getWorkspaceGroupId()).orElseThrow(() -> error("access_denied")).name();
-        return new McpDtos.Context(client.name(), profile.getName(), group, request.redirectUri(), owner);
+        String tokenId = client.owner() == null ? existingConnection(owner, client.id()).map(IntegrationToken::getId).orElse("") : client.id();
+        var permissions = profile.getIntegrationAccess() == null ? IntegrationAccess.initial() : profile.getIntegrationAccess();
+        return new McpDtos.Context(client.name(), profile.getName(), group, request.redirectUri(), owner, permissions.effective(tokenId, true));
     }
     public McpDtos.Redirect authorize(String actor, McpDtos.Consent consent) {
         if (consent == null) throw error("invalid_request");
@@ -138,7 +144,10 @@ public class McpAuthorizationService {
         requireProfile(actor, owner);
         String code = randomValue("mcc_");
         if (consent.approve()) {
+            var permissions = access(owner);
+            if (permissions.mcpMode() == IntegrationAccess.Mode.BLOCKED) throw error("access_denied");
             var connection = client.owner() == null ? connection(owner, client, request.redirectUri()) : requireClient(client.id());
+            if (permissions.effective(connection.getId(), true) == IntegrationAccess.Mode.BLOCKED) throw error("access_denied");
             var value = new McpAuthorization();
             value.id = hash(code); value.kind = "code"; value.clientId = client.id(); value.tokenId = connection.getId();
             value.ownerUserId = owner; value.redirectUri = request.redirectUri();
@@ -152,14 +161,17 @@ public class McpAuthorizationService {
         return new McpDtos.Redirect(callback);
     }
     private synchronized IntegrationToken connection(String owner, ClientIdentity client, String redirect) {
-        var existing = tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc(owner).stream()
-                .filter(this::isClient).filter(t -> client.id().equals(t.getOauthClientId())).findFirst();
+        var existing = existingConnection(owner, client.id());
         if (existing.isPresent()) return existing.get();
         var created = keys.create(owner, new IntegrationTokenCreateRequestDto(client.name(), 90), MCP_SCOPE);
         var token = tokens.findByIdAndOwnerUserId(created.token().id(), owner).orElseThrow();
         // The generated integration secret is never exposed; only OAuth grants can use this connection.
         token.setOauthClientId(client.id()); token.setRedirectUri(redirect);
         return tokens.save(token);
+    }
+    private java.util.Optional<IntegrationToken> existingConnection(String owner, String clientId) {
+        return tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc(owner).stream()
+                .filter(this::isClient).filter(t -> clientId.equals(t.getOauthClientId())).findFirst();
     }
     public Map<String, Object> exchange(Map<String, String> input, String clientId, String secret, String address) {
         ClientIdentity client = clientIdentity(clientId);
@@ -207,7 +219,16 @@ public class McpAuthorizationService {
         if (grant == null) return null;
         var connection = grantConnection(grant);
         if (connection == null) return null;
-        return new AuthenticatedIntegrationClient(grant.ownerUserId, connection.getId(), grant.clientId);
+        return new AuthenticatedIntegrationClient(grant.ownerUserId, connection.getId(), grant.clientId, MCP_SCOPE,
+                IntegrationAccess.Mode.WRITE, grant.id);
+    }
+    /** Long-lived subscriptions survive access-token refresh, but never their authorizing grant. */
+    public boolean activeSubscriptionGrant(String grantId, String owner, String tokenId, String clientId) {
+        if (!realmMatches()) return false;
+        var grant = grants.activeGrant(grantId, owner, clientId, resource());
+        // Keep the same established manual-client token binding as normal OAuth requests.
+        var connection = grant == null ? null : grantConnection(grant);
+        return connection != null && connection.getId().equals(tokenId);
     }
     private ClientIdentity validate(McpDtos.Authorization r) {
         if (!realmMatches()) throw error("access_denied");
@@ -245,7 +266,12 @@ public class McpAuthorizationService {
                 || !Objects.equals(grant.clientId, token.getOauthClientId() == null ? token.getId() : token.getOauthClientId())) return null;
         if (token.getOauthClientId() != null && registrations.findById(token.getOauthClientId())
                 .filter(c -> c.expiresAt.isAfter(Instant.now())).isEmpty()) return null;
+        if (access(token.getOwnerUserId()).effective(token.getId(), true) == IntegrationAccess.Mode.BLOCKED) return null;
         return token;
+    }
+    private IntegrationAccess access(String owner) {
+        var user = users.findByUserId(owner).orElseThrow(() -> error("access_denied"));
+        return user.getIntegrationAccess() == null ? IntegrationAccess.initial() : user.getIntegrationAccess();
     }
     private void requireProfile(String actor, String owner) {
         requireAccount(actor, owner);

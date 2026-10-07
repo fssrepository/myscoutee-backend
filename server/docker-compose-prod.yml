@@ -14,7 +14,7 @@ secrets:
 
 services:
   mcp:
-    image: ${MCP_IMAGE:-myscoutee-mcp:1.3.0-prod}
+    image: ${MCP_IMAGE:-myscoutee-mcp:1.5.0-prod}
     build:
       context: ../../myscoutee-mcp
       dockerfile: Dockerfile

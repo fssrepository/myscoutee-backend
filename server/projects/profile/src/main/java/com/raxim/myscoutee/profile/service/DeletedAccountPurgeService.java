@@ -739,6 +739,8 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("userFilterPreferences", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userPageFilterPreferences", List.of("userId"), userId);
         deleteDocumentsByAnyField("integrationParticipantInvites", List.of("ownerUserId", "claimedUserId"), userId);
+        deleteDocumentsByAnyField("mcpEventSubscriptions", List.of("ownerUserId"), userId);
+        deleteDocumentsByAnyField("integrationWebhookDeliveries", List.of("ownerUserId"), userId);
         deleteDocumentsByAnyField("integrationExternalIds", List.of("ownerUserId"), userId);
         mongoTemplate.remove(Query.query(Criteria.where("resourceType").is("participant").and("internalId").is(userId)), "integrationExternalIds");
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);

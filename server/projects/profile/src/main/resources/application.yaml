@@ -19,9 +19,15 @@ integration:
     allow-http: ${INTEGRATION_WEBHOOK_ALLOW_HTTP:false}
     allow-private-addresses: ${INTEGRATION_WEBHOOK_ALLOW_PRIVATE_ADDRESSES:false}
     delivery-interval-ms: ${INTEGRATION_WEBHOOK_DELIVERY_INTERVAL_MS:1000}
-    # Scale from zero idle threads to at most 100 parallel callback deliveries.
+    # Virtual threads, with a semaphore retaining the existing parallel-delivery ceiling.
     max-worker-count: ${INTEGRATION_WEBHOOK_MAX_WORKER_COUNT:100}
     delivery-batch-size: ${INTEGRATION_WEBHOOK_DELIVERY_BATCH_SIZE:100}
+
+  events:
+    # One process-wide token bucket covers callback verification and delivery; it never blocks a worker.
+    requests-per-second: ${INTEGRATION_EVENTS_REQUESTS_PER_SECOND:4}
+    burst: ${INTEGRATION_EVENTS_BURST:4}
+    max-concurrent: ${INTEGRATION_EVENTS_MAX_CONCURRENT:8}
 
 registry:
   enabled: ${REGISTRY_ENABLED:false}

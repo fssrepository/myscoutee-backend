@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "integrationWebhookDeliveries")
 @CompoundIndexes({
+        @CompoundIndex(name = "integration_delivery_protocol_status", def = "{'protocol':1,'status':1,'ownerUserId':1}"),
         @CompoundIndex(
                 name = "integration_webhook_delivery_due",
                 def = "{'status': 1, 'nextAttemptAtIso': 1, 'createdAtIso': 1}"),
@@ -29,6 +30,17 @@ public class IntegrationWebhookDelivery {
     private String lastError;
     private String createdAtIso;
     private String sentAtIso;
+    private String protocol;
+    private String subscriptionGeneration;
+    @org.springframework.data.mongodb.core.index.Indexed(expireAfter = "0s")
+    private java.time.Instant deleteAfter;
+
+    public String getProtocol() { return protocol; }
+    public void setProtocol(String protocol) { this.protocol = protocol; }
+    public String getSubscriptionGeneration() { return subscriptionGeneration; }
+    public void setSubscriptionGeneration(String generation) { this.subscriptionGeneration = generation; }
+    public java.time.Instant getDeleteAfter() { return deleteAfter; }
+    public void setDeleteAfter(java.time.Instant value) { deleteAfter = value; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
