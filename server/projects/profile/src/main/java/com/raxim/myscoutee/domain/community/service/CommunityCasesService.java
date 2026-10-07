@@ -1,10 +1,11 @@
 package com.raxim.myscoutee.domain.community.service;
+import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.chat.api.CaseConversations;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository;
@@ -30,19 +31,19 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
-public class CommunityCasesService {
+public class CommunityCasesService implements com.raxim.myscoutee.domain.community.api.Cases {
     public static final List<String> TYPES = List.of("fault", "maintenance", "meter-replacement", "chimney-sweep", "renovation", "other");
     @org.springframework.beans.factory.annotation.Autowired
     private ScheduledMessages scheduledMessages;
     private final ServiceCasesRepository cases;
     private final CommunityAuthority access;
     private final GroupDirectory groups;
-    private final UsersRepository users;
+    private final ProfileDirectory users;
     private final NotificationDelivery notifications;
-    private final ChatService chats;
+    private final CaseConversations chats;
     private final ServiceOfferingsRepository offerings;
     public CommunityCasesService(ServiceCasesRepository cases, CommunityAuthority access, GroupDirectory groups,
-            UsersRepository users, NotificationDelivery notifications, ChatService chats, ServiceOfferingsRepository offerings) {
+            ProfileDirectory users, NotificationDelivery notifications, CaseConversations chats, ServiceOfferingsRepository offerings) {
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
     }
     @org.springframework.beans.factory.annotation.Autowired
@@ -79,7 +80,7 @@ public class CommunityCasesService {
         var groupIds = rows.stream().map(ServiceCase::communityId).filter(Objects::nonNull).distinct().toList();
         var groupsById = groups.findByIdIn(groupIds).stream().collect(Collectors.toMap(GroupView::id, g -> g));
         var people = users.findByUserIdIn(rows.stream().flatMap(c -> displayAccounts(c).stream()).collect(Collectors.toSet()))
-                .stream().collect(Collectors.toMap(Users::getUserId, u -> u));
+                .stream().collect(Collectors.toMap(WorkspaceProfile::getUserId, u -> u));
         Map<String, Long> context = new java.util.HashMap<>();
         context.put("total", 0L);
         for (var bucket : cases.bucketCounts(BaseGroups.COMMUNITY_BASE_ID, actor, managed)) {
@@ -144,7 +145,7 @@ public class CommunityCasesService {
                 if ("leave".equals(action) && manager) owner = null;
                 if (participants.stream().noneMatch(member -> List.of("accepted", "invited").contains(memberStates.getOrDefault(member, c.membershipStatus(member))))) status = "trash";
                 for (int i = 0; i < support.size(); i++) if (support.get(i).accountId().equals(actor)) {
-                    var own = support.get(i); support.set(i, new ServiceCase.Support(actor, own.serviceId(), "accepted".equals(next) ? "accepted" : "declined"));
+                    var own = support.get(i); support.set(i, new CaseDetails.Support(actor, own.serviceId(), "accepted".equals(next) ? "accepted" : "declined"));
                 }
             }
             case "invite-members", "remove-member" -> {
@@ -169,7 +170,7 @@ public class CommunityCasesService {
                 if (!manager) throw error(HttpStatus.FORBIDDEN);
                 if ("delete-board-task".equals(action)) {
                     if (boardTasks.stream().noneMatch(t -> t.id().equals(r.taskId()))) throw error(HttpStatus.NOT_FOUND);
-                    boardTasks.replaceAll(t -> t.id().equals(r.taskId()) ? new ServiceCase.BoardTask(t.id(), t.title(), t.description(), "deleted",
+                    boardTasks.replaceAll(t -> t.id().equals(r.taskId()) ? new CaseDetails.BoardTask(t.id(), t.title(), t.description(), "deleted",
                             t.assigneeAccountIds(), t.dependsOnIds(), t.startAtIso(), t.endAtIso(), t.offerIds()) : t);
                 } else {
                     if (!List.of("open", "in-progress").contains(status)) throw error(HttpStatus.CONFLICT);
@@ -195,20 +196,20 @@ public class CommunityCasesService {
                 if ("recommend".equals(action)) {
                     if (!c.activeParticipantAccountIds().contains(actor) && !manager) throw error(HttpStatus.FORBIDDEN);
                     recommendations.removeIf(v -> v.accountId().equals(actor) && v.providerAccountId().equals(r.providerAccountId()));
-                    recommendations.add(new ServiceCase.Recommendation(actor, r.providerAccountId(), r.serviceId()));
+                    recommendations.add(new CaseDetails.Recommendation(actor, r.providerAccountId(), r.serviceId()));
                 } else {
                     if (!manager) throw error(HttpStatus.FORBIDDEN);
                     if (support.stream().anyMatch(v -> v.accountId().equals(r.providerAccountId()) && Objects.equals(v.serviceId(), r.serviceId()) && !"declined".equals(v.status()))) return dto(actor, c);
                     support.removeIf(v -> v.accountId().equals(r.providerAccountId()));
                     String membership = "accepted".equals(c.membershipStatus(r.providerAccountId())) ? "accepted" : "invited";
-                    support.add(new ServiceCase.Support(r.providerAccountId(), r.serviceId(), membership));
+                    support.add(new CaseDetails.Support(r.providerAccountId(), r.serviceId(), membership));
                     participants.add(r.providerAccountId());
                     memberStates.put(r.providerAccountId(), membership);
                 }
             }
             case "accept-invite", "decline-invite" -> {
                 var own = support.stream().filter(v -> v.accountId().equals(actor) && "invited".equals(v.status())).findFirst().orElseThrow(() -> error(HttpStatus.FORBIDDEN));
-                support.remove(own); support.add(new ServiceCase.Support(actor, own.serviceId(), "accept-invite".equals(action) ? "accepted" : "declined"));
+                support.remove(own); support.add(new CaseDetails.Support(actor, own.serviceId(), "accept-invite".equals(action) ? "accepted" : "declined"));
                 memberStates.put(actor, "accept-invite".equals(action) ? "accepted" : "declined");
             }
             case "offer", "edit-offer" -> {
@@ -222,7 +223,7 @@ public class CommunityCasesService {
                     throw error(HttpStatus.BAD_REQUEST);
                 try { java.util.Currency.getInstance(r.currency()); } catch (RuntimeException error) { throw error(HttpStatus.BAD_REQUEST); }
                 validateOfferPolicies(r.workPolicies()); validateOfferPolicies(r.refundPolicies());
-                var offer = new ServiceCase.Offer(editing ? existing.id() : UUID.randomUUID().toString(), editing ? existing.providerAccountId() : actor,
+                var offer = new CaseDetails.Offer(editing ? existing.id() : UUID.randomUUID().toString(), editing ? existing.providerAccountId() : actor,
                         editing ? existing.serviceId() : own.serviceId(), r.amount(), r.currency(), r.note(), editing ? existing.status() : "pending",
                         editing ? existing.createdAtIso() : Instant.now().toString(), r.workPolicy(), r.refundPolicy(), r.workPolicies(), r.refundPolicies());
                 if (editing) offers.set(offers.indexOf(existing), offer); else offers.add(offer);
@@ -231,7 +232,7 @@ public class CommunityCasesService {
                 if (!manager) throw error(HttpStatus.FORBIDDEN);
                 int index = -1; for (int i = 0; i < offers.size(); i++) if (offers.get(i).id().equals(r.offerId())) index = i;
                 if (index < 0 || "trash".equals(status)) throw error(HttpStatus.CONFLICT);
-                var o = offers.get(index); offers.set(index, new ServiceCase.Offer(o.id(), o.providerAccountId(), o.serviceId(), o.amount(), o.currency(), o.note(),
+                var o = offers.get(index); offers.set(index, new CaseDetails.Offer(o.id(), o.providerAccountId(), o.serviceId(), o.amount(), o.currency(), o.note(),
                         "accept-offer".equals(action) ? "accepted" : "reject-offer".equals(action) ? "rejected" : "pending", o.createdAtIso(), o.workPolicy(), o.refundPolicy(), o.workPolicies(), o.refundPolicies()));
             }
             default -> throw error(HttpStatus.BAD_REQUEST);
@@ -244,10 +245,10 @@ public class CommunityCasesService {
         return dto(actor, saved);
     }
     public void notifyChange(ServiceCase c, String actor, String action, String occurrenceKey) {
-        chats.syncCaseChat(c);
+        chats.synchronizeCase(com.raxim.myscoutee.domain.community.mapper.CaseConversationMapper.toConversation(c));
         var recipientAccounts = c.notifiedParticipantAccountIds().stream().filter(id -> !id.equals(actor)).toList();
         var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID, recipientAccounts)
-                .stream().map(Users::getUserId).toList();
+                .stream().map(WorkspaceProfile::getUserId).toList();
         if (recipients.isEmpty()) return;
         String kind = "case-" + action;
         var payload = new LinkedHashMap<String, String>();
@@ -268,11 +269,11 @@ public class CommunityCasesService {
                     || p.description() == null || p.description().isBlank() || p.description().length() > 4000 || p.required() == null) throw error(HttpStatus.BAD_REQUEST);
         }
     }
-    private static void validateBoardTask(ServiceCase.BoardTask task, ServiceCase c) {
+    private static void validateBoardTask(CaseDetails.BoardTask task, ServiceCase c) {
         if (task == null || task.id() == null || task.id().isBlank() || task.id().length() > 100 || task.title() == null || task.title().isBlank() || task.title().length() > 120
                 || task.description() == null || task.description().length() > 4000 || task.status() == null || !List.of("todo", "in-progress", "done", "deleted").contains(task.status())
                 || task.assigneeAccountIds() == null || task.dependsOnIds() == null || task.assigneeAccountIds().size() > 100 || task.dependsOnIds().size() > 200) throw error(HttpStatus.BAD_REQUEST);
-        var offerIds = c.offers().stream().filter(o -> "accepted".equals(o.status())).map(ServiceCase.Offer::id).collect(Collectors.toSet());
+        var offerIds = c.offers().stream().filter(o -> "accepted".equals(o.status())).map(CaseDetails.Offer::id).collect(Collectors.toSet());
         if (task.offerIds().size() > 100 || !offerIds.containsAll(task.offerIds()) || new HashSet<>(task.offerIds()).size() != task.offerIds().size()) throw error(HttpStatus.BAD_REQUEST);
         var old = c.boardTasks().stream().filter(t -> t.id().equals(task.id())).findFirst().orElse(null);
         if (task.assigneeAccountIds().stream().anyMatch(id -> !c.activeParticipantAccountIds().contains(id) && (old == null || !old.assigneeAccountIds().contains(id)))) throw error(HttpStatus.BAD_REQUEST);
@@ -282,13 +283,13 @@ public class CommunityCasesService {
             if (end != null && (start == null || !end.isAfter(start))) throw error(HttpStatus.BAD_REQUEST);
         } catch (RuntimeException invalid) { throw error(HttpStatus.BAD_REQUEST); }
     }
-    private static void validateTaskGraph(List<ServiceCase.BoardTask> tasks) {
+    private static void validateTaskGraph(List<CaseDetails.BoardTask> tasks) {
         if (tasks.size() > 200) throw error(HttpStatus.BAD_REQUEST);
-        var byId = tasks.stream().collect(Collectors.toMap(ServiceCase.BoardTask::id, t -> t));
+        var byId = tasks.stream().collect(Collectors.toMap(CaseDetails.BoardTask::id, t -> t));
         var completed = new HashSet<String>();
         for (var task : tasks) visitTask(task.id(), byId, new HashSet<>(), completed);
     }
-    private static void visitTask(String id, Map<String, ServiceCase.BoardTask> tasks, Set<String> path, Set<String> completed) {
+    private static void visitTask(String id, Map<String, CaseDetails.BoardTask> tasks, Set<String> path, Set<String> completed) {
         if (completed.contains(id)) return;
         if (!tasks.containsKey(id) || !path.add(id)) throw error(HttpStatus.BAD_REQUEST);
         for (String dependency : tasks.get(id).dependsOnIds()) visitTask(dependency, tasks, path, completed);
@@ -299,7 +300,7 @@ public class CommunityCasesService {
         c.recommendations().forEach(r -> { ids.add(r.providerAccountId()); ids.add(r.accountId()); }); return ids;
     }
     private CaseItem dto(String actor, ServiceCase c) {
-        var people = users.findByUserIdIn(displayAccounts(c)).stream().collect(Collectors.toMap(Users::getUserId, u -> u));
+        var people = users.findByUserIdIn(displayAccounts(c)).stream().collect(Collectors.toMap(WorkspaceProfile::getUserId, u -> u));
         return CommunityCaseMapper.toDto(c, actor, canManage(c, actor), c.communityId() == null ? null : groups.findById(c.communityId()).orElse(null), people);
     }
     private ServiceCase persist(ServiceCase c) {

@@ -168,6 +168,23 @@ class MongoConverterConfigTest {
 
     @Test
     @org.junit.jupiter.api.Tag("standard")
+    void immutableCaseValuesRetainHistoricalNestedIdentities() {
+        var converter = domainConverter();
+        var values = java.util.List.of(
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.Support("provider", "service", "accepted"),
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.Recommendation("member", "provider", "service"),
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.BoardTask("task", "Title", "", "open", java.util.List.of("member"), java.util.List.of(), null, null, java.util.List.of()),
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.Offer("offer", "provider", "service", 25, "EUR", "", "accepted", "now", null, null, java.util.List.of(), java.util.List.of()));
+        for (var value : values) {
+            var document = new Document(); converter.write(new Payload(value), document);
+            assertThat(document.get("value", Document.class).getString("_class"))
+                    .isEqualTo("com.raxim.myscoutee.profile.data.document.ServiceCase$" + value.getClass().getSimpleName());
+            assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+        }
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
     void groupPolicyRetainsHistoricalNestedIdentityAndFieldValues() {
         var converter = domainConverter();
         var policy = new com.raxim.myscoutee.domain.groups.dto.GroupPolicy(true, true, java.util.List.of("profile.name"));

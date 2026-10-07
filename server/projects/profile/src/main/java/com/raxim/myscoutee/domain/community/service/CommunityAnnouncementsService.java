@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.community.service;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.community.document.CommunityAnnouncement;
 import com.raxim.myscoutee.domain.community.repository.CommunityAnnouncementsRepository;
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
@@ -31,7 +31,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
-public class CommunityAnnouncementsService {
+public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain.community.api.Announcements {
     public static final String CLOSE_RULE = "community-voting-close";
     public static final List<String> CHOICES = List.of("yes", "no", "abstain");
     @org.springframework.beans.factory.annotation.Autowired
@@ -39,10 +39,10 @@ public class CommunityAnnouncementsService {
     private final CommunityAnnouncementsRepository announcements;
     private final CommunityAuthority access;
     private final MongoTemplate mongo;
-    private final UsersRepository users;
+    private final ProfileDirectory users;
     private final NotificationDelivery notifications;
     public CommunityAnnouncementsService(CommunityAnnouncementsRepository announcements,
-            CommunityAuthority access, MongoTemplate mongo, UsersRepository users, NotificationDelivery notifications) {
+            CommunityAuthority access, MongoTemplate mongo, ProfileDirectory users, NotificationDelivery notifications) {
         this.announcements = announcements; this.access = access; this.mongo = mongo; this.users = users; this.notifications = notifications;
     }
     public String actor(String profileId) { return access.actor(profileId); }
@@ -160,7 +160,7 @@ public class CommunityAnnouncementsService {
     private void notifyMembers(CommunityAnnouncement a, String actor, String action, String occurrence, boolean adminsOnly) {
         var accounts = access.roster(a.communityId()).stream().filter(m -> !actor.equals(m.getUserId()) && (!adminsOnly || "Admin".equals(m.getRole())))
                 .map(CommunityMember::getUserId).distinct().toList();
-        var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(a.communityId(), accounts).stream().map(Users::getUserId).toList();
+        var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(a.communityId(), accounts).stream().map(WorkspaceProfile::getUserId).toList();
         if (recipients.isEmpty()) return;
         String kind = "announcement-" + action;
         var payload = new LinkedHashMap<String, String>(); payload.put("workspaceGroupId", a.communityId()); payload.put("announcementId", a.id());

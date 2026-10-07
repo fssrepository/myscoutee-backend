@@ -7,6 +7,11 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 @Service
 public class CommunityMembershipService implements CommunityMemberships {
+    @Override public java.util.Set<String> acceptedAccounts(String groupId, java.util.Collection<String> accounts, int limit) {
+        return members.findByOwnerTypeAndOwnerIdAndStatusAndUserIdIn("community", groupId, "accepted", accounts,
+                org.springframework.data.domain.PageRequest.of(0, limit)).getContent().stream()
+                .map(ActivityMember::getUserId).collect(java.util.stream.Collectors.toSet());
+    }
     private final ActivityMembersRepository members;
     public CommunityMembershipService(ActivityMembersRepository members) { this.members = members; }
     @Override public List<CommunityMember> forAccount(String id) { return members.findByOwnerTypeAndUserId("community", id).stream().map(this::view).toList(); }

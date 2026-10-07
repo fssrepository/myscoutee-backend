@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.community.service;
+import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
@@ -29,8 +30,8 @@ class CaseAppointmentsServiceTest {
  ServiceProviderCalendar state;ServiceOfferingsRepository offerings;
  @BeforeEach void setup(){cases=mock(CommunityCasesService.class);services=mock(ServiceOfferingsService.class);calendars=mock(ServiceProviderCalendarsRepository.class);
   var pricing=new EventCheckoutPricingService(mock(ActivityEventsRepository.class),mock(ActivityMembersRepository.class),mock(TranslationService.class));
-  offerings=mock(ServiceOfferingsRepository.class);service=new CaseAppointmentsService(cases,services,calendars,new ActivityEventSubEventsMapper(),pricing,mock(ServiceCasesRepository.class),offerings,mock(UsersRepository.class));
-  when(cases.visible(anyString(),eq("case"))).thenReturn(new ServiceCase("case",CommunityGroup.COMMUNITY_BASE_ID,"homes","owner","Shared repair","", "maintenance","open",true,List.of("owner","resident"),List.of("owner","resident","provider"),List.of(),List.of(new ServiceCase.Support("provider","service","accepted")),List.of(),List.of(),null,null,"2099-01-01T00:00:00Z","2099-01-01T00:00:00Z",0L,Map.of(),List.of(),List.of()));
+  offerings=mock(ServiceOfferingsRepository.class);service=new CaseAppointmentsService(cases,services,calendars,new ActivityEventSubEventsMapper(),pricing,mock(ServiceCasesRepository.class),offerings,new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
+  when(cases.visible(anyString(),eq("case"))).thenReturn(new ServiceCase("case",CommunityGroup.COMMUNITY_BASE_ID,"homes","owner","Shared repair","", "maintenance","open",true,List.of("owner","resident"),List.of("owner","resident","provider"),List.of(),List.of(new CaseDetails.Support("provider","service","accepted")),List.of(),List.of(),null,null,"2099-01-01T00:00:00Z","2099-01-01T00:00:00Z",0L,Map.of(),List.of(),List.of()));
   when(offerings.findById("service")).thenReturn(Optional.of(new ServiceOffering("service",CommunityGroup.COMMUNITY_BASE_ID,"provider","Repairs","","maintenance",List.of(),null,List.of(),List.of("provider"),true,"2099-01-01T00:00:00Z","2099-12-31T23:59:59Z","Daily",60,List.of(new EventSlotTemplateDto("morning","2099-01-01T09:20:00Z",null,false,List.of())),null,"published","2099-01-01T00:00:00Z","2099-01-01T00:00:00Z",0L,"")));
   when(calendars.findById("provider")).thenAnswer(inv->Optional.ofNullable(state));
   when(calendars.save(any())).thenAnswer(inv->{var x=(ServiceProviderCalendar)inv.getArgument(0);state=new ServiceProviderCalendar(x.id(),x.appointments(),x.lastOperationId(),x.lastOperationSignature(),x.version()==null?0:x.version()+1);return state;});

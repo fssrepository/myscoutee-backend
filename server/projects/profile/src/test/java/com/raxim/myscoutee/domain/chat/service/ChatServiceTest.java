@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.chat.service;
+import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
@@ -167,7 +168,7 @@ class ChatServiceTest {
         when(chatsRepository.findByOwnerUserIdAndChatId("provider-profile", "c-case-case")).thenReturn(Optional.of(stale));
         var c = new com.raxim.myscoutee.domain.community.document.ServiceCase("case", "myscoutee-community", "private", "owner", "Repair", "", "fault", "open", false,
                 List.of("owner"), List.of("owner", "provider"), List.of(),
-                List.of(new com.raxim.myscoutee.domain.community.document.ServiceCase.Support("provider", null, "declined")), List.of(), List.of(), null, null, "now", "now", 1L, java.util.Map.of(), List.of(), List.of());
+                List.of(new com.raxim.myscoutee.domain.community.dto.CaseDetails.Support("provider", null, "declined")), List.of(), List.of(), null, null, "now", "now", 1L, java.util.Map.of(), List.of(), List.of());
         when(mongoTemplate.findById("case", com.raxim.myscoutee.domain.community.document.ServiceCase.class)).thenReturn(c);
         assertThat(service.hasChatAccess("c-case-case", "provider-profile")).isFalse();
     }
@@ -1360,6 +1361,12 @@ class ChatServiceTest {
     private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
                 new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        var caseRepository = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class, call ->
+                "findById".equals(call.getMethod().getName())
+                        ? java.util.Optional.ofNullable(mongo.findById(call.getArgument(0), com.raxim.myscoutee.domain.community.document.ServiceCase.class))
+                        : org.mockito.Answers.RETURNS_DEFAULTS.answer(call));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "cases", new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(caseRepository));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "announcements", new com.raxim.myscoutee.domain.community.service.AnnouncementDirectoryService(mongo));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
         return service;
     }

@@ -33,10 +33,11 @@ class DomainServiceBoundaryTest {
             "access", Set.of("accessGrants", "accessPolicyDefinitions"),
             "administration", Set.of("adminMonitoring", "adminStats"),
             "email", Set.of("emailTemplates", "emailCampaignRules", "emailOutbox", "scheduledMessageTasks", "scheduledMessageRuns", "scheduledMessageDeliveries", "operatorEmailConfigurations", "emailUnsubscriptions"),
-            "groups", Set.of("communityGroups"));
+            "groups", Set.of("communityGroups"),
+            "community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks"));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -69,7 +70,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;

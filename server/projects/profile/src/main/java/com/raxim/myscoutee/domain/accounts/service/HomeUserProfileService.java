@@ -231,7 +231,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository serviceCasesRepository;
+    private com.raxim.myscoutee.domain.community.api.CaseParticipants caseParticipants;
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
@@ -2254,15 +2254,13 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     private int communityCaseCount(Users user) {
-        if (serviceCasesRepository == null || user.getWorkspaceGroupId() == null) return 0;
+        if (caseParticipants == null || user.getWorkspaceGroupId() == null) return 0;
         boolean community = com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
                 || communityGroupsRepository.findById(user.getWorkspaceGroupId()).map(g -> "community".equals(g.effectiveType())).orElse(false);
         if (!community) return 0;
         String account = StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId();
         var managed = groupAdministration.managedGroups(account);
-        long total = serviceCasesRepository.bucketCounts(com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID, account, managed)
-                .stream().filter(bucket -> !"trash".equals(bucket.status())).mapToLong(bucket -> bucket.count()).sum();
-        return (int) Math.min(Integer.MAX_VALUE, total);
+        return caseParticipants.visibleCount(com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID, account, managed);
     }
 
     private UserMenuCountersDto emptyMenuCounters() {

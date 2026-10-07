@@ -47,7 +47,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
  * processor without passing through this service.
  */
 @Service
-public class EventCheckoutPricingService {
+public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.payments.api.ServiceSlotPricing {
     public static final String INVALID_PROMO_CODE_MESSAGE_KEY = "event.checkout.promo.invalid";
 
     private final ActivityEventsRepository activityEventsRepository;
@@ -1072,6 +1072,6 @@ public class EventCheckoutPricingService {
     public record PricingSnapshot(
             double amount,
             String currency,
-            List<EventCheckoutPricingSummaryRowDto> rows) {
+            List<EventCheckoutPricingSummaryRowDto> rows) implements com.raxim.myscoutee.domain.payments.api.ServiceSlotPricing.Quote {
     }
 }

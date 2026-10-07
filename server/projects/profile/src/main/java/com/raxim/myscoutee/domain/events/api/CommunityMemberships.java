@@ -3,6 +3,7 @@ import java.util.*;
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 /** Community-scoped reads, registration and compare-and-set transitions. */
 public interface CommunityMemberships {
+    java.util.Set<String> acceptedAccounts(String groupId, java.util.Collection<String> accounts, int limit);
     List<CommunityMember> forAccount(String accountId);
     List<CommunityMember> forGroup(String groupId);
     List<CommunityMember> forGroups(Collection<String> groupIds);

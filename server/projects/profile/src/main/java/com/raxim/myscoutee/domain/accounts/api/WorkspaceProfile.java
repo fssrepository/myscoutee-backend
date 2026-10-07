@@ -29,6 +29,7 @@ public interface WorkspaceProfile {
     String getName();
     String getCity();
     List<String> getImages();
+    List<String> getLanguages();
     Coordinates getLocationCoordinates();
     interface Coordinates { Double latitude(); Double longitude(); }
 }

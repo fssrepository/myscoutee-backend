@@ -59,7 +59,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.community.document.ServiceCase;
+import com.raxim.myscoutee.domain.community.dto.CaseConversation;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.assets.document.Asset;
@@ -113,9 +113,13 @@ import com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
-public class ChatService {
+public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConversations {
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.community.api.CaseParticipants cases;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.community.api.AnnouncementDirectory announcements;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     public static final String RANDOM_ROOM_WELCOME_MESSAGE_TYPE = "random-room-welcome";
@@ -658,7 +662,7 @@ public class ChatService {
     }
 
     private ChatDto ensureAnnouncementFeedbackChat(ChatServiceEnsureRequestDto request, String userId) {
-        var a = mongoTemplate.findById(normalizeId(request.announcementId()), com.raxim.myscoutee.domain.community.document.CommunityAnnouncement.class);
+        var a = announcements.find(normalizeId(request.announcementId())).orElse(null);
         Users actor = findUser(userId);
         if (a == null || actor == null || !"published".equals(a.status()) || !a.communityId().equals(actor.getWorkspaceGroupId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement unavailable.");
@@ -693,7 +697,7 @@ public class ChatService {
     }
 
     private ChatDto ensureCaseChat(ChatServiceEnsureRequestDto request, String userId) {
-        ServiceCase serviceCase = mongoTemplate.findById(normalizeId(request.caseId()), ServiceCase.class);
+        CaseConversation serviceCase = cases.conversation(normalizeId(request.caseId())).orElse(null);
         if (!caseChatAccess(serviceCase, findUser(userId), request.caseOfferId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case unavailable.");
         syncCaseChat(serviceCase);
@@ -704,7 +708,7 @@ public class ChatService {
         return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
     }
 
-    private boolean caseChatAccess(ServiceCase serviceCase, Users actor, String caseOfferId) {
+    private boolean caseChatAccess(CaseConversation serviceCase, Users actor, String caseOfferId) {
         return serviceCase != null && actor != null
                 && BaseGroups.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
                 && BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
@@ -713,7 +717,8 @@ public class ChatService {
     }
 
     /** Case and quotation groups share the existing Cases channel and membership lifecycle. */
-    public List<Chat> syncCaseChat(ServiceCase serviceCase) {
+    @Override public void synchronizeCase(CaseConversation serviceCase) { syncCaseChat(serviceCase); }
+    public List<Chat> syncCaseChat(CaseConversation serviceCase) {
         var profiles = usersRepository.findByWorkspaceGroupIdAndAccountUserIdIn(
                 BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
         var byAccount = profiles.stream().collect(java.util.stream.Collectors.toMap(
@@ -2888,7 +2893,7 @@ public class ChatService {
         }
         String normalizedUserId = normalizeId(userId);
         if ("case".equals(chat.getChannelType()) && !caseChatAccess(
-                mongoTemplate.findById(chat.getOwnerId(), ServiceCase.class), findUser(normalizedUserId), chat.getCaseOfferId())) return false;
+                cases.conversation(chat.getOwnerId()).orElse(null), findUser(normalizedUserId), chat.getCaseOfferId())) return false;
         if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }

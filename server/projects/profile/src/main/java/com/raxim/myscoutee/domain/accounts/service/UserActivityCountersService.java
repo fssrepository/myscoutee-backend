@@ -39,7 +39,7 @@ import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepos
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class UserActivityCountersService {
+public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters {
     private final OrganizerFollowingService organizerFollowingService;
 
     public void expireFollowingCounters(Instant now) {

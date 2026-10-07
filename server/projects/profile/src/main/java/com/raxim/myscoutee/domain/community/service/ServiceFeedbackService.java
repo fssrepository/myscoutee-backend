@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.community.service;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.document.ServiceFeedback;
 import com.raxim.myscoutee.domain.community.document.ServiceOffering;
@@ -20,19 +20,19 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.Page;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 /** Completion workers create feedback eligibility; reads never synthesize missing eligibility. */
 @Service
 public class ServiceFeedbackService implements com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation {
-    public static final Set<String> CRITERIA = Set.of("quality", "reliability", "communication", "value");
+    public static final Set<String> CRITERIA = com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.CRITERIA;
     private final MongoTemplate mongo;
-    private final UsersRepository users;
+    private final ProfileDirectory users;
     private final NotificationDelivery notifications;
-    private final UserActivityCountersService counters;
-    public ServiceFeedbackService(MongoTemplate mongo, UsersRepository users, NotificationDelivery notifications, UserActivityCountersService counters) {
+    private final ServiceFeedbackCounters counters;
+    public ServiceFeedbackService(MongoTemplate mongo, ProfileDirectory users, NotificationDelivery notifications, ServiceFeedbackCounters counters) {
         this.mongo=mongo; this.users=users; this.notifications=notifications; this.counters=counters;
     }
     public record Item(ServiceFeedback feedback, String providerName, String reviewerName, String serviceTitle, String serviceImageUrl) {}
@@ -48,7 +48,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
         var reviewers=closed.activeParticipantAccountIds().stream().filter(id -> !closed.support().stream().anyMatch(s -> s.accountId().equals(id))
                 || closed.audienceAccountIds().contains(id) || id.equals(closed.ownerAccountId())).toList();
         var profiles=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,reviewers);
-        var profileIds=profiles.stream().collect(Collectors.groupingBy(Users::getAccountUserId,Collectors.mapping(Users::getUserId,Collectors.toList())));
+        var profileIds=profiles.stream().collect(Collectors.groupingBy(WorkspaceProfile::getAccountUserId,Collectors.mapping(WorkspaceProfile::getUserId,Collectors.toList())));
         var active=new HashSet<>(closed.activeParticipantAccountIds());
         var touched=new HashSet<String>();
         for (var provider : closed.support()) {
@@ -83,7 +83,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
         long total=mongo.count(Query.query(scope),ServiceFeedback.class);
         var rows=mongo.find(Query.query(scope).with(Sort.by(Sort.Order.desc("createdAtIso"),Sort.Order.asc("id"))).skip((long)page*size).limit(size),ServiceFeedback.class);
         var ids=rows.stream().flatMap(r->java.util.stream.Stream.of(r.viewerAccountId(),r.providerAccountId())).collect(Collectors.toSet());
-        var names=users.findByUserIdIn(ids).stream().collect(Collectors.toMap(Users::getUserId,u->Objects.toString(u.getName(),"")));
+        var names=users.findByUserIdIn(ids).stream().collect(Collectors.toMap(WorkspaceProfile::getUserId,u->Objects.toString(u.getName(),"")));
         var serviceIds=rows.stream().map(ServiceFeedback::serviceId).filter(Objects::nonNull).distinct().toList();
         var offerings=serviceIds.isEmpty() ? Map.<String,ServiceOffering>of() : mongo.find(Query.query(
             Criteria.where("_id").in(serviceIds).and("baseGroupId").is(BaseGroups.COMMUNITY_BASE_ID)
@@ -135,7 +135,7 @@ public class ServiceFeedbackService implements com.raxim.myscoutee.domain.commun
         for(var profile:users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,List.of(actor))) counters.updateServiceFeedbackPending(profile.getUserId(),count);
     }
     private void notifyOnce(String id,String kind,String actor,String title,String caseId) {
-        var recipients=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,List.of(actor)).stream().map(Users::getUserId).toList();
+        var recipients=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,List.of(actor)).stream().map(WorkspaceProfile::getUserId).toList();
         notifyOnce(id,kind,recipients,title,caseId);
     }
     private void notifyOnce(String id,String kind,List<String> recipients,String title,String caseId) {

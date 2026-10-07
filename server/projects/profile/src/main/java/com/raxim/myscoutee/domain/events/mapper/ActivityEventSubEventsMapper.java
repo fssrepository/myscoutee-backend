@@ -36,7 +36,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.SubEventSupplyContributionEntry
 import com.raxim.myscoutee.domain.events.service.TournamentGroupCountPolicy;
 
 @Component
-public class ActivityEventSubEventsMapper {
+public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.events.api.SlotRecurrence {
     public List<SubEventItem> runtimeStages(ActivityEvent event) {
         if (event == null) {
             return List.of();

@@ -4,10 +4,10 @@ import com.raxim.myscoutee.domain.affinity.service.UserRatesService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.community.service.CommunityAnnouncementsService;
-import com.raxim.myscoutee.domain.community.service.CommunityCasesService;
-import com.raxim.myscoutee.domain.community.service.CommunityScheduledTasksService;
-import com.raxim.myscoutee.domain.community.service.ServiceOfferingsService;
+import com.raxim.myscoutee.domain.community.api.Announcements;
+import com.raxim.myscoutee.domain.community.api.Cases;
+import com.raxim.myscoutee.domain.community.api.ScheduledCases;
+import com.raxim.myscoutee.domain.community.api.ServiceOfferings;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.groups.api.Groups;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
@@ -31,11 +31,11 @@ public class IntegrationReadController {
     private final UserRatesService ratings;
     private final AssetsService assets;
     private final Campaigns campaigns;
-    private final ServiceOfferingsService services;
-    private final CommunityCasesService cases;
-    private final CommunityAnnouncementsService announcements;
-    private final CommunityScheduledTasksService tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, Groups groups, ChatService chats, NotificationInbox notifications, UserRatesService ratings, AssetsService assets, Campaigns campaigns, ServiceOfferingsService services, CommunityCasesService cases, CommunityAnnouncementsService announcements, CommunityScheduledTasksService tasks) {
+    private final ServiceOfferings services;
+    private final Cases cases;
+    private final Announcements announcements;
+    private final ScheduledCases tasks;
+    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, Groups groups, ChatService chats, NotificationInbox notifications, UserRatesService ratings, AssetsService assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

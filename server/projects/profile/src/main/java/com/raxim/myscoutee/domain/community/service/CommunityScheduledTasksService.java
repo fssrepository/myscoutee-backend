@@ -6,8 +6,8 @@ import com.raxim.myscoutee.domain.community.document.CommunityScheduledTask;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.repository.CommunityScheduledTasksRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
+import com.raxim.myscoutee.domain.events.api.CommunityMemberships;
 import com.raxim.myscoutee.domain.groups.api.GroupView;
 import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 import com.raxim.myscoutee.domain.groups.api.CommunityAuthority;
@@ -28,24 +28,24 @@ import com.raxim.myscoutee.domain.community.mapper.CommunityCaseMapper;
 import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
-public class CommunityScheduledTasksService {
+public class CommunityScheduledTasksService implements com.raxim.myscoutee.domain.community.api.ScheduledCases {
     public static final String RULE = "community-scheduled-cases";
     public static final int LEAD_DAYS = 45;
     private final CommunityScheduledTasksRepository tasks;
     private final ServiceCasesRepository cases;
     private final CommunityAuthority access;
     private final GroupDirectory groups;
-    private final ActivityMembersRepository members;
+    private final CommunityMemberships members;
     private final CommunityCasesService caseService;
     public CommunityScheduledTasksService(CommunityScheduledTasksRepository tasks, ServiceCasesRepository cases,
-            CommunityAuthority access, GroupDirectory groups, ActivityMembersRepository members, CommunityCasesService caseService) {
+            CommunityAuthority access, GroupDirectory groups, CommunityMemberships members, CommunityCasesService caseService) {
         this.tasks = tasks; this.cases = cases; this.access = access; this.groups = groups; this.members = members; this.caseService = caseService;
     }
     public String actor(String id) { return access.actor(id); }
     public Page<TaskItem> page(String actor, int size, String cursor, String status) {
         if (!Set.of("active", "paused", "trash").contains(status)) throw error(HttpStatus.BAD_REQUEST);
         var managed = access.managedGroups(actor);
-        var memberIds = members.findByOwnerTypeAndUserId("community", actor).stream().filter(m -> "accepted".equals(m.getStatus())).map(ActivityMember::getOwnerId).toList();
+        var memberIds = members.forAccount(actor).stream().filter(m -> "accepted".equals(m.getStatus())).map(CommunityMember::getOwnerId).toList();
         var joined = memberIds.isEmpty() ? List.<String>of() : groups.findByIdIn(memberIds).stream()
                 .filter(g -> "community".equals(g.effectiveType()) && !BaseGroups.isBaseId(g.id()) && !g.deleted() && !g.awaitingOwner()).map(GroupView::id).toList();
         int page = CommunityCasesService.page(cursor), limit = Math.max(1, Math.min(50, size));
@@ -54,8 +54,8 @@ public class CommunityScheduledTasksService {
         var records = tasks.visible(BaseGroups.COMMUNITY_BASE_ID, actor, managed, joined, filter, PageRequest.of(page, limit, Sort.by("nextDueAtIso", "id")));
         var ids = records.stream().map(CommunityScheduledTask::communityId).filter(Objects::nonNull).distinct().toList();
         var groupById = ids.isEmpty() ? Map.<String, GroupView>of() : groups.findByIdIn(ids).stream().collect(Collectors.toMap(GroupView::id, g -> g));
-        var roster = ids.isEmpty() ? Map.<String, Set<String>>of() : members.findByOwnerTypeAndOwnerIdIn("community", ids).stream().filter(m -> "accepted".equals(m.getStatus()))
-                .collect(Collectors.groupingBy(ActivityMember::getOwnerId, Collectors.mapping(ActivityMember::getUserId, Collectors.toSet())));
+        var roster = ids.isEmpty() ? Map.<String, Set<String>>of() : members.forGroups(ids).stream().filter(m -> "accepted".equals(m.getStatus()))
+                .collect(Collectors.groupingBy(CommunityMember::getOwnerId, Collectors.mapping(CommunityMember::getUserId, Collectors.toSet())));
         var context = new HashMap<String, Long>(); for (var key : List.of("active", "paused", "trash")) context.put(key, 0L);
         tasks.counters(BaseGroups.COMMUNITY_BASE_ID, actor, managed, joined).forEach(row -> context.put(row.status(), row.count()));
         context.put("total", context.get("active") + context.get("paused"));
@@ -113,18 +113,18 @@ public class CommunityScheduledTasksService {
                 PageRequest.of(0, 100, Sort.by("nextDueAtIso", "id")));
         var ids = due.stream().map(CommunityScheduledTask::communityId).filter(Objects::nonNull).distinct().toList();
         var groupById = groups.findByIdIn(ids).stream().collect(Collectors.toMap(GroupView::id, g -> g));
-        var rosters = members.findByOwnerTypeAndOwnerIdIn("community", ids).stream().filter(m -> "accepted".equals(m.getStatus()))
-                .collect(Collectors.groupingBy(ActivityMember::getOwnerId));
+        var rosters = members.forGroups(ids).stream().filter(m -> "accepted".equals(m.getStatus()))
+                .collect(Collectors.groupingBy(CommunityMember::getOwnerId));
         int created = 0;
         for (var task : due) {
             var group = task.communityId() == null ? null : groupById.get(task.communityId());
             if (task.communityId() != null && (group == null || group.deleted() || group.awaitingOwner() || !"community".equals(group.effectiveType()))) continue;
-            var roster = task.communityId() == null ? List.<ActivityMember>of() : rosters.getOrDefault(task.communityId(), List.of());
-            var accepted = task.communityId() == null ? Set.of(task.ownerAccountId()) : roster.stream().map(ActivityMember::getUserId).collect(Collectors.toSet());
+            var roster = task.communityId() == null ? List.<CommunityMember>of() : rosters.getOrDefault(task.communityId(), List.of());
+            var accepted = task.communityId() == null ? Set.of(task.ownerAccountId()) : roster.stream().map(CommunityMember::getUserId).collect(Collectors.toSet());
             var audience = task.audienceAll() ? List.copyOf(accepted) : task.audienceAccountIds().stream().filter(accepted::contains).toList();
             if (audience.isEmpty()) continue;
             var participants = new LinkedHashSet<>(audience);
-            roster.stream().filter(m -> "Admin".equals(m.getRole())).map(ActivityMember::getUserId).forEach(participants::add);
+            roster.stream().filter(m -> "Admin".equals(m.getRole())).map(CommunityMember::getUserId).forEach(participants::add);
             String caseId = occurrenceId(task.id(), task.nextDueAtIso());
             ServiceCase c = cases.findById(caseId).orElse(null);
             if (c == null) {

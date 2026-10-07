@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.domain.community.document;
 
 import java.util.List;
+import com.raxim.myscoutee.domain.community.dto.CaseDetails.*;
 import com.raxim.myscoutee.common.dto.SharedDtos.PolicyItemDto;
 import java.util.Map;
 import org.springframework.data.annotation.Id;
@@ -52,19 +53,5 @@ public record ServiceCase(@Id String id, String baseGroupId, String communityId,
     }
     public List<String> notifiedParticipantAccountIds() {
         return participantAccountIds.stream().filter(id -> List.of("accepted", "invited").contains(membershipStatus(id))).toList();
-    }
-    public record BoardTask(String id, String title, String description, String status,
-            List<String> assigneeAccountIds, List<String> dependsOnIds, String startAtIso, String endAtIso, List<String> offerIds) {
-        public BoardTask { offerIds = offerIds == null ? List.of() : List.copyOf(offerIds); }
-    }
-    public record Support(String accountId, String serviceId, String status) {}
-    public record Recommendation(String accountId, String providerAccountId, String serviceId) {}
-    public record Offer(String id, String providerAccountId, String serviceId, double amount, String currency,
-            String note, String status, String createdAtIso, String workPolicy, String refundPolicy,
-            List<PolicyItemDto> workPolicies, List<PolicyItemDto> refundPolicies) {
-        public Offer {
-            workPolicies = workPolicies == null ? List.of() : List.copyOf(workPolicies);
-            refundPolicies = refundPolicies == null ? List.of() : List.copyOf(refundPolicies);
-        }
     }
 }

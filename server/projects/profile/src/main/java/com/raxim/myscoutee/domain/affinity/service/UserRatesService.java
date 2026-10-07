@@ -7,7 +7,7 @@ import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.community.service.ServiceFeedbackService;
+import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -930,7 +930,7 @@ public class UserRatesService {
             case "campaign" -> Set.of("relevance", "appeal", "clarity", "collaboration");
             case "work" -> Set.of("fit", "interests", "communication", "collaboration");
             case "service-interest" -> Set.of("relevance", "clarity", "confidence", "value");
-            case "service" -> ServiceFeedbackService.CRITERIA;
+            case "service" -> CaseFeedbackPreparation.CRITERIA;
             default -> Set.of();
         };
         if (!Integer.valueOf(1).equals(snapshot.version()) || keys.isEmpty() || snapshot.criteria() == null

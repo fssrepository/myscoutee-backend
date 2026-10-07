@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
+import com.raxim.myscoutee.domain.community.api.CaseParticipants;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -36,13 +36,13 @@ public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatWebSocketSessionRegistry.class);
 
     private final ObjectMapper objectMapper;
-    private final ServiceCasesRepository cases;
+    private final CaseParticipants cases;
     private final UsersRepository users;
     private final Map<String, Map<String, SessionRef>> sessionsByChatId = new ConcurrentHashMap<>();
     private final Map<String, Object> sendLocksBySessionId = new ConcurrentHashMap<>();
     private final ExecutorService broadcastExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
-    public ChatWebSocketSessionRegistry(ObjectMapper objectMapper, ServiceCasesRepository cases, UsersRepository users) {
+    public ChatWebSocketSessionRegistry(ObjectMapper objectMapper, CaseParticipants cases, UsersRepository users) {
         this.objectMapper = objectMapper; this.cases = cases; this.users = users;
     }
 
@@ -140,7 +140,7 @@ public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.
         MongoSessionMode previous = MongoSessionModeContext.currentMode();
         try {
             MongoSessionModeContext.set(mode);
-            var serviceCase = cases.findById(chatId.substring("c-case-".length())).orElse(null);
+            var serviceCase = cases.conversation(chatId.substring("c-case-".length())).orElse(null);
             if (serviceCase == null || !BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())) return Set.of();
             return users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds())
                     .stream().map(u -> u.getUserId()).collect(java.util.stream.Collectors.toSet());

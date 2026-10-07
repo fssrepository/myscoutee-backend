@@ -4,10 +4,10 @@ import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.community.dto.CommunityAnnouncementDtos;
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos;
 import com.raxim.myscoutee.domain.community.dto.ServiceOfferingDtos;
-import com.raxim.myscoutee.domain.community.service.CommunityAnnouncementsService;
-import com.raxim.myscoutee.domain.community.service.CommunityCasesService;
-import com.raxim.myscoutee.domain.community.service.CommunityScheduledTasksService;
-import com.raxim.myscoutee.domain.community.service.ServiceOfferingsService;
+import com.raxim.myscoutee.domain.community.api.Announcements;
+import com.raxim.myscoutee.domain.community.api.Cases;
+import com.raxim.myscoutee.domain.community.api.ScheduledCases;
+import com.raxim.myscoutee.domain.community.api.ServiceOfferings;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
 
 import org.springframework.security.core.Authentication;
@@ -24,14 +24,14 @@ import com.raxim.myscoutee.domain.campaigns.dto.CampaignDtos;
 public class IntegrationDomainController {
     private final IntegrationCapabilitiesService access;
     private final Campaigns campaigns;
-    private final CommunityCasesService cases;
-    private final CommunityAnnouncementsService announcements;
-    private final CommunityScheduledTasksService tasks;
-    private final ServiceOfferingsService services;
+    private final Cases cases;
+    private final Announcements announcements;
+    private final ScheduledCases tasks;
+    private final ServiceOfferings services;
 
     public IntegrationDomainController(IntegrationCapabilitiesService access, Campaigns campaigns,
-            CommunityCasesService cases, CommunityAnnouncementsService announcements,
-            CommunityScheduledTasksService tasks, ServiceOfferingsService services) {
+            Cases cases, Announcements announcements,
+            ScheduledCases tasks, ServiceOfferings services) {
         this.access = access; this.campaigns = campaigns; this.cases = cases;
         this.announcements = announcements; this.tasks = tasks; this.services = services;
     }

@@ -39,12 +39,12 @@ may need changes together.
 | ---: | --- | ---: | ---: | --- | --- |
 | 1 | accounts | 4 | 23 | In progress: notification recipient, preference and counter API | First boundary tests passed; remaining account boundaries pending |
 | 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
-| 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests passed; domain checkpoint below |
+| 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
 | 6 | assets | 1 | 2 | Pending | — |
 | 7 | affinity | 6 | 11 | Pending | — |
-| 8 | community | 6 | 10 | Pending | — |
+| 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; domain checkpoint below |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 9/21 — #2 notifications, #3 groups, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 10/21 — #2 notifications, #3 groups, #8 community, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1137,3 +1137,104 @@ removed paths are recorded because their responsibilities moved):
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/EventCheckoutBasketServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/ExchangeRateTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeServiceTest.java`
+
+
+### #8 community complete
+
+Integration controllers call `Cases`, `Announcements`, `ScheduledCases` and
+`ServiceOfferings`; the existing services implement these interfaces without
+changing endpoint validation or response shapes. Accounts owns profile reads and
+feedback-counter writes. Events owns membership queries and recurrence, and
+payments exposes the existing appointment price calculation. Affinity owns the
+existing score query, campaign exclusion and duplicate-key reduction.
+
+Community owns the case counts, case lookup and announcement lookup used by
+accounts and chat. `CaseConversation` is a detached value: community computes main
+conversation and private offer participants before passing them to chat's existing
+synchronization logic. No additional database read is needed when a saved case
+is handed to chat. Socket membership rechecks use the same owner lookup. Invited
+and removed participants stay excluded; provider access to one offer does not
+expand into another offer or the main conversation.
+
+The immutable case detail records move into `community.dto.CaseDetails` because
+they are already part of request/response contracts. Explicit nested Mongo aliases
+preserve the historical `ServiceCase$BoardTask`, `$Support`, `$Recommendation` and
+`$Offer` identities. `ServiceOfferingView` exposes the existing read-only service
+record to API consumers; its JSON field names and serialized content are unchanged.
+No migration or new collection is introduced.
+
+| Area | Functional regression risk | Severe slowdown risk | E2E focus |
+| --- | --- | --- | --- |
+| Case and offer chat membership | High impact if incorrect | Low; same queries, detached values created from the already loaded case | Invited/removed members, separate providers, main vs private offer chats, socket updates |
+| Case menu counts | Medium | Low; same bucket aggregation and integer cap | Managed communities, participant visibility, trash exclusion |
+| Offering search, staff and rating eligibility | Medium | Low; existing batch reads and 100-member query retained | Languages, distance, inactive profiles, rating exclusion and accepted staff |
+| Appointment recurrence and prices | Medium | Low; same implementation and rounding | Overrides, occurrence dates, occupancy price and replay |
+| Feedback counters and notifications | Medium | Low; same account-scoped updates and batched profile lookup | Completed-case snapshot, pending feedback counts, recipient scope |
+| Case detail BSON and service response JSON | Medium | Low | Historical nested identities, save/reload and integration request forwarding |
+
+Verification: **625 focused standard + embedded tests passed**, with zero failures,
+errors or skips. The selection covers community, chat, accounts, integrations,
+payments, affinity, slot behavior, Mongo type identity and every completed-domain
+boundary. New contract tests exercise private offer membership, excluded actors,
+case count capping and all four moved BSON value types. The dev watcher compiled
+successfully and the dev application is healthy. No measured E2E latency claim is
+made. All calls remain in-process; read-only owner views need a transport adapter
+before separate-process deployment.
+
+Exact files in this domain checkpoint:
+
+- `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ServiceFeedbackCounters.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AccountRatings.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AccountRatingService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserRatesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/CaseConversations.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatWebSocketSessionRegistry.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/AnnouncementDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/Announcements.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/CaseFeedbackPreparation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/CaseParticipants.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/Cases.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/ScheduledCases.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/ServiceOfferingView.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/ServiceOfferings.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/document/ServiceCase.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/document/ServiceOffering.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/dto/CaseAppointmentDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/dto/CaseConversation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/dto/CaseDetails.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/dto/CommunityCaseDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/dto/ServiceOfferingDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/mapper/CaseConversationMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/mapper/CommunityCaseMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/AnnouncementDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CaseAppointmentsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CaseParticipantsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityCasesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityScheduledTasksService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceFeedbackService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceOfferingsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/CommunityMemberships.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/SlotRecurrence.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/mapper/ActivityEventSubEventsMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/CommunityMembershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationDomainController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationReadController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/api/ServiceSlotPricing.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/service/EventCheckoutPricingService.java`
+- `server/projects/profile/src/main/resources/mongo-domain-types.properties`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CaseAppointmentsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CaseParticipantsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityCasesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityScheduledTasksServiceTest.java`
