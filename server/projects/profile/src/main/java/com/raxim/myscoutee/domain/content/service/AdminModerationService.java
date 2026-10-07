@@ -182,7 +182,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         UserReportSubmission report = requireWarningReport(
                 targetUserId,
                 request == null ? null : request.reportId());
-        requireScope(admin.id(), report.getUserId());
+        requireScope(admin.id(), report == null ? targetUserId : report.getUserId());
         String message = normalize(request == null ? null : request.message());
         appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
                 : "Please update the reported behavior before your account is blocked.", "warned");

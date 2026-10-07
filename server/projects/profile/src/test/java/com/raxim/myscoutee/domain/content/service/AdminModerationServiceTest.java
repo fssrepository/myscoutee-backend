@@ -109,6 +109,51 @@ class AdminModerationServiceTest {
     }
 
     @Test
+    void warningWithoutReportIdUsesTheTargetWorkspaceAndSendsSupportMessage() {
+        UserReportSubmission report = new UserReportSubmission();
+        report.setTargetUserId("target");
+        Users admin = new Users();
+        admin.setUserId("admin-demo-ava");
+        admin.setWorkspaceGroupId("myscoutee-work");
+        Users target = new Users();
+        target.setUserId("target");
+        target.setWorkspaceGroupId("myscoutee-work");
+        when(configProperties.isFirebaseEnabled()).thenReturn(false);
+        when(reportsRepository.findByTargetUserIdOrderByCreatedDateDesc("target")).thenReturn(List.of(report));
+        when(usersRepository.findByUserId("admin-demo-ava")).thenReturn(Optional.of(admin));
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+
+        service.warn("target", new AdminActionRequestDto("admin-demo-ava", "Warning text", null));
+
+        verify(chatService).sendAdminSupportMessage("target", "admin-demo-ava", "Ava Moderation", "AM", "Warning text", "warned");
+        verify(reportsRepository, never()).save(any(UserReportSubmission.class));
+        verify(adminTelemetryService).record("admin.user.warned", "moderation", "target", "admin-demo-ava");
+    }
+
+    @Test
+    void warningWithoutReportIdStillRejectsAnotherWorkspace() {
+        UserReportSubmission report = new UserReportSubmission();
+        report.setTargetUserId("target");
+        Users admin = new Users();
+        admin.setUserId("admin-demo-ava");
+        admin.setWorkspaceGroupId("myscoutee-work");
+        Users target = new Users();
+        target.setUserId("target");
+        target.setWorkspaceGroupId("myscoutee-community");
+        when(configProperties.isFirebaseEnabled()).thenReturn(false);
+        when(reportsRepository.findByTargetUserIdOrderByCreatedDateDesc("target")).thenReturn(List.of(report));
+        when(usersRepository.findByUserId("admin-demo-ava")).thenReturn(Optional.of(admin));
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+
+        assertThatThrownBy(() -> service.warn("target", new AdminActionRequestDto("admin-demo-ava", "Warning text", null)))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class)
+                .hasMessageContaining("404")
+                .hasMessageContaining("Case not found in this workspace");
+        verify(chatService, never()).sendAdminSupportMessage(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(reportsRepository, never()).save(any(UserReportSubmission.class));
+    }
+
+    @Test
     void warnDoesNotMarkTheReportWhenTheSupportMessageFails() {
         String targetUserId = "target";
         String reportId = "report-1";
