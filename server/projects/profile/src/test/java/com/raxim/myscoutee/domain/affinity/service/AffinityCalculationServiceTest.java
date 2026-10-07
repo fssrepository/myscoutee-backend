@@ -300,9 +300,9 @@ class AffinityCalculationServiceTest {
         });
         return new AffinityCalculationService(
                 affinityConfigsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 userRatesRepository,
-                userExperienceProfilesRepository, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups));
+                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups));
     }
 
     private UserExperienceProfile experienceProfile(String userId, String type, String org) {

@@ -384,7 +384,7 @@ public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnersh
             String id,
             String title,
             String description,
-            Boolean required) {
+            Boolean required) implements com.raxim.myscoutee.domain.assets.api.AssetOwnership.Policy {
     }
 
     private static boolean hasText(String value) {

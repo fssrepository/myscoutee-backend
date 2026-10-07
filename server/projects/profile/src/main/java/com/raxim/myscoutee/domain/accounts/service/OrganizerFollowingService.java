@@ -20,7 +20,7 @@ import com.raxim.myscoutee.domain.accounts.api.Friendships;
 /** Following is independent of event watch subscriptions and avatar activity totals.
  * Reads return the stored state. Event mutations and the existing expiry worker own updates. */
 @Service
-public class OrganizerFollowingService {
+public class OrganizerFollowingService implements com.raxim.myscoutee.domain.accounts.api.FollowingEvents {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
 

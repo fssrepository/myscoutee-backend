@@ -32,7 +32,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ModelStatusPropagationService {
+public class ModelStatusPropagationService implements com.raxim.myscoutee.domain.platform.api.ModelStatusChanges {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
     private static final String ROLE_ADMIN = "Admin";
@@ -882,7 +882,7 @@ public class ModelStatusPropagationService {
     private record AdminStatusSnapshot(String strongestSuppressionStatus, boolean hasSuppressedAdmin, boolean hasActiveAdmin) {
     }
 
-    public record ModelStatusPropagationOutcome(List<String> eventSourceIds, List<String> assetIds, boolean hasConflicts) {
+    public record ModelStatusPropagationOutcome(List<String> eventSourceIds, List<String> assetIds, boolean hasConflicts) implements com.raxim.myscoutee.domain.platform.api.ModelStatusChanges.Outcome {
         public ModelStatusPropagationOutcome {
             eventSourceIds = compact(eventSourceIds);
             assetIds = compact(assetIds);

@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "user_affinity_edge_left_weight", def = "{'leftUserId': 1, 'edgeWeight': -1}"),
         @CompoundIndex(name = "user_affinity_edge_right_weight", def = "{'rightUserId': 1, 'edgeWeight': -1}")
 })
-public class UserAffinityEdge {
+public class UserAffinityEdge implements com.raxim.myscoutee.domain.affinity.api.EdgeView {
     @Id
     private String id;
     @Indexed(name = "user_affinity_edge_pair_key", unique = true)

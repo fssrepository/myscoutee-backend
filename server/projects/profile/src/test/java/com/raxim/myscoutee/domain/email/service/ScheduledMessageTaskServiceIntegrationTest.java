@@ -380,6 +380,8 @@ class ScheduledMessageTaskServiceIntegrationTest {
             com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.class,
             com.raxim.myscoutee.domain.events.service.MemberAttentionService.class,
             com.raxim.myscoutee.domain.groups.service.GroupDirectoryService.class,
+            com.raxim.myscoutee.domain.affinity.service.ConfigurationCatalogService.class,
+            com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService.class,
             JobGroupScopeService.class
     })
     static class Config {

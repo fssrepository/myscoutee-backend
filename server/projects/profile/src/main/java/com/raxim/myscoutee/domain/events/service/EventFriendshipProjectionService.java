@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.affinity.service.UserRatesService;
+import com.raxim.myscoutee.domain.affinity.api.Ratings;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import org.bson.Document;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,10 +17,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import com.mongodb.client.model.BulkWriteOptions;
-import com.mongodb.client.model.UpdateOneModel;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.WriteModel;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
@@ -39,10 +34,10 @@ public class EventFriendshipProjectionService {
 
     private final MongoTemplate mongo;
     private final ActivityMembersRepository members;
-    private final UserRatesService userRatesService;
+    private final Ratings userRatesService;
 
     public EventFriendshipProjectionService(MongoTemplate mongo, ActivityMembersRepository members,
-            UserRatesService userRatesService) {
+            Ratings userRatesService) {
         this.mongo = mongo;
         this.members = members;
         this.userRatesService = userRatesService;
@@ -76,12 +71,12 @@ public class EventFriendshipProjectionService {
             List<String> userIds = new ArrayList<>(participants.getOrDefault(event.getSourceId(), new LinkedHashSet<>()));
             userIds.sort(String::compareTo);
             LinkedHashSet<UserPair> pairs = allPairs(userIds);
-            List<WriteModel<Document>> metWrites = new ArrayList<>();
+            List<com.raxim.myscoutee.domain.affinity.api.MeetingEvidence.Meeting> metWrites = new ArrayList<>();
             for (UserPair pair : pairs) {
-                metWrites.add(metWrite(pair.left(), pair.right(), event, endedAt));
-                if (metWrites.size() == 500) flush("userRates", metWrites);
+                metWrites.add(new com.raxim.myscoutee.domain.affinity.api.MeetingEvidence.Meeting(pair.left(), pair.right(), event.getSourceId(), event.getTitle(), endedAt));
+                if (metWrites.size() == 500) flush(metWrites);
             }
-            flush("userRates", metWrites);
+            flush(metWrites);
             LinkedHashSet<String> metParticipantIds = new LinkedHashSet<>();
             for (UserPair pair : pairs) {
                 metParticipantIds.add(pair.left());
@@ -133,15 +128,15 @@ public class EventFriendshipProjectionService {
                         .map(String::trim).distinct().sorted().toList()));
             }
             Instant completedAt = Instant.parse(round.getCompletedAtIso());
-            List<WriteModel<Document>> writes = new ArrayList<>();
+            List<com.raxim.myscoutee.domain.affinity.api.MeetingEvidence.Meeting> writes = new ArrayList<>();
             LinkedHashSet<String> participantIds = new LinkedHashSet<>();
             for (UserPair pair : pairs) {
-                writes.add(metWrite(pair.left(), pair.right(), event, completedAt));
+                writes.add(new com.raxim.myscoutee.domain.affinity.api.MeetingEvidence.Meeting(pair.left(), pair.right(), event.getSourceId(), event.getTitle(), completedAt));
                 participantIds.add(pair.left());
                 participantIds.add(pair.right());
-                if (writes.size() == 500) flush("userRates", writes);
+                if (writes.size() == 500) flush(writes);
             }
-            flush("userRates", writes);
+            flush(writes);
             userRatesService.projectRecordedMeetings(participantIds);
             mongo.updateFirst(Query.query(Criteria.where("_id").is(round.getId())
                             .and("completedAtIso").is(round.getCompletedAtIso())),
@@ -151,44 +146,11 @@ public class EventFriendshipProjectionService {
         return projected;
     }
 
-    private void flush(String collectionName, List<WriteModel<Document>> writes) {
-        if (writes.isEmpty()) return;
-        mongo.getCollection(collectionName).bulkWrite(writes, new BulkWriteOptions().ordered(false));
-        writes.clear();
-    }
-
-    private WriteModel<Document> metWrite(String left, String right, ActivityEvent event, Instant endedAt) {
-        String syncKey = metSyncKey(event.getSourceId(), left, right);
-        String happenedAt = endedAt.toString();
-        Document identity = new Document("_id", syncKey)
-                .append("syncKey", syncKey)
-                .append("mode", "single")
-                .append("createdDate", happenedAt)
-                .append("createdUser", SYSTEM_USER)
-                .append("ownerUserId", left)
-                .append("relatedUserId", right)
-                .append("scoreGiven", 0)
-                .append("scoreReceived", 0)
-                .append("mutuallyRated", false);
-        Document meeting = new Document("updatedDate", happenedAt)
-                .append("updatedUser", SYSTEM_USER)
-                .append("met", true)
-                .append("metEventId", event.getSourceId())
-                .append("eventName", event.getTitle() == null ? "" : event.getTitle());
-        Document pairFilter = new Document("mode", "single").append("$or", List.of(
-                new Document("ownerUserId", left).append("relatedUserId", right),
-                new Document("ownerUserId", right).append("relatedUserId", left),
-                new Document("syncKey", syncKey)));
-        return new UpdateOneModel<>(pairFilter,
-                new Document("$set", meeting).append("$setOnInsert", identity),
-                new UpdateOptions().upsert(true));
-    }
-
-    private String metSyncKey(String eventId, String left, String right) {
-        return "event-met:" + eventId.length() + ":" + eventId
-                + ":" + left.length() + ":" + left
-                + ":" + right;
-    }
-
     private record UserPair(String left, String right) {}
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.MeetingEvidence meetingEvidence;
+    private void flush(List<com.raxim.myscoutee.domain.affinity.api.MeetingEvidence.Meeting> meetings) {
+        if (meetings.isEmpty()) return;
+        meetingEvidence.record(meetings);
+        meetings.clear();
+    }
 }

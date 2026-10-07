@@ -47,7 +47,7 @@ public record SubEventItem(
         String stageFinalizedAt,
         String stageFinalizedByUserId,
         Integer stageResultRevision,
-        List<SubEventGroupItemDto> groups) implements com.raxim.myscoutee.domain.events.api.EventSchedule.Stage {
+        List<SubEventGroupItemDto> groups) implements com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent {
 
     public SubEventItem(
             String id,

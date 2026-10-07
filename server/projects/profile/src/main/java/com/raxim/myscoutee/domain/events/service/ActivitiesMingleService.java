@@ -29,7 +29,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound.TableAssignment;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleActionRequestDto;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleParticipantDto;
@@ -39,7 +39,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
@@ -60,7 +60,7 @@ public class ActivitiesMingleService {
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final ActivityMingleRoundsRepository activityMingleRoundsRepository;
     private final UsersRepository usersRepository;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessPermissions accessControlService;
     private final NotificationDelivery notificationOutboxService;
@@ -72,7 +72,7 @@ public class ActivitiesMingleService {
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
             ActivityMingleRoundsRepository activityMingleRoundsRepository,
             UsersRepository usersRepository,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
             AccessPermissions accessControlService,
             NotificationDelivery notificationOutboxService, com.raxim.myscoutee.domain.groups.api.GroupDirectory groups) {
@@ -502,7 +502,7 @@ public class ActivitiesMingleService {
         Map<String, Node> nodes = new LinkedHashMap<>();
         eligibleUserIds.forEach(userId -> nodes.put(userId, new Node(userId)));
         List<Edge> edges = new ArrayList<>();
-        for (UserAffinityEdge affinity : userAffinityEdgesRepository.findRelevantByUserIds(List.copyOf(eligibleUserIds))) {
+        for (EdgeView affinity : userAffinityEdgesRepository.findRelevantByUserIds(List.copyOf(eligibleUserIds))) {
             String left = normalizeId(affinity == null ? null : affinity.getLeftUserId());
             String right = normalizeId(affinity == null ? null : affinity.getRightUserId());
             if (!eligibleUserIds.contains(left) || !eligibleUserIds.contains(right) || left.equals(right)) {

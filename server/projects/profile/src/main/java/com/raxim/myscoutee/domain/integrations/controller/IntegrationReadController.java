@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.controller;
 
-import com.raxim.myscoutee.domain.affinity.service.UserRatesService;
+import com.raxim.myscoutee.domain.affinity.api.Ratings;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
@@ -28,14 +28,14 @@ public class IntegrationReadController {
     private final Groups groups;
     private final ChatService chats;
     private final NotificationInbox notifications;
-    private final UserRatesService ratings;
+    private final Ratings ratings;
     private final AssetsService assets;
     private final Campaigns campaigns;
     private final ServiceOfferings services;
     private final Cases cases;
     private final Announcements announcements;
     private final ScheduledCases tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, Groups groups, ChatService chats, NotificationInbox notifications, UserRatesService ratings, AssetsService assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
+    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, Groups groups, ChatService chats, NotificationInbox notifications, Ratings ratings, AssetsService assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

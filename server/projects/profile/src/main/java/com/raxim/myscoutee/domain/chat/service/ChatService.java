@@ -60,7 +60,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.community.dto.CaseConversation;
-import com.raxim.myscoutee.domain.affinity.document.UserRate;
+
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -114,6 +114,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
 public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConversations {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.RatingDirectory ratings;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired
@@ -686,8 +687,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConv
         if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
                 || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campaign unavailable.");
-        if (!mongoTemplate.exists(Query.query(Criteria.where("campaignId").is(campaign.id())
-                .and("ownerUserId").is(userId).and("relatedUserId").is(campaign.ownerUserId()).and("scoreGiven").gt(0)), UserRate.class))
+        if (!ratings.hasPositiveCampaignRating(campaign.id(), userId, campaign.ownerUserId()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Rate the campaign before asking its organizer.");
         String chatId = "c-campaign-" + campaign.id() + "-" + userId;
         List<Chat> copies = syncResourceChat(chatId, "campaign", campaign.id(), campaign.title(),

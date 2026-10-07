@@ -59,6 +59,7 @@ import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService
 
 @Service
 public class DeletedAccountPurgeService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.AffinityPrivacy affinityPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
@@ -744,8 +745,8 @@ public class DeletedAccountPurgeService {
     }
 
     private void purgeUserReferencedDocuments(String userId) {
-        deleteDocumentsByAnyField("userRates", List.of("ownerUserId", "relatedUserId", "secondaryRelatedUserId", "bridgeUserId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("userAffinityEdges", List.of("leftUserId", "rightUserId"), userId);
+        affinityPrivacy.purgeRatings(userId);
+        affinityPrivacy.purgeEdges(userId);
         deleteDocumentsByAnyField("userFriendships", List.of("leftUserId", "rightUserId"), userId);
         deleteDocumentsByAnyField("userExperienceProfiles", List.of("userId"), userId);
         deleteDocumentsByAnyField("userFilterPreferences", List.of("userId", "createdUser", "updatedUser"), userId);
@@ -770,14 +771,13 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("shareTokens", List.of("ownerUserId"), userId);
         deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("affinityRecomputeTasks", List.of("targetId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("affinityRecomputeTasks", List.of("targetId"), "USER:" + userId);
+        affinityPrivacy.purgeTasks(userId);
         deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId);
         helpPrivacy.anonymizeAuthors(userId);
         anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId);
         emailPrivacy.anonymizeAuthors(userId);
         notificationPrivacy.anonymizeRuleAuthors(userId);
-        anonymizeUserFieldsByAnyField("affinityConfigs", List.of("changedUser"), userId);
+        affinityPrivacy.anonymizeAuthors(userId);
     }
 
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {

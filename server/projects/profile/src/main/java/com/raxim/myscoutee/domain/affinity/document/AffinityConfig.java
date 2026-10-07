@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "affinity_config_active_version", def = "{'active': 1, 'version': -1}"),
         @CompoundIndex(name = "affinity_config_key_version", def = "{'key': 1, 'version': -1}", unique = true)
 })
-public class AffinityConfig {
+public class AffinityConfig implements com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog.Settings {
     @Id
     private String id;
     private String key;
@@ -707,7 +707,7 @@ public class AffinityConfig {
         }
     }
 
-    public static class NotificationParameters {
+    public static class NotificationParameters implements com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog.NotificationParameters {
         private Integer firebaseWindowStartHour = 8;
         private Integer firebaseWindowEndHour = 22;
         private Integer maxWorkers = 4;
@@ -782,7 +782,7 @@ public class AffinityConfig {
         }
     }
 
-    public static class JobParameters {
+    public static class JobParameters implements com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog.JobParameters {
         private Integer userChangedDebounceSeconds = 300;
         private Integer eventChangedDebounceSeconds = 180;
         private Integer eventMembersChangedDebounceSeconds = 300;

@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "userExperienceProfiles")
-public class UserExperienceProfile {
+public class UserExperienceProfile implements com.raxim.myscoutee.domain.accounts.api.Experiences.Profile {
     @Id
     private String mongoId;
 
@@ -51,7 +51,7 @@ public class UserExperienceProfile {
         this.entries = entries;
     }
 
-    public static class ExperienceItemRecord {
+    public static class ExperienceItemRecord implements com.raxim.myscoutee.domain.accounts.api.Experiences.Entry {
         @Field("id")
         private String id;
         private String type;

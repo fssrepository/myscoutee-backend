@@ -6,8 +6,8 @@ import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
@@ -59,9 +59,9 @@ import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
 import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.UserFriendship;
-import com.raxim.myscoutee.domain.affinity.document.UserRate;
+import com.raxim.myscoutee.domain.affinity.api.RatingView;
 import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -109,9 +109,9 @@ import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepositor
 import com.raxim.myscoutee.domain.content.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
+import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
@@ -151,7 +151,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private static final long MILLIS_PER_DAY = 24L * 60L * 60L * 1000L;
     private static final long USER_READ_SNAPSHOT_CACHE_TTL_MS = 5_000L;
     private static final int OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE = 18;
-    public static final int HOME_GAME_RATE_PROJECTION_VERSION = 1;
+    public static final int HOME_GAME_RATE_PROJECTION_VERSION = com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections.RATING_VERSION;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -235,9 +235,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
-    private final UserRatesRepository userRatesRepository;
+    private final RatingDirectory userRatesRepository;
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
     private final ActivityEventsRepository activityEventsRepository;
@@ -252,8 +252,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final ScheduledMessages scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
     private final RegionSecurity regionSecurityProperties;
-    private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AffinityScores absoluteAffinityService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
@@ -277,9 +277,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UsersRepository usersRepository,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             UserFriendshipsRepository userFriendshipsRepository,
-            UserRatesRepository userRatesRepository,
+            RatingDirectory userRatesRepository,
             ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository,
             ActivityEventsRepository activityEventsRepository,
@@ -294,8 +294,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             ScheduledMessages scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
             RegionSecurity regionSecurityProperties,
-            AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AffinityScores absoluteAffinityService,
+            AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
@@ -1631,7 +1631,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
 
         Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
-        for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
+        for (EdgeView edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
             String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
             String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
             if (!StringUtils.hasText(leftUserId) || !StringUtils.hasText(rightUserId) || leftUserId.equals(rightUserId)) {
@@ -1669,7 +1669,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                                 : user.getHomeGameLastRateActivityMs().longValue());
             }
         } else {
-            for (UserRate record : userRatesRepository.findAll()) {
+            for (RatingView record : userRatesRepository.findAll()) {
                 if (record == null) {
                     continue;
                 }
@@ -1783,7 +1783,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
     }
 
-    private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
+    private double resolveAffinityEdgeWeight(EdgeView edge) {
         if (edge == null) {
             return 0d;
         }
@@ -1854,6 +1854,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 && INSIDE_NETWORK_GAME_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
+    @Override public boolean activityRateVisible(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
+        return isActivityRateVisibleUser((Users) profile);
+    }
     public boolean isActivityRateVisibleUser(Users user) {
         return isUsableUserDocument(user)
                 && !isDemoOperatorUserDocument(user)
@@ -1885,7 +1888,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
 
         Set<String> ratedUserIds = new LinkedHashSet<>();
-        for (UserRate record : userRatesRepository.findHomeGameExclusionProjections(normalizedRaterUserId)) {
+        for (RatingView record : userRatesRepository.findHomeGameExclusionProjections(normalizedRaterUserId)) {
             if (!hasOwnRecordedActivityRate(record, normalizedRaterUserId)) {
                 continue;
             }
@@ -1913,7 +1916,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return Set.copyOf(ratedPairKeys);
         }
 
-        for (UserRate record : userRatesRepository.findHomeGameExclusionProjections(raterUserId)) {
+        for (RatingView record : userRatesRepository.findHomeGameExclusionProjections(raterUserId)) {
             if (!"pair".equals(safeText(record == null ? null : record.getMode()))) {
                 continue;
             }
@@ -1947,7 +1950,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
     }
 
-    private boolean hasOwnRecordedActivityRate(UserRate record, String ownerUserId) {
+    private boolean hasOwnRecordedActivityRate(RatingView record, String ownerUserId) {
         if (record == null || !ownerUserId.equals(normalizeId(record.getOwnerUserId()))) {
             return false;
         }

@@ -19,15 +19,15 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 
 @Service
 public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affinity.api.GraphScience {
@@ -39,14 +39,14 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
 
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
-    private final ActivityMembersRepository activityMembersRepository;
-    private final UsersRepository usersRepository;
+    private final MemberDirectory activityMembersRepository;
+    private final ProfileDirectory usersRepository;
 
     public AdminGraphScienceService(
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
-            ActivityMembersRepository activityMembersRepository,
-            UsersRepository usersRepository) {
+            MemberDirectory activityMembersRepository,
+            ProfileDirectory usersRepository) {
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -79,7 +79,7 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
     }
 
     private GraphScienceResult calculate(String groupId) {
-        List<Users> users = usersRepository.findAll().stream().filter(user -> Objects.equals(groupId, user.getWorkspaceGroupId())).toList();
+        List<? extends WorkspaceProfile> users = usersRepository.findAll().stream().filter(user -> Objects.equals(groupId, user.getWorkspaceGroupId())).toList();
         Map<String, String> userNamesById = userNamesById(users);
         Map<String, String> userGendersById = userGendersById(users);
         Map<String, GraphEdge> edgesByKey = new LinkedHashMap<>();
@@ -213,8 +213,8 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
     }
 
     private void addEventMemberEdges(Map<String, GraphEdge> edgesByKey, Set<String> nodes) {
-        Map<String, List<ActivityMember>> acceptedByEvent = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findAll()) {
+        Map<String, List<Member>> acceptedByEvent = new LinkedHashMap<>();
+        for (Member member : activityMembersRepository.findAll()) {
             if (member == null || !OWNER_TYPE_EVENT.equals(normalizeKey(member.getOwnerType()))) {
                 continue;
             }
@@ -230,15 +230,15 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
             acceptedByEvent.computeIfAbsent(normalizeId(member.getOwnerId()), ignored -> new ArrayList<>()).add(member);
         }
 
-        for (List<ActivityMember> members : acceptedByEvent.values()) {
-            List<ActivityMember> limited = members.stream()
+        for (List<Member> members : acceptedByEvent.values()) {
+            List<Member> limited = members.stream()
                     .filter(member -> StringUtils.hasText(normalizeId(member.getUserId())))
                     .limit(MAX_EVENT_CLIQUE_SIZE)
                     .toList();
             for (int i = 0; i < limited.size(); i++) {
                 for (int j = i + 1; j < limited.size(); j++) {
-                    ActivityMember left = limited.get(i);
-                    ActivityMember right = limited.get(j);
+                    Member left = limited.get(i);
+                    Member right = limited.get(j);
                     String date = latest(firstNonBlank(left.getMetAtIso(), left.getActionAtIso()), firstNonBlank(right.getMetAtIso(), right.getActionAtIso()));
                     addEdge(edgesByKey, nodes, left.getUserId(), right.getUserId(), 0.22d, 1, true, false, date);
                 }
@@ -542,9 +542,9 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
         return "stats.graph.insight.healthy";
     }
 
-    private Map<String, String> userNamesById(List<Users> users) {
+    private Map<String, String> userNamesById(List<? extends WorkspaceProfile> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (Users user : users) {
+        for (WorkspaceProfile user : users) {
             if (user == null) {
                 continue;
             }
@@ -556,9 +556,9 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
         return result;
     }
 
-    private Map<String, String> userGendersById(List<Users> users) {
+    private Map<String, String> userGendersById(List<? extends WorkspaceProfile> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (Users user : users) {
+        for (WorkspaceProfile user : users) {
             if (user == null) {
                 continue;
             }

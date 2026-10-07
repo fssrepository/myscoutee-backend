@@ -182,7 +182,7 @@ class ActivitiesEventsServiceTest {
                 activityMingleSessionsRepository,
                 usersRepository,
                 friendshipFacts,
-                userAffinityEdgesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 homeUserProfileService,
                 activitiesMembersService,
                 activitiesResourcesService,

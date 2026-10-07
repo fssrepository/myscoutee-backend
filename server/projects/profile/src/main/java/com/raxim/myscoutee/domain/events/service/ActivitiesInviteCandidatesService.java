@@ -21,14 +21,14 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile;
-import com.raxim.myscoutee.domain.affinity.document.UserRate;
+import com.raxim.myscoutee.domain.affinity.api.RatingView;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.ActivityInviteDtos.ActivityInviteCandidatesRequestDto;
 import com.raxim.myscoutee.domain.events.dto.ActivityInviteDtos.ActivityInviteCandidatesPageDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.accounts.repository.NavigatorContactsProfilesRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
+import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
@@ -36,7 +36,7 @@ public class ActivitiesInviteCandidatesService {
     @org.springframework.beans.factory.annotation.Autowired
     private Groups communityGroups;
     private final UsersRepository usersRepository;
-    private final UserRatesRepository userRatesRepository;
+    private final RatingDirectory userRatesRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final HomeUserProfileService homeUserProfileService;
@@ -44,7 +44,7 @@ public class ActivitiesInviteCandidatesService {
 
     public ActivitiesInviteCandidatesService(
             UsersRepository usersRepository,
-            UserRatesRepository userRatesRepository,
+            RatingDirectory userRatesRepository,
             ActivityMembersRepository activityMembersRepository,
             ActivitiesMembersService activitiesMembersService,
             HomeUserProfileService homeUserProfileService,
@@ -131,7 +131,7 @@ public class ActivitiesInviteCandidatesService {
         }
 
         Map<String, CandidateSignal> signalsByUserId = new LinkedHashMap<>();
-        for (UserRate rate : userRatesRepository.findRelevantByUserIds(List.of(activeUserId))) {
+        for (RatingView rate : userRatesRepository.findRelevantByUserIds(List.of(activeUserId))) {
             if (!isEligibleSingleMetRate(rate, activeUserId)) {
                 continue;
             }
@@ -432,7 +432,7 @@ public class ActivitiesInviteCandidatesService {
                 null);
     }
 
-    private CandidateSignal toSignal(UserRate rate) {
+    private CandidateSignal toSignal(RatingView rate) {
         String metAtIso = firstNonBlank(rate == null ? null : rate.getCreatedDate(), rate == null ? null : rate.getUpdatedDate(), Instant.now().toString());
         if (isFutureIso(metAtIso)) {
             return null;
@@ -453,14 +453,14 @@ public class ActivitiesInviteCandidatesService {
         return next.userRateAffinity() > current.userRateAffinity();
     }
 
-    private boolean isEligibleSingleMetRate(UserRate rate, String activeUserId) {
+    private boolean isEligibleSingleMetRate(RatingView rate, String activeUserId) {
         return rate != null
                 && "single".equals(safeText(rate.getMode()))
                 && Boolean.TRUE.equals(rate.getMet())
                 && !singleMetCounterpartUserIds(rate, activeUserId).isEmpty();
     }
 
-    private List<String> singleMetCounterpartUserIds(UserRate rate, String activeUserId) {
+    private List<String> singleMetCounterpartUserIds(RatingView rate, String activeUserId) {
         LinkedHashSet<String> counterpartIds = new LinkedHashSet<>();
         if (rate == null || !StringUtils.hasText(activeUserId)) {
             return List.of();

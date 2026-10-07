@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.Query;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 
 public interface UserRatesRepository extends MongoRepository<UserRate, String> {
+    List<UserRate> findByOwnerUserIdIn(java.util.Collection<String> ownerIds);
     @Query("{'campaignId': ?1, '$or': [{'ownerUserId': ?0}, {'relatedUserId': ?0}, {'secondaryRelatedUserId': ?0}]}")
     List<UserRate> findRelevantInCampaign(String userId, String campaignId);
     List<UserRate> findByCampaignIdIn(Collection<String> campaignIds);

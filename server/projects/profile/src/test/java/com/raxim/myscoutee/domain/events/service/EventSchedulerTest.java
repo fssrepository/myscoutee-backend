@@ -330,10 +330,8 @@ class EventSchedulerTest {
         candidates.forEach(user -> user.setWorkspaceGroupId("myscoutee-work"));
         when(usersRepository.findAllById(anyCollection())).thenReturn(candidates);
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(rate("organizer", "other-campaign", 1d)));
-        var evidence = new com.raxim.myscoutee.domain.affinity.document.UserRate();
-        evidence.setCampaignId("campaign-a"); evidence.setOwnerUserId("candidate-a"); evidence.setRelatedUserId("organizer");
-        when(userRatesRepository.findByCampaignIdIn(Set.of("campaign-a"))).thenReturn(List.of(evidence));
-        when(affinityEdgeService.projectCampaignEdges(List.of(evidence))).thenReturn(Map.of("campaign-a", List.of(rate("organizer", "candidate-a", .8d))));
+        when(affinityEdgeService.campaignGraphs(Set.of("campaign-a"))).thenReturn(Map.of("campaign-a",
+            new com.raxim.myscoutee.domain.affinity.api.CampaignGraphs.Snapshot(List.of("candidate-a", "organizer"), List.of(rate("organizer", "candidate-a", .8d)))));
         when(activitiesMembersService.inviteUsers("work-event", "organizer", List.of("candidate-a"), event)).thenReturn(List.of("candidate-a"));
         assertThat(scheduler.generatePriorityPlansForEvents(List.of("work-event")))
                 .singleElement().satisfies(plan -> assertThat(plan.invitedUserIds()).containsExactly("candidate-a"));
@@ -1974,11 +1972,11 @@ class EventSchedulerTest {
                         anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(2));
         EventScheduler scheduler = new EventScheduler(
-                userRatesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
                 affinityEdgeService,
                 new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository),
                 usersRepository,
-                userAffinityEdgesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 activityEventsRepository,
                 activityMainEventRuntimeRepository,
                 schedulerPlanMarkersRepository,

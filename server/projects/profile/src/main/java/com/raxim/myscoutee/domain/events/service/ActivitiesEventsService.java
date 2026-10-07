@@ -8,8 +8,8 @@ import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
@@ -72,7 +72,7 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.EventWatchSubscription;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventInvitationContextDto;
@@ -130,7 +130,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsReposi
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
@@ -193,7 +193,7 @@ public class ActivitiesEventsService {
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final UsersRepository usersRepository;
     private final Friendships friendshipFacts;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesResourcesService activitiesResourcesService;
@@ -202,8 +202,8 @@ public class ActivitiesEventsService {
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final EventCheckoutPricingService eventCheckoutPricingService;
     private final ScheduledMessages scheduledMessageTaskService;
-    private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AffinityScores absoluteAffinityService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final MongoTemplate mongoTemplate;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
@@ -232,7 +232,7 @@ public class ActivitiesEventsService {
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
             UsersRepository usersRepository,
             Friendships friendshipFacts,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesResourcesService activitiesResourcesService,
@@ -241,8 +241,8 @@ public class ActivitiesEventsService {
             EventCheckoutBasketService eventCheckoutBasketService,
             EventCheckoutPricingService eventCheckoutPricingService,
             ScheduledMessages scheduledMessageTaskService,
-            AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AffinityScores absoluteAffinityService,
+            AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             MongoTemplate mongoTemplate,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
@@ -646,7 +646,7 @@ public class ActivitiesEventsService {
         }
 
         Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
-        for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
+        for (EdgeView edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
             String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
             String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
             if (!StringUtils.hasText(leftUserId)
@@ -667,7 +667,7 @@ public class ActivitiesEventsService {
         return weightsByPairKey;
     }
 
-    private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
+    private double resolveAffinityEdgeWeight(EdgeView edge) {
         if (edge == null) {
             return 0d;
         }

@@ -24,20 +24,21 @@ import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxServic
 class DomainServiceBoundaryTest {
     private static final String DOMAIN = "com/raxim/myscoutee/domain/";
     private static final Pattern REFERENCES = Pattern.compile(DOMAIN + "[\\w/$]+");
-    private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.of(
-            "notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs"),
-            "localization", Set.of("i18n_messages", "i18n_bundles"),
-            "help", Set.of("helpCenterRevisions", "helpCenterAudit", "helpCenterGuideFields"),
-            "media", Set.of(),
-            "campaigns", Set.of("campaigns"),
-            "access", Set.of("accessGrants", "accessPolicyDefinitions"),
-            "administration", Set.of("adminMonitoring", "adminStats"),
-            "email", Set.of("emailTemplates", "emailCampaignRules", "emailOutbox", "scheduledMessageTasks", "scheduledMessageRuns", "scheduledMessageDeliveries", "operatorEmailConfigurations", "emailUnsubscriptions"),
-            "groups", Set.of("communityGroups"),
-            "community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks"));
+    private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.ofEntries(
+            java.util.Map.entry("notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs")),
+            java.util.Map.entry("localization", Set.of("i18n_messages", "i18n_bundles")),
+            java.util.Map.entry("help", Set.of("helpCenterRevisions", "helpCenterAudit", "helpCenterGuideFields")),
+            java.util.Map.entry("media", Set.of()),
+            java.util.Map.entry("campaigns", Set.of("campaigns")),
+            java.util.Map.entry("access", Set.of("accessGrants", "accessPolicyDefinitions")),
+            java.util.Map.entry("administration", Set.of("adminMonitoring", "adminStats")),
+            java.util.Map.entry("email", Set.of("emailTemplates", "emailCampaignRules", "emailOutbox", "scheduledMessageTasks", "scheduledMessageRuns", "scheduledMessageDeliveries", "operatorEmailConfigurations", "emailUnsubscriptions")),
+            java.util.Map.entry("groups", Set.of("communityGroups")),
+            java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
+            java.util.Map.entry("affinity", Set.of("userRates", "userAffinityEdges", "affinityConfigs", "affinityRecomputeTasks")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -70,7 +71,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;

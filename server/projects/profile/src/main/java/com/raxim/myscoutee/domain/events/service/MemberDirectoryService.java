@@ -13,4 +13,7 @@ public class MemberDirectoryService implements MemberDirectory {
     public MemberDirectoryService(ActivityMembersRepository members) { this.members = members; }
     @Override public Optional<ActivityMember> findByOwnerTypeAndOwnerIdAndUserId(String type, String id, String user) { return members.findByOwnerTypeAndOwnerIdAndUserId(type, id, user); }
     @Override public List<ActivityMember> findByOwnerTypeAndOwnerId(String type, String id) { return members.findByOwnerTypeAndOwnerId(type, id); }
+    @Override public java.util.List<ActivityMember> findByOwnerTypeAndUserId(String type, String user) { return members.findByOwnerTypeAndUserId(type, user); }
+    @Override public java.util.List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String type, java.util.Collection<String> ids) { return members.findByOwnerTypeAndOwnerIdIn(type, ids); }
+    @Override public java.util.List<ActivityMember> findAll() { return members.findAll(); }
 }

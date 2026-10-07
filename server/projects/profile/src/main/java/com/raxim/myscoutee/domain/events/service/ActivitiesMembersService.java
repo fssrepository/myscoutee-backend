@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.events.service;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
@@ -131,7 +131,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final PaymentService paymentService;
     private final EventInviteNotificationService eventInviteNotificationService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final ChatService chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
@@ -153,7 +153,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             EventCheckoutBasketService eventCheckoutBasketService,
             PaymentService paymentService,
             EventInviteNotificationService eventInviteNotificationService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             ChatService chatService,
             EventSlotReadModelService eventSlotReadModelService,

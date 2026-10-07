@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.assets.service;
 
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesResourcesService;
@@ -125,8 +125,8 @@ public class AssetsService {
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
     private final MongoTemplate mongoTemplate;
-    private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AffinityScores absoluteAffinityService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final NotificationDelivery notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
@@ -145,8 +145,8 @@ public class AssetsService {
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
             MongoTemplate mongoTemplate,
-            AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AffinityScores absoluteAffinityService,
+            AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             NotificationDelivery notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,

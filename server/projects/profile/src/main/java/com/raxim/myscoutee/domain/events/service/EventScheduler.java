@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.affinity.service.UserAffinityEdgeService;
+import com.raxim.myscoutee.domain.affinity.api.CampaignGraphs;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
@@ -57,7 +57,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration;
 import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
@@ -66,7 +66,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMainEventRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.platform.repository.SchedulerPlanMarkersRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
@@ -104,10 +104,10 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private static final String DEFAULT_CLICK_URL = "/game";
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
-    private final com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository;
-    private final UserAffinityEdgeService affinityEdgeService;
+    private final com.raxim.myscoutee.domain.affinity.api.RatingDirectory userRatesRepository;
+    private final CampaignGraphs affinityEdgeService;
     private final UsersRepository usersRepository;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository;
     private final SchedulerPlanMarkersRepository schedulerPlanMarkersRepository;
@@ -140,11 +140,11 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private boolean waitlistInviterEnabled;
 
     public EventScheduler(
-            com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository,
-            UserAffinityEdgeService affinityEdgeService,
+            com.raxim.myscoutee.domain.affinity.api.RatingDirectory userRatesRepository,
+            CampaignGraphs affinityEdgeService,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups,
             UsersRepository usersRepository,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository,
             SchedulerPlanMarkersRepository schedulerPlanMarkersRepository,
@@ -1719,19 +1719,16 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 .filter(StringUtils::hasText).collect(Collectors.toSet());
         Map<String, FGraph> graphs = new LinkedHashMap<>();
         if (campaignIds.isEmpty()) return graphs;
-        var campaignRates = userRatesRepository.findByCampaignIdIn(campaignIds);
-        var ratesByCampaign = campaignRates.stream().collect(Collectors.groupingBy(com.raxim.myscoutee.domain.affinity.document.UserRate::getCampaignId));
-        var edgesByCampaign = affinityEdgeService.projectCampaignEdges(campaignRates);
+        var snapshots = affinityEdgeService.campaignGraphs(campaignIds);
         for (String campaignId : campaignIds) {
-            var rates = ratesByCampaign.getOrDefault(campaignId, List.of());
+            var snapshot = snapshots.getOrDefault(campaignId, new CampaignGraphs.Snapshot(List.of(), List.of()));
             Map<String, Node> nodes = new LinkedHashMap<>();
             List<Edge> edges = new ArrayList<>();
-            for (var rate : rates) {
-                for (String id : List.of(normalizeId(rate.getOwnerUserId()), normalizeId(rate.getRelatedUserId()))) {
-                    if (StringUtils.hasText(id)) nodes.putIfAbsent(id, new Node(id));
-                }
+            for (String userId : snapshot.userIds()) {
+                String id = normalizeId(userId);
+                if (StringUtils.hasText(id)) nodes.putIfAbsent(id, new Node(id));
             }
-            for (UserAffinityEdge edge : edgesByCampaign.getOrDefault(campaignId, List.of())) addUserAffinityEdge(edges, nodes, edge);
+            for (EdgeView edge : snapshot.edges()) addUserAffinityEdge(edges, nodes, edge);
             graphs.put(campaignId, new FGraph(nodes, edges));
         }
         return graphs;
@@ -1769,9 +1766,9 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                     .forEach(discoveredUserIds::add);
         }
 
-        List<UserAffinityEdge> affinityEdges = resolveRelevantEdges(discoveredUserIds);
+        List<? extends EdgeView> affinityEdges = resolveRelevantEdges(discoveredUserIds);
         incrementObservedQueries(observedQueries);
-        for (UserAffinityEdge edge : affinityEdges) {
+        for (EdgeView edge : affinityEdges) {
             if (edge == null) {
                 continue;
             }
@@ -1790,7 +1787,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             nodesByUserId.putIfAbsent(userId, new Node(userId));
         }
 
-        for (UserAffinityEdge edge : affinityEdges) {
+        for (EdgeView edge : affinityEdges) {
             if (edge == null) {
                 continue;
             }
@@ -1799,7 +1796,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         return new FGraph(nodesByUserId, edges);
     }
 
-    private List<UserAffinityEdge> resolveRelevantEdges(Set<String> requiredUserIds) {
+    private List<? extends EdgeView> resolveRelevantEdges(Set<String> requiredUserIds) {
         List<String> normalizedUserIds = requiredUserIds == null
                 ? List.of()
                 : requiredUserIds.stream()
@@ -1813,7 +1810,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         return userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds);
     }
 
-    private void collectAffinityEdgeUserIds(Set<String> userIds, UserAffinityEdge edge) {
+    private void collectAffinityEdgeUserIds(Set<String> userIds, EdgeView edge) {
         String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
         String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
         if (StringUtils.hasText(leftUserId)) {
@@ -1824,7 +1821,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         }
     }
 
-    private void addUserAffinityEdge(List<Edge> edges, Map<String, Node> nodesByUserId, UserAffinityEdge affinityEdge) {
+    private void addUserAffinityEdge(List<Edge> edges, Map<String, Node> nodesByUserId, EdgeView affinityEdge) {
         String leftUserId = normalizeId(affinityEdge.getLeftUserId());
         String rightUserId = normalizeId(affinityEdge.getRightUserId());
         double weight = affinityEdge.getEdgeWeight() == null ? 0d : Math.max(0d, affinityEdge.getEdgeWeight());

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class ActivitiesEventLeaderboardService {
     private final EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessPermissions accessControlService;
-    private AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private AffinityStatusChanges affinityRecomputeTaskService;
     private ActivityMingleRoundsRepository activityMingleRoundsRepository;
     private final EventGeneratorByScore scoreGenerator = new EventGeneratorByScore();
 
@@ -94,7 +94,7 @@ public class ActivitiesEventLeaderboardService {
     }
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    void setAffinityRecomputeTaskService(AffinityRecomputeTaskService affinityRecomputeTaskService) {
+    void setAffinityRecomputeTaskService(AffinityStatusChanges affinityRecomputeTaskService) {
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
     }
 

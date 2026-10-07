@@ -19,11 +19,11 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
-import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
+import com.raxim.myscoutee.domain.accounts.api.Experiences.Profile;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileDetailGroupDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileDetailRowDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
@@ -31,19 +31,19 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserImpressionsDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserImpressionsSectionDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserPersonalityTraitDto;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
+import com.raxim.myscoutee.domain.accounts.api.Experiences;
 
 @Service
-public class AbsoluteAffinityService {
+public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affinity.api.AffinityScores {
     private static final int TOKEN_HASH_MOD = 997;
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private final AffinityConfigsRepository affinityConfigsRepository;
-    private final UserExperienceProfilesRepository userExperienceProfilesRepository;
+    private final Experiences userExperienceProfilesRepository;
 
     public AbsoluteAffinityService(
             AffinityConfigsRepository affinityConfigsRepository,
-            UserExperienceProfilesRepository userExperienceProfilesRepository,
+            Experiences userExperienceProfilesRepository,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups) {
         this.communityGroups = communityGroups;
         this.affinityConfigsRepository = affinityConfigsRepository;
@@ -57,7 +57,7 @@ public class AbsoluteAffinityService {
     private double resolveUserAffinity(
             UserDto user,
             AffinityConfig config,
-            UserExperienceProfile experienceProfile) {
+            Profile experienceProfile) {
         if (user == null) {
             return 0d;
         }
@@ -92,14 +92,14 @@ public class AbsoluteAffinityService {
         return Math.max(0d, score);
     }
 
-    public double resolveUserAffinity(Users user) {
+    public double resolveUserAffinity(WorkspaceProfile user) {
         return resolveUserAffinity(user, activeConfig(user == null ? null : user.getWorkspaceGroupId()), loadExperienceProfile(user == null ? null : user.getId()));
     }
 
     private double resolveUserAffinity(
-            Users user,
+            WorkspaceProfile user,
             AffinityConfig config,
-            UserExperienceProfile experienceProfile) {
+            Profile experienceProfile) {
         if (user == null) {
             return 0d;
         }
@@ -134,13 +134,13 @@ public class AbsoluteAffinityService {
         return Math.max(0d, score);
     }
 
-    public double resolveEventAffinity(ActivityEvent event, Collection<Users> participants) {
+    public double resolveEventAffinity(Event event, Collection<? extends WorkspaceProfile> participants) {
         if (event == null) {
             return 0d;
         }
         AffinityConfig config = activeConfig(event.getWorkspaceGroupId());
         AffinityConfig.AbsoluteEventAffinityMultipliers multipliers = config.getAbsolute().getEvent();
-        Map<String, UserExperienceProfile> experiencesByUserId = loadExperienceProfiles(participantUserIds(participants));
+        Map<String, Profile> experiencesByUserId = loadExperienceProfiles(participantUserIds(participants));
         LinkedHashSet<String> tokens = new LinkedHashSet<>();
         addToken(tokens, "event:title", event.getTitle());
         addToken(tokens, "event:subtitle", event.getSubtitle());
@@ -160,7 +160,7 @@ public class AbsoluteAffinityService {
                     });
         }
 
-        List<Double> participantAffinities = (participants == null ? List.<Users>of() : participants).stream()
+        List<Double> participantAffinities = (participants == null ? List.<WorkspaceProfile>of() : participants).stream()
                 .filter(Objects::nonNull)
                 .map(participant -> resolveUserAffinity(
                         participant,
@@ -177,7 +177,7 @@ public class AbsoluteAffinityService {
         return Math.max(0d, score);
     }
 
-    public double resolveEventBoost(ActivityEvent event, Collection<Users> participants) {
+    public double resolveEventBoost(Event event, Collection<? extends WorkspaceProfile> participants) {
         if (event == null) {
             return 0d;
         }
@@ -198,7 +198,7 @@ public class AbsoluteAffinityService {
         return Math.max(0d, score);
     }
 
-    public double resolveAssetAffinity(Asset asset, Users owner) {
+    public double resolveAssetAffinity(Asset asset, WorkspaceProfile owner) {
         if (asset == null) {
             return 0d;
         }
@@ -213,7 +213,7 @@ public class AbsoluteAffinityService {
         addToken(tokens, "asset:visibility", asset.getVisibility());
         addTextTokens(tokens, "asset:details", asset.getDetails());
         addTokens(tokens, "asset:route", asset.getRoutes());
-        for (Asset.AssetPolicyRecord policy : asset.getPolicies() == null ? List.<Asset.AssetPolicyRecord>of() : asset.getPolicies()) {
+        for (com.raxim.myscoutee.domain.assets.api.AssetOwnership.Policy policy : asset.getPolicies() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetOwnership.Policy>of() : asset.getPolicies()) {
             if (policy == null) {
                 continue;
             }
@@ -228,7 +228,7 @@ public class AbsoluteAffinityService {
         return Math.max(0d, score);
     }
 
-    public double resolveAssetBoost(Asset asset, Users owner) {
+    public double resolveAssetBoost(Asset asset, WorkspaceProfile owner) {
         if (asset == null) {
             return 0d;
         }
@@ -236,7 +236,7 @@ public class AbsoluteAffinityService {
         AffinityConfig.AssetBoostMultipliers multipliers = config.getBoost().getAsset();
         int acceptedRequests = 0;
         int activeRequestCount = 0;
-        for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
+        for (com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request request : asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request>of() : asset.getRequests()) {
             if (request == null || "d".equals(normalizeKey(request.status())) || "deleted".equals(normalizeKey(request.status()))) {
                 continue;
             }
@@ -302,15 +302,15 @@ public class AbsoluteAffinityService {
         }
     }
 
-    private void addStoredProfileDetailTokens(LinkedHashSet<String> tokens, Collection<Users.ProfileDetailGroupRecord> groups) {
+    private void addStoredProfileDetailTokens(LinkedHashSet<String> tokens, Collection<? extends WorkspaceProfile.ProfileDetailGroupRecord> groups) {
         if (groups == null) {
             return;
         }
-        for (Users.ProfileDetailGroupRecord group : groups) {
+        for (WorkspaceProfile.ProfileDetailGroupRecord group : groups) {
             if (group == null) {
                 continue;
             }
-            for (Users.ProfileDetailRowRecord row : group.rows() == null ? List.<Users.ProfileDetailRowRecord>of() : group.rows()) {
+            for (WorkspaceProfile.ProfileDetailRowRecord row : group.rows() == null ? List.<WorkspaceProfile.ProfileDetailRowRecord>of() : group.rows()) {
                 if (row == null) {
                     continue;
                 }
@@ -324,11 +324,11 @@ public class AbsoluteAffinityService {
         }
     }
 
-    private void addExperienceTokens(LinkedHashSet<String> tokens, UserExperienceProfile profile) {
+    private void addExperienceTokens(LinkedHashSet<String> tokens, Profile profile) {
         if (profile == null || profile.getEntries() == null) {
             return;
         }
-        for (UserExperienceProfile.ExperienceItemRecord entry : profile.getEntries()) {
+        for (com.raxim.myscoutee.domain.accounts.api.Experiences.Entry entry : profile.getEntries()) {
             if (entry == null) {
                 continue;
             }
@@ -356,7 +356,7 @@ public class AbsoluteAffinityService {
         addImpressionSectionTokens(tokens, "member", impressions.member());
     }
 
-    private void addStoredImpressionTokens(LinkedHashSet<String> tokens, Users.UserImpressionsRecord impressions) {
+    private void addStoredImpressionTokens(LinkedHashSet<String> tokens, WorkspaceProfile.UserImpressionsRecord impressions) {
         if (impressions == null) {
             return;
         }
@@ -379,14 +379,14 @@ public class AbsoluteAffinityService {
         }
     }
 
-    private void addStoredImpressionSectionTokens(LinkedHashSet<String> tokens, String role, Users.UserImpressionsSectionRecord section) {
+    private void addStoredImpressionSectionTokens(LinkedHashSet<String> tokens, String role, WorkspaceProfile.UserImpressionsSectionRecord section) {
         if (section == null) {
             return;
         }
         addTokens(tokens, "impression:" + role + ":vibe", section.vibeBadges());
         addTokens(tokens, "impression:" + role + ":personality", section.personalityBadges());
         addTokens(tokens, "impression:" + role + ":category", section.categoryBadges());
-        for (Users.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<Users.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
+        for (WorkspaceProfile.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<WorkspaceProfile.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
             if (trait == null) {
                 continue;
             }
@@ -404,7 +404,7 @@ public class AbsoluteAffinityService {
     }
 
     private double storedImpressionScore(
-            Users.UserImpressionsRecord impressions,
+            WorkspaceProfile.UserImpressionsRecord impressions,
             AffinityConfig.AbsoluteUserAffinityMultipliers multipliers) {
         if (impressions == null) {
             return 0d;
@@ -438,7 +438,7 @@ public class AbsoluteAffinityService {
     }
 
     private double storedImpressionSectionScore(
-            Users.UserImpressionsSectionRecord section,
+            WorkspaceProfile.UserImpressionsSectionRecord section,
             AffinityConfig.AbsoluteUserAffinityMultipliers multipliers) {
         if (section == null) {
             return 0d;
@@ -451,7 +451,7 @@ public class AbsoluteAffinityService {
                 * multiplier(multipliers.getImpressionTotalEvents(), 37d)
                 + Math.max(0, normalizeCount(section.repeatCount(), 0))
                 * multiplier(multipliers.getImpressionRepeatCount(), 53d);
-        for (Users.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<Users.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
+        for (WorkspaceProfile.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<WorkspaceProfile.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
             if (trait != null) {
                 score += Math.max(0, normalizeCount(trait.percent(), 0))
                         * multiplier(multipliers.getImpressionTraitPercent(), 7d)
@@ -462,7 +462,7 @@ public class AbsoluteAffinityService {
         return score;
     }
 
-    private double averageHostConfidence(Collection<Users> participants) {
+    private double averageHostConfidence(Collection<? extends WorkspaceProfile> participants) {
         if (participants == null || participants.isEmpty()) {
             return 0d;
         }
@@ -474,8 +474,8 @@ public class AbsoluteAffinityService {
                 .orElse(0d);
     }
 
-    private double hostConfidence(Users user) {
-        Users.UserImpressionsSectionRecord host = user == null || user.getImpressions() == null
+    private double hostConfidence(WorkspaceProfile user) {
+        WorkspaceProfile.UserImpressionsSectionRecord host = user == null || user.getImpressions() == null
                 ? null
                 : user.getImpressions().host();
         if (host == null) {
@@ -485,7 +485,7 @@ public class AbsoluteAffinityService {
                 + Math.max(0, normalizeCount(host.peopleMet(), 0)) * 10d
                 + Math.max(0, normalizeCount(host.totalEvents(), 0)) * 15d
                 + Math.max(0, normalizeCount(host.repeatCount(), 0)) * 20d;
-        for (Users.UserPersonalityTraitRecord trait : host.personalityTraits() == null ? List.<Users.UserPersonalityTraitRecord>of() : host.personalityTraits()) {
+        for (WorkspaceProfile.UserPersonalityTraitRecord trait : host.personalityTraits() == null ? List.<WorkspaceProfile.UserPersonalityTraitRecord>of() : host.personalityTraits()) {
             if (trait != null) {
                 score += Math.max(0, normalizeCount(trait.evidenceCount(), 0)) * 5d;
             }
@@ -621,21 +621,21 @@ public class AbsoluteAffinityService {
         return multiplier != null && Double.isFinite(multiplier) ? Math.max(0d, multiplier) : fallback;
     }
 
-    private UserExperienceProfile loadExperienceProfile(String userId) {
+    private Profile loadExperienceProfile(String userId) {
         String normalizedUserId = normalizeKey(userId);
         if (userExperienceProfilesRepository == null || !StringUtils.hasText(normalizedUserId)) {
             return null;
         }
-        Optional<UserExperienceProfile> profile = userExperienceProfilesRepository.findByUserId(normalizedUserId);
+        Optional<? extends Profile> profile = userExperienceProfilesRepository.findByUserId(normalizedUserId);
         return profile == null ? null : profile.orElse(null);
     }
 
-    private Map<String, UserExperienceProfile> loadExperienceProfiles(Set<String> userIds) {
+    private Map<String, Profile> loadExperienceProfiles(Set<String> userIds) {
         if (userExperienceProfilesRepository == null || userIds == null || userIds.isEmpty()) {
             return Map.of();
         }
-        Map<String, UserExperienceProfile> profilesByUserId = new HashMap<>();
-        for (UserExperienceProfile profile : userExperienceProfilesRepository.findByUserIdIn(new ArrayList<>(userIds))) {
+        Map<String, Profile> profilesByUserId = new HashMap<>();
+        for (Profile profile : userExperienceProfilesRepository.findByUserIdIn(new ArrayList<>(userIds))) {
             String userId = normalizeKey(profile == null ? null : profile.getUserId());
             if (StringUtils.hasText(userId)) {
                 profilesByUserId.put(userId, profile);
@@ -644,12 +644,12 @@ public class AbsoluteAffinityService {
         return profilesByUserId;
     }
 
-    private Set<String> participantUserIds(Collection<Users> participants) {
+    private Set<String> participantUserIds(Collection<? extends WorkspaceProfile> participants) {
         if (participants == null || participants.isEmpty()) {
             return Set.of();
         }
         LinkedHashSet<String> userIds = new LinkedHashSet<>();
-        for (Users participant : participants) {
+        for (WorkspaceProfile participant : participants) {
             String userId = normalizeKey(participant == null ? null : participant.getId());
             if (StringUtils.hasText(userId)) {
                 userIds.add(userId);

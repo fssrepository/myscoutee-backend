@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.events.service;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -72,7 +72,7 @@ public class ActivitiesEventFeedbackService {
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
     private final UsersRepository usersRepository;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final AccessPermissions accessControlService;
     private final UserActivityCountersService userActivityCountersService;
@@ -86,7 +86,7 @@ public class ActivitiesEventFeedbackService {
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
             UsersRepository usersRepository,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             AccessPermissions accessControlService,
             UserActivityCountersService userActivityCountersService,

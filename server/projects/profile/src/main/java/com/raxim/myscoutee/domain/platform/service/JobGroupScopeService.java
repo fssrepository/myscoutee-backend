@@ -16,6 +16,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 /** Resolves stored workspace ownership at job boundaries; never accepts an admin-supplied scope. */
 @Service
 public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform.api.JobAudience {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog configurations;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     private final MongoTemplate mongo;
@@ -53,7 +54,7 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
         type = type == null ? "" : type.toLowerCase(java.util.Locale.ROOT);
         if ("user".equals(type)) return forUser(id);
         if ("config".equals(type)) {
-            var config = mongo.findById(id, com.raxim.myscoutee.domain.affinity.document.AffinityConfig.class);
+            var config = configurations.find(id);
             return config == null ? JobGroupContext.groupId() : "default".equals(config.getKey()) ? null : config.getKey();
         }
         String collection = switch (type) { case "event" -> "events"; case "asset" -> "assets"; default -> null; };
@@ -76,6 +77,13 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
                 || java.util.Objects.equals(workspaces().get(workspaceId), JobGroupContext.groupId());
     }
 
+    @Override public WorkspaceScope workspaceScope() {
+        var spaces = workspaces();
+        String scope = JobGroupContext.groupId();
+        return scope == null ? new WorkspaceScope(java.util.Set.copyOf(spaces.keySet()), false)
+                : new WorkspaceScope(spaces.entrySet().stream().filter(entry -> scope.equals(entry.getValue()))
+                    .map(java.util.Map.Entry::getKey).collect(java.util.stream.Collectors.toSet()), true);
+    }
     public Criteria workspaceCriteria(String field) {
         var workspaces = workspaces();
         String scope = JobGroupContext.groupId();

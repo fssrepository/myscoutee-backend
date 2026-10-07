@@ -43,8 +43,8 @@ may need changes together.
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
 | 6 | assets | 1 | 2 | Pending | — |
-| 7 | affinity | 6 | 11 | Pending | — |
-| 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; domain checkpoint below |
+| 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; commit recorded by this checkpoint |
+| 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 10/21 — #2 notifications, #3 groups, #8 community, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 11/21 — #2 notifications, #3 groups, #7 affinity, #8 community, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1238,3 +1238,172 @@ Exact files in this domain checkpoint:
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityCasesServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/community/service/CommunityScheduledTasksServiceTest.java`
+
+### #7 affinity complete: owner inputs, derived writes and calculation contracts
+
+- The existing affinity algorithms implement `AffinityScores`, `Ratings`,
+  `AffinityStatusChanges` and `CampaignGraphs`; their callers depend on these
+  interfaces. Scores, debounce values, edge accumulation and client payloads
+  retain their existing rules.
+- `ProfileDirectory`, `Experiences`, `EventOwnership`, `MemberDirectory` and
+  `AssetOwnership` supply owner-issued read views. They remain local views of
+  the same objects, not detached remote DTOs. Read-only accessors do not authorize
+  callers to mutate the returned collections. Event/asset/account affinity
+  updates execute inside their owner, including the original optimistic date
+  guard and post-success in-memory update. A later HTTP adapter must make this
+  local identity behavior explicit.
+- Account rating projections and friendship upserts now belong to accounts.
+  Exact narrow field updates, unordered bulk writes, timestamp maxima, earliest
+  friendship / latest meeting guards and literal Mongo expressions are retained.
+- Events submit bounded meeting-evidence commands to affinity. The existing
+  pair identity, upsert, batch size (500), retry behavior and completion-after-
+  persistence ordering remain intact. Affinity privacy commands replace the
+  original raw purge/anonymization calls at the same coordinator positions.
+- `ConfigurationCatalog`, `RatingDirectory` and `EdgeDirectory` own reads of
+  affinity persistence. Campaign graph snapshots use one rating batch for both
+  participants and calculated edges; no per-campaign or per-participant read
+  is introduced.
+- Scoped full recomputation reuses the already selected account IDs, querying
+  rating owners in batches of 1,000 instead of joining the users collection.
+  This changes the query plan. The unscoped path still uses its original scan.
+- QMAU's old cross-domain Mongo union is split into owner-controlled sorted
+  streams (`RatingMeasurement`, `EventMeasurement`, `ChatMeasurement`,
+  `AssetMeasurement`) and account-owned `MeasurementEligibility`. Operator
+  merges six cursors and checks eligibility in batches of 1,000. The shared
+  cursor helper contains no domain query or acceptance rule. The vocabulary,
+  timestamp fallback, exclusions and deterministic evidence order are retained.
+  Eligibility is read per batch rather than inside one aggregate; concurrent
+  profile changes can therefore be observed at different times. Neither path
+  promises a transactional snapshot. Cursor lifetime is an in-process contract;
+  a future remote adapter needs paged/streamed evidence, not a Mongo cursor.
+
+| Area | Functional regression risk | Severe slowdown risk | Required attention |
+| --- | --- | --- | --- |
+| Scores, rating pages, recompute signals | Medium | Low | Existing score fixtures, social modes, task coalescing and notifications |
+| Guarded event/asset writes and profile projections | Medium | Low | Concurrent edits must not be overwritten; memory changes only after a matched write |
+| Meeting/friendship writes and privacy purge | High | Low | Retry after partial work, shared rating orientation, monotonic dates and purge coverage |
+| Campaign graphs | Medium | Low | Campaign isolation and exactly one evidence read |
+| Scoped full recomputation | Medium | Medium | Representative owner counts, indexed owner lookup and no cross-workspace ratings |
+| QMAU evidence merge | High | Medium | Compare old/new evidence and commitment; period-scale data, sort spills and batch latency; concurrent eligibility changes |
+
+The risk ratings above are engineering estimates, not measured latency claims.
+The QMAU implementation opens six bounded cursors and performs one account query
+per 1,000 candidate rows; it does not load all evidence into JVM memory. E2E
+performance remains to be measured after stopping the dev application.
+
+Changed files for this checkpoint (repository-relative):
+
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/common/measurement/EvidenceCursor.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/common/measurement/MeasurementEvidence.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/common/measurement/MongoEvidenceCursor.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountAffinityProjections.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/Experiences.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/FollowingEvents.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/Friendships.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/MeasurementEligibility.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfilePresentation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/document/UserExperienceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/document/Users.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/AccountAffinityProjectionService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ExperienceDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/FriendshipFacts.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/MeasurementEligibilityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/OrganizerFollowingService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/UserExperienceProfilesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AffinityPrivacy.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AffinityScores.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AffinityStatusChanges.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/CampaignGraphs.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/ConfigurationCatalog.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/EdgeDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/EdgeView.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/MeetingEvidence.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/RatingDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/RatingMeasurement.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/RatingView.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/Ratings.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/document/AffinityConfig.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/document/UserAffinityEdge.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/document/UserRate.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/repository/UserRatesRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AbsoluteAffinityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AdminAffinityGraphService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AdminGraphScienceService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityCalculationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityMaintenanceService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityPrivacyService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeTaskService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeWorkerService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/ConfigurationCatalogService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/EdgeDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/MeetingEvidenceService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/RatingDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/RatingMeasurementService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserAffinityEdgeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserRatesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetMeasurement.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetOwnership.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/document/Asset.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetMeasurementService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetOwnershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/ChatMeasurement.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatMeasurementService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/AdminModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventMeasurement.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventOwnership.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/MemberDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/SubEventItem.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventFeedbackService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventLeaderboardService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesInviteCandidatesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMingleService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventFriendshipProjectionService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventMeasurementService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventOwnershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventScheduler.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/MemberDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationReadController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/repository/MongoQualifiedMauEvidenceRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/JobAudience.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/ModelStatusChanges.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/SchedulingPolicy.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/ModelStatusPropagationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/PlatformParametersService.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AdminAffinityGraphServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AdminGraphScienceServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AffinityCalculationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AffinityProjectionOwnershipTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeTaskServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/UserAffinityEdgeServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/UserRatesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskServiceIntegrationTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesInviteCandidatesServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesMingleServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventFriendshipProjectionServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventSchedulerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/AdminClientServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/repository/LegacyQualifiedMauEvidence.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/repository/MongoQualifiedMauEvidenceRepositoryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/repository/QualifiedMauOwnerParityTest.java`
+
+Verification: the full standard + embedded suite passed **1,680 tests** with no
+failures, errors or skips. After adding write-guard, scoped-batch and campaign
+snapshot proofs, **31 final focused tests** passed. The embedded QMAU parity
+fixture produced exactly the same ordered 1,013 evidence rows as the frozen
+pre-change union query, across all six action types and exclusion rules.
+Existing dev hot-deploy compilation succeeded and the container is healthy.
+Master and the frontend submodule remain unchanged. E2E performance is not yet
+measured.

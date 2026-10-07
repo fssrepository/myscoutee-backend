@@ -38,6 +38,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 @org.junit.jupiter.api.Tag("standard")
 class DeletedAccountPurgeServiceTest {
     private void wireGlobalJob(DeletedAccountPurgeService service, MongoTemplate mongoTemplate) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "affinityPrivacy", new com.raxim.myscoutee.domain.affinity.service.AffinityPrivacyService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "emailPrivacy",
                 new com.raxim.myscoutee.domain.email.service.EmailPrivacyService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "helpPrivacy",

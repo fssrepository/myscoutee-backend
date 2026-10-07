@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.ModelStatusPropagationService;
+import com.raxim.myscoutee.domain.platform.api.ModelStatusChanges;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -38,7 +38,7 @@ public class AffinityRecomputeWorkerService {
     private final String workerId = "affinity-worker-" + UUID.randomUUID();
     private final AffinityRecomputeTaskService taskService;
     private final AffinityMaintenanceService affinityMaintenanceService;
-    private final ModelStatusPropagationService modelStatusPropagationService;
+    private final ModelStatusChanges modelStatusPropagationService;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
     private final AffinityRecomputeMetricsService metricsService;
@@ -50,7 +50,7 @@ public class AffinityRecomputeWorkerService {
     public AffinityRecomputeWorkerService(
             AffinityRecomputeTaskService taskService,
             AffinityMaintenanceService affinityMaintenanceService,
-            ModelStatusPropagationService modelStatusPropagationService,
+            ModelStatusChanges modelStatusPropagationService,
             AffinityRecomputeProperties properties,
             MongoTemplate mongoTemplate,
             AffinityRecomputeMetricsService metricsService) {
@@ -377,7 +377,7 @@ public class AffinityRecomputeWorkerService {
     }
 
     private void processUserTarget(String userId) {
-        ModelStatusPropagationService.ModelStatusPropagationOutcome statusOutcome =
+        ModelStatusChanges.Outcome statusOutcome =
                 modelStatusPropagationService.applyForUser(userId);
         if (statusOutcome.hasConflicts()) {
             taskService.enqueue(

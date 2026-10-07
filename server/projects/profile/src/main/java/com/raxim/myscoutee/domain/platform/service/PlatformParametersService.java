@@ -4,30 +4,28 @@ import java.time.Duration;
 
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
-import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
+import com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog;
+
 
 @Service
-public class PlatformParametersService implements com.raxim.myscoutee.domain.platform.api.NotificationPolicy {
+public class PlatformParametersService implements com.raxim.myscoutee.domain.platform.api.SchedulingPolicy {
     private static final String CONFIG_KEY = "default";
 
-    private final AffinityConfigsRepository affinityConfigsRepository;
+    private final ConfigurationCatalog affinityConfigsRepository;
 
-    public PlatformParametersService(AffinityConfigsRepository affinityConfigsRepository) {
+    public PlatformParametersService(ConfigurationCatalog affinityConfigsRepository) {
         this.affinityConfigsRepository = affinityConfigsRepository;
     }
 
-    public AffinityConfig activeConfig() {
-        return affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(JobGroupContext.key())
-                .or(() -> affinityConfigsRepository.findFirstByKeyOrderByVersionDesc(JobGroupContext.key()))
-                .orElseGet(AffinityConfig::defaults);
+    public ConfigurationCatalog.Settings activeConfig() {
+        return affinityConfigsRepository.active(JobGroupContext.key());
     }
 
-    public AffinityConfig.NotificationParameters notifications() {
+    public ConfigurationCatalog.NotificationParameters notifications() {
         return activeConfig().getNotifications();
     }
 
-    public AffinityConfig.JobParameters jobs() {
+    public ConfigurationCatalog.JobParameters jobs() {
         return activeConfig().getJobs();
     }
 

@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 
@@ -69,7 +69,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private final ChatMessagesRepository chatMessagesRepository;
     private final ChatService chatService;
     private final UserActivityCountersService userActivityCountersService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final AppSettingsService appSettingsService;
     private final NotificationDelivery notificationOutboxService;
@@ -84,7 +84,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             ChatMessagesRepository chatMessagesRepository,
             ChatService chatService,
             UserActivityCountersService userActivityCountersService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
+            AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             AppSettingsService appSettingsService,
             NotificationDelivery notificationOutboxService) {

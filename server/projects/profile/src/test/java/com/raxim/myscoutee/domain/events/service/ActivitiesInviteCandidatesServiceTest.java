@@ -56,7 +56,7 @@ class ActivitiesInviteCandidatesServiceTest {
     void setUp() {
         service = new ActivitiesInviteCandidatesService(
                 usersRepository,
-                userRatesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
                 activityMembersRepository,
                 activitiesMembersService,
                 homeUserProfileService,

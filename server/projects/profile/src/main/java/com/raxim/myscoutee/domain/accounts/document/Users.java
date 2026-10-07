@@ -753,14 +753,14 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
 
     public record ProfileDetailGroupRecord(
             String title,
-            List<ProfileDetailRowRecord> rows) {
+            List<ProfileDetailRowRecord> rows) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ProfileDetailGroupRecord {
     }
 
     public record ProfileDetailRowRecord(
             String labelKey,
             String value,
             String privacy,
-            List<String> options) {
+            List<String> options) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ProfileDetailRowRecord {
     }
 
     public static class UserDeviceRecord implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.Device {
@@ -822,7 +822,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
 
     public record UserImpressionsRecord(
             UserImpressionsSectionRecord host,
-            UserImpressionsSectionRecord member) {
+            UserImpressionsSectionRecord member) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.UserImpressionsRecord {
     }
 
     public record UserImpressionsSectionRecord(
@@ -835,7 +835,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             List<String> vibeBadges,
             List<String> personalityBadges,
             List<UserPersonalityTraitRecord> personalityTraits,
-            List<String> categoryBadges) {
+            List<String> categoryBadges) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.UserImpressionsSectionRecord {
     }
 
     public record UserPersonalityTraitRecord(
@@ -843,6 +843,6 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             String label,
             Integer percent,
             Integer evidenceCount,
-            String lastRatedAtIso) {
+            String lastRatedAtIso) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.UserPersonalityTraitRecord {
     }
 }

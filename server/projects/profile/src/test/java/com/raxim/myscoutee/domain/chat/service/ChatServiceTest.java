@@ -1359,6 +1359,9 @@ class ChatServiceTest {
     }
 
     private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "ratings", ratings);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
                 new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
         var caseRepository = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class, call ->

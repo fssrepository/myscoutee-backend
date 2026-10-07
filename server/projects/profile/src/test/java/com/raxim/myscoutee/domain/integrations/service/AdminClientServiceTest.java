@@ -54,7 +54,7 @@ class AdminClientServiceTest {
         new AdminStatsService(repository, new com.raxim.myscoutee.domain.accounts.service.ProfileStatisticsService(users), mock(AdminModerationService.class),
                 new AdminGraphScienceService(mock(com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository.class),
                     mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class),
-                    mock(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class), users)).refreshGraphScienceSnapshot();
+                    new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class)), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users))).refreshGraphScienceSnapshot();
         assertEquals(Map.of("female", 3L), snapshot.getActiveProfileGenders());
     }
     @Test void administratorAccessIsRecheckedAndRemovedRolesAreDenied() {

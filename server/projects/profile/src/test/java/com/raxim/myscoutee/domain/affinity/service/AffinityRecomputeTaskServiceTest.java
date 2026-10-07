@@ -48,6 +48,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
             com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
@@ -83,6 +85,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
             com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
@@ -134,6 +138,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
             com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
@@ -170,6 +176,8 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
             com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
