@@ -25,7 +25,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeade
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.domain.operator.service.OperatorNetworkService;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 @RestController
 @RequestMapping("/operator")

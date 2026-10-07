@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,12 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.BindingArchiveRequest;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchiveRequest;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationResponse;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -45,7 +46,7 @@ class RegistryLocalStoreTest {
     void signedBindingArchivePreservesHistoryAndStartsTheNextScopeFresh()
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryProperties properties = properties();
+        RegistryConfiguration properties = properties();
         Files.createDirectory(properties.getStateDir());
         Files.createDirectories(
                 properties.getPrivateKeyPath().getParent());
@@ -109,7 +110,7 @@ class RegistryLocalStoreTest {
     @Test
     void archiveRequiresTheDurableSignedDeactivationReceipt() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryProperties properties = properties();
+        RegistryConfiguration properties = properties();
         Files.createDirectory(properties.getStateDir());
         RegistryLocalStore store =
                 new RegistryLocalStore(properties, objectMapper);
@@ -132,7 +133,7 @@ class RegistryLocalStoreTest {
     void compensationRestoreReinstatesTheExactBindingWithoutTouchingKeys()
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryProperties properties = properties();
+        RegistryConfiguration properties = properties();
         Files.createDirectory(properties.getStateDir());
         Files.createDirectories(
                 properties.getPrivateKeyPath().getParent());
@@ -168,8 +169,8 @@ class RegistryLocalStoreTest {
                 .hasContent("preserved-public-key");
     }
 
-    private RegistryProperties properties() {
-        RegistryProperties properties = new RegistryProperties();
+    private RegistryConfiguration properties() {
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setStateDir(
                 temporaryDirectory.resolve("state"));
         properties.setPrivateKeyPath(

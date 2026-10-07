@@ -36,11 +36,12 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("groups", Set.of("communityGroups")),
             java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
             java.util.Map.entry("affinity", Set.of("userRates", "userAffinityEdges", "affinityConfigs", "affinityRecomputeTasks")),
+            java.util.Map.entry("registry", Set.of()),
             java.util.Map.entry("assets", Set.of("assets", "assetRequests")),
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -76,7 +77,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;

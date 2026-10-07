@@ -40,7 +40,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingSlotOverrideDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 @Service
 public class OperatorRevenueService {

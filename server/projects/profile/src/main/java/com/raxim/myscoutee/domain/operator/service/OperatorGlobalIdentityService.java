@@ -30,20 +30,19 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityLinkStateRepository;
 import com.raxim.myscoutee.domain.accounts.repository.PrivacyConsentsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.GlobalIdentityVoprfClient;
-import com.raxim.myscoutee.domain.registry.GlobalIdentityVoprfClient.BlindSession;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityEvaluationRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityEvaluationResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityLink;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityLinkActionRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityLinkRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityMutationResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityVoprfKey;
+import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient;
+import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient.BlindSession;
+import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityEvaluationRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityEvaluationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityLink;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityLinkActionRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityLinkRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityMutationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityVoprfKey;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -510,9 +509,7 @@ public class OperatorGlobalIdentityService {
                 runtime,
                 state,
                 state.getLocalUserId());
-        RegistryHttpClient client = new RegistryHttpClient(
-                runtime.properties(),
-                objectMapper);
+        RegistryTransport client = runtimeResolver.transport(runtime);
         String timestamp = clock.instant().toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
         String path = ACTION_LINK.equals(pending.getAction())
@@ -662,9 +659,7 @@ public class OperatorGlobalIdentityService {
                     signedMessage);
             GlobalIdentityEvaluationResponse response;
             try {
-                response = new RegistryHttpClient(
-                        runtime.properties(),
-                        objectMapper).evaluateGlobalIdentity(
+                response = runtimeResolver.transport(runtime).evaluateGlobalIdentity(
                                 new GlobalIdentityEvaluationRequest(
                                         RegistryProtocol.PROTOCOL_VERSION,
                                         runtime.state().registryScope(),
@@ -711,9 +706,7 @@ public class OperatorGlobalIdentityService {
             RegisteredRuntime runtime) {
         GlobalIdentityVoprfKey key;
         try {
-            key = new RegistryHttpClient(
-                    runtime.properties(),
-                    objectMapper).currentGlobalIdentityVoprfKey();
+            key = runtimeResolver.transport(runtime).currentGlobalIdentityVoprfKey();
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(
                     HttpStatus.SERVICE_UNAVAILABLE,
@@ -736,7 +729,7 @@ public class OperatorGlobalIdentityService {
                 || !runtime.registryKeyId().equals(key.registryKeyId())
                 || !runtime.registryPublicKeyBase64().equals(
                         key.registryPublicKey())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityVoprfKey(key),
                         key.signature())) {
@@ -781,7 +774,7 @@ public class OperatorGlobalIdentityService {
                 response.evaluatedAt(),
                 "evaluated_at");
         if (!expectedResponseHash.equals(response.responseHash())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityEvaluationReceipt(
                                 response),
@@ -919,7 +912,7 @@ public class OperatorGlobalIdentityService {
         String expectedHash = RegistryProtocol.sha256(
                 RegistryProtocol.globalIdentityEvent(event));
         if (!expectedHash.equals(event.eventHash())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityEventReceipt(event),
                         event.signature())) {

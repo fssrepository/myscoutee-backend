@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -63,7 +64,7 @@ class RegistryGoEndToEndTest {
                 : RegistryProtocol.publicKeyFingerprint(publicKeyBeforePreflight);
         List<String> stateEntriesBeforePreflight = directoryEntries(stateDirectory);
 
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setOperatorRegistrationConfirmed(false);
@@ -90,7 +91,7 @@ class RegistryGoEndToEndTest {
         }
 
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryPreflightService.RegistryInspection inspection =
+        com.raxim.myscoutee.domain.registry.dto.RegistryInspection inspection =
                 new RegistryPreflightService(properties, objectMapper)
                         .inspectConfiguredRegistry();
         assertThat(inspection.registryScope()).isEqualTo(registryScope);
@@ -107,7 +108,7 @@ class RegistryGoEndToEndTest {
             assertThat(Files.readAllBytes(publicKey)).isEqualTo(publicKeyBeforePreflight);
         }
 
-        RegistryNodeIdentityService.NodeIdentity nodeIdentity =
+        com.raxim.myscoutee.domain.registry.dto.NodeIdentity nodeIdentity =
                 new RegistryNodeIdentityService(properties).initializeNodeIdentity();
         assertThat(nodeIdentity.publicKeyFingerprint())
                 .isEqualTo(RegistryCrypto.load(properties).deploymentPublicKeyFingerprint());

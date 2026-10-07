@@ -13,7 +13,7 @@ import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.CandidateDefaultsDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.NodeIdentityDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryOptionDto;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
 
 @org.junit.jupiter.api.Tag("standard")
 class OperatorRegistryMapperTest {

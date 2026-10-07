@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.registry;
+package com.raxim.myscoutee.domain.registry.api;
 
 /**
  * Signals that a registry response failed protocol validation after transport succeeded.

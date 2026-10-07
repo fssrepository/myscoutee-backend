@@ -39,16 +39,15 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorReven
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorRevenueReportPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorRevenueSyncDto;
 import com.raxim.myscoutee.domain.operator.repository.RevenueReportOutboxRepository;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient.RegistryHttpException;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueBatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueBatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueCurrencyRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueBatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueBatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueCurrencyRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueReceipt;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -412,8 +411,8 @@ public class OperatorRevenueReportService {
             RegisteredRuntime runtime,
             boolean forceDelivery,
             Instant now) {
-        RegistryHttpClient httpClient =
-                new RegistryHttpClient(runtime.properties(), objectMapper);
+        RegistryTransport httpClient =
+                runtimeResolver.transport(runtime);
         List<RevenueReportOutboxItem> pending = outboxRepository
                 .findByDeploymentIdOrderByPeriodAscRevisionAsc(
                         runtime.state().deploymentId())
@@ -717,7 +716,7 @@ public class OperatorRevenueReportService {
         RegistryProtocol.requireCheckpointDate(receipt.checkpointDate());
         if (!RegistryProtocol.checkpointDateAt(acceptedAt).equals(
                     receipt.checkpointDate())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.revenueReceipt(response),
                         receipt.signature())) {

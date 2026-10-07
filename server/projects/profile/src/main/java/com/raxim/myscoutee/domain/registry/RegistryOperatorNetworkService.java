@@ -1,4 +1,12 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimVerification;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.PackageVerification;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.AnnouncementOutcome;
 
 import java.io.IOException;
 import java.net.URI;
@@ -19,27 +27,27 @@ import java.util.regex.Pattern;
 
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.OperatorActionJournalEntry;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.OperatorClaimStatusEvidence;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeployment;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeploymentPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorClaimStatusReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorClaimStatusResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementEntry;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementLink;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementLocalization;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.OperatorActionJournalEntry;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.OperatorClaimStatusEvidence;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeployment;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeploymentPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorClaimStatusReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorClaimStatusResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementEntry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLink;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLocalization;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -110,7 +118,7 @@ public final class RegistryOperatorNetworkService {
             RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT,
             RegistryProtocol.OPERATOR_ACTION_REACTIVATE_DEPLOYMENT);
 
-    private final RegistryProperties properties;
+    private final RegistryConfiguration properties;
     private final RegistryLocalStore localStore;
     private final RegistryHttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -118,7 +126,7 @@ public final class RegistryOperatorNetworkService {
     private final SecureRandom secureRandom;
 
     public RegistryOperatorNetworkService(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             ObjectMapper objectMapper) {
         this(
                 properties,
@@ -130,7 +138,7 @@ public final class RegistryOperatorNetworkService {
     }
 
     RegistryOperatorNetworkService(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             RegistryLocalStore localStore,
             RegistryHttpClient httpClient,
             ObjectMapper objectMapper,
@@ -659,7 +667,7 @@ public final class RegistryOperatorNetworkService {
                     eligibilityStatus =
                             RegistryProtocol.OPERATOR_ELIGIBILITY_STATUS_INACTIVE;
                 }
-            } catch (RegistryHttpClient.RegistryHttpException exception) {
+            } catch (com.raxim.myscoutee.domain.registry.api.RegistryHttpException exception) {
                 if (!isUnsupportedClaimStatusEndpoint(exception)) {
                     throw exception;
                 }
@@ -680,7 +688,7 @@ public final class RegistryOperatorNetworkService {
                     throw new RegistryProtocolException(
                             "Registry returned an incomplete operator claim capability response.");
                 }
-            } catch (RegistryHttpClient.RegistryHttpException exception) {
+            } catch (com.raxim.myscoutee.domain.registry.api.RegistryHttpException exception) {
                 if (isUnsupportedClaimStatusEndpoint(exception)) {
                     verificationCapability = "BACKEND_UNAVAILABLE";
                     verificationUnavailableReason =
@@ -712,7 +720,7 @@ public final class RegistryOperatorNetworkService {
                     }
                     cursor = safeText(page.nextCursor());
                 } while (!found && !cursor.isEmpty());
-            } catch (RegistryHttpClient.RegistryHttpException
+            } catch (com.raxim.myscoutee.domain.registry.api.RegistryHttpException
                     | RegistryProtocolException exception) {
                 // Share is optional enrichment. The independently verified
                 // claim status remains usable when leaderboard reads fail.
@@ -831,7 +839,7 @@ public final class RegistryOperatorNetworkService {
         if (registration.duplicate() == null) {
             throw new IllegalStateException("Persisted registry registration receipt is incomplete.");
         }
-        PublicKey registryPublicKey = RegistryCrypto.parseRegistryPublicKey(
+        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(
                 registration.registryPublicKey());
         String registryFingerprint =
                 RegistryProtocol.publicKeyFingerprint(registryPublicKey.getEncoded());
@@ -850,7 +858,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalStateException(
                     "Registry key differs from the explicitly pinned registration key.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 registryPublicKey,
                 RegistryProtocol.registrationReceipt(registration),
                 registration.receiptSignature())) {
@@ -989,7 +997,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalStateException(
                     "Registry operator journal payload hash is invalid.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trusted.deploymentCrypto().deploymentPublicKey(),
                 RegistryProtocol.signedRequest(
                         "POST",
@@ -1106,7 +1114,7 @@ public final class RegistryOperatorNetworkService {
         if (!RegistryProtocol.hashEquals(expectedAuditHash, receipt.auditHash())) {
             throw new IllegalArgumentException("Registry operator audit hash is invalid.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.operatorActionReceipt(receipt),
                 receipt.signature())) {
@@ -1287,7 +1295,7 @@ public final class RegistryOperatorNetworkService {
         } else {
             verifyClaimEligibilityBoundary(status);
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trusted.registryPublicKey(),
                 legacyEvidence
                         ? RegistryProtocol.legacyOperatorClaimStatusReceipt(
@@ -1520,13 +1528,13 @@ public final class RegistryOperatorNetworkService {
     }
 
     private static boolean isUnsupportedClaimStatusEndpoint(
-            RegistryHttpClient.RegistryHttpException exception) {
+            com.raxim.myscoutee.domain.registry.api.RegistryHttpException exception) {
         return exception.getStatusCode() == 404
                 && "not_found".equals(exception.getErrorCode());
     }
 
     private static boolean isMissingStructuredClaim(
-            RegistryHttpClient.RegistryHttpException exception) {
+            com.raxim.myscoutee.domain.registry.api.RegistryHttpException exception) {
         return exception.getStatusCode() == 404
                 && "operator_claim_not_found".equals(exception.getErrorCode());
     }
@@ -1743,7 +1751,7 @@ public final class RegistryOperatorNetworkService {
         if (!RegistryProtocol.hashEquals(expectedHash, snapshot.snapshotHash())) {
             throw new IllegalArgumentException("Registry leaderboard snapshot hash is invalid.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.leaderboardSnapshotReceipt(snapshot),
                 snapshot.signature())) {
@@ -1803,7 +1811,7 @@ public final class RegistryOperatorNetworkService {
             throw new IllegalArgumentException(
                     "Registry announcement snapshot hash is invalid.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementSnapshotReceipt(snapshot),
                 snapshot.signature())) {
@@ -1830,7 +1838,7 @@ public final class RegistryOperatorNetworkService {
                 UpdateManifest manifest = entry.updateManifest();
                 boolean keyMatches = packageSigningKey != null
                         && manifest.packageSigningKeyId().equals(configuredPackageKeyId);
-                boolean signatureVerified = keyMatches && RegistryCrypto.verifyBase64(
+                boolean signatureVerified = keyMatches && com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         packageSigningKey,
                         RegistryProtocol.releasePackage(manifest),
                         manifest.packageSignature());
@@ -1918,7 +1926,7 @@ public final class RegistryOperatorNetworkService {
                 entry.announcementHash())) {
             throw new IllegalArgumentException("Registry announcement hash is invalid.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementReceipt(entry),
                 entry.signature())) {
@@ -2063,7 +2071,7 @@ public final class RegistryOperatorNetworkService {
                 throw new IllegalStateException(
                         "Package-signing public key file has an invalid size.");
             }
-            return RegistryCrypto.parsePublicKeyPemOrDer(
+            return com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyPemOrDer(
                     Files.readAllBytes(normalized),
                     "package-signing public key");
         } catch (IOException exception) {
@@ -2099,7 +2107,7 @@ public final class RegistryOperatorNetworkService {
         byte[] signature = decodeCanonicalUrlBase64(
                 cursor.substring(separator + 1),
                 "announcement cursor signature");
-        if (signature.length != 64 || !RegistryCrypto.verify(
+        if (signature.length != 64 || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verify(
                 trusted.registryPublicKey(),
                 RegistryProtocol.announcementCursor(payload),
                 signature)) {
@@ -2228,7 +2236,7 @@ public final class RegistryOperatorNetworkService {
         }
         int version = node.path("version").asInt(-1);
         requireLeaderboardCursorFields(node, version);
-        if (signature.length != 64 || !RegistryCrypto.verify(
+        if (signature.length != 64 || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verify(
                 trusted.registryPublicKey(),
                 RegistryProtocol.leaderboardCursor(version, payload),
                 signature)) {
@@ -2615,86 +2623,17 @@ public final class RegistryOperatorNetworkService {
         return StringUtils.hasText(value) ? value : null;
     }
 
-    public record ActionCommand(
-            String action,
-            String operatorName,
-            String operatorAvatarUrl,
-            String clientToken,
-            Long tokenTtlSeconds,
-            String tokenId,
-            String linkId,
-            String idempotencyKey,
-            ClaimVerification claimVerification) {
 
-        public ActionCommand(
-                String action,
-                String operatorName,
-                String operatorAvatarUrl,
-                String clientToken,
-                Long tokenTtlSeconds,
-                String tokenId,
-                String linkId,
-                String idempotencyKey) {
-            this(
-                    action,
-                    operatorName,
-                    operatorAvatarUrl,
-                    clientToken,
-                    tokenTtlSeconds,
-                    tokenId,
-                    linkId,
-                    idempotencyKey,
-                    null);
-        }
-    }
 
-    public record ClaimVerification(
-            String legalName,
-            String registrationNumber,
-            String jurisdiction,
-            String registeredAddress,
-            String website,
-            String verificationContactName,
-            String verificationContactRole,
-            String verificationContactEmail,
-            boolean authorityAttested) {
-    }
 
-    public record ActionOutcome(
-            OperatorActionResponse response,
-            String idempotencyKey,
-            String plaintextClientToken,
-            Path receiptPath) {
-    }
 
-    public record ClaimStatus(
-            boolean claimed,
-            String claimedAt,
-            String operatorName,
-            String operatorAvatarUrl,
-            String groupId,
-            String activeLinkId,
-            String shareNumerator,
-            String shareDenominator,
-            String verificationCapability,
-            String verificationUnavailableReason,
-            String verificationStatus,
-            String verificationSubmittedAt,
-            String legalName,
-            String eligibilityStatus) {
-    }
 
-    public record PackageVerification(
-            String announcementId,
-            boolean packageSigningKeyConfigured,
-            boolean packageSigningKeyMatches,
-            boolean packageSignatureVerified) {
-    }
 
-    public record AnnouncementOutcome(
-            AnnouncementPage page,
-            List<PackageVerification> packageVerifications) {
-    }
+
+
+
+
+
 
     private record TrustedDeployment(
             LocalState state,

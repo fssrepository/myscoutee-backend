@@ -23,15 +23,15 @@ import org.junit.jupiter.api.Test;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.QualifiedMauReportOutboxItem;
 import com.raxim.myscoutee.domain.operator.repository.MongoQualifiedMauEvidenceRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRepository;
 import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauCalculator.QualifiedMauSnapshot;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -45,7 +45,7 @@ class OperatorQualifiedMauReportServiceTest {
     @Test
     void unregisteredDeploymentReturnsBeforeEvidenceOrOutboxAccess() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorQualifiedMauCalculator calculator =
                 mock(OperatorQualifiedMauCalculator.class);
         QualifiedMauReportOutboxRepository outbox =
@@ -68,7 +68,7 @@ class OperatorQualifiedMauReportServiceTest {
     @Test
     void synchronizationFailureDoesNotExposeInternalExceptionDetails() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorQualifiedMauCalculator calculator =
                 mock(OperatorQualifiedMauCalculator.class);
         QualifiedMauReportOutboxRepository outbox =
@@ -89,7 +89,7 @@ class OperatorQualifiedMauReportServiceTest {
     @Test
     void demoSynchronizationUsesDemoRuntimeAndMaterializesSixCompletedMonths() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorQualifiedMauCalculator calculator =
                 mock(OperatorQualifiedMauCalculator.class);
         List<QualifiedMauReportOutboxItem> stored =
@@ -195,7 +195,7 @@ class OperatorQualifiedMauReportServiceTest {
     }
 
     private static RegisteredRuntime runtime() {
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setBaseUrl("http://127.0.0.1:1");
         properties.setAllowInsecureHttp(true);
         properties.setInsecureHttpAllowedHosts("127.0.0.1");

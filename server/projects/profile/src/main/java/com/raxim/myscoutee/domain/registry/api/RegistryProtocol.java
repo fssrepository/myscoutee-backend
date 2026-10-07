@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.registry;
+package com.raxim.myscoutee.domain.registry.api;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -1090,7 +1090,7 @@ public final class RegistryProtocol {
                 status.registryKeyId());
     }
 
-    static byte[] legacyOperatorClaimStatusReceipt(
+    public static byte[] legacyOperatorClaimStatusReceipt(
             OperatorClaimStatusReceipt status) {
         Objects.requireNonNull(status, "Legacy operator claim status receipt must not be null.");
         return canonicalAllowEmpty(

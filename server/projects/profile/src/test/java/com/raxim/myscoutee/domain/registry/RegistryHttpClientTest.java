@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,13 +7,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 @org.junit.jupiter.api.Tag("standard")
 class RegistryHttpClientTest {
     @Test
     void rejectsPlainHttpUnlessOperatorExplicitlyAllowsIt() {
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setBaseUrl("http://127.0.0.1:8080");
         RegistryHttpClient client = new RegistryHttpClient(
                 properties,
@@ -39,7 +40,7 @@ class RegistryHttpClientTest {
 
     @Test
     void rejectsBaseUrlsThatCouldChangeTheSignedRequestTarget() {
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setBaseUrl("https://registry.example.test/prefix?tenant=other");
         RegistryHttpClient client = new RegistryHttpClient(
                 properties,
@@ -52,7 +53,7 @@ class RegistryHttpClientTest {
 
     @Test
     void settlementQueryUsesThePinnedEndpointAndRejectsMissingBodies() {
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setBaseUrl("https://registry.example.test");
         RegistryHttpClient client = new RegistryHttpClient(
                 properties,

@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -12,13 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.MauReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.MauReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationResponse;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -35,7 +36,7 @@ import tools.jackson.databind.ObjectMapper;
 public class RegistryEnrollmentService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistryEnrollmentService.class);
 
-    private final RegistryProperties properties;
+    private final RegistryConfiguration properties;
     private final RegistryLocalStore localStore;
     private final RegistryHttpClient httpClient;
     private final Clock clock;
@@ -44,7 +45,7 @@ public class RegistryEnrollmentService {
     private volatile boolean completionLogged;
 
     public RegistryEnrollmentService(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             ObjectMapper objectMapper) {
         this(
                 properties,
@@ -55,7 +56,7 @@ public class RegistryEnrollmentService {
     }
 
     RegistryEnrollmentService(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             RegistryLocalStore localStore,
             RegistryHttpClient httpClient,
             Clock clock,
@@ -279,7 +280,7 @@ public class RegistryEnrollmentService {
             throw new IllegalArgumentException("Registry registration duplicate flag is missing.");
         }
 
-        PublicKey registryPublicKey = RegistryCrypto.parseRegistryPublicKey(response.registryPublicKey());
+        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(response.registryPublicKey());
         String registryFingerprint = RegistryProtocol.publicKeyFingerprint(registryPublicKey.getEncoded());
         String derivedRegistryKeyId = RegistryProtocol.registryKeyId(registryFingerprint);
         RegistryProtocol.requireRegistryKeyId(response.registryKeyId());
@@ -288,7 +289,7 @@ public class RegistryEnrollmentService {
                     "Registry key ID does not match the supplied registry public key.");
         }
         enforceRegistryTrust(state, registryFingerprint);
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 registryPublicKey,
                 RegistryProtocol.registrationReceipt(response),
                 response.receiptSignature())) {
@@ -372,7 +373,7 @@ public class RegistryEnrollmentService {
         if (!RegistryProtocol.hashEquals(expectedEntryHash, receipt.entryHash())) {
             throw new IllegalArgumentException("Registry receipt ledger entry hash is invalid.");
         }
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 trustedRegistry.publicKey(),
                 RegistryProtocol.mauReceipt(response),
                 receipt.signature())) {

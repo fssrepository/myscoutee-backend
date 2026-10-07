@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.registry;
+package com.raxim.myscoutee.domain.registry.api;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

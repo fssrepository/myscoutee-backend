@@ -39,15 +39,14 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorMeasurementDtos.OperatorM
 import com.raxim.myscoutee.domain.operator.repository.MongoQualifiedMauEvidenceRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRepository;
 import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauCalculator.QualifiedMauSnapshot;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient.RegistryHttpException;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.MauReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.MauReceipt;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -518,9 +517,7 @@ public class OperatorQualifiedMauReportService {
                 item.getSupersedesBatchId(),
                 item.getPayloadHash(),
                 signature);
-        BatchResponse response = new RegistryHttpClient(
-                runtime.properties(),
-                objectMapper).submitMauBatch(request);
+        BatchResponse response = runtimeResolver.transport(runtime).submitMauBatch(request);
         verifyResponse(runtime, item, response);
 
         item.setAcceptedResponse(response);
@@ -610,7 +607,7 @@ public class OperatorQualifiedMauReportService {
                         receipt.entryHash())
                 || !RegistryProtocol.checkpointDateAt(acceptedAt).equals(
                         receipt.checkpointDate())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.qmauReceipt(response),
                         receipt.signature())) {

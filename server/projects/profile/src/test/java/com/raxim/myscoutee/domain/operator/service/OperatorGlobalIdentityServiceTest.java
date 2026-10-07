@@ -17,9 +17,9 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityLinkStateRepository;
 import com.raxim.myscoutee.domain.accounts.repository.PrivacyConsentsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
-import com.raxim.myscoutee.domain.registry.GlobalIdentityVoprfClient;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityVoprfKey;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityVoprfKey;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -37,7 +37,7 @@ class OperatorGlobalIdentityServiceTest {
                 GlobalIdentityVoprfClient.class);
         OperatorGlobalIdentityService service =
                 new OperatorGlobalIdentityService(
-                        mock(OperatorRevenueRegistryRuntimeResolver.class),
+                        RegistryRuntimeTestSupport.resolver(),
                         linkRepository,
                         usersRepository,
                         privacyConsentsRepository,

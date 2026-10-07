@@ -42,7 +42,7 @@ may need changes together.
 | 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
-| 6 | assets | 1 | 2 | Complete: asset ownership, booking contracts, privacy and save events | 1,147 regression tests passed; stale alias repaired; 44 final focused tests passed |
+| 6 | assets | 1 | 2 | Complete: asset ownership, booking contracts, privacy and save events | 1,147 regression tests passed; stale alias repaired; 44 final focused tests passed; `07b4c337c` |
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
@@ -57,9 +57,9 @@ may need changes together.
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
 | 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; `2bb3bd0ae` |
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
-| 21 | registry | 0 | 0 | Pending: full boundary review | — |
+| 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed |
 
-**Completed domains: 13/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 14/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1670,3 +1670,140 @@ Exact changed files for this checkpoint (repository-relative):
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/PaymentServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/ModelStatusPropagationServiceTest.java`
+
+
+## #21 registry: signed operations and durable evidence ownership
+
+Status: complete. Checkpoint subject:
+`[MSC-120] Isolate registry operations and signed enrollment evidence`.
+
+`RegistryOperations`, `RegistryNetwork`, `RegistryTransport` and `RegistrySigner`
+are the public capabilities. Existing bridges, HTTP client, private-key loader
+and local store remain the implementations. No registry request, durable file,
+Mongo collection, retry policy or enrollment rule is added.
+
+- Operator services use contracts and domain-owned values instead of constructing
+  registry HTTP clients or accessing the local store/key loader. Transport
+  construction stays at the original call sites through the existing registry
+  owner; this change adds no request or background process.
+- The operator checks configured/enabled/registered/outbound gates first.
+  Only then does `RegistryOperations.registeredEvidence` validate the endpoint,
+  load keys and durable state, and run the original signed registration and
+  installation-receipt checks in their original order. The operator supplies a
+  value snapshot of its selected trust anchor and enrollment summary.
+- Private keys remain in `RegistryCrypto`; the caller receives the existing
+  local signing capability through `RegistrySigner`. Registered runtime values
+  and configuration paths are in-process contracts, not serialized secrets or
+  proof that this boundary can already run over HTTP.
+- Public-key parsing/verification moves without algorithm changes to
+  `RegistrySignatures`. Canonical `RegistryProtocol` and the VOPRF client move to
+  the API package; a source comparison confirms their algorithms are unchanged.
+  VOPRF private inputs and blinding remain local. The fixed-blind vector test
+  moves alongside its package-private deterministic test entry point.
+- Immutable state, archive, inspection, enrollment and network action values move
+  to `registry/dto`, preserving fields and Jackson names. Explicit nested Mongo
+  aliases preserve the historical registry root fallback identities. The
+  nonpersisted registered-runtime value does not invent a historical Mongo alias.
+- `RegistryProperties` and `RegistryDemoProperties` keep their configuration
+  annotations and extend the public configuration values. Defaults, setters,
+  validation, original property prefixes and separate REAL/DEMO paths are retained.
+  Operator code still creates a separate per-request configuration snapshot.
+
+| Changed boundary | Functional regression risk | Severe slowdown risk | E2E focus |
+| --- | --- | --- | --- |
+| Operator gate to signed enrollment evidence | High impact: trust and privacy boundary | Low: same validation, key/file reads and request construction | Missing/disabled/unregistered/outbound-disabled gates; wrong trust anchor; tampered/missing receipts |
+| Registry HTTP operations and retry errors | Medium | Low: same client and per-call creation, no extra hop | MAU/revenue/presence retry and receipt verification; settlement reads and error classification |
+| Local signing and public verification | High impact if canonical bytes differ | Low: unchanged cryptographic algorithms | Signature vectors, malformed keys/signatures, exact deployment identity |
+| State and network value moves | Medium | Low: unchanged JSON fields and durable store | Reload, archive/restore, duplicate enrollment, claim/actions, leaderboard and announcements |
+| Configuration binding and DEMO isolation | High impact if scopes or key paths cross | Low: same snapshots/defaults | Bound property values, REAL outbound policy, pinned demo endpoint and isolated files |
+
+Evidence: **270 registry/operator, protocol, cryptographic, state, boundary and
+serialization tests passed** with no errors or skips. A further **48 focused
+tests passed**, including the added operator gate noninteraction proof and
+Spring configuration binding/default/validation/isolation proof. The existing dev
+watcher compiled and restarted the application successfully; container health is
+healthy. All **15 final alias/serialization tests passed** after removing an unnecessary
+alias for the nonpersisted runtime value. E2E application testing and latency measurements
+remain pending; the tests do not establish separate-process deployment readiness.
+
+Exact changed files for this checkpoint (repository-relative):
+
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/controller/OperatorNetworkController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/document/GlobalIdentityLinkState.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/document/GlobalIdentityPresenceOutboxItem.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/document/QualifiedMauReportOutboxItem.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/document/RevenueReportOutboxItem.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/mapper/OperatorNetworkMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/mapper/OperatorRegistryMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorGlobalIdentityPresenceReportService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorGlobalIdentityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorNetworkService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorQualifiedMauCalculator.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorQualifiedMauReportService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRegistryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueRegistryRuntimeResolver.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueReportService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorSettlementService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorUpdateReleaseService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorUpdateService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/GlobalIdentityVoprfClient.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryCrypto.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryEnrollmentService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryHttpClient.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryLocalStore.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryNodeIdentityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryOperatorNetworkOperations.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryOperatorNetworkService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryOperatorOperations.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryPreflightService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryProtocol.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryProtocolException.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/GlobalIdentityVoprfClient.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryConfiguration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryDemoConfiguration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryHttpException.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryNetwork.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryOperations.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryProtocol.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryProtocolException.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistrySignatures.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistrySigner.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/api/RegistryTransport.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/config/RegistryDemoProperties.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/config/RegistryProperties.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/NodeIdentity.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/RegistryEnrollmentValues.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/RegistryExpectation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/RegistryInspection.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/RegistryNetworkValues.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/RegistryRegisteredState.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/dto/RegistryState.java`
+- `server/projects/profile/src/main/resources/mongo-domain-types.properties`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/mapper/OperatorRegistryMapperTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorGlobalIdentityPresenceReportServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorGlobalIdentityServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorGoRegistryRailQualificationTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorNetworkServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorQualifiedMauReportServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorRegistryServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueRegistryRuntimeResolverTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueReportServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorSettlementServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorUpdateReleaseServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorUpdateServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/RegistryRuntimeTestSupport.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/GlobalIdentityVoprfClientTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryCryptoTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryEnrollmentServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryGoEndToEndTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryHttpClientTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryLocalStoreTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryNodeIdentityServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryOperatorNetworkServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryPreflightServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryProtocolTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryTestIdentity.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/api/GlobalIdentityVoprfClientTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/config/RegistryConfigurationBindingTest.java`

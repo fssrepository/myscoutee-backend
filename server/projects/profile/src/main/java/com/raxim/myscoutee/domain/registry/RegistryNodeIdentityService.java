@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.dto.NodeIdentity;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -22,7 +24,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 /**
  * Explicit, one-shot creation of the local deployment signing identity.
@@ -42,9 +44,9 @@ public class RegistryNodeIdentityService {
             PosixFilePermissions.fromString("rwx------");
     private static final ConcurrentMap<String, Object> IDENTITY_LOCKS = new ConcurrentHashMap<>();
 
-    private final RegistryProperties properties;
+    private final RegistryConfiguration properties;
 
-    public RegistryNodeIdentityService(RegistryProperties properties) {
+    public RegistryNodeIdentityService(RegistryConfiguration properties) {
         this.properties = Objects.requireNonNull(properties, "Registry properties must not be null.");
     }
 
@@ -370,8 +372,7 @@ public class RegistryNodeIdentityService {
         }
     }
 
-    public record NodeIdentity(String publicKeyFingerprint) {
-    }
+
 
     private record IdentityPaths(Path privateKey, Path publicKey) {
         String lockKey() {

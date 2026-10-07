@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -28,13 +29,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.MauReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.MauReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationResponse;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -67,7 +68,7 @@ class RegistryEnrollmentServiceTest {
     @Test
     void enrollmentWithoutOperatorConfirmationDoesNotTouchKeysStateOrNetwork() {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setBaseUrl("not a URI");
@@ -89,7 +90,7 @@ class RegistryEnrollmentServiceTest {
     @Test
     void activeMissingInstallerKeysDoesNotBlockOrFailApplicationReadyHandling() {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setOperatorRegistrationConfirmed(true);
@@ -119,12 +120,12 @@ class RegistryEnrollmentServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         TestRegistry registry = new TestRegistry(objectMapper, true, false);
         try (registry) {
-            RegistryProperties properties = properties(registry, "backend-v1");
+            RegistryConfiguration properties = properties(registry, "backend-v1");
             RegistryLocalStore store = new RegistryLocalStore(properties, objectMapper);
             RegistryEnrollmentService firstProcess = service(properties, store, objectMapper);
 
             assertThatThrownBy(firstProcess::synchronizeNow)
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class)
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class)
                     .hasMessageContaining("temporarily unavailable");
 
             LocalState afterFailure = store.load().orElseThrow();
@@ -185,7 +186,7 @@ class RegistryEnrollmentServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         TestRegistry registry = new TestRegistry(objectMapper, false, true);
         try (registry) {
-            RegistryProperties properties = properties(registry, "backend-v1");
+            RegistryConfiguration properties = properties(registry, "backend-v1");
             RegistryLocalStore store = new RegistryLocalStore(properties, objectMapper);
 
             assertThatThrownBy(service(properties, store, objectMapper)::synchronizeNow)
@@ -209,7 +210,7 @@ class RegistryEnrollmentServiceTest {
                 false,
                 "test-program:parent-b");
         try (registry) {
-            RegistryProperties properties = properties(registry, "backend-v1");
+            RegistryConfiguration properties = properties(registry, "backend-v1");
             RegistryLocalStore store = new RegistryLocalStore(properties, objectMapper);
 
             assertThatThrownBy(service(properties, store, objectMapper)::synchronizeNow)
@@ -228,7 +229,7 @@ class RegistryEnrollmentServiceTest {
     @Test
     void persistedRegistrationReceiptMustRemainBoundToTheTopLevelDeploymentId() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         Path stateDirectory = temporaryDirectory.resolve("binding-state");
         Files.createDirectory(stateDirectory);
         properties.setStateDir(stateDirectory);
@@ -277,13 +278,13 @@ class RegistryEnrollmentServiceTest {
                 .hasMessageContaining("deployment ID does not match");
     }
 
-    private RegistryProperties properties(TestRegistry registry, String softwareVersion) throws IOException {
+    private RegistryConfiguration properties(TestRegistry registry, String softwareVersion) throws IOException {
         Path keyDirectory = temporaryDirectory.resolve("keys-" + softwareVersion);
         Path stateDirectory = temporaryDirectory.resolve("state-" + softwareVersion);
         RegistryTestIdentity.writeDeploymentIdentity(keyDirectory, RegistryTestIdentity.generate());
         Files.createDirectory(stateDirectory);
 
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setOperatorRegistrationConfirmed(true);
@@ -301,7 +302,7 @@ class RegistryEnrollmentServiceTest {
     }
 
     private RegistryEnrollmentService service(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             RegistryLocalStore store,
             ObjectMapper objectMapper) {
         return new RegistryEnrollmentService(
@@ -365,14 +366,14 @@ class RegistryEnrollmentServiceTest {
                         RegistrationRequest.class);
                 registrationRequests.add(request);
                 require(REGISTRY_SCOPE.equals(request.registryScope()), "Registration scope was invalid.");
-                deploymentPublicKey = RegistryCrypto.parseRegistryPublicKey(request.publicKey());
+                deploymentPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(request.publicKey());
                 String fingerprint = RegistryProtocol.publicKeyFingerprint(deploymentPublicKey.getEncoded());
                 String expectedPayloadHash = RegistryProtocol.sha256(RegistryProtocol.registrationPayload(
                         request.keyAlgorithm(),
                         request.publicKey(),
                         request.softwareVersion()));
                 require(expectedPayloadHash.equals(request.payloadHash()), "Registration payload hash was invalid.");
-                require(RegistryCrypto.verifyBase64(
+                require(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                                 deploymentPublicKey,
                                 RegistryProtocol.signedRequest(
                                         exchange.getRequestMethod(),
@@ -435,7 +436,7 @@ class RegistryEnrollmentServiceTest {
                         request.commitmentHash()));
                 require(commitmentHash.equals(request.commitmentHash()), "Batch commitment hash was invalid.");
                 require(payloadHash.equals(request.payloadHash()), "Batch payload hash was invalid.");
-                require(RegistryCrypto.verifyBase64(
+                require(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                                 deploymentPublicKey,
                                 RegistryProtocol.signedRequest(
                                         exchange.getRequestMethod(),

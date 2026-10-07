@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,27 +29,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimVerification;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementEntry;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementLink;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementLocalization;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeployment;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeploymentPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorClaimStatusReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorClaimStatusResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistrationResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimVerification;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementEntry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLink;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLocalization;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeployment;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeploymentPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorClaimStatusReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorClaimStatusResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistrationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -75,11 +77,11 @@ class RegistryOperatorNetworkServiceTest {
     void signsActionVerifiesAuditReceiptAndPersistsNoPlaintextToken() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
 
-            RegistryOperatorNetworkService.ActionOutcome outcome = service.apply(
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome outcome = service.apply(
                     new ActionCommand(
                             RegistryProtocol.OPERATOR_ACTION_ISSUE_CLIENT_TOKEN,
                             null,
@@ -110,7 +112,7 @@ class RegistryOperatorNetworkServiceTest {
     void verifiesSignedSnapshotAndOpaqueCursorWithoutCalculatingLeaderboard() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
 
@@ -157,7 +159,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             registry.suspendedLeaderboardDeployment = true;
             RegistryOperatorNetworkService service =
@@ -188,7 +190,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -227,7 +229,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -264,7 +266,7 @@ class RegistryOperatorNetworkServiceTest {
     void claimStatusComesFromVerifiedJournalAndSignedGroupShare() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
 
@@ -288,7 +290,7 @@ class RegistryOperatorNetworkServiceTest {
                             "alex@example.test",
                             true)));
 
-            RegistryOperatorNetworkService.ClaimStatus status = service.claimStatus();
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status = service.claimStatus();
 
             assertThat(status.claimed()).isTrue();
             assertThat(status.claimedAt()).isEqualTo("2026-07-28T00:00:03Z");
@@ -316,7 +318,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -326,7 +328,7 @@ class RegistryOperatorNetworkServiceTest {
             registry.approvedClaimStatus = true;
             registry.suspendedClaimStatus = true;
 
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     service.claimStatus();
 
             assertThat(status.verificationStatus()).isEqualTo("APPROVED");
@@ -351,7 +353,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -381,7 +383,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -422,7 +424,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -434,14 +436,13 @@ class RegistryOperatorNetworkServiceTest {
             Files.writeString(
                     evidencePath,
                     objectMapper.writeValueAsString(
-                            new RegistryLocalStore
-                                    .OperatorClaimStatusEvidence(
+                            new com.raxim.myscoutee.domain.registry.dto.RegistryState.OperatorClaimStatusEvidence(
                                             1,
                                             registry
                                                     .legacyClaimStatusEvidence())),
                     StandardCharsets.UTF_8);
 
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     service.claimStatus();
 
             assertThat(status.eligibilityStatus()).isEqualTo("inactive");
@@ -462,7 +463,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             registry.redeemAsTokenDerivedClaim = true;
             RegistryOperatorNetworkService service =
@@ -470,7 +471,7 @@ class RegistryOperatorNetworkServiceTest {
                             properties,
                             objectMapper);
 
-            RegistryOperatorNetworkService.ActionOutcome redemption =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome redemption =
                     service.apply(new ActionCommand(
                             RegistryProtocol
                                     .OPERATOR_ACTION_REDEEM_CLIENT_TOKEN,
@@ -481,7 +482,7 @@ class RegistryOperatorNetworkServiceTest {
                             null,
                             null,
                             null));
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     service.claimStatus();
 
             assertThat(status.claimed()).isTrue();
@@ -505,7 +506,7 @@ class RegistryOperatorNetworkServiceTest {
             assertThat(redemption.response().receipt().sourcePrivateRecordHash())
                     .isEqualTo(SOURCE_PRIVATE_RECORD_HASH);
 
-            RegistryLocalStore.OperatorActionJournalEntry durable =
+            com.raxim.myscoutee.domain.registry.dto.RegistryState.OperatorActionJournalEntry durable =
                     new RegistryLocalStore(properties, objectMapper)
                             .loadOperatorActionJournal()
                             .getFirst();
@@ -536,7 +537,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             registry.sourceAnchorsForOrdinaryAction = true;
             RegistryOperatorNetworkService service =
@@ -566,7 +567,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             registry.redeemAsTokenDerivedClaim = true;
             registry.omitTokenDerivedSourceAnchors = true;
@@ -597,7 +598,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -634,7 +635,7 @@ class RegistryOperatorNetworkServiceTest {
     void rejectsTamperedSignedClaimStatus() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             service.apply(new ActionCommand(
@@ -670,7 +671,7 @@ class RegistryOperatorNetworkServiceTest {
     void approvedStatusComesOnlyFromVerifiedRegistryReceipt() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             service.apply(new ActionCommand(
@@ -694,7 +695,7 @@ class RegistryOperatorNetworkServiceTest {
                             true)));
             registry.approvedClaimStatus = true;
 
-            RegistryOperatorNetworkService.ClaimStatus status = service.claimStatus();
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status = service.claimStatus();
 
             assertThat(status.verificationStatus()).isEqualTo("APPROVED");
             assertThat(status.eligibilityStatus()).isEqualTo("active");
@@ -710,7 +711,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -719,7 +720,7 @@ class RegistryOperatorNetworkServiceTest {
             service.apply(structuredClaim("Rejected Cooperative"));
             registry.rejectedClaimStatus = true;
 
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     service.claimStatus();
 
             assertThat(status.verificationStatus()).isEqualTo("REJECTED");
@@ -745,7 +746,7 @@ class RegistryOperatorNetworkServiceTest {
     void rejectsSignedStatusRollbackAfterApprovalAndRestart() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             service.apply(structuredClaim("Restart Cooperative"));
@@ -768,7 +769,7 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             service.apply(structuredClaim("Withdrawal Cooperative"));
@@ -787,8 +788,8 @@ class RegistryOperatorNetworkServiceTest {
                     null);
 
             assertThatThrownBy(() -> service.apply(withdraw))
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
-            RegistryOperatorNetworkService.ClaimStatus reconciled =
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus reconciled =
                     service.claimStatus();
 
             assertThat(reconciled.claimed()).isFalse();
@@ -799,7 +800,7 @@ class RegistryOperatorNetworkServiceTest {
             assertThat(reconciled.verificationStatus()).isEqualTo("WITHDRAWN");
             assertThat(reconciled.eligibilityStatus()).isEqualTo("inactive");
 
-            RegistryOperatorNetworkService.ActionOutcome retry =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome retry =
                     service.apply(withdraw);
             assertThat(retry.response().duplicate()).isTrue();
             assertThat(registry.firstWithdrawalIdempotency.get())
@@ -826,7 +827,7 @@ class RegistryOperatorNetworkServiceTest {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry =
                 new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties =
+            RegistryConfiguration properties =
                     registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(
@@ -852,9 +853,8 @@ class RegistryOperatorNetworkServiceTest {
 
             assertThatThrownBy(() -> service.apply(deactivate))
                     .isInstanceOf(
-                            RegistryHttpClient
-                                    .RegistryHttpException.class);
-            RegistryOperatorNetworkService.ActionOutcome retry =
+                            com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome retry =
                     service.apply(deactivate);
 
             assertThat(retry.response().duplicate()).isTrue();
@@ -868,7 +868,7 @@ class RegistryOperatorNetworkServiceTest {
                     new RegistryOperatorNetworkService(
                             properties,
                             objectMapper);
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     restarted.claimStatus();
 
             assertThat(status.claimed()).isFalse();
@@ -890,7 +890,7 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryLocalStore store = new RegistryLocalStore(properties, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
@@ -902,7 +902,7 @@ class RegistryOperatorNetworkServiceTest {
             var previousDeactivation = service.apply(deactivate);
             LocalState previous = store.load().orElseThrow();
             var archive = store.archiveActiveBinding(
-                    new RegistryLocalStore.BindingArchiveRequest(
+                    new com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchiveRequest(
                             properties.getBaseUrl(), SCOPE, registry.registryKeyId,
                             registry.registryFingerprint, DEPLOYMENT_ID,
                             previousDeactivation.response().receipt(),
@@ -957,7 +957,7 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             ActionCommand claim = structuredClaim("Generation Cooperative");
@@ -988,13 +988,13 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             service.apply(structuredClaim("Leaderboard Independent Cooperative"));
             registry.failLeaderboard = true;
 
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     service.claimStatus();
 
             assertThat(status.claimed()).isTrue();
@@ -1010,12 +1010,12 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             registry.unsupportedClaimStatusEndpoint = true;
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
 
-            RegistryOperatorNetworkService.ClaimStatus status =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus status =
                     service.claimStatus();
 
             assertThat(status.verificationCapability())
@@ -1030,7 +1030,7 @@ class RegistryOperatorNetworkServiceTest {
     void redeemAndRevokeLinkRetriesUseStableIdempotencyKeys() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             ActionCommand redeem = new ActionCommand(
@@ -1046,8 +1046,8 @@ class RegistryOperatorNetworkServiceTest {
                     RegistryProtocol.OPERATOR_ACTION_REDEEM_CLIENT_TOKEN;
 
             assertThatThrownBy(() -> service.apply(redeem))
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
-            RegistryOperatorNetworkService.ActionOutcome redeemed =
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome redeemed =
                     service.apply(redeem);
             assertThat(redeemed.response().duplicate()).isTrue();
             assertThat(redeemed.idempotencyKey()).startsWith("redeem_");
@@ -1068,8 +1068,8 @@ class RegistryOperatorNetworkServiceTest {
             registry.loseFirstResponseForAction =
                     RegistryProtocol.OPERATOR_ACTION_REVOKE_GROUP_LINK;
             assertThatThrownBy(() -> service.apply(revoke))
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
-            RegistryOperatorNetworkService.ActionOutcome revoked =
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome revoked =
                     service.apply(revoke);
 
             assertThat(revoked.response().duplicate()).isTrue();
@@ -1088,10 +1088,10 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
-            RegistryOperatorNetworkService.ActionOutcome claim =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome claim =
                     service.apply(structuredClaim("Private Evidence Cooperative"));
             service.claimStatus();
             Path statusPath = properties.receiptDirectory()
@@ -1129,7 +1129,7 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             ActionCommand claim = new ActionCommand(
@@ -1154,9 +1154,9 @@ class RegistryOperatorNetworkServiceTest {
             registry.loseFirstClaimResponse = true;
 
             assertThatThrownBy(() -> service.apply(claim))
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class)
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class)
                     .hasMessageContaining("communicate");
-            RegistryOperatorNetworkService.ActionOutcome retry = service.apply(claim);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome retry = service.apply(claim);
 
             assertThat(retry.response().duplicate()).isTrue();
             assertThat(registry.firstClaimIdempotency.get())
@@ -1175,7 +1175,7 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
             ActionCommand claim = new ActionCommand(
@@ -1198,13 +1198,13 @@ class RegistryOperatorNetworkServiceTest {
                             "alex@example.test",
                             true));
 
-            RegistryOperatorNetworkService.ActionOutcome first = service.apply(claim);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome first = service.apply(claim);
             byte[] durableBefore = Files.readAllBytes(first.receiptPath());
             registry.failClaimStatusOnce = true;
             assertThatThrownBy(service::claimStatus)
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class);
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class);
 
-            RegistryOperatorNetworkService.ActionOutcome retry = service.apply(claim);
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome retry = service.apply(claim);
 
             assertThat(retry.response().duplicate()).isTrue();
             assertThat(retry.receiptPath()).isEqualTo(first.receiptPath());
@@ -1223,11 +1223,11 @@ class RegistryOperatorNetworkServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = registeredProperties(registry, objectMapper);
+            RegistryConfiguration properties = registeredProperties(registry, objectMapper);
             RegistryOperatorNetworkService service =
                     new RegistryOperatorNetworkService(properties, objectMapper);
 
-            RegistryOperatorNetworkService.AnnouncementOutcome outcome =
+            com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.AnnouncementOutcome outcome =
                     service.announcements(
                             "UPDATE",
                             "NOTICE",
@@ -1267,7 +1267,7 @@ class RegistryOperatorNetworkServiceTest {
     void refusesOperatorNetworkBeforeExplicitRegistrationWithoutCallingRegistry() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (TestOperatorRegistry registry = new TestOperatorRegistry(objectMapper)) {
-            RegistryProperties properties = baseProperties(registry);
+            RegistryConfiguration properties = baseProperties(registry);
             Path keyDirectory = temporaryDirectory.resolve("unregistered-keys");
             RegistryTestIdentity.writeDeploymentIdentity(
                     keyDirectory,
@@ -1327,10 +1327,10 @@ class RegistryOperatorNetworkServiceTest {
                         true));
     }
 
-    private RegistryProperties registeredProperties(
+    private RegistryConfiguration registeredProperties(
             TestOperatorRegistry registry,
             ObjectMapper objectMapper) throws IOException {
-        RegistryProperties properties = baseProperties(registry);
+        RegistryConfiguration properties = baseProperties(registry);
         Path keyDirectory = temporaryDirectory.resolve("registered-keys");
         RegistryTestIdentity.writeDeploymentIdentity(
                 keyDirectory,
@@ -1390,8 +1390,8 @@ class RegistryOperatorNetworkServiceTest {
         return properties;
     }
 
-    private RegistryProperties baseProperties(TestOperatorRegistry registry) {
-        RegistryProperties properties = new RegistryProperties();
+    private RegistryConfiguration baseProperties(TestOperatorRegistry registry) {
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setOperatorRegistrationConfirmed(false);
@@ -1625,7 +1625,7 @@ class RegistryOperatorNetworkServiceTest {
                                         request.tokenId(),
                                         request.linkId()));
                 require(expectedPayloadHash.equals(request.payloadHash()), "Action payload hash was invalid.");
-                require(RegistryCrypto.verifyBase64(
+                require(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                                 deploymentKeyPair.getPublic(),
                                 RegistryProtocol.signedRequest(
                                         "POST",

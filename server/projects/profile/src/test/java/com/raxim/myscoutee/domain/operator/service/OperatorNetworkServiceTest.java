@@ -21,8 +21,8 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryDemoProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryDemoConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionRequestDto;
@@ -35,15 +35,15 @@ import com.raxim.myscoutee.domain.operator.repository.OperatorClaimSubmissionSna
 import com.raxim.myscoutee.domain.operator.repository.OperatorRegistrySettingsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkOperations;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimStatus;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeployment;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeploymentPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocolException;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeployment;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeploymentPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
 
 @org.junit.jupiter.api.Tag("standard")
 class OperatorNetworkServiceTest {
@@ -118,7 +118,7 @@ class OperatorNetworkServiceTest {
         RegistryOperatorNetworkOperations operations =
                 mock(RegistryOperatorNetworkOperations.class);
         OperatorNetworkMapper mapper = mock(OperatorNetworkMapper.class);
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setOutboundAllowed(true);
         when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
                 .thenReturn(Optional.of(registeredSettings()));
@@ -226,7 +226,7 @@ class OperatorNetworkServiceTest {
                 claimSubmissionRepository,
                 usersRepository,
                 properties,
-                new RegistryDemoProperties(),
+                new RegistryDemoConfiguration(),
                 operations,
                 mapper);
         assertThat(service.submitClaim(
@@ -284,7 +284,7 @@ class OperatorNetworkServiceTest {
                 mock(OperatorClaimSubmissionSnapshotRepository.class);
         RegistryOperatorNetworkOperations operations =
                 mock(RegistryOperatorNetworkOperations.class);
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setOutboundAllowed(true);
         when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
                 .thenReturn(Optional.of(registeredSettings()));
@@ -368,7 +368,7 @@ class OperatorNetworkServiceTest {
                 claimSubmissionRepository,
                 mock(UsersRepository.class),
                 properties,
-                new RegistryDemoProperties(),
+                new RegistryDemoConfiguration(),
                 operations,
                 new OperatorNetworkMapper());
         OperatorRedeemClientTokenRequestDto request =
@@ -546,7 +546,7 @@ class OperatorNetworkServiceTest {
                 mock(OperatorClaimSubmissionSnapshotRepository.class);
         RegistryOperatorNetworkOperations operations =
                 mock(RegistryOperatorNetworkOperations.class);
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setOutboundAllowed(true);
         when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
                 .thenReturn(Optional.of(registeredSettings()));
@@ -575,7 +575,7 @@ class OperatorNetworkServiceTest {
                 claimSubmissionRepository,
                 mock(UsersRepository.class),
                 properties,
-                new RegistryDemoProperties(),
+                new RegistryDemoConfiguration(),
                 operations,
                 new OperatorNetworkMapper());
 
@@ -602,8 +602,8 @@ class OperatorNetworkServiceTest {
                 settingsRepository,
                 claimSubmissionRepository,
                 usersRepository,
-                new RegistryProperties(),
-                new RegistryDemoProperties(),
+                new RegistryConfiguration(),
+                new RegistryDemoConfiguration(),
                 operations,
                 mock(OperatorNetworkMapper.class));
 
@@ -690,7 +690,7 @@ class OperatorNetworkServiceTest {
             RegistryOperatorNetworkOperations operations) {
         OperatorRegistrySettingsRepository settingsRepository =
                 mock(OperatorRegistrySettingsRepository.class);
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setOutboundAllowed(true);
         when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
                 .thenReturn(Optional.of(registeredSettings()));
@@ -699,7 +699,7 @@ class OperatorNetworkServiceTest {
                 mock(OperatorClaimSubmissionSnapshotRepository.class),
                 mock(UsersRepository.class),
                 properties,
-                new RegistryDemoProperties(),
+                new RegistryDemoConfiguration(),
                 operations,
                 mock(OperatorNetworkMapper.class));
     }
@@ -708,7 +708,7 @@ class OperatorNetworkServiceTest {
             RegistryOperatorNetworkOperations operations) {
         OperatorRegistrySettingsRepository settingsRepository =
                 mock(OperatorRegistrySettingsRepository.class);
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setOutboundAllowed(true);
         when(settingsRepository.findById(OperatorRegistrySettings.SINGLETON_ID))
                 .thenReturn(Optional.of(registeredSettings()));
@@ -717,7 +717,7 @@ class OperatorNetworkServiceTest {
                 mock(OperatorClaimSubmissionSnapshotRepository.class),
                 mock(UsersRepository.class),
                 properties,
-                new RegistryDemoProperties(),
+                new RegistryDemoConfiguration(),
                 operations,
                 new OperatorNetworkMapper());
     }

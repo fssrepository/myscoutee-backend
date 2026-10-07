@@ -1,4 +1,5 @@
-package com.raxim.myscoutee.domain.registry;
+package com.raxim.myscoutee.domain.registry.api;
+import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
