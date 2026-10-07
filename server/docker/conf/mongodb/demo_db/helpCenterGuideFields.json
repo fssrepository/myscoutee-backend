@@ -6912,14 +6912,6 @@
     "order": 32
   },
   {
-    "_id": "navigation.menu--notification-launcher",
-    "id": "notification-launcher",
-    "screenKey": "navigation.menu",
-    "group": "menus",
-    "i18nKey": "guide.navigation.menu.notification-launcher",
-    "order": 33
-  },
-  {
     "_id": "members--members-list",
     "id": "members-list",
     "screenKey": "members",
@@ -11176,14 +11168,6 @@
     "order": 0
   },
   {
-    "_id": "admin.navigation--notification-launcher",
-    "id": "notification-launcher",
-    "screenKey": "admin.navigation",
-    "group": "menus",
-    "i18nKey": "guide.admin.navigation.notification-launcher",
-    "order": 1
-  },
-  {
     "_id": "admin.navigation--explanations",
     "id": "explanations",
     "screenKey": "admin.navigation",
@@ -11310,14 +11294,6 @@
     "group": "menus",
     "i18nKey": "guide.operator.navigation.notifications",
     "order": 0
-  },
-  {
-    "_id": "operator.navigation--notification-launcher",
-    "id": "notification-launcher",
-    "screenKey": "operator.navigation",
-    "group": "menus",
-    "i18nKey": "guide.operator.navigation.notification-launcher",
-    "order": 1
   },
   {
     "_id": "operator.navigation--explanations",

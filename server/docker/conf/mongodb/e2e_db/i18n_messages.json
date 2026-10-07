@@ -32385,7 +32385,7 @@
     "_id": "i18n-message-en-guide-navigation-menu-notifications-description",
     "key": "guide.navigation.menu.notifications.description",
     "lang": "en",
-    "value": "Open notifications here even after hiding the bell. The badge counts unread updates. Drag the bell or lightbulb to move it; drop on the red X to hide it."
+    "value": "Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept."
   },
   {
     "_id": "i18n-message-en-guide-navigation-menu-explanations-label",
@@ -69567,7 +69567,7 @@
     "_id": "i18n-message-hu-guide-navigation-menu-notifications-description",
     "key": "guide.navigation.menu.notifications.description",
     "lang": "hu",
-    "value": "Innen a csengő elrejtése után is eléred az értesítéseket. A jelvény az olvasatlanokat számolja. A csengő és a villanykörte húzható; piros X-re ejtve elrejthető."
+    "value": "Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak."
   },
   {
     "_id": "i18n-message-hu-guide-navigation-menu-explanations-label",
@@ -82224,22 +82224,10 @@
     "value": "Guide button"
   },
   {
-    "_id": "i18n-message-en-guide-admin-navigation-notification-launcher-description",
-    "key": "guide.admin.navigation.notification-launcher.description",
-    "lang": "en",
-    "value": "Show or hide the floating notification button. Your inbox and delivery settings remain available."
-  },
-  {
-    "_id": "i18n-message-en-guide-admin-navigation-notification-launcher-label",
-    "key": "guide.admin.navigation.notification-launcher.label",
-    "lang": "en",
-    "value": "Notification button"
-  },
-  {
     "_id": "i18n-message-en-guide-admin-navigation-notifications-description",
     "key": "guide.admin.navigation.notifications.description",
     "lang": "en",
-    "value": "Open your inbox, mark messages read and manage alert muting."
+    "value": "Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-notifications-label",
@@ -83274,18 +83262,6 @@
     "value": "Updates"
   },
   {
-    "_id": "i18n-message-en-guide-navigation-menu-notification-launcher-description",
-    "key": "guide.navigation.menu.notification-launcher.description",
-    "lang": "en",
-    "value": "Show or hide the floating notification button. Your inbox and delivery settings remain available."
-  },
-  {
-    "_id": "i18n-message-en-guide-navigation-menu-notification-launcher-label",
-    "key": "guide.navigation.menu.notification-launcher.label",
-    "lang": "en",
-    "value": "Notification button"
-  },
-  {
     "_id": "i18n-message-en-guide-operator-claim-close-description",
     "key": "guide.operator.claim.close.description",
     "lang": "en",
@@ -83586,22 +83562,10 @@
     "value": "Guide button"
   },
   {
-    "_id": "i18n-message-en-guide-operator-navigation-notification-launcher-description",
-    "key": "guide.operator.navigation.notification-launcher.description",
-    "lang": "en",
-    "value": "Show or hide the floating notification button. Your inbox and delivery settings remain available."
-  },
-  {
-    "_id": "i18n-message-en-guide-operator-navigation-notification-launcher-label",
-    "key": "guide.operator.navigation.notification-launcher.label",
-    "lang": "en",
-    "value": "Notification button"
-  },
-  {
     "_id": "i18n-message-en-guide-operator-navigation-notifications-description",
     "key": "guide.operator.navigation.notifications.description",
     "lang": "en",
-    "value": "Open your inbox, mark messages read and manage alert muting."
+    "value": "Open notifications directly. Use the existing mute control in the notification popup to hide or restore the floating alert. Notifications and unread counts are kept."
   },
   {
     "_id": "i18n-message-en-guide-operator-navigation-notifications-label",
@@ -83788,12 +83752,6 @@
     "key": "guide.operator.updates.overview.label",
     "lang": "en",
     "value": "Updates"
-  },
-  {
-    "_id": "i18n-message-en-notification-launcher-toggle",
-    "key": "notification.launcher.toggle",
-    "lang": "en",
-    "value": "Notification button"
   },
   {
     "_id": "i18n-message-hu-guide-admin-affinity-graph-close-description",
@@ -84540,22 +84498,10 @@
     "value": "Guide gomb"
   },
   {
-    "_id": "i18n-message-hu-guide-admin-navigation-notification-launcher-description",
-    "key": "guide.admin.navigation.notification-launcher.description",
-    "lang": "hu",
-    "value": "A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők."
-  },
-  {
-    "_id": "i18n-message-hu-guide-admin-navigation-notification-launcher-label",
-    "key": "guide.admin.navigation.notification-launcher.label",
-    "lang": "hu",
-    "value": "Értesítési gomb"
-  },
-  {
     "_id": "i18n-message-hu-guide-admin-navigation-notifications-description",
     "key": "guide.admin.navigation.notifications.description",
     "lang": "hu",
-    "value": "Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást."
+    "value": "Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-notifications-label",
@@ -85590,18 +85536,6 @@
     "value": "Frissítések"
   },
   {
-    "_id": "i18n-message-hu-guide-navigation-menu-notification-launcher-description",
-    "key": "guide.navigation.menu.notification-launcher.description",
-    "lang": "hu",
-    "value": "A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők."
-  },
-  {
-    "_id": "i18n-message-hu-guide-navigation-menu-notification-launcher-label",
-    "key": "guide.navigation.menu.notification-launcher.label",
-    "lang": "hu",
-    "value": "Értesítési gomb"
-  },
-  {
     "_id": "i18n-message-hu-guide-operator-claim-close-description",
     "key": "guide.operator.claim.close.description",
     "lang": "hu",
@@ -85902,22 +85836,10 @@
     "value": "Guide gomb"
   },
   {
-    "_id": "i18n-message-hu-guide-operator-navigation-notification-launcher-description",
-    "key": "guide.operator.navigation.notification-launcher.description",
-    "lang": "hu",
-    "value": "A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők."
-  },
-  {
-    "_id": "i18n-message-hu-guide-operator-navigation-notification-launcher-label",
-    "key": "guide.operator.navigation.notification-launcher.label",
-    "lang": "hu",
-    "value": "Értesítési gomb"
-  },
-  {
     "_id": "i18n-message-hu-guide-operator-navigation-notifications-description",
     "key": "guide.operator.navigation.notifications.description",
     "lang": "hu",
-    "value": "Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást."
+    "value": "Közvetlenül megnyitja az értesítéseket. A popup meglévő némító gombjával rejtheted el vagy kapcsolhatod vissza a lebegő jelzést. Az értesítések és az olvasatlan darabszám megmaradnak."
   },
   {
     "_id": "i18n-message-hu-guide-operator-navigation-notifications-label",
@@ -86104,12 +86026,6 @@
     "key": "guide.operator.updates.overview.label",
     "lang": "hu",
     "value": "Frissítések"
-  },
-  {
-    "_id": "i18n-message-hu-notification-launcher-toggle",
-    "key": "notification.launcher.toggle",
-    "lang": "hu",
-    "value": "Értesítési gomb"
   },
   {
     "_id": "i18n-message-en-notification-action-open",
