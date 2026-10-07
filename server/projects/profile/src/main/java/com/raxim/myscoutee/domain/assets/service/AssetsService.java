@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
-import com.raxim.myscoutee.domain.content.service.ContentModerationService;
+import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.events.service.ActivitiesResourcesService;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
 import com.raxim.myscoutee.domain.events.service.EventTicketAuditService;
@@ -99,7 +99,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class AssetsService {
+public class AssetsService implements com.raxim.myscoutee.domain.assets.api.AssetModerationDetails {
     private static final Logger LOGGER = LoggerFactory.getLogger(AssetsService.class);
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
@@ -116,7 +116,7 @@ public class AssetsService {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ContentModerationService contentModeration;
+    private ContentRegistration contentModeration;
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;

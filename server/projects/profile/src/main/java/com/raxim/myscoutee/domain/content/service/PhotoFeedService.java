@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.content.service;
 
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
+import com.raxim.myscoutee.domain.events.api.FeedEvents;
 
 import java.net.URI;
 import java.net.URLDecoder;
@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.content.document.PhotoFeedPost;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.content.dto.PhotoFeedDtos.*;
 import com.raxim.myscoutee.domain.content.repository.PhotoFeedRepository;
 import com.raxim.myscoutee.domain.content.mapper.PhotoFeedMapper;
@@ -28,10 +28,11 @@ public class PhotoFeedService {
     private ContentModerationService contentModeration;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ActivitiesEventsService events;
+    private FeedEvents events;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.FeedCounts feedCounts;
     private final PhotoFeedRepository posts;
     public PhotoFeedService(PhotoFeedRepository posts) { this.posts = posts; }
-    public Post create(Users actor, Create request) {
+    public Post create(WorkspaceProfile actor, Create request) {
         try { UUID.fromString(request.id()); } catch (RuntimeException ex) { throw badRequest(); }
         var coordinates = coordinates(actor);
         var existing = posts.find(request.id());
@@ -63,22 +64,22 @@ public class PhotoFeedService {
                 post.imageDetails().getOrDefault(post.imageUrls().getFirst(), new com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto("", "")).caption(), post.imageUrls().getFirst()).status();
         return post.moderationStatus();
     }
-    private Post ownExisting(Users actor, PhotoFeedPost post) {
+    private Post ownExisting(WorkspaceProfile actor, PhotoFeedPost post) {
         if (post == null || !actor.getUserId().equals(post.creatorUserId())) throw new ResponseStatusException(HttpStatus.CONFLICT);
         String status = register(post);
-        return PhotoFeedMapper.toDto(post, 0, status, posts.counters(actor.getUserId()));
+        return PhotoFeedMapper.toDto(post, 0, status, feedCounts.counters(actor.getUserId()));
     }
-    public Users.FeedCountersRecord remove(Users actor, String id) {
+    public com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord remove(WorkspaceProfile actor, String id) {
         var post = posts.find(id);
         if (post == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         if (!actor.getUserId().equals(post.creatorUserId())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         contentModeration.removeFeed(id, actor.getUserId());
-        return posts.counters(actor.getUserId());
+        return feedCounts.counters(actor.getUserId());
     }
-    public Page page(Users actor, int pageSize, String cursorValue) {
+    public Page page(WorkspaceProfile actor, int pageSize, String cursorValue) {
         return page(actor, pageSize, cursorValue, "public");
     }
-    public Page page(Users actor, int pageSize, String cursorValue, String status) {
+    public Page page(WorkspaceProfile actor, int pageSize, String cursorValue, String status) {
         if (!List.of("public", "seen", "accepted", "under-review", "rejected", "blocked").contains(status)) throw badRequest();
         var coordinates = coordinates(actor);
         int limit = Math.max(1, Math.min(50, pageSize));
@@ -90,14 +91,14 @@ public class PhotoFeedService {
             var last = page.getLast();
             next = ((int) Math.floor(last.distanceKm() / 5)) + "|" + last.createdAtIso() + "|" + last.id();
         }
-        var counts = posts.counters(actor.getUserId());
+        var counts = feedCounts.counters(actor.getUserId());
         long total = List.of("public", "seen").contains(status) ? posts.count(actor.getUserId(), status) : counts.counts().getOrDefault(status, 0L);
         return new Page(page, total, next, counts);
     }
-    public List<String> seen(Users actor, List<String> ids) {
+    public List<String> seen(WorkspaceProfile actor, List<String> ids) {
         return saveSeen(actor, ids, 50);
     }
-    public Page syncPage(Users actor, PageSync request) {
+    public Page syncPage(WorkspaceProfile actor, PageSync request) {
         // Validate the read before writing. Opening Public feed can acknowledge
         // its retained outbox and obtain the already-filtered first page at once.
         if (!"public".equals(request.status())) throw badRequest();
@@ -106,7 +107,7 @@ public class PhotoFeedService {
         saveSeen(actor, request.seenPostIds(), 5000);
         return page(actor, request.pageSize(), request.cursor(), request.status());
     }
-    private List<String> saveSeen(Users actor, List<String> ids, int limit) {
+    private List<String> saveSeen(WorkspaceProfile actor, List<String> ids, int limit) {
         if (ids == null || ids.isEmpty() || ids.size() > limit) throw badRequest();
         for (String id : ids) try { UUID.fromString(id); } catch (RuntimeException ex) { throw badRequest(); }
         var unique = ids.stream().distinct().toList();
@@ -114,7 +115,7 @@ public class PhotoFeedService {
         // Inaccessible/removed posts are terminal too; do not retain an impossible outbox retry.
         return unique;
     }
-    public EventPage eventPage(Users actor, int pageSize, String cursor) {
+    public EventPage eventPage(WorkspaceProfile actor, int pageSize, String cursor) {
         var options = events.queryFeedEventOptions(actor.getUserId());
         int start = 0;
         if (cursor != null && !cursor.isBlank()) {
@@ -137,7 +138,7 @@ public class PhotoFeedService {
             return new Cursor(bucket, parts[1], parts[2]);
         } catch (RuntimeException ex) { throw badRequest(); }
     }
-    static Users.LocationCoordinatesRecord coordinates(Users actor) {
+    static WorkspaceProfile.Coordinates coordinates(WorkspaceProfile actor) {
         var point = actor.getLocationCoordinates();
         if (point == null || point.latitude() == null || point.longitude() == null
                 || !Double.isFinite(point.latitude()) || !Double.isFinite(point.longitude())

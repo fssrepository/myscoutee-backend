@@ -75,6 +75,7 @@ class UserActivityCountersServiceTest {
                 eventWatchSubscriptionsRepository,
                 eventParticipationTicketService,
                 mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "contentStatistics", new com.raxim.myscoutee.domain.content.service.ContentStatisticsService(mongoTemplate));
     }
 
     @Test

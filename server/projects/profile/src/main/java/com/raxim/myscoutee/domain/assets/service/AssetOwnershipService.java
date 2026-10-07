@@ -45,4 +45,5 @@ public class AssetOwnershipService implements AssetOwnership {
         return true;
     }
     private String normalizeId(String value) { return value == null ? "" : value.trim(); }
+    @Override public java.util.Optional<com.raxim.myscoutee.domain.assets.document.Asset> findById(String id) { return assets.findById(id); }
 }

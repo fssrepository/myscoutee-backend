@@ -3,18 +3,18 @@ package com.raxim.myscoutee.domain.content.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.content.dto.PhotoFeedDtos.*;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
 import com.raxim.myscoutee.domain.content.service.PhotoFeedService;
 
 @RestController
 @RequestMapping("/activities/feed")
 public class PhotoFeedController {
-    private final HomeUserProfileService profiles;
+    private final ProfilePresentation profiles;
     private final PhotoFeedService feed;
-    public PhotoFeedController(HomeUserProfileService profiles, PhotoFeedService feed) { this.profiles = profiles; this.feed = feed; }
-    private Users actor(String id) {
+    public PhotoFeedController(ProfilePresentation profiles, PhotoFeedService feed) { this.profiles = profiles; this.feed = feed; }
+    private WorkspaceProfile actor(String id) {
         var user = profiles.resolveCurrentUser(id);
         if (user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         return user;
@@ -31,7 +31,7 @@ public class PhotoFeedController {
         return feed.syncPage(actor(request.userId()), request);
     }
     @DeleteMapping("/{id}")
-    public Users.FeedCountersRecord remove(@PathVariable String id, @RequestParam String userId) {
+    public com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord remove(@PathVariable String id, @RequestParam String userId) {
         return feed.remove(actor(userId), id);
     }
     public record SeenRequest(String userId, java.util.List<String> postIds) {}

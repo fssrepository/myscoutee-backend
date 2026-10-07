@@ -19,12 +19,12 @@ import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationC
 @RequestMapping("/admin/payment-simulator")
 public class AdminPaymentSimulatorController {
     private final PaymentSimulatorRegistrationClient simulatorClient;
-    private final com.raxim.myscoutee.domain.content.service.AdminModerationService moderation;
+    private final com.raxim.myscoutee.domain.content.api.AdministrativeAccess moderation;
     private final org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users;
 
     public AdminPaymentSimulatorController(PaymentSimulatorRegistrationClient simulatorClient,
-            com.raxim.myscoutee.domain.content.service.AdminModerationService moderation,
+            com.raxim.myscoutee.domain.content.api.AdministrativeAccess moderation,
             org.springframework.data.mongodb.core.MongoTemplate mongo,
             com.raxim.myscoutee.domain.accounts.repository.UsersRepository users) {
         this.moderation = moderation; this.mongo = mongo; this.users = users;

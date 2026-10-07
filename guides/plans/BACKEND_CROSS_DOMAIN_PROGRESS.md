@@ -43,12 +43,12 @@ may need changes together.
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
 | 6 | assets | 1 | 2 | Pending | — |
-| 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; commit recorded by this checkpoint |
+| 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
-| 12 | content | 2 | 5 | Pending; existing admin-access methods exposed through interface | Whole domain not separated |
+| 12 | content | 2 | 5 | Complete: moderation ownership, support review, submissions, counters and privacy | 899 regression, boundary and serialization tests passed; commit recorded by this checkpoint |
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
 | 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; `c5dceafa1` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 11/21 — #2 notifications, #3 groups, #7 affinity, #8 community, #9 campaigns, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 12/21 — #2 notifications, #3 groups, #7 affinity, #8 community, #9 campaigns, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1407,3 +1407,124 @@ pre-change union query, across all six action types and exclusion rules.
 Existing dev hot-deploy compilation succeeded and the container is healthy.
 Master and the frontend submodule remain unchanged. E2E performance is not yet
 measured.
+
+### #12 content complete: moderation and submission ownership
+
+- Content moderation calls event/asset owner commands with the same source ID,
+  version and decision. The original version predicates, suppression exclusions,
+  previous-status restoration and counter-refresh ordering are retained. Event
+  details are read and mapped by events, and asset details reuse AssetsService
+  through `AssetModerationDetails`.
+- Profile block/unblock saves move to `ProfileModeration`; content retains the
+  existing report and administrator scope checks before calling it. Repeated
+  blocking retains the original status. Local owner-issued profile identity is
+  reused, with no additional database read.
+- `ChatReview` owns report-message membership, author validation and the existing
+  newest-50-message read/reversal. `ChatDirectory` supplies support summaries;
+  `SupportMessages` reuses ChatService's existing durable message behavior.
+- Feedback and report creation use `UserFeedback` and `UserReports`. Accounts
+  still performs its existing actor/event/chat authorization and normalization.
+  IDs, sync keys, duplicate responses, timestamps, notification ordering and
+  telemetry remain unchanged. The existing CommunityReportService implements
+  report submission rather than adding a second report persistence path.
+- Content owns feed-count aggregation, unresolved-report/feedback counts, idea
+  media cleanup and content privacy operations. Accounts retains the original
+  feed-counter compare-and-set loop; each retry re-reads the authoritative
+  content counts. Privacy calls retain their coordinator ordering and fail-fast
+  media deletion before removing idea rows.
+- Feed counter records move from a nested account document type to an account
+  DTO. The exact historical nested Mongo `_class` identity is explicitly mapped
+  and round-trip tested. No collection or JSON field is renamed.
+- Landing, feed and share-link consumers use existing account, country, event
+  and asset implementations through read contracts. FirebasePrincipal implements
+  `AccountIdentity`; the existing email/principal fallback and admin-email check
+  remain at the same authorization point.
+
+| Area | Functional regression risk | Severe slowdown risk | Required attention |
+| --- | --- | --- | --- |
+| Moderation and lifecycle restoration | High | Low | Version conflicts, repeated decisions, block/unblock restoration, counters after writes |
+| Reported chat inspection | High | Low | Reporter membership, target author and bounded history; unauthorized history stays hidden |
+| Feedback/report submission | Medium | Low | Natural-key duplicates, original responses, notification/telemetry ordering |
+| Feed counters and persisted value identity | Medium | Low | Retry concurrent writes, historical Mongo identity and unchanged JSON |
+| Privacy and idea media purge | High | Low | Media deletion failure must prevent subsequent row removal |
+| Read-only country/profile/event/asset contracts | Low | Low | Same reads and batching; local views are not remote DTOs |
+
+Verification: **899 standard regression, boundary and serialization tests passed**
+with no failures, errors or skips. This includes content, accounts, chat, events,
+assets and integrations, plus explicit lifecycle guard and chat authorization
+proofs. The dev watcher compiled successfully and the application container is
+healthy. No new network hop or per-item read was introduced. Performance ratings
+are estimates; E2E performance remains unmeasured. Master and frontend are unchanged.
+
+Changed files for this checkpoint (repository-relative):
+
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountIdentity.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ActivityCounters.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/FeedCounts.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileModeration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfilePresentation.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/document/Users.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/dto/AuthDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/dto/FeedCountersRecord.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/security/firebase/dto/FirebasePrincipal.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/FeedCountsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetModerationDetails.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetModerationProjection.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetOwnership.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetModerationProjectionService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetOwnershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/ChatDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/ChatReview.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/SupportMessages.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatReviewService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/ContentPrivacy.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/ContentRegistration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/ContentStatistics.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/UserFeedback.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/UserReports.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/controller/ContentModerationController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/controller/LandingContentController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/controller/PhotoFeedController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/dto/PhotoFeedDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/mapper/PhotoFeedMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/repository/PhotoFeedRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/AdminModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/CommunityReportService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/ContentModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/ContentPrivacyService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/ContentStatisticsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/IdeaPostsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/PhotoFeedService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/ShareTokensService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/UserFeedbackService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventModeration.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventOwnership.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/FeedEvents.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventOwnershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/repository/AdminClientRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/controller/AdminPaymentSimulatorController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/CountryDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/document/CountryPartition.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/CountryPartitionService.java`
+- `server/projects/profile/src/main/resources/mongo-domain-types.properties`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatReviewServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/controller/ContentModerationControllerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/AdminModerationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/ContentModerationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/ModerationOwnershipTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/PhotoFeedServiceTest.java`

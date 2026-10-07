@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.content.service.ContentModerationService;
+import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
 import com.raxim.myscoutee.domain.payments.service.AffiliateService;
@@ -39,7 +39,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,13 +55,11 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
-import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
 import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.UserFriendship;
 import com.raxim.myscoutee.domain.affinity.api.RatingView;
-import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
@@ -106,13 +103,13 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
-import com.raxim.myscoutee.domain.content.repository.UserFeedbackSubmissionsRepository;
+import com.raxim.myscoutee.domain.content.api.UserFeedback;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
-import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
+import com.raxim.myscoutee.domain.content.api.UserReports;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -224,7 +221,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ContentModerationService contentModeration;
+    private ContentRegistration contentModeration;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
     private SavedPaymentMethodsService savedPaymentMethods;
@@ -246,8 +243,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
-    private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
-    private final UserReportSubmissionsRepository userReportSubmissionsRepository;
+    private final UserFeedback userFeedbackSubmissionsRepository;
+    private final UserReports userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
     private final ScheduledMessages scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
@@ -288,8 +285,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             EventParticipationTicketService eventParticipationTicketService,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
-            UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
-            UserReportSubmissionsRepository userReportSubmissionsRepository,
+            UserFeedback userFeedbackSubmissionsRepository,
+            UserReports userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
             ScheduledMessages scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
@@ -625,7 +622,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 Instant.now().toString(),
                 OrganizerFollowingService.state(user),
                 contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
-                user.getFeedCounters() == null ? Users.FeedCountersRecord.empty() : user.getFeedCounters(),
+                user.getFeedCounters() == null ? com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord.empty() : user.getFeedCounters(),
                 savedPaymentMethods != null && savedPaymentMethods.cardsAvailable(),
                 account != null && account != user ? buildMenuCounters(account, account) : null);
     }
@@ -761,21 +758,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return new UserSubmitActionResponseDto(false, "Unable to send feedback.");
         }
 
-        String nowIso = Instant.now().toString();
-        UserFeedbackSubmission document = new UserFeedbackSubmission();
-        document.setId(new ObjectId().toHexString());
-        document.setSyncKey(UUID.randomUUID().toString());
-        document.setUserId(userId);
-        document.setCategory(safeText(request.category()));
-        document.setSubject(safeText(request.subject()));
-        document.setDetails(safeText(request.details()));
-        document.setCreatedDate(nowIso);
-        document.setCreatedUser(userId);
-        document.setUpdatedDate(nowIso);
-        document.setUpdatedUser(userId);
-        userFeedbackSubmissionsRepository.save(document);
-        if (roleNotifications != null) roleNotifications.moderationSubmitted("feedback-submitted", document.getId());
-        adminTelemetryService.record("feedback.submitted", "moderation", document.getId(), userId);
+        String submissionId = userFeedbackSubmissionsRepository.submit(userId, safeText(request.category()), safeText(request.subject()), safeText(request.details()));
+        if (roleNotifications != null) roleNotifications.moderationSubmitted("feedback-submitted", submissionId);
+        adminTelemetryService.record("feedback.submitted", "moderation", submissionId, userId);
         return new UserSubmitActionResponseDto(true, null);
     }
 
@@ -842,45 +827,31 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 chatId,
                 messageId,
                 assetId);
-        if (userReportSubmissionsRepository.findBySyncKey(reportSyncKey).isPresent()) {
+        if (userReportSubmissionsRepository.exists(reportSyncKey)) {
             return new UserSubmitActionResponseDto(true, "Report already submitted.");
         }
 
-        String nowIso = Instant.now().toString();
-        UserReportSubmission document = new UserReportSubmission();
-        document.setId(new ObjectId().toHexString());
-        document.setSyncKey(reportSyncKey);
-        document.setUserId(userId);
-        document.setHandle(safeText(request.handle()));
-        document.setReason(safeText(request.reason()));
-        document.setDetails(safeText(request.details()));
-        document.setTargetUserId(targetUserId);
-        document.setMemberEntryId(resolvedTargetMemberEntryId);
-        document.setEventId(eventId);
-        document.setEventTitle(normalizeOptionalText(firstNonBlank(
-                eventRecord == null ? null : eventRecord.getTitle(),
-                request.eventTitle())));
-        document.setEventStartAtIso(normalizeOptionalText(firstNonBlank(
-                eventRecord == null ? null : eventRecord.getStartAtIso(),
-                request.eventStartAtIso())));
-        document.setSourceType(sourceType);
-        document.setSourceId(sourceId);
-        document.setSourceText(sourceText);
-        document.setChatId(chatId);
-        document.setMessageId(messageId);
-        document.setAssetId(assetId);
-        document.setAssetType(assetType);
-        document.setCreatedDate(nowIso);
-        document.setCreatedUser(userId);
-        document.setUpdatedDate(nowIso);
-        document.setUpdatedUser(userId);
-        try {
-            userReportSubmissionsRepository.save(document);
-        } catch (DuplicateKeyException duplicate) {
-            return new UserSubmitActionResponseDto(true, "Report already submitted.");
-        }
-        if (roleNotifications != null) roleNotifications.moderationSubmitted("report-submitted", document.getId());
-        adminTelemetryService.record("report.submitted", "moderation", document.getId(), userId);
+        var submission = userReportSubmissionsRepository.submit(new com.raxim.myscoutee.domain.content.api.UserReports.ReportDraft(
+                reportSyncKey,
+                userId,
+                safeText(request.handle()),
+                safeText(request.reason()),
+                safeText(request.details()),
+                targetUserId,
+                resolvedTargetMemberEntryId,
+                eventId,
+                normalizeOptionalText(firstNonBlank(eventRecord == null ? null : eventRecord.getTitle(), request.eventTitle())),
+                normalizeOptionalText(firstNonBlank(eventRecord == null ? null : eventRecord.getStartAtIso(), request.eventStartAtIso())),
+                sourceType,
+                sourceId,
+                sourceText,
+                chatId,
+                messageId,
+                assetId,
+                assetType));
+        if (submission.duplicate()) return new UserSubmitActionResponseDto(true, "Report already submitted.");
+        if (roleNotifications != null) roleNotifications.moderationSubmitted("report-submitted", submission.id());
+        adminTelemetryService.record("report.submitted", "moderation", submission.id(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }
 

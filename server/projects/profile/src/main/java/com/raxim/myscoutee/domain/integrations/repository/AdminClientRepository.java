@@ -13,11 +13,9 @@ public class AdminClientRepository {
     private final AdministrativeStatistics statistics;
     public AdminClientRepository(MongoTemplate mongo, AdministrativeStatistics statistics) { this.mongo = mongo; this.statistics = statistics; }
     public AdministrativeStatistics.Summary stats() { return statistics.global(); }
-    public long unresolvedReports() { return unresolved("userReports"); }
-    public long unresolvedFeedback() { return unresolved("userFeedback"); }
-    private long unresolved(String collection) {
-        return mongo.count(Query.query(Criteria.where("resolvedAtIso").in(null, "")), collection);
-    }
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
+    public long unresolvedReports() { return contentStatistics.unresolvedReports(); }
+    public long unresolvedFeedback() { return contentStatistics.unresolvedFeedback(); }
     public String unreadVersion(String owner) {
         Query query = Query.query(Criteria.where("ownerUserId").is(owner).and("unread").gt(0).and("lastSenderId").ne(owner))
                 .with(Sort.by(Sort.Direction.DESC, "dateIso")).limit(1);

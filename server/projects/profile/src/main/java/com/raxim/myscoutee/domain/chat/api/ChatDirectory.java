@@ -7,6 +7,7 @@ public interface ChatDirectory {
     Optional<? extends Chat> findByOwnerUserIdAndChatId(String ownerId, String chatId);
     List<? extends Chat> findByChatId(String chatId);
     interface Chat {
+        Integer getUnread(); String getTitle();
         String getChatId(); String getOwnerId(); String getOwnerUserId(); String getChannelType();
         String getSupportBaseGroupId(); List<String> getMemberIds(); SupportCase getSupportCase();
     }

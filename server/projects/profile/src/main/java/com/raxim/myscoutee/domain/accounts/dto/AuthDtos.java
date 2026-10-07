@@ -623,7 +623,7 @@ public final class AuthDtos {
             String serverTsIso,
             com.raxim.myscoutee.domain.accounts.document.Users.FollowingRecord following,
             com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.Snapshot contentModeration,
-            com.raxim.myscoutee.domain.accounts.document.Users.FeedCountersRecord feedCounters,
+            com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord feedCounters,
             boolean paymentCardsAvailable,
             UserMenuCountersDto accountCounters) {
     }

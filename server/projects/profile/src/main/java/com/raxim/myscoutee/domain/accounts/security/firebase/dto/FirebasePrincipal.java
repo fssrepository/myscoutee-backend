@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
 
-public class FirebasePrincipal implements UserDetails {
+public class FirebasePrincipal implements UserDetails, com.raxim.myscoutee.domain.accounts.api.AccountIdentity {
     private final String userId;
     private final String email;
     private final List<String> authorities;

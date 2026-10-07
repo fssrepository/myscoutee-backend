@@ -13,7 +13,7 @@ import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.content.service.ContentModerationService;
+import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
@@ -147,7 +147,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ActivitiesEventsService {
+public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.FeedEvents {
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -182,7 +182,7 @@ public class ActivitiesEventsService {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ContentModerationService contentModeration;
+    private ContentRegistration contentModeration;
 
     private final Campaigns campaigns;
     private final ActivityEventsRepository activityEventsRepository;

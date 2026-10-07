@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -44,9 +45,6 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
     private FeedCountersRecord feedCounters;
     public FeedCountersRecord getFeedCounters() { return feedCounters; }
     public void setFeedCounters(FeedCountersRecord value) { feedCounters = value; }
-    public record FeedCountersRecord(long revision, Map<String, Long> counts) {
-        public static FeedCountersRecord empty() { return new FeedCountersRecord(0, Map.of()); }
-    }
     private FollowingRecord following;
 
     public FollowingRecord getFollowing() { return following; }

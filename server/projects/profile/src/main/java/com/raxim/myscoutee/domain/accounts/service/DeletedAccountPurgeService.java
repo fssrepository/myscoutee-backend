@@ -44,7 +44,6 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.content.document.IdeaPost;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
@@ -59,6 +58,7 @@ import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService
 
 @Service
 public class DeletedAccountPurgeService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentPrivacy contentPrivacy;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.AffinityPrivacy affinityPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
@@ -272,7 +272,7 @@ public class DeletedAccountPurgeService {
             purgeActivityResources(userId, job.getOwnedEventIds(), job.getOwnedAssetIds());
 
             markStage(job, "idea-posts");
-            purgeIdeaPosts(userId);
+            contentPrivacy.purgeIdeaPosts(userId);
 
             markStage(job, "chat-activity");
             purgeUserChatActivity(userId);
@@ -723,27 +723,6 @@ public class DeletedAccountPurgeService {
         return changed;
     }
 
-    private void purgeIdeaPosts(String userId) {
-        List<IdeaPost> posts = mongoTemplate.find(
-                Query.query(new Criteria().orOperator(
-                        Criteria.where("createdUser").is(userId),
-                        Criteria.where("updatedUser").is(userId),
-                        Criteria.where("trashedByUserId").is(userId))),
-                IdeaPost.class);
-        for (IdeaPost post : posts == null ? List.<IdeaPost>of() : posts) {
-            if (post == null) {
-                continue;
-            }
-            deletePurgeMedia(post.getImageUrl());
-            for (String imageUrl : post.getImageUrls() == null ? List.<String>of() : post.getImageUrls()) {
-                deletePurgeMedia(imageUrl);
-            }
-        }
-        if (posts != null && !posts.isEmpty()) {
-            mongoTemplate.remove(Query.query(Criteria.where("_id").in(posts.stream().map(IdeaPost::getId).toList())), IdeaPost.class);
-        }
-    }
-
     private void purgeUserReferencedDocuments(String userId) {
         affinityPrivacy.purgeRatings(userId);
         affinityPrivacy.purgeEdges(userId);
@@ -757,10 +736,10 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("integrationExternalIds", List.of("ownerUserId"), userId);
         mongoTemplate.remove(Query.query(Criteria.where("resourceType").is("participant").and("internalId").is(userId)), "integrationExternalIds");
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);
-        deleteDocumentsByAnyField("userFeedback", List.of("userId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("userReports", List.of("userId", "targetUserId", "createdUser", "updatedUser"), userId);
+        contentPrivacy.purgeFeedback(userId);
+        contentPrivacy.purgeReports(userId);
         deleteDocumentsByAnyField("userSessionActions", List.of("userId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("photoFeedViews", List.of("userId"), userId);
+        contentPrivacy.purgeFeedViews(userId);
         deleteDocumentsByAnyField("payments", List.of("userId"), userId);
         emailPrivacy.purgeDeliveryData(userId);
         notificationPrivacy.purgeDeliveryData(userId);
@@ -768,7 +747,7 @@ public class DeletedAccountPurgeService {
                 "eventTicketAudit",
                 List.of("holderUserId", "actorUserId", "originalUsedByUserId"),
                 userId);
-        deleteDocumentsByAnyField("shareTokens", List.of("ownerUserId"), userId);
+        contentPrivacy.purgeShareTokens(userId);
         deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);
         affinityPrivacy.purgeTasks(userId);

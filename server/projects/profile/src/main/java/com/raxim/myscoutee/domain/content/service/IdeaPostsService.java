@@ -2,9 +2,8 @@ package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.media.api.MediaStorage;
-import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
+import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 import java.util.Map;
-import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +34,7 @@ import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
@@ -77,7 +76,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
     private final OperationalTelemetry adminTelemetryService;
-    private final AppSettingsService appSettingsService;
+    private final AdministratorSettings appSettingsService;
     private final LandingArticlesRepository landingArticlesRepository;
     private final IdeaPostMapper ideaPostMapper;
     private final MediaStorage mediaStorageService;
@@ -88,7 +87,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
             OperationalTelemetry adminTelemetryService,
-            AppSettingsService appSettingsService,
+            AdministratorSettings appSettingsService,
             LandingArticlesRepository landingArticlesRepository,
             IdeaPostMapper ideaPostMapper,
             MediaStorage mediaStorageService) {
@@ -663,7 +662,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     private String resolveFirebaseEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof FirebasePrincipal firebasePrincipal) {
+        if (principal instanceof AccountIdentity firebasePrincipal) {
             return normalize(firebasePrincipal.getEmail());
         }
         return normalize(authentication == null ? null : authentication.getName());

@@ -80,15 +80,17 @@ class AdminModerationServiceTest {
                 configProperties,
                 reportsRepository,
                 feedbackRepository,
-                usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository),
+                new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
                 chatService,
                 userActivityCountersService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 appSettingsService,
                 notificationOutboxService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileModeration", new com.raxim.myscoutee.domain.accounts.service.ProfileModerationService(usersRepository));
+        org.mockito.Mockito.lenient().doCallRealMethod().when(userActivityCountersService).hasSupportCaseCounters(org.mockito.ArgumentMatchers.any());
     }
 
     @AfterEach

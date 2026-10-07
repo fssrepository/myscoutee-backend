@@ -12,7 +12,7 @@ public final class PhotoFeedMapper {
         return toDto(post, distanceKm, moderationStatus, null);
     }
     public static Post toDto(PhotoFeedPost post, double distanceKm, String moderationStatus,
-            com.raxim.myscoutee.domain.accounts.document.Users.FeedCountersRecord counters) {
+            com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord counters) {
         return new Post(post.id(), post.creatorUserId(), post.creatorName(), post.creatorAvatarUrl(),
                 post.createdAtIso(), post.imageUrls(), post.imageDetails(), distanceKm, moderationStatus, counters);
     }

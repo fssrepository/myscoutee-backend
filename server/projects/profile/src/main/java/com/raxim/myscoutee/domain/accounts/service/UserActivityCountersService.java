@@ -39,7 +39,8 @@ import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepos
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters {
+public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.ActivityCounters {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
     private final OrganizerFollowingService organizerFollowingService;
 
     public void expireFollowingCounters(Instant now) {
@@ -54,15 +55,9 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             Users user = mongoTemplate.findOne(userQuery, Users.class);
             if (user == null) return;
             var before = user.getFeedCounters();
-            Map<String, Long> counts = new LinkedHashMap<>();
-            for (String status : List.of("accepted", "under-review", "rejected", "blocked")) counts.put(status, 0L);
-            var rows = mongoTemplate.aggregate(Aggregation.newAggregation(
-                    Aggregation.match(Criteria.where("creatorUserId").is(userId).and("deleted").ne(true)),
-                    Aggregation.group("moderationStatus").count().as("count")), "photoFeedPosts", Document.class);
-            for (Document row : rows) if (counts.containsKey(row.getString("_id")))
-                counts.put(row.getString("_id"), ((Number) row.get("count")).longValue());
+            Map<String, Long> counts = contentStatistics.feedCounts(userId);
             if (before != null && counts.equals(before.counts())) return;
-            var next = new Users.FeedCountersRecord(before == null ? 1 : before.revision() + 1, counts);
+            var next = new com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord(before == null ? 1 : before.revision() + 1, counts);
             if (mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(userId).and("feedCounters").is(before)),
                     new Update().set("feedCounters", next), Users.class).getMatchedCount() > 0) return;
         }
@@ -1250,5 +1245,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                     feedbacked + other.feedbacked,
                     removed + other.removed);
         }
+    }
+    @Override public boolean hasSupportCaseCounters(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
+        Users user = (Users) profile;
+        var activities = user == null ? null : user.getActivities();
+        var chat = activities == null ? null : activities.chat();
+        return chat != null && chat.supportCases() != null;
     }
 }

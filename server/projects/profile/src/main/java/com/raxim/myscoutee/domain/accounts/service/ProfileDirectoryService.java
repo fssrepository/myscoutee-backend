@@ -17,4 +17,5 @@ public class ProfileDirectoryService implements ProfileDirectory {
     @Override public Optional<Users> findByUserId(String userId) { return users.findByUserId(userId); }
     @Override public List<Users> findByEmailIn(Collection<String> emails) { return users.findByEmailIn(emails); }
     @Override public List<Users> findByUserIdIn(Collection<String> userIds) { return users.findByUserIdIn(userIds); }
+    @Override public java.util.List<Users> findByProfileStatus(String status) { return users.findByProfileStatus(status); }
 }

@@ -4,14 +4,13 @@ import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.chat.api.SupportMessages;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,11 +30,14 @@ public class ContentModerationService implements com.raxim.myscoutee.domain.cont
     private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.groups.api.GroupModerationProjection groupModeration;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventModeration eventModeration;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetModerationProjection assetModeration;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
     private final ContentModerationRepository repository;
     private final MongoTemplate mongo;
-    private final ChatService chats;
-    private final UserActivityCountersService counters;
-    public ContentModerationService(ContentModerationRepository repository, MongoTemplate mongo, ChatService chats, UserActivityCountersService counters) {
+    private final SupportMessages chats;
+    private final ActivityCounters counters;
+    public ContentModerationService(ContentModerationRepository repository, MongoTemplate mongo, SupportMessages chats, ActivityCounters counters) {
         this.repository = repository; this.mongo = mongo; this.chats = chats; this.counters = counters;
     }
     private State state(String groupId) { return groupId == null ? repository.state() : repository.state(groupId); }
@@ -85,7 +87,7 @@ public class ContentModerationService implements com.raxim.myscoutee.domain.cont
             if (existing.deleted()) throw new ResponseStatusException(HttpStatus.GONE);
             applyResource(existing); return existing;
         }
-        var owner = "group".equals(category) ? null : mongo.findOne(Query.query(Criteria.where("userId").is(ownerId)), com.raxim.myscoutee.domain.accounts.document.Users.class);
+        var owner = "group".equals(category) ? null : profiles.findByUserId(ownerId).orElse(null);
         String groupId = owner == null ? null : owner.getWorkspaceGroupId();
         if ("group".equals(category)) {
             var group = groupDirectory.findById(sourceId).orElse(null);
@@ -201,35 +203,19 @@ public class ContentModerationService implements com.raxim.myscoutee.domain.cont
             groupModeration.resource(item.sourceId(), item.version(), item.status());
             return;
         }
-        String collection = switch (item.category()) { case "event" -> "events"; case "asset" -> "assets"; default -> "photoFeedPosts"; };
-        String key = switch (item.category()) { case "event" -> "sourceId"; case "asset" -> "assetId"; default -> "_id"; };
-        var query = Query.query(Criteria.where(key).is(item.sourceId()).andOperator(new Criteria().orOperator(
+        if (item.category().equals("event")) {
+            eventModeration.apply(item.sourceId(), item.version(), item.status());
+            counters.refreshEventCountersForSourceIds(List.of(item.sourceId()));
+        } else if (item.category().equals("asset")) {
+            assetModeration.apply(item.sourceId(), item.version(), item.status());
+            counters.refreshAssetCountersForUser(item.ownerUserId());
+        } else {
+            var query = Query.query(Criteria.where("_id").is(item.sourceId()).andOperator(new Criteria().orOperator(
                 Criteria.where("moderationVersion").lte(item.version()), Criteria.where("moderationVersion").exists(false))));
-        if (item.category().equals("feed")) {
             mongo.updateMulti(query, new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version())
-                    .set("deleted", item.deleted()), collection);
+                .set("deleted", item.deleted()), "photoFeedPosts");
             counters.refreshFeedCountersForUser(item.ownerUserId());
-            return;
         }
-        var records = mongo.find(query, Document.class, collection);
-        for (Document record : records) {
-            String current = record.getString("status");
-            String original = record.getString("moderationPreviousStatus");
-            var update = new Update().set("moderationStatus", item.status()).set("moderationVersion", item.version());
-            if (item.status().equals("accepted")) {
-                if (original != null) {
-                    if ("B".equals(current)) update.set("status", original);
-                    update.unset("moderationPreviousStatus");
-                }
-            } else if (!List.of("DR", "T", "D").contains(current == null ? "" : current)) {
-                if (original == null) update.set("moderationPreviousStatus", current == null ? "A" : current);
-                update.set("status", "B");
-            }
-            mongo.updateFirst(Query.query(Criteria.where("_id").is(record.get("_id")).andOperator(new Criteria().orOperator(
-                    Criteria.where("moderationVersion").lte(item.version()), Criteria.where("moderationVersion").exists(false)))), update, collection);
-        }
-        if (item.category().equals("event")) counters.refreshEventCountersForSourceIds(List.of(item.sourceId()));
-        else counters.refreshAssetCountersForUser(item.ownerUserId());
     }
     public int approveDue() {
         drainPending();

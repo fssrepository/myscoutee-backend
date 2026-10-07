@@ -27,7 +27,7 @@ class ContentModerationControllerTest {
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final AssetsService assets = mock(AssetsService.class);
     final ContentModerationController controller = new ContentModerationController(admins, moderation, mongo,
-            assets, mock(ActivityEventDetailMapper.class), groups);
+            assets, mock(com.raxim.myscoutee.domain.events.api.EventModeration.class), groups);
 
     void member(String groupId) {
         var account = new Users(); account.setUserId("account");

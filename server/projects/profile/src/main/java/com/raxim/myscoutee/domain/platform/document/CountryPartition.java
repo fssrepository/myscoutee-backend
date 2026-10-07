@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "countryPartitions")
-public class CountryPartition {
+public class CountryPartition implements com.raxim.myscoutee.domain.platform.api.CountryDirectory.Country {
     @Id
     private String id;
 

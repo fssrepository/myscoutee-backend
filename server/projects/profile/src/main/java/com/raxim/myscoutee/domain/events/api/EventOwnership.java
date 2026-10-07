@@ -4,12 +4,14 @@ import java.util.List;
 import com.raxim.myscoutee.common.dto.SharedDtos.*;
 
 public interface EventOwnership {
+    java.util.Optional<? extends Event> findById(String id);
     boolean updateAffinity(Event value, double affinity, double boost);
     java.util.List<? extends Event> findBySourceIdIn(java.util.Collection<String> ids);
     java.util.List<? extends Event> findByCreatorUserId(String id);
     java.util.List<? extends Event> findAll();
     List<? extends Event> findBySourceId(String sourceId);
     interface Event {
+        String getTimeframe(); String getImageUrl(); String getSourceLink(); Boolean getPublished();
         String getCampaignId();
         String getId();
         String getSyncKey();

@@ -46,4 +46,5 @@ public class EventOwnershipService implements EventOwnership {
         return true;
     }
     private String normalizeId(String value) { return value == null ? "" : value.trim(); }
+    @Override public java.util.Optional<ActivityEvent> findById(String id) { return events.findById(id); }
 }

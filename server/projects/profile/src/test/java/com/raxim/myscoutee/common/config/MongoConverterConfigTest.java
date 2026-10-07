@@ -26,6 +26,17 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 
 class MongoConverterConfigTest {
     @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void feedCounterValueRetainsHistoricalIdentityAndCounts() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord(7, java.util.Map.of("accepted", 3L));
+        var document = new Document(); converter.write(new Payload(value), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+            .isEqualTo("com.raxim.myscoutee.profile.data.document.Users$FeedCountersRecord");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+    }
+
+    @Test
 
     @org.junit.jupiter.api.Tag("embedded")
     void preservesDottedKeysWhenAnotherPostProcessorCreatesTheConverterEarly() {

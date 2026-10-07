@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AssetOwnership {
+    java.util.Optional<? extends Asset> findById(String id);
     boolean updateAffinity(Asset value, double affinity, double boost);
     java.util.List<? extends Asset> findByAssetIdIn(java.util.Collection<String> ids);
     java.util.List<? extends Asset> findByOwnerUserId(String id);
     java.util.List<? extends Asset> findAll();
     Optional<? extends Asset> findByAssetId(String assetId);
     interface Asset {
+        String getImageUrl(); String getSourceLink();
         String getWorkspaceGroupId();
         String getId();
         String getSyncKey();
