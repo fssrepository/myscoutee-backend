@@ -81495,7 +81495,7 @@
     "_id": "i18n-message-en-guide-admin-affinity-graph-overview-description",
     "key": "guide.admin.affinity-graph.overview.description",
     "lang": "en",
-    "value": "Inspect the graph and its displayed relationships."
+    "value": "Explore the displayed people and their affinity links. Drag with the left mouse button to pan, use the right button to rotate and the wheel to zoom; consult the legend when comparing nodes."
   },
   {
     "_id": "i18n-message-en-guide-admin-affinity-graph-overview-label",
@@ -81507,7 +81507,7 @@
     "_id": "i18n-message-en-guide-admin-article-edit-article-preview-description",
     "key": "guide.admin.article-edit.article-preview.description",
     "lang": "en",
-    "value": "Check how the article will appear."
+    "value": "Open a reader-style preview of the current draft, including edits not yet saved. Close the preview to continue editing, then save to keep those changes."
   },
   {
     "_id": "i18n-message-en-guide-admin-article-edit-article-preview-label",
@@ -81519,7 +81519,7 @@
     "_id": "i18n-message-en-guide-admin-article-edit-article-save-description",
     "key": "guide.admin.article-edit.article-save.description",
     "lang": "en",
-    "value": "Save the current article changes."
+    "value": "Persist this article’s current text and media, then return to the list. Saving a new draft does not publish it; the article card provides the publication action."
   },
   {
     "_id": "i18n-message-en-guide-admin-article-edit-article-save-label",
@@ -81531,7 +81531,7 @@
     "_id": "i18n-message-en-guide-admin-article-edit-close-description",
     "key": "guide.admin.article-edit.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Close the editor and discard its unsaved draft. Save first if you want to keep the current text and media changes."
   },
   {
     "_id": "i18n-message-en-guide-admin-article-edit-close-label",
@@ -81543,7 +81543,7 @@
     "_id": "i18n-message-en-guide-admin-article-edit-overview-description",
     "key": "guide.admin.article-edit.overview.description",
     "lang": "en",
-    "value": "Edit the article and review its preview before saving."
+    "value": "Edit the article for the selected language, including its title, text and images. Preview the result before saving, and use the saved article’s separate publication action when ready."
   },
   {
     "_id": "i18n-message-en-guide-admin-article-edit-overview-label",
@@ -81567,7 +81567,7 @@
     "_id": "i18n-message-en-guide-admin-article-view-overview-description",
     "key": "guide.admin.article-view.overview.description",
     "lang": "en",
-    "value": "Review the article as displayed to readers. Close to return to the editor."
+    "value": "Check the article’s text, images and layout as a reader would see them. A draft preview lets you review pending edits; opening it does not save or publish them."
   },
   {
     "_id": "i18n-message-en-guide-admin-article-view-overview-label",
@@ -81591,7 +81591,7 @@
     "_id": "i18n-message-en-guide-admin-blocked-users-overview-description",
     "key": "guide.admin.blocked-users.overview.description",
     "lang": "en",
-    "value": "Inspect restrictions and use the available account actions."
+    "value": "Review who is blocked and when the restriction was recorded. Use the row menu to lift a block after confirmation, or open an existing support conversation to understand its context."
   },
   {
     "_id": "i18n-message-en-guide-admin-blocked-users-overview-label",
@@ -81615,7 +81615,7 @@
     "_id": "i18n-message-en-guide-admin-chat-review-message-description",
     "key": "guide.admin.chat-review.message.description",
     "lang": "en",
-    "value": "Explain the issue briefly and clearly."
+    "value": "Write the warning the selected user will receive: identify the reported conduct and explain what needs to change. Check the recipient and wording before sending."
   },
   {
     "_id": "i18n-message-en-guide-admin-chat-review-message-label",
@@ -81627,7 +81627,7 @@
     "_id": "i18n-message-en-guide-admin-chat-review-overview-description",
     "key": "guide.admin.chat-review.overview.description",
     "lang": "en",
-    "value": "Inspect the selected report conversation. A warning sends your message to the affected user."
+    "value": "Review the selected user and report context before composing a warning. Sending records a moderation warning for that user; it is an action, not a private draft note."
   },
   {
     "_id": "i18n-message-en-guide-admin-chat-review-overview-label",
@@ -81639,7 +81639,7 @@
     "_id": "i18n-message-en-guide-admin-chat-review-send-warning-description",
     "key": "guide.admin.chat-review.send-warning.description",
     "lang": "en",
-    "value": "Send the written warning to the selected user."
+    "value": "Send the written warning to the selected user, linked to the selected report when present. Wait for the success message; after a successful send the text field is cleared."
   },
   {
     "_id": "i18n-message-en-guide-admin-chat-review-send-warning-label",
@@ -81651,7 +81651,7 @@
     "_id": "i18n-message-en-guide-admin-content-moderation-category-description",
     "key": "guide.admin.content-moderation.category.description",
     "lang": "en",
-    "value": "Choose which content category to review."
+    "value": "Limit the queue to a content type, such as posts, events or assets. Combine it with the status filter to find the items that need your review in this workspace."
   },
   {
     "_id": "i18n-message-en-guide-admin-content-moderation-category-label",
@@ -81675,7 +81675,7 @@
     "_id": "i18n-message-en-guide-admin-content-moderation-overview-description",
     "key": "guide.admin.content-moderation.overview.description",
     "lang": "en",
-    "value": "Review submitted content and apply a decision within your current workspace."
+    "value": "Open a row to inspect the submitted content, then use its menu to record a review decision. The status and category filters determine which items remain visible after a decision."
   },
   {
     "_id": "i18n-message-en-guide-admin-content-moderation-overview-label",
@@ -81687,7 +81687,7 @@
     "_id": "i18n-message-en-guide-admin-content-moderation-settings-description",
     "key": "guide.admin.content-moderation.settings.description",
     "lang": "en",
-    "value": "Configure the moderation rules for this workspace."
+    "value": "Set whether moderation is enabled for this workspace, which categories it covers and whether automatic approval is used. Changes are prepared in a separate form and require saving."
   },
   {
     "_id": "i18n-message-en-guide-admin-content-moderation-settings-label",
@@ -81699,7 +81699,7 @@
     "_id": "i18n-message-en-guide-admin-content-moderation-status-description",
     "key": "guide.admin.content-moderation.status.description",
     "lang": "en",
-    "value": "Filter by the current review state."
+    "value": "Choose the review state to work on. Counts reflect the selected category; changing this filter only changes the list, while a row’s decision menu changes the item’s state."
   },
   {
     "_id": "i18n-message-en-guide-admin-content-moderation-status-label",
@@ -81735,7 +81735,7 @@
     "_id": "i18n-message-en-guide-admin-feedback-detail-overview-description",
     "key": "guide.admin.feedback-detail.overview.description",
     "lang": "en",
-    "value": "Read the submitted feedback and choose the appropriate review action."
+    "value": "Read the full submission and its category before deciding whether it has been handled. Return to the feedback list to use the row’s solved or unresolved action."
   },
   {
     "_id": "i18n-message-en-guide-admin-feedback-detail-overview-label",
@@ -81747,7 +81747,7 @@
     "_id": "i18n-message-en-guide-admin-feedback-feedback-review-status-filter-description",
     "key": "guide.admin.feedback.feedback-review-status-filter.description",
     "lang": "en",
-    "value": "Filter feedback by review state."
+    "value": "Choose unresolved feedback for current work or solved feedback for follow-up. Marking an item solved changes which queue contains it; it does not delete the submission."
   },
   {
     "_id": "i18n-message-en-guide-admin-feedback-feedback-review-status-filter-label",
@@ -81759,7 +81759,7 @@
     "_id": "i18n-message-en-guide-admin-feedback-overview-description",
     "key": "guide.admin.feedback.overview.description",
     "lang": "en",
-    "value": "Open a feedback item to read it and record its review state."
+    "value": "Read submitted bug reports, requests and other feedback. After handling an item, use its row menu to mark it solved; a solved item can be returned to unresolved when further work is needed."
   },
   {
     "_id": "i18n-message-en-guide-admin-feedback-overview-label",
@@ -81783,7 +81783,7 @@
     "_id": "i18n-message-en-guide-admin-graph-help-overview-description",
     "key": "guide.admin.graph-help.overview.description",
     "lang": "en",
-    "value": "This explanation describes the selected chart and how to read it."
+    "value": "Use the explanations of edges, bridges, reach, clustering and recurring connections to interpret the network charts. Return to the chart to compare those definitions with the displayed values."
   },
   {
     "_id": "i18n-message-en-guide-admin-graph-help-overview-label",
@@ -81807,7 +81807,7 @@
     "_id": "i18n-message-en-guide-admin-help-editor-help-document-description",
     "key": "guide.admin.help-editor.help-document.description",
     "lang": "en",
-    "value": "Choose the document or editable guide to work on."
+    "value": "Select the document type or editable guide you intend to maintain. For an explanation, also check its target screen so the saved steps belong to the right part of the app."
   },
   {
     "_id": "i18n-message-en-guide-admin-help-editor-help-document-label",
@@ -81819,7 +81819,7 @@
     "_id": "i18n-message-en-guide-admin-help-editor-help-language-description",
     "key": "guide.admin.help-editor.help-language.description",
     "lang": "en",
-    "value": "Each language has its own revisions."
+    "value": "Choose the content language before editing. Each language has separate revisions and an active version, so changing this selection does not translate or publish the other language."
   },
   {
     "_id": "i18n-message-en-guide-admin-help-editor-help-language-label",
@@ -81831,7 +81831,7 @@
     "_id": "i18n-message-en-guide-admin-help-editor-help-new-revision-description",
     "key": "guide.admin.help-editor.help-new-revision.description",
     "lang": "en",
-    "value": "Create a draft; users see it after activation."
+    "value": "Prepare a new revision of the selected document and language. Save it first, then activate the revision when it should replace the version users currently see."
   },
   {
     "_id": "i18n-message-en-guide-admin-help-editor-help-new-revision-label",
@@ -81843,7 +81843,7 @@
     "_id": "i18n-message-en-guide-admin-help-editor-overview-description",
     "key": "guide.admin.help-editor.overview.description",
     "lang": "en",
-    "value": "Manage help, policy and editable guide revisions. System guides are maintained with the application and are hidden here."
+    "value": "Maintain help and policy documents, and guides that allow editing. Choose a language, save a revision and activate it when ready for users. Application-managed system guides are excluded from this editor."
   },
   {
     "_id": "i18n-message-en-guide-admin-help-editor-overview-label",
@@ -81855,7 +81855,7 @@
     "_id": "i18n-message-en-guide-admin-home-overview-description",
     "key": "guide.admin.home.overview.description",
     "lang": "en",
-    "value": "Open your avatar menu to choose moderation, content, jobs or monitoring. Notification and guide controls are also there."
+    "value": "Open the avatar menu to choose a task: content review, user reports, feedback, jobs or monitoring. Each opens its own workspace; personal notifications and guide visibility are controlled from the same menu."
   },
   {
     "_id": "i18n-message-en-guide-admin-home-overview-label",
@@ -81879,7 +81879,7 @@
     "_id": "i18n-message-en-guide-admin-idea-editor-idea-filter-description",
     "key": "guide.admin.idea-editor.idea-filter.description",
     "lang": "en",
-    "value": "Switch between published items, drafts and trash."
+    "value": "Choose drafts for unfinished work, published or featured articles for visible content, or trash to recover a removed article. The filter changes the list without publishing or deleting anything."
   },
   {
     "_id": "i18n-message-en-guide-admin-idea-editor-idea-filter-label",
@@ -81891,7 +81891,7 @@
     "_id": "i18n-message-en-guide-admin-idea-editor-idea-language-description",
     "key": "guide.admin.idea-editor.idea-language.description",
     "lang": "en",
-    "value": "Choose the article language."
+    "value": "Select which language’s articles to list and edit. Check this before creating a draft or changing text so the content is saved for the intended readers."
   },
   {
     "_id": "i18n-message-en-guide-admin-idea-editor-idea-language-label",
@@ -81903,7 +81903,7 @@
     "_id": "i18n-message-en-guide-admin-idea-editor-idea-new-description",
     "key": "guide.admin.idea-editor.idea-new.description",
     "lang": "en",
-    "value": "Create a new article draft."
+    "value": "Start a new article in the selected language. Prepare its title, text and images, preview it, then save; publication is a separate action on the saved article."
   },
   {
     "_id": "i18n-message-en-guide-admin-idea-editor-idea-new-label",
@@ -81915,7 +81915,7 @@
     "_id": "i18n-message-en-guide-admin-idea-editor-overview-description",
     "key": "guide.admin.idea-editor.overview.description",
     "lang": "en",
-    "value": "Manage articles, drafts and published content in the selected language."
+    "value": "Manage article drafts, published articles and trash in the selected language. Editing saves the content; publication and featured placement are separate actions on the article card."
   },
   {
     "_id": "i18n-message-en-guide-admin-idea-editor-overview-label",
@@ -81939,7 +81939,7 @@
     "_id": "i18n-message-en-guide-admin-item-preview-overview-description",
     "key": "guide.admin.item-preview.overview.description",
     "lang": "en",
-    "value": "Inspect the reported item before returning to its review."
+    "value": "Inspect the reported item’s actual content and attachments before making a moderation decision. Close this preview to return to the report and its available actions."
   },
   {
     "_id": "i18n-message-en-guide-admin-item-preview-overview-label",
@@ -81951,7 +81951,7 @@
     "_id": "i18n-message-en-guide-admin-job-parameter-close-description",
     "key": "guide.admin.job-parameter.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Discard this parameter draft and return to the process. Use Save first to retain the edited values."
   },
   {
     "_id": "i18n-message-en-guide-admin-job-parameter-close-label",
@@ -81963,7 +81963,7 @@
     "_id": "i18n-message-en-guide-admin-job-parameter-overview-description",
     "key": "guide.admin.job-parameter.overview.description",
     "lang": "en",
-    "value": "Edit the selected job parameter and save the change."
+    "value": "Review the selected process’s parameter names, values and offered choices. Edit the values needed for its operation, then save to persist the configuration."
   },
   {
     "_id": "i18n-message-en-guide-admin-job-parameter-overview-label",
@@ -81975,7 +81975,7 @@
     "_id": "i18n-message-en-guide-admin-job-parameter-parameter-save-description",
     "key": "guide.admin.job-parameter.parameter-save.description",
     "lang": "en",
-    "value": "Apply this parameter value."
+    "value": "Save the edited job parameters and return to the process. These values configure its operation; saving them does not itself request a manual run."
   },
   {
     "_id": "i18n-message-en-guide-admin-job-parameter-parameter-save-label",
@@ -81987,7 +81987,7 @@
     "_id": "i18n-message-en-guide-admin-moderation-settings-close-description",
     "key": "guide.admin.moderation-settings.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Discard this settings draft and return to the review queue. To apply changed categories or automatic-approval settings, save before closing."
   },
   {
     "_id": "i18n-message-en-guide-admin-moderation-settings-close-label",
@@ -81999,7 +81999,7 @@
     "_id": "i18n-message-en-guide-admin-moderation-settings-overview-description",
     "key": "guide.admin.moderation-settings.overview.description",
     "lang": "en",
-    "value": "Configure automatic review and enabled moderation categories, then save."
+    "value": "Choose the moderated categories and whether automatic approval is enabled. If you use automatic approval, set its delay; check all selections before saving the workspace settings."
   },
   {
     "_id": "i18n-message-en-guide-admin-moderation-settings-overview-label",
@@ -82011,7 +82011,7 @@
     "_id": "i18n-message-en-guide-admin-moderation-settings-save-description",
     "key": "guide.admin.moderation-settings.save.description",
     "lang": "en",
-    "value": "Apply these moderation settings."
+    "value": "Persist the selected moderation settings for this workspace and return to its review queue. If saving fails, the form stays open so you can correct or retry the change."
   },
   {
     "_id": "i18n-message-en-guide-admin-moderation-settings-save-label",
@@ -82035,7 +82035,7 @@
     "_id": "i18n-message-en-guide-admin-monitoring-monitoring-filter-description",
     "key": "guide.admin.monitoring.monitoring-filter.description",
     "lang": "en",
-    "value": "Choose the monitoring events to display."
+    "value": "Focus on items needing attention, domain activity, delivery or workers. The filter selects monitoring categories; it does not alter the monitored processes."
   },
   {
     "_id": "i18n-message-en-guide-admin-monitoring-monitoring-filter-label",
@@ -82047,7 +82047,7 @@
     "_id": "i18n-message-en-guide-admin-monitoring-overview-description",
     "key": "guide.admin.monitoring.overview.description",
     "lang": "en",
-    "value": "Review operational measurements and recent application activity."
+    "value": "Follow the operational flow cards to locate unhealthy components, queued work or delivery problems. Read each stage’s metrics and the volumes between stages together before choosing what to investigate."
   },
   {
     "_id": "i18n-message-en-guide-admin-monitoring-overview-label",
@@ -82059,7 +82059,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminarticle-description",
     "key": "guide.admin.navigation.adminArticle.description",
     "lang": "en",
-    "value": "Manage article drafts and publications."
+    "value": "Create and revise articles, preview their content, and manage publication or featured placement from the cards. Drafts and trash remain available through the list filters."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminarticle-label",
@@ -82071,7 +82071,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminchat-description",
     "key": "guide.admin.navigation.adminChat.description",
     "lang": "en",
-    "value": "Inspect reports and send appropriate warnings."
+    "value": "Open the moderation conversation view for the selected reported user. Check the report context and recipient before writing and sending a warning."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminchat-label",
@@ -82083,7 +82083,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-admincontent-description",
     "key": "guide.admin.navigation.adminContent.description",
     "lang": "en",
-    "value": "Edit help, policies and editable guides; system guides are hidden."
+    "value": "Maintain help, policies and editable guides by language and revision. Save prepared content, then activate the version users should see; system-managed guides are excluded."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-admincontent-label",
@@ -82095,7 +82095,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminfeedback-description",
     "key": "guide.admin.navigation.adminFeedback.description",
     "lang": "en",
-    "value": "Review user feedback."
+    "value": "Read bug reports, feature requests and other feedback. Mark handled submissions solved, or reopen them for further work, without deleting their content."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminfeedback-label",
@@ -82107,7 +82107,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-admingraph-description",
     "key": "guide.admin.navigation.adminGraph.description",
     "lang": "en",
-    "value": "Explore the affinity graph."
+    "value": "Explore people and affinity links in an interactive graph. Pan, rotate and zoom the view to inspect connections while using the legend to interpret nodes."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-admingraph-label",
@@ -82119,7 +82119,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminjobs-description",
     "key": "guide.admin.navigation.adminJobs.description",
     "lang": "en",
-    "value": "Configure delivery rules and scheduled jobs."
+    "value": "Inspect background processes, notification rules and recent runs. Open a process to manage its supported timing and parameters or use its execution controls."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminjobs-label",
@@ -82131,7 +82131,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminmetrics-description",
     "key": "guide.admin.navigation.adminMetrics.description",
     "lang": "en",
-    "value": "Inspect operational metrics and activity."
+    "value": "Inspect operational health, processing stages and delivery volumes. Use the attention filter to focus the view on components that need investigation."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminmetrics-label",
@@ -82143,7 +82143,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminmoderation-description",
     "key": "guide.admin.navigation.adminModeration.description",
     "lang": "en",
-    "value": "Review submitted content."
+    "value": "Open the content-review queue to inspect submissions by type and status, then record moderation decisions. Its settings control the categories and automatic approval used in the workspace."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminmoderation-label",
@@ -82155,7 +82155,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminparams-description",
     "key": "guide.admin.navigation.adminParams.description",
     "lang": "en",
-    "value": "Manage application parameters and their history."
+    "value": "Inspect and edit application configuration by section. Each section’s history lets you compare recorded versions and restore an earlier configuration when needed."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminparams-label",
@@ -82167,7 +82167,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminpaymentauthorizations-description",
     "key": "guide.admin.navigation.adminPaymentAuthorizations.description",
     "lang": "en",
-    "value": "Review pending payment authorizations."
+    "value": "Open the payment simulator’s authorization view to inspect the payments presented there and use its decision controls. Check payment details before submitting a decision."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminpaymentauthorizations-label",
@@ -82179,7 +82179,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminpaymentsimulator-description",
     "key": "guide.admin.navigation.adminPaymentSimulator.description",
     "lang": "en",
-    "value": "Open the configured payment test environment."
+    "value": "Open the configured payment simulator’s settings to prepare a payment test. The simulator view controls the test setup used by the selected payment provider."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminpaymentsimulator-label",
@@ -82191,7 +82191,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminreports-description",
     "key": "guide.admin.navigation.adminReports.description",
     "lang": "en",
-    "value": "Review reported users and their evidence."
+    "value": "Review reports about users with their reason and source context. After inspecting the evidence, use the available actions to warn or restrict the affected user."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminreports-label",
@@ -82203,7 +82203,7 @@
     "_id": "i18n-message-en-guide-admin-navigation-adminstats-description",
     "key": "guide.admin.navigation.adminStats.description",
     "lang": "en",
-    "value": "Inspect application statistics."
+    "value": "Compare profile and activity statistics across the displayed periods and segments. Use timelines and graph explanations to interpret changes in the figures."
   },
   {
     "_id": "i18n-message-en-guide-admin-navigation-adminstats-label",
@@ -82263,7 +82263,7 @@
     "_id": "i18n-message-en-guide-admin-notifications-overview-description",
     "key": "guide.admin.notifications.overview.description",
     "lang": "en",
-    "value": "Manage delivery rules, schedules and job runs. This is separate from your personal notification inbox."
+    "value": "Inspect automated processes and notification rules, including their state, timing and run history. Open a row for its controls; personal received notifications are in your notification inbox."
   },
   {
     "_id": "i18n-message-en-guide-admin-notifications-overview-label",
@@ -82275,7 +82275,7 @@
     "_id": "i18n-message-en-guide-admin-notifications-process-filter-description",
     "key": "guide.admin.notifications.process-filter.description",
     "lang": "en",
-    "value": "Choose which jobs and delivery rules to display."
+    "value": "Narrow the process list to the category you need to inspect. Filtering helps locate a job or delivery rule; it does not enable, disable or start that process."
   },
   {
     "_id": "i18n-message-en-guide-admin-notifications-process-filter-label",
@@ -82287,7 +82287,7 @@
     "_id": "i18n-message-en-guide-admin-parameter-edit-close-description",
     "key": "guide.admin.parameter-edit.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Cancel the section edit and discard unsaved field changes. Already saved configuration remains in effect."
   },
   {
     "_id": "i18n-message-en-guide-admin-parameter-edit-close-label",
@@ -82299,7 +82299,7 @@
     "_id": "i18n-message-en-guide-admin-parameter-edit-overview-description",
     "key": "guide.admin.parameter-edit.overview.description",
     "lang": "en",
-    "value": "Check the value and its validation before saving."
+    "value": "Edit the selected section’s fields using the displayed values, units and choices. Saving applies the section as a new configuration change; closing without saving discards this draft."
   },
   {
     "_id": "i18n-message-en-guide-admin-parameter-edit-overview-label",
@@ -82311,7 +82311,7 @@
     "_id": "i18n-message-en-guide-admin-parameter-edit-save-edit-description",
     "key": "guide.admin.parameter-edit.save-edit.description",
     "lang": "en",
-    "value": "Save the parameter value."
+    "value": "Save all edited fields in this configuration section. The saved state replaces the displayed current values and the editor closes after success."
   },
   {
     "_id": "i18n-message-en-guide-admin-parameter-edit-save-edit-label",
@@ -82335,7 +82335,7 @@
     "_id": "i18n-message-en-guide-admin-parameter-history-overview-description",
     "key": "guide.admin.parameter-history.overview.description",
     "lang": "en",
-    "value": "Review earlier changes and their authors."
+    "value": "Expand a version to inspect its saved values and change information. Restoring an earlier version changes the active configuration; inspecting a version alone leaves the current values in effect."
   },
   {
     "_id": "i18n-message-en-guide-admin-parameter-history-overview-label",
@@ -82359,7 +82359,7 @@
     "_id": "i18n-message-en-guide-admin-params-overview-description",
     "key": "guide.admin.params.overview.description",
     "lang": "en",
-    "value": "Inspect current configuration, edit a parameter or view its history."
+    "value": "Expand a configuration section to inspect its current values. Edit changes that section; History shows its recorded versions and offers restoration of an earlier version."
   },
   {
     "_id": "i18n-message-en-guide-admin-params-overview-label",
@@ -82383,7 +82383,7 @@
     "_id": "i18n-message-en-guide-admin-payment-authorizations-overview-description",
     "key": "guide.admin.payment-authorizations.overview.description",
     "lang": "en",
-    "value": "Review pending payment authorizations and decide only after checking their details."
+    "value": "This opens the configured payment simulator’s authorization view. Inspect the displayed payment details before using its decision controls, then check the resulting authorization state."
   },
   {
     "_id": "i18n-message-en-guide-admin-payment-authorizations-overview-label",
@@ -82407,7 +82407,7 @@
     "_id": "i18n-message-en-guide-admin-payment-simulator-overview-description",
     "key": "guide.admin.payment-simulator.overview.description",
     "lang": "en",
-    "value": "Inspect simulated payment outcomes and use the provided test controls."
+    "value": "Open the configured payment simulator’s administration view to inspect and change its test setup. Check the provider and settings in that view before running the payment scenario you want to exercise."
   },
   {
     "_id": "i18n-message-en-guide-admin-payment-simulator-overview-label",
@@ -82431,7 +82431,7 @@
     "_id": "i18n-message-en-guide-admin-process-detail-overview-description",
     "key": "guide.admin.process-detail.overview.description",
     "lang": "en",
-    "value": "Review channels, parameters and recent runs before changing the rule."
+    "value": "Check the selected process’s configuration and recent runs before changing it. Timing and parameter controls are available only where that process supports them; run history helps distinguish configuration from execution results."
   },
   {
     "_id": "i18n-message-en-guide-admin-process-detail-overview-label",
@@ -82443,7 +82443,7 @@
     "_id": "i18n-message-en-guide-admin-process-detail-process-detail-save-description",
     "key": "guide.admin.process-detail.process-detail-save.description",
     "lang": "en",
-    "value": "Save the configured delivery rule."
+    "value": "Persist the edited process configuration. Check the save result before leaving; saving configuration is separate from a manual run of the process."
   },
   {
     "_id": "i18n-message-en-guide-admin-process-detail-process-detail-save-label",
@@ -82467,7 +82467,7 @@
     "_id": "i18n-message-en-guide-admin-report-detail-overview-description",
     "key": "guide.admin.report-detail.overview.description",
     "lang": "en",
-    "value": "Read the report and its context before choosing a review action."
+    "value": "Read the report’s reason and linked context alongside the reported user. Review the source before using the available warning or block action; the action applies to that user."
   },
   {
     "_id": "i18n-message-en-guide-admin-report-detail-overview-label",
@@ -82479,7 +82479,7 @@
     "_id": "i18n-message-en-guide-admin-reports-blocked-users-description",
     "key": "guide.admin.reports.blocked-users.description",
     "lang": "en",
-    "value": "Inspect blocked accounts and their moderation state."
+    "value": "Open the restricted-user list to inspect existing blocks. A user’s menu offers unblocking and, when a support conversation already exists, access to that conversation."
   },
   {
     "_id": "i18n-message-en-guide-admin-reports-blocked-users-label",
@@ -82503,7 +82503,7 @@
     "_id": "i18n-message-en-guide-admin-reports-overview-description",
     "key": "guide.admin.reports.overview.description",
     "lang": "en",
-    "value": "Open a report to inspect its evidence and available review actions."
+    "value": "Open a report to read its reason, affected user and source context. Use the user’s action menu for a warning or restriction after reviewing the evidence; opening a report alone does not take that action."
   },
   {
     "_id": "i18n-message-en-guide-admin-reports-overview-label",
@@ -82515,7 +82515,7 @@
     "_id": "i18n-message-en-guide-admin-reports-reports-review-status-filter-description",
     "key": "guide.admin.reports.reports-review-status-filter.description",
     "lang": "en",
-    "value": "Choose pending or reviewed reports."
+    "value": "Switch between unresolved reports that need attention and resolved reports you want to revisit. This selects the queue; it does not change a report’s review state."
   },
   {
     "_id": "i18n-message-en-guide-admin-reports-reports-review-status-filter-label",
@@ -82527,7 +82527,7 @@
     "_id": "i18n-message-en-guide-admin-schedule-edit-close-description",
     "key": "guide.admin.schedule-edit.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Cancel this timing edit and restore the schedule shown when you opened the editor. Save before closing if the new timing should take effect."
   },
   {
     "_id": "i18n-message-en-guide-admin-schedule-edit-close-label",
@@ -82539,7 +82539,7 @@
     "_id": "i18n-message-en-guide-admin-schedule-edit-overview-description",
     "key": "guide.admin.schedule-edit.overview.description",
     "lang": "en",
-    "value": "Set when the selected job runs, including its interval or start time."
+    "value": "Set the selected process’s supported start time, interval or run windows. Review the resulting timing before saving, because it controls when the scheduled process becomes due."
   },
   {
     "_id": "i18n-message-en-guide-admin-schedule-edit-overview-label",
@@ -82551,7 +82551,7 @@
     "_id": "i18n-message-en-guide-admin-schedule-edit-schedule-save-description",
     "key": "guide.admin.schedule-edit.schedule-save.description",
     "lang": "en",
-    "value": "Apply the selected schedule."
+    "value": "Save the selected process’s timing and return to its details. This updates its schedule; use the separate run action if you intend to execute it manually."
   },
   {
     "_id": "i18n-message-en-guide-admin-schedule-edit-schedule-save-label",
@@ -82575,7 +82575,7 @@
     "_id": "i18n-message-en-guide-admin-stats-overview-description",
     "key": "guide.admin.stats.overview.description",
     "lang": "en",
-    "value": "Explore the displayed period and metrics. Use chart help for the selected graph."
+    "value": "Read the summary metrics together with their period and segments, then use the timelines to compare changes. The graph help explains network measures so counts and relationships can be interpreted in context."
   },
   {
     "_id": "i18n-message-en-guide-admin-stats-overview-label",
@@ -82587,7 +82587,7 @@
     "_id": "i18n-message-en-guide-admin-stats-stats-refresh-description",
     "key": "guide.admin.stats.stats-refresh.description",
     "lang": "en",
-    "value": "Refresh the displayed statistics."
+    "value": "Reload the statistical snapshot for the current view. Check the displayed period and update information before comparing refreshed figures with earlier observations."
   },
   {
     "_id": "i18n-message-en-guide-admin-stats-stats-refresh-label",
@@ -83265,7 +83265,7 @@
     "_id": "i18n-message-en-guide-operator-claim-close-description",
     "key": "guide.operator.claim.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Return to the operator page. Closing does not submit the form or withdraw a request that has already been sent for review."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-close-label",
@@ -83277,7 +83277,7 @@
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-attestation-description",
     "key": "guide.operator.claim.operator-claim-attestation.description",
     "lang": "en",
-    "value": "Confirm that you may act for this legal entity."
+    "value": "Confirm that you are authorized to represent the named legal entity. This declaration is required for the company request; it does not replace the verification decision."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-attestation-label",
@@ -83289,7 +83289,7 @@
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-legal-name-description",
     "key": "guide.operator.claim.operator-claim-legal-name.description",
     "lang": "en",
-    "value": "Use the registered legal name of your company."
+    "value": "Enter the company’s registered legal name so the verification can identify the legal entity. Use the company details here, rather than the product’s display name."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-legal-name-label",
@@ -83301,7 +83301,7 @@
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-client-code-description",
     "key": "guide.operator.claim.operator-claim-path-client-code.description",
     "lang": "en",
-    "value": "Use the code from an existing verified operator."
+    "value": "Use a client code issued by an already verified, active operator to link this deployment to that operator. This is the joining path, not a new company-verification request."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-client-code-label",
@@ -83313,7 +83313,7 @@
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-company-description",
     "key": "guide.operator.claim.operator-claim-path-company.description",
     "lang": "en",
-    "value": "Enter the legal entity and the authorized contact."
+    "value": "Prepare the company’s legal details and the authorized representative’s contact information. Submitting sends these for verification; filling the form alone does not approve the operator."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-company-label",
@@ -83325,7 +83325,7 @@
     "_id": "i18n-message-en-guide-operator-claim-operator-redeem-token-description",
     "key": "guide.operator.claim.operator-redeem-token.description",
     "lang": "en",
-    "value": "Submit the entered client code to link this deployment."
+    "value": "Submit the entered client code to link this registered deployment to its issuing operator. Read the resulting status to check whether the link was accepted."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-operator-redeem-token-label",
@@ -83337,7 +83337,7 @@
     "_id": "i18n-message-en-guide-operator-claim-overview-description",
     "key": "guide.operator.claim.overview.description",
     "lang": "en",
-    "value": "Choose company verification or an existing client code. The current review state is shown here."
+    "value": "Choose company verification for a new operator identity, or a client code to join an existing one. Registration is required before submission; pending review and approval are shown separately."
   },
   {
     "_id": "i18n-message-en-guide-operator-claim-overview-label",
@@ -83361,7 +83361,7 @@
     "_id": "i18n-message-en-guide-operator-community-overview-description",
     "key": "guide.operator.community.overview.description",
     "lang": "en",
-    "value": "Read the operator community information and available announcements here."
+    "value": "Read announcements shared with operators, including attached links and download-verification information. Check the source and the displayed verification state before using a download."
   },
   {
     "_id": "i18n-message-en-guide-operator-community-overview-label",
@@ -83373,7 +83373,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-close-description",
     "key": "guide.operator.configuration.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Return to the operator page. Use the relevant save action before closing if you want to persist pending configuration changes."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-close-label",
@@ -83385,7 +83385,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-admin-emails-description",
     "key": "guide.operator.configuration.operator-save-admin-emails.description",
     "lang": "en",
-    "value": "Save the accounts allowed to use app administration."
+    "value": "Save the email list that grants app-administration access. Check additions and removals carefully; this also saves other pending changes in the shared configuration draft."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-admin-emails-label",
@@ -83397,7 +83397,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-branding-description",
     "key": "guide.operator.configuration.operator-save-branding.description",
     "lang": "en",
-    "value": "Save the product identity displayed on this deployment."
+    "value": "Save the name and logo used by this deployment. This saves the shared configuration draft, including pending edits in its other sections; the updated branding is then applied in the app."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-branding-label",
@@ -83409,7 +83409,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-firebase-description",
     "key": "guide.operator.configuration.operator-save-firebase.description",
     "lang": "en",
-    "value": "Save credentials before testing or activating the connection."
+    "value": "Save the Firebase configuration, then run its authentication and messaging checks before activation. Saving credentials and activating them are separate actions; other shared configuration edits are also saved."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-firebase-label",
@@ -83421,7 +83421,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-privacy-contact-description",
     "key": "guide.operator.configuration.operator-save-privacy-contact.description",
     "lang": "en",
-    "value": "Save the controller and contact shown in privacy information."
+    "value": "Save the data controller’s name and privacy contact email shown in the app’s privacy information. Other pending edits in the shared configuration draft are saved with them."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-privacy-contact-label",
@@ -83433,7 +83433,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-tls-description",
     "key": "guide.operator.configuration.operator-save-tls.description",
     "lang": "en",
-    "value": "Save certificate settings; use the available checks before activation."
+    "value": "Submit the selected TLS mode, domain and certificate settings. Follow the returned job state to confirm completion; a save request alone does not prove the new certificate is already active."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-operator-save-tls-label",
@@ -83445,7 +83445,7 @@
     "_id": "i18n-message-en-guide-operator-configuration-overview-description",
     "key": "guide.operator.configuration.overview.description",
     "lang": "en",
-    "value": "Open a section to configure branding, administrators, privacy contacts and service connections. Save changes in that section."
+    "value": "Expand a section to edit deployment settings. Branding, access and service credentials share a configuration draft, so review other pending edits before saving; TLS has its own save operation."
   },
   {
     "_id": "i18n-message-en-guide-operator-configuration-overview-label",
@@ -83469,7 +83469,7 @@
     "_id": "i18n-message-en-guide-operator-deployments-overview-description",
     "key": "guide.operator.deployments.overview.description",
     "lang": "en",
-    "value": "These nodes belong to the selected operator. Inspect their reported status and contribution."
+    "value": "Inspect the deployments belonging to the operator you selected in the leaderboard. Compare their reported status and contribution to understand how that operator’s total is composed."
   },
   {
     "_id": "i18n-message-en-guide-operator-deployments-overview-label",
@@ -83481,7 +83481,7 @@
     "_id": "i18n-message-en-guide-operator-home-claim-description",
     "key": "guide.operator.home.claim.description",
     "lang": "en",
-    "value": "Link the deployment to your verified operator identity."
+    "value": "After registration, request company verification or link this deployment to an existing verified operator with a client code. The result and review status appear in this window."
   },
   {
     "_id": "i18n-message-en-guide-operator-home-claim-label",
@@ -83493,7 +83493,7 @@
     "_id": "i18n-message-en-guide-operator-home-configuration-description",
     "key": "guide.operator.home.configuration.description",
     "lang": "en",
-    "value": "Configure this deployment and its connected services."
+    "value": "Set this deployment’s name and logo, administrator access, privacy contact and connected services. Each section shows the data and checks needed for its setup."
   },
   {
     "_id": "i18n-message-en-guide-operator-home-configuration-label",
@@ -83505,7 +83505,7 @@
     "_id": "i18n-message-en-guide-operator-home-leaderboard-description",
     "key": "guide.operator.home.leaderboard.description",
     "lang": "en",
-    "value": "Select a claimed operator to view its deployments."
+    "value": "Select an operator to see which deployments contribute to its position. The deployment list lets you compare their reported state and contribution separately."
   },
   {
     "_id": "i18n-message-en-guide-operator-home-leaderboard-label",
@@ -83517,7 +83517,7 @@
     "_id": "i18n-message-en-guide-operator-home-registration-description",
     "key": "guide.operator.home.registration.description",
     "lang": "en",
-    "value": "Manage registration and measurement reporting."
+    "value": "Connect this deployment to a Registry and inspect its connection and measurement delivery. Registration and verified operator identity are separate steps."
   },
   {
     "_id": "i18n-message-en-guide-operator-home-registration-label",
@@ -83529,7 +83529,7 @@
     "_id": "i18n-message-en-guide-operator-home-revenue-description",
     "key": "guide.operator.home.revenue.description",
     "lang": "en",
-    "value": "Inspect revenue, receipts and synchronization."
+    "value": "Compare recorded revenue, Registry delivery and accepted settlements. Use this view to identify pending or blocked reports and inspect the period and currency behind each amount."
   },
   {
     "_id": "i18n-message-en-guide-operator-home-revenue-label",
@@ -83541,7 +83541,7 @@
     "_id": "i18n-message-en-guide-operator-home-updates-description",
     "key": "guide.operator.home.updates.description",
     "lang": "en",
-    "value": "Check available versions and update progress."
+    "value": "Compare the installed release with the available update and see whether rollback is offered. Open this before deciding to change the running deployment."
   },
   {
     "_id": "i18n-message-en-guide-operator-home-updates-label",
@@ -83589,7 +83589,7 @@
     "_id": "i18n-message-en-guide-operator-registration-close-description",
     "key": "guide.operator.registration.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Return to the operator page. The registered connection remains active; use Disconnect when you intend to deactivate it."
   },
   {
     "_id": "i18n-message-en-guide-operator-registration-close-label",
@@ -83601,7 +83601,7 @@
     "_id": "i18n-message-en-guide-operator-registration-disconnect-description",
     "key": "guide.operator.registration.disconnect.description",
     "lang": "en",
-    "value": "Disconnect this deployment from the Registry."
+    "value": "Deactivate this deployment’s current Registry connection. Use this when you intend to disconnect, rather than merely close the registration window."
   },
   {
     "_id": "i18n-message-en-guide-operator-registration-disconnect-label",
@@ -83613,7 +83613,7 @@
     "_id": "i18n-message-en-guide-operator-registration-overview-description",
     "key": "guide.operator.registration.overview.description",
     "lang": "en",
-    "value": "Review registration, heartbeat and measurement delivery for this deployment."
+    "value": "Check the selected Registry address, registration state, last heartbeat and measurement delivery together. A registered connection does not by itself mean every report has been delivered."
   },
   {
     "_id": "i18n-message-en-guide-operator-registration-overview-label",
@@ -83625,7 +83625,7 @@
     "_id": "i18n-message-en-guide-operator-registration-refresh-description",
     "key": "guide.operator.registration.refresh.description",
     "lang": "en",
-    "value": "Fetch the current registration and delivery state."
+    "value": "Reload registration, heartbeat and delivery information after an operation or connection change. Refreshing the view does not register or disconnect the deployment."
   },
   {
     "_id": "i18n-message-en-guide-operator-registration-refresh-label",
@@ -83637,7 +83637,7 @@
     "_id": "i18n-message-en-guide-operator-registration-register-description",
     "key": "guide.operator.registration.register.description",
     "lang": "en",
-    "value": "Register this deployment with the displayed Registry."
+    "value": "Register at the Registry address entered here. If it differs from the active Registry, the existing binding is replaced; verify the destination before starting."
   },
   {
     "_id": "i18n-message-en-guide-operator-registration-register-label",
@@ -83649,7 +83649,7 @@
     "_id": "i18n-message-en-guide-operator-registration-synchronize-measurements-description",
     "key": "guide.operator.registration.synchronize-measurements.description",
     "lang": "en",
-    "value": "Synchronize pending measurement reports."
+    "value": "Request delivery of pending measurement reports to the connected Registry. Check the returned delivery state to distinguish accepted reports from those still pending or blocked."
   },
   {
     "_id": "i18n-message-en-guide-operator-registration-synchronize-measurements-label",
@@ -83661,7 +83661,7 @@
     "_id": "i18n-message-en-guide-operator-revenue-close-description",
     "key": "guide.operator.revenue.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Return to the operator page. Closing the revenue view leaves recorded entries, settlements and report-delivery state intact."
   },
   {
     "_id": "i18n-message-en-guide-operator-revenue-close-label",
@@ -83673,7 +83673,7 @@
     "_id": "i18n-message-en-guide-operator-revenue-operator-synchronize-revenue-description",
     "key": "guide.operator.revenue.operator-synchronize-revenue.description",
     "lang": "en",
-    "value": "Send pending revenue reports through the existing delivery queue."
+    "value": "Ask the delivery queue to synchronize pending revenue reports. Inspect the resulting state and blocked reports afterwards; starting synchronization does not guarantee that every report is accepted."
   },
   {
     "_id": "i18n-message-en-guide-operator-revenue-operator-synchronize-revenue-label",
@@ -83685,7 +83685,7 @@
     "_id": "i18n-message-en-guide-operator-revenue-overview-description",
     "key": "guide.operator.revenue.overview.description",
     "lang": "en",
-    "value": "Review the ledger, settlement state and report delivery. Amounts follow the displayed currency and period."
+    "value": "Compare revenue entries with delivery status and accepted settlements for the displayed period and currency. A locally recorded amount and a Registry-accepted report represent different stages."
   },
   {
     "_id": "i18n-message-en-guide-operator-revenue-overview-label",
@@ -83697,7 +83697,7 @@
     "_id": "i18n-message-en-guide-operator-updates-close-description",
     "key": "guide.operator.updates.close.description",
     "lang": "en",
-    "value": "Return to the previous surface."
+    "value": "Close the progress window and return to the operator page. Closing this window does not cancel an update already started."
   },
   {
     "_id": "i18n-message-en-guide-operator-updates-close-label",
@@ -83709,7 +83709,7 @@
     "_id": "i18n-message-en-guide-operator-updates-operator-apply-update-description",
     "key": "guide.operator.updates.operator-apply-update.description",
     "lang": "en",
-    "value": "Start the displayed update and follow its progress here."
+    "value": "Start installing the offered release on this deployment. Follow its progress here; after successful completion the application reloads to use the installed version."
   },
   {
     "_id": "i18n-message-en-guide-operator-updates-operator-apply-update-label",
@@ -83721,7 +83721,7 @@
     "_id": "i18n-message-en-guide-operator-updates-operator-refresh-update-description",
     "key": "guide.operator.updates.operator-refresh-update.description",
     "lang": "en",
-    "value": "Refresh the available signed release information."
+    "value": "Fetch the latest release information and update state. This checks what is available; installation starts only with the update action."
   },
   {
     "_id": "i18n-message-en-guide-operator-updates-operator-refresh-update-label",
@@ -83733,7 +83733,7 @@
     "_id": "i18n-message-en-guide-operator-updates-operator-rollback-update-description",
     "key": "guide.operator.updates.operator-rollback-update.description",
     "lang": "en",
-    "value": "Restore the supported previous release when available."
+    "value": "Start the supported rollback to the displayed target version. Check that target first; a successful rollback reloads the application just like an update."
   },
   {
     "_id": "i18n-message-en-guide-operator-updates-operator-rollback-update-label",
@@ -83745,7 +83745,7 @@
     "_id": "i18n-message-en-guide-operator-updates-overview-description",
     "key": "guide.operator.updates.overview.description",
     "lang": "en",
-    "value": "Compare installed and available versions; progress and errors appear here."
+    "value": "Check the installed version, offered release and rollback target before acting. During an update this window shows the current phase, progress and any failure."
   },
   {
     "_id": "i18n-message-en-guide-operator-updates-overview-label",
@@ -83769,7 +83769,7 @@
     "_id": "i18n-message-hu-guide-admin-affinity-graph-overview-description",
     "key": "guide.admin.affinity-graph.overview.description",
     "lang": "hu",
-    "value": "A gráf és a megjelenített kapcsolatok áttekintése."
+    "value": "A megjelenített embereket és affinitási kapcsolataikat vizsgálhatod. Bal egérgombbal mozgathatod, jobb gombbal forgathatod, a görgővel nagyíthatod a nézetet; a csomópontok összehasonlításához használd a jelmagyarázatot."
   },
   {
     "_id": "i18n-message-hu-guide-admin-affinity-graph-overview-label",
@@ -83781,7 +83781,7 @@
     "_id": "i18n-message-hu-guide-admin-article-edit-article-preview-description",
     "key": "guide.admin.article-edit.article-preview.description",
     "lang": "hu",
-    "value": "Ellenőrizd a cikk megjelenését."
+    "value": "Olvasói előnézetet nyit az aktuális piszkozatról, a még nem mentett módosításokkal együtt. Bezárása után folytathatod a szerkesztést; a változtatások megőrzéséhez ments."
   },
   {
     "_id": "i18n-message-hu-guide-admin-article-edit-article-preview-label",
@@ -83793,7 +83793,7 @@
     "_id": "i18n-message-hu-guide-admin-article-edit-article-save-description",
     "key": "guide.admin.article-edit.article-save.description",
     "lang": "hu",
-    "value": "A cikk módosításainak mentése."
+    "value": "Elmenti a cikk aktuális szövegét és médiatartalmát, majd visszatér a listához. Az új piszkozat mentése nem publikálja azt; erre a cikk kártyáján külön művelet van."
   },
   {
     "_id": "i18n-message-hu-guide-admin-article-edit-article-save-label",
@@ -83805,7 +83805,7 @@
     "_id": "i18n-message-hu-guide-admin-article-edit-close-description",
     "key": "guide.admin.article-edit.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Bezárja a szerkesztőt, és elveti a nem mentett piszkozatot. Előbb ments, ha meg szeretnéd őrizni az aktuális szöveg- és médiamódosításokat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-article-edit-close-label",
@@ -83817,7 +83817,7 @@
     "_id": "i18n-message-hu-guide-admin-article-edit-overview-description",
     "key": "guide.admin.article-edit.overview.description",
     "lang": "hu",
-    "value": "Szerkeszd a cikket, majd mentés előtt ellenőrizd az előnézetet."
+    "value": "A kiválasztott nyelven szerkesztheted a cikk címét, szövegét és képeit. Mentés előtt nézd meg az előnézetet; az elkészült cikk publikálását az elmentett kártya külön műveletével végezheted el."
   },
   {
     "_id": "i18n-message-hu-guide-admin-article-edit-overview-label",
@@ -83841,7 +83841,7 @@
     "_id": "i18n-message-hu-guide-admin-article-view-overview-description",
     "key": "guide.admin.article-view.overview.description",
     "lang": "hu",
-    "value": "A cikk olvasói nézetének ellenőrzése. Bezárás után visszatérsz a szerkesztőhöz."
+    "value": "Olvasói nézetben ellenőrizheted a cikk szövegét, képeit és elrendezését. A piszkozat előnézete a függő módosításokat mutatja; megnyitása nem menti és nem publikálja azokat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-article-view-overview-label",
@@ -83865,7 +83865,7 @@
     "_id": "i18n-message-hu-guide-admin-blocked-users-overview-description",
     "key": "guide.admin.blocked-users.overview.description",
     "lang": "hu",
-    "value": "A korlátozások áttekintése és az elérhető fiókműveletek használata."
+    "value": "Nézd át, ki van letiltva, és mikor rögzítették a korlátozást. A sor menüjében megerősítés után feloldhatod a tiltást, vagy megnyithatod a meglévő támogatási beszélgetést az előzményekhez."
   },
   {
     "_id": "i18n-message-hu-guide-admin-blocked-users-overview-label",
@@ -83889,7 +83889,7 @@
     "_id": "i18n-message-hu-guide-admin-chat-review-message-description",
     "key": "guide.admin.chat-review.message.description",
     "lang": "hu",
-    "value": "Röviden és érthetően írd le a problémát."
+    "value": "A kiválasztott felhasználónak szánt figyelmeztetést írd ide: nevezd meg a kifogásolt viselkedést és a szükséges változtatást. Küldés előtt ellenőrizd a címzettet és a megfogalmazást."
   },
   {
     "_id": "i18n-message-hu-guide-admin-chat-review-message-label",
@@ -83901,7 +83901,7 @@
     "_id": "i18n-message-hu-guide-admin-chat-review-overview-description",
     "key": "guide.admin.chat-review.overview.description",
     "lang": "hu",
-    "value": "A bejelentéshez tartozó beszélgetés. A figyelmeztetés elküldi az üzenetedet az érintett felhasználónak."
+    "value": "Figyelmeztetés írása előtt ellenőrizd a kiválasztott felhasználót és a bejelentés előzményeit. A küldés moderátori figyelmeztetést rögzít a felhasználónak; ez művelet, nem privát piszkozatjegyzet."
   },
   {
     "_id": "i18n-message-hu-guide-admin-chat-review-overview-label",
@@ -83913,7 +83913,7 @@
     "_id": "i18n-message-hu-guide-admin-chat-review-send-warning-description",
     "key": "guide.admin.chat-review.send-warning.description",
     "lang": "hu",
-    "value": "A megírt figyelmeztetés küldése a kiválasztott felhasználónak."
+    "value": "Elküldi a megírt figyelmeztetést a kiválasztott felhasználónak, és ha van kiválasztott bejelentés, ahhoz kapcsolja. Várd meg a sikerjelzést; sikeres küldés után a szövegmező kiürül."
   },
   {
     "_id": "i18n-message-hu-guide-admin-chat-review-send-warning-label",
@@ -83925,7 +83925,7 @@
     "_id": "i18n-message-hu-guide-admin-content-moderation-category-description",
     "key": "guide.admin.content-moderation.category.description",
     "lang": "hu",
-    "value": "Válaszd ki az áttekintendő tartalomtípust."
+    "value": "Szűkítsd a sort egy tartalomtípusra, például bejegyzésekre, eseményekre vagy eszközökre. Az állapotszűrővel együtt keresheted meg a munkaterület ellenőrzésre váró elemeit."
   },
   {
     "_id": "i18n-message-hu-guide-admin-content-moderation-category-label",
@@ -83949,7 +83949,7 @@
     "_id": "i18n-message-hu-guide-admin-content-moderation-overview-description",
     "key": "guide.admin.content-moderation.overview.description",
     "lang": "hu",
-    "value": "A beküldött tartalmak áttekintése és elbírálása az aktuális munkaterületen."
+    "value": "A sor megnyitásával ellenőrizd a beküldött tartalmat, majd a sor menüjében rögzíts döntést. Az állapot- és kategóriaszűrő határozza meg, mely elemek maradnak láthatók a döntés után."
   },
   {
     "_id": "i18n-message-hu-guide-admin-content-moderation-overview-label",
@@ -83961,7 +83961,7 @@
     "_id": "i18n-message-hu-guide-admin-content-moderation-settings-description",
     "key": "guide.admin.content-moderation.settings.description",
     "lang": "hu",
-    "value": "A munkaterület moderálási szabályainak beállítása."
+    "value": "Beállíthatod, aktív-e a moderálás ezen a munkaterületen, mely kategóriákra vonatkozik, és használ-e automatikus jóváhagyást. A külön űrlapon előkészített módosításokat menteni kell."
   },
   {
     "_id": "i18n-message-hu-guide-admin-content-moderation-settings-label",
@@ -83973,7 +83973,7 @@
     "_id": "i18n-message-hu-guide-admin-content-moderation-status-description",
     "key": "guide.admin.content-moderation.status.description",
     "lang": "hu",
-    "value": "Szűrés az elbírálás állapotára."
+    "value": "Válaszd ki a feldolgozandó ellenőrzési állapotot. A számlálók a kiválasztott kategóriára vonatkoznak; a szűrő a listát változtatja, az elem állapotát a sor döntési menüje módosítja."
   },
   {
     "_id": "i18n-message-hu-guide-admin-content-moderation-status-label",
@@ -84009,7 +84009,7 @@
     "_id": "i18n-message-hu-guide-admin-feedback-detail-overview-description",
     "key": "guide.admin.feedback-detail.overview.description",
     "lang": "hu",
-    "value": "Olvasd el a beküldött visszajelzést, majd válaszd a megfelelő műveletet."
+    "value": "A feldolgozottság megítélése előtt olvasd el a teljes visszajelzést és a kategóriáját. A megoldott vagy megoldatlan állapotot a visszajelzési lista sorának menüjében állíthatod."
   },
   {
     "_id": "i18n-message-hu-guide-admin-feedback-detail-overview-label",
@@ -84021,7 +84021,7 @@
     "_id": "i18n-message-hu-guide-admin-feedback-feedback-review-status-filter-description",
     "key": "guide.admin.feedback.feedback-review-status-filter.description",
     "lang": "hu",
-    "value": "Visszajelzések szűrése az elbírálás állapotára."
+    "value": "A folyamatban lévő munkához válaszd a megoldatlan, utánkövetéshez a megoldott visszajelzéseket. A megoldottra jelölés másik sorba helyezi az elemet, nem törli a beküldést."
   },
   {
     "_id": "i18n-message-hu-guide-admin-feedback-feedback-review-status-filter-label",
@@ -84033,7 +84033,7 @@
     "_id": "i18n-message-hu-guide-admin-feedback-overview-description",
     "key": "guide.admin.feedback.overview.description",
     "lang": "hu",
-    "value": "Nyiss meg egy visszajelzést az elolvasásához és az elbírálási állapot rögzítéséhez."
+    "value": "Olvasd el a hibajelzéseket, kéréseket és egyéb visszajelzéseket. Feldolgozás után a sor menüjében jelöld megoldottnak; ha további munka szükséges, a megoldott elem visszaállítható megoldatlanra."
   },
   {
     "_id": "i18n-message-hu-guide-admin-feedback-overview-label",
@@ -84057,7 +84057,7 @@
     "_id": "i18n-message-hu-guide-admin-graph-help-overview-description",
     "key": "guide.admin.graph-help.overview.description",
     "lang": "hu",
-    "value": "Ez a magyarázat a kiválasztott grafikon értelmezését segíti."
+    "value": "Az élek, hidak, elérés, klaszterezettség és visszatérő kapcsolatok magyarázata segít a hálózati ábrák értelmezésében. Térj vissza a gráfhoz a fogalmak és a kijelzett értékek összevetéséhez."
   },
   {
     "_id": "i18n-message-hu-guide-admin-graph-help-overview-label",
@@ -84081,7 +84081,7 @@
     "_id": "i18n-message-hu-guide-admin-help-editor-help-document-description",
     "key": "guide.admin.help-editor.help-document.description",
     "lang": "hu",
-    "value": "Válaszd ki a dokumentumot vagy szerkeszthető guide-ot."
+    "value": "Válaszd ki a kezelendő dokumentumtípust vagy szerkeszthető útmutatót. Magyarázatnál ellenőrizd a célképernyőt is, hogy a mentett lépések az alkalmazás megfelelő részéhez tartozzanak."
   },
   {
     "_id": "i18n-message-hu-guide-admin-help-editor-help-document-label",
@@ -84093,7 +84093,7 @@
     "_id": "i18n-message-hu-guide-admin-help-editor-help-language-description",
     "key": "guide.admin.help-editor.help-language.description",
     "lang": "hu",
-    "value": "Minden nyelv saját verziókkal rendelkezik."
+    "value": "Szerkesztés előtt válaszd ki a tartalom nyelvét. Minden nyelvhez külön verziók és aktív változat tartozik, ezért a választás nem fordítja le és nem publikálja a másik nyelvű tartalmat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-help-editor-help-language-label",
@@ -84105,7 +84105,7 @@
     "_id": "i18n-message-hu-guide-admin-help-editor-help-new-revision-description",
     "key": "guide.admin.help-editor.help-new-revision.description",
     "lang": "hu",
-    "value": "Hozz létre vázlatot; a felhasználók aktiválás után látják."
+    "value": "Készíts új verziót a kiválasztott dokumentumhoz és nyelvhez. Először mentsd el, majd akkor aktiváld, amikor le szeretnéd váltani a felhasználóknak jelenleg látható változatot."
   },
   {
     "_id": "i18n-message-hu-guide-admin-help-editor-help-new-revision-label",
@@ -84117,7 +84117,7 @@
     "_id": "i18n-message-hu-guide-admin-help-editor-overview-description",
     "key": "guide.admin.help-editor.overview.description",
     "lang": "hu",
-    "value": "Súgó-, szabályzat- és szerkeszthető guide-verziók. A rendszer-guide-ok az alkalmazással frissülnek, itt nem jelennek meg."
+    "value": "Itt kezelheted a súgókat, szabályzatokat és szerkeszthető útmutatókat. Válassz nyelvet, ments verziót, majd aktiváld, amikor a felhasználóknak szánod. Az alkalmazás által kezelt rendszerútmutatók nem szerepelnek ebben a szerkesztőben."
   },
   {
     "_id": "i18n-message-hu-guide-admin-help-editor-overview-label",
@@ -84129,7 +84129,7 @@
     "_id": "i18n-message-hu-guide-admin-home-overview-description",
     "key": "guide.admin.home.overview.description",
     "lang": "hu",
-    "value": "Az avatar menüből nyílik a moderálás, tartalom, feladatok és megfigyelés. Az értesítés és guide kapcsolója is ott van."
+    "value": "Az avatármenüben válassz feladatot: tartalomellenőrzés, felhasználói bejelentések, visszajelzések, háttérfeladatok vagy monitorozás. Mindegyik saját felületet nyit; ugyanitt éred el a személyes értesítéseket és az útmutatók kapcsolóját."
   },
   {
     "_id": "i18n-message-hu-guide-admin-home-overview-label",
@@ -84153,7 +84153,7 @@
     "_id": "i18n-message-hu-guide-admin-idea-editor-idea-filter-description",
     "key": "guide.admin.idea-editor.idea-filter.description",
     "lang": "hu",
-    "value": "Váltás a közzétett cikkek, vázlatok és a lomtár között."
+    "value": "A befejezetlen munkához válaszd a piszkozatokat, a látható tartalomhoz a publikált vagy kiemelt cikkeket, helyreállításhoz a kukát. A szűrő a listát változtatja, nem publikál és nem töröl."
   },
   {
     "_id": "i18n-message-hu-guide-admin-idea-editor-idea-filter-label",
@@ -84165,7 +84165,7 @@
     "_id": "i18n-message-hu-guide-admin-idea-editor-idea-language-description",
     "key": "guide.admin.idea-editor.idea-language.description",
     "lang": "hu",
-    "value": "Válaszd ki a cikkek nyelvét."
+    "value": "Válaszd ki, mely nyelv cikkeit listázod és szerkeszted. Piszkozat létrehozása vagy szöveg módosítása előtt ellenőrizd, hogy a tartalom a megfelelő olvasóknak szánt nyelven mentődjön."
   },
   {
     "_id": "i18n-message-hu-guide-admin-idea-editor-idea-language-label",
@@ -84177,7 +84177,7 @@
     "_id": "i18n-message-hu-guide-admin-idea-editor-idea-new-description",
     "key": "guide.admin.idea-editor.idea-new.description",
     "lang": "hu",
-    "value": "Új cikkvázlat létrehozása."
+    "value": "Új cikket kezd a kiválasztott nyelven. Készítsd el a címet, szöveget és képeket, nézd meg az előnézetet, majd ments; a publikálás az elmentett cikk külön művelete."
   },
   {
     "_id": "i18n-message-hu-guide-admin-idea-editor-idea-new-label",
@@ -84189,7 +84189,7 @@
     "_id": "i18n-message-hu-guide-admin-idea-editor-overview-description",
     "key": "guide.admin.idea-editor.overview.description",
     "lang": "hu",
-    "value": "Cikkek, vázlatok és közzétett tartalmak kezelése a kiválasztott nyelven."
+    "value": "A kiválasztott nyelven kezelheted a cikkpiszkozatokat, publikált cikkeket és a kukát. A szerkesztő a tartalmat menti; a publikálás és a kiemelés külön művelet a cikk kártyáján."
   },
   {
     "_id": "i18n-message-hu-guide-admin-idea-editor-overview-label",
@@ -84213,7 +84213,7 @@
     "_id": "i18n-message-hu-guide-admin-item-preview-overview-description",
     "key": "guide.admin.item-preview.overview.description",
     "lang": "hu",
-    "value": "Tekintsd át a bejelentett tartalmat, majd térj vissza az elbíráláshoz."
+    "value": "Moderálási döntés előtt ellenőrizd a bejelentett elem tényleges tartalmát és mellékleteit. Az előnézet bezárása visszavisz a bejelentéshez és az ott elérhető műveletekhez."
   },
   {
     "_id": "i18n-message-hu-guide-admin-item-preview-overview-label",
@@ -84225,7 +84225,7 @@
     "_id": "i18n-message-hu-guide-admin-job-parameter-close-description",
     "key": "guide.admin.job-parameter.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Elveti a paraméterpiszkozatot, és visszatér a folyamathoz. A módosított értékek megőrzéséhez előbb ments."
   },
   {
     "_id": "i18n-message-hu-guide-admin-job-parameter-close-label",
@@ -84237,7 +84237,7 @@
     "_id": "i18n-message-hu-guide-admin-job-parameter-overview-description",
     "key": "guide.admin.job-parameter.overview.description",
     "lang": "hu",
-    "value": "Módosítsd a kiválasztott feladatparamétert, majd ments."
+    "value": "Nézd át a kiválasztott folyamat paraméterneveit, értékeit és választható lehetőségeit. Módosítsd a működéséhez szükséges értékeket, majd mentsd el a konfigurációt."
   },
   {
     "_id": "i18n-message-hu-guide-admin-job-parameter-overview-label",
@@ -84249,7 +84249,7 @@
     "_id": "i18n-message-hu-guide-admin-job-parameter-parameter-save-description",
     "key": "guide.admin.job-parameter.parameter-save.description",
     "lang": "hu",
-    "value": "A paraméterérték alkalmazása."
+    "value": "Elmenti a háttérfeladat módosított paramétereit, és visszatér a folyamathoz. Ezek az értékek a működést állítják be; a mentés önmagában nem kér kézi futtatást."
   },
   {
     "_id": "i18n-message-hu-guide-admin-job-parameter-parameter-save-label",
@@ -84261,7 +84261,7 @@
     "_id": "i18n-message-hu-guide-admin-moderation-settings-close-description",
     "key": "guide.admin.moderation-settings.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Elveti ezt a beállítási piszkozatot, és visszatér az ellenőrzési sorhoz. A módosított kategóriák és automatikus jóváhagyás alkalmazásához bezárás előtt ments."
   },
   {
     "_id": "i18n-message-hu-guide-admin-moderation-settings-close-label",
@@ -84273,7 +84273,7 @@
     "_id": "i18n-message-hu-guide-admin-moderation-settings-overview-description",
     "key": "guide.admin.moderation-settings.overview.description",
     "lang": "hu",
-    "value": "Állítsd be az automatikus ellenőrzést és a moderált kategóriákat, majd ments."
+    "value": "Válaszd ki a moderált kategóriákat és az automatikus jóváhagyás használatát. Automatikus jóváhagyásnál add meg a késleltetést is; mentés előtt ellenőrizd a munkaterület összes beállítását."
   },
   {
     "_id": "i18n-message-hu-guide-admin-moderation-settings-overview-label",
@@ -84285,7 +84285,7 @@
     "_id": "i18n-message-hu-guide-admin-moderation-settings-save-description",
     "key": "guide.admin.moderation-settings.save.description",
     "lang": "hu",
-    "value": "A moderálási beállítások alkalmazása."
+    "value": "Elmenti a kiválasztott moderálási beállításokat ezen a munkaterületen, majd visszatér az ellenőrzési sorhoz. Sikertelen mentésnél az űrlap nyitva marad a javításhoz vagy az újrapróbáláshoz."
   },
   {
     "_id": "i18n-message-hu-guide-admin-moderation-settings-save-label",
@@ -84309,7 +84309,7 @@
     "_id": "i18n-message-hu-guide-admin-monitoring-monitoring-filter-description",
     "key": "guide.admin.monitoring.monitoring-filter.description",
     "lang": "hu",
-    "value": "A megjelenített megfigyelési események kiválasztása."
+    "value": "Szűrj a figyelmet igénylő elemekre, domainműködésre, kézbesítésre vagy feldolgozókra. A szűrő monitorozási kategóriákat választ ki, nem módosítja a megfigyelt folyamatokat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-monitoring-monitoring-filter-label",
@@ -84321,7 +84321,7 @@
     "_id": "i18n-message-hu-guide-admin-monitoring-overview-description",
     "key": "guide.admin.monitoring.overview.description",
     "lang": "hu",
-    "value": "Működési mérések és az alkalmazás legutóbbi eseményeinek áttekintése."
+    "value": "A működési folyamatábrákon keresd a hibás állapotú összetevőket, a várakozó munkát vagy a kézbesítési problémákat. A vizsgálat kiválasztásához együtt olvasd a szakaszok mutatóit és a köztük jelzett forgalmat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-monitoring-overview-label",
@@ -84333,7 +84333,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminarticle-description",
     "key": "guide.admin.navigation.adminArticle.description",
     "lang": "hu",
-    "value": "Cikkvázlatok és publikációk kezelése."
+    "value": "Cikkeket készíthetsz és módosíthatsz, ellenőrizheted az előnézetet, majd a kártyákon kezelheted a publikálást és kiemelést. A piszkozatok és a kuka a listaszűrőkön keresztül érhetők el."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminarticle-label",
@@ -84345,7 +84345,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminchat-description",
     "key": "guide.admin.navigation.adminChat.description",
     "lang": "hu",
-    "value": "Bejelentések ellenőrzése és indokolt figyelmeztetések küldése."
+    "value": "Megnyitja a kiválasztott bejelentett felhasználó moderálási beszélgetési nézetét. Figyelmeztetés írása és küldése előtt ellenőrizd a bejelentés előzményeit és a címzettet."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminchat-label",
@@ -84357,7 +84357,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-admincontent-description",
     "key": "guide.admin.navigation.adminContent.description",
     "lang": "hu",
-    "value": "Súgók, szabályzatok és szerkeszthető guide-ok; a rendszer-guide-ok rejtettek."
+    "value": "Nyelv és verzió szerint kezelheted a súgókat, szabályzatokat és szerkeszthető útmutatókat. Mentsd az előkészített tartalmat, majd aktiváld a felhasználóknak szánt változatot; a rendszer által kezelt útmutatók nem szerepelnek itt."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-admincontent-label",
@@ -84369,7 +84369,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminfeedback-description",
     "key": "guide.admin.navigation.adminFeedback.description",
     "lang": "hu",
-    "value": "Felhasználói visszajelzések kezelése."
+    "value": "Elolvashatod a hibajelzéseket, fejlesztési kéréseket és egyéb visszajelzéseket. A feldolgozott beküldéseket megoldottnak jelölheted, vagy további munkához újranyithatod a tartalmuk törlése nélkül."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminfeedback-label",
@@ -84381,7 +84381,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-admingraph-description",
     "key": "guide.admin.navigation.adminGraph.description",
     "lang": "hu",
-    "value": "A kapcsolódási gráf megtekintése."
+    "value": "Interaktív gráfon vizsgálhatod az embereket és affinitási kapcsolataikat. A nézet mozgatásával, forgatásával és nagyításával követheted a kapcsolatokat, a csomópontokat a jelmagyarázat segít értelmezni."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-admingraph-label",
@@ -84393,7 +84393,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminjobs-description",
     "key": "guide.admin.navigation.adminJobs.description",
     "lang": "hu",
-    "value": "Kézbesítési szabályok és időzített feladatok kezelése."
+    "value": "Áttekintheted a háttérfolyamatokat, értesítési szabályokat és friss futásokat. Egy folyamat megnyitásával kezelheted a támogatott időzítést és paramétereket, illetve a végrehajtási műveleteket."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminjobs-label",
@@ -84405,7 +84405,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminmetrics-description",
     "key": "guide.admin.navigation.adminMetrics.description",
     "lang": "hu",
-    "value": "Működési mutatók és események áttekintése."
+    "value": "Ellenőrizheted a működési állapotot, feldolgozási szakaszokat és kézbesítési forgalmat. A figyelmet igénylő elemek szűrőjével a vizsgálandó összetevőkre szűkítheted a nézetet."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminmetrics-label",
@@ -84417,7 +84417,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminmoderation-description",
     "key": "guide.admin.navigation.adminModeration.description",
     "lang": "hu",
-    "value": "Beküldött tartalmak elbírálása."
+    "value": "Megnyitja a tartalomellenőrzési sort, ahol típus és állapot szerint vizsgálhatod a beküldéseket és rögzíthetsz döntéseket. Beállításai a munkaterület kategóriáit és automatikus jóváhagyását szabályozzák."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminmoderation-label",
@@ -84429,7 +84429,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminparams-description",
     "key": "guide.admin.navigation.adminParams.description",
     "lang": "hu",
-    "value": "Alkalmazásparaméterek és előzmények kezelése."
+    "value": "Szakaszonként áttekintheted és szerkesztheted az alkalmazás konfigurációját. Az előzményekben összevetheted a rögzített verziókat, és szükség esetén visszaállíthatsz korábbi beállítást."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminparams-label",
@@ -84441,7 +84441,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentauthorizations-description",
     "key": "guide.admin.navigation.adminPaymentAuthorizations.description",
     "lang": "hu",
-    "value": "Függő fizetési engedélyezések kezelése."
+    "value": "Megnyitja a fizetési szimulátor engedélyezési nézetét az ott megjelenő fizetések és döntési műveletek kezeléséhez. Döntés beküldése előtt ellenőrizd a fizetés adatait."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentauthorizations-label",
@@ -84453,7 +84453,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentsimulator-description",
     "key": "guide.admin.navigation.adminPaymentSimulator.description",
     "lang": "hu",
-    "value": "A beállított fizetési tesztkörnyezet megnyitása."
+    "value": "Megnyitja a beállított fizetési szimulátor beállításait a fizetési teszt előkészítéséhez. A szimulátor nézetében kezelheted a kiválasztott fizetési szolgáltató tesztbeállításait."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentsimulator-label",
@@ -84465,7 +84465,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminreports-description",
     "key": "guide.admin.navigation.adminReports.description",
     "lang": "hu",
-    "value": "Bejelentett felhasználók és bizonyítékok áttekintése."
+    "value": "Ellenőrizheted a felhasználókról szóló bejelentéseket, az indokot és a forrást. A bizonyítékok átnézése után az elérhető műveletekkel figyelmeztetheted vagy korlátozhatod az érintett felhasználót."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminreports-label",
@@ -84477,7 +84477,7 @@
     "_id": "i18n-message-hu-guide-admin-navigation-adminstats-description",
     "key": "guide.admin.navigation.adminStats.description",
     "lang": "hu",
-    "value": "Alkalmazásstatisztikák áttekintése."
+    "value": "Összehasonlíthatod a profil- és aktivitási statisztikákat a kijelzett időszakokban és bontásokban. A számok változásának értelmezéséhez használd az idővonalakat és gráfmagyarázatokat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-navigation-adminstats-label",
@@ -84537,7 +84537,7 @@
     "_id": "i18n-message-hu-guide-admin-notifications-overview-description",
     "key": "guide.admin.notifications.overview.description",
     "lang": "hu",
-    "value": "Kézbesítési szabályok, időzítések és futások kezelése. A saját értesítéseidet az értesítési központban találod."
+    "value": "Itt az automatikus folyamatokat és értesítési szabályokat látod, állapotukkal, időzítésükkel és futási előzményeikkel. A vezérléshez nyiss meg egy sort; a személyesen kapott értesítések az értesítési postaládában vannak."
   },
   {
     "_id": "i18n-message-hu-guide-admin-notifications-overview-label",
@@ -84549,7 +84549,7 @@
     "_id": "i18n-message-hu-guide-admin-notifications-process-filter-description",
     "key": "guide.admin.notifications.process-filter.description",
     "lang": "hu",
-    "value": "A megjelenített feladatok és kézbesítési szabályok kiválasztása."
+    "value": "Szűkítsd a folyamatlistát a vizsgálandó kategóriára. A szűrés segít megtalálni a feladatot vagy kézbesítési szabályt; nem engedélyezi, tiltja le vagy indítja el a folyamatot."
   },
   {
     "_id": "i18n-message-hu-guide-admin-notifications-process-filter-label",
@@ -84561,7 +84561,7 @@
     "_id": "i18n-message-hu-guide-admin-parameter-edit-close-description",
     "key": "guide.admin.parameter-edit.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Megszakítja a szakasz szerkesztését, és elveti a nem mentett mezőmódosításokat. A már elmentett konfiguráció marad érvényben."
   },
   {
     "_id": "i18n-message-hu-guide-admin-parameter-edit-close-label",
@@ -84573,7 +84573,7 @@
     "_id": "i18n-message-hu-guide-admin-parameter-edit-overview-description",
     "key": "guide.admin.parameter-edit.overview.description",
     "lang": "hu",
-    "value": "Mentés előtt ellenőrizd az értéket és az ellenőrzés eredményét."
+    "value": "A kijelzett értékek, mértékegységek és választási lehetőségek alapján szerkeszd a kiválasztott szakaszt. A mentés konfigurációs módosításként rögzíti a szakaszt; mentés nélküli bezárás elveti a piszkozatot."
   },
   {
     "_id": "i18n-message-hu-guide-admin-parameter-edit-overview-label",
@@ -84585,7 +84585,7 @@
     "_id": "i18n-message-hu-guide-admin-parameter-edit-save-edit-description",
     "key": "guide.admin.parameter-edit.save-edit.description",
     "lang": "hu",
-    "value": "A paraméterérték mentése."
+    "value": "Elmenti a konfigurációs szakasz összes szerkesztett mezőjét. A mentett állapot váltja fel a kijelzett aktuális értékeket; siker esetén a szerkesztő bezárul."
   },
   {
     "_id": "i18n-message-hu-guide-admin-parameter-edit-save-edit-label",
@@ -84609,7 +84609,7 @@
     "_id": "i18n-message-hu-guide-admin-parameter-history-overview-description",
     "key": "guide.admin.parameter-history.overview.description",
     "lang": "hu",
-    "value": "A korábbi változtatások és szerzőik áttekintése."
+    "value": "Nyiss ki egy verziót a mentett értékek és módosítási adatok ellenőrzéséhez. Egy korábbi verzió visszaállítása megváltoztatja az aktív konfigurációt; a puszta megtekintés megtartja a jelenlegi értékeket."
   },
   {
     "_id": "i18n-message-hu-guide-admin-parameter-history-overview-label",
@@ -84633,7 +84633,7 @@
     "_id": "i18n-message-hu-guide-admin-params-overview-description",
     "key": "guide.admin.params.overview.description",
     "lang": "hu",
-    "value": "Az aktuális beállítások áttekintése, paraméter módosítása vagy előzményeinek megnyitása."
+    "value": "Nyiss ki egy konfigurációs szakaszt az aktuális értékeihez. A szerkesztés ezt a szakaszt módosítja; az előzményekben a rögzített verziókat láthatod, és visszaállíthatsz egy korábbi változatot."
   },
   {
     "_id": "i18n-message-hu-guide-admin-params-overview-label",
@@ -84657,7 +84657,7 @@
     "_id": "i18n-message-hu-guide-admin-payment-authorizations-overview-description",
     "key": "guide.admin.payment-authorizations.overview.description",
     "lang": "hu",
-    "value": "Ellenőrizd a függő fizetési engedélyezések részleteit, mielőtt döntesz."
+    "value": "Ez a beállított fizetési szimulátor engedélyezési nézetét nyitja meg. A döntési művelet előtt ellenőrizd a kijelzett fizetés részleteit, majd nézd meg az engedélyezés eredményét."
   },
   {
     "_id": "i18n-message-hu-guide-admin-payment-authorizations-overview-label",
@@ -84681,7 +84681,7 @@
     "_id": "i18n-message-hu-guide-admin-payment-simulator-overview-description",
     "key": "guide.admin.payment-simulator.overview.description",
     "lang": "hu",
-    "value": "Szimulált fizetési eredmények és a rendelkezésre álló tesztvezérlők."
+    "value": "A beállított fizetési szimulátor adminisztrációs nézetében ellenőrizheted és módosíthatod a tesztbeállításokat. A fizetési forgatókönyv kipróbálása előtt nézd át az ott választott szolgáltatót és beállításokat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-payment-simulator-overview-label",
@@ -84705,7 +84705,7 @@
     "_id": "i18n-message-hu-guide-admin-process-detail-overview-description",
     "key": "guide.admin.process-detail.overview.description",
     "lang": "hu",
-    "value": "A szabály módosítása előtt ellenőrizd a csatornákat, paramétereket és korábbi futásokat."
+    "value": "Módosítás előtt nézd át a kiválasztott folyamat beállításait és futásait. Időzítés és paraméterezés ott érhető el, ahol a folyamat támogatja; az előzmények segítenek elkülöníteni a beállítást a futás eredményétől."
   },
   {
     "_id": "i18n-message-hu-guide-admin-process-detail-overview-label",
@@ -84717,7 +84717,7 @@
     "_id": "i18n-message-hu-guide-admin-process-detail-process-detail-save-description",
     "key": "guide.admin.process-detail.process-detail-save.description",
     "lang": "hu",
-    "value": "A beállított kézbesítési szabály mentése."
+    "value": "Elmenti a folyamat módosított konfigurációját. Kilépés előtt ellenőrizd a mentés eredményét; a konfiguráció mentése külön művelet a folyamat kézi futtatásától."
   },
   {
     "_id": "i18n-message-hu-guide-admin-process-detail-process-detail-save-label",
@@ -84741,7 +84741,7 @@
     "_id": "i18n-message-hu-guide-admin-report-detail-overview-description",
     "key": "guide.admin.report-detail.overview.description",
     "lang": "hu",
-    "value": "Az elbírálás előtt olvasd el a bejelentést és annak körülményeit."
+    "value": "A bejelentett felhasználó mellett olvasd el az indokot és a kapcsolódó forrást. Figyelmeztetés vagy tiltás előtt ellenőrizd ezt a tartalmat; a művelet az érintett felhasználóra vonatkozik."
   },
   {
     "_id": "i18n-message-hu-guide-admin-report-detail-overview-label",
@@ -84753,7 +84753,7 @@
     "_id": "i18n-message-hu-guide-admin-reports-blocked-users-description",
     "key": "guide.admin.reports.blocked-users.description",
     "lang": "hu",
-    "value": "A letiltott fiókok és moderálási állapotuk megtekintése."
+    "value": "Megnyitja a korlátozott felhasználók listáját a meglévő tiltások áttekintéséhez. A felhasználó menüje feloldást kínál, és meglévő támogatási beszélgetés esetén annak megnyitását is."
   },
   {
     "_id": "i18n-message-hu-guide-admin-reports-blocked-users-label",
@@ -84777,7 +84777,7 @@
     "_id": "i18n-message-hu-guide-admin-reports-overview-description",
     "key": "guide.admin.reports.overview.description",
     "lang": "hu",
-    "value": "Nyiss meg egy bejelentést a bizonyítékok és az elbírálási műveletek megtekintéséhez."
+    "value": "Nyiss meg egy bejelentést az indok, az érintett felhasználó és a forrás ellenőrzéséhez. A bizonyítékok átnézése után a felhasználó menüjében indíthatsz figyelmeztetést vagy korlátozást; a megnyitás ezt nem végzi el."
   },
   {
     "_id": "i18n-message-hu-guide-admin-reports-overview-label",
@@ -84789,7 +84789,7 @@
     "_id": "i18n-message-hu-guide-admin-reports-reports-review-status-filter-description",
     "key": "guide.admin.reports.reports-review-status-filter.description",
     "lang": "hu",
-    "value": "Függő vagy már elbírált bejelentések kiválasztása."
+    "value": "Válts a figyelmet igénylő, megoldatlan bejelentések és az újra áttekintendő lezárt bejelentések között. Ez a sor kiválasztása, nem a bejelentések állapotának módosítása."
   },
   {
     "_id": "i18n-message-hu-guide-admin-reports-reports-review-status-filter-label",
@@ -84801,7 +84801,7 @@
     "_id": "i18n-message-hu-guide-admin-schedule-edit-close-description",
     "key": "guide.admin.schedule-edit.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Elveti az időzítés szerkesztését, és visszaállítja a megnyitáskor látott ütemezést. Ha az új időzítést szeretnéd érvényesíteni, bezárás előtt ments."
   },
   {
     "_id": "i18n-message-hu-guide-admin-schedule-edit-close-label",
@@ -84813,7 +84813,7 @@
     "_id": "i18n-message-hu-guide-admin-schedule-edit-overview-description",
     "key": "guide.admin.schedule-edit.overview.description",
     "lang": "hu",
-    "value": "Állítsd be a feladat futását: időközét vagy kezdési időpontját."
+    "value": "Állítsd be a folyamat által támogatott kezdést, időközt vagy futási ablakokat. Mentés előtt nézd át az eredményt, mert ez szabályozza, mikor válik esedékessé az ütemezett folyamat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-schedule-edit-overview-label",
@@ -84825,7 +84825,7 @@
     "_id": "i18n-message-hu-guide-admin-schedule-edit-schedule-save-description",
     "key": "guide.admin.schedule-edit.schedule-save.description",
     "lang": "hu",
-    "value": "A kiválasztott időzítés alkalmazása."
+    "value": "Elmenti a kiválasztott folyamat időzítését, és visszatér a részletekhez. Ez az ütemezést módosítja; kézi végrehajtáshoz a külön futtatási műveletet használd."
   },
   {
     "_id": "i18n-message-hu-guide-admin-schedule-edit-schedule-save-label",
@@ -84849,7 +84849,7 @@
     "_id": "i18n-message-hu-guide-admin-stats-overview-description",
     "key": "guide.admin.stats.overview.description",
     "lang": "hu",
-    "value": "A kijelzett időszak és mutatók áttekintése. A grafikon súgója az adott ábrát magyarázza."
+    "value": "Az összesített mutatókat az időszakkal és bontásokkal együtt olvasd, majd az idővonalakon hasonlítsd össze a változásokat. A gráfsúgó segít a hálózati mérőszámok és kapcsolatok értelmezésében."
   },
   {
     "_id": "i18n-message-hu-guide-admin-stats-overview-label",
@@ -84861,7 +84861,7 @@
     "_id": "i18n-message-hu-guide-admin-stats-stats-refresh-description",
     "key": "guide.admin.stats.stats-refresh.description",
     "lang": "hu",
-    "value": "A megjelenített statisztikák frissítése."
+    "value": "Újra lekéri az aktuális nézet statisztikai adatait. A friss számok korábbi megfigyelésekkel való összevetése előtt ellenőrizd a kijelzett időszakot és frissítési adatokat."
   },
   {
     "_id": "i18n-message-hu-guide-admin-stats-stats-refresh-label",
@@ -85539,7 +85539,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-close-description",
     "key": "guide.operator.claim.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Visszatér az üzemeltetői oldalra. A bezárás nem küldi be az űrlapot, és nem vonja vissza a már elbírálásra elküldött kérelmet."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-close-label",
@@ -85551,7 +85551,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-attestation-description",
     "key": "guide.operator.claim.operator-claim-attestation.description",
     "lang": "hu",
-    "value": "Igazold, hogy jogosult vagy a jogi személy nevében eljárni."
+    "value": "Igazold, hogy jogosult vagy a megnevezett jogi személy képviseletére. Ez a nyilatkozat szükséges a céges kérelemhez, de nem helyettesíti az ellenőrzés eredményét."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-attestation-label",
@@ -85563,7 +85563,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-legal-name-description",
     "key": "guide.operator.claim.operator-claim-legal-name.description",
     "lang": "hu",
-    "value": "A cég bejegyzett, hivatalos nevét add meg."
+    "value": "A cég bejegyzett nevét add meg, hogy az ellenőrzés azonosíthassa a jogi személyt. Ide a cég adata kerül, nem a termék megjelenített neve."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-legal-name-label",
@@ -85575,7 +85575,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-client-code-description",
     "key": "guide.operator.claim.operator-claim-path-client-code.description",
     "lang": "hu",
-    "value": "Egy meglévő, igazolt operátortól kapott kód használata."
+    "value": "Egy már ellenőrzött, aktív üzemeltető által kiadott ügyfélkóddal kapcsolhatod hozzá ezt a telepítést. Ez csatlakozás a meglévő üzemeltetőhöz, nem új céges ellenőrzési kérelem."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-client-code-label",
@@ -85587,7 +85587,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-company-description",
     "key": "guide.operator.claim.operator-claim-path-company.description",
     "lang": "hu",
-    "value": "Add meg a jogi személyt és a meghatalmazott kapcsolattartót."
+    "value": "Add meg a cég jogi adatait és a képviseletre jogosult személy elérhetőségét. A beküldés ellenőrzésre továbbítja ezeket; az űrlap kitöltése önmagában nem jelent jóváhagyást."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-company-label",
@@ -85599,7 +85599,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-operator-redeem-token-description",
     "key": "guide.operator.claim.operator-redeem-token.description",
     "lang": "hu",
-    "value": "A megadott ügyfélkóddal kapcsold hozzá a telepítést."
+    "value": "Beküldi az ügyfélkódot, hogy a regisztrált telepítést a kódot kiadó üzemeltetőhöz kapcsolja. A visszakapott állapot mutatja, hogy a hozzárendelést elfogadták-e."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-operator-redeem-token-label",
@@ -85611,7 +85611,7 @@
     "_id": "i18n-message-hu-guide-operator-claim-overview-description",
     "key": "guide.operator.claim.overview.description",
     "lang": "hu",
-    "value": "Válassz céges igazolást vagy meglévő ügyfélkódot. Itt látszik az elbírálás állapota."
+    "value": "Új üzemeltetői azonosításhoz válaszd a céges ellenőrzést, meglévőhöz az ügyfélkódot. Beküldés előtt regisztrálni kell a telepítést; az elbírálásra váró és a jóváhagyott állapot külön jelenik meg."
   },
   {
     "_id": "i18n-message-hu-guide-operator-claim-overview-label",
@@ -85635,7 +85635,7 @@
     "_id": "i18n-message-hu-guide-operator-community-overview-description",
     "key": "guide.operator.community.overview.description",
     "lang": "hu",
-    "value": "Itt olvashatod az operátori közösség információit és az elérhető közleményeket."
+    "value": "Olvasd el az üzemeltetőknek szóló közleményeket, a hozzájuk tartozó hivatkozásokat és a letöltések ellenőrzési adatait. Letöltés használata előtt nézd meg a forrást és a jelzett ellenőrzési állapotot."
   },
   {
     "_id": "i18n-message-hu-guide-operator-community-overview-label",
@@ -85647,7 +85647,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-close-description",
     "key": "guide.operator.configuration.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Visszatér az üzemeltetői oldalra. Bezárás előtt használd a megfelelő mentési műveletet, ha meg szeretnéd őrizni a függő konfigurációs módosításokat."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-close-label",
@@ -85659,7 +85659,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-admin-emails-description",
     "key": "guide.operator.configuration.operator-save-admin-emails.description",
     "lang": "hu",
-    "value": "Az alkalmazás adminisztrációjára jogosult fiókok mentése."
+    "value": "Elmenti az alkalmazás-adminisztrációhoz hozzáférést adó e-mail-listát. Ellenőrizd a felvételeket és törléseket; a közös konfigurációs piszkozat többi függő módosítását is menti."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-admin-emails-label",
@@ -85671,7 +85671,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-branding-description",
     "key": "guide.operator.configuration.operator-save-branding.description",
     "lang": "hu",
-    "value": "A telepítésen megjelenő arculat mentése."
+    "value": "Elmenti a telepítés nevét és logóját. A közös konfigurációs piszkozat többi szakaszának függő módosításait is menti; az új arculat ezután megjelenik az alkalmazásban."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-branding-label",
@@ -85683,7 +85683,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-firebase-description",
     "key": "guide.operator.configuration.operator-save-firebase.description",
     "lang": "hu",
-    "value": "Mentsd a hitelesítő adatokat a kapcsolat tesztelése vagy aktiválása előtt."
+    "value": "Mentsd a Firebase-beállítást, majd aktiválás előtt futtasd a hitelesítési és üzenetküldési ellenőrzéseket. Az adatok mentése és az aktiválás külön művelet; a közös konfiguráció többi módosítása is mentődik."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-firebase-label",
@@ -85695,7 +85695,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-privacy-contact-description",
     "key": "guide.operator.configuration.operator-save-privacy-contact.description",
     "lang": "hu",
-    "value": "Az adatvédelmi tájékoztató adatkezelőjének és kapcsolatának mentése."
+    "value": "Elmenti az adatvédelmi tájékoztatásban megjelenő adatkezelő nevét és kapcsolattartási e-mail-címét. Velük együtt a közös konfigurációs piszkozat többi függő módosítását is menti."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-privacy-contact-label",
@@ -85707,7 +85707,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-tls-description",
     "key": "guide.operator.configuration.operator-save-tls.description",
     "lang": "hu",
-    "value": "Tanúsítványbeállítások mentése; aktiválás előtt használd az ellenőrzéseket."
+    "value": "Beküldi a TLS-módot, a domaint és a tanúsítvány beállításait. A visszakapott feladatállapotból ellenőrizd a befejezést; a mentési kérés önmagában nem bizonyítja, hogy az új tanúsítvány már aktív."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-operator-save-tls-label",
@@ -85719,7 +85719,7 @@
     "_id": "i18n-message-hu-guide-operator-configuration-overview-description",
     "key": "guide.operator.configuration.overview.description",
     "lang": "hu",
-    "value": "A szekciókban az arculatot, adminokat, adatvédelmi kapcsolatot és szolgáltatásokat állíthatod be. Szekciónként ments."
+    "value": "Nyisd ki a beállítandó szakaszt. Az arculat, a hozzáférés és a szolgáltatási adatok közös konfigurációs piszkozatot használnak, ezért mentés előtt a többi függő módosítást is nézd át. A TLS mentése külön művelet."
   },
   {
     "_id": "i18n-message-hu-guide-operator-configuration-overview-label",
@@ -85743,7 +85743,7 @@
     "_id": "i18n-message-hu-guide-operator-deployments-overview-description",
     "key": "guide.operator.deployments.overview.description",
     "lang": "hu",
-    "value": "Ezek a kiválasztott operátor node-jai. Nézd meg a jelentett állapotukat és hozzájárulásukat."
+    "value": "A ranglistán kiválasztott üzemeltető telepítéseit látod. A jelentett állapot és hozzájárulás összehasonlításával megértheted, mely telepítések adják az üzemeltető összesített eredményét."
   },
   {
     "_id": "i18n-message-hu-guide-operator-deployments-overview-label",
@@ -85755,7 +85755,7 @@
     "_id": "i18n-message-hu-guide-operator-home-claim-description",
     "key": "guide.operator.home.claim.description",
     "lang": "hu",
-    "value": "Kapcsold a telepítést az igazolt operátori azonosítódhoz."
+    "value": "Regisztráció után kérhetsz céges ellenőrzést, vagy ügyfélkóddal kapcsolhatod a telepítést egy már ellenőrzött üzemeltetőhöz. Az eredmény és az ellenőrzés állapota az ablakban látható."
   },
   {
     "_id": "i18n-message-hu-guide-operator-home-claim-label",
@@ -85767,7 +85767,7 @@
     "_id": "i18n-message-hu-guide-operator-home-configuration-description",
     "key": "guide.operator.home.configuration.description",
     "lang": "hu",
-    "value": "A telepítés és a kapcsolódó szolgáltatások beállításai."
+    "value": "Itt állíthatod be a telepítés nevét, logóját, adminisztrátori hozzáférését, adatvédelmi elérhetőségét és kapcsolódó szolgáltatásait. A szakaszok mutatják a beállításhoz szükséges adatokat és ellenőrzéseket."
   },
   {
     "_id": "i18n-message-hu-guide-operator-home-configuration-label",
@@ -85779,7 +85779,7 @@
     "_id": "i18n-message-hu-guide-operator-home-leaderboard-description",
     "key": "guide.operator.home.leaderboard.description",
     "lang": "hu",
-    "value": "Egy igazolt operátort kiválasztva láthatod a telepítéseit."
+    "value": "Válassz üzemeltetőt a hozzá tartozó telepítések megtekintéséhez. A listában külön összehasonlíthatod az egyes telepítések jelentett állapotát és hozzájárulását."
   },
   {
     "_id": "i18n-message-hu-guide-operator-home-leaderboard-label",
@@ -85791,7 +85791,7 @@
     "_id": "i18n-message-hu-guide-operator-home-registration-description",
     "key": "guide.operator.home.registration.description",
     "lang": "hu",
-    "value": "A regisztráció és a mérési jelentések kezelése."
+    "value": "Kapcsold ezt a telepítést egy Registryhez, és ellenőrizd a kapcsolatot, valamint a mérési jelentések kézbesítését. A regisztráció és az ellenőrzött üzemeltetői személyazonosság külön lépés."
   },
   {
     "_id": "i18n-message-hu-guide-operator-home-registration-label",
@@ -85803,7 +85803,7 @@
     "_id": "i18n-message-hu-guide-operator-home-revenue-description",
     "key": "guide.operator.home.revenue.description",
     "lang": "hu",
-    "value": "Bevételek, bizonylatok és szinkronizálás."
+    "value": "Hasonlítsd össze a rögzített bevételeket, a Registry felé történő kézbesítést és az elfogadott elszámolásokat. Itt keresheted meg a függő vagy elakadt jelentéseket, és az összegekhez tartozó időszakot, pénznemet."
   },
   {
     "_id": "i18n-message-hu-guide-operator-home-revenue-label",
@@ -85815,7 +85815,7 @@
     "_id": "i18n-message-hu-guide-operator-home-updates-description",
     "key": "guide.operator.home.updates.description",
     "lang": "hu",
-    "value": "Az elérhető verziót és a frissítés állapotát mutatja."
+    "value": "Hasonlítsd össze a telepített és az elérhető verziót, és ellenőrizd, van-e visszaállítási lehetőség. Itt tájékozódj a futó telepítés frissítése előtt."
   },
   {
     "_id": "i18n-message-hu-guide-operator-home-updates-label",
@@ -85863,7 +85863,7 @@
     "_id": "i18n-message-hu-guide-operator-registration-close-description",
     "key": "guide.operator.registration.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Visszatér az üzemeltetői oldalra. A regisztrált kapcsolat aktív marad; a deaktiváláshoz a leválasztási műveletet használd."
   },
   {
     "_id": "i18n-message-hu-guide-operator-registration-close-label",
@@ -85875,7 +85875,7 @@
     "_id": "i18n-message-hu-guide-operator-registration-disconnect-description",
     "key": "guide.operator.registration.disconnect.description",
     "lang": "hu",
-    "value": "A telepítés leválasztása a Registryről."
+    "value": "Deaktiválja ennek a telepítésnek a jelenlegi Registry-kapcsolatát. Akkor használd, ha valóban le szeretnél kapcsolódni, nem csak a regisztrációs ablakot bezárni."
   },
   {
     "_id": "i18n-message-hu-guide-operator-registration-disconnect-label",
@@ -85887,7 +85887,7 @@
     "_id": "i18n-message-hu-guide-operator-registration-overview-description",
     "key": "guide.operator.registration.overview.description",
     "lang": "hu",
-    "value": "A telepítés regisztrációja, életjele és mérési jelentései."
+    "value": "Együtt ellenőrizd a kiválasztott Registry címét, a regisztrációt, az utolsó életjelet és a mérési jelentések kézbesítését. A regisztrált kapcsolat önmagában nem jelenti minden jelentés sikeres kézbesítését."
   },
   {
     "_id": "i18n-message-hu-guide-operator-registration-overview-label",
@@ -85899,7 +85899,7 @@
     "_id": "i18n-message-hu-guide-operator-registration-refresh-description",
     "key": "guide.operator.registration.refresh.description",
     "lang": "hu",
-    "value": "A regisztráció és a jelentésküldés aktuális állapotának lekérése."
+    "value": "Újra lekéri a regisztráció, az életjel és a kézbesítés adatait egy művelet vagy kapcsolatváltozás után. A nézet frissítése nem regisztrálja és nem kapcsolja le a telepítést."
   },
   {
     "_id": "i18n-message-hu-guide-operator-registration-refresh-label",
@@ -85911,7 +85911,7 @@
     "_id": "i18n-message-hu-guide-operator-registration-register-description",
     "key": "guide.operator.registration.register.description",
     "lang": "hu",
-    "value": "Regisztráld ezt a telepítést a megjelenített Registryben."
+    "value": "Regisztrál a megadott Registry-címen. Ha ez eltér az aktív Registrytől, a meglévő kapcsolatot lecseréli; indítás előtt ellenőrizd a célcímet."
   },
   {
     "_id": "i18n-message-hu-guide-operator-registration-register-label",
@@ -85923,7 +85923,7 @@
     "_id": "i18n-message-hu-guide-operator-registration-synchronize-measurements-description",
     "key": "guide.operator.registration.synchronize-measurements.description",
     "lang": "hu",
-    "value": "A függőben lévő mérési jelentések szinkronizálása."
+    "value": "Kéri a függő mérési jelentések kézbesítését a kapcsolódó Registrynek. A visszakapott állapotból ellenőrizheted, mely jelentéseket fogadták el, és melyek maradtak függőben vagy elakadtak."
   },
   {
     "_id": "i18n-message-hu-guide-operator-registration-synchronize-measurements-label",
@@ -85935,7 +85935,7 @@
     "_id": "i18n-message-hu-guide-operator-revenue-close-description",
     "key": "guide.operator.revenue.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Visszatér az üzemeltetői oldalra. A bevételi nézet bezárása megőrzi a rögzített tételeket, az elszámolásokat és a jelentések kézbesítési állapotát."
   },
   {
     "_id": "i18n-message-hu-guide-operator-revenue-close-label",
@@ -85947,7 +85947,7 @@
     "_id": "i18n-message-hu-guide-operator-revenue-operator-synchronize-revenue-description",
     "key": "guide.operator.revenue.operator-synchronize-revenue.description",
     "lang": "hu",
-    "value": "A függő bevételi jelentések küldése a kézbesítési soron keresztül."
+    "value": "Kéri a kézbesítési sortól a függő bevételi jelentések szinkronizálását. Utána ellenőrizd az állapotot és az elakadt jelentéseket; az indítás nem garantálja minden jelentés elfogadását."
   },
   {
     "_id": "i18n-message-hu-guide-operator-revenue-operator-synchronize-revenue-label",
@@ -85959,7 +85959,7 @@
     "_id": "i18n-message-hu-guide-operator-revenue-overview-description",
     "key": "guide.operator.revenue.overview.description",
     "lang": "hu",
-    "value": "A főkönyv, elszámolások és jelentésküldés állapota. Az összegek a kijelzett pénznemhez és időszakhoz tartoznak."
+    "value": "Hasonlítsd össze a bevételi tételeket, a kézbesítési állapotot és az elfogadott elszámolásokat a kijelzett időszakban és pénznemben. A helyben rögzített összeg és a Registry által elfogadott jelentés külön állomás."
   },
   {
     "_id": "i18n-message-hu-guide-operator-revenue-overview-label",
@@ -85971,7 +85971,7 @@
     "_id": "i18n-message-hu-guide-operator-updates-close-description",
     "key": "guide.operator.updates.close.description",
     "lang": "hu",
-    "value": "Visszatérés az előző felülethez."
+    "value": "Bezárja a folyamat ablakát, és visszatér az üzemeltetői oldalra. Az ablak bezárása nem szakítja meg a már elindított frissítést."
   },
   {
     "_id": "i18n-message-hu-guide-operator-updates-close-label",
@@ -85983,7 +85983,7 @@
     "_id": "i18n-message-hu-guide-operator-updates-operator-apply-update-description",
     "key": "guide.operator.updates.operator-apply-update.description",
     "lang": "hu",
-    "value": "Indítsd a megjelenített frissítést, és itt kövesd az állapotát."
+    "value": "Elindítja a felajánlott kiadás telepítését ezen a rendszeren. Itt követheted a haladást; sikeres befejezés után az alkalmazás újratöltődik a telepített verzió használatához."
   },
   {
     "_id": "i18n-message-hu-guide-operator-updates-operator-apply-update-label",
@@ -85995,7 +85995,7 @@
     "_id": "i18n-message-hu-guide-operator-updates-operator-refresh-update-description",
     "key": "guide.operator.updates.operator-refresh-update.description",
     "lang": "hu",
-    "value": "Az elérhető, aláírt kiadás adatainak frissítése."
+    "value": "Lekéri a legfrissebb kiadási információt és frissítési állapotot. Ezzel az elérhető verziókat ellenőrzöd; a telepítést a frissítési művelet indítja."
   },
   {
     "_id": "i18n-message-hu-guide-operator-updates-operator-refresh-update-label",
@@ -86007,7 +86007,7 @@
     "_id": "i18n-message-hu-guide-operator-updates-operator-rollback-update-description",
     "key": "guide.operator.updates.operator-rollback-update.description",
     "lang": "hu",
-    "value": "Az előző, támogatott kiadás visszaállítása, ha elérhető."
+    "value": "Elindítja a támogatott visszaállítást a kijelzett célverzióra. Előbb ellenőrizd ezt a verziót; sikeres visszaállítás után az alkalmazás a frissítéshez hasonlóan újratöltődik."
   },
   {
     "_id": "i18n-message-hu-guide-operator-updates-operator-rollback-update-label",
@@ -86019,7 +86019,7 @@
     "_id": "i18n-message-hu-guide-operator-updates-overview-description",
     "key": "guide.operator.updates.overview.description",
     "lang": "hu",
-    "value": "Itt láthatod a telepített és elérhető verziót, a folyamat állapotát és hibáit."
+    "value": "Művelet előtt ellenőrizd a telepített verziót, a felajánlott kiadást és a visszaállítás célverzióját. Frissítés közben itt látható az aktuális szakasz, a haladás és az esetleges hiba."
   },
   {
     "_id": "i18n-message-hu-guide-operator-updates-overview-label",
