@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class EventWatchService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
@@ -48,17 +48,17 @@ public class EventWatchService {
 
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final HomeUserProfileService homeUserProfileService;
+    private final ProfilePresentation homeUserProfileService;
     private final Friendships friendshipFacts;
-    private final UserActivityCountersService userActivityCountersService;
+    private final ActivityCounters userActivityCountersService;
     private final NotificationDelivery notificationOutboxService;
 
     public EventWatchService(
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventsRepository activityEventsRepository,
-            HomeUserProfileService homeUserProfileService,
+            ProfilePresentation homeUserProfileService,
             Friendships friendshipFacts,
-            UserActivityCountersService userActivityCountersService,
+            ActivityCounters userActivityCountersService,
             NotificationDelivery notificationOutboxService) {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.activityEventsRepository = activityEventsRepository;

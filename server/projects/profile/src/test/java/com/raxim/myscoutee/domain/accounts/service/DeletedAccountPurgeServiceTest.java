@@ -110,9 +110,8 @@ class DeletedAccountPurgeServiceTest {
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
                 new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
-                activityEventsRepository,
+                new com.raxim.myscoutee.domain.events.service.EventPrivacyService(activityEventsRepository, activityMembersRepository, mongoTemplate, mediaStorageService),
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
-                activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
                 mongoTemplate,
@@ -174,9 +173,8 @@ class DeletedAccountPurgeServiceTest {
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
                 new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
-                activityEventsRepository,
+                new com.raxim.myscoutee.domain.events.service.EventPrivacyService(activityEventsRepository, activityMembersRepository, mongoTemplate, mediaStorageService),
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
-                activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
                 mongoTemplate,
@@ -226,9 +224,8 @@ class DeletedAccountPurgeServiceTest {
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
                 new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
-                activityEventsRepository,
+                new com.raxim.myscoutee.domain.events.service.EventPrivacyService(activityEventsRepository, activityMembersRepository, mongoTemplate, mediaStorageService),
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
-                activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
                 mongoTemplate,

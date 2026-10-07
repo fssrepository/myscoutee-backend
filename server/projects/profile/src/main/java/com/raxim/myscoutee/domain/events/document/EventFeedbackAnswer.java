@@ -17,7 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "event_feedback_answer_event_submitted", def = "{'eventId': 1, 'submittedAtIso': -1}"),
         @CompoundIndex(name = "event_feedback_answer_target_user_submitted", def = "{'targetUserId': 1, 'submittedAtIso': -1}")
 })
-public class EventFeedbackAnswer {
+public class EventFeedbackAnswer implements com.raxim.myscoutee.domain.events.api.FeedbackDirectory.Answer {
     @Id
     private String id;
 

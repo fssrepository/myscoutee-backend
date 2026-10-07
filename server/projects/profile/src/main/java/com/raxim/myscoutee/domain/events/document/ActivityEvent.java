@@ -56,13 +56,6 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
     private String workspaceGroupId;
     public String getWorkspaceGroupId() { return workspaceGroupId; }
     public void setWorkspaceGroupId(String value) { workspaceGroupId = value; }
-    public static final String STATUS_ACTIVE = "A";
-    public static final String STATUS_DRAFT = "DR";
-    public static final String STATUS_TRASHED = "T";
-    public static final String STATUS_UNDER_REVIEW = "UR";
-    public static final String STATUS_BLOCKED = "B";
-    public static final String STATUS_DELETED = "D";
-    public static final String STATUS_INACTIVE = "I";
 
     @Id
     private String id;

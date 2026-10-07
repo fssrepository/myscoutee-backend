@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.document.Users.FollowingRecord;
 import com.raxim.myscoutee.domain.accounts.api.Friendships;
@@ -21,8 +21,8 @@ import com.raxim.myscoutee.domain.accounts.api.Friendships;
  * Reads return the stored state. Event mutations and the existing expiry worker own updates. */
 @Service
 public class OrganizerFollowingService implements com.raxim.myscoutee.domain.accounts.api.FollowingEvents {
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
 
     private final MongoTemplate mongo;
     private final Friendships friendships;
@@ -68,13 +68,11 @@ public class OrganizerFollowingService implements com.raxim.myscoutee.domain.acc
 
     FollowingRecord calculate(String viewer, Set<String> organizers, Instant now) {
         if (organizers.isEmpty()) return new FollowingRecord(List.of(), 0, null);
-        List<ActivityEvent> events = mongo.find(Query.query(Criteria.where("creatorUserId").in(organizers)
-                .and("status").is("A")
-                .and("generated").ne(true)), ActivityEvent.class);
+        List<? extends Event> events = eventOwnership.activeOriginalEventsByCreators(organizers);
         Set<String> friends = friendships.friendIds(viewer);
         Set<String> sources = new HashSet<>();
         Instant nextExpiry = null;
-        for (ActivityEvent event : events) {
+        for (Event event : events) {
             if (!eligible(event, viewer, friends, now)) continue;
             sources.add(event.getSourceId());
             Instant end = boundary(event);
@@ -83,7 +81,7 @@ public class OrganizerFollowingService implements com.raxim.myscoutee.domain.acc
         return new FollowingRecord(List.copyOf(organizers), sources.size(), nextExpiry == null ? null : nextExpiry.toString());
     }
 
-    public static boolean eligible(ActivityEvent event, String viewer, Set<String> friends, Instant now) {
+    public static boolean eligible(Event event, String viewer, Set<String> friends, Instant now) {
         if (event == null || !"A".equals(event.getStatus()) || !Boolean.TRUE.equals(event.getPublished())
                 || Boolean.TRUE.equals(event.getGenerated()) || Boolean.TRUE.equals(event.getIsTrashed())
                 || "tournament-room".equalsIgnoreCase(event.getEventType())
@@ -95,7 +93,7 @@ public class OrganizerFollowingService implements com.raxim.myscoutee.domain.acc
         return end != null && end.isAfter(now);
     }
 
-    private static Instant boundary(ActivityEvent event) {
+    private static Instant boundary(Event event) {
         String value = event.getEndAtIso();
         if (value == null || value.isBlank()) value = event.getStartAtIso();
         try { return Instant.parse(value); } catch (RuntimeException ignored) { return null; }
@@ -104,7 +102,7 @@ public class OrganizerFollowingService implements com.raxim.myscoutee.domain.acc
     public void refreshForSources(Collection<String> sourceIds) {
         if (sourceIds == null || sourceIds.isEmpty()) return;
         Set<String> organizers = new HashSet<>();
-        mongo.find(Query.query(Criteria.where("sourceId").in(sourceIds)), ActivityEvent.class)
+        eventOwnership.storedEventsBySources(sourceIds)
                 .forEach(event -> organizers.add(event.getCreatorUserId()));
         refreshForOrganizers(organizers);
     }
@@ -141,4 +139,6 @@ public class OrganizerFollowingService implements com.raxim.myscoutee.domain.acc
 
     public record FollowedMember(String id, String userId, String name, String initials,
             String gender, String city, String avatarUrl, String role, String status) {}
+    @Override public java.util.List<String> organizerIds(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) { return state((Users) profile).organizerIds(); }
+    public boolean eligibleEvent(Event event, String viewer, Set<String> friends, Instant now) { return eligible(event, viewer, friends, now); }
 }

@@ -49,7 +49,7 @@ class OrganizerFollowingServiceTest {
         MongoTemplate mongo = mock(MongoTemplate.class); FriendshipFacts friends = mock(FriendshipFacts.class);
         when(friends.friendIds("viewer")).thenReturn(Set.of());
         when(mongo.find(any(Query.class), eq(ActivityEvent.class))).thenReturn(List.of(event("one"), event("one"), event("two")));
-        var result = new OrganizerFollowingService(mongo, friends).calculate("viewer", Set.of("organizer"), NOW);
+        var result = service(mongo, friends).calculate("viewer", Set.of("organizer"), NOW);
         assertEquals(2, result.eventCount()); assertEquals("2026-09-22T13:00:00Z", result.nextExpiryAtIso());
         verify(mongo, times(1)).find(any(Query.class), eq(ActivityEvent.class));
     }
@@ -62,7 +62,7 @@ class OrganizerFollowingServiceTest {
         when(friends.friendIds("viewer")).thenReturn(Set.of());
         when(mongo.updateFirst(any(Query.class), any(Update.class), eq(Users.class)))
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
-        var result = new OrganizerFollowingService(mongo, friends).change("viewer", "organizer", false);
+        var result = service(mongo, friends).change("viewer", "organizer", false);
         assertEquals(List.of("other"), result.organizerIds());
         verify(mongo).updateFirst(any(Query.class), argThat((Update update) ->
                 update.getUpdateObject().get("$set", org.bson.Document.class).keySet().equals(Set.of("following"))), eq(Users.class));
@@ -78,7 +78,7 @@ class OrganizerFollowingServiceTest {
         when(friends.friendIds("viewer")).thenReturn(Set.of());
         when(mongo.updateFirst(any(Query.class), any(Update.class), eq(Users.class)))
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
-        var service = new OrganizerFollowingService(mongo, friends);
+        var service = service(mongo, friends);
         var result = service.change("viewer", "organizer", true);
         assertEquals(2, result.eventCountDelta()); assertEquals(2, result.eventCount());
         user.setFollowing(new Users.FollowingRecord(result.organizerIds(), result.eventCount(), result.nextExpiryAtIso()));
@@ -91,11 +91,16 @@ class OrganizerFollowingServiceTest {
         when(mongo.findOne(any(Query.class), eq(Users.class))).thenReturn(user);
         when(mongo.updateFirst(any(Query.class), any(Update.class), eq(Users.class)))
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
-        var result = new OrganizerFollowingService(mongo, friends).change("viewer", "organizer", false);
+        var result = service(mongo, friends).change("viewer", "organizer", false);
         assertEquals(-3, result.eventCountDelta()); assertEquals(0, result.eventCount());
         verify(mongo).updateFirst(any(Query.class), argThat((Update update) ->
                 new Users.FollowingRecord(List.of(), 0, null).equals(
                     update.getUpdateObject().get("$set", org.bson.Document.class).get("following"))), eq(Users.class));
     }
 
+    private OrganizerFollowingService service(MongoTemplate mongo, FriendshipFacts friends) {
+        var service = new OrganizerFollowingService(mongo, friends);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(null, mongo));
+        return service;
+    }
 }

@@ -111,7 +111,7 @@ class ActivitiesMembersServiceTest {
                 activityMembersRepository,
                 activityEventsRepository,
                 activitySubEventResourcesRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 homeUserProfileService,
                 assetsService,
                 activitiesResourcesService,

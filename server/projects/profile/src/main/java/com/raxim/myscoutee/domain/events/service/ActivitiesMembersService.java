@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
+import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.api.Assets;
@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
 import com.raxim.myscoutee.domain.payments.api.EventPayments;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -43,7 +43,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionResponseDto;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberInviteRejectionDto;
@@ -63,14 +63,14 @@ import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMembersSummaryDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
 public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.PartnerInvitationAdmission, com.raxim.myscoutee.domain.events.api.CheckoutMemberships, com.raxim.myscoutee.domain.events.api.MemberAudience {
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private EventJobQueries jobGroupScope;
 
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
     private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
@@ -123,8 +123,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
-    private final UsersRepository usersRepository;
-    private final HomeUserProfileService homeUserProfileService;
+    private final ProfileDirectory usersRepository;
+    private final ProfilePresentation homeUserProfileService;
     private final Assets assetsService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
@@ -136,7 +136,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final EventConversations chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessPermissions accessControlService;
-    private final UserActivityCountersService userActivityCountersService;
+    private final ActivityCounters userActivityCountersService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
     private final ActivityMemberMapper activityMemberMapper;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
@@ -145,8 +145,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             ActivityMembersRepository activityMembersRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
-            UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService,
+            ProfileDirectory usersRepository,
+            ProfilePresentation homeUserProfileService,
             Assets assetsService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
@@ -158,7 +158,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             EventConversations chatService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessPermissions accessControlService,
-            UserActivityCountersService userActivityCountersService,
+            ActivityCounters userActivityCountersService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,
             ActivityMemberMapper activityMemberMapper) {
         this.activityMembersRepository = activityMembersRepository;
@@ -245,7 +245,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 normalizedOwnerType,
                 normalizedOwnerId,
                 ownerMembers);
-        Map<String, Users> usersById = memberUsersById(ownerMembers);
+        Map<String, WorkspaceProfile> usersById = memberUsersById(ownerMembers);
         return ownerMembers.stream()
                 .map(member -> toEntryDto(member, viewerUserId, usersById))
                 .filter(Objects::nonNull)
@@ -600,7 +600,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Map<String, String> namesByUserId = new LinkedHashMap<>();
         if (!userIds.isEmpty()) {
-            for (Users user : usersRepository.findByUserIdIn(userIds)) {
+            for (WorkspaceProfile user : usersRepository.findByUserIdIn(userIds)) {
                 String userId = normalizeId(user == null ? null : user.getUserId());
                 if (StringUtils.hasText(userId)) {
                     namesByUserId.putIfAbsent(userId, safeText(user.getName()));
@@ -1618,7 +1618,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         List<ActivityMemberEntryDto> nextEntries = new ArrayList<>();
         List<ActivityMember> profileMembers = new ArrayList<>(existing == null ? List.of() : existing);
         if (next != null) profileMembers.add(next);
-        Map<String, Users> usersById = memberUsersById(profileMembers);
+        Map<String, WorkspaceProfile> usersById = memberUsersById(profileMembers);
         for (ActivityMember member : existing == null ? List.<ActivityMember>of() : existing) {
             String memberId = member == null ? "" : firstNonBlank(
                     normalizeId(member.getSyncKey()),
@@ -1676,21 +1676,21 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         return next;
     }
 
-    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
+    public OwnerMembersSnapshot requestJoin(String eventId, WorkspaceProfile viewer, ActivityEvent eventRecord) {
         return requestJoin(eventId, viewer, eventRecord, false);
     }
 
-    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted) {
+    public OwnerMembersSnapshot requestJoin(String eventId, WorkspaceProfile viewer, ActivityEvent eventRecord, boolean accepted) {
         return requestJoin(eventId, viewer, eventRecord, accepted, false);
     }
 
-    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted, boolean waitingList) {
+    public OwnerMembersSnapshot requestJoin(String eventId, WorkspaceProfile viewer, ActivityEvent eventRecord, boolean accepted, boolean waitingList) {
         return requestJoin(eventId, viewer, eventRecord, accepted, waitingList, false);
     }
 
     public OwnerMembersSnapshot requestJoin(
             String eventId,
-            Users viewer,
+            WorkspaceProfile viewer,
             ActivityEvent eventRecord,
             boolean accepted,
             boolean waitingList,
@@ -4267,25 +4267,25 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         return toSortableDate(next.getUpdatedDate()) >= toSortableDate(current.getUpdatedDate());
     }
 
-    private Map<String, Users> memberUsersById(Collection<ActivityMember> members) {
+    private Map<String, WorkspaceProfile> memberUsersById(Collection<ActivityMember> members) {
         Set<String> userIds = new LinkedHashSet<>();
         for (ActivityMember member : members) {
             String userId = normalizeId(member == null ? null : member.getUserId());
             if (StringUtils.hasText(userId)) userIds.add(userId);
         }
         if (userIds.isEmpty()) return Map.of();
-        Map<String, Users> usersById = new LinkedHashMap<>();
-        for (Users user : usersRepository.findByUserIdIn(userIds)) {
+        Map<String, WorkspaceProfile> usersById = new LinkedHashMap<>();
+        for (WorkspaceProfile user : usersRepository.findByUserIdIn(userIds)) {
             if (user != null) usersById.put(normalizeId(user.getUserId()), user);
         }
         return usersById;
     }
 
-    private ActivityMemberEntryDto toEntryDto(ActivityMember member, String viewerUserId, Map<String, Users> usersById) {
+    private ActivityMemberEntryDto toEntryDto(ActivityMember member, String viewerUserId, Map<String, WorkspaceProfile> usersById) {
         if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
             return null;
         }
-        Users user = usersById.get(normalizeId(member.getUserId()));
+        WorkspaceProfile user = usersById.get(normalizeId(member.getUserId()));
         String role = resolveStoredRole(member, member.getOwnerType(), member.getOwnerId());
         String status = normalizeStatus(member.getStatus());
         String pendingSource = resolvePendingSource(member.getPendingSource(), status);
@@ -4309,7 +4309,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 actionAtIso,
                 safeText(member.getMetWhere()),
                 resolveAvatarUrl(user),
-                user == null ? null : homeUserProfileService.toGameCardUserDto(user),
+                user == null ? null : homeUserProfileService.presentGameCard(user),
                 List.of(),
                 memberRevision(member),
                 nullableText(member.getAttendanceStatus()),
@@ -4788,7 +4788,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 .filter(document -> normalizedLeavingOwnerUserId.equals(normalizeId(document.getCreatorUserId())))
                 .findFirst()
                 .orElse(findPreferredEventRecord(normalizedEventId));
-        Users successor = usersRepository.findByUserId(normalizedSuccessorAdminUserId).orElse(null);
+        WorkspaceProfile successor = usersRepository.findByUserId(normalizedSuccessorAdminUserId).orElse(null);
         List<ActivityEvent> duplicateSuccessorOverlays = documents.stream()
                 .filter(document -> document != canonical)
                 .filter(document -> normalizedSuccessorAdminUserId.equals(normalizeId(document.getOwnerUserId())))
@@ -5085,7 +5085,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         if (!StringUtils.hasText(normalizeId(eventId)) || member == null) {
             return;
         }
-        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
+        WorkspaceProfile user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
         String displayName = firstNonBlank(user == null ? null : user.getName(), normalizeId(member.getUserId()));
         String text = ACTION_REINSTATE.equals(action)
                 ? displayName + " was reinstated to the event."
@@ -5268,7 +5268,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         if (!StringUtils.hasText(userId)) {
             return "";
         }
-        Users user = usersRepository.findByUserId(userId).orElse(null);
+        WorkspaceProfile user = usersRepository.findByUserId(userId).orElse(null);
         return firstNonBlank(user == null ? null : user.getName(), userId);
     }
 
@@ -5750,7 +5750,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
         return "woman".equals(safeText(value)) ? "woman" : "man";
     }
 
-    private String resolveAvatarUrl(Users user) {
+    private String resolveAvatarUrl(WorkspaceProfile user) {
         if (user == null || user.getImages() == null || user.getImages().isEmpty()) {
             return "";
         }

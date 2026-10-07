@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.payments.api.PaymentRefunds;
 import com.raxim.myscoutee.domain.payments.api.EventPayments;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.util.*;
@@ -26,7 +26,7 @@ public class EventCancellationService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 

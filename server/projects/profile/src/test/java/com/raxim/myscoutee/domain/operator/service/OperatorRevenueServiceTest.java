@@ -204,7 +204,7 @@ class OperatorRevenueServiceTest {
         when(events.findAll()).thenReturn(List.of());
         when(assets.findAll()).thenReturn(List.of());
         return new OperatorRevenueService(
-                events,
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events),
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assets), new com.raxim.myscoutee.domain.payments.service.PaymentRevenueService(paymentsRepository),
                 new OperatorRevenueMapper(),
                 Clock.fixed(NOW, ZoneOffset.UTC));

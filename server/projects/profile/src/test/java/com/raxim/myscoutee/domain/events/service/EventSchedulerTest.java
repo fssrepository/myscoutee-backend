@@ -46,7 +46,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
-import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
+import com.raxim.myscoutee.domain.events.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardGroupDto;
@@ -57,7 +57,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMainEventRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
-import com.raxim.myscoutee.domain.platform.repository.SchedulerPlanMarkersRepository;
+import com.raxim.myscoutee.domain.events.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
@@ -70,13 +70,13 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository;
     @Mock private UserAffinityEdgeService affinityEdgeService;
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
-    private JobGroupScopeService jobScope() {
+    private EventJobQueries jobScope() {
         var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
         var scope = new JobGroupScopeService(mongo);
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
-        return scope;
+        return new EventJobQueries(mongo, scope);
     }
     @Mock
     private UsersRepository usersRepository;
@@ -1975,7 +1975,7 @@ class EventSchedulerTest {
                 new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
                 affinityEdgeService,
                 new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository),
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 activityEventsRepository,
                 activityMainEventRuntimeRepository,

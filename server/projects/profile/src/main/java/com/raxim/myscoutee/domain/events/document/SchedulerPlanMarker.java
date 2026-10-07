@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.platform.document;
+package com.raxim.myscoutee.domain.events.document;
 
 import java.util.List;
 

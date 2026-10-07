@@ -41,4 +41,9 @@ public class ProfileDirectoryService implements ProfileDirectory {
         if (profile != null) for (var contact : profile.getContacts()) ids.add(contact.getUserId() == null ? "" : contact.getUserId().trim());
         return ids;
     }
+    public List<Users> findAllById(Iterable<String> ids) { return users.findAllById(ids); }
+    public PaymentMembers paymentMembers(String workspace, String actor, int page, int size) {
+        var values = users.findPaymentMembers(workspace, actor, org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("name").ascending().and(org.springframework.data.domain.Sort.by("userId").ascending())));
+        return new PaymentMembers(values.getContent(), values.getTotalElements());
+    }
 }

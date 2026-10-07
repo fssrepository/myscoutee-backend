@@ -26,9 +26,7 @@ public class UserFriendshipIndexInitializer {
             var friendships = database.getCollection("userFriendships");
             friendships.createIndex(new Document("leftUserId", 1), new IndexOptions().name("leftUserId"));
             friendships.createIndex(new Document("rightUserId", 1), new IndexOptions().name("rightUserId"));
-            database.getCollection("events").createIndex(
-                    new Document("friendshipsProjected", 1).append("endAtIso", 1).append("sourceId", 1),
-                    new IndexOptions().name("event_friendships_due"));
+
         }
     }
 }

@@ -17,17 +17,17 @@ import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.api.RequiresPolicies;
 import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.events.service.ActivitiesResourcesService;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
 
 @RestController
 @RequestMapping("/activities/events/subevent-resources")
 public class ActivitiesResourcesController {
     private final ActivitiesResourcesService activitiesResourcesService;
-    private final HomeUserProfileService homeUserProfileService;
+    private final ProfilePresentation homeUserProfileService;
 
     public ActivitiesResourcesController(
             ActivitiesResourcesService activitiesResourcesService,
-            HomeUserProfileService homeUserProfileService) {
+            ProfilePresentation homeUserProfileService) {
         this.activitiesResourcesService = activitiesResourcesService;
         this.homeUserProfileService = homeUserProfileService;
     }

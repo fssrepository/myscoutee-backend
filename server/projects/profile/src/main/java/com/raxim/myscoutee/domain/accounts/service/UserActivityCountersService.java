@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.domain.accounts.service;
+import com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.FeedbackBucketDelta;
 
-import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
+import com.raxim.myscoutee.domain.events.api.ParticipationTickets;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -24,18 +25,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 
-import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
-import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
+
+import com.raxim.myscoutee.domain.events.api.EventWatchDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
@@ -73,36 +74,36 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
 
     private final UsersRepository usersRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
+    private final EventOwnership activityEventsRepository;
+    private final MemberDirectory activityMembersRepository;
     private final AssetOwnership assetsRepository;
-    private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
-    private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
-    private final EventParticipationTicketService eventParticipationTicketService;
+    private final com.raxim.myscoutee.domain.events.api.FeedbackEligibility feedbackEligibility;
+    private final EventWatchDirectory eventWatchSubscriptionsRepository;
+    private final ParticipationTickets eventParticipationTicketService;
     private final MongoTemplate mongoTemplate;
 
     public UserActivityCountersService(
             UsersRepository usersRepository,
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
+            EventOwnership activityEventsRepository,
+            MemberDirectory activityMembersRepository,
             AssetOwnership assetsRepository,
-            EventFeedbackStatesRepository eventFeedbackStatesRepository,
-            EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
-            EventParticipationTicketService eventParticipationTicketService,
+            com.raxim.myscoutee.domain.events.api.FeedbackEligibility feedbackEligibility,
+            EventWatchDirectory eventWatchSubscriptionsRepository,
+            ParticipationTickets eventParticipationTicketService,
             MongoTemplate mongoTemplate,
             OrganizerFollowingService organizerFollowingService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
-        this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
+        this.feedbackEligibility = feedbackEligibility;
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
         this.organizerFollowingService = organizerFollowingService;
     }
 
-    public void refreshEventCountersForDocuments(Collection<ActivityEvent> events) {
+    public void refreshEventCountersForDocuments(Collection<? extends Event> events) {
         refreshEventCountersForSourceIds(events == null
                 ? List.of()
                 : events.stream()
@@ -117,10 +118,10 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             return;
         }
         Set<String> userIds = new LinkedHashSet<>();
-        for (ActivityEvent event : activityEventsRepository.findBySourceIdIn(normalizedSourceIds)) {
+        for (Event event : activityEventsRepository.findBySourceIdIn(normalizedSourceIds)) {
             collectEventUserIds(userIds, event);
         }
-        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, normalizedSourceIds)) {
+        for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, normalizedSourceIds)) {
             String userId = normalizeId(member == null ? null : member.getUserId());
             if (StringUtils.hasText(userId)) {
                 userIds.add(userId);
@@ -244,7 +245,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     public void applyFeedbackStateTransition(
-            ActivityEvent event,
+            Event event,
             String userId,
             boolean wasSubmitted,
             boolean wasRemoved,
@@ -274,91 +275,10 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     public int syncFeedbackEligibilityForSourceIds(Collection<String> sourceIds, Instant requestedNow) {
-        List<String> normalizedSourceIds = normalizeIds(sourceIds);
-        if (normalizedSourceIds.isEmpty()) {
-            return 0;
-        }
-
-        Instant now = requestedNow == null ? Instant.now() : requestedNow;
-        String nowIso = now.toString();
-        Map<String, ActivityEvent> eventsBySourceId = preferredFeedbackEventsBySourceId(
-                activityEventsRepository.findBySourceIdIn(normalizedSourceIds));
-        Map<FeedbackEligibilityKey, ActivityEvent> desiredEligibility = new LinkedHashMap<>();
-        for (ActivityEvent event : eventsBySourceId.values()) {
-            if (!isFeedbackUnlocked(event, now) || isTrashScopeStatus(event)) {
-                continue;
-            }
-            Set<String> adminUserIds = feedbackAdminUserIds(event);
-            for (String userId : safeStrings(event.getAcceptedMemberUserIds())) {
-                if (!adminUserIds.contains(userId)) {
-                    desiredEligibility.put(new FeedbackEligibilityKey(userId, normalizeId(event.getSourceId())), event);
-                }
-            }
-        }
-
-        Map<FeedbackEligibilityKey, EventFeedbackState> existingStates = new LinkedHashMap<>();
-        for (EventFeedbackState state : eventFeedbackStatesRepository
-                .findByEventIdInOrderByEventIdAscUpdatedDateDesc(normalizedSourceIds)) {
-            FeedbackEligibilityKey key = feedbackEligibilityKey(state);
-            if (key != null) {
-                existingStates.putIfAbsent(key, state);
-            }
-        }
-
-        Map<String, FeedbackBucketDelta> deltasByUserId = new LinkedHashMap<>();
-        List<EventFeedbackState> changedStates = new java.util.ArrayList<>();
-        Set<FeedbackEligibilityKey> allKeys = new LinkedHashSet<>(existingStates.keySet());
-        allKeys.addAll(desiredEligibility.keySet());
-        for (FeedbackEligibilityKey key : allKeys) {
-            EventFeedbackState state = existingStates.get(key);
-            boolean desired = desiredEligibility.containsKey(key);
-            boolean legacyTracked = state != null
-                    && (StringUtils.hasText(state.getSubmittedAtIso()) || Boolean.TRUE.equals(state.getRemoved()));
-            boolean currentEligible = state != null
-                    && (Boolean.TRUE.equals(state.getEligible())
-                    || (state.getEligible() == null && legacyTracked));
-            boolean counterTracked = state != null
-                    && (Boolean.TRUE.equals(state.getCounterTracked()) || legacyTracked);
-
-            if (state == null && desired) {
-                state = newFeedbackEligibilityState(key, nowIso);
-                changedStates.add(state);
-                addFeedbackDelta(deltasByUserId, key.userId(), "pending", 1);
-                continue;
-            }
-            if (state == null) {
-                continue;
-            }
-
-            if (desired && !currentEligible) {
-                addFeedbackDelta(deltasByUserId, key.userId(), feedbackBucket(state), 1);
-                state.setEligible(true);
-                state.setCounterTracked(true);
-                touchFeedbackEligibilityState(state, nowIso);
-                changedStates.add(state);
-            } else if (!desired && currentEligible) {
-                if (counterTracked) {
-                    addFeedbackDelta(deltasByUserId, key.userId(), feedbackBucket(state), -1);
-                }
-                state.setEligible(false);
-                state.setCounterTracked(false);
-                touchFeedbackEligibilityState(state, nowIso);
-                changedStates.add(state);
-            } else if (desired
-                    && (state.getEligible() == null || state.getCounterTracked() == null)) {
-                state.setEligible(true);
-                state.setCounterTracked(true);
-                touchFeedbackEligibilityState(state, nowIso);
-                changedStates.add(state);
-            }
-        }
-
-        if (!changedStates.isEmpty()) {
-            eventFeedbackStatesRepository.saveAll(changedStates);
-        }
-        int updatedUsers = applyFeedbackBucketDeltas(deltasByUserId);
-        markFeedbackProjectionState(normalizedSourceIds, eventsBySourceId, now);
-        return updatedUsers;
+        var projection = feedbackEligibility.project(sourceIds, requestedNow);
+        int updated = applyFeedbackBucketDeltas(projection.deltas());
+        feedbackEligibility.complete(projection);
+        return updated;
     }
 
     private SupportCaseCounters resolveSupportCaseCounters(String baseGroupId) {
@@ -371,24 +291,24 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         Instant now = Instant.now();
         Set<String> sourceIds = new LinkedHashSet<>();
         Set<String> watchedSourceIds = eventWatchSubscriptionsRepository
-                .findByUserIdOrderByUpdatedDateDesc(userId).stream()
-                .map(subscription -> normalizeId(subscription == null ? null : subscription.getEventId()))
+                .watchedEventIds(userId).stream()
+                .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        List<ActivityMember> storedMemberships = activityMembersRepository
+        List<? extends Member> storedMemberships = activityMembersRepository
                 .findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId);
-        List<ActivityMember> memberships = storedMemberships == null ? List.of() : storedMemberships;
+        List<? extends Member> memberships = storedMemberships == null ? List.of() : storedMemberships;
         Set<String> legacyDeletedMembershipSourceIds = memberships.stream()
                 .filter(Objects::nonNull)
                 .filter(member -> isDeletedMembershipStatus(member.getStatus()))
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Set<String> suppressedMembershipSourceIds = memberships.stream()
                 .filter(Objects::nonNull)
                 .filter(this::isRestorableSuppressedMembership)
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
@@ -399,14 +319,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         collectSourceIds(sourceIds, activityEventsRepository.findPendingRequestEvents(userId));
         sourceIds.addAll(legacyDeletedMembershipSourceIds);
         sourceIds.addAll(suppressedMembershipSourceIds);
-        List<ActivityEvent> eventDocuments = activityEventsRepository.findBySourceIdIn(sourceIds);
+        List<? extends Event> eventDocuments = activityEventsRepository.findBySourceIdIn(sourceIds);
         Set<String> personalTrashSourceIds = new LinkedHashSet<>(legacyDeletedMembershipSourceIds);
         for (String sourceId : suppressedMembershipSourceIds) {
             if (hasRestorablePersonalTrashProjection(eventDocuments, sourceId, userId)) {
                 personalTrashSourceIds.add(sourceId);
             }
         }
-        Map<String, ActivityEvent> preferredBySourceId = preferredEventsBySourceId(eventDocuments, userId);
+        Map<String, Event> preferredBySourceId = preferredEventsBySourceId(eventDocuments, userId);
 
         int active = 0;
         int pending = 0;
@@ -416,7 +336,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         int trash = 0;
         Set<String> countedSources = new LinkedHashSet<>();
         Set<String> allBucketSources = new LinkedHashSet<>();
-        for (ActivityEvent event : preferredBySourceId.values()) {
+        for (Event event : preferredBySourceId.values()) {
             String sourceId = normalizeId(event.getSourceId());
             if (!countedSources.add(sourceId)) {
                 continue;
@@ -530,17 +450,17 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
 
     private int resolveTicketCount(String userId) {
         var profiles = usersRepository.findByAccountUserId(userId);
-        List<ActivityEvent> tickets;
+        List<? extends Event> tickets;
         if (profiles.isEmpty()) tickets = eventParticipationTicketService.queryTicketRecordsForUser(userId);
         else {
             var ids = new LinkedHashSet<String>(); ids.add(userId);
             profiles.forEach(profile -> ids.add(profile.getUserId()));
             tickets = eventParticipationTicketService.queryTicketSnapshotRecordsForUsers(ids).stream()
-                    .map(EventParticipationTicketService.TicketSnapshotRecord::event).toList();
+                    .map(ParticipationTickets.Snapshot::event).toList();
         }
         long ticketCount = tickets.stream()
                 .filter(Objects::nonNull)
-                .map(ActivityEvent::getSourceId)
+                .map(Event::getSourceId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -775,37 +695,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         return submitted ? "feedbacked" : "pending";
     }
 
-    private String feedbackBucket(EventFeedbackState state) {
-        return feedbackBucket(
-                StringUtils.hasText(state == null ? null : state.getSubmittedAtIso()),
-                Boolean.TRUE.equals(state == null ? null : state.getRemoved()));
-    }
 
-    private Map<String, ActivityEvent> preferredFeedbackEventsBySourceId(Collection<ActivityEvent> events) {
-        Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
-            String sourceId = normalizeId(event == null ? null : event.getSourceId());
-            if (!StringUtils.hasText(sourceId) || Boolean.TRUE.equals(event.getGenerated())) {
-                continue;
-            }
-            ActivityEvent current = preferred.get(sourceId);
-            if (current == null || feedbackEventPreferenceScore(event) > feedbackEventPreferenceScore(current)) {
-                preferred.put(sourceId, event);
-            }
-        }
-        return preferred;
-    }
 
-    private int feedbackEventPreferenceScore(ActivityEvent event) {
-        if (event == null) {
-            return 0;
-        }
-        boolean canonical = normalizeId(event.getCreatorUserId()).equals(normalizeId(event.getOwnerUserId()));
-        int acceptedCount = safeStrings(event.getAcceptedMemberUserIds()).size();
-        return (canonical ? 1_000_000 : 0) + acceptedCount;
-    }
 
-    private Set<String> feedbackAdminUserIds(ActivityEvent event) {
+
+    private Set<String> feedbackAdminUserIds(Event event) {
         Set<String> userIds = new LinkedHashSet<>();
         addUserId(userIds, event == null ? null : event.getOwnerUserId());
         addUserId(userIds, event == null ? null : event.getCreatorUserId());
@@ -813,12 +707,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         return userIds;
     }
 
-    private boolean isFeedbackUnlocked(ActivityEvent event, Instant now) {
-        Instant endAt = parseInstant(event == null ? null : event.getEndAtIso());
-        return endAt != null
-                && !endAt.plusSeconds(EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS)
-                        .isAfter(now == null ? Instant.now() : now);
-    }
+
 
     private Instant parseInstant(String value) {
         try {
@@ -828,34 +717,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
     }
 
-    private FeedbackEligibilityKey feedbackEligibilityKey(EventFeedbackState state) {
-        String userId = normalizeId(state == null ? null : state.getViewerUserId());
-        String eventId = normalizeId(state == null ? null : state.getEventId());
-        return StringUtils.hasText(userId) && StringUtils.hasText(eventId)
-                ? new FeedbackEligibilityKey(userId, eventId)
-                : null;
-    }
 
-    private EventFeedbackState newFeedbackEligibilityState(FeedbackEligibilityKey key, String nowIso) {
-        EventFeedbackState state = new EventFeedbackState();
-        state.setId(new ObjectId().toHexString());
-        state.setSyncKey(UUID.randomUUID().toString());
-        state.setViewerUserId(key.userId());
-        state.setEventId(key.eventId());
-        state.setRemoved(false);
-        state.setEligible(true);
-        state.setCounterTracked(true);
-        state.setCreatedDate(nowIso);
-        state.setCreatedUser(FEEDBACK_COUNTER_PROJECTOR);
-        state.setUpdatedDate(nowIso);
-        state.setUpdatedUser(FEEDBACK_COUNTER_PROJECTOR);
-        return state;
-    }
 
-    private void touchFeedbackEligibilityState(EventFeedbackState state, String nowIso) {
-        state.setUpdatedDate(nowIso);
-        state.setUpdatedUser(FEEDBACK_COUNTER_PROJECTOR);
-    }
+
+
+
 
     private void addFeedbackDelta(
             Map<String, FeedbackBucketDelta> deltasByUserId,
@@ -897,38 +763,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         return updated;
     }
 
-    private void markFeedbackProjectionState(
-            Collection<String> sourceIds,
-            Map<String, ActivityEvent> eventsBySourceId,
-            Instant now) {
-        Set<String> waitingSourceIds = new LinkedHashSet<>();
-        for (Map.Entry<String, ActivityEvent> entry : eventsBySourceId.entrySet()) {
-            ActivityEvent event = entry.getValue();
-            Instant endAt = parseInstant(event == null ? null : event.getEndAtIso());
-            if (!isTrashScopeStatus(event)
-                    && endAt != null
-                    && endAt.plusSeconds(EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS).isAfter(now)) {
-                waitingSourceIds.add(entry.getKey());
-            }
-        }
-        Set<String> projectedSourceIds = new LinkedHashSet<>(normalizeIds(sourceIds));
-        projectedSourceIds.removeAll(waitingSourceIds);
-        updateFeedbackProjectionMarker(projectedSourceIds, true);
-        updateFeedbackProjectionMarker(waitingSourceIds, false);
-    }
 
-    private void updateFeedbackProjectionMarker(Collection<String> sourceIds, boolean projected) {
-        List<String> normalizedSourceIds = normalizeIds(sourceIds);
-        if (normalizedSourceIds.isEmpty()) {
-            return;
-        }
-        mongoTemplate.updateMulti(
-                Query.query(Criteria.where("sourceId").in(normalizedSourceIds)),
-                new Update().set("feedbackCountersProjected", projected),
-                ActivityEvent.class);
-    }
 
-    private void collectEventUserIds(Set<String> userIds, ActivityEvent event) {
+
+
+    private void collectEventUserIds(Set<String> userIds, Event event) {
         if (event == null) {
             return;
         }
@@ -944,14 +783,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
     }
 
-    private Map<String, ActivityEvent> preferredEventsBySourceId(Collection<ActivityEvent> events, String userId) {
-        Map<String, ActivityEvent> preferred = new LinkedHashMap<>();
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+    private Map<String, Event> preferredEventsBySourceId(Collection<? extends Event> events, String userId) {
+        Map<String, Event> preferred = new LinkedHashMap<>();
+        for (Event event : events == null ? List.<Event>of() : events) {
             String sourceId = normalizeId(event == null ? null : event.getSourceId());
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
-            ActivityEvent current = preferred.get(sourceId);
+            Event current = preferred.get(sourceId);
             if (current == null || eventPreferenceScore(event, userId) > eventPreferenceScore(current, userId)) {
                 preferred.put(sourceId, event);
             }
@@ -959,8 +798,8 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         return preferred;
     }
 
-    private void collectSourceIds(Set<String> sourceIds, Collection<ActivityEvent> events) {
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+    private void collectSourceIds(Set<String> sourceIds, Collection<? extends Event> events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             String parentEventId = isGeneratedSlotRecord(event)
                     ? normalizeId(event.getParentEventId())
                     : "";
@@ -973,14 +812,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
     }
 
-    private boolean isGeneratedSlotRecord(ActivityEvent event) {
+    private boolean isGeneratedSlotRecord(Event event) {
         return event != null
                 && (Boolean.TRUE.equals(event.getGenerated())
                 || StringUtils.hasText(normalizeId(event.getParentEventId()))
                 || "slot".equals(safeText(event.getEventType())));
     }
 
-    private int eventPreferenceScore(ActivityEvent event, String userId) {
+    private int eventPreferenceScore(Event event, String userId) {
         if (event == null) {
             return 0;
         }
@@ -992,7 +831,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                 + (!safeStrings(event.getAdmins()).isEmpty() ? 1 : 0);
     }
 
-    private boolean isHostingRecordForUser(ActivityEvent event, String userId) {
+    private boolean isHostingRecordForUser(Event event, String userId) {
         if (event == null) {
             return false;
         }
@@ -1002,48 +841,48 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
                         || safeStrings(event.getAdmins()).contains(normalizedUserId));
     }
 
-    private boolean isInvitationForUser(ActivityEvent event, String userId) {
+    private boolean isInvitationForUser(Event event, String userId) {
         return event != null && safeStrings(event.getInvitedMemberUserIds()).contains(normalizeId(userId));
     }
 
-    private boolean isPendingRequestForUser(ActivityEvent event, String userId) {
+    private boolean isPendingRequestForUser(Event event, String userId) {
         return event != null && safeStrings(event.getPendingRequestMemberUserIds()).contains(normalizeId(userId));
     }
 
-    private boolean isAcceptedMemberForUser(ActivityEvent event, String userId) {
+    private boolean isAcceptedMemberForUser(Event event, String userId) {
         return event != null && safeStrings(event.getAcceptedMemberUserIds()).contains(normalizeId(userId));
     }
 
-    private boolean isDraftStatus(ActivityEvent event) {
+    private boolean isDraftStatus(Event event) {
         return event != null
-                && (Boolean.FALSE.equals(event.getPublished()) || ActivityEvent.STATUS_DRAFT.equals(normalizeStatus(event.getStatus())));
+                && (Boolean.FALSE.equals(event.getPublished()) || Event.STATUS_DRAFT.equals(normalizeStatus(event.getStatus())));
     }
 
-    private boolean isPendingReviewStatus(ActivityEvent event) {
+    private boolean isPendingReviewStatus(Event event) {
         String status = normalizeStatus(event == null ? null : event.getStatus());
-        return ActivityEvent.STATUS_UNDER_REVIEW.equals(status) || ActivityEvent.STATUS_BLOCKED.equals(status);
+        return Event.STATUS_UNDER_REVIEW.equals(status) || Event.STATUS_BLOCKED.equals(status);
     }
 
-    private boolean isActiveEventStatus(ActivityEvent event) {
+    private boolean isActiveEventStatus(Event event) {
         String status = normalizeStatus(event == null ? null : event.getStatus());
-        return ActivityEvent.STATUS_ACTIVE.equals(status) || !StringUtils.hasText(status);
+        return Event.STATUS_ACTIVE.equals(status) || !StringUtils.hasText(status);
     }
 
-    private boolean isTrashScopeStatus(ActivityEvent event) {
+    private boolean isTrashScopeStatus(Event event) {
         if (event == null || Boolean.TRUE.equals(event.getIsTrashed())) {
             return true;
         }
         String status = normalizeStatus(event.getStatus());
-        return ActivityEvent.STATUS_TRASHED.equals(status);
+        return Event.STATUS_TRASHED.equals(status);
     }
 
     private boolean isDeletedMembershipStatus(String status) {
         String normalized = safeText(status);
         return "deleted".equalsIgnoreCase(normalized)
-                || ActivityEvent.STATUS_DELETED.equalsIgnoreCase(normalized);
+                || Event.STATUS_DELETED.equalsIgnoreCase(normalized);
     }
 
-    private boolean isRestorableSuppressedMembership(ActivityMember member) {
+    private boolean isRestorableSuppressedMembership(Member member) {
         if (member == null || !"suppressed".equalsIgnoreCase(safeText(member.getStatus()))) {
             return false;
         }
@@ -1054,14 +893,14 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private boolean hasRestorablePersonalTrashProjection(
-            Collection<ActivityEvent> events,
+            Collection<? extends Event> events,
             String sourceId,
             String userId) {
         String normalizedSourceId = normalizeId(sourceId);
         String normalizedUserId = normalizeId(userId);
         boolean activeCanonicalExists = false;
         boolean personalTrashOverlayExists = false;
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             if (event == null || !normalizedSourceId.equals(normalizeId(event.getSourceId()))) {
                 continue;
             }
@@ -1080,11 +919,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
 
     private boolean isSuppressedAssetStatus(String status) {
         String normalized = normalizeStatus(status);
-        return ActivityEvent.STATUS_UNDER_REVIEW.equals(normalized)
-                || ActivityEvent.STATUS_BLOCKED.equals(normalized)
-                || ActivityEvent.STATUS_DELETED.equals(normalized)
-                || ActivityEvent.STATUS_INACTIVE.equals(normalized)
-                || ActivityEvent.STATUS_TRASHED.equals(normalized);
+        return Event.STATUS_UNDER_REVIEW.equals(normalized)
+                || Event.STATUS_BLOCKED.equals(normalized)
+                || Event.STATUS_DELETED.equals(normalized)
+                || Event.STATUS_INACTIVE.equals(normalized)
+                || Event.STATUS_TRASHED.equals(normalized);
     }
 
     private List<String> normalizeIds(Collection<String> values) {
@@ -1110,13 +949,13 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private String normalizeStatus(String value) {
         String normalized = safeText(value);
         return switch (normalized) {
-            case "active" -> ActivityEvent.STATUS_ACTIVE;
-            case "draft" -> ActivityEvent.STATUS_DRAFT;
-            case "trashed", "trash" -> ActivityEvent.STATUS_TRASHED;
-            case "under-review", "under review" -> ActivityEvent.STATUS_UNDER_REVIEW;
-            case "blocked" -> ActivityEvent.STATUS_BLOCKED;
-            case "deleted" -> ActivityEvent.STATUS_DELETED;
-            case "inactive" -> ActivityEvent.STATUS_INACTIVE;
+            case "active" -> Event.STATUS_ACTIVE;
+            case "draft" -> Event.STATUS_DRAFT;
+            case "trashed", "trash" -> Event.STATUS_TRASHED;
+            case "under-review", "under review" -> Event.STATUS_UNDER_REVIEW;
+            case "blocked" -> Event.STATUS_BLOCKED;
+            case "deleted" -> Event.STATUS_DELETED;
+            case "inactive" -> Event.STATUS_INACTIVE;
             default -> normalized.toUpperCase();
         };
     }
@@ -1190,24 +1029,6 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private record FeedbackEligibilityKey(String userId, String eventId) {
     }
 
-    private record FeedbackBucketDelta(int ownEvents, int pending, int feedbacked, int removed) {
-        static FeedbackBucketDelta forBucket(String bucket, int amount) {
-            return switch (bucket) {
-                case "own-events" -> new FeedbackBucketDelta(amount, 0, 0, 0);
-                case "removed" -> new FeedbackBucketDelta(0, 0, 0, amount);
-                case "feedbacked" -> new FeedbackBucketDelta(0, 0, amount, 0);
-                default -> new FeedbackBucketDelta(0, amount, 0, 0);
-            };
-        }
-
-        FeedbackBucketDelta plus(FeedbackBucketDelta other) {
-            return new FeedbackBucketDelta(
-                    ownEvents + other.ownEvents,
-                    pending + other.pending,
-                    feedbacked + other.feedbacked,
-                    removed + other.removed);
-        }
-    }
     @Override public boolean hasSupportCaseCounters(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
         Users user = (Users) profile;
         var activities = user == null ? null : user.getActivities();

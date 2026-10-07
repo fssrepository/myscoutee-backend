@@ -68,11 +68,11 @@ class UserActivityCountersServiceTest {
     void setUp() {
         service = new UserActivityCountersService(
                 usersRepository,
-                activityEventsRepository,
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
-                eventFeedbackStatesRepository,
-                eventWatchSubscriptionsRepository,
+                new com.raxim.myscoutee.domain.events.service.EventFeedbackEligibilityService(activityEventsRepository, eventFeedbackStatesRepository, mongoTemplate),
+                new com.raxim.myscoutee.domain.events.service.EventWatchDirectoryService(eventWatchSubscriptionsRepository),
                 eventParticipationTicketService,
                 mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "contentStatistics", new com.raxim.myscoutee.domain.content.service.ContentStatisticsService(mongoTemplate));

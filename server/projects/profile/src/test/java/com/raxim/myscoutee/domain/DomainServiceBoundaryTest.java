@@ -37,6 +37,7 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
             java.util.Map.entry("affinity", Set.of("userRates", "userAffinityEdges", "affinityConfigs", "affinityRecomputeTasks")),
             java.util.Map.entry("registry", Set.of()),
+            java.util.Map.entry("events", Set.of("activityEventRuntimeItems", "activityMembers", "activityMingleRounds", "activityMingleSessions", "activityResources", "activitySubEventGroups", "activitySubEventStageRuntime", "eventFeedbackAnswers", "eventFeedbackStates", "eventLeaderboardEntries", "eventTicketAudit", "eventTickets", "eventWatchSubscriptions", "events", "schedulerPlanMarkers")),
             java.util.Map.entry("chat", Set.of("chats", "chatMessages", "contactChatAccess")),
             java.util.Map.entry("integrations", Set.of("integrationTokens", "integrationWebhookDeliveries", "mcpEventSubscriptions", "integrationExternalIds", "mcpAuthorizations", "integrationWebhookSubscriptions", "mcpOAuthClients", "integrationParticipantInvites")),
             java.util.Map.entry("payments", Set.of("payments", "affiliateRegistrations", "affiliateLinks", "affiliatePartners", "affiliatePaymentContributions", "payment_gateway_operations", "savedPaymentMethods", "paymentMethodRegistrations", "eventCheckoutBasketItems", "paymentProviders", "exchangeRates")),
@@ -44,7 +45,7 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -69,6 +70,7 @@ class DomainServiceBoundaryTest {
                             // These reviewed uses are telemetry/UI categories or GitHub release JSON keys.
                             // Other methods, owner classes and actual collection names remain checked.
                             if ("assets".equals(value) && semanticAssetLabel(name, method)) return;
+                            if ("events".equals(value) && semanticEventLabel(name, method)) return;
                             if ("chats".equals(value) && name.equals(DOMAIN + "administration/service/AdminMonitoringService") && method.equals("categoryFor")) return;
                             if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("describe")) return;
                             assertThat(COLLECTIONS.get(domain).contains(value)).as("Raw foreign collection in %s.%s: %s", name, method, value)
@@ -82,7 +84,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;
@@ -105,6 +107,20 @@ class DomainServiceBoundaryTest {
             checked++;
         }
         assertThat(checked).as("Scanned production classes in %s", domain).isGreaterThan(5);
+    }
+
+    private boolean semanticEventLabel(String name, String method) {
+        var methods = switch (name.substring(DOMAIN.length())) {
+            case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "eventsCategory", "membersCategory", "categoryFor", "nodeFor");
+            case "administration/service/AdminStatsService" -> Set.of("applyTelemetryEvents", "applyDailyActivity", "timelineItems");
+            case "affinity/service/AdminParamsService" -> Set.of("<clinit>", "fieldsFor", "applySection", "copySection");
+            case "assets/service/AssetsService" -> Set.of("toAssetTicketDto");
+            case "integrations/service/McpEventsService" -> Set.of("catalog");
+            case "integrations/controller/IntegrationReadController" -> Set.of("listEvents");
+            case "chat/service/ChatService" -> Set.of("chatNavigationContext");
+            default -> Set.<String>of();
+        };
+        return methods.contains(method) || methods.stream().anyMatch(owner -> method.startsWith("lambda$" + owner + "$"));
     }
 
     private boolean semanticAssetLabel(String name, String method) {

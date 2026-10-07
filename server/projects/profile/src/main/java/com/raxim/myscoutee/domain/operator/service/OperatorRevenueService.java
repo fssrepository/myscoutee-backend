@@ -29,15 +29,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.payments.api.PaymentView;
-import com.raxim.myscoutee.domain.events.document.SubEventItem;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorRevenueDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingSlotOverrideDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnership;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.payments.api.PaymentRevenue;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
@@ -61,7 +61,7 @@ public class OperatorRevenueService {
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String REQUEST_KIND_BORROW = "borrow";
 
-    private final ActivityEventsRepository activityEventsRepository;
+    private final EventOwnership activityEventsRepository;
     private final AssetOwnership assetsRepository;
     private final PaymentRevenue paymentsRepository;
     private final OperatorRevenueMapper mapper;
@@ -69,7 +69,7 @@ public class OperatorRevenueService {
 
     @Autowired
     public OperatorRevenueService(
-            ActivityEventsRepository activityEventsRepository,
+            EventOwnership activityEventsRepository,
             AssetOwnership assetsRepository,
             PaymentRevenue paymentsRepository,
             OperatorRevenueMapper mapper) {
@@ -82,7 +82,7 @@ public class OperatorRevenueService {
     }
 
     OperatorRevenueService(
-            ActivityEventsRepository activityEventsRepository,
+            EventOwnership activityEventsRepository,
             AssetOwnership assetsRepository,
             PaymentRevenue paymentsRepository,
             OperatorRevenueMapper mapper,
@@ -222,8 +222,8 @@ public class OperatorRevenueService {
 
     private void accumulateEvents(
             Accumulation accumulation,
-            List<ActivityEvent> events) {
-        for (ActivityEvent event : nonNull(events)) {
+            List<? extends Event> events) {
+        for (Event event : nonNull(events)) {
             if (Boolean.TRUE.equals(event.getGenerated())
                     || !StringUtils.hasText(safeText(event.getSourceId()))
                     || !Boolean.TRUE.equals(event.getTicketing())) {
@@ -235,7 +235,7 @@ public class OperatorRevenueService {
                     accumulation,
                     unitMinorByCurrency,
                     event.getPricing());
-            for (SubEventItem subEvent : nonNull(event.getSubEvents())) {
+            for (SubEvent subEvent : nonNull(event.getSubEvents())) {
                 if (Boolean.TRUE.equals(subEvent.optional())) {
                     addPricingUnit(
                             accumulation,

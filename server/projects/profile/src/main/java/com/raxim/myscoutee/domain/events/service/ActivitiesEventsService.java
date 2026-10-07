@@ -4,9 +4,9 @@ import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
+import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
@@ -73,7 +73,7 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.EventWatchSubscription;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto;
@@ -131,7 +131,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventGroupsReposi
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
@@ -148,6 +148,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents, com.raxim.myscoutee.domain.events.api.EventOperations {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.FollowingEvents followingEvents;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -191,10 +192,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
     private final Friendships friendshipFacts;
     private final EdgeDirectory userAffinityEdgesRepository;
-    private final HomeUserProfileService homeUserProfileService;
+    private final ProfilePresentation homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
@@ -214,7 +215,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessPermissions accessControlService;
-    private final UserActivityCountersService userActivityCountersService;
+    private final ActivityCounters userActivityCountersService;
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventDetailMapper activityEventDetailMapper;
     private final ActivityEventMapper activityEventMapper;
@@ -230,10 +231,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityMembersRepository activityMembersRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
-            UsersRepository usersRepository,
+            ProfileDirectory usersRepository,
             Friendships friendshipFacts,
             EdgeDirectory userAffinityEdgesRepository,
-            HomeUserProfileService homeUserProfileService,
+            ProfilePresentation homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
@@ -253,7 +254,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessPermissions accessControlService,
-            UserActivityCountersService userActivityCountersService,
+            ActivityCounters userActivityCountersService,
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventDetailMapper activityEventDetailMapper,
             ActivityEventMapper activityEventMapper,
@@ -2262,12 +2263,12 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
         boolean followedOnly = request != null && Boolean.TRUE.equals(request.followedOnly());
         Set<String> followedIds = followedOnly
-                ? Set.copyOf(OrganizerFollowingService.state(homeUserProfileService.resolveCurrentUser(viewer.userId())).organizerIds())
+                ? Set.copyOf(followingEvents.organizerIds(homeUserProfileService.resolveCurrentUser(viewer.userId())))
                 : Set.of();
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
             List<EventProjection> sorted = computeExploreRecords(viewer, followedOnly).stream()
                     .filter(record -> !followedOnly || followedIds.contains(record.getCreatorUserId()))
-                    .filter(record -> !followedOnly || OrganizerFollowingService.eligible(record, viewer.userId(),
+                    .filter(record -> !followedOnly || followingEvents.eligibleEvent(record, viewer.userId(),
                             friendshipFacts.friendIds(viewer.userId()), Instant.now()))
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .filter(record -> !StringUtils.hasText(mode) || mode.equals(normalizeEventMode(record.getMode())))
@@ -3541,7 +3542,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private void enqueueCheckoutBasketUpdatedNotification(
             ActivityEvent event,
-            Users member,
+            WorkspaceProfile member,
             String pendingReason) {
         if (notificationOutboxService == null || event == null || member == null) {
             return;
@@ -5006,7 +5007,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
 
-        Users creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
+        WorkspaceProfile creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
         String ownerUserId = normalizeId(request.creatorUserId());
         if (!StringUtils.hasText(ownerUserId)) {
             ownerUserId = actorUserId;
@@ -5600,7 +5601,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {
-        Users user = homeUserProfileService.resolveCurrentUser(requestedUserId);
+        WorkspaceProfile user = homeUserProfileService.resolveCurrentUser(requestedUserId);
         String userId = user == null ? null : normalizeId(user.getId());
         if (!StringUtils.hasText(userId) || user == null) {
             return null;
@@ -5806,7 +5807,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return Map.of();
         }
         Map<String, String> avatarUrlsByUserId = new LinkedHashMap<>();
-        for (Users user : usersRepository.findByUserIdIn(creatorUserIds)) {
+        for (WorkspaceProfile user : usersRepository.findByUserIdIn(creatorUserIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
             String avatarUrl = firstUserImageUrl(user);
             if (StringUtils.hasText(userId) && StringUtils.hasText(avatarUrl)) {
@@ -5816,7 +5817,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return avatarUrlsByUserId;
     }
 
-    private String firstUserImageUrl(Users user) {
+    private String firstUserImageUrl(WorkspaceProfile user) {
         if (user == null || user.getImages() == null) {
             return "";
         }
@@ -6870,7 +6871,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private ActivityEvent buildSyncedRecord(
             EventDetailDto request,
-            Users creator,
+            WorkspaceProfile creator,
             String actorUserId,
             String sourceId,
             ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
@@ -7136,16 +7137,16 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return firstNonBlank(event.getEndAtIso(), event.getStartAtIso());
     }
 
-    private double resolveAffinity(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
+    private double resolveAffinity(ActivityEvent event, WorkspaceProfile creator, List<String> acceptedMemberUserIds) {
         return absoluteAffinityService.resolveEventAffinity(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
     }
 
-    private double resolveBoost(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
+    private double resolveBoost(ActivityEvent event, WorkspaceProfile creator, List<String> acceptedMemberUserIds) {
         return absoluteAffinityService.resolveEventBoost(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
     }
 
-    private List<Users> resolveAffinityParticipants(Users creator, List<String> acceptedMemberUserIds) {
-        LinkedHashMap<String, Users> participantsByUserId = new LinkedHashMap<>();
+    private List<WorkspaceProfile> resolveAffinityParticipants(WorkspaceProfile creator, List<String> acceptedMemberUserIds) {
+        LinkedHashMap<String, WorkspaceProfile> participantsByUserId = new LinkedHashMap<>();
         String creatorUserId = normalizeId(creator == null ? null : creator.getId());
         if (StringUtils.hasText(creatorUserId)) {
             participantsByUserId.put(creatorUserId, creator);
@@ -7154,7 +7155,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 .filter(userId -> !participantsByUserId.containsKey(userId))
                 .toList();
         if (!missingUserIds.isEmpty()) {
-            for (Users user : usersRepository.findByUserIdIn(missingUserIds)) {
+            for (WorkspaceProfile user : usersRepository.findByUserIdIn(missingUserIds)) {
                 String userId = normalizeId(user == null ? null : user.getId());
                 if (StringUtils.hasText(userId)) {
                     participantsByUserId.put(userId, user);
@@ -8363,7 +8364,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return new GeoJsonPoint(value.getX(), value.getY());
     }
 
-    private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord value) {
+    private LocationCoordinatesDto toLocationCoordinatesDto(WorkspaceProfile.Coordinates value) {
         if (value == null || value.latitude() == null || value.longitude() == null) {
             return null;
         }
@@ -8529,14 +8530,14 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return Math.max(min, Math.min(max, normalized));
     }
 
-    private String resolveCreatorName(String requestedName, Users creator) {
+    private String resolveCreatorName(String requestedName, WorkspaceProfile creator) {
         if (StringUtils.hasText(requestedName)) {
             return requestedName.trim();
         }
         return creator == null ? "" : safeText(creator.getName());
     }
 
-    private String resolveCreatorInitials(String requestedInitials, Users creator, String requestedName) {
+    private String resolveCreatorInitials(String requestedInitials, WorkspaceProfile creator, String requestedName) {
         if (StringUtils.hasText(requestedInitials)) {
             return requestedInitials.trim();
         }
@@ -8551,14 +8552,14 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return ("" + words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
     }
 
-    private String resolveCreatorGender(String requestedGender, Users creator) {
+    private String resolveCreatorGender(String requestedGender, WorkspaceProfile creator) {
         if (StringUtils.hasText(requestedGender)) {
             return requestedGender.trim();
         }
         return creator == null ? "man" : safeText(creator.getGender());
     }
 
-    private String resolveCreatorCity(String requestedCity, Users creator) {
+    private String resolveCreatorCity(String requestedCity, WorkspaceProfile creator) {
         if (StringUtils.hasText(requestedCity)) {
             return requestedCity.trim();
         }
@@ -8650,7 +8651,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private record ViewerContext(
             String userId,
-            Users user,
+            WorkspaceProfile user,
             LocationCoordinatesDto locationCoordinates,
             int affinity) {
     }

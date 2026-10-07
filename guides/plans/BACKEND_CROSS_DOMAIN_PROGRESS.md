@@ -40,8 +40,8 @@ may need changes together.
 | 1 | accounts | 4 | 23 | In progress: notification recipient, preference and counter API | First boundary tests passed; remaining account boundaries pending |
 | 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
 | 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
-| 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
-| 5 | chat | 4 | 8 | Complete: conversation contracts, account writes, event context and chat privacy ownership | 653 regression tests and 98 final focused tests passed; this checkpoint |
+| 4 | events | 8 | 14 | Complete: owner-controlled reads/writes, feedback projection, privacy and scoped scheduling | 566 regression tests and 59 final focused checks passed; this checkpoint |
+| 5 | chat | 4 | 8 | Complete: conversation contracts, account writes, event context and chat privacy ownership | 653 regression tests and 98 final focused tests passed; `4d20ef5f2` |
 | 6 | assets | 1 | 2 | Complete: asset ownership, booking contracts, privacy and save events | 1,147 regression tests passed; stale alias repaired; 44 final focused tests passed; `07b4c337c` |
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed; `602f0367b` |
 
-**Completed domains: 17/21 — #2 notifications, #3 groups, #5 chat, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
+**Completed domains: 18/21 — #2 notifications, #3 groups, #4 events, #5 chat, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -2014,3 +2014,58 @@ through the real owner adapters over the original repository fixtures.
 Final verification: all 98 focused chat, embedded persistence, Mongo alias and
 architecture checks passed with no failures or skips. The existing dev watcher
 compiled successfully and the application health check is healthy.
+
+### #4 events: persistence ownership, feedback projection and scoped jobs
+
+- `EventOwnership`, `MemberDirectory`, `ParticipationTickets`, `FeedbackDirectory`
+  and `EventWatchDirectory`: account presentation/counters, following, operator
+  revenue and platform status propagation read event-owned facts through contracts.
+  The existing repository queries, projections, ordering and batching are retained.
+  Event and nested sub-event values are read-only local views, not HTTP-ready copies.
+- `EventFeedbackEligibilityService`: eligibility-state creation/updates and event
+  projection markers move from accounts into events. Accounts receives explicit
+  bucket deltas; eligibility save, account counter application and completion
+  marker updates remain in the original order, including the failure boundary.
+  Legacy submitted/removed states, unlock delay, canonical-event preference and
+  generated-event filtering retain their existing rules.
+- `EventPrivacyService`: owned event/media deletion, event/asset memberships,
+  managed-admin references, resource cleanup, ticket audit anonymization,
+  feedback/leaderboard deletion and scheduler authorship cleanup move to events.
+  Account purge preserves its durable stages and operation ordering.
+- `EventOwnershipService.updateStatusIfSnapshotCurrent`: the original id plus
+  optional updated-date guard and status-before-suppression write stay together
+  in the event owner. Platform retains status decisions and notification order.
+- `EventJobQueries`: the original event-owned `$lookup` query moves from platform
+  into events. Workspace membership is provided by `JobAudience`; filtering still
+  precedes sort/skip/limit. Unlike a foreign-domain join, both persisted sides of
+  this query belong to events. No extra query or network hop is added.
+- `SchedulerPlanMarker` and its repository move from platform to events; the
+  original persisted alias is updated in `mongo-domain-types.properties`.
+  `EventFriendshipIndexInitializer` now owns the existing due-projection index in
+  both session databases; account friendship indexes retain their original owner.
+- `ProfileDirectory`, `ContactDirectory`, `ProfilePresentation`, `ActivityCounters`
+  and `FollowingEvents` replace event-side account repository/service dependencies.
+  Contact candidate fallback identifiers remain distinct from chat eligibility.
+  `AccountEventCounterUpdateService` owns expiry counter construction, equality
+  checks and the original changed-profile bulk save; events supplies calculated
+  invitation/event/hosting counts through an explicit command.
+- `DomainServiceBoundaryTest` now checks events in both directions, including its
+  collection names. Exact semantic-label exceptions cover existing telemetry,
+  UI buckets, navigation contexts and MCP catalog keys only.
+
+Functional risk: **medium/high**, focused on feedback eligibility/counter ordering,
+expiry projections, suppression/restoration and account purge. These paths need
+E2E attention despite the successful local regression. Public endpoints, event
+DTOs, collection names, status values and optimistic conditions are preserved.
+Severe slowdown risk: **low** for the owner-interface moves: the event-owned job
+join, sorted paging and batched profile/member reads retain their query shapes.
+No new per-event profile lookup is introduced. E2E latency is not yet measured.
+
+Verification: all **566 regression tests** passed across events, accounts, status
+propagation, operator revenue and encounter publication. All **59 final focused
+checks** passed, including the expanded architecture guard, Mongo aliases,
+security bootstrap and embedded Mongo parity. Embedded checks cover mixed
+workspace event projections, absent owners, filtering before skip/limit and a
+stale status snapshot that must not overwrite a concurrent event update. The dev
+watcher compiled successfully and restarted the application in 7.86 seconds;
+this startup duration is diagnostic evidence, not a throughput benchmark.

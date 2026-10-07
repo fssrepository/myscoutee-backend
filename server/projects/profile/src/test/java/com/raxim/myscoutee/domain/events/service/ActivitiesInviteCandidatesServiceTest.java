@@ -55,12 +55,12 @@ class ActivitiesInviteCandidatesServiceTest {
     @BeforeEach
     void setUp() {
         service = new ActivitiesInviteCandidatesService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
                 activityMembersRepository,
                 activitiesMembersService,
                 homeUserProfileService,
-                navigatorContactsProfilesRepository);
+                new com.raxim.myscoutee.domain.accounts.service.ContactDirectoryService(navigatorContactsProfilesRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "communityGroups", communityGroups);
     }
 
@@ -84,7 +84,7 @@ class ActivitiesInviteCandidatesServiceTest {
         when(userRatesRepository.findRelevantByUserIds(List.of("account")))
                 .thenReturn(List.of(singleMetRate("account", "account", 1), singleMetRate("account", "other", 1)));
         when(usersRepository.findByUserIdIn(Set.of("other"))).thenReturn(List.of(other));
-        when(homeUserProfileService.isActivityRateVisibleUser(other)).thenReturn(true);
+        when(homeUserProfileService.activityRateVisible(other)).thenReturn(true);
 
         var result = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "group-profile", "community", "community", "recent"));
@@ -117,8 +117,8 @@ class ActivitiesInviteCandidatesServiceTest {
                 singleMetRate("active", "saved-contact", 0.9d),
                 singleMetRate("active", "other", 0.8d)));
         when(usersRepository.findByUserIdIn(Set.of("other"))).thenReturn(List.of(otherUser));
-        when(homeUserProfileService.isActivityRateVisibleUser(otherUser)).thenReturn(true);
-        when(homeUserProfileService.toGameCardUserDto(otherUser)).thenReturn(null);
+        when(homeUserProfileService.activityRateVisible(otherUser)).thenReturn(true);
+        when(homeUserProfileService.presentGameCard(otherUser)).thenReturn(null);
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",
@@ -164,8 +164,8 @@ class ActivitiesInviteCandidatesServiceTest {
                 .thenReturn(new PageImpl<>(List.of(member)));
         when(usersRepository.findByUserIdIn(Set.of("pending-child", "parent-member")))
                 .thenReturn(List.of(pendingUser, parentMember));
-        when(homeUserProfileService.toGameCardUserDto(pendingUser)).thenReturn(null);
-        when(homeUserProfileService.toGameCardUserDto(parentMember)).thenReturn(null);
+        when(homeUserProfileService.presentGameCard(pendingUser)).thenReturn(null);
+        when(homeUserProfileService.presentGameCard(parentMember)).thenReturn(null);
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",
@@ -213,7 +213,7 @@ class ActivitiesInviteCandidatesServiceTest {
                 any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(member)));
         when(usersRepository.findByUserIdIn(Set.of("group-member"))).thenReturn(List.of(groupMember));
-        when(homeUserProfileService.toGameCardUserDto(groupMember)).thenReturn(null);
+        when(homeUserProfileService.presentGameCard(groupMember)).thenReturn(null);
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",
@@ -270,8 +270,8 @@ class ActivitiesInviteCandidatesServiceTest {
                 .thenReturn(new PageImpl<>(List.of(member)));
         when(usersRepository.findByUserIdIn(Set.of("pending-child", "parent-member")))
                 .thenReturn(List.of(pendingUser, parentMember));
-        when(homeUserProfileService.toGameCardUserDto(pendingUser)).thenReturn(null);
-        when(homeUserProfileService.toGameCardUserDto(parentMember)).thenReturn(null);
+        when(homeUserProfileService.presentGameCard(pendingUser)).thenReturn(null);
+        when(homeUserProfileService.presentGameCard(parentMember)).thenReturn(null);
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",

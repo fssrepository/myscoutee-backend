@@ -12,7 +12,7 @@ public interface WorkspaceProfile {
     String getPartitionKey();
     ActivityCounts getActivities();
     List<? extends Device> getDevices();
-    interface ActivityCounts { ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
+    interface ActivityCounts { FeedbackCounts eventFeedback(); ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
     interface ChatCounts { Integer all(); SupportCounts supportCases(); }
     interface SupportCounts { Integer pending(); Integer warned(); Integer picked(); }
     interface Device {
@@ -57,4 +57,5 @@ public interface WorkspaceProfile {
     java.util.Map<String, Double> getPaymentIncomeTotals();
     java.util.Map<String, Double> getPaymentAllTotals();
     Integer getPaymentRefundsPending();
+    interface FeedbackCounts { Integer ownEvents(); Integer pending(); Integer feedbacked(); Integer removed(); }
 }

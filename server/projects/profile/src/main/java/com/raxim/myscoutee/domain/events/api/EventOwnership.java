@@ -15,6 +15,15 @@ public interface EventOwnership {
     java.util.List<? extends Event> findAll();
     List<? extends Event> findBySourceId(String sourceId);
     interface Event {
+        List<String> getAcceptedMemberUserIds(); List<String> getInvitedMemberUserIds(); List<String> getPendingRequestMemberUserIds(); String getStatusBeforeSuppression(); Boolean getTicketing();
+    public static final String STATUS_ACTIVE = "A";
+    public static final String STATUS_DRAFT = "DR";
+    public static final String STATUS_TRASHED = "T";
+    public static final String STATUS_UNDER_REVIEW = "UR";
+    public static final String STATUS_BLOCKED = "B";
+    public static final String STATUS_DELETED = "D";
+    public static final String STATUS_INACTIVE = "I";
+
         String getAvatar();
         Boolean getIsTrashed(); Boolean getIsExpired();
         com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto getMingleConfiguration();
@@ -58,8 +67,21 @@ public interface EventOwnership {
         String getUpdatedUser();
         String getStatus(); String getCreatorUserId(); String getWorkspaceGroupId(); String getUpdatedDate(); List<String> getAdmins();
     }
-    interface SubEvent extends EventSchedule.Stage { String location(); String endAt(); List<com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto> groups(); }
+    interface SubEvent extends EventSchedule.Stage { com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto pricing(); String location(); String endAt(); List<com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto> groups(); }
     Event findByIdOrSourceId(String id);
     List<? extends Event> chatNavigationEvents(java.util.Collection<String> eventIds);
     com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentSubEvent(SubEvent value);
+    List<? extends Event> findDirectOwnerEvents(String userId);
+    List<? extends Event> findAdminVisibleEvents(String userId);
+    List<? extends Event> findAcceptedMembershipEvents(String userId);
+    List<? extends Event> findActiveInvitationEvents(String userId);
+    List<? extends Event> findPendingRequestEvents(String userId);
+    List<? extends Event> findByOwnerUserId(String userId);
+    List<? extends Event> findByAdminsContaining(String userId);
+    List<? extends Event> findHomeGameMemberProjections();
+    List<? extends Event> activeOriginalEventsByCreators(java.util.Collection<String> creators);
+    List<? extends Event> storedEventsBySources(java.util.Collection<String> sources);
+    boolean updateStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus);
+    record JobScope(String workspaceGroupId, String ownerUserId, String creatorUserId) {}
+    JobScope findJobScope(String sourceId);
 }

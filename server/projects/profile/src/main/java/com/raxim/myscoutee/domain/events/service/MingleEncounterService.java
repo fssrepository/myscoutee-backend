@@ -12,8 +12,8 @@ public class MingleEncounterService implements MingleEncounters {
  private final ActivityMingleSessionsRepository sessions;
  private final ActivityMingleRoundsRepository rounds;
  private final MongoTemplate mongo;
- private final com.raxim.myscoutee.domain.platform.service.JobGroupScopeService scopes;
- public MingleEncounterService(ActivityMingleSessionsRepository sessions,ActivityMingleRoundsRepository rounds,MongoTemplate mongo,com.raxim.myscoutee.domain.platform.service.JobGroupScopeService scopes) { this.sessions=sessions;this.rounds=rounds;this.mongo=mongo;this.scopes=scopes; }
+ private final com.raxim.myscoutee.domain.events.service.EventJobQueries scopes;
+ public MingleEncounterService(ActivityMingleSessionsRepository sessions,ActivityMingleRoundsRepository rounds,MongoTemplate mongo,com.raxim.myscoutee.domain.events.service.EventJobQueries scopes) { this.sessions=sessions;this.rounds=rounds;this.mongo=mongo;this.scopes=scopes; }
  public Optional<ActivityMingleSession> findSession(String eventId) { return sessions.findByEventId(eventId); }
  public List<ActivityMingleRound> completedRounds(Collection<String> ids) { return rounds.findByEventIdInAndStatusOrderByRoundNumberAsc(ids,"COMPLETED"); }
  public boolean isCompleted(String eventId) { return mongo.exists(Query.query(Criteria.where("eventId").is(eventId).and("status").is("COMPLETED")),ActivityMingleSession.class); }

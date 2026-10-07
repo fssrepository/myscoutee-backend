@@ -92,7 +92,7 @@ class ActivitiesEventFeedbackServiceTest {
                 mingleRoundsRepository,
                 eventFeedbackStatesRepository,
                 eventFeedbackAnswersRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 accessControlService,

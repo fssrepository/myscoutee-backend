@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
@@ -47,8 +47,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     private static final Set<String> SUPPRESSED_STATUSES = Set.of(STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE);
 
     private final UsersRepository usersRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
+    private final EventOwnership activityEventsRepository;
+    private final MemberDirectory activityMembersRepository;
     private final AssetOwnership assetsRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationDelivery notificationOutboxService;
@@ -56,8 +56,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
 
     public ModelStatusPropagationService(
             UsersRepository usersRepository,
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
+            EventOwnership activityEventsRepository,
+            MemberDirectory activityMembersRepository,
             AssetOwnership assetsRepository,
             MongoTemplate mongoTemplate,
             NotificationDelivery notificationOutboxService,
@@ -81,7 +81,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
             return ModelStatusPropagationOutcome.empty();
         }
 
-        LinkedHashMap<String, ActivityEvent> affectedEventsById = affectedAdminEventsByDocumentId(normalizedUserId);
+        LinkedHashMap<String, Event> affectedEventsById = affectedAdminEventsByDocumentId(normalizedUserId);
         RecomputeTargets eventTargets = applyEventStatuses(affectedEventsById.values());
         RecomputeTargets assetTargets = applyAssetStatuses(normalizedUserId);
         return new ModelStatusPropagationOutcome(
@@ -90,15 +90,15 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 eventTargets.hasConflicts() || assetTargets.hasConflicts());
     }
 
-    private LinkedHashMap<String, ActivityEvent> affectedAdminEventsByDocumentId(String userId) {
-        LinkedHashMap<String, ActivityEvent> eventsById = new LinkedHashMap<>();
+    private LinkedHashMap<String, Event> affectedAdminEventsByDocumentId(String userId) {
+        LinkedHashMap<String, Event> eventsById = new LinkedHashMap<>();
         addEvents(eventsById, activityEventsRepository.findByCreatorUserId(userId));
         addEvents(eventsById, activityEventsRepository.findByAdminsContaining(userId));
 
         List<String> adminMemberEventIds = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
                 .filter(member -> MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .filter(member -> ROLE_ADMIN.equals(safeText(member == null ? null : member.getRole())))
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -109,8 +109,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return eventsById;
     }
 
-    private RecomputeTargets applyEventStatuses(Collection<ActivityEvent> events) {
-        List<ActivityEvent> eventList = events == null
+    private RecomputeTargets applyEventStatuses(Collection<? extends Event> events) {
+        List<? extends Event> eventList = events == null
                 ? List.of()
                 : events.stream().filter(event -> event != null).toList();
         if (eventList.isEmpty()) {
@@ -130,7 +130,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
 
         LinkedHashSet<String> targetSourceIds = new LinkedHashSet<>();
         boolean conflict = false;
-        for (ActivityEvent event : eventList) {
+        for (Event event : eventList) {
             if (!isOperationalEvent(event)) {
                 continue;
             }
@@ -186,11 +186,11 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         LinkedHashMap<String, Asset> assetsById = new LinkedHashMap<>();
         addAssets(assetsById, assetsRepository.findByOwnerUserId(userId));
 
-        List<ActivityMember> managerMemberships = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId);
-        List<String> managedAssetIds = (managerMemberships == null ? List.<ActivityMember>of() : managerMemberships).stream()
+        List<? extends Member> managerMemberships = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId);
+        List<String> managedAssetIds = (managerMemberships == null ? List.<Member>of() : managerMemberships).stream()
                 .filter(member -> MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .filter(member -> isManagerRole(member == null ? null : member.getRole()))
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -201,7 +201,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return assetsById;
     }
 
-    private boolean suppressEvent(ActivityEvent event, String suppressionStatus) {
+    private boolean suppressEvent(Event event, String suppressionStatus) {
         if (event == null) {
             return false;
         }
@@ -224,7 +224,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return updated;
     }
 
-    private boolean restoreEventIfSuppressed(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
+    private boolean restoreEventIfSuppressed(Event event, Map<String, Integer> acceptedMemberCountsBySourceId) {
         if (event == null) {
             return true;
         }
@@ -301,14 +301,14 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return updated;
     }
 
-    private void markEventAttachmentUnavailable(ActivityEvent event, String reason) {
+    private void markEventAttachmentUnavailable(Event event, String reason) {
         String sourceId = normalizeId(event == null ? null : event.getSourceId());
         if (chatAttachmentLifecycleService != null && StringUtils.hasText(sourceId)) {
             chatAttachmentLifecycleService.markEventUnavailable(sourceId, reason);
         }
     }
 
-    private void markEventAttachmentAvailable(ActivityEvent event) {
+    private void markEventAttachmentAvailable(Event event) {
         String sourceId = normalizeId(event == null ? null : event.getSourceId());
         if (chatAttachmentLifecycleService != null && StringUtils.hasText(sourceId)) {
             chatAttachmentLifecycleService.markEventAvailable(sourceId);
@@ -389,7 +389,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 safeText(asset.getUpdatedUser())));
     }
 
-    private void enqueueEventStatusNotification(ActivityEvent event, String nextStatus, String previousStatus) {
+    private void enqueueEventStatusNotification(Event event, String nextStatus, String previousStatus) {
         if (event == null || notificationOutboxService == null) {
             return;
         }
@@ -449,32 +449,13 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 safeText(event.getUpdatedUser())));
     }
 
-    private boolean updateEventStatusIfSnapshotCurrent(ActivityEvent event, String nextStatus, String previousStatus) {
-        if (event == null) {
-            return false;
-        }
-        String id = normalizeId(event.getId());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(event.getUpdatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        Update update = new Update().set("status", nextStatus);
-        if (StringUtils.hasText(previousStatus)) {
-            update.set("statusBeforeSuppression", previousStatus);
-        } else {
-            update.unset("statusBeforeSuppression");
-        }
-        UpdateResult result = mongoTemplate.updateFirst(new Query(criteria), update, ActivityEvent.class);
-        return result.getMatchedCount() > 0;
+    private boolean updateEventStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus) {
+        return activityEventsRepository.updateStatusIfSnapshotCurrent(event, nextStatus, previousStatus);
     }
 
 
 
-    private boolean canRestoreEvent(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
+    private boolean canRestoreEvent(Event event, Map<String, Integer> acceptedMemberCountsBySourceId) {
         if (!isOperationalEvent(event)) {
             return false;
         }
@@ -494,7 +475,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
             return Map.of();
         }
         LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+        for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
             if (member == null || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))) {
                 continue;
             }
@@ -506,10 +487,10 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return result;
     }
 
-    private Map<String, Set<String>> resolveAdminIdsBySourceId(Collection<ActivityEvent> events) {
+    private Map<String, Set<String>> resolveAdminIdsBySourceId(Collection<? extends Event> events) {
         LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
         LinkedHashSet<String> sourceIds = new LinkedHashSet<>();
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             if (event == null) {
                 continue;
             }
@@ -527,7 +508,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
 
         if (!sourceIds.isEmpty()) {
-            for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+            for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
                 if (member == null
                         || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                         || !ROLE_ADMIN.equals(safeText(member.getRole()))) {
@@ -566,8 +547,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
 
         if (!assetIds.isEmpty()) {
-            List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
-            for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
+            List<? extends Member> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
+            for (Member member : assetMembers == null ? List.<Member>of() : assetMembers) {
                 if (member == null
                         || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                         || !isManagerRole(member.getRole())) {
@@ -601,8 +582,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 && !StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
             candidateIds.add(ownerUserId);
         }
-        List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
-        for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
+        List<? extends Member> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
+        for (Member member : assetMembers == null ? List.<Member>of() : assetMembers) {
             if (member == null
                     || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                     || !isManagerRole(member.getRole())) {
@@ -624,7 +605,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 .toList();
     }
 
-    private List<String> activeEventAdminUserIds(ActivityEvent event) {
+    private List<String> activeEventAdminUserIds(Event event) {
         if (event == null) {
             return List.of();
         }
@@ -638,8 +619,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (StringUtils.hasText(creatorUserId)) {
             candidateIds.add(creatorUserId);
         }
-        List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
-        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
+        List<? extends Member> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
+        for (Member member : members == null ? List.<Member>of() : members) {
             if (member == null
                     || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                     || !ROLE_ADMIN.equals(safeText(member.getRole()))) {
@@ -659,7 +640,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 .toList();
     }
 
-    private List<String> eventMemberUserIds(ActivityEvent event) {
+    private List<String> eventMemberUserIds(Event event) {
         if (event == null) {
             return List.of();
         }
@@ -672,10 +653,10 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (StringUtils.hasText(creatorUserId)) {
             adminUserIds.add(creatorUserId);
         }
-        List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
-        return (members == null ? List.<ActivityMember>of() : members).stream()
+        List<? extends Member> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
+        return (members == null ? List.<Member>of() : members).stream()
                 .filter(member -> member != null && MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
-                .map(ActivityMember::getUserId)
+                .map(Member::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .filter(userId -> !adminUserIds.contains(userId))
@@ -752,7 +733,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return StringUtils.hasText(title) ? title : "This asset";
     }
 
-    private String eventTitle(ActivityEvent event) {
+    private String eventTitle(Event event) {
         String title = safeText(event == null ? null : event.getTitle());
         return StringUtils.hasText(title) ? title : "This event";
     }
@@ -762,7 +743,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return StringUtils.hasText(normalizedFirst) ? normalizedFirst : safeText(second);
     }
 
-    private boolean isOperationalEvent(ActivityEvent event) {
+    private boolean isOperationalEvent(Event event) {
         if (event == null) {
             return false;
         }
@@ -791,8 +772,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
     }
 
-    private void addEvents(Map<String, ActivityEvent> target, List<ActivityEvent> events) {
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+    private void addEvents(Map<String, Event> target, List<? extends Event> events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             String documentId = normalizeId(event == null ? null : event.getId());
             if (StringUtils.hasText(documentId)) {
                 target.put(documentId, event);

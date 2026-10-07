@@ -11,7 +11,6 @@ import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
-import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
 import com.raxim.myscoutee.domain.payments.api.Affiliates;
 import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
 import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
@@ -50,9 +49,9 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentity
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.access.api.RegionSecurity;
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
+import com.raxim.myscoutee.domain.events.api.FeedbackDirectory.Answer;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
 import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
@@ -94,11 +93,10 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponse
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
+import com.raxim.myscoutee.domain.events.api.FeedbackDirectory;
 import com.raxim.myscoutee.domain.content.api.UserFeedback;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
@@ -232,12 +230,10 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final UserFriendshipsRepository userFriendshipsRepository;
     private final RatingDirectory userRatesRepository;
     private final com.raxim.myscoutee.domain.chat.api.ChatReview chatReview;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
+    private final EventOwnership activityEventsRepository;
+    private final MemberDirectory activityMembersRepository;
     private final AssetOwnership assetsRepository;
-    private final EventParticipationTicketService eventParticipationTicketService;
-    private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
-    private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
+    private final FeedbackDirectory eventFeedbackAnswersRepository;
     private final UserFeedback userFeedbackSubmissionsRepository;
     private final UserReports userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
@@ -273,12 +269,10 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UserFriendshipsRepository userFriendshipsRepository,
             RatingDirectory userRatesRepository,
             com.raxim.myscoutee.domain.chat.api.ChatReview chatReview,
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
+            EventOwnership activityEventsRepository,
+            MemberDirectory activityMembersRepository,
             AssetOwnership assetsRepository,
-            EventParticipationTicketService eventParticipationTicketService,
-            EventFeedbackStatesRepository eventFeedbackStatesRepository,
-            EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
+            FeedbackDirectory eventFeedbackAnswersRepository,
             UserFeedback userFeedbackSubmissionsRepository,
             UserReports userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
@@ -304,8 +298,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
-        this.eventParticipationTicketService = eventParticipationTicketService;
-        this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
@@ -772,9 +764,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
         }
 
-        ActivityEvent eventRecord = resolvePreferredEventRecord(eventId);
-        ActivityMember reporterMembership = resolveAcceptedReportMember(eventId, userId);
-        ActivityMember targetMembership = resolveAcceptedReportMember(eventId, targetUserId);
+        Event eventRecord = resolvePreferredEventRecord(eventId);
+        Member reporterMembership = resolveAcceptedReportMember(eventId, userId);
+        Member targetMembership = resolveAcceptedReportMember(eventId, targetUserId);
         boolean sharedAcceptedEvent = reporterMembership != null && targetMembership != null;
         boolean reportableEventOrganizer = isReportableEventOrganizer(eventRecord, targetUserId);
         if (!sharedAcceptedEvent && !reportableEventOrganizer) {
@@ -1616,7 +1608,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private Map<String, Long> queryLatestHomeActivityMsByUserId(
             List<Users> visibleGameUsers,
-            List<ActivityEvent> memberProjections) {
+            List<? extends Event> memberProjections) {
         Map<String, Long> latestByUserId = new LinkedHashMap<>();
         boolean allRateProjectionsCurrent = visibleGameUsers != null
                 && !visibleGameUsers.isEmpty()
@@ -1648,14 +1640,14 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
 
         if (hasHomeGameMemberProjections(memberProjections)) {
-            for (ActivityEvent event : memberProjections) {
+            for (Event event : memberProjections) {
                 long timestampMs = homeGameEventActivityMillis(event);
                 for (String userId : normalizeStrings(event == null ? null : event.getAcceptedMemberUserIds())) {
                     rememberLatestActivityMs(latestByUserId, userId, timestampMs);
                 }
             }
         } else {
-            for (ActivityMember member : activityMembersRepository.findAll()) {
+            for (Member member : activityMembersRepository.findAll()) {
                 if (member == null) {
                     continue;
                 }
@@ -1938,16 +1930,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
     }
 
-    private boolean hasHomeGameMemberProjections(List<ActivityEvent> memberProjections) {
+    private boolean hasHomeGameMemberProjections(List<? extends Event> memberProjections) {
         return memberProjections != null
                 && memberProjections.stream()
                         .filter(Objects::nonNull)
-                        .map(ActivityEvent::getAcceptedMemberUserIds)
+                        .map(Event::getAcceptedMemberUserIds)
                         .filter(Objects::nonNull)
                         .anyMatch(userIds -> !userIds.isEmpty());
     }
 
-    private long homeGameEventActivityMillis(ActivityEvent event) {
+    private long homeGameEventActivityMillis(Event event) {
         return parseIsoMillis(firstNonBlank(
                 event == null ? null : event.getStartAtIso(),
                 event == null ? null : event.getUpdatedDate(),
@@ -1972,7 +1964,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                     .filter(Objects::nonNull)
                     .filter(this::isUsableUserDocument)
                     .toList();
-            List<ActivityEvent> homeGameMemberProjections = activityEventsRepository.findHomeGameMemberProjections();
+            List<? extends Event> homeGameMemberProjections = activityEventsRepository.findHomeGameMemberProjections();
             GameStackSnapshot snapshot = new GameStackSnapshot(
                     List.copyOf(visibleGameUsers),
                     indexUsersById(visibleGameUsers),
@@ -2013,7 +2005,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         }
     }
 
-    private long resolveMemberRecordTimestampMs(ActivityMember member) {
+    private long resolveMemberRecordTimestampMs(Member member) {
         try {
             return Instant.parse(firstNonBlank(
                     member == null ? null : member.getActionAtIso(),
@@ -2579,7 +2571,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return safeText(value).contains(SEED_USER_IMAGE_HOST);
     }
 
-    private ActivityEvent resolvePreferredEventRecord(String eventId) {
+    private Event resolvePreferredEventRecord(String eventId) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return null;
@@ -2587,14 +2579,14 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return preferredEventRecordsBySourceId(activityEventsRepository.findBySourceId(normalizedEventId)).get(normalizedEventId);
     }
 
-    private ActivityMember resolveAcceptedReportMember(String eventId, String userId) {
+    private Member resolveAcceptedReportMember(String eventId, String userId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
             return null;
         }
 
-        ActivityMember storedMember = activityMembersRepository
+        Member storedMember = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedEventId, normalizedUserId)
                 .orElse(null);
         if (storedMember != null) {
@@ -2605,10 +2597,10 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return null;
     }
 
-    private boolean isReportableEventOrganizer(ActivityEvent eventRecord, String userId) {
+    private boolean isReportableEventOrganizer(Event eventRecord, String userId) {
         String normalizedUserId = normalizeId(userId);
         if (eventRecord == null
-                || !ActivityEvent.STATUS_ACTIVE.equals(eventRecord.getStatus())
+                || !Event.STATUS_ACTIVE.equals(eventRecord.getStatus())
                 || !StringUtils.hasText(normalizedUserId)) {
             return false;
         }
@@ -2627,7 +2619,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
 
 
-    private String resolveActivityMemberEntryId(ActivityMember member) {
+    private String resolveActivityMemberEntryId(Member member) {
         if (member == null) {
             return null;
         }
@@ -2653,9 +2645,9 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return normalizedStatus;
     }
 
-    private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {
-        LinkedHashMap<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+    private Map<String, Event> preferredEventRecordsBySourceId(List<? extends Event> records) {
+        LinkedHashMap<String, Event> preferredBySourceId = new LinkedHashMap<>();
+        for (Event record : records == null ? List.<Event>of() : records) {
             if (record == null) {
                 continue;
             }
@@ -2663,7 +2655,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
-            ActivityEvent current = preferredBySourceId.get(sourceId);
+            Event current = preferredBySourceId.get(sourceId);
             if (current == null || shouldPreferEventRecord(record, current)) {
                 preferredBySourceId.put(sourceId, record);
             }
@@ -2671,7 +2663,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return preferredBySourceId;
     }
 
-    private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
+    private boolean shouldPreferEventRecord(Event next, Event current) {
         boolean nextActive = "A".equals(safeText(next == null ? null : next.getStatus()));
         boolean currentActive = "A".equals(safeText(current == null ? null : current.getStatus()));
         if (nextActive != currentActive) {
@@ -2680,7 +2672,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
     }
 
-    private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
+    private boolean isHostingRecordForUser(Event record, String userId) {
         if (record == null || !StringUtils.hasText(userId) || Boolean.TRUE.equals(record.getIsTrashed())) {
             return false;
         }
@@ -3262,7 +3254,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     private UserImpressionsDto resolveMergedUserImpressionsUncached(Users user) {
-        List<EventFeedbackAnswer> feedbackAnswers = eventFeedbackAnswersRepository
+        List<? extends Answer> feedbackAnswers = eventFeedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc(normalizeId(user.getId()));
         UserImpressionsSectionDto host = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().host(), "event", feedbackAnswers);
         UserImpressionsSectionDto member = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().member(), "attendee", feedbackAnswers);
@@ -3276,7 +3268,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             Users user,
             Users.UserImpressionsSectionRecord record,
             String feedbackKind,
-            List<EventFeedbackAnswer> feedbackAnswers) {
+            List<? extends Answer> feedbackAnswers) {
         boolean hasStoredData = hasImpressionsSectionRecordData(record);
         if (!hasStoredData
                 && !hasImpressionActivity(user, feedbackKind)
@@ -3343,7 +3335,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                                 && (normalizeCount(trait.percent()) > 0 || normalizeCount(trait.evidenceCount()) > 0));
     }
 
-    private boolean hasFeedbackAnswerSignals(String feedbackKind, List<EventFeedbackAnswer> feedbackAnswers) {
+    private boolean hasFeedbackAnswerSignals(String feedbackKind, List<? extends Answer> feedbackAnswers) {
         String expectedKind = normalizeToken(feedbackKind);
         return safeList(feedbackAnswers).stream()
                 .filter(Objects::nonNull)
@@ -3360,7 +3352,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             Users user,
             Users.UserImpressionsSectionRecord record,
             String feedbackKind,
-            List<EventFeedbackAnswer> feedbackAnswers) {
+            List<? extends Answer> feedbackAnswers) {
         Map<String, Double> scoreByTraitId = new LinkedHashMap<>();
         Map<String, Integer> evidenceByTraitId = new LinkedHashMap<>();
         Map<String, String> lastRatedAtByTraitId = new LinkedHashMap<>();
@@ -3440,12 +3432,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private void applyFeedbackAnswerTraitSignals(
             String feedbackKind,
-            List<EventFeedbackAnswer> feedbackAnswers,
+            List<? extends Answer> feedbackAnswers,
             Map<String, Double> scoreByTraitId,
             Map<String, Integer> evidenceByTraitId,
             Map<String, String> lastRatedAtByTraitId) {
         String expectedKind = normalizeToken(feedbackKind);
-        for (EventFeedbackAnswer answer : safeList(feedbackAnswers)) {
+        for (Answer answer : safeList(feedbackAnswers)) {
             if (answer == null || !Objects.equals(expectedKind, normalizeToken(answer.getKind()))) {
                 continue;
             }
@@ -3840,4 +3832,5 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             Integer percent) {
     }
 
+    @Override public UserDto presentGameCard(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) { return toGameCardUserDto((Users) profile); }
 }

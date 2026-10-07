@@ -34,7 +34,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventResourceMetricRecord;
@@ -52,7 +52,7 @@ import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
@@ -66,7 +66,7 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
     private final Assets assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     private final AccessPermissions accessControlService;
@@ -80,7 +80,7 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityEventsRepository activityEventsRepository,
-            UsersRepository usersRepository,
+            ProfileDirectory usersRepository,
             Assets assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
             AccessPermissions accessControlService,
@@ -527,8 +527,8 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        Map<String, Users> contributorsById = (contributorUserIds.isEmpty()
-                ? List.<Users>of()
+        Map<String, WorkspaceProfile> contributorsById = (contributorUserIds.isEmpty()
+                ? List.<WorkspaceProfile>of()
                 : usersRepository.findByUserIdIn(contributorUserIds)).stream()
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new,
@@ -537,7 +537,7 @@ public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.ev
         List<SubEventSupplyContributionEntryDto> items = pageEntries.stream()
                 .filter(Objects::nonNull)
                 .map(entry -> {
-                    Users contributor = contributorsById.get(normalizeId(entry.userId()));
+                    WorkspaceProfile contributor = contributorsById.get(normalizeId(entry.userId()));
                     return new SubEventSupplyContributionEntryDto(
                             safeText(entry.id()),
                             safeText(entry.userId()),

@@ -746,7 +746,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             Integer ownEvents,
             Integer pending,
             Integer feedbacked,
-            Integer removed) {
+            Integer removed) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.FeedbackCounts {
     }
 
     public record ProfileDetailGroupRecord(

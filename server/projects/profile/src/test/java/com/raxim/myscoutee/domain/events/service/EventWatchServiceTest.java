@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -57,7 +57,7 @@ class EventWatchServiceTest {
         event.setVisibility("Invitation only");
         event.setCapacityTotal(2);
         event.setAcceptedMembers(1);
-        var scope = mock(JobGroupScopeService.class);
+        var scope = mock(EventJobQueries.class);
         when(scope.findEventOwned(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(EventWatchSubscription.class), org.mockito.ArgumentMatchers.eq("eventId"))).thenReturn(List.of(subscription));
         org.springframework.test.util.ReflectionTestUtils.setField(fixture.service, "jobGroupScope", scope);
         when(fixture.activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));

@@ -32,13 +32,8 @@ import org.springframework.util.StringUtils;
 
 import org.bson.Document;
 import com.raxim.myscoutee.domain.accounts.document.AccountPurgeJob;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.accounts.repository.AccountPurgeJobsRepository;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -73,10 +68,9 @@ public class DeletedAccountPurgeService {
 
     private final UsersRepository usersRepository;
     private final com.raxim.myscoutee.domain.chat.api.ChatPrivacy chatPrivacy;
-    private final ActivityEventsRepository activityEventsRepository;
+    private final com.raxim.myscoutee.domain.events.api.EventPrivacy eventPrivacy;
     @Autowired private com.raxim.myscoutee.domain.assets.api.AssetPrivacy assetPrivacy;
     private final AssetOwnership assetsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
     private final MediaStorage mediaStorageService;
     private final MongoTemplate mongoTemplate;
@@ -88,18 +82,16 @@ public class DeletedAccountPurgeService {
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
             com.raxim.myscoutee.domain.chat.api.ChatPrivacy chatPrivacy,
-            ActivityEventsRepository activityEventsRepository,
+            com.raxim.myscoutee.domain.events.api.EventPrivacy eventPrivacy,
             AssetOwnership assetsRepository,
-            ActivityMembersRepository activityMembersRepository,
             AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaStorage mediaStorageService,
             MongoTemplate mongoTemplate,
             PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;
         this.chatPrivacy = chatPrivacy;
-        this.activityEventsRepository = activityEventsRepository;
+        this.eventPrivacy = eventPrivacy;
         this.assetsRepository = assetsRepository;
-        this.activityMembersRepository = activityMembersRepository;
         this.accountPurgeJobsRepository = accountPurgeJobsRepository;
         this.mediaStorageService = mediaStorageService;
         this.mongoTemplate = mongoTemplate;
@@ -240,10 +232,10 @@ public class DeletedAccountPurgeService {
             purgeUserMedia(user);
 
             markStage(job, "owned-events");
-            List<ActivityEvent> ownedEvents = findOwnedEventsForPurge(userId);
+            List<? extends com.raxim.myscoutee.domain.events.api.EventOwnership.Event> ownedEvents = eventPrivacy.findOwnedEventsForPurge(userId);
             job.setOwnedEventIds(mergeIds(job.getOwnedEventIds(), sourceIds(ownedEvents)));
             saveJob(job);
-            purgeOwnedEvents(ownedEvents, job.getOwnedEventIds());
+            eventPrivacy.purgeOwnedEvents(ownedEvents, job.getOwnedEventIds());
 
             markStage(job, "owned-assets");
             List<? extends Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
@@ -252,14 +244,14 @@ public class DeletedAccountPurgeService {
             purgeOwnedAssets(ownedAssets, job.getOwnedAssetIds());
 
             markStage(job, "memberships");
-            purgeActivityMemberships(userId);
-            purgeManagedEventAdminReferences(userId);
+            eventPrivacy.purgeActivityMemberships(userId);
+            eventPrivacy.purgeManagedEventAdminReferences(userId);
 
             markStage(job, "asset-requests");
             assetPrivacy.purgeRemainingAssetRequests(userId);
 
             markStage(job, "activity-resources");
-            purgeActivityResources(userId, job.getOwnedEventIds(), job.getOwnedAssetIds());
+            eventPrivacy.purgeActivityResources(userId, job.getOwnedEventIds(), job.getOwnedAssetIds());
 
             markStage(job, "idea-posts");
             contentPrivacy.purgeIdeaPosts(userId);
@@ -428,55 +420,21 @@ public class DeletedAccountPurgeService {
         }
     }
 
-    private List<ActivityEvent> findOwnedEventsForPurge(String userId) {
-        Map<String, ActivityEvent> eventsByKey = new LinkedHashMap<>();
-        addEvents(eventsByKey, activityEventsRepository.findByOwnerUserId(userId));
-        addEvents(eventsByKey, activityEventsRepository.findByCreatorUserId(userId));
-        return new ArrayList<>(eventsByKey.values());
-    }
 
-    private void addEvents(Map<String, ActivityEvent> eventsByKey, List<ActivityEvent> events) {
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
-            if (event == null) {
-                continue;
-            }
-            String key = safeText(event.getId());
-            if (!StringUtils.hasText(key)) {
-                key = safeText(event.getOwnerUserId()) + ":" + safeText(event.getSourceId());
-            }
-            if (StringUtils.hasText(key)) {
-                eventsByKey.putIfAbsent(key, event);
-            }
-        }
-    }
 
-    private List<String> sourceIds(List<ActivityEvent> ownedEvents) {
-        return (ownedEvents == null ? List.<ActivityEvent>of() : ownedEvents).stream()
+
+
+    private List<String> sourceIds(List<? extends com.raxim.myscoutee.domain.events.api.EventOwnership.Event> ownedEvents) {
+        return (ownedEvents == null ? List.<com.raxim.myscoutee.domain.events.api.EventOwnership.Event>of() : ownedEvents).stream()
                 .filter(Objects::nonNull)
-                .map(ActivityEvent::getSourceId)
+                .map(com.raxim.myscoutee.domain.events.api.EventOwnership.Event::getSourceId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
     }
 
-    private void purgeOwnedEvents(List<ActivityEvent> ownedEvents, Collection<String> sourceIds) {
-        List<ActivityEvent> events = ownedEvents == null ? List.of() : ownedEvents;
-        for (ActivityEvent event : events) {
-            if (event != null) {
-                deletePurgeMedia(event.getImageUrl());
-            }
-        }
-        if (sourceIds != null && !sourceIds.isEmpty()) {
-            List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds);
-            if (members != null && !members.isEmpty()) {
-                activityMembersRepository.deleteAll(members);
-            }
-        }
-        if (!events.isEmpty()) {
-            activityEventsRepository.deleteAll(events);
-        }
-    }
+
 
     private List<String> assetIds(List<? extends Asset> ownedAssets) {
         return (ownedAssets == null ? List.<Asset>of() : ownedAssets).stream()
@@ -491,12 +449,7 @@ public class DeletedAccountPurgeService {
     private void purgeOwnedAssets(List<? extends Asset> ownedAssets, Collection<String> assetIds) {
         List<? extends Asset> assets = ownedAssets == null ? List.of() : ownedAssets;
         assetPrivacy.purgeOwnedMedia(assets);
-        if (assetIds != null && !assetIds.isEmpty()) {
-            List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
-            if (members != null && !members.isEmpty()) {
-                activityMembersRepository.deleteAll(members);
-            }
-        }
+        eventPrivacy.purgeAssetMemberships(assetIds);
         if (!assets.isEmpty()) {
             assetPrivacy.deleteOwnedRecords(assets);
         }
@@ -523,171 +476,21 @@ public class DeletedAccountPurgeService {
         mediaStorageService.deletePublicObjectOrThrow(mediaUrlOrKey);
     }
 
-    private void purgeActivityMemberships(String userId) {
-        Map<String, ActivityMember> membershipsByKey = new LinkedHashMap<>();
-        addMemberships(membershipsByKey, activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId));
-        addMemberships(membershipsByKey, activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId));
-        if (!membershipsByKey.isEmpty()) {
-            activityMembersRepository.deleteAll(membershipsByKey.values());
-        }
-    }
-
-    private void purgeManagedEventAdminReferences(String userId) {
-        List<ActivityEvent> managedEvents = activityEventsRepository.findByAdminsContaining(userId);
-        List<ActivityEvent> changedEvents = new ArrayList<>();
-        for (ActivityEvent event : managedEvents == null ? List.<ActivityEvent>of() : managedEvents) {
-            if (event == null || event.getAdmins() == null || event.getAdmins().isEmpty()) {
-                continue;
-            }
-            List<String> retainedAdmins = event.getAdmins().stream()
-                    .filter(adminId -> !userId.equals(safeText(adminId)))
-                    .toList();
-            if (retainedAdmins.size() != event.getAdmins().size()) {
-                event.setAdmins(new ArrayList<>(retainedAdmins));
-                changedEvents.add(event);
-            }
-        }
-        if (!changedEvents.isEmpty()) {
-            activityEventsRepository.saveAll(changedEvents);
-        }
-    }
-
-    private void addMemberships(Map<String, ActivityMember> membershipsByKey, List<ActivityMember> memberships) {
-        for (ActivityMember membership : memberships == null ? List.<ActivityMember>of() : memberships) {
-            if (membership == null) {
-                continue;
-            }
-            String key = safeText(membership.getId());
-            if (!StringUtils.hasText(key)) {
-                key = safeText(membership.getOwnerType()) + ":" + safeText(membership.getOwnerId()) + ":" + safeText(membership.getUserId());
-            }
-            if (StringUtils.hasText(key)) {
-                membershipsByKey.putIfAbsent(key, membership);
-            }
-        }
-    }
 
 
 
-    private void purgeActivityResources(String userId, Collection<String> ownedEventIds, Collection<String> ownedAssetIds) {
-        deleteDocumentsByAnyField(
-                "activityResources",
-                List.of("assetOwnerUserId", "createdUser", "updatedUser"),
-                userId);
-        if (ownedEventIds != null && !ownedEventIds.isEmpty()) {
-            mongoTemplate.remove(Query.query(Criteria.where("ownerId").in(ownedEventIds)), "activityResources");
-        }
-        List<ActivitySubEventResource> resources = mongoTemplate.find(
-                Query.query(new Criteria().orOperator(
-                        Criteria.where("supplyContributionEntriesByAssetId").exists(true),
-                        Criteria.where("assetSettingsByType").exists(true),
-                        Criteria.where("assetAssignmentIds").exists(true))),
-                ActivitySubEventResource.class);
-        List<ActivitySubEventResource> changedResources = new ArrayList<>();
-        LinkedHashSet<String> ownedAssetIdSet = new LinkedHashSet<>(ownedAssetIds == null ? List.<String>of() : ownedAssetIds);
-        for (ActivitySubEventResource resource : resources == null ? List.<ActivitySubEventResource>of() : resources) {
-            if (resource == null) {
-                continue;
-            }
-            boolean changed = removeSupplyContributionsByUser(resource, userId);
-            changed = removeSettingsByUser(resource, userId) || changed;
-            if (!ownedAssetIdSet.isEmpty()) {
-                changed = removeOwnedAssetReferences(resource, ownedAssetIdSet) || changed;
-            }
-            if (changed) {
-                changedResources.add(resource);
-            }
-        }
-        if (!changedResources.isEmpty()) {
-            for (ActivitySubEventResource resource : changedResources) {
-                mongoTemplate.save(resource);
-            }
-        }
-    }
 
-    private boolean removeSupplyContributionsByUser(ActivitySubEventResource resource, String userId) {
-        Map<String, List<ActivitySubEventResource.SubEventSupplyContributionEntryRecord>> entriesByAssetId =
-                resource.getSupplyContributionEntriesByAssetId();
-        if (entriesByAssetId == null || entriesByAssetId.isEmpty()) {
-            return false;
-        }
-        boolean changed = false;
-        Map<String, List<ActivitySubEventResource.SubEventSupplyContributionEntryRecord>> next = new LinkedHashMap<>();
-        for (Map.Entry<String, List<ActivitySubEventResource.SubEventSupplyContributionEntryRecord>> entry : entriesByAssetId.entrySet()) {
-            List<ActivitySubEventResource.SubEventSupplyContributionEntryRecord> retained = (entry.getValue() == null
-                    ? List.<ActivitySubEventResource.SubEventSupplyContributionEntryRecord>of()
-                    : entry.getValue()).stream()
-                    .filter(item -> item != null && !userId.equals(safeText(item.userId())))
-                    .toList();
-            if (retained.size() != (entry.getValue() == null ? 0 : entry.getValue().size())) {
-                changed = true;
-            }
-            if (!retained.isEmpty()) {
-                next.put(entry.getKey(), new ArrayList<>(retained));
-            } else if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                changed = true;
-            }
-        }
-        if (changed) {
-            resource.setSupplyContributionEntriesByAssetId(next);
-        }
-        return changed;
-    }
 
-    private boolean removeSettingsByUser(ActivitySubEventResource resource, String userId) {
-        Map<String, Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord>> settingsByType =
-                resource.getAssetSettingsByType();
-        if (settingsByType == null || settingsByType.isEmpty()) {
-            return false;
-        }
-        boolean changed = false;
-        Map<String, Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord>> next = new LinkedHashMap<>();
-        for (Map.Entry<String, Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord>> typeEntry : settingsByType.entrySet()) {
-            Map<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord> retainedByAsset = new LinkedHashMap<>();
-            for (Map.Entry<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord> assetEntry
-                    : (typeEntry.getValue() == null ? Map.<String, ActivitySubEventResource.SubEventAssignedAssetSettingsRecord>of() : typeEntry.getValue()).entrySet()) {
-                ActivitySubEventResource.SubEventAssignedAssetSettingsRecord settings = assetEntry.getValue();
-                if (settings != null && userId.equals(safeText(settings.addedByUserId()))) {
-                    changed = true;
-                    continue;
-                }
-                retainedByAsset.put(assetEntry.getKey(), settings);
-            }
-            if (!retainedByAsset.isEmpty()) {
-                next.put(typeEntry.getKey(), retainedByAsset);
-            } else if (typeEntry.getValue() != null && !typeEntry.getValue().isEmpty()) {
-                changed = true;
-            }
-        }
-        if (changed) {
-            resource.setAssetSettingsByType(next);
-        }
-        return changed;
-    }
 
-    private boolean removeOwnedAssetReferences(ActivitySubEventResource resource, Collection<String> ownedAssetIds) {
-        Map<String, List<String>> assignments = resource.getAssetAssignmentIds();
-        if (assignments == null || assignments.isEmpty()) {
-            return false;
-        }
-        boolean changed = false;
-        Map<String, List<String>> next = new LinkedHashMap<>();
-        for (Map.Entry<String, List<String>> entry : assignments.entrySet()) {
-            List<String> retained = (entry.getValue() == null ? List.<String>of() : entry.getValue()).stream()
-                    .filter(assetId -> !ownedAssetIds.contains(safeText(assetId)))
-                    .toList();
-            if (retained.size() != (entry.getValue() == null ? 0 : entry.getValue().size())) {
-                changed = true;
-            }
-            if (!retained.isEmpty()) {
-                next.put(entry.getKey(), new ArrayList<>(retained));
-            }
-        }
-        if (changed) {
-            resource.setAssetAssignmentIds(next);
-        }
-        return changed;
-    }
+
+
+
+
+
+
+
+
+
 
     private void purgeUserReferencedDocuments(String userId) {
         affinityPrivacy.purgeRatings(userId);
@@ -705,17 +508,13 @@ public class DeletedAccountPurgeService {
         paymentPrivacy.purgePayerRecords(userId);
         emailPrivacy.purgeDeliveryData(userId);
         notificationPrivacy.purgeDeliveryData(userId);
-        anonymizeUserFieldsByAnyField(
-                "eventTicketAudit",
-                List.of("holderUserId", "actorUserId", "originalUsedByUserId"),
-                userId);
+        eventPrivacy.anonymizeTicketAudit(userId);
         contentPrivacy.purgeShareTokens(userId);
-        deleteDocumentsByAnyField("eventFeedbackAnswers", List.of("viewerUserId", "targetUserId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("eventFeedbackStates", List.of("viewerUserId", "createdUser", "updatedUser"), userId);
+        eventPrivacy.purgeFeedback(userId);
         affinityPrivacy.purgeTasks(userId);
-        deleteDocumentsByAnyField("eventLeaderboardEntries", List.of("memberId", "homeMemberId", "awayMemberId", "createdUser", "updatedUser"), userId);
+        eventPrivacy.purgeLeaderboard(userId);
         helpPrivacy.anonymizeAuthors(userId);
-        anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId);
+        eventPrivacy.anonymizeSchedulerMarkers(userId);
         emailPrivacy.anonymizeAuthors(userId);
         notificationPrivacy.anonymizeRuleAuthors(userId);
         affinityPrivacy.anonymizeAuthors(userId);

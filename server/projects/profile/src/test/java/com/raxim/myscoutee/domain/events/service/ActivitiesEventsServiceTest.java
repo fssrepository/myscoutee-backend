@@ -180,7 +180,7 @@ class ActivitiesEventsServiceTest {
                 activitySubEventStageRuntimeRepository,
                 activityMembersRepository,
                 activityMingleSessionsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 friendshipFacts,
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 homeUserProfileService,
@@ -221,6 +221,7 @@ class ActivitiesEventsServiceTest {
         lenient().when(accessControlService.canCurrentActorTakeOverEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorJoinEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorApplyEventStageAction(anyString())).thenReturn(true);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "followingEvents", new com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService(mongoTemplate, friendshipFacts));
     }
 
     @Test

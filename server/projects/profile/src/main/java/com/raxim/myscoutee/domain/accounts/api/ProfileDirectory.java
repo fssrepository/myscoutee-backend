@@ -20,4 +20,7 @@ public interface ProfileDirectory {
     long countByUserIdIn(Collection<String> ids);
     List<? extends WorkspaceProfile> pageByUserIdIn(Collection<String> ids, int offset, int limit);
     java.util.Set<String> savedContactIds(String userId);
+    List<? extends WorkspaceProfile> findAllById(Iterable<String> ids);
+    record PaymentMembers(List<? extends WorkspaceProfile> items, long total) {}
+    PaymentMembers paymentMembers(String workspace, String actor, int page, int size);
 }

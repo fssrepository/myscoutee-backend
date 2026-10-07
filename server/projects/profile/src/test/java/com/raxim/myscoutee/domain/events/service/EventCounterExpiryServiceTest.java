@@ -59,13 +59,14 @@ class EventCounterExpiryServiceTest {
     void setUp() {
         service = new EventCounterExpiryService(
                 activityMembersRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mongoTemplate,
                 notificationRuleRegistryService,
                 adminTelemetryService,
                 userActivityCountersService,
                 eventFriendshipProjectionService,
                 20);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventCounterUpdates", new com.raxim.myscoutee.domain.accounts.service.AccountEventCounterUpdateService(usersRepository));
     }
 
     @Test
@@ -257,7 +258,7 @@ class EventCounterExpiryServiceTest {
         Users.UserActivitiesRecord second = activities(
                 new Users.UserEventCountersRecord(21, 1, 2, 3, 4, 5, 6));
 
-        assertThat(service.activitiesEqual(first, second)).isFalse();
+        assertThat(new com.raxim.myscoutee.domain.accounts.service.AccountEventCounterUpdateService(usersRepository).activitiesEqual(first, second)).isFalse();
     }
 
     private Users.UserActivitiesRecord activities(

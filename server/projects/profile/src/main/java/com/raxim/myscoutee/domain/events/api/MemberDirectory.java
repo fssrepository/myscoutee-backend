@@ -10,6 +10,7 @@ public interface MemberDirectory {
     Optional<? extends Member> findByOwnerTypeAndOwnerIdAndUserId(String ownerType, String ownerId, String userId);
     List<? extends Member> findByOwnerTypeAndOwnerId(String ownerType, String ownerId);
     interface Member {
+        String getSuppressionRootOwnerId(); String getStatusBeforeSuppression();
         String getRequestKind(); String getManagerGrantedByUserId();
         String getId();
         String getSyncKey();

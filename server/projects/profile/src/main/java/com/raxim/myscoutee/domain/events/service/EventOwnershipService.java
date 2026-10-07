@@ -69,4 +69,40 @@ public class EventOwnershipService implements EventOwnership {
     public com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentSubEvent(SubEvent value) {
         return com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper.toDto((com.raxim.myscoutee.domain.events.document.SubEventItem) value);
     }
+    public List<ActivityEvent> findDirectOwnerEvents(String userId) { return events.findDirectOwnerEvents(userId); }
+    public List<ActivityEvent> findAdminVisibleEvents(String userId) { return events.findAdminVisibleEvents(userId); }
+    public List<ActivityEvent> findAcceptedMembershipEvents(String userId) { return events.findAcceptedMembershipEvents(userId); }
+    public List<ActivityEvent> findActiveInvitationEvents(String userId) { return events.findActiveInvitationEvents(userId); }
+    public List<ActivityEvent> findPendingRequestEvents(String userId) { return events.findPendingRequestEvents(userId); }
+    public List<ActivityEvent> findByOwnerUserId(String userId) { return events.findByOwnerUserId(userId); }
+    public List<ActivityEvent> findByAdminsContaining(String userId) { return events.findByAdminsContaining(userId); }
+    public List<ActivityEvent> findHomeGameMemberProjections() { return events.findHomeGameMemberProjections(); }
+    public List<ActivityEvent> activeOriginalEventsByCreators(java.util.Collection<String> creators) { return mongo.find(Query.query(Criteria.where("creatorUserId").in(creators).and("status").is("A").and("generated").ne(true)), ActivityEvent.class); }
+    public List<ActivityEvent> storedEventsBySources(java.util.Collection<String> sources) { return mongo.find(Query.query(Criteria.where("sourceId").in(sources)), ActivityEvent.class); }
+    public boolean updateStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus) {
+        if (event == null) {
+            return false;
+        }
+        String id = normalizeId(event.getId());
+        if (!StringUtils.hasText(id)) {
+            return false;
+        }
+        Criteria criteria = Criteria.where("_id").is(id);
+        String updatedDate = normalizeId(event.getUpdatedDate());
+        if (StringUtils.hasText(updatedDate)) {
+            criteria = criteria.and("updatedDate").is(updatedDate);
+        }
+        Update update = new Update().set("status", nextStatus);
+        if (StringUtils.hasText(previousStatus)) {
+            update.set("statusBeforeSuppression", previousStatus);
+        } else {
+            update.unset("statusBeforeSuppression");
+        }
+        UpdateResult result = mongo.updateFirst(new Query(criteria), update, ActivityEvent.class);
+        return result.getMatchedCount() > 0;
+    }
+    public JobScope findJobScope(String sourceId) {
+        var row = mongo.findOne(Query.query(Criteria.where("sourceId").is(sourceId)), org.bson.Document.class, "events");
+        return row == null ? null : new JobScope(row.getString("workspaceGroupId"), row.getString("ownerUserId"), row.getString("creatorUserId"));
+    }
 }

@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.affinity.api.Ratings;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 @Service
 public class EventFriendshipProjectionService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
 
     private static final String MINGLE_MODE = "Mingle";
     private static final String MINGLE_ROUND_COMPLETED = "COMPLETED";

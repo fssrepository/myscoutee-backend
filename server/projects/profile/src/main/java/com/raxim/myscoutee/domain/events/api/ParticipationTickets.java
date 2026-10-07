@@ -11,4 +11,5 @@ public interface ParticipationTickets {
         String getId(); String getCode(); String getEventId(); String getHolderUserId();
         String getStatus(); String getIssuedAtIso(); String getUsedAtIso(); String getUsedByUserId();
     }
+    List<? extends EventOwnership.Event> queryTicketRecordsForUser(String userId);
 }
