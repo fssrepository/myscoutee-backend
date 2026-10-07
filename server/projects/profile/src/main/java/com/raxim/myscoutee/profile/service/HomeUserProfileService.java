@@ -244,6 +244,12 @@ public class HomeUserProfileService {
     private final AssetsService assetsService;
     private final AffiliateService affiliateService;
     private NotificationRuleRegistryService notificationRuleRegistryService;
+    private com.raxim.myscoutee.profile.service.notifications.RoleNotificationService roleNotifications;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setRoleNotifications(com.raxim.myscoutee.profile.service.notifications.RoleNotificationService value) {
+        this.roleNotifications = value;
+    }
     private UserNotificationPageRepository userNotificationPageRepository;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
@@ -676,6 +682,7 @@ public class HomeUserProfileService {
         Users existing = usersRepository.findByUserId(normalizedUserId).orElse(null);
         boolean wasTrackedForAccountPurge = existing != null
                 && Boolean.TRUE.equals(existing.getAccountPurgePendingCounterTracked());
+        boolean completingRegistration = existing == null || PROFILE_STATUS_ONBOARDING.equals(existing.getProfileStatus());
         Users merged = mergeUserDocument(existing, user);
         if (existing == null) {
             merged.setAffiliateRegistration(affiliateService.resolveRegistration(affiliateCode, normalizedUserId));
@@ -691,6 +698,10 @@ public class HomeUserProfileService {
             throw exception;
         }
         affiliateService.recordRegistration(saved.getAffiliateRegistration());
+        if (completingRegistration && !PROFILE_STATUS_ONBOARDING.equals(saved.getProfileStatus())
+                && "A".equals(saved.getStatus()) && roleNotifications != null) {
+            roleNotifications.memberJoined(saved);
+        }
         if (existing == null && userFilterPreferencesRepository.findByUserId(normalizedUserId).isEmpty()) {
             persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
         }
@@ -745,6 +756,7 @@ public class HomeUserProfileService {
         document.setUpdatedDate(nowIso);
         document.setUpdatedUser(userId);
         userFeedbackSubmissionsRepository.save(document);
+        if (roleNotifications != null) roleNotifications.moderationSubmitted("feedback-submitted", document.getId());
         adminTelemetryService.record("feedback.submitted", "moderation", document.getId(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }
@@ -849,6 +861,7 @@ public class HomeUserProfileService {
         } catch (DuplicateKeyException duplicate) {
             return new UserSubmitActionResponseDto(true, "Report already submitted.");
         }
+        if (roleNotifications != null) roleNotifications.moderationSubmitted("report-submitted", document.getId());
         adminTelemetryService.record("report.submitted", "moderation", document.getId(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }

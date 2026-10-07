@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "helpCenterRevisions")
 @CompoundIndexes({
+        @CompoundIndex(name = "help_revision_system_context", def = "{'documentType': 1, 'contextKey': 1, 'isSystem': 1}"),
         @CompoundIndex(name = "help_revision_group_document_lang_context_version", def = "{'baseGroupId': 1, 'documentType': 1, 'lang': 1, 'contextKey': 1, 'version': -1}", unique = true),
         @CompoundIndex(name = "help_revision_group_document_lang_context_active", def = "{'baseGroupId': 1, 'documentType': 1, 'lang': 1, 'contextKey': 1, 'active': 1, 'version': -1}")
 })
@@ -30,6 +31,11 @@ public class HelpCenterRevision {
 
     @Indexed(name = "help_revision_context_key")
     private String contextKey;
+
+    @Field("isSystem")
+    private boolean isSystem;
+    public boolean getIsSystem() { return isSystem; }
+    public void setIsSystem(boolean value) { isSystem = value; }
 
     private String languageLabel;
     private Integer version;

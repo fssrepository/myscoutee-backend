@@ -2830,6 +2830,41 @@
           "autoDismissExplanationGuide": false
         }
       ]
+    },
+    "ROLE-GUIDES-NOTIFICATIONS-001": {
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "Operator",
+          "sessionKind": "demo",
+          "userId": "operator@myscoutee.local",
+          "expectedName": "Demo Operator",
+          "targetUrl": "http://localhost/operator",
+          "entryUrl": "http://localhost/entry?redirect=%2Foperator",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Ava",
+          "sessionKind": "demo",
+          "userId": "admin-demo-ava",
+          "expectedName": "Ava Moderation",
+          "targetUrl": "http://localhost/admin",
+          "entryUrl": "http://localhost/entry?redirect=%2Fadmin",
+          "autoDismissExplanationGuide": false
+        },
+        {
+          "actor": "Casey",
+          "sessionKind": "demo",
+          "userId": "650000000000000000000061",
+          "expectedName": "Casey Bridge",
+          "targetUrl": "http://localhost/game",
+          "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+          "autoDismissExplanationGuide": false
+        }
+      ],
+      "preserveOtherSessions": true
     }
   }
 }

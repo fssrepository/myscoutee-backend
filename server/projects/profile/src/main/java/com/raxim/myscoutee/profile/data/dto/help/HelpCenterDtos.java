@@ -35,7 +35,8 @@ public final class HelpCenterDtos {
             String createdAtIso,
             String createdByUserId,
             String updatedAtIso,
-            String updatedByUserId) {}
+            String updatedByUserId,
+            boolean isSystem) {}
 
     public record HelpCenterAuditEntryDto(
             String id,

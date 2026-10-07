@@ -25,6 +25,12 @@ import jakarta.validation.Valid;
 public class OperatorBootstrapController {
     private final OperatorBootstrapAuthenticationService service;
     private final ConfigProperties config;
+    private com.raxim.myscoutee.profile.service.UserLoginSessionService loginSessions;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void setLoginSessions(com.raxim.myscoutee.profile.service.UserLoginSessionService value) {
+        this.loginSessions = value;
+    }
 
     public OperatorBootstrapController(
             OperatorBootstrapAuthenticationService service,
@@ -52,6 +58,7 @@ public class OperatorBootstrapController {
         }
         OperatorBootstrapAuthenticationService.LoginResult result =
                 service.login(request.email(), request.password());
+        if (loginSessions != null) loginSessions.recordBootstrapLogin(result.email(), httpRequest);
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.noStore())
                 .header("Pragma", "no-cache")
