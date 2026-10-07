@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -15,7 +17,7 @@ class JobGroupScopeServiceTest {
         var mongo = mock(MongoTemplate.class);
         var community = new org.bson.Document("_id", "private-homes").append("groupType", "community");
         when(mongo.find(any(Query.class), eq(org.bson.Document.class), eq("communityGroups"))).thenReturn(List.of(community));
-        var service = new JobGroupScopeService(mongo);
+        var service = new JobGroupScopeService();
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", directory);
@@ -24,7 +26,8 @@ class JobGroupScopeServiceTest {
             assertThat(service.matchesWorkspace(CommunityGroup.COMMUNITY_BASE_ID)).isTrue();
             assertThat(service.matchesWorkspace(CommunityGroup.WORK_BASE_ID)).isFalse();
             assertThat(service.matchesWorkspace(null)).isFalse();
-            assertThat(service.workspaceCriteria("workspaceGroupId").getCriteriaObject().toJson())
+            assertThat(service.workspaceScope().included()).isTrue();
+            assertThat(service.workspaceScope().ids())
                     .contains("private-homes", CommunityGroup.COMMUNITY_BASE_ID).doesNotContain(CommunityGroup.WORK_BASE_ID);
         });
         verify(mongo, times(1)).find(argThat(query -> query.getFieldsObject().keySet().equals(java.util.Set.of("_id", "groupType"))),
@@ -32,8 +35,9 @@ class JobGroupScopeServiceTest {
         JobGroupContext.run(null, () -> {
             assertThat(service.matchesWorkspace(null)).isTrue();
             assertThat(service.matchesWorkspace("private-homes")).isFalse();
-            assertThat(service.workspaceCriteria("workspaceGroupId").getCriteriaObject().toJson())
-                    .contains("$nin", "private-homes", CommunityGroup.COMMUNITY_BASE_ID, CommunityGroup.WORK_BASE_ID);
+            assertThat(service.workspaceScope().included()).isFalse();
+            assertThat(service.workspaceScope().ids())
+                    .contains("private-homes", CommunityGroup.COMMUNITY_BASE_ID, CommunityGroup.WORK_BASE_ID);
         });
         assertThat(JobGroupContext.isActive()).isFalse();
     }

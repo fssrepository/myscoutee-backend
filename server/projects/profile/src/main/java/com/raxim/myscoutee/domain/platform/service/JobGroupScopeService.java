@@ -1,15 +1,13 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+
 import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 
@@ -22,9 +20,6 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
-    private final MongoTemplate mongo;
-
-    public JobGroupScopeService(MongoTemplate mongo) { this.mongo = mongo; }
 
     public String forWorkspace(String workspaceId) {
         if (workspaceId == null || workspaceId.isBlank()) return null;
@@ -91,12 +86,6 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
                 : new WorkspaceScope(spaces.entrySet().stream().filter(entry -> scope.equals(entry.getValue()))
                     .map(java.util.Map.Entry::getKey).collect(java.util.stream.Collectors.toSet()), true);
     }
-    public Criteria workspaceCriteria(String field) {
-        var workspaces = workspaces();
-        String scope = JobGroupContext.groupId();
-        return scope == null ? Criteria.where(field).nin(workspaces.keySet())
-                : Criteria.where(field).in(workspaces.entrySet().stream()
-                    .filter(entry -> scope.equals(entry.getValue())).map(java.util.Map.Entry::getKey).toList());
-    }
+
 
 }

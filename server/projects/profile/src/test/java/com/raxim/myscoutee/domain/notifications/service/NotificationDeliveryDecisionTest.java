@@ -330,7 +330,7 @@ class NotificationDeliveryDecisionTest {
         NotificationOutboxWorkerService worker = new NotificationOutboxWorkerService(config, outbox, new AccountNotificationService(users, mongo), sessions, mongo, null, null,
                 mock(AdminTelemetryService.class), gateway, 50, 500, 5, 300000L, 60000L, 0, 24, null);
         var registry = mock(NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         @SuppressWarnings("unchecked") ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         worker.setNotificationRuleRegistryServiceProvider(provider);

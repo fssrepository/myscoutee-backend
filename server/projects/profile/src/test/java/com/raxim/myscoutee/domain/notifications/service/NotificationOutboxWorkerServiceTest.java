@@ -55,7 +55,7 @@ class NotificationOutboxWorkerServiceTest {
         rule.setRuleKey(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX);
         rule.setEnabled(true);
         when(registryProvider.getIfAvailable()).thenReturn(registry);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
         when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX))
                 .thenReturn(Optional.of(rule));
         when(registry.shouldRunScheduledRule(
@@ -124,7 +124,7 @@ class NotificationOutboxWorkerServiceTest {
         rule.setRuleKey(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX);
         rule.setEnabled(true);
         when(registryProvider.getIfAvailable()).thenReturn(registry);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
         when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX))
                 .thenReturn(Optional.of(rule));
         NotificationOutboxWorkerService service = service(
@@ -223,7 +223,7 @@ class NotificationOutboxWorkerServiceTest {
                 null);
 
         var registry = org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
         @SuppressWarnings("unchecked") ObjectProvider<NotificationRuleRegistryService> provider = org.mockito.Mockito.mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         service.setNotificationRuleRegistryServiceProvider(provider);

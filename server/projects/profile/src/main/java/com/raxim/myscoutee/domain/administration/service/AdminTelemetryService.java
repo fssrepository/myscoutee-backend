@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.administration.service;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
 import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Duration;

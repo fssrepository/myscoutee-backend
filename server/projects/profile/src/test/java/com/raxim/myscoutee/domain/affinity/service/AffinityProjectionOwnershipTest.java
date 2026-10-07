@@ -21,7 +21,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.service.EventOwnershipService;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 @Tag("standard")
 class AffinityProjectionOwnershipTest {

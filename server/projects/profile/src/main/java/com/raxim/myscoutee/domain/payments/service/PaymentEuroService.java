@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 import java.math.*;
 import com.raxim.myscoutee.domain.payments.dto.ExchangeRateDtos.Snapshot;

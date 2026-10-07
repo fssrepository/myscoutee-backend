@@ -44,7 +44,7 @@ class NotificationOutboxServiceTest {
         assertThat(items.get(1).getBaseGroupId()).isEqualTo("myscoutee-work");
         assertThat(items.get(1).getRecipientUserIds()).containsExactly("work");
         assertThat(items.get(0).getCollapseKey()).isNotEqualTo(items.get(1).getCollapseKey());
-        assertThat(com.raxim.myscoutee.domain.platform.service.JobGroupContext.isActive()).isFalse();
+        assertThat(com.raxim.myscoutee.domain.platform.api.JobGroupContext.isActive()).isFalse();
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
 import com.raxim.myscoutee.domain.affinity.api.GraphScience;
 import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.time.LocalDate;

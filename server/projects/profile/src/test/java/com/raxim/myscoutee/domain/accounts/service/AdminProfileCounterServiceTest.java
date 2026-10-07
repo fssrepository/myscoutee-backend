@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.administration.api.AdministrativeQueues;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 @Tag("standard")
 class AdminProfileCounterServiceTest {

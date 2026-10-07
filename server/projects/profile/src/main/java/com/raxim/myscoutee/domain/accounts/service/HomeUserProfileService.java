@@ -14,7 +14,7 @@ import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.payments.api.Affiliates;
 import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
 import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.nio.charset.StandardCharsets;

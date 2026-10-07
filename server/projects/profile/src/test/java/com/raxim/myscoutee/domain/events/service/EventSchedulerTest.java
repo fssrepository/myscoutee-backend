@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.events.service;
 import com.raxim.myscoutee.domain.affinity.service.UserAffinityEdgeService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
 
@@ -72,7 +72,7 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
     private EventJobQueries jobScope() {
         var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
-        var scope = new JobGroupScopeService(mongo);
+        var scope = new JobGroupScopeService();
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);

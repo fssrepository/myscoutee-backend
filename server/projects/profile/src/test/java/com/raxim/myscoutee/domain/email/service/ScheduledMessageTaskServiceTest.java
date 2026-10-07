@@ -81,7 +81,7 @@ class ScheduledMessageTaskServiceTest {
     @Mock
     private ObjectProvider<EmailProperties> emailPropertiesProvider;
     @Mock
-    private ObjectProvider<ConfigProperties> configPropertiesProvider;
+    private ObjectProvider<com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration> configPropertiesProvider;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock

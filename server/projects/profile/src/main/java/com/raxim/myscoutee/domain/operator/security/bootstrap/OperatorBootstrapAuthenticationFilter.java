@@ -9,7 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,12 +19,12 @@ import jakarta.servlet.http.HttpServletResponse;
 public class OperatorBootstrapAuthenticationFilter
         extends OncePerRequestFilter {
     private final OperatorBootstrapAuthenticationService service;
-    private final ConfigProperties config;
+    private final RuntimeConfiguration config;
     private final ProfileAuthentication profileAuthentication;
 
     public OperatorBootstrapAuthenticationFilter(
             OperatorBootstrapAuthenticationService service,
-            ConfigProperties config, ProfileAuthentication profileAuthentication) {
+            RuntimeConfiguration config, ProfileAuthentication profileAuthentication) {
         this.service = service;
         this.config = config;
         this.profileAuthentication = profileAuthentication;

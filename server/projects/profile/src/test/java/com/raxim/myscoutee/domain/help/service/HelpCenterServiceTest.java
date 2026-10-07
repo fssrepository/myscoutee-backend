@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.help.service;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

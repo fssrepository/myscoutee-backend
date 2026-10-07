@@ -55,7 +55,7 @@ import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.events.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
-import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
+import com.raxim.myscoutee.domain.events.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.accounts.document.Users;

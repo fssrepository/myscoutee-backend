@@ -27,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.chat.api.ChatDirectory.Chat;
 import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
@@ -58,7 +58,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileModeration profileModeration;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
     private final ProfileDirectory usersRepository;
@@ -73,7 +73,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     public AdminModerationService(
             com.raxim.myscoutee.domain.groups.api.GroupDirectory groups,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
             ProfileDirectory usersRepository,

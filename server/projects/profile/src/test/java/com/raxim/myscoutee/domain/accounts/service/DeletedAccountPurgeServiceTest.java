@@ -54,7 +54,7 @@ class DeletedAccountPurgeServiceTest {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "notificationPrivacy",
                 new com.raxim.myscoutee.domain.notifications.service.NotificationPrivacyService(mongoTemplate));
         var registry = mock(com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "notificationRuleRegistryService", registry);
         var scope = mock(com.raxim.myscoutee.domain.platform.service.JobGroupScopeService.class);
         when(scope.matchesWorkspace(any())).thenReturn(true);

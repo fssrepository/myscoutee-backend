@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import java.time.Instant;
 import com.raxim.myscoutee.domain.email.api.EmailProcessCatalog;
 import java.util.LinkedHashMap;

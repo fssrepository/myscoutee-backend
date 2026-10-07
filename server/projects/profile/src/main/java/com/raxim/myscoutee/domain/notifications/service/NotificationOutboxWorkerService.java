@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
 import java.time.Duration;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -45,7 +45,7 @@ import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Device;
@@ -66,7 +66,7 @@ public class NotificationOutboxWorkerService {
     private static final String DELIVERY_STRATEGY_DIRECT = "direct";
     private static final String DELIVERY_STRATEGY_TOPIC = "topic";
 
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final AccountNotifications accounts;
     private final ChatPresence chatWebSocketSessionRegistry;
@@ -89,7 +89,7 @@ public class NotificationOutboxWorkerService {
     private volatile Instant lastScheduledPollAt = Instant.EPOCH;
 
     public NotificationOutboxWorkerService(
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             NotificationOutboxRepository notificationOutboxRepository,
             AccountNotifications accounts,
             ChatPresence chatWebSocketSessionRegistry,

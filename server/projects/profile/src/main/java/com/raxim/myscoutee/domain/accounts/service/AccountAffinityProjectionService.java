@@ -7,7 +7,7 @@ import com.raxim.myscoutee.domain.accounts.api.*;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 @Service
 public class AccountAffinityProjectionService implements AccountAffinityProjections {
     private final MongoTemplate mongo;

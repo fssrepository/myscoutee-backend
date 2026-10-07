@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.notifications.api.RoleNotifications;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
@@ -18,11 +18,11 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 @Service
 public class RoleNotificationService implements RoleNotifications {
     private final AccountNotifications accounts;
-    private final ConfigProperties config;
+    private final RuntimeConfiguration config;
     private final AdministratorSettings settings;
     private final NotificationOutboxService outbox;
 
-    public RoleNotificationService(AccountNotifications accounts, ConfigProperties config,
+    public RoleNotificationService(AccountNotifications accounts, RuntimeConfiguration config,
             AdministratorSettings settings, NotificationOutboxService outbox) {
         this.accounts = accounts;
         this.config = config;

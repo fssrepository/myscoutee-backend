@@ -37,7 +37,7 @@ import tools.jackson.databind.ObjectMapper;
 import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.content.document.IdeaPost;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminActionRequestDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminCountsDto;
@@ -72,7 +72,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
             .preserveRelativeLinks(true);
 
     private final AdminModerationService admins;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
     private final OperationalTelemetry adminTelemetryService;
@@ -83,7 +83,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
 
     public IdeaPostsService(
             AdminModerationService admins,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
             OperationalTelemetry adminTelemetryService,

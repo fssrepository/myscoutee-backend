@@ -7,7 +7,7 @@ import com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.document.ServiceFeedback;
 import com.raxim.myscoutee.domain.community.document.ServiceOffering;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.nio.charset.StandardCharsets;

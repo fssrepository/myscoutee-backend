@@ -38,7 +38,7 @@ class PaymentMethodExpiryTaskServiceTest {
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY);
         SavedPaymentMethod method = dueMethod();
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         var scope = mock(com.raxim.myscoutee.domain.platform.service.JobGroupScopeService.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope", scope);
 

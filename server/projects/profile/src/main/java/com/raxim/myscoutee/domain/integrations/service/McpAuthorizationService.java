@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import com.raxim.myscoutee.domain.integrations.document.McpOAuthClient;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,13 +47,13 @@ public class McpAuthorizationService {
     private final IntegrationPublicEndpointResolver endpoint;
     private final McpOAuthClientsRepository registrations;
     private final AccountWorkspaces profiles;
-    private final ConfigProperties config;
+    private final RuntimeConfiguration config;
     private final SecureRandom random = new SecureRandom();
 
     public McpAuthorizationService(IntegrationTokenService keys, IntegrationTokensRepository tokens,
             McpAuthorizationRepository grants, ProfileDirectory users, GroupDirectory groups,
             IntegrationPublicEndpointResolver endpoint, McpOAuthClientsRepository registrations,
-            AccountWorkspaces profiles, ConfigProperties config) {
+            AccountWorkspaces profiles, RuntimeConfiguration config) {
         this.keys = keys; this.tokens = tokens; this.grants = grants; this.users = users;
         this.groups = groups; this.endpoint = endpoint;
         this.registrations = registrations; this.profiles = profiles; this.config = config;

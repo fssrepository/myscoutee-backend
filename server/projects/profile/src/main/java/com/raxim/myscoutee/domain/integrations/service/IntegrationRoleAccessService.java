@@ -6,16 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 
 /** Integration role checks use the same current role sources as interactive authentication. */
 @Service
 public class IntegrationRoleAccessService {
     private final AdministratorSettings settings;
-    private final ConfigProperties config;
+    private final RuntimeConfiguration config;
 
-    public IntegrationRoleAccessService(AdministratorSettings settings, ConfigProperties config) {
+    public IntegrationRoleAccessService(AdministratorSettings settings, RuntimeConfiguration config) {
         this.settings = settings;
         this.config = config;
     }

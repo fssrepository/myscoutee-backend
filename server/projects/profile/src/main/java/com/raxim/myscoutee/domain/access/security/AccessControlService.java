@@ -23,7 +23,7 @@ import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.access.document.AccessGrant;
 import com.raxim.myscoutee.domain.access.document.AccessPolicyDefinition;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceStateDto;
@@ -39,7 +39,7 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
 
     private final AccessGrantsRepository accessGrantsRepository;
     private final AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final AccessPolicyConditionRegistry conditionRegistry;
     private final MemberPolicyFacts memberPolicyFacts;
     private final ChatPolicyFacts chatPolicyFacts;
@@ -49,7 +49,7 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
     public AccessControlService(
             AccessGrantsRepository accessGrantsRepository,
             AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             AccessPolicyConditionRegistry conditionRegistry,
             MemberPolicyFacts memberPolicyFacts,
             ChatPolicyFacts chatPolicyFacts) {

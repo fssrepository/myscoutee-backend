@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.email.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 import java.time.Instant;

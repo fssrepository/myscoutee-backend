@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.net.InetAddress;
@@ -374,13 +374,13 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
             if (claimed == null) { deliverySlots.release(); if (permit != null) permit.close(); }
             if (claimed != null) {
                 try {
-                    var groupId = com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId();
+                    var groupId = com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId();
                     var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
                     deliveryExecutor.execute(() -> {
                         var previousMode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
                         try {
                             com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
-                            com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(groupId, () -> deliver(claimed, permit));
+                            com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(groupId, () -> deliver(claimed, permit));
                         } finally {
                             com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previousMode);
                             deliverySlots.release();

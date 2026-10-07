@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.email.service;
 
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -99,7 +99,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
             payment.setUserId(owner); payment.setStatus("pending"); payment.setCreatedDate(owner);
             mongoTemplate.save(payment);
         }
-        var scope = new JobGroupScopeService(mongoTemplate);
+        var scope = new JobGroupScopeService();
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongoTemplate);
         org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);

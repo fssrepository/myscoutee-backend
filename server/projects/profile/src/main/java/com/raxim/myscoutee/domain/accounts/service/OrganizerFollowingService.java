@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.accounts.service.AccountJobQueries;
 
 import java.time.Instant;

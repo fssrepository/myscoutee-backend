@@ -28,7 +28,7 @@ class AdminAffinityGraphLayoutWorkerServiceTest {
     void setUp() {
         adminAffinityGraphService = mock(AdminAffinityGraphService.class);
         notificationRuleRegistryService = mock(NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(notificationRuleRegistryService).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(notificationRuleRegistryService).forEachGroup(any(String.class), any(Runnable.class));
         worker = new AdminAffinityGraphLayoutWorkerService(
                 adminAffinityGraphService,
                 notificationRuleRegistryService);

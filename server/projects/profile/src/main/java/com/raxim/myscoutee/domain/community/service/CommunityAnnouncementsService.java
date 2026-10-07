@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.community.repository.CommunityAnnouncementsRep
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 import com.raxim.myscoutee.domain.groups.api.CommunityAuthority;
 import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatterBuilder;

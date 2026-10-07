@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;

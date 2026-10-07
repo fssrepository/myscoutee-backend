@@ -11,11 +11,11 @@ public interface EmailTemplatesRepository extends MongoRepository<EmailTemplate,
     List<EmailTemplate> findByBaseGroupId(String baseGroupId);
     Optional<EmailTemplate> findByBaseGroupIdAndTemplateKey(String baseGroupId, String templateKey);
     default Optional<EmailTemplate> findByTemplateKey(String templateKey) {
-        return findByBaseGroupIdAndTemplateKey(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId(), templateKey);
+        return findByBaseGroupIdAndTemplateKey(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId(), templateKey);
     }
 
     List<EmailTemplate> findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(String baseGroupId);
     default List<EmailTemplate> findByEnabledTrueOrderByTemplateKeyAsc() {
-        return findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId());
+        return findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId());
     }
 }

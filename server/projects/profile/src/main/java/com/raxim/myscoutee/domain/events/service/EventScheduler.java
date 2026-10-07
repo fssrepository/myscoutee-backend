@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.events.service;
 import com.raxim.myscoutee.domain.affinity.api.CampaignGraphs;
 import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 import com.raxim.myscoutee.domain.platform.api.SchedulingPolicy;
 

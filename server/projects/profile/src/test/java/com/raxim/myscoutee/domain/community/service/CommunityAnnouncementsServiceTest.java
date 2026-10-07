@@ -7,7 +7,7 @@ import com.raxim.myscoutee.domain.community.repository.CommunityAnnouncementsRep
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;

@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+
 import java.time.Duration;
 
 import org.springframework.stereotype.Service;

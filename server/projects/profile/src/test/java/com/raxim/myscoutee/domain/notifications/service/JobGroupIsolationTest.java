@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationRuleConfigsRepository;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 @org.junit.jupiter.api.Tag("standard")
 class JobGroupIsolationTest {

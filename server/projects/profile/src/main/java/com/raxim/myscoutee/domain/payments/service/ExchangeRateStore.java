@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,14 +17,14 @@ public class ExchangeRateStore {
     private final MongoTemplate mongo;
     public ExchangeRateStore(MongoTemplate mongo) { this.mongo = mongo; }
 
-    @Cacheable(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.domain.platform.service.JobGroupContext).key()")
+    @Cacheable(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.domain.platform.api.JobGroupContext).key()")
     public List<Document> observations() {
         return mongo.getCollection("exchangeRates").find(new Document("baseGroupId", JobGroupContext.groupId())).sort(new Document("_id", -1)).limit(400)
                 .map(row -> { if (row.getString("date") != null) row.put("_id", row.getString("date")); return row; })
                 .into(new java.util.ArrayList<>());
     }
 
-    @CacheEvict(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.domain.platform.service.JobGroupContext).key()")
+    @CacheEvict(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.domain.platform.api.JobGroupContext).key()")
     public void save(List<Document> observations) {
         var writes = observations.stream().map(row -> {
             String date = row.getString("_id");

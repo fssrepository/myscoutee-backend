@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -19,7 +19,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Device;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
@@ -73,14 +73,14 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
     private DeploymentBranding deploymentBrandingResolver;
     private MongoTemplate mongoTemplate;
-    private ConfigProperties configProperties;
+    private RuntimeConfiguration configProperties;
     private AccountNotifications accounts;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private ChatPresence chatWebSocketSessionRegistry;
 
     @Autowired
-    void configureDelivery(ConfigProperties configProperties, AccountNotifications accounts,
+    void configureDelivery(RuntimeConfiguration configProperties, AccountNotifications accounts,
             ChatPresence chatWebSocketSessionRegistry) {
         this.configProperties = configProperties;
         this.accounts = accounts;

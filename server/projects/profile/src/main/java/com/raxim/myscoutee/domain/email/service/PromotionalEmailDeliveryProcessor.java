@@ -133,7 +133,7 @@ public class PromotionalEmailDeliveryProcessor {
 
     private List<EmailOutboxItem> loadPendingItems(String nowIso, int batchSize) {
         Query query = Query.query(new Criteria().andOperator(
-                Criteria.where("baseGroupId").is(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId()),
+                Criteria.where("baseGroupId").is(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId()),
                 Criteria.where("status").is(EmailOutboxStatus.PENDING),
                 Criteria.where("scheduledAt").lte(nowIso)))
                 .with(Sort.by(Sort.Direction.ASC, "scheduledAt", "createdDate"))

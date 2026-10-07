@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.operator.security.bootstrap;
 
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,7 +15,7 @@ public final class OperatorBootstrapTransportSecurity {
 
     public static boolean isAllowed(
             HttpServletRequest request,
-            ConfigProperties config) {
+            RuntimeConfiguration config) {
         if (config != null
                 && config.isOperatorBootstrapAllowInsecure()) {
             return true;

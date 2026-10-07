@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.email.api.EmailSendResult;
 
 import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;

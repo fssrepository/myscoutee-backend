@@ -4,7 +4,7 @@ import com.raxim.myscoutee.domain.accounts.api.AccountInactivity;
 import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
 import com.raxim.myscoutee.domain.events.api.MemberAudience;
 import com.raxim.myscoutee.domain.localization.api.Translations;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Instant;
@@ -41,7 +41,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -114,7 +114,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     private final ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider;
     private final ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider;
     private final ObjectProvider<EmailProperties> emailPropertiesProvider;
-    private final ObjectProvider<ConfigProperties> configPropertiesProvider;
+    private final ObjectProvider<RuntimeConfiguration> configPropertiesProvider;
 
     private ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider;
     private DeploymentBranding deploymentBrandingResolver;
@@ -146,7 +146,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider,
             ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider,
             ObjectProvider<EmailProperties> emailPropertiesProvider,
-            ObjectProvider<ConfigProperties> configPropertiesProvider) {
+            ObjectProvider<RuntimeConfiguration> configPropertiesProvider) {
         this.mongoTemplate = mongoTemplate;
         this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
         this.profiles = profiles;
@@ -1253,7 +1253,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     }
 
     private boolean firebaseEnabled() {
-        ConfigProperties configProperties = configPropertiesProvider.getIfAvailable();
+        RuntimeConfiguration configProperties = configPropertiesProvider.getIfAvailable();
         return configProperties != null && configProperties.isFirebaseEnabled();
     }
 

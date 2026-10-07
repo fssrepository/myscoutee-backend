@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.payments.service;
 
 import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates;
 import com.raxim.myscoutee.domain.events.api.CheckoutMemberships;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Instant;

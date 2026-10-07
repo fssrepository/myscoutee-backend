@@ -10,7 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
 import com.raxim.myscoutee.domain.notifications.service.AdminNotificationSocketSessionRegistry;
 
@@ -18,12 +18,12 @@ import com.raxim.myscoutee.domain.notifications.service.AdminNotificationSocketS
 public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
     private final AdminNotificationSocketSessionRegistry sessionRegistry;
     private final AdministrativeAccess adminModerationService;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
 
     public AdminNotificationWebSocketHandler(
             AdminNotificationSocketSessionRegistry sessionRegistry,
             AdministrativeAccess adminModerationService,
-            ConfigProperties configProperties) {
+            RuntimeConfiguration configProperties) {
         this.sessionRegistry = sessionRegistry;
         this.adminModerationService = adminModerationService;
         this.configProperties = configProperties;

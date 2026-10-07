@@ -25,6 +25,7 @@ class DomainServiceBoundaryTest {
     private static final String DOMAIN = "com/raxim/myscoutee/domain/";
     private static final Pattern REFERENCES = Pattern.compile(DOMAIN + "[\\w/$]+");
     private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.ofEntries(
+            java.util.Map.entry("platform", Set.of("appSettings", "deploymentConfigurations", "countryPartitions")),
             java.util.Map.entry("operator", Set.of("revenueReportOutbox", "globalIdentityLinkStates", "qualifiedMauReportOutbox", "globalIdentityPresenceChunkOutbox", "operatorRegistrySettings", "operatorRegistryEndpoints", "operatorClaimSubmissionSnapshots")),
             java.util.Map.entry("accounts", Set.of("userFriendships", "users", "userSessionActions", "privacyConsents", "userPageFilterPreferences", "accountPurgeJobs", "userLoginAudits", "navigatorContacts", "userExperienceProfiles", "userSessionStates", "userFilterPreferences")),
             java.util.Map.entry("notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs")),
@@ -47,7 +48,7 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator", "platform"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -87,8 +88,8 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator"})
-    void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator", "platform"})
+    void domainsUseOnlyForeignContracts(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;
         for (Resource resource : productionDomainClasses()) {
@@ -99,10 +100,9 @@ class DomainServiceBoundaryTest {
                 while (references.find()) {
                     String dependency = references.group();
                     if (dependency.startsWith(owned)) continue;
-                    boolean runtime = dependency.equals(DOMAIN + "platform/service/JobGroupContext")
-                            || dependency.equals(DOMAIN + "platform/config/ConfigProperties");
-                    assertThat(runtime || dependency.contains("/api/") || dependency.contains("/dto/"))
-                            .as("Foreign implementation dependency: %s -> %s", name, dependency).isTrue();
+                    assertThat(dependency)
+                            .as("Foreign implementation dependency: %s -> %s", name, dependency)
+                            .matches(Pattern.quote(DOMAIN) + "[a-z]+/(api|dto)/.*");
                 }
             }
             checked++;

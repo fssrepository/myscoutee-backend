@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.help.service;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
 import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import org.bson.types.ObjectId;
@@ -27,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.help.document.HelpCenterAuditEntry;
 import com.raxim.myscoutee.domain.help.document.HelpCenterGuideField;
 import com.raxim.myscoutee.domain.help.document.HelpCenterRevision;
@@ -67,7 +67,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
             .addProtocols("img", "src", "http", "https", "data", "blob")
             .preserveRelativeLinks(true);
 
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final HelpCenterRevisionsRepository revisionsRepository;
     private final HelpCenterAuditRepository auditRepository;
     private final HelpCenterGuideFieldsRepository guideFieldsRepository;
@@ -77,7 +77,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private final ConsentAuthorization accessControlService;
 
     public HelpCenterService(
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             HelpCenterRevisionsRepository revisionsRepository,
             HelpCenterAuditRepository auditRepository,
             HelpCenterGuideFieldsRepository guideFieldsRepository,

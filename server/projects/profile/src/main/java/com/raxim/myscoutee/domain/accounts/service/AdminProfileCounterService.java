@@ -7,7 +7,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.administration.api.AdministrativeQueues;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 @Service
 public class AdminProfileCounterService implements AdminCounterRefresh {
     private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");

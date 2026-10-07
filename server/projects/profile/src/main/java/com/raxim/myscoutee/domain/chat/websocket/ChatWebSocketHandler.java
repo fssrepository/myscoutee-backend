@@ -17,7 +17,7 @@ import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSocketRequestDto;
@@ -33,14 +33,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
     private final ChatWebSocketSessionRegistry sessionRegistry;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final ChatCallSignalingService calls;
 
     public ChatWebSocketHandler(
             ObjectMapper objectMapper,
             ChatService chatService,
             ChatWebSocketSessionRegistry sessionRegistry,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             ChatCallSignalingService calls) {
         this.objectMapper = objectMapper;
         this.chatService = chatService;

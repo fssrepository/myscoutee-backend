@@ -13,7 +13,7 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredent
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
 import com.raxim.myscoutee.domain.media.api.MediaSessionAccess;
 
@@ -29,14 +29,14 @@ public class FirebaseFilter extends OncePerRequestFilter {
     private static final String DEMO_USER_ID = "X-Demo-User-Id";
 
     private final FirebaseService firebaseService;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccess mediaSessionAccess;
 
     public FirebaseFilter(
             FirebaseService firebaseService,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             FirebaseTokenVerifier firebaseTokenVerifier,
             UserLoginSessionService userLoginSessionService,
             MediaSessionAccess mediaSessionAccess) {

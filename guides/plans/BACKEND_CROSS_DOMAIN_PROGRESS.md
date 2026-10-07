@@ -1,6 +1,8 @@
 # MSC-120: Cross-domain separation progress
 
-Status: in progress, 2026-10-07. This file tracks the cross-domain implementation.
+Status: **21/21 domains implemented and locally verified**, 2026-10-07.
+E2E behavior and performance verification is deferred to 2026-10-08 by user instruction.
+This file tracks the cross-domain implementation.
 The earlier package reorganization remains documented in the
 [domain plan](BACKEND_DOMAIN_SEGREGATION.md).
 
@@ -52,14 +54,14 @@ may need changes together.
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
 | 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; `c5dceafa1` |
-| 16 | operator | 4 | 7 | Complete: operator contracts and platform-owned deployment configuration commands | 241 focused local tests passed; this checkpoint |
-| 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
+| 16 | operator | 4 | 7 | Complete: operator contracts and platform-owned deployment configuration commands | 241 focused local tests passed; `c11829ad0` |
+| 17 | platform | 2 | 5 | Complete: read-only runtime policy, owner-resolved job scope and strict contracts | 273 focused tests; final full local suite: 1,731 passed; this checkpoint |
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
 | 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; `2bb3bd0ae` |
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed; `602f0367b` |
 
-**Completed domains: 18/21 — #2 notifications, #3 groups, #4 events, #5 chat, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
+**Completed domains: 21/21 — #1 accounts, #2 notifications, #3 groups, #4 events, #5 chat, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #16 operator, #17 platform, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -137,9 +139,11 @@ user batch instead of two; workspace-only enqueue needs at most two; mixed
 profile/account audiences reuse an already loaded account. Invalid-token cleanup
 adds one fresh batch read after the provider responds, only on that error path.
 
-The notification domain still shares runtime infrastructure: `JobGroupContext`,
-`ConfigProperties`, the authenticated principal and the Firebase runtime adapter.
-These are explicit in-process environment/transport dependencies, not evidence of
+The notification checkpoint initially retained shared runtime infrastructure.
+The final #1/#17 checkpoints expose these through `platform/api/JobGroupContext`,
+`RuntimeConfiguration`, `accounts/api/AccountIdentity` and `FirebaseRuntime`;
+no foreign implementation exception remains in the compiled boundary guard.
+These remain in-process environment/transport contracts, not evidence of
 independent deployment. Incoming producers, inbox consumers, administration and schedulers now use
 `NotificationDelivery`, `NotificationInbox`, `NotificationAdministration` and
 `NotificationJobs`. Delivery receipts and job configuration are read-only local
@@ -2126,3 +2130,232 @@ this startup duration is diagnostic evidence, not a throughput benchmark.
 - Verification: **241 focused standard/embedded tests passed, zero failures/skips**.
   The running dev watcher compiled and restarted successfully. No external
   configuration was submitted. HTTP E2E remains deferred by user instruction.
+
+## #17 Platform — implementation and local verification
+
+- `platform/api/RuntimeConfiguration` exposes the existing runtime policy as a
+  read-only interface. `platform/config/ConfigProperties` remains the single
+  configuration-bound owner with the unchanged `config` prefix, defaults and
+  Firebase activation flag. Twenty consumer classes now name the interface;
+  configuration binding and platform activation retain mutation rights.
+- `platform/api/JobGroupContext` is the existing in-process execution context,
+  relocated unchanged. Nested scope restoration, per-scope memoization and
+  cleanup after exceptions have a focused regression test. It is a local
+  runtime contract, not a distributed context transport.
+- `platform/service/JobGroupScopeService` now resolves ownership exclusively
+  through account, group, asset, event and affinity APIs. Its unused Mongo
+  constructor and obsolete foreign-query helper are removed. Workspace scope
+  values retain inclusion/exclusion and default-group semantics; the owning
+  domains construct their own queries.
+- `DomainServiceBoundaryTest` covers **all 21 domains in both directions**:
+  foreign types must be under the owning domain's root `api` or `dto` package.
+  There are **no foreign implementation exceptions**. The raw collection guard
+  keeps narrowly enumerated telemetry/UI label exceptions; these are not
+  persistence exceptions. `DomainRepositoryOwnershipTest` also checks that each
+  Mongo repository and authoritative document have the same domain owner.
+- **Functional risk: medium/high** at runtime authorization and workspace job
+  boundaries. **Severe slowdown risk: low** for this checkpoint: the original
+  singleton policies and per-job memoization are retained, with no added I/O.
+- Focused evidence: **273 standard/embedded tests passed, zero failures/skips**,
+  covering platform/operator/account security, configuration/crypto/activation,
+  WebSecurity bootstrap, aliases, ownership and all 42 directional boundary
+  checks. The complete local suite is recorded in the closeout below.
+- Existing dev hot-deploy compiled and restarted successfully. Read-only HTTP
+  checks returned **200** from `/deployment/configuration` and **204** from the
+  inactive `/deployment/configuration/firebase-config` endpoint. The configured
+  container TCP health check also passes. `/actuator/health` is not exposed by
+  this deployment; it is not used as health evidence.
+
+### Final three checkpoints: exact production file inventory
+
+Paths below are relative to `server/projects/profile/src/main/`. The functional
+and slowdown risks above apply to their respective checkpoint; consumer import
+changes do not introduce a second implementation. Tests and documentation are
+also available in each named commit's complete diff.
+
+#1 accounts:
+
+- `java/com/raxim/myscoutee/common/config/WebSecurityConfig.java`
+- `java/com/raxim/myscoutee/common/config/mongo/SessionMongoRoutingFilter.java`
+- `java/com/raxim/myscoutee/domain/access/security/AccessControlService.java`
+- `java/com/raxim/myscoutee/domain/access/security/ChatPolicyFacts.java`
+- `java/com/raxim/myscoutee/domain/accounts/api/AccountConsents.java`
+- `java/com/raxim/myscoutee/domain/accounts/api/AccountIdentity.java`
+- `java/com/raxim/myscoutee/domain/accounts/api/BootstrapAccounts.java`
+- `java/com/raxim/myscoutee/domain/accounts/api/BootstrapLoginAudit.java`
+- `java/com/raxim/myscoutee/domain/accounts/api/ProfileAuthentication.java`
+- `java/com/raxim/myscoutee/domain/accounts/security/firebase/DefaultFirebaseTokenVerifier.java`
+- `java/com/raxim/myscoutee/domain/accounts/security/firebase/FirebaseFilter.java`
+- `java/com/raxim/myscoutee/domain/accounts/security/firebase/FirebaseService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/AccountConsentService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/AccountJobQueries.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountWarningWorker.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/OrganizerFollowingService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/ProfileAuthenticationService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/UserLoginSessionService.java`
+- `java/com/raxim/myscoutee/domain/groups/api/WorkspaceContext.java`
+- `java/com/raxim/myscoutee/domain/help/service/HelpCenterService.java`
+- `java/com/raxim/myscoutee/domain/media/service/MediaSessionAccessService.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/DefaultFirebaseMessagingGateway.java`
+- `java/com/raxim/myscoutee/domain/notifications/websocket/AdminNotificationWebSocketHandler.java`
+- `java/com/raxim/myscoutee/domain/operator/api/GlobalIdentityPrivacy.java`
+- `java/com/raxim/myscoutee/domain/operator/api/OperatorBootstrapRequestSupport.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorBootstrapController.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorNetworkController.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorRegistryController.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorTlsController.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorUpdateController.java`
+- `java/com/raxim/myscoutee/domain/operator/security/bootstrap/OperatorBootstrapAuthenticationFilter.java`
+- `java/com/raxim/myscoutee/domain/operator/security/bootstrap/OperatorBootstrapAuthenticationService.java`
+- `java/com/raxim/myscoutee/domain/operator/security/bootstrap/OperatorBootstrapRequestSupport.java`
+- `java/com/raxim/myscoutee/domain/operator/service/OperatorGlobalIdentityService.java`
+- `java/com/raxim/myscoutee/domain/operator/service/OperatorNetworkService.java`
+- `java/com/raxim/myscoutee/domain/platform/api/CountryDirectory.java`
+- `java/com/raxim/myscoutee/domain/platform/api/FirebaseRuntime.java`
+- `java/com/raxim/myscoutee/domain/platform/service/DeploymentFirebaseRuntime.java`
+- `java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeService.java`
+- `java/com/raxim/myscoutee/domain/platform/service/ModelStatusPropagationService.java`
+- `resources/mongo-domain-types.properties`
+
+#16 operator:
+
+- `java/com/raxim/myscoutee/common/config/AppConfig.java`
+- `java/com/raxim/myscoutee/domain/operator/config/OperatorConfigurationProperties.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorConfigurationController.java`
+- `java/com/raxim/myscoutee/domain/operator/mapper/OperatorConfigurationMapper.java`
+- `java/com/raxim/myscoutee/domain/operator/service/OperatorConfigurationService.java`
+- `java/com/raxim/myscoutee/domain/platform/api/DeploymentConfigurationManagement.java`
+- `java/com/raxim/myscoutee/domain/platform/config/OperatorConfigurationProperties.java`
+- `java/com/raxim/myscoutee/domain/platform/controller/DeploymentConfigurationController.java`
+- `java/com/raxim/myscoutee/domain/platform/mapper/OperatorConfigurationMapper.java`
+- `java/com/raxim/myscoutee/domain/platform/service/DeploymentConfigurationCrypto.java`
+- `java/com/raxim/myscoutee/domain/platform/service/DeploymentFirebaseRuntime.java`
+- `java/com/raxim/myscoutee/domain/platform/service/OperatorConfigurationService.java`
+
+#17 platform (including the old location of relocated classes):
+
+- `java/com/raxim/myscoutee/domain/access/security/AccessControlService.java`
+- `java/com/raxim/myscoutee/domain/accounts/config/FirebaseConfig.java`
+- `java/com/raxim/myscoutee/domain/accounts/security/firebase/FirebaseFilter.java`
+- `java/com/raxim/myscoutee/domain/accounts/security/firebase/FirebaseService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/AccountAffinityProjectionService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/AdminProfileCounterService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountWarningWorker.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/FacebookDataDeletionService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `java/com/raxim/myscoutee/domain/accounts/service/OrganizerFollowingService.java`
+- `java/com/raxim/myscoutee/domain/administration/service/AdminMenuCounterService.java`
+- `java/com/raxim/myscoutee/domain/administration/service/AdminMonitoringService.java`
+- `java/com/raxim/myscoutee/domain/administration/service/AdminStatsService.java`
+- `java/com/raxim/myscoutee/domain/administration/service/AdminStatsTelemetryWorkerService.java`
+- `java/com/raxim/myscoutee/domain/administration/service/AdminTelemetryService.java`
+- `java/com/raxim/myscoutee/domain/affinity/service/AdminAffinityGraphService.java`
+- `java/com/raxim/myscoutee/domain/affinity/service/AffinityMaintenanceService.java`
+- `java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeChangeStreamService.java`
+- `java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeMetricsService.java`
+- `java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeTaskService.java`
+- `java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeWorkerService.java`
+- `java/com/raxim/myscoutee/domain/chat/websocket/ChatWebSocketHandler.java`
+- `java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsService.java`
+- `java/com/raxim/myscoutee/domain/community/service/CommunityCasesService.java`
+- `java/com/raxim/myscoutee/domain/community/service/CommunityScheduledTasksService.java`
+- `java/com/raxim/myscoutee/domain/community/service/ServiceFeedbackService.java`
+- `java/com/raxim/myscoutee/domain/content/service/AdminModerationService.java`
+- `java/com/raxim/myscoutee/domain/content/service/ContentModerationService.java`
+- `java/com/raxim/myscoutee/domain/content/service/IdeaPostsService.java`
+- `java/com/raxim/myscoutee/domain/email/repository/EmailCampaignRulesRepository.java`
+- `java/com/raxim/myscoutee/domain/email/repository/EmailTemplatesRepository.java`
+- `java/com/raxim/myscoutee/domain/email/service/PromotionalEmailDeliveryProcessor.java`
+- `java/com/raxim/myscoutee/domain/email/service/PromotionalEmailPlannerService.java`
+- `java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskService.java`
+- `java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersService.java`
+- `java/com/raxim/myscoutee/domain/events/service/EventCounterExpiryService.java`
+- `java/com/raxim/myscoutee/domain/events/service/EventFriendshipProjectionService.java`
+- `java/com/raxim/myscoutee/domain/events/service/EventScheduler.java`
+- `java/com/raxim/myscoutee/domain/help/service/HelpCenterService.java`
+- `java/com/raxim/myscoutee/domain/integrations/service/IntegrationRoleAccessService.java`
+- `java/com/raxim/myscoutee/domain/integrations/service/IntegrationWebhookService.java`
+- `java/com/raxim/myscoutee/domain/integrations/service/McpAuthorizationService.java`
+- `java/com/raxim/myscoutee/domain/notifications/repository/NotificationTemplatesRepository.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/AdminNotificationService.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/AdminNotificationSocketSessionRegistry.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/NotificationOutboxService.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/NotificationOutboxWorkerService.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/NotificationRuleRegistryService.java`
+- `java/com/raxim/myscoutee/domain/notifications/service/RoleNotificationService.java`
+- `java/com/raxim/myscoutee/domain/notifications/websocket/AdminNotificationWebSocketHandler.java`
+- `java/com/raxim/myscoutee/domain/operator/controller/OperatorBootstrapController.java`
+- `java/com/raxim/myscoutee/domain/operator/security/bootstrap/OperatorBootstrapAuthenticationFilter.java`
+- `java/com/raxim/myscoutee/domain/operator/security/bootstrap/OperatorBootstrapAuthenticationService.java`
+- `java/com/raxim/myscoutee/domain/operator/security/bootstrap/OperatorBootstrapTransportSecurity.java`
+- `java/com/raxim/myscoutee/domain/payments/service/EventCheckoutBasketService.java`
+- `java/com/raxim/myscoutee/domain/payments/service/ExchangeRateStore.java`
+- `java/com/raxim/myscoutee/domain/payments/service/PaymentEuroService.java`
+- `java/com/raxim/myscoutee/domain/platform/api/JobGroupContext.java`
+- `java/com/raxim/myscoutee/domain/platform/api/RuntimeConfiguration.java`
+- `java/com/raxim/myscoutee/domain/platform/config/ConfigProperties.java`
+- `java/com/raxim/myscoutee/domain/platform/service/JobGroupContext.java`
+- `java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeService.java`
+- `java/com/raxim/myscoutee/domain/platform/service/PlatformParametersService.java`
+
+## Final local closeout — 2026-10-07
+
+All **21 domains** have an individual `[MSC-120]` checkpoint commit on
+`refactor/MSC-120-backend-domain-segregation`. No cross-domain commit has been
+merged into master. Master and `origin/master` remain at
+`752ba4d15cb7fdd0ec958c2169e552047a77ea78`; the frontend submodule remains unchanged.
+
+| Evidence | Result |
+| --- | --- |
+| Final full standard/embedded JUnit suite | **1,731 passed; 0 failures, 0 errors, 0 skipped** |
+| Final platform/security/architecture focused suite | **273 passed; 0 failures or skips** |
+| Domain guard | All **42** incoming/outgoing checks pass across **21** domains; no foreign implementation exceptions |
+| Source review | **0** foreign domain implementation references; root `api`/`dto` contracts only |
+| Repository and legacy Mongo type checks | Passed in the full local suite |
+| E2E/dev test source compilation | Passed; tests **not executed** |
+| Dev runtime | Existing watcher build/restart successful; container healthy; public configuration HTTP 200, inactive Firebase config HTTP 204 |
+| E2E journeys and latency/throughput comparison | **Not run; deferred by user instruction** |
+
+The first complete run exposed 31 failures in four test classes sharing an
+outdated `GroupTestSupport` fixture. The helper now wires the real account and
+event owner adapters to the existing mock Mongo fixtures. No product predicate
+or expectation was relaxed. The repeated full suite passed. Compiling the
+separate `e2eTest` source set then caught an outdated scheduler-marker import
+and the dev media qualification test's old profile-repository constructor;
+both were updated without executing either live-server suite.
+
+Reproducible local verification (JDK 25, isolated output, serial worker):
+
+```sh
+JAVA_HOME=/home/raxim/.local/share/myscoutee-domain-tests/jdk-25   tools/run-backend-junit.sh local :projects:profile:compileE2eTestJava
+```
+
+Private execution logs are retained locally under
+`/home/raxim/.local/state/myscoutee-domain-segregation/`: `accounts-tests.log`,
+`operator-tests.log`, `platform-tests.log`, `final-local-tests.log` and
+`final-e2e-compilation.log`. The latter confirms the final source compilation;
+its local test task is up-to-date after the successful 1,731-test run.
+
+### Remaining verification and highest-risk E2E targets
+
+There is no remaining domain implementation in this 21-domain scope. The next
+session should verify real HTTP journeys and performance; a master merge remains
+subject to the user's later review. Dev is intentionally left running now.
+**Stop the dev application before starting the E2E application.** Use disposable
+E2E data and the same representative fixtures for any baseline/branch comparison.
+
+| Priority | Boundary | Functional risk | Severe slowdown risk / reason | Required E2E evidence |
+| ---: | --- | --- | --- | --- |
+| 1 | Payment/integration owner-scoped jobs | High: scope, pagination and retry correctness | Medium/high for skewed backlogs: the foreign join becomes owner lookups in batches of up to 1,000 candidates | Mixed workspaces, large unrelated backlog, limit/offset, cursor release and throughput versus the pinned baseline |
+| 2 | Account purge and payment cancellation/refunds | High: durable ordering, privacy and money | Low/medium; retain existing batches and guarded writes | Interrupted/repeated purge, interrupted cancellation, duplicate provider receipts, refund counters and redaction |
+| 3 | Authentication, bootstrap and media sessions | High: authorization and realm isolation | Low: same local owner and credential checks | Real/demo separation, bootstrap restrictions, active sessions, media token issue/revoke and access denial |
+| 4 | Event feedback, memberships and chat counters | High: ownership and derived-state consistency | Low/medium: retained batch reads and atomic/bulk writes | Repeated feedback, publication/member changes, stale snapshot rejection, chat consent and reload-visible counters |
+| 5 | Deployment configuration and Firebase activation | Medium/high: protected config and capability activation | Low: unchanged locks, encryption, revision checks and cache behavior | Operator authorization, failed save/test, activation and refresh/reload |
+
+These are engineering risk estimates, not measured percentages. Local read-only
+views and infrastructure interfaces intentionally remain in-process contracts;
+future OpenAPI adapters still need detached transport schemas and distributed
+execution/error semantics. Independent microservice deployment is not claimed.

@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.platform.service;
+package com.raxim.myscoutee.domain.platform.api;
 
 import java.util.function.Supplier;
 

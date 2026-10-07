@@ -11,11 +11,11 @@ public interface NotificationTemplatesRepository extends MongoRepository<Notific
     List<NotificationTemplate> findByBaseGroupId(String baseGroupId);
     Optional<NotificationTemplate> findByBaseGroupIdAndTemplateKey(String baseGroupId, String templateKey);
     default Optional<NotificationTemplate> findByTemplateKey(String templateKey) {
-        return findByBaseGroupIdAndTemplateKey(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId(), templateKey);
+        return findByBaseGroupIdAndTemplateKey(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId(), templateKey);
     }
 
     List<NotificationTemplate> findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(String baseGroupId);
     default List<NotificationTemplate> findByEnabledTrueOrderByTemplateKeyAsc() {
-        return findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId());
+        return findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId());
     }
 }

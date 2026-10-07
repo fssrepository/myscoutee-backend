@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.accounts.api.AdminCounterRefresh;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
 import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -94,7 +94,7 @@ class ContentModerationServiceTest {
         service.settings(new SaveSettings("moderator", 0, new Settings(true, true, 5, List.of("feed"))), "A");
         Item item = service.register("feed", "scoped", "profile", "Photo", "");
         when(repository.due(any(), anyString(), eq(100), eq("A"))).thenReturn(List.of(item));
-        assertEquals(1, com.raxim.myscoutee.domain.platform.service.JobGroupContext.call("A", service::approveDue));
+        assertEquals(1, com.raxim.myscoutee.domain.platform.api.JobGroupContext.call("A", service::approveDue));
         assertEquals("accepted", service.scopedItem(item.id(), "A").status());
         assertEquals(1, service.snapshot("A").counts().get("feed").get("accepted"));
         assertTrue(service.snapshot().counts().isEmpty());
@@ -203,7 +203,7 @@ class ContentModerationServiceTest {
             assertTrue(age >= 599 && age <= 601);
             return List.of(item);
         });
-        assertEquals(1, com.raxim.myscoutee.domain.platform.service.JobGroupContext.call(null, service::approveDue));
+        assertEquals(1, com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(null, service::approveDue));
         assertEquals("accepted", items.get(item.id()).status());
         assertEquals(0, service.snapshot().pendingCount());
         verifyNoInteractions(chat);

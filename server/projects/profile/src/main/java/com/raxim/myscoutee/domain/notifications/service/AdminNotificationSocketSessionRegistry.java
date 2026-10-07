@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
 import java.util.List;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import java.util.Map;
 import java.util.Set;

@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.administration.service;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
 import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;

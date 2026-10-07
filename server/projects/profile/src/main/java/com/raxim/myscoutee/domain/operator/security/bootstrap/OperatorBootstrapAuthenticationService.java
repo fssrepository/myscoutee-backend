@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.accounts.api.BootstrapAccounts;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 
 @Service
 public class OperatorBootstrapAuthenticationService {
@@ -52,7 +52,7 @@ public class OperatorBootstrapAuthenticationService {
             "myscoutee/operator-bootstrap/token-key/v1"
                     .getBytes(StandardCharsets.US_ASCII);
 
-    private final ConfigProperties config;
+    private final RuntimeConfiguration config;
     private final BootstrapAccounts firebaseService;
     private final Clock clock;
     private final SecureRandom secureRandom;
@@ -64,7 +64,7 @@ public class OperatorBootstrapAuthenticationService {
 
     @Autowired
     public OperatorBootstrapAuthenticationService(
-            ConfigProperties config,
+            RuntimeConfiguration config,
             BootstrapAccounts firebaseService) {
         this(
                 config,
@@ -74,7 +74,7 @@ public class OperatorBootstrapAuthenticationService {
     }
 
     OperatorBootstrapAuthenticationService(
-            ConfigProperties config,
+            RuntimeConfiguration config,
             BootstrapAccounts firebaseService,
             Clock clock,
             SecureRandom secureRandom) {

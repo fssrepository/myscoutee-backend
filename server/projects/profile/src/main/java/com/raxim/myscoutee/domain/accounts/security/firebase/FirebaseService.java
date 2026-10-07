@@ -16,20 +16,20 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 
 @Service
 public class FirebaseService implements com.raxim.myscoutee.domain.accounts.api.BootstrapAccounts {
-    private final ConfigProperties config;
+    private final RuntimeConfiguration config;
     private final UsersRepository usersRepository;
     private final AdministratorSettings appSettingsService;
     private static final String PROFILE_STATUS_ONBOARDING = "onboarding";
 
     public FirebaseService(
-            ConfigProperties config,
+            RuntimeConfiguration config,
             UsersRepository usersRepository,
             AdministratorSettings appSettingsService) {
         this.config = config;

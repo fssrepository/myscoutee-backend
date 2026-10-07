@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.chat.api.SupportMessages;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
