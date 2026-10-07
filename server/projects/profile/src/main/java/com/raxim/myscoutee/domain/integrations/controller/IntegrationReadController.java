@@ -3,12 +3,12 @@ package com.raxim.myscoutee.domain.integrations.controller;
 import com.raxim.myscoutee.domain.affinity.api.Ratings;
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.ChatQueries;
 import com.raxim.myscoutee.domain.community.api.Announcements;
 import com.raxim.myscoutee.domain.community.api.Cases;
 import com.raxim.myscoutee.domain.community.api.ScheduledCases;
 import com.raxim.myscoutee.domain.community.api.ServiceOfferings;
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
+import com.raxim.myscoutee.domain.events.api.EventOperations;
 import com.raxim.myscoutee.domain.groups.api.Groups;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
 
@@ -24,9 +24,9 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 @RequestMapping("/integrations/v1")
 public class IntegrationReadController {
     private final IntegrationCapabilitiesService access;
-    private final ActivitiesEventsService events;
+    private final EventOperations events;
     private final Groups groups;
-    private final ChatService chats;
+    private final ChatQueries chats;
     private final NotificationInbox notifications;
     private final Ratings ratings;
     private final Assets assets;
@@ -35,7 +35,7 @@ public class IntegrationReadController {
     private final Cases cases;
     private final Announcements announcements;
     private final ScheduledCases tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, Groups groups, ChatService chats, NotificationInbox notifications, Ratings ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
+    public IntegrationReadController(IntegrationCapabilitiesService access, EventOperations events, Groups groups, ChatQueries chats, NotificationInbox notifications, Ratings ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

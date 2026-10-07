@@ -55,7 +55,7 @@ import tools.jackson.databind.ObjectMapper;
  * them through a durable signed outbox with idempotent retries.
  */
 @Service
-public class OperatorQualifiedMauReportService {
+public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.domain.operator.api.MeasurementReports {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(OperatorQualifiedMauReportService.class);
     private static final int COMPLETED_PERIOD_COUNT = 6;

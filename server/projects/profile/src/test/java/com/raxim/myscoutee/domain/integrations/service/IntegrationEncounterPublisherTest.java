@@ -34,10 +34,14 @@ class IntegrationEncounterPublisherTest {
     @Mock ActivityEventsRepository events;
     @Mock IntegrationEventQueryService queries;
     @Mock IntegrationWebhookService webhooks;
-    @InjectMocks IntegrationEncounterPublisher publisher;
+    IntegrationEncounterPublisher publisher;
 
     @org.junit.jupiter.api.BeforeEach
-    void wireScope() { org.springframework.test.util.ReflectionTestUtils.setField(publisher, "jobGroupScope", jobGroupScope); }
+    void wireScope() {
+        publisher = new IntegrationEncounterPublisher(
+            new com.raxim.myscoutee.domain.events.service.MingleEncounterService(null, null, mongo, jobGroupScope),
+            new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events), queries, webhooks);
+    }
 
     @Test
     void retriesFailedPublicationBeforeMarkingTheSameCompletedRevision() {

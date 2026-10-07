@@ -1,2 +1,2 @@
 package com.raxim.myscoutee.domain.accounts.api;
-public interface AccountIdentity { String getEmail(); String getUserId(); }
+public interface AccountIdentity { WorkspaceProfile getUser(); String getEmail(); String getUserId(); }

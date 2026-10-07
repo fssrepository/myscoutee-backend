@@ -27,12 +27,12 @@ class IntegrationCapabilitiesServiceTest {
         var auth = authentication(profile);
         assertThatThrownBy(() -> service.requireRead(auth, null)).isInstanceOf(ResponseStatusException.class);
         auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
-                com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.READ));
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ));
         assertThat(service.describe(auth).operations()).contains("listEvents", "chatMessages", "listRatings")
                 .doesNotContain("listCampaigns", "listCases", "saveAnnouncement");
         assertThatThrownBy(() -> service.requireRead(auth, "work")).isInstanceOf(ResponseStatusException.class);
         auth.setDetails(new AuthenticatedIntegrationClient("base", "key", "client").withAccess(
-                com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.BLOCKED));
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.BLOCKED));
         assertThatThrownBy(() -> service.describe(auth)).isInstanceOf(ResponseStatusException.class);
     }
     private final CommunityGroupsService groups = mock(CommunityGroupsService.class);
@@ -102,7 +102,7 @@ class IntegrationCapabilitiesServiceTest {
         assertThat(service.describe(auth).operations()).isEmpty();
         assertThatThrownBy(() -> service.requireRoleRead(auth, "operator")).isInstanceOf(ResponseStatusException.class);
         auth.setDetails(new AuthenticatedIntegrationClient("operator", "key", "client").withAccess(
-                com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.READ));
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ));
         assertThat(service.describe(auth).operations()).containsExactly("operatorMeasurements", "operatorRevenueReports");
         assertThat(service.requireRoleRead(auth, "operator")).isEqualTo("operator");
         assertThatThrownBy(() -> service.requireWrite(auth, null)).isInstanceOf(ResponseStatusException.class);

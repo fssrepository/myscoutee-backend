@@ -113,7 +113,7 @@ import com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
-public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConversations, com.raxim.myscoutee.domain.chat.api.SupportMessages {
+public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConversations, com.raxim.myscoutee.domain.chat.api.SupportMessages, com.raxim.myscoutee.domain.chat.api.ChatQueries {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
 
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.RatingDirectory ratings;

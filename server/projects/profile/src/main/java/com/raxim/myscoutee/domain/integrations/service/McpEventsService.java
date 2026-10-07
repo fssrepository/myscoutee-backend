@@ -1,10 +1,10 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
-import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
 import com.raxim.myscoutee.domain.integrations.document.McpEventSubscription;
 import com.raxim.myscoutee.domain.integrations.repository.McpEventSubscriptionsRepository;
@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.integrations.dto.McpEventDtos.*;
 
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
-import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
+import com.raxim.myscoutee.domain.platform.api.SecretEncryption;
 import tools.jackson.databind.ObjectMapper;
 
 /** Owns Events protocol subscriptions; uses the established webhook publisher and delivery workers. */
@@ -35,19 +35,19 @@ public class McpEventsService {
     private static final Set<String> NAMES = Set.of(EVENT_CHANGED, EVENT_ENCOUNTERS, ASSET_CHANGED, ADMIN_ATTENTION, OPERATOR_ATTENTION);
     private final IntegrationRoleAccessService roles;
     private final McpEventSubscriptionsRepository subscriptions;
-    private final UsersRepository users;
+    private final ProfileDirectory users;
     private final AssetOwnership assets;
     private final IntegrationEventQueryService events;
-    private final CommunityGroupProfilesService profiles;
+    private final AccountWorkspaces profiles;
     private final McpAuthorizationService oauth;
-    private final DeploymentConfigurationCrypto crypto;
+    private final SecretEncryption crypto;
     private final McpEventCallbackClient callbacks;
     private final ObjectMapper json;
     private final org.springframework.data.mongodb.core.MongoTemplate mongo;
 
-    public McpEventsService(McpEventSubscriptionsRepository subscriptions, UsersRepository users,
-            AssetOwnership assets, IntegrationEventQueryService events, CommunityGroupProfilesService profiles,
-            McpAuthorizationService oauth, DeploymentConfigurationCrypto crypto, McpEventCallbackClient callbacks,
+    public McpEventsService(McpEventSubscriptionsRepository subscriptions, ProfileDirectory users,
+            AssetOwnership assets, IntegrationEventQueryService events, AccountWorkspaces profiles,
+            McpAuthorizationService oauth, SecretEncryption crypto, McpEventCallbackClient callbacks,
             ObjectMapper json, org.springframework.data.mongodb.core.MongoTemplate mongo, IntegrationRoleAccessService roles) {
         this.subscriptions = subscriptions; this.users = users; this.assets = assets; this.events = events;
         this.profiles = profiles; this.oauth = oauth; this.crypto = crypto; this.callbacks = callbacks; this.json = json;
@@ -68,7 +68,7 @@ public class McpEventsService {
         if (client == null || !IntegrationTokenService.MCP_SCOPE.equals(client.scope()) || client.grantId() == null)
             throw denied();
         if (client.accessMode() != IntegrationAccess.Mode.FULL) return Map.of("events", List.of());
-        Users owner = requirePrincipal(client);
+        WorkspaceProfile owner = requirePrincipal(client);
         List<Map<String, Object>> definitions = new ArrayList<>();
         var names = new ArrayList<String>();
         if (roles.privileged(owner)) {
@@ -109,7 +109,7 @@ public class McpEventsService {
     }
 
     public Subscribed subscribe(AuthenticatedIntegrationClient client, Request request) {
-        Users owner = requirePrincipal(client);
+        WorkspaceProfile owner = requirePrincipal(client);
         String resource = validate(request, true);
         requireResource(owner, request.name(), resource);
         if (queueFull(client.ownerUserId(), 0)) throw new ProtocolException(-32013, "Event delivery queue is full", "pending_deliveries");
@@ -210,9 +210,9 @@ public class McpEventsService {
         }
     }
 
-    private Users requirePrincipal(AuthenticatedIntegrationClient client) {
+    private WorkspaceProfile requirePrincipal(AuthenticatedIntegrationClient client) {
         if (client == null || !IntegrationTokenService.MCP_SCOPE.equals(client.scope()) || client.grantId() == null) throw denied();
-        Users owner = users.findByUserId(client.ownerUserId()).orElseThrow(McpEventsService::denied);
+        WorkspaceProfile owner = users.findByUserId(client.ownerUserId()).orElseThrow(McpEventsService::denied);
         try { roles.requireActive(owner); } catch (ResponseStatusException error) { throw denied(); }
         var access = owner.getIntegrationAccess() == null ? IntegrationAccess.initial() : owner.getIntegrationAccess();
         if (access.effective(client.tokenId(), true) != IntegrationAccess.Mode.FULL
@@ -225,10 +225,10 @@ public class McpEventsService {
         return owner;
     }
 
-    private static boolean hasGroup(Users owner) {
+    private static boolean hasGroup(WorkspaceProfile owner) {
         return owner.getWorkspaceGroupId() != null && !owner.getWorkspaceGroupId().isBlank();
     }
-    private void requireResource(Users owner, String name, String id) {
+    private void requireResource(WorkspaceProfile owner, String name, String id) {
         try {
             if (roleEvent(name)) {
                 if (!"node".equals(id) || !(ADMIN_ATTENTION.equals(name) ? roles.admin(owner) : roles.operator(owner))) throw denied();
@@ -316,7 +316,7 @@ public class McpEventsService {
                 || !subscription.name.equals(delivery.getEventType())
                 || !subscription.resourceId.equals(delivery.getResourceExternalId())) return 410;
         try {
-            Users owner = requirePrincipal(new AuthenticatedIntegrationClient(subscription.ownerUserId, subscription.tokenId,
+            WorkspaceProfile owner = requirePrincipal(new AuthenticatedIntegrationClient(subscription.ownerUserId, subscription.tokenId,
                     subscription.clientId, IntegrationTokenService.MCP_SCOPE, IntegrationAccess.Mode.FULL, subscription.grantId));
             requireResource(owner, subscription.name, subscription.resourceId);
         } catch (ProtocolException denied) { return 410; }

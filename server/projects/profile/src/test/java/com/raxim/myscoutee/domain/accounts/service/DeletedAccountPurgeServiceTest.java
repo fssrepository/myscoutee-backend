@@ -44,6 +44,7 @@ class DeletedAccountPurgeServiceTest {
             (com.raxim.myscoutee.domain.media.api.MediaStorage) org.springframework.test.util.ReflectionTestUtils.getField(service, "mediaStorageService")));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "contentPrivacy", new com.raxim.myscoutee.domain.content.service.ContentPrivacyService(mongoTemplate,
             (com.raxim.myscoutee.domain.media.api.MediaStorage) org.springframework.test.util.ReflectionTestUtils.getField(service, "mediaStorageService")));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "integrationPrivacy", new com.raxim.myscoutee.domain.integrations.service.IntegrationPrivacyService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "paymentPrivacy", new com.raxim.myscoutee.domain.payments.service.PaymentPrivacyService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "affinityPrivacy", new com.raxim.myscoutee.domain.affinity.service.AffinityPrivacyService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "emailPrivacy",

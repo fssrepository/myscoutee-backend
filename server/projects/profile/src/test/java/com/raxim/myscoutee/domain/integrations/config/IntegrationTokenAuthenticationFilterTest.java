@@ -22,7 +22,7 @@ class IntegrationTokenAuthenticationFilterTest {
     private final IntegrationTokenService tokenService = org.mockito.Mockito.mock(IntegrationTokenService.class);
     private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class);
     private final com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class);
-    private final IntegrationTokenAuthenticationFilter filter = new IntegrationTokenAuthenticationFilter(tokenService, users, profiles,
+    private final IntegrationTokenAuthenticationFilter filter = new IntegrationTokenAuthenticationFilter(tokenService, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  profiles,
             new com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService(null, null));
 
     @Test void oauthUsesTheSameIntegrationAuthorityAndNeverFallsBackToApiKeys() throws Exception {
@@ -48,6 +48,8 @@ class IntegrationTokenAuthenticationFilterTest {
                 .extracting("authority").containsExactly("INTEGRATION");
         verifyNoInteractions(tokenService);
     }
+
+    @org.junit.jupiter.api.BeforeEach void wireAuthenticationOwner() { org.springframework.test.util.ReflectionTestUtils.setField(filter, "profileAuthentication", new com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService()); }
 
     @AfterEach
     void tearDown() {

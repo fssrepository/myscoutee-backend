@@ -27,6 +27,22 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 class MongoConverterConfigTest {
     @Test
     @org.junit.jupiter.api.Tag("standard")
+    void integrationAccessRetainsItsLegacyIdentityAndRevisionAcrossProfileReload() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess(7,
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ,
+                java.util.Map.of("client", com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.FULL));
+        var document = new Document(); converter.write(new Payload(value), document);
+        assertThat(document.get("value", Document.class).getString("_class")).isEqualTo("com.raxim.myscoutee.profile.data.document.IntegrationAccess");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+        var user = new Users(); user.setUserId("member"); user.setIntegrationAccess(value);
+        var profile = new Document(); converter.write(user, profile);
+        profile.get("integrationAccess", Document.class).remove("_class");
+        assertThat(converter.read(Users.class, profile).getIntegrationAccess()).isEqualTo(value);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
     void affiliateAttributionReloadsAsRootAndEmbeddedValueWithoutATypeDiscriminator() {
         var converter = domainConverter();
         var value = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration("member", "owner", "code", "now");

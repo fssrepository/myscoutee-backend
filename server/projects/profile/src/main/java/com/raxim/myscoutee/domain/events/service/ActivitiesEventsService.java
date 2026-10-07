@@ -147,7 +147,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents {
+public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents, com.raxim.myscoutee.domain.events.api.EventOperations {
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();

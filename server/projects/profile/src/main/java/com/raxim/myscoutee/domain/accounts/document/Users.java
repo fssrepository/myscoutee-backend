@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.document;
 
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration;
 
 import java.util.ArrayList;
@@ -670,7 +670,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             Integer groupSupport,
             Integer contacts,
             Integer campaign,
-            Integer cases) {
+            Integer cases) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ChatCounts {
         public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
                 Integer appSupport, UserSupportCaseCountersRecord supportCases, Integer groupSupport, Integer contacts) {
             this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, contacts, 0, 0);
@@ -701,7 +701,7 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
             Integer picked,
             Integer solved,
             Integer blocked,
-            Integer all) {
+            Integer all) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.SupportCounts {
     }
 
     public record UserEventCountersRecord(

@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.raxim.myscoutee.domain.integrations.service.AdminClientService;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
-import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauReportService;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueReportService;
+import com.raxim.myscoutee.domain.operator.api.MeasurementReports;
+import com.raxim.myscoutee.domain.operator.api.RevenueReports;
 import com.raxim.myscoutee.domain.operator.dto.OperatorMeasurementDtos.OperatorMeasurementReportPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorRevenueReportPageDto;
 
@@ -17,11 +17,11 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorReven
 public class IntegrationRoleReadController {
     private final IntegrationCapabilitiesService access;
     private final AdminClientService admin;
-    private final OperatorQualifiedMauReportService measurements;
-    private final OperatorRevenueReportService revenue;
+    private final MeasurementReports measurements;
+    private final RevenueReports revenue;
 
     public IntegrationRoleReadController(IntegrationCapabilitiesService access, AdminClientService admin,
-            OperatorQualifiedMauReportService measurements, OperatorRevenueReportService revenue) {
+            MeasurementReports measurements, RevenueReports revenue) {
         this.access = access; this.admin = admin; this.measurements = measurements; this.revenue = revenue;
     }
 

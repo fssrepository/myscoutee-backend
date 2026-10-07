@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.integrations.service;
+package com.raxim.myscoutee.domain.events.service;
 
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
@@ -9,10 +9,10 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 
 @Component
-public class IntegrationResourceChangeListener extends AbstractMongoEventListener<Object> {
-    private final IntegrationWebhookService webhookService;
+public class EventIntegrationChangeListener extends AbstractMongoEventListener<Object> {
+    private final com.raxim.myscoutee.domain.integrations.api.EventChanges webhookService;
 
-    public IntegrationResourceChangeListener(IntegrationWebhookService webhookService) {
+    public EventIntegrationChangeListener(com.raxim.myscoutee.domain.integrations.api.EventChanges webhookService) {
         this.webhookService = webhookService;
     }
 

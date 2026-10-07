@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -43,21 +43,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationToken;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookSubscription;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationWatchRequestDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationWatchResponseDto;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationExternalIdsRepository;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationTokensRepository;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationWebhookDeliveriesRepository;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationWebhookSubscriptionsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
 import tools.jackson.core.JacksonException;
@@ -67,13 +67,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 @Service
-public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.AssetChanges, com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
+public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.EventChanges, com.raxim.myscoutee.domain.integrations.api.AssetChanges, com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountJobScopes accountJobScopes;
 
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
@@ -96,7 +98,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
     private final IntegrationWebhookDeliveriesRepository deliveriesRepository;
     private final IntegrationExternalIdsRepository externalIdsRepository;
     private final IntegrationTokensRepository tokensRepository;
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
     private final MongoTemplate mongoTemplate;
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
@@ -111,7 +113,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
             IntegrationWebhookDeliveriesRepository deliveriesRepository,
             IntegrationExternalIdsRepository externalIdsRepository,
             IntegrationTokensRepository tokensRepository,
-            UsersRepository usersRepository,
+            ProfileDirectory usersRepository,
             MongoTemplate mongoTemplate,
             ObjectMapper objectMapper,
             @Value("${integration.webhook.allow-http:false}") boolean allowHttp,
@@ -193,7 +195,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         return new IntegrationWatchResponseDto(true, saved.getCallbackUrl(), List.copyOf(saved.getEventTypes()));
     }
 
-    public void enqueue(ActivityEvent event) {
+    public void enqueue(Event event) {
         if (event == null || !Boolean.TRUE.equals(event.getIsAdmin())) {
             return;
         }
@@ -239,7 +241,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
      * shape, augmented only with the participant fields that are useful to the
      * resource owner. No email address or internal user id leaves the service.
      */
-    public void enqueue(ActivityMember member) {
+    public void enqueue(Member member) {
         if (member == null || !StringUtils.hasText(member.getOwnerId())) {
             return;
         }
@@ -248,9 +250,8 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
             // `isAdmin` is a computed ActivityEvent property, not a stored Mongo
             // field. Load the event family by source id and apply the canonical
             // owner/admin check in enqueue(ActivityEvent, change).
-            Query query = Query.query(Criteria.where("sourceId").is(member.getOwnerId()));
             LinkedHashSet<String> notifiedOwners = new LinkedHashSet<>();
-            for (ActivityEvent event : mongoTemplate.find(query, ActivityEvent.class)) {
+            for (Event event : eventOwnership.findStoredFamilyBySourceId(member.getOwnerId())) {
                 if (notifiedOwners.add(normalize(event.getOwnerUserId()))) {
                     enqueue(event, change);
                 }
@@ -263,7 +264,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         }
     }
 
-    private void enqueue(ActivityEvent event, Map<String, Object> change) {
+    private void enqueue(Event event, Map<String, Object> change) {
         if (event == null || !Boolean.TRUE.equals(event.getIsAdmin())) {
             return;
         }
@@ -309,13 +310,13 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         enqueue(ownerUserId, ASSET_CHANGED, "asset", externalId, resource);
     }
 
-    private Map<String, Object> participantChange(ActivityMember member) {
+    private Map<String, Object> participantChange(Member member) {
         LinkedHashMap<String, Object> change = new LinkedHashMap<>();
         change.put("kind", "participant");
         change.put("status", nullable(member.getStatus()));
         change.put("role", nullable(member.getRole()));
         change.put("actionAt", nullable(member.getActionAtIso()));
-        Users participant = usersRepository.findByUserId(member.getUserId()).orElse(null);
+        WorkspaceProfile participant = usersRepository.findByUserId(member.getUserId()).orElse(null);
         if (participant != null) {
             LinkedHashMap<String, Object> publicParticipant = new LinkedHashMap<>();
             publicParticipant.put("name", nullable(participant.getName()));
@@ -349,7 +350,8 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
                 Criteria.where("nextAttemptAtIso").lte(now)));
         due.with(Sort.by(Sort.Order.asc("createdAtIso")));
         due.limit(Math.min(deliveryBatchSize, availableSlots));
-        for (IntegrationWebhookDelivery candidate : jobGroupScope.findOwned(due, IntegrationWebhookDelivery.class, "ownerUserId")) {
+        var workspaceScope = jobGroupScope.workspaceScope();
+        for (IntegrationWebhookDelivery candidate : com.raxim.myscoutee.common.mongo.OwnerScopedQuery.find(mongoTemplate, due, IntegrationWebhookDelivery.class, IntegrationWebhookDelivery::getOwnerUserId, ids -> accountJobScopes.matchingOwners(ids, workspaceScope))) {
             var permit = McpEventsService.PROTOCOL.equals(candidate.getProtocol()) ? mcpEvents.reserveDelivery() : null;
             if (McpEventsService.PROTOCOL.equals(candidate.getProtocol()) && permit == null) continue;
             if (!deliverySlots.tryAcquire()) {
@@ -608,12 +610,12 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         deliveriesRepository.save(delivery);
     }
 
-    private com.raxim.myscoutee.domain.integrations.document.IntegrationAccess integrationAccess(String ownerUserId) {
+    private com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess integrationAccess(String ownerUserId) {
         return usersRepository.findByUserId(ownerUserId).map(owner -> owner.getIntegrationAccess() == null
-                ? com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.initial() : owner.getIntegrationAccess()).orElse(null);
+                ? com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.initial() : owner.getIntegrationAccess()).orElse(null);
     }
 
-    private boolean tokenIsActive(String tokenId, String ownerUserId, com.raxim.myscoutee.domain.integrations.document.IntegrationAccess access) {
+    private boolean tokenIsActive(String tokenId, String ownerUserId, com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess access) {
         if (access == null) return false;
         IntegrationToken token = tokensRepository.findByIdAndOwnerUserId(tokenId, ownerUserId).orElse(null);
         if (token == null || StringUtils.hasText(token.getRevokedAtIso())) {
@@ -622,7 +624,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         try {
             return Instant.parse(token.getExpiresAtIso()).isAfter(Instant.now())
                     && access.effective(tokenId, IntegrationTokenService.MCP_SCOPE.equals(token.getScope()))
-                        != com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.BLOCKED;
+                        != com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.BLOCKED;
         } catch (RuntimeException ignored) {
             return false;
         }

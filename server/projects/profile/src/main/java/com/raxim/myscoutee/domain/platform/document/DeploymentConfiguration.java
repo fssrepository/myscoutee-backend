@@ -275,7 +275,7 @@ public class DeploymentConfiguration implements com.raxim.myscoutee.domain.platf
         }
     }
 
-    public static class Integration {
+    public static class Integration implements com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Integration {
         private String publicBaseUrl;
 
         public String getPublicBaseUrl() {

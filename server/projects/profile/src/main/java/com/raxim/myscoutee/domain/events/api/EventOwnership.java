@@ -4,6 +4,10 @@ import java.util.List;
 import com.raxim.myscoutee.common.dto.SharedDtos.*;
 
 public interface EventOwnership {
+    java.util.Optional<? extends Event> findByOwnerUserIdAndSourceId(String owner, String source);
+    boolean ownedExists(String owner, String source);
+    List<? extends Event> findStoredFamilyBySourceId(String source);
+
     java.util.Optional<? extends Event> findById(String id);
     boolean updateAffinity(Event value, double affinity, double boost);
     java.util.List<? extends Event> findBySourceIdIn(java.util.Collection<String> ids);
@@ -11,6 +15,9 @@ public interface EventOwnership {
     java.util.List<? extends Event> findAll();
     List<? extends Event> findBySourceId(String sourceId);
     interface Event {
+        Boolean getIsTrashed(); Boolean getIsExpired();
+        com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto getMingleConfiguration();
+
         String getOrganizerUserId();
         com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto getPricing();
         Boolean getPaymentDeadlineEnabled(); Integer getPaymentDeadlineHours(); String getCancelledAtIso();

@@ -290,10 +290,10 @@ public class IntegrationTokenService {
             String tokenId,
             String clientId,
             String scope,
-            com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode accessMode,
-            String grantId) {
+            com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode accessMode,
+            String grantId) implements com.raxim.myscoutee.domain.integrations.api.IntegrationClientIdentity {
         public AuthenticatedIntegrationClient(String ownerUserId, String tokenId, String clientId, String scope,
-                com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode accessMode) {
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode accessMode) {
             this(ownerUserId, tokenId, clientId, scope, accessMode, null);
         }
         public AuthenticatedIntegrationClient(String ownerUserId, String tokenId, String clientId) {
@@ -301,9 +301,9 @@ public class IntegrationTokenService {
         }
         public AuthenticatedIntegrationClient(String ownerUserId, String tokenId, String clientId, String scope) {
             this(ownerUserId, tokenId, clientId, scope,
-                    com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.WRITE);
+                    com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.WRITE);
         }
-        public AuthenticatedIntegrationClient withAccess(com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode mode) {
+        public AuthenticatedIntegrationClient withAccess(com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode mode) {
             return new AuthenticatedIntegrationClient(ownerUserId, tokenId, clientId, scope, mode, grantId);
         }
     }

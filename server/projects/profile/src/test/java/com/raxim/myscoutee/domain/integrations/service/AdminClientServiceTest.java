@@ -61,7 +61,7 @@ class AdminClientServiceTest {
         var users = mock(UsersRepository.class); var roles = mock(AdminMenuCounterService.class);
         var user = new Users(); user.setUserId("admin"); user.setProfileStatus("public");
         when(users.findByUserId("admin")).thenReturn(Optional.of(user)); when(roles.isAdminUser(user)).thenReturn(true);
-        var access = new AdminClientAccessService(users, roles); assertSame(user, access.requireAdmin("admin"));
+        var access = new AdminClientAccessService(new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  roles); assertSame(user, access.requireAdmin("admin"));
         user.setProfileStatus("inactive"); assertThrows(org.springframework.web.server.ResponseStatusException.class, () -> access.requireAdmin("admin"));
         user.setProfileStatus("public"); when(roles.isAdminUser(user)).thenReturn(false);
         assertThrows(org.springframework.web.server.ResponseStatusException.class, () -> access.requireAdmin("admin"));

@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
+import com.raxim.myscoutee.domain.events.api.EventOperations;
 import com.raxim.myscoutee.domain.media.api.MediaStorage;
 
 import java.time.Instant;
@@ -26,7 +26,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.campaigns.dto.CampaignDtos;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationCampaignSyncItemDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationCampaignSyncRequestDto;
@@ -49,6 +49,7 @@ import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @Service
 public class IntegrationSyncService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -61,14 +62,14 @@ public class IntegrationSyncService {
     private final IntegrationExternalIdsRepository externalIdsRepository;
     private final MongoTemplate mongoTemplate;
     private final Assets assetsService;
-    private final ActivitiesEventsService eventsService;
+    private final EventOperations eventsService;
     private final MediaStorage mediaStorageService;
 
     public IntegrationSyncService(
             IntegrationExternalIdsRepository externalIdsRepository,
             MongoTemplate mongoTemplate,
             Assets assetsService,
-            ActivitiesEventsService eventsService,
+            EventOperations eventsService,
             MediaStorage mediaStorageService, Campaigns campaignsService) {
         this.externalIdsRepository = externalIdsRepository;
         this.mongoTemplate = mongoTemplate;
@@ -326,10 +327,7 @@ public class IntegrationSyncService {
         if (RESOURCE_ASSET.equals(resourceType)) {
             return assetOwnership.ownedExists(ownerUserId, internalId);
         }
-        return mongoTemplate.exists(
-                Query.query(Criteria.where("ownerUserId").is(ownerUserId)
-                        .and("sourceId").is(internalId)),
-                ActivityEvent.class);
+        return eventOwnership.ownedExists(ownerUserId, internalId);
     }
 
     private void discardImage(StoredImageSet uploadedImage) {
@@ -440,8 +438,8 @@ public class IntegrationSyncService {
         int capacityMin = item.capacityMin();
         int capacityMax = item.capacityMax();
         String status = "draft".equalsIgnoreCase(normalize(item.status()))
-                ? ActivityEvent.STATUS_DRAFT
-                : ActivityEvent.STATUS_ACTIVE;
+                ? "DR"
+                : "A";
         return new EventDetailDto(
                 null,
                 internalId,

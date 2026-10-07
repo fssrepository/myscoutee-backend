@@ -4,12 +4,17 @@ import java.util.List;
 
 /** Read-only local profile view; callers must not retain it as a persistence handle. */
 public interface WorkspaceProfile {
+    com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess getIntegrationAccess();
+    String getDeletedAtIso();
+    boolean isOperator();
     String getId();
     Integer getCompletion();
     String getPartitionKey();
     ActivityCounts getActivities();
     List<? extends Device> getDevices();
-    interface ActivityCounts { Integer events(); Integer hosting(); Integer game(); }
+    interface ActivityCounts { ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
+    interface ChatCounts { Integer all(); SupportCounts supportCases(); }
+    interface SupportCounts { Integer pending(); Integer warned(); Integer picked(); }
     interface Device {
         String getLastSeenAtIso();
         String getLastRegisteredAtIso();

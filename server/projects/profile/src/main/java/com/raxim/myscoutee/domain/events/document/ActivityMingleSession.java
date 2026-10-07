@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "mingle_session_encounters_due", def = "{'status': 1, 'encountersPublished': 1, 'updatedAtIso': 1}"),
         @CompoundIndex(name = "mingle_session_status_due", def = "{'status': 1, 'phaseEndsAtIso': 1}")
 })
-public class ActivityMingleSession {
+public class ActivityMingleSession implements com.raxim.myscoutee.domain.events.api.MingleEncounters.Session {
     @Id
     private String id;
     @Indexed(name = "mingle_session_event", unique = true)

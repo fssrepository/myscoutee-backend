@@ -79,7 +79,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
             // API keys and OAuth grants were verified by the integration filter.
             // They have their own expiry/revocation and never carry a browser
             // session ID, even when their owner has an enrolled app session.
-            if (existing.getDetails() instanceof com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient
+            if (existing.getDetails() instanceof com.raxim.myscoutee.domain.integrations.api.IntegrationClientIdentity
                     && existing.getAuthorities().stream().anyMatch(a -> "INTEGRATION".equals(a.getAuthority()))
                     && request.getRequestURI().matches("/(?:api/)?integrations/v1/.*")) {
                 filterChain.doFilter(request, response);

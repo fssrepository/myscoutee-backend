@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.integrations.document;
+package com.raxim.myscoutee.domain.integrations.dto;
 
 import java.util.Map;
 

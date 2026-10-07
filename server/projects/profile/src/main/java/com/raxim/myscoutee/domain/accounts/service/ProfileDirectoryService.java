@@ -13,6 +13,7 @@ public class ProfileDirectoryService implements ProfileDirectory {
     private final UsersRepository users;
     public ProfileDirectoryService(UsersRepository users) { this.users = users; }
     @Override public List<Users> findByWorkspaceGroupIdAndAccountUserIdIn(String groupId, Collection<String> accounts) { return users.findByWorkspaceGroupIdAndAccountUserIdIn(groupId, accounts); }
+    @Override public Optional<Users> findByWorkspaceGroupIdAndAccountUserId(String group, String account) { return users.findByWorkspaceGroupIdAndAccountUserId(group, account); }
     @Override public List<Users> findAll() { return users.findAll(); }
     @Override public Optional<Users> findByUserId(String userId) { return users.findByUserId(userId); }
     @Override public List<Users> findByEmailIn(Collection<String> emails) { return users.findByEmailIn(emails); }

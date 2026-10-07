@@ -146,11 +146,12 @@ class WebSecurityConfigBootstrapTest {
         applicationContext.registerBean(
                 OperatorBootstrapAuthenticationService.class,
                 () -> bootstrapService);
+        applicationContext.registerBean(com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService.class,
+                com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService::new);
         applicationContext.registerBean(
                 IntegrationTokenAuthenticationFilter.class,
                 () -> new IntegrationTokenAuthenticationFilter(mock(
-                        com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class),
-                        mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class),
+                        com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)),
                         mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class),
                         mock(com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService.class)));
         applicationContext.registerBean(AdminClientAuthenticationFilter.class,

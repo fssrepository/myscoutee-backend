@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.dto;
 
 import java.util.List;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto;
 
 public final class IntegrationDtos {

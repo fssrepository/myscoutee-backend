@@ -59,7 +59,7 @@ class AssetBoundaryOwnershipTest {
         new AssetIntegrationChangeListener(changes).onAfterSave(new AfterSaveEvent<>(asset, new Document(), "assets"));
         verify(changes).enqueue(asset); verifyNoMoreInteractions(changes);
         var webhook = mock(com.raxim.myscoutee.domain.integrations.service.IntegrationWebhookService.class);
-        new com.raxim.myscoutee.domain.integrations.service.IntegrationResourceChangeListener(webhook)
+        new com.raxim.myscoutee.domain.events.service.EventIntegrationChangeListener(webhook)
                 .onAfterSave(new AfterSaveEvent<>(asset, new Document(), "assets"));
         verifyNoInteractions(webhook);
     }

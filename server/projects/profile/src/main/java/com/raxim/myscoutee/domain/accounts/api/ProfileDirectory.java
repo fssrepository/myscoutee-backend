@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProfileDirectory {
+    java.util.Optional<? extends WorkspaceProfile> findByWorkspaceGroupIdAndAccountUserId(String group, String account);
     List<? extends WorkspaceProfile> findByProfileStatus(String status);
     List<? extends WorkspaceProfile> findByWorkspaceGroupIdAndAccountUserIdIn(String groupId, Collection<String> accounts);
     List<? extends WorkspaceProfile> findAll();

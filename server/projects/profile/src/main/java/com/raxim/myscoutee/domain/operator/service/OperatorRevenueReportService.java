@@ -52,7 +52,7 @@ import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueReceipt;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
-public class OperatorRevenueReportService {
+public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.operator.api.RevenueReports {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(OperatorRevenueReportService.class);
     private static final int MAX_CORRECTION_ROUNDS = 2;

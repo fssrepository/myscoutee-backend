@@ -58,6 +58,7 @@ import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService
 
 @Service
 public class DeletedAccountPurgeService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.integrations.api.IntegrationPrivacy integrationPrivacy;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.payments.api.PaymentPrivacy paymentPrivacy;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentPrivacy contentPrivacy;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.AffinityPrivacy affinityPrivacy;
@@ -708,11 +709,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("userExperienceProfiles", List.of("userId"), userId);
         deleteDocumentsByAnyField("userFilterPreferences", List.of("userId", "createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("userPageFilterPreferences", List.of("userId"), userId);
-        deleteDocumentsByAnyField("integrationParticipantInvites", List.of("ownerUserId", "claimedUserId"), userId);
-        deleteDocumentsByAnyField("mcpEventSubscriptions", List.of("ownerUserId"), userId);
-        deleteDocumentsByAnyField("integrationWebhookDeliveries", List.of("ownerUserId"), userId);
-        deleteDocumentsByAnyField("integrationExternalIds", List.of("ownerUserId"), userId);
-        mongoTemplate.remove(Query.query(Criteria.where("resourceType").is("participant").and("internalId").is(userId)), "integrationExternalIds");
+        integrationPrivacy.purgeParticipantData(userId);
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);
         contentPrivacy.purgeFeedback(userId);
         contentPrivacy.purgeReports(userId);

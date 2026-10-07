@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationToken;
 import com.raxim.myscoutee.domain.payments.service.AffiliateService;
 
@@ -22,7 +22,7 @@ class IntegrationSettingsServiceTest {
     final UsersRepository users = mock(UsersRepository.class);
     final AffiliateService affiliates = mock(AffiliateService.class);
     final IntegrationPublicEndpointResolver endpoint = mock(IntegrationPublicEndpointResolver.class);
-    final IntegrationSettingsService service = new IntegrationSettingsService(tokens, mcp, users, affiliates, endpoint);
+    final IntegrationSettingsService service = new IntegrationSettingsService(tokens,  mcp, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  affiliates,  endpoint);
 
     Users owner(long revision) {
         var owner = new Users(); owner.setUserId("owner");
@@ -38,6 +38,7 @@ class IntegrationSettingsServiceTest {
                 List.of(new IntegrationClientAccessDto(id, IntegrationAccess.Mode.BLOCKED)));
     }
 
+    @org.junit.jupiter.api.BeforeEach void wireAccountAccessOwner() { org.springframework.test.util.ReflectionTestUtils.setField(service, "accountIntegrationAccess", new com.raxim.myscoutee.domain.accounts.service.AccountIntegrationAccessService(users)); }
     @Test void validatesWholeRequestBeforeWritingAndRejectsForeignOrAdminKeys() {
         owner(3);
         when(tokens.activeTokens("owner")).thenReturn(List.of(token("api", "integration"), token("operator", "admin-client")));

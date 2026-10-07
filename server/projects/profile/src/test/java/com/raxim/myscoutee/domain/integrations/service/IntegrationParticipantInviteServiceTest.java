@@ -47,11 +47,13 @@ class IntegrationParticipantInviteServiceTest {
     final String token = "a".repeat(43);
 
     @BeforeEach void setup() {
-        service = new IntegrationParticipantInviteService(mongo, events, access, members, endpoint, profiles);
+        service = new IntegrationParticipantInviteService(mongo, new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events),  access,  members,  endpoint,  profiles);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groups", groups);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "affiliates", affiliates);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventActions", eventActions);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "users", users);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "users", new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileAuthentication", new com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService());
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "encounters", new com.raxim.myscoutee.domain.events.service.MingleEncounterService(null, null, mongo, null));
     }
 
     @Test void groupEventLinkUsesTheAdmittedProfileAndRestoresTheAccountAuthentication() {

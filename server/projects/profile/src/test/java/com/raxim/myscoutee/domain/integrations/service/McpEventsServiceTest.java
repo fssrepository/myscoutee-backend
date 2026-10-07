@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
 import com.raxim.myscoutee.domain.integrations.document.McpEventSubscription;
 import com.raxim.myscoutee.domain.integrations.repository.McpEventSubscriptionsRepository;
@@ -38,8 +38,8 @@ class McpEventsServiceTest {
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final JsonMapper json = JsonMapper.builder().build();
     final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
-    final McpEventsService service = new McpEventsService(subscriptions, users, new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assets), eventQueries,
-            mock(CommunityGroupProfilesService.class), oauth, crypto, callbacks, json, mongo, roles);
+    final McpEventsService service = new McpEventsService(subscriptions, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assets),  eventQueries,
+            mock(CommunityGroupProfilesService.class),  oauth,  crypto,  callbacks,  json,  mongo,  roles);
     final AuthenticatedIntegrationClient client = new AuthenticatedIntegrationClient("alice", "token-a", "shared-chatgpt",
             "mcp", IntegrationAccess.Mode.FULL, "grant-a");
     final String secret = "whsec_" + Base64.getEncoder().encodeToString(new byte[32]);

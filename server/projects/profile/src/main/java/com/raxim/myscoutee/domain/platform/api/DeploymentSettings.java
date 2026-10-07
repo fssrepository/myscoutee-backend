@@ -5,7 +5,8 @@ import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 public interface DeploymentSettings {
     String SINGLETON_ID = "deployment-configuration";
     Optional<? extends Configuration> findById(String id);
-    interface Configuration { Payment getPayment(); }
+    interface Configuration { Integration getIntegration(); Payment getPayment(); }
+    interface Integration { String getPublicBaseUrl(); }
     interface Payment {
         String getProviderId(); String getPublicBaseUrl(); String getMerchantAccount();
         String getExchangeRateUrl(); EncryptedSecret getCredentialEnvelope(); String getCredentialMask();

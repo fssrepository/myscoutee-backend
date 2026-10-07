@@ -68,7 +68,7 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
-public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.CheckoutMemberships, com.raxim.myscoutee.domain.events.api.MemberAudience {
+public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.PartnerInvitationAdmission, com.raxim.myscoutee.domain.events.api.CheckoutMemberships, com.raxim.myscoutee.domain.events.api.MemberAudience {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 
@@ -2933,8 +2933,9 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     }
 
     /** Called only after a stored partner invitation has been bound to the signed-in recipient. */
-    public void claimIntegrationInvite(com.raxim.myscoutee.domain.integrations.document.IntegrationParticipantInvite invite,
-            ActivityEvent event, String actorUserId) {
+    public void claimIntegrationInvite(com.raxim.myscoutee.domain.integrations.api.ParticipantInvitation invite,
+            com.raxim.myscoutee.domain.events.api.EventOwnership.Event snapshot, String actorUserId) {
+        ActivityEvent event = (ActivityEvent) snapshot;
         if (!actorUserId.equals(invite.claimedUserId()) || !invite.eventId().equals(event.getSourceId())
                 || (!invite.reusable() && !invite.ownerUserId().equals(event.getOwnerUserId()))
                 || !accessControlService.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {

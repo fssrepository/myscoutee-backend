@@ -46,8 +46,8 @@ may need changes together.
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
-| 10 | payments | 8 | 10 | Complete: owner-controlled checkout, accounting, cancellations and scoped jobs | 1,109 regression tests passed; two purge fixtures repaired; 178 focused tests and 31 final boundary/header tests passed; checkpoint commit follows |
-| 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
+| 10 | payments | 8 | 10 | Complete: owner-controlled checkout, accounting, cancellations and scoped jobs | 1,109 regression tests passed; two purge fixtures repaired; 178 focused tests and 31 final boundary/header tests passed; `e7be89bd0` |
+| 11 | integrations | 11 | 15 | Complete: owner-controlled authorization, invitations, publication and webhook jobs | 794 regression tests passed; three security bootstrap fixtures repaired; 167 final focused tests passed; this checkpoint |
 | 12 | content | 2 | 5 | Complete: moderation ownership, support review, submissions, counters and privacy | 899 regression, boundary and serialization tests passed; `e7ac81ab3` |
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed; `602f0367b` |
 
-**Completed domains: 15/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
+**Completed domains: 16/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1891,3 +1891,74 @@ After wiring the real payment privacy owner, all 178 focused tests passed,
 including embedded Mongo parity, cancellation guards and attribution reload.
 The final expanded collection-boundary and response-header checks passed all
 31 tests. Integration/E2E and performance measurements remain separate work.
+
+
+### #11 integrations: owner-controlled authorization, invitations and publication
+
+- `domain/integrations/dto/IntegrationAccess.java` is the existing immutable,
+  revisioned access value, moved from the document package. Accounts retains
+  ownership of its embedded storage. The historical Mongo alias is retained.
+  `accounts/api/AccountIntegrationAccess.java` and its service execute the
+  original `UsersRepository.updateIntegrationAccess` revision guard.
+- `accounts/api/{ProfileDirectory,WorkspaceProfile,AccountIdentity,
+  ProfileAuthentication}.java` and their existing/new owner implementations
+  expose stored account lookup, activity counters and authenticated profile
+  creation/rebinding. `ProfileAuthenticationService` reuses `FirebasePrincipal`
+  and `FirebaseAuthenticationToken.forProfile`; authentication attributes,
+  authority checks, binding rejection and context restoration remain unchanged.
+  Integration filters/services use account contracts and the existing
+  `AccountWorkspaces` and `SelectedProfile` operations.
+- `integrations/api/IntegrationClientIdentity.java` is implemented by the
+  existing verified integration details record. The Firebase filter uses this
+  public contract while retaining its integration authority and URL guards.
+  No token expiry, grant revocation, IP validation or OAuth checks are moved or
+  bypassed. Common security composition still wires the actual integration
+  filters; this is application bootstrap, not business-domain data access.
+- `events/api/{EventOperations,EventOwnership,PartnerInvitationAdmission,
+  MingleEncounters}.java` and owner services expose the existing event queries,
+  admission workflow, completed-round/session reads, pending-publication read
+  and guarded acknowledgement. `IntegrationEventQueryService`,
+  `IntegrationParticipantInviteService`, `IntegrationSyncService` and
+  `IntegrationEncounterPublisher` retain their existing validations and public
+  results. Event/session/round/table views are **local read-only views**, not
+  detached HTTP contracts. Admission consumes the owner-issued event snapshot.
+- `events/service/EventIntegrationChangeListener.java` replaces the former
+  integration-owned listener. It sends each saved event/member once through
+  `integrations/api/EventChanges.java`; assets retain their separate existing
+  producer. Webhook payload fields and owner deduplication remain unchanged.
+- `chat/api/ChatQueries.java` exposes existing chat page/message readers.
+  `ChatDirectory{,Service}.unreadVersion` owns the original projected, sorted
+  single-chat query used by `integrations/repository/AdminClientRepository`.
+- `operator/api/{MeasurementReports,RevenueReports}.java` expose existing
+  bounded operator report readers. Integration role authorization stays before
+  those calls. `platform/api/DeploymentSettings.java` adds the existing
+  integration endpoint read-only value; its validation/fallback is unchanged.
+- `integrations/service/IntegrationWebhookService.java` uses the common
+  `OwnerScopedQuery` and account-owned workspace selection from checkpoint #10.
+  The existing due criteria, sort, batch limit, claim guard, worker semaphore,
+  HTTP timeout and retry schedule are unchanged. Account filtering precedes
+  limit; owner reads are batched, and the same cross-batch scope observation
+  and backlog-scan risks documented for payment jobs apply here.
+- `IntegrationPrivacy{,Service}` owns the existing invitation/subscription/
+  delivery/external-ID purge operations in their original order.
+  `ParticipantIntegrationIndexInitializer` owns the same participant and
+  external-ID indexes, including unique keys, in both existing databases.
+  The events initializer retains Mingle indexes.
+
+| Area | Functional regression risk | Severe slowdown risk | E2E focus |
+| --- | --- | --- | --- |
+| API/OAuth profile binding and access revisions | High | Low; same repository reads and guarded write | Revoked/expired grant, blocked mode, workspace profile, cross-account invite, revision conflict |
+| Event invite admission and public participant results | High | Low; same owner lookups, batching and pair construction | Reusable link, bound token retry, completed Mingle, private workspace, no internal-ID disclosure |
+| Encounter publication and save listeners | Medium | Low; same batch/read/update counts | Failed enqueue retries, stale session revision, deleted event, one notification producer |
+| Scoped webhook claiming | Medium | Medium to high under unrelated-workspace backlog; unmeasured | Claim race, workspace skew, scope reassignment, semaphore saturation, retry and timeout |
+| Embedded access reload, index and purge ownership | Medium | Low; unchanged persisted shape and queries | Legacy profile reload, unique participant mapping, deleted account cleanup |
+
+Integration checkpoint verification and commit are recorded in the numbered
+inventory. These local checks do not claim E2E throughput or detached-domain
+HTTP readiness.
+
+Verification: 794 tests passed in the expanded regression run; three isolated
+security bootstrap fixtures were repaired to register the existing account
+authentication owner. The final 167 focused integration, security, owner-event,
+serialization and boundary tests passed with no failures or skips. The existing
+dev watcher compiled and restarted successfully, and the application is healthy.
