@@ -35,7 +35,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
-import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.BrandingUpdateDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.ConfigurationTestKind;

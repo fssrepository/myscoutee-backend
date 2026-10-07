@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.domain.registry.RegistryCrypto;

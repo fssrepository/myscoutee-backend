@@ -11,7 +11,9 @@ version = System.getenv('MYSCOUTEE_VERSION') ?: '1.3.0'
 
 // JUnit compilation must never replace the classes used by the running dev app.
 def junitTasks = ['test', 'standardTest', 'embeddedTest', 'integrationTest',
-                  'qualificationTest', 'testClasses', 'compileTestJava', 'jacocoTestReport']
+                  'qualificationTest', 'testClasses', 'compileTestJava', 'processTestResources',
+                  'e2eTest', 'e2eTestClasses', 'compileE2eTestJava', 'processE2eTestResources',
+                  'jacocoTestReport', 'check', 'sonar']
 def isolatedJunitBuild = providers.gradleProperty('isolatedJUnit')
     .map { it.toBoolean() }
     .orElse(gradle.startParameter.taskNames.any { junitTasks.contains(it.tokenize(':').last()) })

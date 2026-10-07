@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
 
 @org.junit.jupiter.api.Tag("embedded")
 class OperatorUpdateHttpClientTest {

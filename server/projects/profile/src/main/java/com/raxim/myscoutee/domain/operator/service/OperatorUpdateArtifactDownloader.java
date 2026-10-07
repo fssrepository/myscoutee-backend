@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
 
 @Component
 public class OperatorUpdateArtifactDownloader {

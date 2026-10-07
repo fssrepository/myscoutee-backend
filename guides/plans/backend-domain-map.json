@@ -1,7 +1,7 @@
 {
   "baseline": "8af73cf0a",
   "main_classes": 682,
-  "mapped_classes": 645,
+  "mapped_classes": 648,
   "domain_class_counts": {
     "access": 39,
     "accounts": 58,
@@ -20,7 +20,7 @@
     "localization": 10,
     "media": 11,
     "notifications": 22,
-    "operator": 61,
+    "operator": 64,
     "payments": 52,
     "platform": 21,
     "registry": 14
@@ -997,7 +997,7 @@
     {
       "from": "platform",
       "to": "operator",
-      "imports": 5
+      "imports": 6
     },
     {
       "from": "platform",
@@ -1341,5 +1341,6 @@
     "registry": 10
   },
   "current_main_classes": 679,
-  "dependency_method": "Explicit current-source imports; static counts, not runtime calls."
+  "dependency_method": "Explicit current-source imports; static counts, not runtime calls.",
+  "inventory_note": "Counts are Java source files; the localization I18nMessageService file is entirely commented out and defines no runtime class."
 }

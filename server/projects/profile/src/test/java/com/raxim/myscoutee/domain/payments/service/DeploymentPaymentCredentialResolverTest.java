@@ -14,7 +14,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
 

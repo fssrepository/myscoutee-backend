@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import com.raxim.myscoutee.domain.administration.document.AdminStatsSnapshot;
 import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.email.service.OperatorEmailConfigurationService;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingActionDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 
@@ -124,6 +125,20 @@ class MongoConverterConfigTest {
         assertThat(document.get("value", Document.class).getString("_class"))
                 .isEqualTo("com.raxim.myscoutee.profile.data.dto.shared.SharedDtos$PricingPromoCodeDto");
         assertThat(converter.read(Payload.class, document).value()).isEqualTo(promo);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void preservesHistoricalTypeIdentityForDocumentsNestedInServices() {
+        var converter = domainConverter();
+        var configuration = new OperatorEmailConfigurationService.Configuration(
+                "global", 3, false, "", "sender@example.test", "Sender", null, "2026-10-07T00:00:00Z");
+        var document = new Document();
+        converter.write(configuration, document);
+
+        assertThat(document.getString("_class")).isEqualTo(
+                "com.raxim.myscoutee.profile.service.operator.OperatorEmailConfigurationService$Configuration");
+        assertThat(converter.read(Object.class, document)).isEqualTo(configuration);
     }
 
     @Test

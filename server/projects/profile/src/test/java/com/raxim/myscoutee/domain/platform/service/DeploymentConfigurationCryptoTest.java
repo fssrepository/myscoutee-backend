@@ -12,7 +12,7 @@ import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 
 @org.junit.jupiter.api.Tag("standard")
