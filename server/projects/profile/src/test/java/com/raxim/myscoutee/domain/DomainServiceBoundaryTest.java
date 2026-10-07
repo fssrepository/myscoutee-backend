@@ -25,6 +25,7 @@ class DomainServiceBoundaryTest {
     private static final String DOMAIN = "com/raxim/myscoutee/domain/";
     private static final Pattern REFERENCES = Pattern.compile(DOMAIN + "[\\w/$]+");
     private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.ofEntries(
+            java.util.Map.entry("operator", Set.of("revenueReportOutbox", "globalIdentityLinkStates", "qualifiedMauReportOutbox", "globalIdentityPresenceChunkOutbox", "operatorRegistrySettings", "operatorRegistryEndpoints", "operatorClaimSubmissionSnapshots")),
             java.util.Map.entry("accounts", Set.of("userFriendships", "users", "userSessionActions", "privacyConsents", "userPageFilterPreferences", "accountPurgeJobs", "userLoginAudits", "navigatorContacts", "userExperienceProfiles", "userSessionStates", "userFilterPreferences")),
             java.util.Map.entry("notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs")),
             java.util.Map.entry("localization", Set.of("i18n_messages", "i18n_bundles")),
@@ -46,7 +47,7 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -86,7 +87,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts", "operator"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;

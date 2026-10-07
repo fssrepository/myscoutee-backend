@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.operator.mapper;
+package com.raxim.myscoutee.domain.platform.mapper;
 
 import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 

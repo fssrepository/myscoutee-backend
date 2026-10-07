@@ -37,7 +37,7 @@ may need changes together.
 
 | # | Domain | Files | Imports | Status | Verification / commit |
 | ---: | --- | ---: | ---: | --- | --- |
-| 1 | accounts | 4 | 23 | Complete: account-owned identity, consent, authentication, session audit and scoped jobs | 425 local tests passed; this checkpoint |
+| 1 | accounts | 4 | 23 | Complete: account-owned identity, consent, authentication, session audit and scoped jobs | 425 local tests passed; `a7fe68125` |
 | 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
 | 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
 | 4 | events | 8 | 14 | Complete: owner-controlled reads/writes, feedback projection, privacy and scoped scheduling | 566 regression tests and 59 final focused checks passed; `0fcacac34` |
@@ -52,7 +52,7 @@ may need changes together.
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
 | 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; `c5dceafa1` |
-| 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
+| 16 | operator | 4 | 7 | Complete: operator contracts and platform-owned deployment configuration commands | 241 focused local tests passed; this checkpoint |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
 | 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; `2bb3bd0ae` |
@@ -2103,3 +2103,26 @@ this startup duration is diagnostic evidence, not a throughput benchmark.
 - User scheduling decision: E2E and speed measurements are deferred to the next
   session. Keep dev running now; stop the dev application before any E2E server
   is started in that later session.
+
+## #16 Operator — completed boundary
+
+- `operator/controller/OperatorConfigurationController` now consumes
+  `platform/api/DeploymentConfigurationManagement`. It retains the same routes,
+  operator authorization, DTOs, validation and response behavior.
+- The existing `OperatorConfigurationService`, `OperatorConfigurationMapper`
+  and `OperatorConfigurationProperties` move into platform beside the deployment
+  document/repository, encryption and Firebase runtime they already manage.
+  Their algorithms are unchanged: per-database locks, optimistic save failures,
+  secret purposes/envelopes, test-before-activation revision checks, cache
+  eviction, administrator updates and runtime refresh ordering remain together.
+  The `operator.configuration` binding prefix and master-key path are unchanged.
+- Configuration service/mapper tests follow their actual owner. Existing
+  controller, crypto, Firebase runtime, payment credential and email unsubscribe
+  tests continue to exercise the same behavior. The boundary guard now covers
+  incoming/outgoing contracts and raw collection ownership for 20 domains.
+- **Functional risk: medium**, concentrated on configuration bean wiring and
+  Firebase activation. **Severe slowdown risk: low**: the same service instance,
+  locks, Mongo operations and capability checks run behind the interface.
+- Verification: **241 focused standard/embedded tests passed, zero failures/skips**.
+  The running dev watcher compiled and restarted successfully. No external
+  configuration was submitted. HTTP E2E remains deferred by user instruction.

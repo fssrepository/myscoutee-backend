@@ -1,6 +1,6 @@
-package com.raxim.myscoutee.domain.operator.service;
+package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.operator.mapper.OperatorConfigurationMapper;
+import com.raxim.myscoutee.domain.platform.mapper.OperatorConfigurationMapper;
 import com.raxim.myscoutee.domain.payments.api.PaymentProviders;
 import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
 import com.raxim.myscoutee.domain.platform.service.DeploymentFirebaseRuntime;
@@ -51,7 +51,7 @@ import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 import com.raxim.myscoutee.domain.platform.service.OperatorFirebaseCapabilityClient.FirebaseWebConfiguration;
 
 @Service
-public class OperatorConfigurationService {
+public class OperatorConfigurationService implements com.raxim.myscoutee.domain.platform.api.DeploymentConfigurationManagement {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.payments.api.ExchangeRateConfiguration exchangeRateSource;
     public static final String FIREBASE_AUTHENTICATION_PURPOSE =

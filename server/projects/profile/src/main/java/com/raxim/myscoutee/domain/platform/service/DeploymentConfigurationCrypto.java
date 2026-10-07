@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.platform.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 

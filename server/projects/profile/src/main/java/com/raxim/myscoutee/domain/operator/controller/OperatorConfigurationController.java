@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.Configu
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.ConfigurationTestResultDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.OperatorConfigurationDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.platform.api.DeploymentConfigurationManagement;
 
 import jakarta.validation.Valid;
 
@@ -20,9 +20,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/operator/configuration")
 @PreAuthorize("hasAuthority('O')")
 public class OperatorConfigurationController {
-    private final OperatorConfigurationService service;
+    private final DeploymentConfigurationManagement service;
 
-    public OperatorConfigurationController(OperatorConfigurationService service) {
+    public OperatorConfigurationController(DeploymentConfigurationManagement service) {
         this.service = service;
     }
 

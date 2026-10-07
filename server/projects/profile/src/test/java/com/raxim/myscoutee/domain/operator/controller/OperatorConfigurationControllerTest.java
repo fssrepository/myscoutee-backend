@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.ConfigurationTestRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.OperatorConfigurationUpdateDto;
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.platform.api.DeploymentConfigurationManagement;
 
 @org.junit.jupiter.api.Tag("standard")
 class OperatorConfigurationControllerTest {
@@ -33,7 +33,7 @@ class OperatorConfigurationControllerTest {
 
     @Test
     void routesUseGetPutAndPluralTestsPath() throws Exception {
-        OperatorConfigurationService service = mock(OperatorConfigurationService.class);
+        DeploymentConfigurationManagement service = mock(DeploymentConfigurationManagement.class);
         var mockMvc = MockMvcBuilders
                 .standaloneSetup(new OperatorConfigurationController(service))
                 .build();

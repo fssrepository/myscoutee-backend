@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.operator.config;
+package com.raxim.myscoutee.domain.platform.config;
 
 import java.nio.file.Path;
 

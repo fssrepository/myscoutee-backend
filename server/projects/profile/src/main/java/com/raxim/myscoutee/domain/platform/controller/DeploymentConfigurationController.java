@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration;
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 

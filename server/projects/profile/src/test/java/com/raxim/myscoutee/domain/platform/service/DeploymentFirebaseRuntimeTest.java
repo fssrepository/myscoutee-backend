@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.platform.service;
 
 import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

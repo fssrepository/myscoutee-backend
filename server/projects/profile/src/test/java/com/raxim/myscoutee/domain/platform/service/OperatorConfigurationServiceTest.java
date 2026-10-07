@@ -1,6 +1,6 @@
-package com.raxim.myscoutee.domain.operator.service;
+package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.operator.mapper.OperatorConfigurationMapper;
+import com.raxim.myscoutee.domain.platform.mapper.OperatorConfigurationMapper;
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentCredentialResolver;
 import com.raxim.myscoutee.domain.payments.service.PaymentProviderService;
 import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
@@ -35,7 +35,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
-import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.platform.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.BrandingUpdateDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.ConfigurationTestKind;
