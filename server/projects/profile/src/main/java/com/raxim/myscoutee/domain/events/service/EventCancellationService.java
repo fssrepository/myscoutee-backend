@@ -17,14 +17,14 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.payments.document.Payment;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 /** Durable cancellation/refund work. Actor authority is checked by the event service before enqueueing. */
 @Service
 public class EventCancellationService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
@@ -37,11 +37,11 @@ public class EventCancellationService {
     private final MongoTemplate mongo;
     private final PaymentService payments;
     private final ScheduledMongoSessionRunner sessions;
-    private final NotificationOutboxService notifications;
+    private final NotificationDelivery notifications;
     private final org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> members;
 
     public EventCancellationService(MongoTemplate mongo, PaymentService payments,
-            ScheduledMongoSessionRunner sessions, NotificationOutboxService notifications,
+            ScheduledMongoSessionRunner sessions, NotificationDelivery notifications,
             org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> members) {
         this.mongo = mongo; this.payments = payments; this.sessions = sessions; this.notifications = notifications;
         this.members = members;

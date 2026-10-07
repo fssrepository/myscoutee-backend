@@ -20,8 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class PaymentRefundService {
@@ -31,14 +31,14 @@ public class PaymentRefundService {
     private final PaymentsRepository paymentsRepository;
     private final PaymentService paymentService;
     private final SavedPaymentMethodsService paymentMethodsService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final MongoTemplate mongoTemplate;
 
     public PaymentRefundService(
             PaymentsRepository paymentsRepository,
             PaymentService paymentService,
             SavedPaymentMethodsService paymentMethodsService,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             MongoTemplate mongoTemplate) {
         this.paymentsRepository = paymentsRepository;
         this.paymentService = paymentService;

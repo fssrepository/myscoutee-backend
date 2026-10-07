@@ -54,11 +54,14 @@ import com.raxim.myscoutee.domain.accounts.repository.AccountPurgeJobsRepository
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService;
 
 @Service
 public class DeletedAccountPurgeService {
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.notifications.api.NotificationPrivacy notificationPrivacy;
+
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
 
@@ -81,7 +84,7 @@ public class DeletedAccountPurgeService {
     private final MediaStorageService mediaStorageService;
     private final MongoTemplate mongoTemplate;
     private final PlatformParametersService platformParametersService;
-    private NotificationRuleRegistryService notificationRuleRegistryService;
+    private NotificationJobs notificationRuleRegistryService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private OperatorGlobalIdentityService operatorGlobalIdentityService;
 
@@ -109,7 +112,7 @@ public class DeletedAccountPurgeService {
     }
 
     @Autowired(required = false)
-    void setNotificationRuleRegistryService(NotificationRuleRegistryService notificationRuleRegistryService) {
+    void setNotificationRuleRegistryService(NotificationJobs notificationRuleRegistryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
@@ -135,22 +138,22 @@ public class DeletedAccountPurgeService {
 
     private void purgeExpiredDeletedAccountsForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_ACCOUNT_PURGE, this::purgeExpiredDeletedAccountsForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_ACCOUNT_PURGE, this::purgeExpiredDeletedAccountsForCurrentDatabaseInGroup);
     }
 
     private void purgeExpiredDeletedAccountsForCurrentDatabaseInGroup() {
         Instant now = Instant.now();
         boolean ruleConfigured = notificationRuleRegistryService != null
                 && notificationRuleRegistryService
-                        .findRule(NotificationRuleRegistryService.RULE_ACCOUNT_PURGE)
+                        .findRule(NotificationJobs.RULE_ACCOUNT_PURGE)
                         .isPresent();
         if (ruleConfigured && !notificationRuleRegistryService.shouldRunScheduledRule(
-                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                NotificationJobs.RULE_ACCOUNT_PURGE,
                 now)) {
             return;
         }
         if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
-                    NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                    NotificationJobs.RULE_ACCOUNT_PURGE,
                     "Scheduled deleted-account purge started.",
                     "account-purge",
                     now) == null) {
@@ -163,7 +166,7 @@ public class DeletedAccountPurgeService {
                     + resumeDuePurgeJobs(now);
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                        NotificationJobs.RULE_ACCOUNT_PURGE,
                         purgedCount,
                         "completed",
                         "Processed scheduled deleted-account purge work.",
@@ -173,7 +176,7 @@ public class DeletedAccountPurgeService {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                        NotificationJobs.RULE_ACCOUNT_PURGE,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -282,7 +285,7 @@ public class DeletedAccountPurgeService {
             usersRepository.delete(user);
             if (pendingCounterTracked && notificationRuleRegistryService != null) {
                 notificationRuleRegistryService.adjustPendingCount(
-                        NotificationRuleRegistryService.RULE_ACCOUNT_PURGE,
+                        NotificationJobs.RULE_ACCOUNT_PURGE,
                         -1,
                         "admin.jobs.table.affected");
             }
@@ -758,8 +761,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("scheduledMessageDeliveries", List.of("userId", "createdUser"), userId);
         deleteDocumentsByAnyField("scheduledMessageRuns", List.of("createdUser", "updatedUser"), userId);
         deleteDocumentsByAnyField("emailOutbox", List.of("userId", "createdUser", "updatedUser"), userId);
-        deleteDocumentsByAnyField("notificationOutbox", List.of("recipientUserIds", "createdUser", "updatedUser"), userId);
-        purgeUserNotifications(userId);
+        notificationPrivacy.purgeDeliveryData(userId);
         anonymizeUserFieldsByAnyField(
                 "eventTicketAudit",
                 List.of("holderUserId", "actorUserId", "originalUsedByUserId"),
@@ -775,30 +777,8 @@ public class DeletedAccountPurgeService {
         anonymizeUserFieldsByAnyField("schedulerPlanMarkers", List.of("updatedUser"), userId);
         anonymizeUserFieldsByAnyField("emailTemplates", List.of("createdUser", "updatedUser"), userId);
         anonymizeUserFieldsByAnyField("emailCampaignRules", List.of("createdUser", "updatedUser"), userId);
-        anonymizeUserFieldsByAnyField("notificationRuleConfigs", List.of("createdUser", "updatedUser"), userId);
+        notificationPrivacy.anonymizeRuleAuthors(userId);
         anonymizeUserFieldsByAnyField("affinityConfigs", List.of("changedUser"), userId);
-    }
-
-    private void purgeUserNotifications(String userId) {
-        mongoTemplate.remove(
-                Query.query(Criteria.where("recipientUserId").is(userId)),
-                "userNotifications");
-        Update senderRedaction = new Update()
-                .set("senderUserId", "deleted-user")
-                .set("title", "Notification from a deleted user")
-                .set("message", "This notification was sent by a deleted user.")
-                .set("payload", new Document());
-        mongoTemplate.updateMulti(
-                Query.query(new Criteria().orOperator(
-                        Criteria.where("senderUserId").is(userId),
-                        Criteria.where("payload.senderUserId").is(userId),
-                        Criteria.where("payload.actorUserId").is(userId))),
-                senderRedaction,
-                "userNotifications");
-        anonymizeUserFieldsByAnyField(
-                "userNotifications",
-                List.of("createdUser", "updatedUser"),
-                userId);
     }
 
     private void deleteDocumentsByAnyField(String collectionName, List<String> fields, String userId) {

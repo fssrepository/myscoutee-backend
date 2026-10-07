@@ -7,8 +7,8 @@ import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChat
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand;
 import com.raxim.myscoutee.domain.chat.document.ContactChatAccess;
 import com.raxim.myscoutee.domain.chat.repository.ContactChatAccessRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -69,7 +69,7 @@ public class NavigatorContactsService {
     private final MongoTemplate mongo;
     private final FriendshipFacts friendshipFacts;
     private final ContactChatAccessRepository chatAccess;
-    private final NotificationOutboxService notifications;
+    private final NotificationDelivery notifications;
 
     public NavigatorContactsService(
             NavigatorContactsProfilesRepository navigatorContactsProfilesRepository,
@@ -79,7 +79,7 @@ public class NavigatorContactsService {
             AccessControlService accessControlService,
             FriendshipFacts friendshipFacts,
             ContactChatAccessRepository chatAccess,
-            NotificationOutboxService notifications,
+            NotificationDelivery notifications,
             MongoTemplate mongo) {
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;

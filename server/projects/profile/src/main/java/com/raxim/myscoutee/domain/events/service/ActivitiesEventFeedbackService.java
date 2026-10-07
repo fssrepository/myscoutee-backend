@@ -56,8 +56,8 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper.EventFeedbackStatRecord;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ActivitiesEventFeedbackService {
@@ -77,7 +77,7 @@ public class ActivitiesEventFeedbackService {
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private final EventFeedbackStatMapper eventFeedbackStatMapper;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
 
     public ActivitiesEventFeedbackService(
             HomeUserProfileService homeUserProfileService,
@@ -91,7 +91,7 @@ public class ActivitiesEventFeedbackService {
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService,
             EventFeedbackStatMapper eventFeedbackStatMapper,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationDelivery notificationOutboxService) {
         this.homeUserProfileService = homeUserProfileService;
         this.activityEventsRepository = activityEventsRepository;
         this.mingleRoundsRepository = mingleRoundsRepository;

@@ -67,9 +67,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 @Service
-public class IntegrationWebhookService {
+public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
@@ -399,16 +399,16 @@ public class IntegrationWebhookService {
     }
 
     /** MSC-118 role notifications feed the existing durable Events queue, without a polling worker. */
-    public void enqueueRoleAttention(com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem notification) {
-        String name = switch (String.valueOf(notification.getEntityType())) {
+    public void enqueueRoleAttention(RoleAttention notification) {
+        String name = switch (String.valueOf(notification.entityType())) {
             case "app-admin" -> McpEventsService.ADMIN_ATTENTION;
             case "operator" -> McpEventsService.OPERATOR_ATTENTION;
             default -> null;
         };
-        if (name == null || !McpEventsService.roleKinds(name).contains(notification.getNotificationType())) return;
-        for (String owner : notification.getRecipientUserIds()) {
-            enqueue(owner, name, notification.getEntityType(), "node", Map.of("kind", notification.getNotificationType()),
-                    notification.getId(), List.of());
+        if (name == null || !McpEventsService.roleKinds(name).contains(notification.notificationType())) return;
+        for (String owner : notification.recipientUserIds()) {
+            enqueue(owner, name, notification.entityType(), "node", Map.of("kind", notification.notificationType()),
+                    notification.id(), List.of());
         }
     }
 

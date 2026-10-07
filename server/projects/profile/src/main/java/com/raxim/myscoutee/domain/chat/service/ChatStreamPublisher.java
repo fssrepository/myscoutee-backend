@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.chat.service;
 
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
+
 import java.time.Duration;
 import java.util.Map;
 

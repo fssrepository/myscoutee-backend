@@ -75,7 +75,7 @@ import com.raxim.myscoutee.domain.access.security.ChatPolicyFacts;
 import com.raxim.myscoutee.domain.access.security.MemberPolicyFacts;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.mongodb.client.result.UpdateResult;
 
 @ExtendWith(MockitoExtension.class)
@@ -112,7 +112,7 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivityTournamentGroupCounterService tournamentGroupCounterService;
     @Mock
-    private ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider;
+    private ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationDelivery> notificationOutboxServiceProvider;
     @Mock
     private NotificationOutboxService notificationOutboxService;
     @Mock

@@ -78,7 +78,7 @@ class AffinityRecomputeTaskServiceTest {
         });
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationJobs> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         AffinityRecomputeTaskService service = new AffinityRecomputeTaskService(
                 repository,
@@ -127,7 +127,7 @@ class AffinityRecomputeTaskServiceTest {
         });
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationJobs> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         when(mongoTemplate.exists(any(Query.class), eq(Users.class))).thenReturn(true);
@@ -163,7 +163,7 @@ class AffinityRecomputeTaskServiceTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationJobs> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         when(mongoTemplate.exists(any(Query.class), eq(Users.class))).thenReturn(false);

@@ -47,11 +47,11 @@ import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.content.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class AdminModerationService {
+public class AdminModerationService implements com.raxim.myscoutee.domain.content.api.AdministrativeAccess {
     private static final List<AdminUserDto> DEMO_ADMINS = List.of(
             new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "admin1@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()),
@@ -70,7 +70,7 @@ public class AdminModerationService {
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AppSettingsService appSettingsService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
 
     public AdminModerationService(
             com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups,
@@ -85,7 +85,7 @@ public class AdminModerationService {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AppSettingsService appSettingsService,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationDelivery notificationOutboxService) {
         this.groups = groups;
         this.configProperties = configProperties;
         this.reportsRepository = reportsRepository;

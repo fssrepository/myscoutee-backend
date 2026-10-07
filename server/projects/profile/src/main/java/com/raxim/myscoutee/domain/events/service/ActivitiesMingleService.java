@@ -42,8 +42,8 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsReposi
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ActivitiesMingleService {
@@ -63,7 +63,7 @@ public class ActivitiesMingleService {
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessControlService accessControlService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups;
     private final EventGeneratorByMingle generator = new EventGeneratorByMingle();
 
@@ -75,7 +75,7 @@ public class ActivitiesMingleService {
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
             AccessControlService accessControlService,
-            NotificationOutboxService notificationOutboxService, com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups) {
+            NotificationDelivery notificationOutboxService, com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups) {
         this.groups=groups;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMingleSessionsRepository = activityMingleSessionsRepository;

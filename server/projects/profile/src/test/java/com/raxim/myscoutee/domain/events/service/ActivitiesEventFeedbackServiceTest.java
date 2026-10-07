@@ -52,7 +52,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")

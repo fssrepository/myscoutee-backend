@@ -84,6 +84,11 @@ initialization ordering and dotted-map-key handling while adding this capability
 
 ## Remaining coupling and service extraction
 
+The follow-up interface work is tracked separately in the numbered
+[cross-domain progress and risk register](BACKEND_CROSS_DOMAIN_PROGRESS.md).
+Its baseline is master `752ba4d15`; changes stay on the MSC-120 branch and each
+completed, verified domain receives its own commit.
+
 Package ownership makes existing dependencies visible; it does not remove them.
 The static dependency inventory records referenced classes and foreign repository
 access. These counts are conservative source-level evidence, not runtime call

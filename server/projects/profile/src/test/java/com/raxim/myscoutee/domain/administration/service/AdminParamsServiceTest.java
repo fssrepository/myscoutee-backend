@@ -27,7 +27,7 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsSaveRe
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsStateDto;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;

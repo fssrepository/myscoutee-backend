@@ -91,7 +91,7 @@ import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")

@@ -33,7 +33,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class EventCounterExpiryService {
@@ -55,7 +55,7 @@ public class EventCounterExpiryService {
     private final ActivityMembersRepository activityMembersRepository;
     private final UsersRepository usersRepository;
     private final MongoTemplate mongoTemplate;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final NotificationJobs notificationRuleRegistryService;
     private final AdminTelemetryService adminTelemetryService;
     private final UserActivityCountersService userActivityCountersService;
     private final EventFriendshipProjectionService eventFriendshipProjectionService;
@@ -81,7 +81,7 @@ public class EventCounterExpiryService {
             ActivityMembersRepository activityMembersRepository,
             UsersRepository usersRepository,
             MongoTemplate mongoTemplate,
-            NotificationRuleRegistryService notificationRuleRegistryService,
+            NotificationJobs notificationRuleRegistryService,
             AdminTelemetryService adminTelemetryService,
             UserActivityCountersService userActivityCountersService,
             EventFriendshipProjectionService eventFriendshipProjectionService,
@@ -115,7 +115,7 @@ public class EventCounterExpiryService {
         try {
             if (scheduled) {
                 if (notificationRuleRegistryService.beginScheduledRun(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         "Scanning expired event counters.",
                         SYSTEM_USER,
                         startedAt) == null) {
@@ -123,14 +123,14 @@ public class EventCounterExpiryService {
                 }
             } else {
                 notificationRuleRegistryService.beginRun(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         "Scanning expired event counters.",
                         SYSTEM_USER,
                         startedAt);
             }
             runStarted = true;
             claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY);
             ExpiryRunResult result = processDueEvents(Instant.now());
             String detail = result.processedSources() == 0 && result.markedTicketRecords() == 0
                     ? "No expired event counters, ticket records, feedback counters, or friendships were due."
@@ -143,7 +143,7 @@ public class EventCounterExpiryService {
                     + result.feedbackProjectionSources() + " event source(s); projected friendships for "
                     + result.friendshipProjectionSources() + " event source(s).";
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                     result.processedSources(),
                     "completed",
                     detail,
@@ -153,7 +153,7 @@ public class EventCounterExpiryService {
                 adminTelemetryService.record(
                         "event.counter.expired",
                         "jobs",
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         SYSTEM_USER,
                         result.dueSources());
             }
@@ -161,14 +161,14 @@ public class EventCounterExpiryService {
         } catch (RuntimeException exception) {
             if (runStarted) {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         claimedPendingCount,
                         "admin.jobs.table.affected");
             }
             LOGGER.warn("Event counter expiry pass failed.", exception);
             if (runStarted) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         0,
                         "failed",
                         safeText(exception.getMessage()),

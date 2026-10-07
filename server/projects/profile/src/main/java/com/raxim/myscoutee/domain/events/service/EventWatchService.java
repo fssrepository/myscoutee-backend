@@ -30,13 +30,13 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventWatchActionResultDt
 import com.raxim.myscoutee.common.dto.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class EventWatchService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
@@ -51,7 +51,7 @@ public class EventWatchService {
     private final HomeUserProfileService homeUserProfileService;
     private final FriendshipFacts friendshipFacts;
     private final UserActivityCountersService userActivityCountersService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
 
     public EventWatchService(
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
@@ -59,7 +59,7 @@ public class EventWatchService {
             HomeUserProfileService homeUserProfileService,
             FriendshipFacts friendshipFacts,
             UserActivityCountersService userActivityCountersService,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationDelivery notificationOutboxService) {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.homeUserProfileService = homeUserProfileService;

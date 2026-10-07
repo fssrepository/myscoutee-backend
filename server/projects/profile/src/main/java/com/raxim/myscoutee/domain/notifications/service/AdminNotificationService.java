@@ -2,6 +2,7 @@ package com.raxim.myscoutee.domain.notifications.service;
 
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import java.time.Instant;
+import com.raxim.myscoutee.domain.email.api.EmailProcessCatalog;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.LinkedHashSet;
@@ -18,10 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.domain.events.algorithm.gen.GeneratorModels.GeneratedEventPlan;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.email.document.EmailTemplate;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamFieldDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamOptionDto;
@@ -30,7 +29,6 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotification
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationMessageDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationRuleDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminScheduledTaskResultDto;
-import com.raxim.myscoutee.domain.email.repository.ScheduledMessageTasksRepository;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationRuleRunRequestDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationRuleRunResultDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationRuleSaveRequestDto;
@@ -40,15 +38,14 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotification
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationTemplateOptionDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationTimingDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto;
-import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.events.service.EventScheduler;
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.events.api.RandomGroupAssignment;
 
 @Service
-public class AdminNotificationService {
+public class AdminNotificationService implements com.raxim.myscoutee.domain.notifications.api.NotificationAdministration {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.payments.service.ExchangeRateJob exchangeRateJob;
+    private com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh exchangeRateJob;
     private static final long MIN_EXPECTED_RANDOM_RUN_MILLIS = 1_000L;
     private static final long MAX_EXPECTED_RANDOM_RUN_MILLIS = 60_000L;
     private static final long DEFAULT_EXPECTED_RANDOM_RUN_MILLIS = 5_000L;
@@ -64,11 +61,10 @@ public class AdminNotificationService {
     private static final Set<String> PROCESS_PROBLEM_STATUSES = Set.of("failed", "error", "missed", "skipped");
 
     private final NotificationRuleRegistryService notificationRuleRegistryService;
-    private final EmailTemplatesRepository emailTemplatesRepository;
-    private final EventScheduler eventScheduler;
-    private final AdminModerationService adminModerationService;
-    private final AdminTelemetryService adminTelemetryService;
-    private final ScheduledMessageTasksRepository scheduledMessageTasksRepository;
+    private final EmailProcessCatalog emailCatalog;
+    private final RandomGroupAssignment eventScheduler;
+    private final AdministrativeAccess adminModerationService;
+    private final OperationalTelemetry adminTelemetryService;
     private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
     private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
         Thread thread = new Thread(runnable, "admin-notification-runner");
@@ -83,17 +79,15 @@ public class AdminNotificationService {
 
     public AdminNotificationService(
             NotificationRuleRegistryService notificationRuleRegistryService,
-            EmailTemplatesRepository emailTemplatesRepository,
-            EventScheduler eventScheduler,
-            AdminModerationService adminModerationService,
-            AdminTelemetryService adminTelemetryService,
-            ScheduledMessageTasksRepository scheduledMessageTasksRepository) {
+            EmailProcessCatalog emailCatalog,
+            RandomGroupAssignment eventScheduler,
+            AdministrativeAccess adminModerationService,
+            OperationalTelemetry adminTelemetryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
-        this.emailTemplatesRepository = emailTemplatesRepository;
+        this.emailCatalog = emailCatalog;
         this.eventScheduler = eventScheduler;
         this.adminModerationService = adminModerationService;
         this.adminTelemetryService = adminTelemetryService;
-        this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
     }
 
     @PreDestroy
@@ -211,7 +205,7 @@ public class AdminNotificationService {
                 progress.adoptRule(startedRule);
             }
             switch (normalizedRuleKey) {
-                case com.raxim.myscoutee.domain.payments.service.ExchangeRateJob.KEY -> {
+                case com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh.KEY -> {
                     MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
                     String jobGroupId = JobGroupContext.groupId();
                     Instant started = Instant.parse(startedAtIso(startedRule));
@@ -290,13 +284,13 @@ public class AdminNotificationService {
                 progress.adoptRule(notificationRuleRegistryService.findRule(ruleKey).orElse(startedRule));
                 progress.raiseTo(1, "Loading published events for matched rooms.");
             }
-            List<GeneratedEventPlan> plans = eventScheduler.generateRandomPlans(planProgress -> {
+            var assignment = eventScheduler.assignRandomGroups(planProgress -> {
                 if (progress != null) {
                     progress.raiseTo(planProgress.progressPercent(), planProgress.detail());
                 }
             });
-            int affectedUsers = affectedUsers(plans);
-            String detail = "Generated " + plans.size() + " random group plan(s) for " + affectedUsers + " user(s).";
+            int affectedUsers = assignment.affectedUsers();
+            String detail = "Generated " + assignment.plans() + " random group plan(s) for " + affectedUsers + " user(s).";
             if (progress != null) {
                 progress.close();
             }
@@ -492,26 +486,11 @@ public class AdminNotificationService {
         return startedAtIso.isEmpty() ? Instant.now().toString() : startedAtIso;
     }
 
-    private int affectedUsers(List<GeneratedEventPlan> plans) {
-        Set<String> userIds = new LinkedHashSet<>();
-        for (GeneratedEventPlan plan : plans == null ? List.<GeneratedEventPlan>of() : plans) {
-            if (plan == null || plan.memberUserIds() == null) {
-                continue;
-            }
-            for (String userId : plan.memberUserIds()) {
-                if (safeText(userId).length() > 0) {
-                    userIds.add(safeText(userId));
-                }
-            }
-        }
-        return userIds.size();
-    }
-
     private AdminNotificationCenterStateDto toState(List<NotificationRuleConfig> rules, String filter) {
         List<NotificationRuleConfig> allRules = rules == null ? List.of() : rules;
         return new AdminNotificationCenterStateDto(
                 filteredProcessRules(allRules, normalizeProcessFilter(filter)).stream().map(this::toDto).toList(),
-                emailTemplatesRepository.findByEnabledTrueOrderByTemplateKeyAsc().stream()
+                emailCatalog.enabledTemplates(JobGroupContext.groupId()).stream()
                         .map(this::toTemplateOption)
                         .toList(),
                 processFilterCounts(allRules),
@@ -678,14 +657,14 @@ public class AdminNotificationService {
     }
 
     private List<AdminScheduledTaskResultDto> scheduledTaskResults() {
-        return scheduledMessageTasksRepository.findTop12ByBaseGroupIdAndLastRunAtIsoNotNullOrderByLastRunAtIsoDesc(JobGroupContext.groupId()).stream()
+        return emailCatalog.recentTaskResults(JobGroupContext.groupId()).stream()
                 .map(task -> new AdminScheduledTaskResultDto(
-                        task.getTaskKey(),
-                        task.getLastRunAtIso(),
-                        task.getLastRunStatus(),
-                        task.getLastRunDetail(),
-                        task.getLastRunCount(),
-                        "scheduled".equals(task.getStatus()) ? task.getDueAtIso() : ""))
+                        task.key(),
+                        task.ranAtIso(),
+                        task.status(),
+                        task.detail(),
+                        task.count(),
+                        task.nextRunAtIso()))
                 .toList();
     }
 
@@ -744,12 +723,12 @@ public class AdminNotificationService {
         return rule;
     }
 
-    private AdminNotificationTemplateOptionDto toTemplateOption(EmailTemplate template) {
+    private AdminNotificationTemplateOptionDto toTemplateOption(EmailProcessCatalog.TemplateOption template) {
         return new AdminNotificationTemplateOptionDto(
-                template.getTemplateKey(),
-                template.getName(),
-                template.getCategory(),
-                template.getDescription());
+                template.key(),
+                template.name(),
+                template.category(),
+                template.description());
     }
 
     private AdminNotificationScheduleSlotDto toScheduleSlotDto(NotificationRuleConfig.ScheduleSlot slot) {

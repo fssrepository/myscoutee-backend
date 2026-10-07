@@ -63,7 +63,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepos
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
@@ -132,7 +132,7 @@ class HomeUserProfileServiceTest {
     @Mock
     private AssetsService assetsService;
     @Mock
-    private UserNotificationPageRepository userNotificationPageRepository;
+    private NotificationCatalog notificationCatalog;
 
     @Mock
     private UserFriendshipsRepository userFriendshipsRepository;
@@ -182,8 +182,8 @@ class HomeUserProfileServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 assetsService, affiliateService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
-        service.setUserNotificationPageRepository(userNotificationPageRepository);
-        lenient().when(userNotificationPageRepository.countUnread("active"))
+        service.setNotificationCatalog(notificationCatalog);
+        lenient().when(notificationCatalog.countUnread("active"))
                 .thenReturn(17L);
     }
 
@@ -1054,7 +1054,7 @@ class HomeUserProfileServiceTest {
         when(eventFeedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("active"))
                 .thenReturn(List.of());
-        when(userNotificationPageRepository.countUnread("active"))
+        when(notificationCatalog.countUnread("active"))
                 .thenReturn(41L);
 
         var snapshot = service.queryRealtimeSnapshot(

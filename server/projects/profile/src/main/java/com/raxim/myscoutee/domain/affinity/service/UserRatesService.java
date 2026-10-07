@@ -54,8 +54,8 @@ import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncRequestDto
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncResponseDto;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class UserRatesService {
@@ -69,7 +69,7 @@ public class UserRatesService {
     private final MongoTemplate mongoTemplate;
     private final AdminTelemetryService adminTelemetryService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final OrganizerFollowingService organizerFollowingService;
 
     @Autowired
@@ -82,7 +82,7 @@ public class UserRatesService {
             MongoTemplate mongoTemplate,
             AdminTelemetryService adminTelemetryService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             OrganizerFollowingService organizerFollowingService) {
         this.userRatesRepository = userRatesRepository;
         this.usersRepository = usersRepository;

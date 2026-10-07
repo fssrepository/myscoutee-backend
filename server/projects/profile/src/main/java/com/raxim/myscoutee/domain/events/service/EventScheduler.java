@@ -55,7 +55,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
-import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration;
 import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -68,12 +68,12 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntime
 import com.raxim.myscoutee.domain.platform.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class EventScheduler {
+public class EventScheduler implements com.raxim.myscoutee.domain.events.api.RandomGroupAssignment {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventScheduler.class);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_GROUP = "group";
@@ -118,9 +118,9 @@ public class EventScheduler {
     private final EventCounterExpiryService eventCounterExpiryService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
     private final ChatService chatService;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final NotificationJobs notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventSubEventsMapper subEventsMapper;
@@ -155,9 +155,9 @@ public class EventScheduler {
             EventCounterExpiryService eventCounterExpiryService,
             EventCheckoutBasketService eventCheckoutBasketService,
             ChatService chatService,
-            NotificationRuleRegistryService notificationRuleRegistryService,
+            NotificationJobs notificationRuleRegistryService,
             PlatformParametersService platformParametersService,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             ActivityEventSubEventsMapper subEventsMapper) {
         this.userRatesRepository = userRatesRepository;
         this.affinityEdgeService = affinityEdgeService;
@@ -202,7 +202,7 @@ public class EventScheduler {
 
     private void runScheduledWrappersForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(Set.of(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW, NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE), this::runScheduledWrappersForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(Set.of(NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW, NotificationJobs.RULE_EVENT_RANDOM_GROUPS, NotificationJobs.RULE_EVENT_COUNTER_EXPIRY, NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE), this::runScheduledWrappersForCurrentDatabaseInGroup);
     }
 
     private void runScheduledWrappersForCurrentDatabaseInGroup() {
@@ -212,25 +212,25 @@ public class EventScheduler {
 
         Instant now = Instant.now();
         boolean tournamentRuleConfigured = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                .findRule(NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW)
                 .isPresent();
         boolean tournamentReviewDue = tournamentRuleConfigured
                 && notificationRuleRegistryService.shouldRunScheduledRule(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         now);
         if (tournamentReviewDue) {
             runTournamentReview(now, tournamentRuleConfigured);
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationJobs.RULE_EVENT_RANDOM_GROUPS, now)) {
             runScheduledRandomGroups();
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, now)) {
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationJobs.RULE_EVENT_COUNTER_EXPIRY, now)) {
             int expiredCount = eventCounterExpiryService.runScheduledExpiryPass(now);
             if (expiredCount > 0) {
                 LOGGER.info("Processed {} due event counter source(s).", expiredCount);
             }
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
             int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBasketsScheduled(now);
             if (purgedCount > 0) {
                 LOGGER.info("Purged {} checkout basket item(s).", purgedCount);
@@ -249,7 +249,7 @@ public class EventScheduler {
 
     private void runWaitlistInviterForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER, this::runWaitlistInviterForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_EVENT_AUTO_INVITER, this::runWaitlistInviterForCurrentDatabaseInGroup);
     }
 
     private void runWaitlistInviterForCurrentDatabaseInGroup() {
@@ -258,17 +258,17 @@ public class EventScheduler {
         }
         Instant now = Instant.now();
         boolean ruleConfigured = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                .findRule(NotificationJobs.RULE_EVENT_AUTO_INVITER)
                 .isPresent();
         boolean due = ruleConfigured
                 && notificationRuleRegistryService.shouldRunScheduledRule(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         now);
         if (!due) {
             return;
         }
         if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                NotificationJobs.RULE_EVENT_AUTO_INVITER,
                 "Scheduled event auto-inviter started.",
                 MARKER_UPDATED_BY,
                 now) == null) {
@@ -276,7 +276,7 @@ public class EventScheduler {
         }
         int claimedPendingCount = ruleConfigured
                 ? notificationRuleRegistryService.claimPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER)
                 : 0;
         try {
             int waitlistChangedCount = activitiesMembersService.sweepEventWaitlists();
@@ -292,7 +292,7 @@ public class EventScheduler {
             }
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         waitlistChangedCount + autoInvitedCount,
                         "completed",
                         "Processed scheduled wait-list and automatic invitations.",
@@ -302,11 +302,11 @@ public class EventScheduler {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         claimedPendingCount,
                         "admin.jobs.table.affected");
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -320,18 +320,18 @@ public class EventScheduler {
     private void runScheduledRandomGroups() {
         Instant startedAt = Instant.now();
         if (notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                 "Scheduled random grouping started.",
                 MARKER_UPDATED_BY,
                 startedAt) == null) {
             return;
         }
         int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+                NotificationJobs.RULE_EVENT_RANDOM_GROUPS);
         try {
             List<GeneratedEventPlan> plans = generateRandomPlans();
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     affectedUsers(plans),
                     "completed",
                     "Generated random event group plans.",
@@ -339,11 +339,11 @@ public class EventScheduler {
                     startedAt);
         } catch (RuntimeException exception) {
             notificationRuleRegistryService.restoreClaimedPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     claimedPendingCount,
-                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
+                    NotificationJobs.PENDING_COUNT_UNIT_USERS);
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     0,
                     "failed",
                     safeText(exception.getMessage()),
@@ -370,7 +370,7 @@ public class EventScheduler {
     private void runTournamentReview(Instant now, boolean ruleConfigured) {
         Instant startedAt = now == null ? Instant.now() : now;
         if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                 "Scheduled tournament review started.",
                 MARKER_UPDATED_BY,
                 startedAt) == null) {
@@ -378,7 +378,7 @@ public class EventScheduler {
         }
         int claimedPendingCount = ruleConfigured
                 ? notificationRuleRegistryService.claimPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW)
                 : 0;
         try {
             int startReviewCount = moveTournamentFirstStagesToStartReview(startedAt);
@@ -402,7 +402,7 @@ public class EventScheduler {
             }
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         startReviewCount + reviewCount + scorePlanRun.changedGroupCount()
                                 + scorePlanRun.processedResultRevisionCount(),
                         "completed",
@@ -413,11 +413,11 @@ public class EventScheduler {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         claimedPendingCount,
                         "admin.jobs.table.affected");
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -758,6 +758,13 @@ public class EventScheduler {
                 .filter(event -> !JobGroupContext.isActive() || jobGroupScope.matchesWorkspace(event.getWorkspaceGroupId())).toList();
     }
 
+    @Override
+    public Result assignRandomGroups(Consumer<Progress> progress) {
+        List<GeneratedEventPlan> plans = generateRandomPlans(progress == null ? null
+                : update -> progress.accept(new Progress(update.progressPercent(), update.detail())));
+        return new Result(plans.size(), affectedUsers(plans));
+    }
+
     public List<GeneratedEventPlan> generateRandomPlans() {
         return generateRandomPlans(null, configuredRandomRoomSourceEventIds());
     }
@@ -791,8 +798,8 @@ public class EventScheduler {
     }
 
     private List<String> configuredRandomRoomSourceEventIds() {
-        NotificationRuleConfig rule = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS)
+        Configuration rule = notificationRuleRegistryService
+                .findRule(NotificationJobs.RULE_EVENT_RANDOM_GROUPS)
                 .orElse(null);
         if (rule == null || rule.getParameters() == null) {
             return List.of();
@@ -801,7 +808,7 @@ public class EventScheduler {
                 .filter(Objects::nonNull)
                 .filter(parameter -> RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER.equals(
                         safeText(parameter.getKey())))
-                .map(NotificationRuleConfig.ParameterField::getTextValue)
+                .map(NotificationJobs.Parameter::getTextValue)
                 .filter(StringUtils::hasText)
                 .flatMap(value -> List.of(value.split("[,;\\s]+")).stream())
                 .map(this::normalizeId)
@@ -2642,7 +2649,7 @@ public class EventScheduler {
             payload.put("senderName", RANDOM_ROOM_SYSTEM_NAME);
 
             notificationOutboxService.enqueue(new NotificationIntent(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     OWNER_TYPE_EVENT,
                     roomEventId,
                     "random-room-participants",

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
-import com.raxim.myscoutee.domain.notifications.document.NotificationTemplate;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ScheduledNotificationDeliveryService {
@@ -20,35 +20,35 @@ public class ScheduledNotificationDeliveryService {
 
     private final EmailProperties emailProperties;
     private final EmailTemplateRenderer templateRenderer;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
 
     public ScheduledNotificationDeliveryService(
             EmailProperties emailProperties,
             EmailTemplateRenderer templateRenderer,
-            NotificationOutboxService notificationOutboxService) {
+            NotificationDelivery notificationOutboxService) {
         this.emailProperties = emailProperties;
         this.templateRenderer = templateRenderer;
         this.notificationOutboxService = notificationOutboxService;
     }
 
-    public boolean send(Users user, NotificationTemplate template, Map<String, String> variables, String ruleKey) {
+    public boolean send(Users user, Template template, Map<String, String> variables, String ruleKey) {
         if (user == null || template == null || !StringUtils.hasText(safeText(user.getUserId()))) {
             return false;
         }
-        String title = templateRenderer.renderText(template.getTitleTemplate(), variables).trim();
-        String body = templateRenderer.renderText(template.getBodyTemplate(), variables).trim();
+        String title = templateRenderer.renderText(template.titleTemplate(), variables).trim();
+        String body = templateRenderer.renderText(template.bodyTemplate(), variables).trim();
         if (!StringUtils.hasText(title) || !StringUtils.hasText(body)) {
             return false;
         }
 
         String clickUrl = resolveClickUrl(template);
         String iconUrl = templateRenderer
-                .renderText(template.getIconUrl(), variables)
+                .renderText(template.iconUrl(), variables)
                 .trim();
         String badgeUrl = templateRenderer
-                .renderText(template.getBadgeUrl(), variables)
+                .renderText(template.badgeUrl(), variables)
                 .trim();
-        String templateKey = safeText(template.getTemplateKey());
+        String templateKey = safeText(template.templateKey());
         String tag = "scheduled-" + firstNonBlank(ruleKey, templateKey);
         String notificationKind = firstNonBlank(
                 variables == null ? null : variables.get("notification_kind"),
@@ -117,8 +117,8 @@ public class ScheduledNotificationDeliveryService {
         }
     }
 
-    private String resolveClickUrl(NotificationTemplate template) {
-        String ctaPath = firstNonBlank(template.getCtaPath(), DEFAULT_CLICK_PATH);
+    private String resolveClickUrl(Template template) {
+        String ctaPath = firstNonBlank(template.ctaPath(), DEFAULT_CLICK_PATH);
         if (ctaPath.startsWith("http://") || ctaPath.startsWith("https://")) {
             return ctaPath;
         }

@@ -37,7 +37,9 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @org.junit.jupiter.api.Tag("standard")
 class DeletedAccountPurgeServiceTest {
-    private void wireGlobalJob(DeletedAccountPurgeService service) {
+    private void wireGlobalJob(DeletedAccountPurgeService service, MongoTemplate mongoTemplate) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "notificationPrivacy",
+                new com.raxim.myscoutee.domain.notifications.service.NotificationPrivacyService(mongoTemplate));
         var registry = mock(com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService.class);
         org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "notificationRuleRegistryService", registry);
@@ -104,7 +106,7 @@ class DeletedAccountPurgeServiceTest {
                 mongoTemplate,
                 null);
 
-        wireGlobalJob(service);
+        wireGlobalJob(service, mongoTemplate);
         service.purgeExpiredDeletedAccounts();
 
         verify(mediaStorageService).deletePublicObjectOrThrow("https://cdn.example/avatar-u1.webp");
@@ -169,7 +171,7 @@ class DeletedAccountPurgeServiceTest {
                 mongoTemplate,
                 null);
 
-        wireGlobalJob(service);
+        wireGlobalJob(service, mongoTemplate);
         service.purgeExpiredDeletedAccounts();
 
         verify(usersRepository, never()).delete(any(Users.class));
@@ -222,7 +224,7 @@ class DeletedAccountPurgeServiceTest {
                 mongoTemplate,
                 null);
 
-        wireGlobalJob(service);
+        wireGlobalJob(service, mongoTemplate);
         service.purgeExpiredDeletedAccounts();
 
         verify(usersRepository).delete(onboardingUser);

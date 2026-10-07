@@ -47,17 +47,18 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Device;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.chat.api.ChatPresence;
+import com.raxim.myscoutee.domain.platform.api.NotificationPolicy;
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway.FirebaseBatchSendResult;
 import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway.FirebaseTokenSendResult;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 @Service
 public class NotificationOutboxWorkerService {
@@ -67,13 +68,13 @@ public class NotificationOutboxWorkerService {
 
     private final ConfigProperties configProperties;
     private final NotificationOutboxRepository notificationOutboxRepository;
-    private final UsersRepository usersRepository;
-    private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
+    private final AccountNotifications accounts;
+    private final ChatPresence chatWebSocketSessionRegistry;
     private final MongoTemplate mongoTemplate;
     private final StringRedisTemplate stringRedisTemplate;
-    private final PlatformParametersService platformParametersService;
+    private final NotificationPolicy platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final FirebaseMessagingGateway firebaseMessagingGateway;
     private final int batchSize;
     private final int firebaseChunkSize;
@@ -90,12 +91,12 @@ public class NotificationOutboxWorkerService {
     public NotificationOutboxWorkerService(
             ConfigProperties configProperties,
             NotificationOutboxRepository notificationOutboxRepository,
-            UsersRepository usersRepository,
-            ChatWebSocketSessionRegistry chatWebSocketSessionRegistry,
+            AccountNotifications accounts,
+            ChatPresence chatWebSocketSessionRegistry,
             MongoTemplate mongoTemplate,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
-            PlatformParametersService platformParametersService,
-            AdminTelemetryService adminTelemetryService,
+            NotificationPolicy platformParametersService,
+            OperationalTelemetry adminTelemetryService,
             FirebaseMessagingGateway firebaseMessagingGateway,
             @Value("${notifications.outbox.batch-size:50}") int batchSize,
             @Value("${notifications.outbox.firebase-chunk-size:500}") int firebaseChunkSize,
@@ -107,7 +108,7 @@ public class NotificationOutboxWorkerService {
             RedisStreamRetentionService redisStreamRetentionService) {
         this.configProperties = configProperties;
         this.notificationOutboxRepository = notificationOutboxRepository;
-        this.usersRepository = usersRepository;
+        this.accounts = accounts;
         this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
         this.mongoTemplate = mongoTemplate;
         this.stringRedisTemplate = stringRedisTemplateProvider == null ? null : stringRedisTemplateProvider.getIfAvailable();
@@ -408,7 +409,7 @@ public class NotificationOutboxWorkerService {
         if (recipientUserIds.isEmpty()) {
             return new DeliveryResult(0, 0, Set.of());
         }
-        List<Users> users = usersRepository.findByUserIdIn(recipientUserIds);
+        List<Recipient> users = accounts.recipients(recipientUserIds);
         List<TokenRegistration> registrations = tokenRegistrations(item, users);
         if (registrations.isEmpty()) {
             return new DeliveryResult(0, 0, Set.of());
@@ -562,7 +563,7 @@ public class NotificationOutboxWorkerService {
     private ResolvedDeploymentBranding snapshottedBranding(
             Map<String, String> payload) {
         ResolvedDeploymentBranding fallback =
-                DeploymentBrandingResolver.fallback();
+                com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback();
         String revisionValue = firstNonBlank(
                 payload == null
                         ? null
@@ -594,26 +595,26 @@ public class NotificationOutboxWorkerService {
                 revision);
     }
 
-    private List<TokenRegistration> tokenRegistrations(NotificationOutboxItem item, List<Users> users) {
+    private List<TokenRegistration> tokenRegistrations(NotificationOutboxItem item, List<Recipient> users) {
         LinkedHashMap<String, TokenRegistration> byToken = new LinkedHashMap<>();
-        for (Users user : users == null ? List.<Users>of() : users) {
-            if (!NotificationOutboxService.hasDeliveryLocation(user)) {
+        for (Recipient user : users == null ? List.<Recipient>of() : users) {
+            if (!user.hasDeliveryLocation()) {
                 continue;
             }
-            String userId = normalizeId(user.getUserId());
-            if (!StringUtils.hasText(userId) || user.getDevices() == null) {
+            String userId = normalizeId(user.userId());
+            if (!StringUtils.hasText(userId) || user.devices() == null) {
                 continue;
             }
-            for (Users.UserDeviceRecord device : user.getDevices()) {
-                if (device == null || !Boolean.TRUE.equals(device.getNotificationsEnabled())) {
+            for (Device device : user.devices()) {
+                if (device == null || !device.enabled()) {
                     continue;
                 }
-                String token = safeText(device.getFirebaseToken());
+                String token = safeText(device.token());
                 if (item.getFirebaseDeliveryRequested() != null) {
                     Map<String, String> planned = item.getFirebaseDevices() == null ? Map.of()
                             : item.getFirebaseDevices().getOrDefault(userId, Map.of());
                     // Resolve only the saved registration; a revoke/rotation cannot retarget old work.
-                    if (!NotificationOutboxService.sha256(token).equals(planned.get(safeText(device.getDeviceId())))) continue;
+                    if (!NotificationOutboxService.sha256(token).equals(planned.get(safeText(device.deviceId())))) continue;
                 }
                 if (StringUtils.hasText(token)) {
                     byToken.putIfAbsent(token, new TokenRegistration(userId, token));
@@ -623,36 +624,12 @@ public class NotificationOutboxWorkerService {
         return new ArrayList<>(byToken.values());
     }
 
-    private void removeInvalidTokens(List<Users> users, Set<String> invalidTokens) {
-        if (users == null || users.isEmpty() || invalidTokens == null || invalidTokens.isEmpty()) {
-            return;
-        }
-        List<Users> changedUsers = new ArrayList<>();
-        int removedTokenCount = 0;
-        for (Users user : users) {
-            if (user == null || user.getDevices() == null || user.getDevices().isEmpty()) {
-                continue;
-            }
-            int originalSize = user.getDevices().size();
-            List<Users.UserDeviceRecord> retained = user.getDevices().stream()
-                    .filter(device -> device != null && !invalidTokens.contains(safeText(device.getFirebaseToken())))
-                    .toList();
-            if (retained.size() == originalSize) {
-                continue;
-            }
-            removedTokenCount += originalSize - retained.size();
-            user.setDevices(retained);
-            changedUsers.add(user);
-        }
-        if (!changedUsers.isEmpty()) {
-            usersRepository.saveAll(changedUsers);
-            adminTelemetryService.record(
-                    "notification.tokens.removed",
-                    "notifications",
-                    "",
-                    "system",
-                    removedTokenCount,
-                    Map.of("users", Integer.toString(changedUsers.size())));
+    private void removeInvalidTokens(List<Recipient> recipients, Set<String> invalidTokens) {
+        if (recipients == null || recipients.isEmpty() || invalidTokens == null || invalidTokens.isEmpty()) return;
+        var cleanup = accounts.removeInvalidPushTokens(recipients.stream().map(Recipient::userId).toList(), invalidTokens);
+        if (cleanup.changedUsers() > 0) {
+            adminTelemetryService.record("notification.tokens.removed", "notifications", "", "system",
+                    cleanup.removedTokens(), Map.of("users", Integer.toString(cleanup.changedUsers())));
         }
     }
 

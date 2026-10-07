@@ -40,7 +40,7 @@ import com.raxim.myscoutee.domain.email.document.ScheduledMessageTask;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
-import com.raxim.myscoutee.domain.notifications.repository.NotificationTemplatesRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.email.repository.ScheduledMessageTasksRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -49,7 +49,7 @@ import com.raxim.myscoutee.domain.email.service.EmailTemplateRenderer;
 import com.raxim.myscoutee.domain.email.service.ScheduledMessageAuditService;
 import com.raxim.myscoutee.domain.email.service.ScheduledNotificationDeliveryService;
 import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")
@@ -69,7 +69,7 @@ class ScheduledMessageTaskServiceTest {
     @Mock
     private EmailTemplatesRepository emailTemplatesRepository;
     @Mock
-    private NotificationTemplatesRepository notificationTemplatesRepository;
+    private NotificationCatalog notificationTemplatesRepository;
     @Mock
     private ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     @Mock
@@ -174,7 +174,7 @@ class ScheduledMessageTaskServiceTest {
 
         verify(scheduledNotificationDeliveryService, times(2)).send(
                 eq(recipient),
-                eq(notificationTemplate),
+                eq(com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(notificationTemplate)),
                 anyMap(),
                 anyString());
         verify(emailOutboxRepository, times(2)).saveAll(anyList());
@@ -203,7 +203,7 @@ class ScheduledMessageTaskServiceTest {
 
         verify(scheduledNotificationDeliveryService).send(
                 eq(recipient),
-                eq(notificationTemplate),
+                eq(com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(notificationTemplate)),
                 anyMap(),
                 anyString());
         verify(emailOutboxRepository, never()).saveAll(anyList());
@@ -330,7 +330,7 @@ class ScheduledMessageTaskServiceTest {
                 (ArgumentCaptor) ArgumentCaptor.forClass(Map.class);
         verify(scheduledNotificationDeliveryService).send(
                 eq(recipient),
-                eq(notificationTemplate),
+                eq(com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(notificationTemplate)),
                 variablesCaptor.capture(),
                 eq("stage-reminder"));
         verify(brandingResolver, times(1)).resolve();
@@ -370,13 +370,14 @@ class ScheduledMessageTaskServiceTest {
         when(emailPropertiesProvider.getIfAvailable()).thenReturn(emailProperties);
         when(configPropertiesProvider.getIfAvailable()).thenReturn(configProperties);
         when(notificationTemplatesRepository.findByTemplateKey("notification-template"))
-                .thenReturn(Optional.of(notificationTemplate));
+                .thenAnswer(call -> Optional.of(com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(notificationTemplate)));
         when(emailTemplatesRepository.findByTemplateKey("email-template"))
                 .thenReturn(Optional.of(emailTemplate));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(recipient));
         when(scheduledNotificationDeliveryService.send(
                 eq(recipient),
-                eq(notificationTemplate),
+                org.mockito.ArgumentMatchers.argThat(template -> template.equals(
+                        com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(notificationTemplate))),
                 anyMap(),
                 anyString()))
                 .thenReturn(true);

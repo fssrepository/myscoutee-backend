@@ -109,7 +109,7 @@ import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMapper;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper;
-import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
 public class ChatService {
@@ -160,7 +160,7 @@ public class ChatService {
     private final UserActivityCountersService userActivityCountersService;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
-    private final UserNotificationService userNotificationService;
+    private final NotificationInbox userNotificationService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
     private final AccessControlService accessControlService;
@@ -180,7 +180,7 @@ public class ChatService {
             UserActivityCountersService userActivityCountersService,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
-            UserNotificationService userNotificationService,
+            NotificationInbox userNotificationService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
             AccessControlService accessControlService,

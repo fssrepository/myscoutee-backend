@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -15,21 +16,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.administration.document.AdminMonitoringSnapshot;
-import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
-import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.administration.repository.AdminMonitoringRepository;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityRecomputeTasksRepository;
-import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
-import com.raxim.myscoutee.domain.notifications.repository.NotificationRuleConfigsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
 public class AdminMenuCounterService {
     private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
 
-    private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
-    private final NotificationOutboxRepository notificationOutboxRepository;
+    private final NotificationCatalog notificationCatalog;
     private final AffinityRecomputeTasksRepository affinityRecomputeTasksRepository;
     private final AdminMonitoringRepository monitoringRepository;
     private final UsersRepository usersRepository;
@@ -46,13 +42,11 @@ public class AdminMenuCounterService {
             long outboxSent) {}
 
     public AdminMenuCounterService(
-            NotificationRuleConfigsRepository notificationRuleConfigsRepository,
-            NotificationOutboxRepository notificationOutboxRepository,
+            NotificationCatalog notificationCatalog,
             AffinityRecomputeTasksRepository affinityRecomputeTasksRepository,
             AdminMonitoringRepository monitoringRepository,
             UsersRepository usersRepository) {
-        this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
-        this.notificationOutboxRepository = notificationOutboxRepository;
+        this.notificationCatalog = notificationCatalog;
         this.affinityRecomputeTasksRepository = affinityRecomputeTasksRepository;
         this.monitoringRepository = monitoringRepository;
         this.usersRepository = usersRepository;
@@ -149,10 +143,10 @@ public class AdminMenuCounterService {
         long recomputePending = countAffinityTasks(AffinityRecomputeTaskService.STATUS_PENDING);
         long recomputeRunning = countAffinityTasks(AffinityRecomputeTaskService.STATUS_RUNNING);
         long recomputeFailed = countAffinityTasks(AffinityRecomputeTaskService.STATUS_FAILED);
-        long outboxPending = countOutbox(NotificationOutboxItem.STATUS_PENDING);
-        long outboxRunning = countOutbox(NotificationOutboxItem.STATUS_RUNNING);
-        long outboxFailed = countOutbox(NotificationOutboxItem.STATUS_FAILED);
-        long outboxSent = countOutbox(NotificationOutboxItem.STATUS_SENT);
+        long outboxPending = countOutbox("pending");
+        long outboxRunning = countOutbox("running");
+        long outboxFailed = countOutbox("failed");
+        long outboxSent = countOutbox("sent");
         long failedMetrics = recomputeFailed + outboxFailed + telemetryFailureEvents();
         return new AdminAlertCounters(
                 toInt(failedRules),
@@ -170,20 +164,10 @@ public class AdminMenuCounterService {
 
     private long failedJobs() {
         try {
-            return notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId()).stream()
-                    .filter(this::isFailedRule)
-                    .count();
+            return notificationCatalog.failedJobs(JobGroupContext.groupId());
         } catch (Exception ignored) {
             return 0L;
         }
-    }
-
-    private boolean isFailedRule(NotificationRuleConfig rule) {
-        if (rule == null || rule.getRunState() == null) {
-            return false;
-        }
-        return isFailedStatus(rule.getRunState().getCurrentStatus())
-                || isFailedStatus(rule.getRunState().getLastRunStatus());
     }
 
     private void refreshMonitoringQueueSnapshot(AdminQueueCounters queues) {
@@ -225,7 +209,7 @@ public class AdminMenuCounterService {
 
     private long countOutbox(String status) {
         try {
-            return notificationOutboxRepository.countByBaseGroupIdAndStatus(JobGroupContext.groupId(), status);
+            return notificationCatalog.countOutbox(JobGroupContext.groupId(), status);
         } catch (Exception ignored) {
             return 0L;
         }

@@ -20,7 +20,7 @@ import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 @Service
 public class PromotionalEmailDeliveryProcessor {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired

@@ -6,19 +6,19 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class ExchangeRateJob {
-    public static final String KEY = "payment-exchange-rates";
+public class ExchangeRateJob implements com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh {
+    public static final String KEY = com.raxim.myscoutee.domain.payments.api.ExchangeRateRefresh.KEY;
     private final ExchangeRateStore store;
     private final ExchangeRateSource source;
     private final DeploymentConfigurationRepository configuration;
-    private final NotificationRuleRegistryService rules;
+    private final NotificationJobs rules;
     private final ScheduledMongoSessionRunner sessions;
     private final PaymentEuroService payments;
     public ExchangeRateJob(ExchangeRateStore store, ExchangeRateSource source, DeploymentConfigurationRepository configuration,
-            NotificationRuleRegistryService rules, ScheduledMongoSessionRunner sessions, PaymentEuroService payments) {
+            NotificationJobs rules, ScheduledMongoSessionRunner sessions, PaymentEuroService payments) {
         this.store = store; this.source = source; this.configuration = configuration;
         this.rules = rules; this.sessions = sessions; this.payments = payments;
     }

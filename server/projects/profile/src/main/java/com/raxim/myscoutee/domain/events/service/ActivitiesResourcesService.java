@@ -55,8 +55,8 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ActivitiesResourcesService {
@@ -73,7 +73,7 @@ public class ActivitiesResourcesService {
     private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
-    private final ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider;
+    private final ObjectProvider<NotificationDelivery> notificationOutboxServiceProvider;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesResourcesService(
@@ -87,7 +87,7 @@ public class ActivitiesResourcesService {
             ActivitySubEventResourceMapper activitySubEventResourceMapper,
             EventSlotReadModelService eventSlotReadModelService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,
-            ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider,
+            ObjectProvider<NotificationDelivery> notificationOutboxServiceProvider,
             MongoTemplate mongoTemplate) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
@@ -854,7 +854,7 @@ public class ActivitiesResourcesService {
             String actorUserId,
             Set<String> addedSupplyAssetIds,
             Map<String, AssetDetailDto> assetDetails) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || addedSupplyAssetIds == null || addedSupplyAssetIds.isEmpty()) {
@@ -906,7 +906,7 @@ public class ActivitiesResourcesService {
             String actorUserId,
             List<SupplyContributionAddition> additions,
             Map<String, AssetDetailDto> assetDetails) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || additions == null || additions.isEmpty()) {
@@ -962,7 +962,7 @@ public class ActivitiesResourcesService {
             String actorUserId,
             List<SupplyContributionRemoval> removals,
             Map<String, AssetDetailDto> assetDetails) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || removals == null || removals.isEmpty()) {
@@ -1019,7 +1019,7 @@ public class ActivitiesResourcesService {
             String assetOwnerUserId,
             String removedAtIso,
             List<AssetAssignmentRemoval> removals) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || removals == null || removals.isEmpty()) {

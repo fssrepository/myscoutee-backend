@@ -24,7 +24,7 @@ import com.raxim.myscoutee.domain.platform.repository.AppSettingsRepository;
 import jakarta.annotation.PostConstruct;
 
 @Service
-public class AppSettingsService {
+public class AppSettingsService implements com.raxim.myscoutee.domain.platform.api.AdministratorSettings {
     public static final String GLOBAL_SETTINGS_KEY = "global";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppSettingsService.class);

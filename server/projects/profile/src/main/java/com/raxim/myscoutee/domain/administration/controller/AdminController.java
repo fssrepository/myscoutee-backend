@@ -43,7 +43,7 @@ import com.raxim.myscoutee.domain.administration.service.AdminStatsService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeMetricsService;
 import com.raxim.myscoutee.domain.help.service.HelpCenterService;
 import com.raxim.myscoutee.domain.content.service.IdeaPostsService;
-import com.raxim.myscoutee.domain.notifications.service.AdminNotificationService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationAdministration;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class AdminController {
     private final AdminModerationService adminModerationService;
     private final HelpCenterService helpCenterService;
     private final IdeaPostsService ideaPostsService;
-    private final AdminNotificationService adminNotificationService;
+    private final NotificationAdministration adminNotificationService;
     private final AdminStatsService adminStatsService;
     private final AdminParamsService adminParamsService;
     private final AdminMonitoringService adminMonitoringService;
@@ -64,7 +64,7 @@ public class AdminController {
             AdminModerationService adminModerationService,
             HelpCenterService helpCenterService,
             IdeaPostsService ideaPostsService,
-            AdminNotificationService adminNotificationService,
+            NotificationAdministration adminNotificationService,
             AdminStatsService adminStatsService,
             AdminParamsService adminParamsService,
             AdminMonitoringService adminMonitoringService,

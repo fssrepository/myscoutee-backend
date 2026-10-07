@@ -61,7 +61,7 @@ import com.raxim.myscoutee.domain.platform.repository.SchedulerPlanMarkersReposi
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
 
 @ExtendWith(MockitoExtension.class)
@@ -102,6 +102,27 @@ class EventSchedulerTest {
     private PlatformParametersService platformParametersService;
     @Mock
     private NotificationOutboxService notificationOutboxService;
+
+    @Test
+    void assignmentContractReportsProgressAndCountsDistinctMembersWithoutExposingPlans() {
+        EventScheduler scheduler = spy(createScheduler());
+        doAnswer(call -> {
+            java.util.function.Consumer<EventScheduler.RandomPlanProgress> progress = call.getArgument(0);
+            progress.accept(new EventScheduler.RandomPlanProgress(50, 1, 2, 3, 1, "First event assigned"));
+            return java.util.Arrays.asList(
+                    new GeneratedEventPlan("room-1", java.util.Arrays.asList(" u1 ", "", null)),
+                    new GeneratedEventPlan("room-2", List.of("u1", "u2")), null);
+        }).when(scheduler).generateRandomPlans(any(java.util.function.Consumer.class));
+        var updates = new ArrayList<com.raxim.myscoutee.domain.events.api.RandomGroupAssignment.Progress>();
+
+        var result = scheduler.assignRandomGroups(updates::add);
+
+        assertThat(result.plans()).isEqualTo(3);
+        assertThat(result.affectedUsers()).isEqualTo(2);
+        assertThat(updates).containsExactly(
+                new com.raxim.myscoutee.domain.events.api.RandomGroupAssignment.Progress(50, "First event assigned"));
+        verify(scheduler).generateRandomPlans(any(java.util.function.Consumer.class));
+    }
 
     @Test
     void priorityOffEventUsesParticipantsWithoutGlobalOrCampaignAffinity() {

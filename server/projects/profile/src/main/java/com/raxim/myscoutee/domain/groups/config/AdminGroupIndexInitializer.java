@@ -22,7 +22,6 @@ public class AdminGroupIndexInitializer {
         for (var factory : databases) {
             for (var spec : List.of(
                     List.of("emailTemplates", "templateKey", "email_template_key"),
-                    List.of("notificationTemplates", "templateKey", "notification_template_key"),
                     List.of("emailCampaignRules", "ruleKey", "email_campaign_rule_key"))) {
                 var records = factory.getMongoDatabase().getCollection(spec.get(0));
                 records.createIndex(new Document("baseGroupId", 1).append(spec.get(1), 1),
@@ -41,15 +40,7 @@ public class AdminGroupIndexInitializer {
                     break;
                 }
             }
-            var collection = factory.getMongoDatabase().getCollection("notificationRuleConfigs");
-            collection.createIndex(new Document("baseGroupId", 1).append("ruleKey", 1),
-                    new IndexOptions().name("notification_rule_group_key").unique(true));
-            for (var index : collection.listIndexes()) {
-                if ("notification_rule_config_rule_key".equals(index.getString("name"))) {
-                    collection.dropIndex("notification_rule_config_rule_key");
-                    break;
-                }
-            }
+
         }
     }
 }

@@ -9,22 +9,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.RoleNotifications;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
+import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 /** Role events use the same durable outbox, inbox counters and delivery preferences as member events. */
 @Service
-public class RoleNotificationService {
-    private final UsersRepository users;
+public class RoleNotificationService implements RoleNotifications {
+    private final AccountNotifications accounts;
     private final ConfigProperties config;
-    private final AppSettingsService settings;
+    private final AdministratorSettings settings;
     private final NotificationOutboxService outbox;
 
-    public RoleNotificationService(UsersRepository users, ConfigProperties config,
-            AppSettingsService settings, NotificationOutboxService outbox) {
-        this.users = users;
+    public RoleNotificationService(AccountNotifications accounts, ConfigProperties config,
+            AdministratorSettings settings, NotificationOutboxService outbox) {
+        this.accounts = accounts;
         this.config = config;
         this.settings = settings;
         this.outbox = outbox;
@@ -36,12 +36,11 @@ public class RoleNotificationService {
                 Map.of("releaseVersion", version), "updates", null);
     }
 
-    public void memberJoined(Users member) {
-        if (member == null || member.isOperator() || settings.isAdminEmail(member.getEmail())
-                || StringUtils.hasText(member.getWorkspaceGroupId())
-                || StringUtils.hasText(member.getAccountUserId())) return;
+    public void memberJoined(MemberRegistration member) {
+        if (member == null || member.operator() || settings.isAdminEmail(member.email())
+                || member.workspaceProfile()) return;
         // A node-level alert needs neither an email/address nor the member's private profile.
-        publish("node-member-joined", member.getUserId(), true, true, "New node member",
+        publish("node-member-joined", member.userId(), true, true, "New node member",
                 "A new member completed registration on this node.", Map.of(), null, "stats");
     }
 
@@ -66,10 +65,9 @@ public class RoleNotificationService {
         if (admins) settings.adminEmails().stream().filter(settings::isAdminEmail).forEach(emails::add);
         if (emails.isEmpty()) return;
         // One bounded recipient lookup, not a users collection scan or a query per recipient.
-        for (Users recipient : users.findByEmailIn(emails)) {
-            if (StringUtils.hasText(recipient.getWorkspaceGroupId()) || "D".equals(recipient.getStatus())) continue;
-            boolean operator = operators && recipient.isOperator();
-            if (!operator && (!admins || !settings.isAdminEmail(recipient.getEmail()))) continue;
+        for (var recipient : accounts.roleRecipients(emails)) {
+            boolean operator = operators && recipient.operator();
+            if (!operator && (!admins || !settings.isAdminEmail(recipient.email()))) continue;
             String target = operator ? operatorTarget : adminTarget;
             String path = operator ? "/operator" : "/admin";
             var payload = new java.util.LinkedHashMap<>(parameters);
@@ -78,9 +76,9 @@ public class RoleNotificationService {
             payload.put("notification_tone", "info");
             if (target != null) payload.put("roleTarget", target);
             if (target != null) path += "?notificationTarget=" + target;
-            outbox.enqueueOnce("role:" + kind + ":" + eventId + ":" + recipient.getUserId(), new NotificationIntent(
+            outbox.enqueueOnce("role:" + kind + ":" + eventId + ":" + recipient.userId(), new NotificationIntent(
                     kind, operator ? "operator" : "app-admin", eventId,
-                    operator ? "app-admin:operator" : "app-admin", List.of(recipient.getUserId()),
+                    operator ? "app-admin:operator" : "app-admin", List.of(recipient.userId()),
                     title, body, path, null, null, kind + "-" + eventId, payload, null));
         }
     }

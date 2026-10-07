@@ -34,7 +34,7 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutPricingSumm
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.domain.payments.repository.EventCheckoutBasketItemsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class EventCheckoutBasketService {
@@ -52,7 +52,7 @@ public class EventCheckoutBasketService {
 
     private final EventCheckoutBasketItemsRepository repository;
     private final MongoTemplate mongoTemplate;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final NotificationJobs notificationRuleRegistryService;
     private final org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService;
     private final EventCheckoutPricingService checkoutPricing;
     private final java.util.concurrent.ConcurrentMap<String, AtomicBoolean> processingByGroup = new java.util.concurrent.ConcurrentHashMap<>();
@@ -60,7 +60,7 @@ public class EventCheckoutBasketService {
     public EventCheckoutBasketService(
             EventCheckoutBasketItemsRepository repository,
             MongoTemplate mongoTemplate,
-            NotificationRuleRegistryService notificationRuleRegistryService,
+            NotificationJobs notificationRuleRegistryService,
             org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService,
             EventCheckoutPricingService checkoutPricing) {
         this.membersService = membersService;
@@ -515,7 +515,7 @@ public class EventCheckoutBasketService {
         try {
             if (scheduled) {
                 if (notificationRuleRegistryService.beginScheduledRun(
-                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE,
                         "Scanning expired checkout basket drafts.",
                         SYSTEM_USER,
                         startedAt) == null) {
@@ -523,7 +523,7 @@ public class EventCheckoutBasketService {
                 }
             } else {
                 notificationRuleRegistryService.beginRun(
-                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE,
                         "Scanning expired checkout basket drafts.",
                         SYSTEM_USER,
                         startedAt);
@@ -566,7 +566,7 @@ public class EventCheckoutBasketService {
                     ? "No expired checkout basket items were due."
                     : "Marked " + modified + " expired checkout basket item(s) as deleted.";
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                    NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE,
                     modified,
                     "completed",
                     detail,
@@ -577,7 +577,7 @@ public class EventCheckoutBasketService {
             LOGGER.warn("Checkout basket purge pass failed.", exception);
             if (runStarted) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                        NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -612,7 +612,7 @@ public class EventCheckoutBasketService {
     private void adjustPendingCount(int delta) {
         if (delta != 0) {
             notificationRuleRegistryService.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE,
+                    NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE,
                     delta,
                     "admin.jobs.table.affected");
         }

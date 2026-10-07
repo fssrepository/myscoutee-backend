@@ -12,7 +12,7 @@ import org.mockito.ArgumentCaptor;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
 
 @org.junit.jupiter.api.Tag("standard")

@@ -49,7 +49,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepo
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")

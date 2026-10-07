@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -20,9 +20,10 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Device;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
+import com.raxim.myscoutee.domain.chat.api.ChatPresence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -38,13 +39,13 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.NotificationPolicy;
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 @Service
-public class NotificationOutboxService {
+public class NotificationOutboxService implements com.raxim.myscoutee.domain.notifications.api.NotificationDelivery {
     public static final String WAKEUP_STREAM_KEY = "notification:outbox:wakeups";
     public static String wakeupStreamKey() {
         return WAKEUP_STREAM_KEY + ":" + com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name() + ":" + JobGroupContext.key();
@@ -60,29 +61,29 @@ public class NotificationOutboxService {
     private static final int DEFAULT_COLLAPSE_WINDOW_SECONDS = 300;
 
     @Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private ObjectProvider<com.raxim.myscoutee.domain.integrations.service.IntegrationWebhookService> integrationWebhooks;
+    private ObjectProvider<com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents> integrationWebhooks;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final StringRedisTemplate stringRedisTemplate;
-    private final PlatformParametersService platformParametersService;
+    private final NotificationPolicy platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
     private final ObjectProvider<UserNotificationService> userNotificationServiceProvider;
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
-    private DeploymentBrandingResolver deploymentBrandingResolver;
+    private DeploymentBranding deploymentBrandingResolver;
     private MongoTemplate mongoTemplate;
     private ConfigProperties configProperties;
-    private UsersRepository usersRepository;
+    private AccountNotifications accounts;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups;
-    private ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
+    private com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
+    private ChatPresence chatWebSocketSessionRegistry;
 
     @Autowired
-    void configureDelivery(ConfigProperties configProperties, UsersRepository usersRepository,
-            ChatWebSocketSessionRegistry chatWebSocketSessionRegistry) {
+    void configureDelivery(ConfigProperties configProperties, AccountNotifications accounts,
+            ChatPresence chatWebSocketSessionRegistry) {
         this.configProperties = configProperties;
-        this.usersRepository = usersRepository;
+        this.accounts = accounts;
         this.chatWebSocketSessionRegistry = chatWebSocketSessionRegistry;
     }
 
@@ -90,7 +91,7 @@ public class NotificationOutboxService {
     public NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
-            PlatformParametersService platformParametersService,
+            NotificationPolicy platformParametersService,
             RedisStreamRetentionService redisStreamRetentionService,
             ObjectProvider<UserNotificationService> userNotificationServiceProvider) {
         this.notificationOutboxRepository = notificationOutboxRepository;
@@ -103,7 +104,7 @@ public class NotificationOutboxService {
     public NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
-            PlatformParametersService platformParametersService,
+            NotificationPolicy platformParametersService,
             RedisStreamRetentionService redisStreamRetentionService) {
         this(
                 notificationOutboxRepository,
@@ -116,7 +117,7 @@ public class NotificationOutboxService {
     NotificationOutboxService(
             NotificationOutboxRepository notificationOutboxRepository,
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
-            PlatformParametersService platformParametersService) {
+            NotificationPolicy platformParametersService) {
         this(notificationOutboxRepository, stringRedisTemplateProvider, platformParametersService, null);
     }
 
@@ -137,7 +138,7 @@ public class NotificationOutboxService {
 
     @Autowired(required = false)
     void setDeploymentBrandingResolver(
-            DeploymentBrandingResolver deploymentBrandingResolver) {
+            DeploymentBranding deploymentBrandingResolver) {
         this.deploymentBrandingResolver = deploymentBrandingResolver;
     }
 
@@ -168,7 +169,8 @@ public class NotificationOutboxService {
         String type = safeText(intent.type());
         ResolvedDeploymentBranding branding = deploymentBranding(intent);
         Map<String, String> payload = normalizedPayload(intent, branding);
-        List<String> recipientUserIds = accountRecipients(intent.recipientUserIds(), payload);
+        RecipientResolution resolution = accountRecipients(intent.recipientUserIds(), payload);
+        List<String> recipientUserIds = resolution.ids();
         String topicName = resolveStableTopicName(intent, payload, recipientUserIds.size());
         String deliveryStrategy = StringUtils.hasText(topicName)
                 ? DELIVERY_STRATEGY_TOPIC
@@ -197,7 +199,7 @@ public class NotificationOutboxService {
                         collapseWindowStartIso(nowIso))
                 .orElse(null);
         TrackedOutboxSave trackedSave = existing != null && mongoTemplate != null
-                ? mergeExistingItemAtomic(existing, recipientUserIds, payload, nowIso, intent.createdUser())
+                ? mergeExistingItemAtomic(existing, recipientUserIds, payload, nowIso, intent.createdUser(), resolution.profiles())
                 : null;
         NotificationOutboxItem saved;
         boolean newlyTracked;
@@ -206,8 +208,8 @@ public class NotificationOutboxService {
             newlyTracked = trackedSave.newlyTracked();
         } else {
             NotificationOutboxItem item = existing == null || mongoTemplate != null
-                    ? newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso)
-                    : mergeRecipients(existing, recipientUserIds, payload, nowIso, intent.createdUser());
+                    ? newItem(intent, recipientUserIds, payload, payloadHash, collapseKey, deliveryStrategy, topicName, nowIso, resolution.profiles())
+                    : mergeRecipients(existing, recipientUserIds, payload, nowIso, intent.createdUser(), resolution.profiles());
             newlyTracked = !Boolean.TRUE.equals(item.getPendingCounterTracked());
             item.setPendingCounterTracked(true);
             saved = notificationOutboxRepository.save(item);
@@ -230,13 +232,14 @@ public class NotificationOutboxService {
         NotificationOutboxItem saved = notificationOutboxRepository.findById(id).orElse(null);
         if (saved == null) {
             Map<String, String> payload = normalizedPayload(intent, deploymentBranding(intent));
-            List<String> recipients = accountRecipients(intent.recipientUserIds(), payload);
+            RecipientResolution resolution = accountRecipients(intent.recipientUserIds(), payload);
+            List<String> recipients = resolution.ids();
             if (recipients.isEmpty()) return Optional.empty();
             String topic = resolveStableTopicName(intent, payload, recipients.size());
             NotificationOutboxItem item = newItem(intent, recipients, payload,
                     sha256(canonicalPayload(payload)), id,
                     StringUtils.hasText(topic) ? DELIVERY_STRATEGY_TOPIC : knownUserDeliveryStrategy(payload, recipients.size()),
-                    topic, Instant.now().toString());
+                    topic, Instant.now().toString(), resolution.profiles());
             item.setId(id);
             item.setSyncKey(id);
             item.setPendingCounterTracked(true);
@@ -257,7 +260,7 @@ public class NotificationOutboxService {
             List<String> recipientUserIds,
             Map<String, String> payload,
             String nowIso,
-            String actorUserId) {
+            String actorUserId, Map<String, Recipient> recipientProfiles) {
         if (existing == null || mongoTemplate == null || !StringUtils.hasText(safeText(existing.getId()))) {
             return null;
         }
@@ -272,7 +275,7 @@ public class NotificationOutboxService {
                                 new Document("$literal", recipientUserIds))));
         if (existing.getFirebaseDeliveryRequested() != null) {
             Map<String, Map<String, String>> additional = snapshotFirebaseDevices(existing,
-                    recipientUserIds.stream().filter(id -> !existing.getRecipientUserIds().contains(id)).toList());
+                    recipientUserIds.stream().filter(id -> !existing.getRecipientUserIds().contains(id)).toList(), recipientProfiles);
             // Existing per-user decisions win, including an explicitly empty device map.
             update.set("firebaseDevices").toValue((AggregationExpression) context -> new Document(
                     "$mergeObjects", List.of(new Document("$literal", additional),
@@ -289,7 +292,7 @@ public class NotificationOutboxService {
             return null;
         }
         NotificationOutboxItem saved = notificationOutboxRepository.findById(existing.getId())
-                .orElseGet(() -> mergeRecipients(existing, recipientUserIds, payload, nowIso, actorUserId));
+                .orElseGet(() -> mergeRecipients(existing, recipientUserIds, payload, nowIso, actorUserId, recipientProfiles));
         if (!DELIVERY_STRATEGY_TOPIC.equals(safeText(saved.getDeliveryStrategy()))) {
             String strategy = knownUserDeliveryStrategy(
                     firstNonEmptyMap(saved.getPayload(), payload),
@@ -329,7 +332,8 @@ public class NotificationOutboxService {
         if (userNotificationService != null) {
             userNotificationService.materialize(item);
             if (integrationWebhooks != null && ("app-admin".equals(item.getEntityType()) || "operator".equals(item.getEntityType()))) {
-                integrationWebhooks.getObject().enqueueRoleAttention(item);
+                integrationWebhooks.getObject().enqueueRoleAttention(new com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents.RoleAttention(
+                        item.getId(), item.getEntityType(), item.getNotificationType(), item.getRecipientUserIds()));
             }
         }
     }
@@ -342,7 +346,7 @@ public class NotificationOutboxService {
             String collapseKey,
             String deliveryStrategy,
             String topicName,
-            String nowIso) {
+            String nowIso, Map<String, Recipient> recipientProfiles) {
         NotificationOutboxItem item = new NotificationOutboxItem();
         item.setId(new ObjectId().toHexString());
         item.setBaseGroupId(JobGroupContext.groupId());
@@ -354,7 +358,7 @@ public class NotificationOutboxService {
         item.setRecipientUserIds(recipientUserIds);
         item.setDeliveryStrategy(deliveryStrategy);
         item.setFirebaseDeliveryRequested(configProperties != null && configProperties.isFirebaseEnabled());
-        item.setFirebaseDevices(snapshotFirebaseDevices(item, recipientUserIds));
+        item.setFirebaseDevices(snapshotFirebaseDevices(item, recipientUserIds, recipientProfiles));
         item.setTopicName(safeNullableText(topicName));
         item.setTitle(firstNonBlank(
                 payload.get("title"),
@@ -388,12 +392,12 @@ public class NotificationOutboxService {
             List<String> recipientUserIds,
             Map<String, String> payload,
             String nowIso,
-            String actorUserId) {
+            String actorUserId, Map<String, Recipient> recipientProfiles) {
         LinkedHashSet<String> merged = new LinkedHashSet<>(compactIds(item.getRecipientUserIds()));
         if (item.getFirebaseDeliveryRequested() != null) {
             Map<String, Map<String, String>> devices = new LinkedHashMap<>(
                     item.getFirebaseDevices() == null ? Map.of() : item.getFirebaseDevices());
-            snapshotFirebaseDevices(item, recipientUserIds.stream().filter(id -> !merged.contains(id)).toList())
+            snapshotFirebaseDevices(item, recipientUserIds.stream().filter(id -> !merged.contains(id)).toList(), recipientProfiles)
                     .forEach(devices::putIfAbsent);
             item.setFirebaseDevices(devices);
         }
@@ -409,33 +413,30 @@ public class NotificationOutboxService {
     }
 
     private Map<String, Map<String, String>> snapshotFirebaseDevices(
-            NotificationOutboxItem item, List<String> recipients) {
+            NotificationOutboxItem item, List<String> recipients, Map<String, Recipient> profiles) {
         Map<String, Map<String, String>> result = new LinkedHashMap<>();
         recipients.forEach(id -> result.put(id, new LinkedHashMap<>()));
         if (!Boolean.TRUE.equals(item.getFirebaseDeliveryRequested()) || recipients.isEmpty()
-                || DELIVERY_STRATEGY_TOPIC.equals(item.getDeliveryStrategy()) || usersRepository == null) {
+                || DELIVERY_STRATEGY_TOPIC.equals(item.getDeliveryStrategy()) || accounts == null) {
             return result;
         }
-        for (Users user : usersRepository.findByUserIdIn(recipients)) {
-            if (!hasDeliveryLocation(user)) continue;
-            Map<String, String> devices = result.get(safeText(user.getUserId()));
-            if (devices == null || user.getDevices() == null) continue;
+        List<String> missing = recipients.stream().filter(id -> !profiles.containsKey(id)).toList();
+        if (!missing.isEmpty()) accounts.recipients(missing).forEach(profile -> profiles.put(profile.userId(), profile));
+        for (String recipientId : recipients) {
+            Recipient user = profiles.get(recipientId);
+            if (user == null || !user.hasDeliveryLocation()) continue;
+            Map<String, String> devices = result.get(safeText(user.userId()));
+            if (devices == null || user.devices() == null) continue;
             if ("chat-message".equals(item.getNotificationType()) && chatWebSocketSessionRegistry != null
-                    && chatWebSocketSessionRegistry.isUserConnected(item.getEntityId(), user.getUserId())) continue;
-            for (Users.UserDeviceRecord device : user.getDevices()) {
-                if (device != null && Boolean.TRUE.equals(device.getNotificationsEnabled())
-                        && StringUtils.hasText(device.getDeviceId()) && StringUtils.hasText(device.getFirebaseToken())) {
-                    devices.put(safeText(device.getDeviceId()), sha256(safeText(device.getFirebaseToken())));
+                    && chatWebSocketSessionRegistry.isUserConnected(item.getEntityId(), user.userId())) continue;
+            for (Device device : user.devices()) {
+                if (device != null && device.enabled()
+                        && StringUtils.hasText(device.deviceId()) && StringUtils.hasText(device.token())) {
+                    devices.put(safeText(device.deviceId()), sha256(safeText(device.token())));
                 }
             }
         }
         return result;
-    }
-
-    static boolean hasDeliveryLocation(Users user) {
-        Users.LocationCoordinatesRecord location = user == null ? null : user.getLocationCoordinates();
-        return location != null && location.latitude() != null && location.longitude() != null
-                && Double.isFinite(location.latitude()) && Double.isFinite(location.longitude());
     }
 
     private String resolveStableTopicName(NotificationIntent intent, Map<String, String> payload, int recipientCount) {
@@ -515,27 +516,32 @@ public class NotificationOutboxService {
         }
     }
 
-    private List<String> accountRecipients(java.util.Collection<String> ids, Map<String, String> payload) {
+    private RecipientResolution accountRecipients(java.util.Collection<String> ids, Map<String, String> payload) {
         var recipients = compactIds(ids);
-        if (usersRepository == null || recipients.isEmpty()) return recipients;
-        var profiles = usersRepository.findByUserIdIn(recipients);
-        var accounts = new java.util.HashMap<String, String>();
+        var snapshots = new LinkedHashMap<String, Recipient>();
+        if (accounts == null || recipients.isEmpty()) return new RecipientResolution(recipients, snapshots);
+        recipients.forEach(id -> snapshots.put(id, null));
+        var profiles = accounts.recipients(recipients);
+        var accountIds = new java.util.HashMap<String, String>();
         var workspaces = new java.util.HashSet<String>();
         for (var profile : profiles) {
-            if (StringUtils.hasText(profile.getAccountUserId())) accounts.put(profile.getUserId(), profile.getAccountUserId());
-            if (StringUtils.hasText(profile.getWorkspaceGroupId())) workspaces.add(profile.getWorkspaceGroupId());
+            snapshots.put(profile.userId(), profile);
+            if (StringUtils.hasText(profile.accountUserId())) accountIds.put(profile.userId(), profile.accountUserId());
+            if (StringUtils.hasText(profile.workspaceGroupId())) workspaces.add(profile.workspaceGroupId());
         }
         if (workspaces.size() == 1) {
             String groupId = workspaces.iterator().next();
             payload.put("workspaceGroupId", groupId);
-            if (communityGroups != null) communityGroups.findById(groupId)
+            if (communityGroups != null) communityGroups.name(groupId)
                     .ifPresent(group -> payload.put("workspaceGroupName", group.name()));
             String url = payload.get("url");
             if (StringUtils.hasText(url)) payload.put("url", org.springframework.web.util.UriComponentsBuilder.fromUriString(url)
                     .replaceQueryParam("workspaceGroupId", groupId).build().toUriString());
         }
-        return recipients.stream().map(id -> accounts.getOrDefault(id, id)).distinct().toList();
+        return new RecipientResolution(recipients.stream().map(id -> accountIds.getOrDefault(id, id)).distinct().toList(), snapshots);
     }
+
+    private record RecipientResolution(List<String> ids, Map<String, Recipient> profiles) {}
 
     private Map<String, String> normalizedPayload(
             NotificationIntent intent,
@@ -611,7 +617,7 @@ public class NotificationOutboxService {
                     revision);
         }
         return deploymentBrandingResolver == null
-                ? DeploymentBrandingResolver.fallback()
+                ? com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback()
                 : deploymentBrandingResolver.resolve();
     }
 
@@ -694,19 +700,4 @@ public class NotificationOutboxService {
         return value == null ? "" : value.trim();
     }
 
-    public record NotificationIntent(
-            String type,
-            String entityType,
-            String entityId,
-            String recipientScope,
-            Collection<String> recipientUserIds,
-            String title,
-            String body,
-            String clickUrl,
-            String iconUrl,
-            String badgeUrl,
-            String tag,
-            Map<String, String> payload,
-            String createdUser) {
-    }
 }

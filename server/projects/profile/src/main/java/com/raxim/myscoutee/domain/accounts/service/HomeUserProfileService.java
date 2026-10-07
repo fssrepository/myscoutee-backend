@@ -65,7 +65,7 @@ import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserByIdResponseDto;
@@ -114,12 +114,12 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 
 @Service
-public class HomeUserProfileService {
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 
@@ -259,14 +259,14 @@ public class HomeUserProfileService {
     private final AccessControlService accessControlService;
     private final AssetsService assetsService;
     private final AffiliateService affiliateService;
-    private NotificationRuleRegistryService notificationRuleRegistryService;
-    private com.raxim.myscoutee.domain.notifications.service.RoleNotificationService roleNotifications;
+    private NotificationJobs notificationRuleRegistryService;
+    private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
 
     @org.springframework.beans.factory.annotation.Autowired
-    void setRoleNotifications(com.raxim.myscoutee.domain.notifications.service.RoleNotificationService value) {
+    void setRoleNotifications(com.raxim.myscoutee.domain.notifications.api.RoleNotifications value) {
         this.roleNotifications = value;
     }
-    private UserNotificationPageRepository userNotificationPageRepository;
+    private NotificationCatalog notificationCatalog;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -333,14 +333,14 @@ public class HomeUserProfileService {
     }
 
     @Autowired(required = false)
-    void setNotificationRuleRegistryService(NotificationRuleRegistryService notificationRuleRegistryService) {
+    void setNotificationRuleRegistryService(NotificationJobs notificationRuleRegistryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Autowired(required = false)
-    void setUserNotificationPageRepository(
-            UserNotificationPageRepository userNotificationPageRepository) {
-        this.userNotificationPageRepository = userNotificationPageRepository;
+    void setNotificationCatalog(
+            NotificationCatalog notificationCatalog) {
+        this.notificationCatalog = notificationCatalog;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -716,7 +716,9 @@ public class HomeUserProfileService {
         affiliateService.recordRegistration(saved.getAffiliateRegistration());
         if (completingRegistration && !PROFILE_STATUS_ONBOARDING.equals(saved.getProfileStatus())
                 && "A".equals(saved.getStatus()) && roleNotifications != null) {
-            roleNotifications.memberJoined(saved);
+            roleNotifications.memberJoined(new com.raxim.myscoutee.domain.notifications.api.RoleNotifications.MemberRegistration(
+                    saved.getUserId(), saved.getEmail(), saved.isOperator(),
+                    StringUtils.hasText(saved.getWorkspaceGroupId()) || StringUtils.hasText(saved.getAccountUserId())));
         }
         if (existing == null && userFilterPreferencesRepository.findByUserId(normalizedUserId).isEmpty()) {
             persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
@@ -2381,7 +2383,7 @@ public class HomeUserProfileService {
             return;
         }
         JobGroupContext.run(jobGroupScope.forUser(userId), () -> notificationRuleRegistryService.adjustPendingCount(
-                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
+                NotificationJobs.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
     }
 
     private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
@@ -2823,10 +2825,10 @@ public class HomeUserProfileService {
             Users user,
             Integer storedNotificationCount) {
         String userId = normalizeId(user == null ? null : StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId());
-        if (userNotificationPageRepository == null || !StringUtils.hasText(userId)) {
+        if (notificationCatalog == null || !StringUtils.hasText(userId)) {
             return normalizeCount(storedNotificationCount);
         }
-        long unreadCount = userNotificationPageRepository.countUnread(userId);
+        long unreadCount = notificationCatalog.countUnread(userId);
         return unreadCount > Integer.MAX_VALUE
                 ? Integer.MAX_VALUE
                 : (int) Math.max(0L, unreadCount);

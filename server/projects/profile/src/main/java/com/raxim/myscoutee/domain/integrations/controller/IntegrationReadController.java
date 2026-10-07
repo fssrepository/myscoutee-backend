@@ -17,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 /** Read/Full-pack reads. Actor identity never comes from query parameters or model arguments. */
 @RestController
@@ -27,7 +27,7 @@ public class IntegrationReadController {
     private final ActivitiesEventsService events;
     private final CommunityGroupsService groups;
     private final ChatService chats;
-    private final UserNotificationService notifications;
+    private final NotificationInbox notifications;
     private final UserRatesService ratings;
     private final AssetsService assets;
     private final CampaignsService campaigns;
@@ -35,7 +35,7 @@ public class IntegrationReadController {
     private final CommunityCasesService cases;
     private final CommunityAnnouncementsService announcements;
     private final CommunityScheduledTasksService tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, CommunityGroupsService groups, ChatService chats, UserNotificationService notifications, UserRatesService ratings, AssetsService assets, CampaignsService campaigns, ServiceOfferingsService services, CommunityCasesService cases, CommunityAnnouncementsService announcements, CommunityScheduledTasksService tasks) {
+    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, CommunityGroupsService groups, ChatService chats, NotificationInbox notifications, UserRatesService ratings, AssetsService assets, CampaignsService campaigns, ServiceOfferingsService services, CommunityCasesService cases, CommunityAnnouncementsService announcements, CommunityScheduledTasksService tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

@@ -96,8 +96,8 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class AssetsService {
@@ -129,7 +129,7 @@ public class AssetsService {
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final AccessControlService accessControlService;
     private final UserActivityCountersService userActivityCountersService;
@@ -149,7 +149,7 @@ public class AssetsService {
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
             AccessControlService accessControlService,
             UserActivityCountersService userActivityCountersService) {

@@ -22,13 +22,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.UserNotification;
-import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationDto;
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository;
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.UserNotificationSlice;
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.AggregatedNotificationUpsert;
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 import com.raxim.myscoutee.domain.notifications.mapper.UserNotificationMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +38,7 @@ class UserNotificationServiceTest {
     @Mock
     private UserNotificationPageRepository userNotificationPageRepository;
     @Mock
-    private UsersRepository usersRepository;
+    private AccountNotifications accounts;
     @Mock
     private UserNotificationMapper userNotificationMapper;
 
@@ -50,7 +49,7 @@ class UserNotificationServiceTest {
         service = new UserNotificationService(
                 userNotificationsRepository,
                 userNotificationPageRepository,
-                usersRepository,
+                accounts,
                 userNotificationMapper);
     }
 
@@ -76,8 +75,8 @@ class UserNotificationServiceTest {
         assertThat(notification.getAllValues())
                 .extracting(UserNotification::getSyncKey)
                 .containsExactly("outbox-sync-1:viewer-1", "outbox-sync-1:viewer-2");
-        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", 1);
-        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-2", 1);
+        verify(accounts).incrementUnreadCounter("viewer-1", 1);
+        verify(accounts).incrementUnreadCounter("viewer-2", 1);
     }
 
     @Test
@@ -98,8 +97,7 @@ class UserNotificationServiceTest {
 
         service.materialize(outbox("event-invite", List.of("viewer-1")));
 
-        verify(userNotificationPageRepository, org.mockito.Mockito.never())
-                .incrementUnreadCounter(any(String.class), eq(1));
+        verify(accounts, org.mockito.Mockito.never()).incrementUnreadCounter(any(String.class), eq(1));
     }
 
     @Test
@@ -122,8 +120,7 @@ class UserNotificationServiceTest {
         assertThat(notification.getValue().getSenderUserId()).isEqualTo("scanner-2");
         verify(userNotificationPageRepository, org.mockito.Mockito.never())
                 .insertIfAbsent(any(UserNotification.class));
-        verify(userNotificationPageRepository, org.mockito.Mockito.never())
-                .incrementUnreadCounter(any(String.class), eq(1));
+        verify(accounts, org.mockito.Mockito.never()).incrementUnreadCounter(any(String.class), eq(1));
     }
 
     @Test
@@ -136,7 +133,7 @@ class UserNotificationServiceTest {
 
         service.materialize(outbox);
 
-        verify(userNotificationPageRepository).incrementUnreadCounter("holder-1", 1);
+        verify(accounts).incrementUnreadCounter("holder-1", 1);
     }
 
     @Test
@@ -206,8 +203,7 @@ class UserNotificationServiceTest {
 
         assertThat(response.unreadCount()).isEqualTo(3);
         assertThat(response.notification().id()).isEqualTo("notification-1");
-        verify(userNotificationPageRepository, org.mockito.Mockito.never())
-                .incrementUnreadCounter("viewer-1", -1);
+        verify(accounts, org.mockito.Mockito.never()).incrementUnreadCounter("viewer-1", -1);
     }
 
     @Test
@@ -226,11 +222,12 @@ class UserNotificationServiceTest {
         var response = service.markRead("viewer-1", "notification-1");
 
         assertThat(response.unreadCount()).isEqualTo(2);
-        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -1);
+        verify(accounts).incrementUnreadCounter("viewer-1", -1);
     }
 
     @Test
     void resolvingAnEventInvitationReadsEveryUnreadNotificationForThatEvent() {
+        when(accounts.notificationAccountId("viewer-1")).thenReturn("viewer-1");
         when(userNotificationPageRepository.markUnreadBySource(
                 eq("viewer-1"),
                 eq("event-invite"),
@@ -241,11 +238,12 @@ class UserNotificationServiceTest {
         int changed = service.markEventInvitationResolved(" viewer-1 ", " event-1 ");
 
         assertThat(changed).isEqualTo(2);
-        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -2);
+        verify(accounts).incrementUnreadCounter("viewer-1", -2);
     }
 
     @Test
     void readingChatMessagesReadsOnlyTheirNotificationsAndDecrementsOnce() {
+        when(accounts.notificationAccountId("viewer-1")).thenReturn("viewer-1");
         when(userNotificationPageRepository.markUnreadChatMessagesRead(
                 eq("viewer-1"),
                 eq("chat-1"),
@@ -258,11 +256,12 @@ class UserNotificationServiceTest {
                 List.of("message-1", "message-2"));
 
         assertThat(changed).isEqualTo(2);
-        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -2);
+        verify(accounts).incrementUnreadCounter("viewer-1", -2);
     }
 
     @Test
     void readingAWholeChatResolvesEveryUnreadNotificationFromThatChat() {
+        when(accounts.notificationAccountId("viewer-1")).thenReturn("viewer-1");
         when(userNotificationPageRepository.markUnreadBySource(
                 eq("viewer-1"),
                 eq("chat-message"),
@@ -273,15 +272,12 @@ class UserNotificationServiceTest {
         int changed = service.markChatRead(" viewer-1 ", " chat-1 ");
 
         assertThat(changed).isEqualTo(3);
-        verify(userNotificationPageRepository).incrementUnreadCounter("viewer-1", -3);
+        verify(accounts).incrementUnreadCounter("viewer-1", -3);
     }
 
     @Test
     void pageReturnsStoredMutedPreferenceAndPreferenceMutationUsesUserScope() {
-        Users user = new Users();
-        user.setUserId("viewer-1");
-        user.setNotificationPreferences(new Users.UserNotificationPreferencesRecord(true));
-        when(usersRepository.findByUserId("viewer-1")).thenReturn(Optional.of(user));
+        when(accounts.muted("viewer-1")).thenReturn(true);
         when(userNotificationPageRepository.findPage("viewer-1", true, 20, null, null))
                 .thenReturn(new UserNotificationSlice(List.of(), 0L, false));
         when(userNotificationMapper.toDtos(List.of())).thenReturn(List.of());
@@ -292,7 +288,7 @@ class UserNotificationServiceTest {
 
         assertThat(page.muted()).isTrue();
         assertThat(preference.muted()).isFalse();
-        verify(userNotificationPageRepository).setMutedPreference("viewer-1", false);
+        verify(accounts).setMuted("viewer-1", false);
     }
 
     private NotificationOutboxItem outbox(String kind, List<String> recipients) {

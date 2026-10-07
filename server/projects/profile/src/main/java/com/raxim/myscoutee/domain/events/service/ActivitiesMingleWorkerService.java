@@ -17,7 +17,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsReposi
 @Service
 public class ActivitiesMingleWorkerService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired

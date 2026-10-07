@@ -19,7 +19,7 @@ import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 public class ChatHandshakeInterceptor implements HandshakeInterceptor {
     public static final String CHAT_ID_ATTRIBUTE = "chatId";
     public static final String USER_ID_ATTRIBUTE = "userId";
-    public static final String SESSION_KIND_ATTRIBUTE = "sessionKind";
+    public static final String SESSION_KIND_ATTRIBUTE = com.raxim.myscoutee.domain.chat.api.ChatSessionAttributes.SESSION_KIND;
 
     @Override
     public boolean beforeHandshake(

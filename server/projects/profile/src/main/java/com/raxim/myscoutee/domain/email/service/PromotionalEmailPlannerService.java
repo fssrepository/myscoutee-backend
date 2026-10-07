@@ -31,23 +31,23 @@ import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.domain.email.document.EmailCampaignRule;
 import com.raxim.myscoutee.domain.email.document.EmailOutboxItem;
 import com.raxim.myscoutee.domain.email.document.EmailTemplate;
-import com.raxim.myscoutee.domain.notifications.document.NotificationTemplate;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.email.repository.EmailCampaignRulesRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
-import com.raxim.myscoutee.domain.notifications.repository.NotificationTemplatesRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
 import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 import jakarta.annotation.PreDestroy;
 
 @Service
 public class PromotionalEmailPlannerService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
@@ -64,7 +64,7 @@ public class PromotionalEmailPlannerService {
     private final EmailCampaignRulesRepository emailCampaignRulesRepository;
     private final EmailOutboxRepository emailOutboxRepository;
     private final UsersRepository usersRepository;
-    private final NotificationTemplatesRepository notificationTemplatesRepository;
+    private final NotificationCatalog notificationTemplatesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final ScheduledNotificationDeliveryService scheduledNotificationDeliveryService;
     private final ScheduledMessageAuditService scheduledMessageAuditService;
@@ -81,7 +81,7 @@ public class PromotionalEmailPlannerService {
             EmailCampaignRulesRepository emailCampaignRulesRepository,
             EmailOutboxRepository emailOutboxRepository,
             UsersRepository usersRepository,
-            NotificationTemplatesRepository notificationTemplatesRepository,
+            NotificationCatalog notificationTemplatesRepository,
             ActivitiesMembersService activitiesMembersService,
             ScheduledNotificationDeliveryService scheduledNotificationDeliveryService,
             ScheduledMessageAuditService scheduledMessageAuditService,
@@ -239,7 +239,7 @@ public class PromotionalEmailPlannerService {
 
         String nowIso = Instant.now().toString();
         EmailTemplate emailTemplate = resolveEmailTemplate(rule);
-        NotificationTemplate notificationTemplate = resolveNotificationTemplate(rule);
+        Template notificationTemplate = resolveNotificationTemplate(rule);
         if (emailTemplate == null && notificationTemplate == null) {
             return PlanningResult.empty();
         }
@@ -306,7 +306,7 @@ public class PromotionalEmailPlannerService {
 
     private ResolvedDeploymentBranding deploymentBranding() {
         return deploymentBrandingResolver == null
-                ? DeploymentBrandingResolver.fallback()
+                ? com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback()
                 : deploymentBrandingResolver.resolve();
     }
 
@@ -336,13 +336,13 @@ public class PromotionalEmailPlannerService {
                 .orElse(null);
     }
 
-    private NotificationTemplate resolveNotificationTemplate(EmailCampaignRule rule) {
+    private Template resolveNotificationTemplate(EmailCampaignRule rule) {
         String templateKey = safeText(rule == null ? null : rule.getNotificationTemplateKey());
         if (!StringUtils.hasText(templateKey)) {
             return null;
         }
         return notificationTemplatesRepository.findByTemplateKey(templateKey)
-                .filter(template -> Boolean.TRUE.equals(template.getEnabled()))
+                .filter(template -> Boolean.TRUE.equals(template.enabled()))
                 .orElse(null);
     }
 

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.administration.service;
 
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
@@ -21,7 +21,7 @@ import com.raxim.myscoutee.domain.administration.config.AdminStatsProperties;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
-public class AdminTelemetryService {
+public class AdminTelemetryService implements com.raxim.myscoutee.domain.administration.api.OperationalTelemetry {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 

@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.domain.community.dto.CommunityAnnouncementDtos.*;
 
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
 
 @Service
@@ -37,9 +37,9 @@ public class CommunityAnnouncementsService {
     private final CommunityAccessService access;
     private final MongoTemplate mongo;
     private final UsersRepository users;
-    private final NotificationOutboxService notifications;
+    private final NotificationDelivery notifications;
     public CommunityAnnouncementsService(CommunityAnnouncementsRepository announcements,
-            CommunityAccessService access, MongoTemplate mongo, UsersRepository users, NotificationOutboxService notifications) {
+            CommunityAccessService access, MongoTemplate mongo, UsersRepository users, NotificationDelivery notifications) {
         this.announcements = announcements; this.access = access; this.mongo = mongo; this.users = users; this.notifications = notifications;
     }
     public String actor(String profileId) { return access.actor(profileId); }
@@ -151,7 +151,7 @@ public class CommunityAnnouncementsService {
         var payload = new LinkedHashMap<String, String>(); payload.put("workspaceGroupId", a.communityId()); payload.put("announcementId", a.id());
         payload.put("notification_message_key", "notification.kind." + kind + ".message");
         JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID, () -> notifications.enqueueOnce(kind + ":" + a.id() + ":" + occurrence,
-                new NotificationOutboxService.NotificationIntent(kind, "announcement", a.id(), "community-members", recipients, a.title(), a.title(),
+                new NotificationDelivery.NotificationIntent(kind, "announcement", a.id(), "community-members", recipients, a.title(), a.title(),
                         "/game?announcementId=" + a.id(), null, "/assets/logo/heart.webp", "announcement:" + a.id(), payload, actor)));
     }
     private Set<String> eligibleVoters(String group) {

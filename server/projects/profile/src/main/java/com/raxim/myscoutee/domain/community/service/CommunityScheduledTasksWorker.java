@@ -4,14 +4,14 @@ import java.time.Instant;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class CommunityScheduledTasksWorker {
     private final CommunityScheduledTasksService tasks;
     private final ScheduledMongoSessionRunner databases;
-    private final NotificationRuleRegistryService rules;
-    public CommunityScheduledTasksWorker(CommunityScheduledTasksService tasks, ScheduledMongoSessionRunner databases, NotificationRuleRegistryService rules) {
+    private final NotificationJobs rules;
+    public CommunityScheduledTasksWorker(CommunityScheduledTasksService tasks, ScheduledMongoSessionRunner databases, NotificationJobs rules) {
         this.tasks = tasks; this.databases = databases; this.rules = rules;
     }
     @Scheduled(fixedDelayString="${community.tasks.check-delay-ms:60000}")

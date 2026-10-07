@@ -27,6 +27,8 @@ import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.service.AccountNotificationService;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
 
@@ -69,7 +71,7 @@ class NotificationOutboxWorkerServiceTest {
         NotificationOutboxWorkerService service = new NotificationOutboxWorkerService(
                 configProperties,
                 outboxRepository,
-                usersRepository,
+                new AccountNotificationService(usersRepository, mongoTemplate),
                 sessionRegistry,
                 mongoTemplate,
                 null,
@@ -204,7 +206,7 @@ class NotificationOutboxWorkerServiceTest {
         NotificationOutboxWorkerService service = new NotificationOutboxWorkerService(
                 configProperties,
                 outboxRepository,
-                usersRepository,
+                new AccountNotificationService(usersRepository, mongoTemplate),
                 sessionRegistry,
                 mongoTemplate,
                 null,
@@ -257,7 +259,7 @@ class NotificationOutboxWorkerServiceTest {
         return new NotificationOutboxWorkerService(
                 new ConfigProperties(),
                 org.mockito.Mockito.mock(NotificationOutboxRepository.class),
-                org.mockito.Mockito.mock(UsersRepository.class),
+                org.mockito.Mockito.mock(AccountNotifications.class),
                 sessionRegistry,
                 org.mockito.Mockito.mock(MongoTemplate.class),
                 null,

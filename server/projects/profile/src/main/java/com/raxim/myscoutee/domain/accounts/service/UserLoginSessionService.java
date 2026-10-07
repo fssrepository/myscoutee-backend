@@ -31,8 +31,8 @@ import com.raxim.myscoutee.domain.accounts.document.UserSessionState.ActiveSessi
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginResponseDto;
 import com.raxim.myscoutee.domain.accounts.repository.UserLoginAuditsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -50,13 +50,13 @@ public class UserLoginSessionService {
 
     private final MongoTemplate mongoTemplate;
     private final UserLoginAuditsRepository userLoginAuditsRepository;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final int maxActiveSessions;
 
     public UserLoginSessionService(
             MongoTemplate mongoTemplate,
             UserLoginAuditsRepository userLoginAuditsRepository,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             @Value("${auth.max-active-sessions:-1}") int maxActiveSessions) {
         this.mongoTemplate = mongoTemplate;
         this.userLoginAuditsRepository = userLoginAuditsRepository;

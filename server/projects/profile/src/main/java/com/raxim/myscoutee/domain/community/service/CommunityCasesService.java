@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.*;
 
 import com.raxim.myscoutee.domain.community.mapper.CommunityCaseMapper;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
 
 @Service
@@ -36,11 +36,11 @@ public class CommunityCasesService {
     private final CommunityAccessService access;
     private final CommunityGroupsRepository groups;
     private final UsersRepository users;
-    private final NotificationOutboxService notifications;
+    private final NotificationDelivery notifications;
     private final ChatService chats;
     private final ServiceOfferingsRepository offerings;
     public CommunityCasesService(ServiceCasesRepository cases, CommunityAccessService access, CommunityGroupsRepository groups,
-            UsersRepository users, NotificationOutboxService notifications, ChatService chats, ServiceOfferingsRepository offerings) {
+            UsersRepository users, NotificationDelivery notifications, ChatService chats, ServiceOfferingsRepository offerings) {
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
     }
     public String actor(String id) { return access.actor(id); }
@@ -244,7 +244,7 @@ public class CommunityCasesService {
         payload.put("workspaceGroupId", CommunityGroup.COMMUNITY_BASE_ID); payload.put("caseId", c.id());
         payload.put("senderUserId", actor); payload.put("notification_message_key", "notification.kind." + kind + ".message");
         JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID, () -> notifications.enqueueOnce(kind + ":" + occurrenceKey,
-                new NotificationOutboxService.NotificationIntent(kind, "case", c.id(), "participants", recipients, c.title(), c.title(),
+                new NotificationDelivery.NotificationIntent(kind, "case", c.id(), "participants", recipients, c.title(), c.title(),
                         "/game?caseId=" + java.net.URLEncoder.encode(c.id(), java.nio.charset.StandardCharsets.UTF_8), null,
                         "/assets/logo/heart.webp", "case:" + c.id(), payload, actor)));
     }

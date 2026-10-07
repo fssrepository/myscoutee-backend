@@ -47,11 +47,11 @@ public class CommunityGroupsService {
     private final UserReportSubmissionsRepository reports;
     private final AdminTelemetryService telemetry;
     private final UserActivityCountersService counters;
-    private final com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService notifications;
+    private final com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications;
     public CommunityGroupsService(CommunityGroupsRepository groups, ActivityMembersRepository memberships,
             UsersRepository users, HomeUserProfileService profiles, CommunityGroupProfilesService groupProfiles,
             ContentModerationService moderation, UserReportSubmissionsRepository reports, AdminTelemetryService telemetry, UserActivityCountersService counters,
-            com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService notifications) {
+            com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications) {
         this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.groupProfiles = groupProfiles;
         this.moderation = moderation; this.reports = reports; this.telemetry = telemetry; this.counters = counters; this.notifications = notifications;
     }
@@ -475,7 +475,7 @@ public class CommunityGroupsService {
         if (attention) payload.put("communityAttention", "members");
         String kind = "community-" + action;
         notifications.enqueueOnce(kind + ":" + subject.getId() + ":" + subject.getActionAtIso(),
-            new com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent(
+            new com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent(
                 kind, OWNER_TYPE, group.id(), "members", recipients, group.name(), group.name(), "/game?communityGroupId=" + java.net.URLEncoder.encode(group.id(), java.nio.charset.StandardCharsets.UTF_8),
                 group.imageUrl(), "/assets/logo/heart.webp", kind + ":" + group.id(), payload, actorId));
     }

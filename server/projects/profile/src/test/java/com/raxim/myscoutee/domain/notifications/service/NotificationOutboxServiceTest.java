@@ -19,9 +19,9 @@ import org.springframework.beans.factory.ObjectProvider;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 @org.junit.jupiter.api.Tag("standard")
 class NotificationOutboxServiceTest {

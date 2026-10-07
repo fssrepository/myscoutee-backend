@@ -27,8 +27,8 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsSaveRe
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsSectionDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsStateDto;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -48,7 +48,7 @@ public class AdminParamsService {
     private final AdminModerationService admins;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final ObjectMapper objectMapper;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final AdminAudienceService adminAudienceService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
@@ -57,7 +57,7 @@ public class AdminParamsService {
             AdminModerationService admins,
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             AdminAudienceService adminAudienceService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService) {

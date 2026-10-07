@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.chat.service;
+package com.raxim.myscoutee.common.redis;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;

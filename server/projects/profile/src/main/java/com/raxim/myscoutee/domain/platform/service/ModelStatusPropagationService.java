@@ -28,8 +28,8 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ModelStatusPropagationService {
@@ -51,7 +51,7 @@ public class ModelStatusPropagationService {
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetsRepository assetsRepository;
     private final MongoTemplate mongoTemplate;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
 
     public ModelStatusPropagationService(
@@ -60,7 +60,7 @@ public class ModelStatusPropagationService {
             ActivityMembersRepository activityMembersRepository,
             AssetsRepository assetsRepository,
             MongoTemplate mongoTemplate,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;

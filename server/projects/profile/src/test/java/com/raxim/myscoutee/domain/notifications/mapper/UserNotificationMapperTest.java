@@ -12,13 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.domain.notifications.document.UserNotification;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")
 class UserNotificationMapperTest {
     @Mock
-    private UsersRepository usersRepository;
+    private AccountNotifications usersRepository;
 
     @Test
     void mapsPageContainingOnlySenderlessSystemNotification() {

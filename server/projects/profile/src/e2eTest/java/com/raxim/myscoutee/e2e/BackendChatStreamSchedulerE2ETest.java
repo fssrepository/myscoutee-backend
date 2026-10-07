@@ -62,7 +62,7 @@ import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.chat.service.ChatStreamPublisher;
 import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.chat.websocket.ChatHandshakeInterceptor;
 import com.raxim.myscoutee.domain.chat.websocket.ChatWebSocketHandler;
 

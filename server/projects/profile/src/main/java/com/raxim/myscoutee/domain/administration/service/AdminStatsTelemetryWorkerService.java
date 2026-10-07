@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.administration.service;
 
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class AdminStatsTelemetryWorkerService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminStatsTelemetryWorkerService.class);

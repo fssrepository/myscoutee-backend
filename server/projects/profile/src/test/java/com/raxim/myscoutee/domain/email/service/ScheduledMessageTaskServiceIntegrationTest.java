@@ -371,6 +371,9 @@ class ScheduledMessageTaskServiceIntegrationTest {
     @Import({
             ScheduledMessageTaskService.class,
             ScheduledMessageAuditService.class,
+            com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.class,
+            com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.class,
+            com.raxim.myscoutee.domain.events.service.MemberAttentionService.class,
             JobGroupScopeService.class
     })
     static class Config {

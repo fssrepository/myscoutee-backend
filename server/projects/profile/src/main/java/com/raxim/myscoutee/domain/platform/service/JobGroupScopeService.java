@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 
 /** Resolves stored workspace ownership at job boundaries; never accepts an admin-supplied scope. */
 @Service
-public class JobGroupScopeService {
+public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform.api.JobAudience {
     private final MongoTemplate mongo;
 
     public JobGroupScopeService(MongoTemplate mongo) { this.mongo = mongo; }

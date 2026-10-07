@@ -32,8 +32,8 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.domain.payments.dto.PaymentDtos.CashReceiptRequestDto;
 import com.raxim.myscoutee.domain.payments.dto.PaymentDtos.PaymentHistoryMutationDto;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 import com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -1418,7 +1418,7 @@ public class PaymentService {
     private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
 
     @Autowired
-    private NotificationOutboxService cashNotifications;
+    private NotificationDelivery cashNotifications;
 
     public PaymentHistoryMutationDto recordCashReceipt(
             String recipientId, CashReceiptRequestDto request) {

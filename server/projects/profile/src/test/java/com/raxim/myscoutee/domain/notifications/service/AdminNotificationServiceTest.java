@@ -175,17 +175,16 @@ class AdminNotificationServiceTest {
 
     private AdminNotificationService service(NotificationRuleRegistryService registry, ScheduledMessageTasksRepository tasks) {
         EmailTemplatesRepository emailTemplatesRepository = mock(EmailTemplatesRepository.class);
-        when(emailTemplatesRepository.findByEnabledTrueOrderByTemplateKeyAsc()).thenReturn(List.of());
+        when(emailTemplatesRepository.findByBaseGroupIdAndEnabledTrueOrderByTemplateKeyAsc(null)).thenReturn(List.of());
         AdminModerationService moderation = mock(AdminModerationService.class);
         when(moderation.resolveAdminActor("admin-1"))
                 .thenReturn(new AdminUserDto("admin-1", "Admin", "A", "admin@example.test", "", "", List.of()));
         return new AdminNotificationService(
                 registry,
-                emailTemplatesRepository,
+                new com.raxim.myscoutee.domain.email.service.EmailProcessCatalogService(emailTemplatesRepository, tasks),
                 mock(EventScheduler.class),
                 moderation,
-                mock(AdminTelemetryService.class),
-                tasks);
+                mock(AdminTelemetryService.class));
     }
 
     private NotificationRuleConfig rule(

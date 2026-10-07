@@ -18,18 +18,18 @@ import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotific
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationsPageResponseDto;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationsSyncRequestDto;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationsSyncResponseDto;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
 
 @RestController
 @RequestMapping("/notifications")
 public class UserNotificationsController {
     private final UserNotificationService userNotificationService;
-    private final HomeUserProfileService homeUserProfileService;
+    private final SelectedProfile homeUserProfileService;
 
     public UserNotificationsController(
             UserNotificationService userNotificationService,
-            HomeUserProfileService homeUserProfileService) {
+            SelectedProfile homeUserProfileService) {
         this.userNotificationService = userNotificationService;
         this.homeUserProfileService = homeUserProfileService;
     }

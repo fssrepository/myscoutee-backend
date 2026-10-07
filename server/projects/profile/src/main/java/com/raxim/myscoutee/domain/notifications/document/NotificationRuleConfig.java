@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "notificationRuleConfigs")
-public class NotificationRuleConfig {
+public class NotificationRuleConfig implements com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration {
     @Id
     private String id;
 
@@ -451,7 +451,7 @@ public class NotificationRuleConfig {
         }
     }
 
-    public static class ParameterField {
+    public static class ParameterField implements com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Parameter {
         private String key;
         private String label;
         private String labelKey;

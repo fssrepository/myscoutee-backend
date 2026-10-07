@@ -141,8 +141,8 @@ import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper.Sub
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ActivitiesEventsService {
@@ -203,7 +203,7 @@ public class ActivitiesEventsService {
     private final AdminTelemetryService adminTelemetryService;
     private final MongoTemplate mongoTemplate;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
     private final ChatService chatService;
@@ -242,7 +242,7 @@ public class ActivitiesEventsService {
             AdminTelemetryService adminTelemetryService,
             MongoTemplate mongoTemplate,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             EventInviteNotificationService eventInviteNotificationService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
             ChatService chatService,

@@ -53,12 +53,12 @@ public class OperatorUpdateReleaseService {
 
     public record ReleasePage(String checkedAt, List<OperatorAnnouncementDto> items) {}
 
-    private com.raxim.myscoutee.domain.notifications.service.RoleNotificationService notifications;
+    private com.raxim.myscoutee.domain.notifications.api.RoleNotifications notifications;
     private com.raxim.myscoutee.domain.registry.config.RegistryProperties registryProperties;
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner sessionRunner;
 
     @Autowired
-    void setNotificationDelivery(com.raxim.myscoutee.domain.notifications.service.RoleNotificationService notifications,
+    void setNotificationDelivery(com.raxim.myscoutee.domain.notifications.api.RoleNotifications notifications,
             com.raxim.myscoutee.domain.registry.config.RegistryProperties registryProperties,
             com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner sessionRunner) {
         this.notifications = notifications;

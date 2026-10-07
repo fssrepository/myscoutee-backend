@@ -31,7 +31,7 @@ import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
-public class ChatWebSocketSessionRegistry {
+public class ChatWebSocketSessionRegistry implements com.raxim.myscoutee.domain.chat.api.ChatPresence {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatWebSocketSessionRegistry.class);
 
     private final ObjectMapper objectMapper;

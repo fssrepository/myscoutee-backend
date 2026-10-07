@@ -28,7 +28,7 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.affinity.document.AffinityRecomputeTask;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class AffinityRecomputeWorkerService {
@@ -78,7 +78,7 @@ public class AffinityRecomputeWorkerService {
 
     private void runDueTasksForCurrentDatabase() {
         var registry = taskService.notificationRuleRegistry();
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE, this::runDueTasksForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_AFFINITY_RECOMPUTE, this::runDueTasksForCurrentDatabaseInGroup);
     }
 
     private void runDueTasksForCurrentDatabaseInGroup() {
@@ -89,20 +89,20 @@ public class AffinityRecomputeWorkerService {
             return;
         }
         Instant startedAt = Instant.now();
-        NotificationRuleRegistryService registry = taskService.notificationRuleRegistry();
+        NotificationJobs registry = taskService.notificationRuleRegistry();
         boolean ruleConfigured = registry != null
-                && registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isPresent();
+                && registry.findRule(NotificationJobs.RULE_AFFINITY_RECOMPUTE).isPresent();
         try {
             boolean due = ruleConfigured
                     ? registry.shouldRunScheduledRule(
-                            NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                            NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                             startedAt)
                     : shouldRunScheduledPass();
             if (!due) {
                 return;
             }
             if (ruleConfigured && registry.beginScheduledRun(
-                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                         "Scheduled affinity recompute started.",
                         "affinity-recompute",
                         startedAt) == null) {
@@ -111,7 +111,7 @@ public class AffinityRecomputeWorkerService {
             int processedCount = processDueTasks(startedAt, "scheduled");
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                         processedCount,
                         "completed",
                         "Processed pending affinity recompute tasks.",
@@ -121,7 +121,7 @@ public class AffinityRecomputeWorkerService {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -135,11 +135,11 @@ public class AffinityRecomputeWorkerService {
     public int wakeDueTasks(String trigger) {
         var registry = taskService.notificationRuleRegistry();
         if (JobGroupContext.isActive()) {
-            return registry == null || registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isEmpty()
+            return registry == null || registry.findRule(NotificationJobs.RULE_AFFINITY_RECOMPUTE).isEmpty()
                     ? 0 : wakeDueTasksInGroup(trigger);
         }
         var total = new java.util.concurrent.atomic.AtomicInteger();
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                 () -> total.addAndGet(wakeDueTasksInGroup(trigger)));
         return total.get();
     }
@@ -149,18 +149,18 @@ public class AffinityRecomputeWorkerService {
             return 0;
         }
         Instant startedAt = Instant.now();
-        NotificationRuleRegistryService registry = taskService.notificationRuleRegistry();
+        NotificationJobs registry = taskService.notificationRuleRegistry();
         boolean ruleConfigured = registry != null
-                && registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE).isPresent();
+                && registry.findRule(NotificationJobs.RULE_AFFINITY_RECOMPUTE).isPresent();
         if (!ruleConfigured) return 0;
-        if (!registry.findRule(NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE)
+        if (!registry.findRule(NotificationJobs.RULE_AFFINITY_RECOMPUTE)
                 .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
                 .orElse(false)) {
             return 0;
         }
         try {
             if (ruleConfigured && registry.beginRun(
-                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                         "Affinity recompute wake-up started.",
                         "affinity-recompute",
                         startedAt) == null) {
@@ -171,7 +171,7 @@ public class AffinityRecomputeWorkerService {
                     StringUtils.hasText(trigger) ? trigger : "wakeup");
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                         processedCount,
                         "completed",
                         "Processed affinity recompute wake-up tasks.",
@@ -182,7 +182,7 @@ public class AffinityRecomputeWorkerService {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                        NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                         0,
                         "failed",
                         safeText(exception.getMessage()),

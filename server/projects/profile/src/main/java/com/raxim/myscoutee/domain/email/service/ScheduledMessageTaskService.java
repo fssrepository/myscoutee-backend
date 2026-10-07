@@ -49,14 +49,14 @@ import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.email.document.EmailOutboxItem;
 import com.raxim.myscoutee.domain.email.document.EmailTemplate;
-import com.raxim.myscoutee.domain.notifications.document.NotificationTemplate;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
 import com.raxim.myscoutee.domain.email.document.ScheduledMessageTask;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
-import com.raxim.myscoutee.domain.notifications.repository.NotificationTemplatesRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.email.repository.ScheduledMessageTasksRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -65,9 +65,9 @@ import com.raxim.myscoutee.domain.email.service.EmailProviderGateway;
 import com.raxim.myscoutee.domain.email.service.EmailTemplateRenderer;
 import com.raxim.myscoutee.domain.email.service.ScheduledMessageAuditService;
 import com.raxim.myscoutee.domain.email.service.ScheduledNotificationDeliveryService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 import jakarta.annotation.PreDestroy;
 
@@ -110,7 +110,7 @@ public class ScheduledMessageTaskService {
     private final ScheduledMessageAuditService scheduledMessageAuditService;
     private final EmailOutboxRepository emailOutboxRepository;
     private final EmailTemplatesRepository emailTemplatesRepository;
-    private final NotificationTemplatesRepository notificationTemplatesRepository;
+    private final NotificationCatalog notificationTemplatesRepository;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     private final ObjectProvider<ScheduledNotificationDeliveryService> scheduledNotificationDeliveryServiceProvider;
     private final ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider;
@@ -118,7 +118,7 @@ public class ScheduledMessageTaskService {
     private final ObjectProvider<EmailProperties> emailPropertiesProvider;
     private final ObjectProvider<ConfigProperties> configPropertiesProvider;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
+    private ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider;
     private DeploymentBrandingResolver deploymentBrandingResolver;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private TranslationService translationService;
@@ -142,7 +142,7 @@ public class ScheduledMessageTaskService {
             ScheduledMessageAuditService scheduledMessageAuditService,
             EmailOutboxRepository emailOutboxRepository,
             EmailTemplatesRepository emailTemplatesRepository,
-            NotificationTemplatesRepository notificationTemplatesRepository,
+            NotificationCatalog notificationTemplatesRepository,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
             ObjectProvider<ScheduledNotificationDeliveryService> scheduledNotificationDeliveryServiceProvider,
             ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider,
@@ -169,7 +169,7 @@ public class ScheduledMessageTaskService {
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void setNotificationRuleRegistryServiceProvider(
-            ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+            ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider) {
         this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
     }
 
@@ -209,21 +209,21 @@ public class ScheduledMessageTaskService {
 
     private void runDueTasksForCurrentDatabase() {
         var registry = notificationRuleRegistry();
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES, this::runDueTasksForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_SCHEDULED_MESSAGES, this::runDueTasksForCurrentDatabaseInGroup);
     }
 
     private void runDueTasksForCurrentDatabaseInGroup() {
         Instant startedAt = Instant.now();
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        NotificationJobs registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
-                && registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES).isPresent();
+                && registry.findRule(NotificationJobs.RULE_SCHEDULED_MESSAGES).isPresent();
         if (ruleConfigured && !registry.shouldRunScheduledRule(
-                NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                NotificationJobs.RULE_SCHEDULED_MESSAGES,
                 startedAt)) {
             return;
         }
         if (ruleConfigured && registry.beginScheduledRun(
-                    NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                    NotificationJobs.RULE_SCHEDULED_MESSAGES,
                     "Scheduled message task poll started.",
                     UPDATED_BY,
                     startedAt) == null) {
@@ -244,7 +244,7 @@ public class ScheduledMessageTaskService {
             }
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                        NotificationJobs.RULE_SCHEDULED_MESSAGES,
                         dueTasks.size(),
                         "completed",
                         "Scheduled due message tasks for local execution.",
@@ -254,7 +254,7 @@ public class ScheduledMessageTaskService {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                        NotificationJobs.RULE_SCHEDULED_MESSAGES,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -642,8 +642,8 @@ public class ScheduledMessageTaskService {
         if (!StringUtils.hasText(taskKey)) {
             return;
         }
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
-        if (registry == null || !registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES)
+        NotificationJobs registry = notificationRuleRegistry();
+        if (registry == null || !registry.findRule(NotificationJobs.RULE_SCHEDULED_MESSAGES)
                         .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
                         .orElse(false)) {
             return;
@@ -750,7 +750,7 @@ public class ScheduledMessageTaskService {
             return new TaskResult(STATUS_COMPLETED, 0, "Stage reminder had no accepted members.");
         }
 
-        NotificationTemplate notificationTemplate = resolveNotificationTemplate(task);
+        Template notificationTemplate = resolveNotificationTemplate(task);
         EmailTemplate emailTemplate = resolveEmailTemplate(task);
         ScheduledNotificationDeliveryService notificationDeliveryService =
                 scheduledNotificationDeliveryServiceProvider.getIfAvailable();
@@ -834,7 +834,7 @@ public class ScheduledMessageTaskService {
             return new TaskResult(STATUS_COMPLETED, 0, "Event change notification had no audience.");
         }
 
-        NotificationTemplate notificationTemplate = resolveNotificationTemplate(task);
+        Template notificationTemplate = resolveNotificationTemplate(task);
         EmailTemplate emailTemplate = resolveEmailTemplate(task);
         ScheduledNotificationDeliveryService notificationDeliveryService =
                 scheduledNotificationDeliveryServiceProvider.getIfAvailable();
@@ -1111,17 +1111,17 @@ public class ScheduledMessageTaskService {
     }
 
     private void adjustPendingCount(int delta) {
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        NotificationJobs registry = notificationRuleRegistry();
         if (registry == null || delta == 0) {
             return;
         }
         registry.adjustPendingCount(
-                NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                NotificationJobs.RULE_SCHEDULED_MESSAGES,
                 delta,
                 "admin.jobs.rule.scheduled.messages");
     }
 
-    private NotificationRuleRegistryService notificationRuleRegistry() {
+    private NotificationJobs notificationRuleRegistry() {
         return notificationRuleRegistryServiceProvider == null
                 ? null
                 : notificationRuleRegistryServiceProvider.getIfAvailable();
@@ -1205,13 +1205,13 @@ public class ScheduledMessageTaskService {
         }
     }
 
-    private NotificationTemplate resolveNotificationTemplate(ScheduledMessageTask task) {
+    private Template resolveNotificationTemplate(ScheduledMessageTask task) {
         String templateKey = safeText(task == null ? null : task.getNotificationTemplateKey());
         if (!StringUtils.hasText(templateKey)) {
             return null;
         }
         return notificationTemplatesRepository.findByTemplateKey(templateKey)
-                .filter(template -> Boolean.TRUE.equals(template.getEnabled()))
+                .filter(template -> Boolean.TRUE.equals(template.enabled()))
                 .orElse(null);
     }
 
@@ -1315,7 +1315,7 @@ public class ScheduledMessageTaskService {
 
     private ResolvedDeploymentBranding deploymentBranding() {
         return deploymentBrandingResolver == null
-                ? DeploymentBrandingResolver.fallback()
+                ? com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback()
                 : deploymentBrandingResolver.resolve();
     }
 

@@ -73,7 +73,7 @@ class NavigatorContactsServiceTest {
         verify(mongo).updateFirst(query.capture(), update.capture(), org.mockito.ArgumentMatchers.eq(Users.class));
         assertThat(query.getValue().getQueryObject().getString("userId")).isEqualTo("b");
         assertThat(update.getValue().getUpdateObject().get("$inc", org.bson.Document.class).getInteger("contactRequestsPending")).isEqualTo(1);
-        var intent = ArgumentCaptor.forClass(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent.class);
+        var intent = ArgumentCaptor.forClass(com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent.class);
         verify(notifications).enqueue(intent.capture());
         assertThat(intent.getValue().recipientUserIds()).containsExactly("b");
         assertThat(intent.getValue().createdUser()).isEqualTo("a");
@@ -122,7 +122,7 @@ class NavigatorContactsServiceTest {
         var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
         verify(mongo).updateFirst(any(), update.capture(), org.mockito.ArgumentMatchers.eq(Users.class));
         assertThat(update.getValue().getUpdateObject().get("$inc", org.bson.Document.class).getInteger("contactRequestsPending")).isEqualTo(-1);
-        var intent = ArgumentCaptor.forClass(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent.class);
+        var intent = ArgumentCaptor.forClass(com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent.class);
         verify(notifications).enqueue(intent.capture());
         assertThat(intent.getValue().recipientUserIds()).containsExactly("a");
     }

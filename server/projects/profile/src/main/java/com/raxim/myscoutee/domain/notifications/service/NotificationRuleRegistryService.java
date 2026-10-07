@@ -32,22 +32,10 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationRuleConfigsRepository;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 
 @Service
-public class NotificationRuleRegistryService {
-    public static final String RULE_EVENT_RANDOM_GROUPS = "event-random-groups";
-    public static final String RULE_EVENT_AUTO_INVITER = "event-auto-inviter";
-    public static final String RULE_EVENT_TOURNAMENT_REVIEW = "event-tournament-review";
-    public static final String RULE_EVENT_COUNTER_EXPIRY = "event-counter-expiry";
-    public static final String RULE_EVENT_CHECKOUT_BASKET_PURGE = "event-checkout-basket-purge";
-    public static final String RULE_NOTIFICATION_OUTBOX = "notification-outbox";
-    public static final String RULE_PAYMENT_METHOD_EXPIRY = "payment-method-expiry";
-    public static final String RULE_AFFINITY_RECOMPUTE = "affinity-recompute";
-    public static final String RULE_AFFINITY_GRAPH_LAYOUT = "affinity-graph-layout";
-    public static final String RULE_SCHEDULED_MESSAGES = "scheduled-messages";
-    public static final String RULE_ACCOUNT_PURGE = "account-purge";
-    public static final String PENDING_COUNT_UNIT_USERS = "admin.jobs.table.users";
+public class NotificationRuleRegistryService implements com.raxim.myscoutee.domain.notifications.api.NotificationJobs {
 
     private static final String SYSTEM_USER = "notification-registry";
     private static final String INTERVAL_UNIT_SECONDS = "seconds";
@@ -67,7 +55,7 @@ public class NotificationRuleRegistryService {
     private final NotificationRuleConfigsRepository notificationRuleConfigsRepository;
     private final AdminNotificationSocketSessionRegistry socketSessionRegistry;
     private final MongoTemplate mongoTemplate;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
 
     private record IntervalSpec(int amount, String unit, int seconds, int minutes) {}
 
@@ -75,7 +63,7 @@ public class NotificationRuleRegistryService {
             NotificationRuleConfigsRepository notificationRuleConfigsRepository,
             AdminNotificationSocketSessionRegistry socketSessionRegistry,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService) {
+            OperationalTelemetry adminTelemetryService) {
         this.notificationRuleConfigsRepository = notificationRuleConfigsRepository;
         this.socketSessionRegistry = socketSessionRegistry;
         this.mongoTemplate = mongoTemplate;

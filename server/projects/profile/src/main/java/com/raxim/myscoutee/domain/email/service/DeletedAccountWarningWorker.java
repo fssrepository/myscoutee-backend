@@ -19,7 +19,7 @@ import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.localization.service.I18nService;
 import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.email.service.OperatorEmailConfigurationService;
 
 /** A deletion episode has one durable delivery claim, independent of subsequent Job runs. */
@@ -37,12 +37,12 @@ public class DeletedAccountWarningWorker {
     private final MongoTemplate mongo;
     private final PlatformParametersService parameters;
     private final OperatorEmailConfigurationService email;
-    private final NotificationRuleRegistryService jobs;
+    private final NotificationJobs jobs;
     private final ScheduledMongoSessionRunner databases;
     private final I18nService i18n;
     private final EmailTemplateRenderer templates;
     public DeletedAccountWarningWorker(MongoTemplate mongo, PlatformParametersService parameters,
-            OperatorEmailConfigurationService email, NotificationRuleRegistryService jobs, ScheduledMongoSessionRunner databases,
+            OperatorEmailConfigurationService email, NotificationJobs jobs, ScheduledMongoSessionRunner databases,
             I18nService i18n, EmailTemplateRenderer templates) {
         this.mongo = mongo; this.parameters = parameters; this.email = email; this.jobs = jobs; this.databases = databases;
         this.i18n = i18n; this.templates = templates;

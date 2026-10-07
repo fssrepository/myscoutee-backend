@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.core.query.*;
 
 import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.Page;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
 
 /** Completion workers create feedback eligibility; reads never synthesize missing eligibility. */
@@ -29,9 +29,9 @@ public class ServiceFeedbackService {
     public static final Set<String> CRITERIA = Set.of("quality", "reliability", "communication", "value");
     private final MongoTemplate mongo;
     private final UsersRepository users;
-    private final NotificationOutboxService notifications;
+    private final NotificationDelivery notifications;
     private final UserActivityCountersService counters;
-    public ServiceFeedbackService(MongoTemplate mongo, UsersRepository users, NotificationOutboxService notifications, UserActivityCountersService counters) {
+    public ServiceFeedbackService(MongoTemplate mongo, UsersRepository users, NotificationDelivery notifications, UserActivityCountersService counters) {
         this.mongo=mongo; this.users=users; this.notifications=notifications; this.counters=counters;
     }
     public record Item(ServiceFeedback feedback, String providerName, String reviewerName, String serviceTitle, String serviceImageUrl) {}
@@ -135,7 +135,7 @@ public class ServiceFeedbackService {
     }
     private void notifyOnce(String id,String kind,List<String> recipients,String title,String caseId) {
         if(recipients.isEmpty())return;
-        JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID,()->notifications.enqueueOnce(kind+":"+id,new NotificationOutboxService.NotificationIntent(kind,"service-feedback",id,"participant",recipients,title,title,
+        JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID,()->notifications.enqueueOnce(kind+":"+id,new NotificationDelivery.NotificationIntent(kind,"service-feedback",id,"participant",recipients,title,title,
             "/game?serviceFeedback=true&workspaceGroupId="+CommunityGroup.COMMUNITY_BASE_ID,null,null,"service-feedback:"+id,Map.of("workspaceGroupId",CommunityGroup.COMMUNITY_BASE_ID,"caseId",caseId,"notification_message_key","notification.kind."+kind+".message"),null)));
     }
 }

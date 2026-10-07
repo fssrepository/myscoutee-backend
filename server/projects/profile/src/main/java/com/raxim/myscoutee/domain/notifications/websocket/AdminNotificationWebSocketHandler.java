@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.notifications.websocket;
 
-import com.raxim.myscoutee.domain.chat.websocket.ChatHandshakeInterceptor;
+import com.raxim.myscoutee.domain.chat.api.ChatSessionAttributes;
 
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,18 +11,18 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
 import com.raxim.myscoutee.domain.notifications.service.AdminNotificationSocketSessionRegistry;
 
 @Component
 public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
     private final AdminNotificationSocketSessionRegistry sessionRegistry;
-    private final AdminModerationService adminModerationService;
+    private final AdministrativeAccess adminModerationService;
     private final ConfigProperties configProperties;
 
     public AdminNotificationWebSocketHandler(
             AdminNotificationSocketSessionRegistry sessionRegistry,
-            AdminModerationService adminModerationService,
+            AdministrativeAccess adminModerationService,
             ConfigProperties configProperties) {
         this.sessionRegistry = sessionRegistry;
         this.adminModerationService = adminModerationService;
@@ -61,7 +61,7 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
         if (session.getPrincipal() instanceof org.springframework.security.core.Authentication authentication) {
             security.setAuthentication(authentication);
         }
-        Object sessionKind = session.getAttributes().get(ChatHandshakeInterceptor.SESSION_KIND_ATTRIBUTE);
+        Object sessionKind = session.getAttributes().get(ChatSessionAttributes.SESSION_KIND);
         var mode = "demo".equalsIgnoreCase(String.valueOf(sessionKind))
                 ? com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO
                 : com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL;

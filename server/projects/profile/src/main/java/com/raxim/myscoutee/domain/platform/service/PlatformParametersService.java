@@ -8,7 +8,7 @@ import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
 
 @Service
-public class PlatformParametersService {
+public class PlatformParametersService implements com.raxim.myscoutee.domain.platform.api.NotificationPolicy {
     private static final String CONFIG_KEY = "default";
 
     private final AffinityConfigsRepository affinityConfigsRepository;
