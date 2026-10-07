@@ -88,7 +88,12 @@ public class FirebaseFilter extends OncePerRequestFilter {
             continueIfSessionActive(request, response, filterChain);
             return;
         }
-        if (DemoSessionRequestSupport.isDemoSessionRequest(request)) {
+        // Demo routing selects a database, not administrator authority. Protected
+        // admin routes must still verify Firebase credentials when it is enabled.
+        if (DemoSessionRequestSupport.isDemoSessionRequest(request)
+                && (!configProperties.isFirebaseEnabled()
+                    || DemoSessionRequestSupport.isAllowedDemoSessionRequest(request)
+                    || DemoSessionRequestSupport.isOperatorRequest(request))) {
             if (DemoSessionRequestSupport.isOperatorRequest(request)) {
                 authenticateDemoOperator(request);
             } else {
