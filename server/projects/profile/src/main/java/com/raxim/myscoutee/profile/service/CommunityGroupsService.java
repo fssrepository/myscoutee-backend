@@ -115,7 +115,8 @@ public class CommunityGroupsService {
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,
                         membersByGroup.getOrDefault(g.id(), List.of()), com.raxim.myscoutee.profile.service.mapper.CommunityGroupProfileMapper.attention(profileByGroup.get(g.id()))))
-                .sorted((order.equals("distance")
+                .sorted(Comparator.comparingInt((Group g) -> CommunityGroup.isBaseId(g.id()) ? 0 : 1)
+                    .thenComparing(order.equals("distance")
                     ? Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : g.distanceKm())
                     : Comparator.comparing(Group::updatedAtIso, Comparator.reverseOrder()))
                     .thenComparing(Group::id)).toList();

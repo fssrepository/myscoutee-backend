@@ -71,6 +71,8 @@ public class ChatWebSocketSessionRegistry {
         sendLocksBySessionId.remove(session.getId());
     }
 
+    public Set<String> chatIds() { return Set.copyOf(sessionsByChatId.keySet()); }
+
     public boolean isUserConnected(String chatId, String userId) {
         if (!StringUtils.hasText(chatId) || !StringUtils.hasText(userId)) {
             return false;
@@ -86,6 +88,15 @@ public class ChatWebSocketSessionRegistry {
             }
         }
         return false;
+    }
+
+    public List<SessionRef> chatSessions(String chatId) {
+        var sessions = sessionsByChatId.get(chatId);
+        return sessions == null ? List.of() : List.copyOf(sessions.values());
+    }
+
+    public void sendEvent(WebSocketSession session, Object event) throws IOException {
+        sendPayload(session, objectMapper.writeValueAsString(event));
     }
 
     public void broadcast(ChatStreamEvent event) {
@@ -214,6 +225,6 @@ public class ChatWebSocketSessionRegistry {
         return StringUtils.hasText(value) ? value.trim() : "";
     }
 
-    private record SessionRef(WebSocketSession session, String userId, MongoSessionMode mode) {
+    public record SessionRef(WebSocketSession session, String userId, MongoSessionMode mode) {
     }
 }

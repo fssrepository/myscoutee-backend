@@ -4,6 +4,14 @@ networks:
     driver: bridge
 
 services:
+  stun:
+    extends:
+      file: docker-compose-stun.yml
+      service: stun
+    container_name: myscoutee-stun
+    networks:
+      - myscoutee
+
   mcp:
     image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.5.0-dev}
     build:
@@ -103,6 +111,8 @@ services:
       - docker-dev.env
     #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     environment:
+      CHAT_CALL_STUN_URLS: "${CHAT_CALL_STUN_URLS:-}"
+      CHAT_CALL_STUN_PORT: "${CHAT_CALL_STUN_PORT:-3478}"
       MONGO_INITDB_DATABASE: ${MONGO_DEMO_DATABASE}
       MONGO_APP_DATABASE: ${MONGO_DEMO_DATABASE}
       MONGO_SEED_DIRECTORY: demo_db

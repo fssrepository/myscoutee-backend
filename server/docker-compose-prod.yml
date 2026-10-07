@@ -13,6 +13,14 @@ secrets:
     file: ./projects/profile/secrets/firebase-service-account.json
 
 services:
+  stun:
+    extends:
+      file: docker-compose-stun.yml
+      service: stun
+    restart: unless-stopped
+    networks:
+      - myscoutee
+
   mcp:
     image: ${MCP_IMAGE:-myscoutee-mcp:1.5.0-prod}
     build:
@@ -205,6 +213,8 @@ services:
       # Do not shadow either with empty environment interpolation below.
       - .env.secrets
     environment:
+      CHAT_CALL_STUN_URLS: "${CHAT_CALL_STUN_URLS:-}"
+      CHAT_CALL_STUN_PORT: "${CHAT_CALL_STUN_PORT:-3478}"
       SPRING_PROFILES_ACTIVE: "prod"
       MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.3.0}"
       MONGODB_HOST: "mongodb"

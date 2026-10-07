@@ -38,6 +38,15 @@ if (!checkpoint || !Array.isArray(checkpoint.sessions) || checkpoint.sessions.le
   fail(`No browser-session configuration exists for ${checkpointId}`);
 }
 
+// Fixture readiness is verified before any existing managed session is replaced.
+if (checkpoint.fixtureScenario && checkpoint.device !== 'android') {
+  const baseline = await runAttachedCommand('bash', [browserSessionCheckpointHarnessPath,
+    'ready', checkpoint.fixtureScenario, checkpoint.fixtureCheckpointId || checkpointId], process.env);
+  const result = JSON.parse(baseline.stdout);
+  if (result.checkpointId !== (checkpoint.fixtureCheckpointId || checkpointId)
+      || result.phase !== checkpoint.fixtureReadyPhase) fail('The configured browser fixture is not ready.');
+}
+
 const defaults = configuration.defaults ?? {};
 const defaultTargetUrl = `${checkpoint.targetUrl || defaults.targetUrl || 'http://localhost/game'}`;
 const defaultEntryUrl = `${checkpoint.entryUrl || defaults.entryUrl || 'http://localhost/entry?redirect=%2Fgame'}`;
@@ -162,7 +171,8 @@ try {
     const microphonePermission = normalizeMicrophonePermission(
       session.microphonePermission ?? checkpoint.microphonePermission ?? 'prompt'
     );
-    await prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission);
+    const cameraPermission = normalizeMicrophonePermission(session.cameraPermission ?? checkpoint.cameraPermission ?? 'prompt');
+    await prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission, cameraPermission);
     const column = index % columns;
     const row = Math.floor(index / columns);
     const position = {
@@ -208,6 +218,7 @@ try {
       geolocation,
       geolocationPermission,
       microphonePermission,
+      cameraPermission,
       fakeMediaStream: session.fakeMediaStream === true,
       pid: browser.pid,
       userDataDirectory,
@@ -226,6 +237,7 @@ try {
       userDataDirectory
     );
     await prepareBrowserMicrophone(port, entryUrl, microphonePermission);
+    await prepareBrowserMicrophone(port, entryUrl, cameraPermission, 'camera');
     if (sessionKind === 'anonymous') {
       await clearManagedSession(port, storageScope, session.localStorage);
       if (bootstrapEntryConsent) {
@@ -381,6 +393,7 @@ async function reopenManagedActor(actor) {
     retained.geolocationPermission, retained.userDataDirectory);
   await save();
   await prepareBrowserMicrophone(port, entryUrl, retained.microphonePermission);
+  await prepareBrowserMicrophone(port, entryUrl, retained.cameraPermission ?? 'prompt', 'camera');
   await installDemoSession(port, storageScope, retained.userId, retained.sessionId, targetUrl, configured.localStorage);
   if (bootstrapEntryConsent) await acceptEntryConsent(port, storageScope, targetUrl);
   await waitForConfiguredSession(port, storageScope, retained.userId, retained.sessionId, targetUrl);
@@ -482,12 +495,13 @@ function normalizeLocalStorageEntries(value) {
   });
 }
 
-async function prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission) {
+async function prepareChromeProfilePreferences(userDataDirectory, geolocationPermission, microphonePermission, cameraPermission = 'prompt') {
   const defaultProfileDirectory = path.join(userDataDirectory, 'Default');
   await mkdir(defaultProfileDirectory, { recursive: true });
   const defaultContentSettings = {
     ...(geolocationPermission === 'prompt' ? {} : { geolocation: geolocationPermission === 'granted' ? 1 : 2 }),
-    ...(microphonePermission === 'prompt' ? {} : { media_stream_mic: microphonePermission === 'granted' ? 1 : 2 })
+    ...(microphonePermission === 'prompt' ? {} : { media_stream_mic: microphonePermission === 'granted' ? 1 : 2 }),
+    ...(cameraPermission === 'prompt' ? {} : { media_stream_camera: cameraPermission === 'granted' ? 1 : 2 })
   };
   await writeFile(path.join(defaultProfileDirectory, 'Preferences'), `${JSON.stringify({
     profile: {
@@ -498,7 +512,7 @@ async function prepareChromeProfilePreferences(userDataDirectory, geolocationPer
   })}\n`);
 }
 
-async function prepareBrowserMicrophone(port, entryPageUrl, permission) {
+async function prepareBrowserMicrophone(port, entryPageUrl, permission, name = 'microphone') {
   if (permission === 'prompt') {
     return;
   }
@@ -510,7 +524,7 @@ async function prepareBrowserMicrophone(port, entryPageUrl, permission) {
   for (const allowedOrigin of new Set([origin, origin.replace('http:', 'https:')])) {
     await cdpCommand(browser.webSocketDebuggerUrl, 'Browser.setPermission', {
       origin: allowedOrigin,
-      permission: { name: 'microphone' },
+      permission: { name },
       setting: permission
     });
   }

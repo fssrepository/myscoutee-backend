@@ -102,3 +102,10 @@ payment:
     apiKey: ${PAYMENT_BARION_API_KEY:}
     apiBaseUrl: ${PAYMENT_BARION_API_BASE_URL:}
     testGatewayEnabled: ${PAYMENT_BARION_TEST_GATEWAY_ENABLED:false}
+
+# Own Docker STUN endpoint; by default the browser uses its application's hostname.
+config:
+  chat-call-stun-urls: ${CHAT_CALL_STUN_URLS:}
+  chat-call-stun-port: ${CHAT_CALL_STUN_PORT:3478}
+  chat-call-stun-health-host: ${CHAT_CALL_STUN_HEALTH_HOST:stun}
+  chat-call-stun-health-port: 3478

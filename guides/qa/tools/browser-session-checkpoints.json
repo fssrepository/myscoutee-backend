@@ -14,6 +14,77 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "CHAT-CALL-001": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "chat-call",
+      "fixtureCheckpointId": "CHAT-CALL-001",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "WebRTC Alice",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c1",
+          "expectedName": "WebRTC Alice",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        },
+        {
+          "actor": "WebRTC Bob",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c2",
+          "expectedName": "WebRTC Bob",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        }
+      ]
+    },
+    "CHAT-CALL-001-GROUP": {
+      "preserveOtherSessions": true,
+      "fixtureScenario": "chat-call",
+      "fixtureCheckpointId": "CHAT-CALL-001",
+      "fixtureReadyPhase": "fixture-ready",
+      "targetUrl": "http://localhost/game",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "layout": {
+        "columns": 3
+      },
+      "sessions": [
+        {
+          "actor": "WebRTC Alice",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c1",
+          "expectedName": "WebRTC Alice",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        },
+        {
+          "actor": "WebRTC Bob",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c2",
+          "expectedName": "WebRTC Bob",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        },
+        {
+          "actor": "WebRTC Carol",
+          "sessionKind": "demo",
+          "userId": "6500000000000000000000c3",
+          "expectedName": "WebRTC Carol",
+          "fakeMediaStream": true,
+          "microphonePermission": "granted",
+          "cameraPermission": "granted"
+        }
+      ]
+    },
     "MSC115-UI-REGRESSION": {
       "preserveOtherSessions": true,
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
