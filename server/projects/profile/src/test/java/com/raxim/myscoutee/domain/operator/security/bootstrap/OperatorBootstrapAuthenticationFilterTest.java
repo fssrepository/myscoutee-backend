@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.security.bootstrap;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -211,6 +212,6 @@ class OperatorBootstrapAuthenticationFilterTest {
         properties.setOperatorBootstrapAllowInsecure(allowInsecure);
         return new OperatorBootstrapAuthenticationFilter(
                 service,
-                properties);
+                properties, new com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService());
     }
 }

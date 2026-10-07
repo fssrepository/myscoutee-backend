@@ -43,4 +43,5 @@ public class AccountConsentService implements AccountConsents {
                         new java.util.ArrayList<>(consent.getApprovedOptionalSectionIds())),
                 consent.getAcceptedAtIso(), consent.getUpdatedAtIso(), consent.getSource());
     }
+    public Optional<Consent> latest(String userId) { return repository.findTopByUserIdOrderByUpdatedAtIsoDesc(userId).map(this::snapshot); }
 }

@@ -37,7 +37,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
-public class UserLoginSessionService {
+public class UserLoginSessionService implements com.raxim.myscoutee.domain.accounts.api.BootstrapLoginAudit {
     public static final String SESSION_ID_HEADER = com.raxim.myscoutee.domain.accounts.api.AccountMediaSessions.SESSION_ID_HEADER;
 
     private static final int MAX_OPAQUE_ID_LENGTH = 128;

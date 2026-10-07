@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
@@ -807,7 +807,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private String resolveFirebaseEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof FirebasePrincipal firebasePrincipal) {
+        if (principal instanceof AccountIdentity firebasePrincipal) {
             return normalize(firebasePrincipal.getEmail());
         }
         return normalize(authentication == null ? null : authentication.getName());

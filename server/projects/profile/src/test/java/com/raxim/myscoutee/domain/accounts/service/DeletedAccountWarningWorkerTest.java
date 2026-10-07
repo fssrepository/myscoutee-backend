@@ -34,7 +34,7 @@ class DeletedAccountWarningWorkerTest {
     final Instant now = Instant.parse("2026-09-22T12:00:00Z");
     final Users user = new Users();
     @BeforeEach void setup() {
-        org.springframework.test.util.ReflectionTestUtils.setField(worker, "jobGroupScope", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mongo));
+        org.springframework.test.util.ReflectionTestUtils.setField(worker, "jobGroupScope", new AccountJobQueries(com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mongo)));
         user.setUserId("deleted-user"); user.setName("Viewer"); user.setEmail("viewer@example.test");
         user.setProfileStatus("deleted"); user.setDeletedAtIso("2026-08-28T12:00:00Z");
         when(email.enabled()).thenReturn(true); when(parameters.accountPurgeWindowDays(30)).thenReturn(30);

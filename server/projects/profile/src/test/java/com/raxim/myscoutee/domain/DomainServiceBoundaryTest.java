@@ -25,6 +25,7 @@ class DomainServiceBoundaryTest {
     private static final String DOMAIN = "com/raxim/myscoutee/domain/";
     private static final Pattern REFERENCES = Pattern.compile(DOMAIN + "[\\w/$]+");
     private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.ofEntries(
+            java.util.Map.entry("accounts", Set.of("userFriendships", "users", "userSessionActions", "privacyConsents", "userPageFilterPreferences", "accountPurgeJobs", "userLoginAudits", "navigatorContacts", "userExperienceProfiles", "userSessionStates", "userFilterPreferences")),
             java.util.Map.entry("notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs")),
             java.util.Map.entry("localization", Set.of("i18n_messages", "i18n_bundles")),
             java.util.Map.entry("help", Set.of("helpCenterRevisions", "helpCenterAudit", "helpCenterGuideFields")),
@@ -45,7 +46,7 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -69,6 +70,7 @@ class DomainServiceBoundaryTest {
                         @Override public void visitLdcInsn(Object value) {
                             // These reviewed uses are telemetry/UI categories or GitHub release JSON keys.
                             // Other methods, owner classes and actual collection names remain checked.
+                            if ("users".equals(value) && semanticUserLabel(name, method)) return;
                             if ("assets".equals(value) && semanticAssetLabel(name, method)) return;
                             if ("events".equals(value) && semanticEventLabel(name, method)) return;
                             if ("chats".equals(value) && name.equals(DOMAIN + "administration/service/AdminMonitoringService") && method.equals("categoryFor")) return;
@@ -84,7 +86,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat", "events", "accounts"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;
@@ -97,9 +99,7 @@ class DomainServiceBoundaryTest {
                     String dependency = references.group();
                     if (dependency.startsWith(owned)) continue;
                     boolean runtime = dependency.equals(DOMAIN + "platform/service/JobGroupContext")
-                            || dependency.equals(DOMAIN + "platform/config/ConfigProperties")
-                            || (name.equals(DOMAIN + "notifications/service/DefaultFirebaseMessagingGateway")
-                                && dependency.equals(DOMAIN + "platform/service/DeploymentFirebaseRuntime"));
+                            || dependency.equals(DOMAIN + "platform/config/ConfigProperties");
                     assertThat(runtime || dependency.contains("/api/") || dependency.contains("/dto/"))
                             .as("Foreign implementation dependency: %s -> %s", name, dependency).isTrue();
                 }
@@ -107,6 +107,17 @@ class DomainServiceBoundaryTest {
             checked++;
         }
         assertThat(checked).as("Scanned production classes in %s", domain).isGreaterThan(5);
+    }
+
+    private boolean semanticUserLabel(String name, String method) {
+        return switch (name.substring(DOMAIN.length())) {
+            case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "usersCategory", "categoryFor").contains(method);
+            case "administration/service/AdminStatsService" -> method.equals("graphDto");
+            case "affinity/service/AdminGraphScienceService" -> method.equals("calculate");
+            case "notifications/service/NotificationOutboxService" -> Set.of("enqueueInGroup", "newItem").contains(method);
+            case "notifications/service/NotificationOutboxWorkerService" -> method.equals("removeInvalidTokens");
+            default -> false;
+        };
     }
 
     private boolean semanticEventLabel(String name, String method) {

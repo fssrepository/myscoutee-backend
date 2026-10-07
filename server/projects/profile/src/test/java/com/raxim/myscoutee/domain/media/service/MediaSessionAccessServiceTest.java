@@ -32,7 +32,7 @@ import jakarta.servlet.http.Cookie;
 @org.junit.jupiter.api.Tag("standard")
 class MediaSessionAccessServiceTest {
     private final MongoTemplate mongo = mock(MongoTemplate.class);
-    private final MediaSessionAccessService service = new MediaSessionAccessService(new com.raxim.myscoutee.domain.accounts.service.AccountMediaSessionService(mongo));
+    private final MediaSessionAccessService service = new MediaSessionAccessService(new com.raxim.myscoutee.domain.accounts.service.AccountMediaSessionService(mongo), new com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService());
     private final UserSessionState.ActiveSession active = new UserSessionState.ActiveSession();
 
     @AfterEach

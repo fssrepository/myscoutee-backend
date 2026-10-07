@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.localization.api.TranslationBundles;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.domain.platform.api.SchedulingPolicy;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.email.api.EmailSending;
 
@@ -32,7 +32,7 @@ import com.raxim.myscoutee.domain.email.api.EmailSending;
 @Service
 public class DeletedAccountWarningWorker {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.accounts.service.AccountJobQueries jobGroupScope;
 
     public static final String RULE = "account-deletion-warning";
     public static final int WARNING_DAYS = 5;
@@ -41,13 +41,13 @@ public class DeletedAccountWarningWorker {
     @Value("${email.account-warning-initial-retry-delay-seconds:60}")
     private long initialRetryDelaySeconds = 60;
     private final MongoTemplate mongo;
-    private final PlatformParametersService parameters;
+    private final SchedulingPolicy parameters;
     private final EmailSending email;
     private final NotificationJobs jobs;
     private final ScheduledMongoSessionRunner databases;
     private final TranslationBundles i18n;
     private final EmailRendering templates;
-    public DeletedAccountWarningWorker(MongoTemplate mongo, PlatformParametersService parameters,
+    public DeletedAccountWarningWorker(MongoTemplate mongo, SchedulingPolicy parameters,
             EmailSending email, NotificationJobs jobs, ScheduledMongoSessionRunner databases,
             TranslationBundles i18n, EmailRendering templates) {
         this.mongo = mongo; this.parameters = parameters; this.email = email; this.jobs = jobs; this.databases = databases;

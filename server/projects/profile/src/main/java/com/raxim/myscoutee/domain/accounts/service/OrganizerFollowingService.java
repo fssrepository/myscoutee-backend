@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.accounts.service.AccountJobQueries;
 
 import java.time.Instant;
 import java.util.*;
@@ -22,7 +22,7 @@ import com.raxim.myscoutee.domain.accounts.api.Friendships;
 @Service
 public class OrganizerFollowingService implements com.raxim.myscoutee.domain.accounts.api.FollowingEvents {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.service.AccountJobQueries jobGroupScope;
 
     private final MongoTemplate mongo;
     private final Friendships friendships;

@@ -19,7 +19,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -534,7 +534,7 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
             return null;
         }
         Object principal = authentication.getPrincipal();
-        if (principal instanceof FirebasePrincipal firebasePrincipal) {
+        if (principal instanceof AccountIdentity firebasePrincipal) {
             return normalizeId(firebasePrincipal.getUserId());
         }
         if (principal instanceof String value) {

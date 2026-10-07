@@ -40,7 +40,7 @@ import jakarta.annotation.PreDestroy;
  * use short-lived isolated apps and therefore cannot switch live traffic.
  */
 @Service
-public class DeploymentFirebaseRuntime {
+public class DeploymentFirebaseRuntime implements com.raxim.myscoutee.domain.platform.api.FirebaseRuntime {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(DeploymentFirebaseRuntime.class);
     private static final String APP_NAME_PREFIX =

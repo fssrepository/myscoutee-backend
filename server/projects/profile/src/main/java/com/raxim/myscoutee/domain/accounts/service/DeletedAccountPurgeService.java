@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.accounts.service;
 
 import com.raxim.myscoutee.domain.media.api.MediaStorage;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
+import com.raxim.myscoutee.domain.platform.api.SchedulingPolicy;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -39,7 +39,7 @@ import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
-import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService;
+import com.raxim.myscoutee.domain.operator.api.GlobalIdentityPrivacy;
 
 @Service
 public class DeletedAccountPurgeService {
@@ -55,7 +55,7 @@ public class DeletedAccountPurgeService {
     private com.raxim.myscoutee.domain.email.api.EmailPrivacy emailPrivacy;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final int DELETE_GRACE_DAYS = 30;
     private static final Duration PURGE_JOB_LEASE = Duration.ofMinutes(30);
@@ -74,10 +74,10 @@ public class DeletedAccountPurgeService {
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
     private final MediaStorage mediaStorageService;
     private final MongoTemplate mongoTemplate;
-    private final PlatformParametersService platformParametersService;
+    private final SchedulingPolicy platformParametersService;
     private NotificationJobs notificationRuleRegistryService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
-    private OperatorGlobalIdentityService operatorGlobalIdentityService;
+    private GlobalIdentityPrivacy operatorGlobalIdentityService;
 
     public DeletedAccountPurgeService(
             UsersRepository usersRepository,
@@ -87,7 +87,7 @@ public class DeletedAccountPurgeService {
             AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaStorage mediaStorageService,
             MongoTemplate mongoTemplate,
-            PlatformParametersService platformParametersService) {
+            SchedulingPolicy platformParametersService) {
         this.usersRepository = usersRepository;
         this.chatPrivacy = chatPrivacy;
         this.eventPrivacy = eventPrivacy;
@@ -110,7 +110,7 @@ public class DeletedAccountPurgeService {
 
     @Autowired(required = false)
     void setOperatorGlobalIdentityService(
-            OperatorGlobalIdentityService operatorGlobalIdentityService) {
+            GlobalIdentityPrivacy operatorGlobalIdentityService) {
         this.operatorGlobalIdentityService = operatorGlobalIdentityService;
     }
 

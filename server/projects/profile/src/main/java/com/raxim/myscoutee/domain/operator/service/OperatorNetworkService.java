@@ -18,7 +18,7 @@ import com.raxim.myscoutee.domain.registry.api.RegistryDemoConfiguration;
 import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementPageDto;
@@ -30,7 +30,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeade
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.domain.operator.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.domain.operator.repository.OperatorRegistrySettingsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 import com.raxim.myscoutee.domain.registry.api.RegistryNetwork;
 import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
@@ -45,7 +45,7 @@ import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
 public class OperatorNetworkService {
     private final OperatorRegistrySettingsRepository settingsRepository;
     private final OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
     private final RegistryConfiguration realProperties;
     private final RegistryDemoConfiguration demoProperties;
     private final RegistryNetwork operations;
@@ -56,7 +56,7 @@ public class OperatorNetworkService {
     public OperatorNetworkService(
             OperatorRegistrySettingsRepository settingsRepository,
             OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
-            UsersRepository usersRepository,
+            ProfileDirectory usersRepository,
             RegistryConfiguration realProperties,
             RegistryDemoConfiguration demoProperties,
             RegistryNetwork operations,
@@ -413,7 +413,7 @@ public class OperatorNetworkService {
             return "";
         }
         return usersRepository.findByUserId(userId)
-                .map(Users::getImages)
+                .map(WorkspaceProfile::getImages)
                 .map(OperatorNetworkService::firstAbsoluteHttpsImage)
                 .orElse("");
     }

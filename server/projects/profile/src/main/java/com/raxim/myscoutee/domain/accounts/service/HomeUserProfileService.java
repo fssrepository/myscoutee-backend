@@ -13,9 +13,9 @@ import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.payments.api.Affiliates;
 import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
-import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
+import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 @Service
 public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation {
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
 
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
@@ -238,7 +238,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final UserReports userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
     private final ScheduledMessages scheduledMessageTaskService;
-    private final CountryPartitionService countryPartitionService;
+    private final CountryDirectory countryPartitionService;
     private final RegionSecurity regionSecurityProperties;
     private final AffinityScores absoluteAffinityService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
@@ -277,7 +277,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UserReports userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
             ScheduledMessages scheduledMessageTaskService,
-            CountryPartitionService countryPartitionService,
+            CountryDirectory countryPartitionService,
             RegionSecurity regionSecurityProperties,
             AffinityScores absoluteAffinityService,
             AffinityStatusChanges affinityRecomputeTaskService,

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsConfigurationUpdateDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorTlsDtos.TlsJobDto;
@@ -59,7 +59,7 @@ public class OperatorTlsController {
 
     private String actorUserId(Authentication authentication) {
         if (authentication != null
-                && authentication.getPrincipal() instanceof FirebasePrincipal principal) {
+                && authentication.getPrincipal() instanceof AccountIdentity principal) {
             return principal.getUserId();
         }
         return authentication == null ? null : authentication.getName();

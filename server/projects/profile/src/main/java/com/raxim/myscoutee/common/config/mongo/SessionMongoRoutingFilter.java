@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
 

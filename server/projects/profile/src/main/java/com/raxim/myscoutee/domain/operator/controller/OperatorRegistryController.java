@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.OperatorRegistryMutationResultDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.OperatorRegistryStatusDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryConfirmRequestDto;
@@ -67,7 +67,7 @@ public class OperatorRegistryController {
 
     private String actorUserId(Authentication authentication) {
         if (authentication != null
-                && authentication.getPrincipal() instanceof FirebasePrincipal principal) {
+                && authentication.getPrincipal() instanceof AccountIdentity principal) {
             return principal.getUserId();
         }
         return authentication == null ? null : authentication.getName();

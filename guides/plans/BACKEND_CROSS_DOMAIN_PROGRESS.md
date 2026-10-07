@@ -37,10 +37,10 @@ may need changes together.
 
 | # | Domain | Files | Imports | Status | Verification / commit |
 | ---: | --- | ---: | ---: | --- | --- |
-| 1 | accounts | 4 | 23 | In progress: notification recipient, preference and counter API | First boundary tests passed; remaining account boundaries pending |
+| 1 | accounts | 4 | 23 | Complete: account-owned identity, consent, authentication, session audit and scoped jobs | 425 local tests passed; this checkpoint |
 | 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
 | 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
-| 4 | events | 8 | 14 | Complete: owner-controlled reads/writes, feedback projection, privacy and scoped scheduling | 566 regression tests and 59 final focused checks passed; this checkpoint |
+| 4 | events | 8 | 14 | Complete: owner-controlled reads/writes, feedback projection, privacy and scoped scheduling | 566 regression tests and 59 final focused checks passed; `0fcacac34` |
 | 5 | chat | 4 | 8 | Complete: conversation contracts, account writes, event context and chat privacy ownership | 653 regression tests and 98 final focused tests passed; `4d20ef5f2` |
 | 6 | assets | 1 | 2 | Complete: asset ownership, booking contracts, privacy and save events | 1,147 regression tests passed; stale alias repaired; 44 final focused tests passed; `07b4c337c` |
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
@@ -2069,3 +2069,37 @@ workspace event projections, absent owners, filtering before skip/limit and a
 stale status snapshot that must not overwrite a concurrent event update. The dev
 watcher compiled successfully and restarted the application in 7.86 seconds;
 this startup duration is diagnostic evidence, not a throughput benchmark.
+
+## #1 Accounts — completed boundary
+
+- `accounts/api/AccountIdentity`, `ProfileAuthentication`, `BootstrapAccounts`,
+  `BootstrapLoginAudit` and their existing account services now own principal,
+  Firebase credential checks, bootstrap account loading/token construction and
+  login audit. Media, access, help, groups, notifications and operator consume
+  these contracts. The original authentication predicates, authorities and
+  audit ordering remain in place; no new public authentication endpoint exists.
+- `AccountConsents.latest` supplies the existing immutable consent snapshot to
+  global identity preparation. Required acceptance/revision checks and the
+  consent commitment inputs remain identical. Operator network and platform
+  status propagation consume read-only `WorkspaceProfile` values.
+- `AccountJobQueries` builds account-owned workspace criteria from `JobAudience`.
+  Platform audience resolution uses account-owned profile queries with the
+  original predicates and batching. The unused platform foreign-user join was
+  removed; the embedded scheduling test now invokes the payment owner's actual
+  replacement and retains its before-limit assertions.
+- Account purge calls `operator/api/GlobalIdentityPrivacy`; scheduling, country,
+  administrator settings and Firebase runtime dependencies use their owner APIs.
+  `OperatorBootstrapRequestSupport` is the shared operator API protocol helper;
+  its historical type alias is retained after relocation.
+- **Functional risk: high** at bootstrap/media authorization and account purge
+  boundaries; medium at consent and scoped scheduling. **Severe slowdown risk:
+  low** for this checkpoint: no extra request, query-per-user loop or HTTP hop.
+- Verification: **425 standard/embedded tests passed, zero failures/skips**,
+  including account/operator/platform/media security, WebSecurity bootstrap,
+  Mongo aliases, the 19-domain boundary guard and embedded scheduling. Missing
+  owner beans and a repository-mock assertion were repaired in test fixtures;
+  product behavior was not relaxed to accommodate them. The existing dev
+  watcher compiled and restarted successfully. Full HTTP E2E is unproven.
+- User scheduling decision: E2E and speed measurements are deferred to the next
+  session. Keep dev running now; stop the dev application before any E2E server
+  is started in that later session.

@@ -23,11 +23,11 @@ import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.events.api.EventOwnership;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
@@ -46,7 +46,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     private static final String STATUS_TRASHED = "T";
     private static final Set<String> SUPPRESSED_STATUSES = Set.of(STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE);
 
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
     private final EventOwnership activityEventsRepository;
     private final MemberDirectory activityMembersRepository;
     private final AssetOwnership assetsRepository;
@@ -55,7 +55,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     private final AttachmentLifecycle chatAttachmentLifecycleService;
 
     public ModelStatusPropagationService(
-            UsersRepository usersRepository,
+            ProfileDirectory usersRepository,
             EventOwnership activityEventsRepository,
             MemberDirectory activityMembersRepository,
             AssetOwnership assetsRepository,
@@ -76,7 +76,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (!StringUtils.hasText(normalizedUserId)) {
             return ModelStatusPropagationOutcome.empty();
         }
-        Users user = usersRepository.findByUserId(normalizedUserId).orElse(null);
+        WorkspaceProfile user = usersRepository.findByUserId(normalizedUserId).orElse(null);
         if (user == null) {
             return ModelStatusPropagationOutcome.empty();
         }
@@ -126,7 +126,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         Set<String> allAdminIds = adminIdsBySourceId.values().stream()
                 .flatMap(Collection::stream)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(allAdminIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(allAdminIds));
 
         LinkedHashSet<String> targetSourceIds = new LinkedHashSet<>();
         boolean conflict = false;
@@ -159,7 +159,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         Set<String> allResponsibleUserIds = responsibleUserIdsByAssetId.values().stream()
                 .flatMap(Collection::stream)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(allResponsibleUserIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(allResponsibleUserIds));
 
         LinkedHashSet<String> targetAssetIds = new LinkedHashSet<>();
         boolean conflict = false;
@@ -599,7 +599,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (candidateIds.isEmpty()) {
             return List.of();
         }
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
         return candidateIds.stream()
                 .filter(userId -> isActiveUser(usersById.get(userId)))
                 .toList();
@@ -634,7 +634,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (candidateIds.isEmpty()) {
             return List.of();
         }
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
         return candidateIds.stream()
                 .filter(userId -> isActiveUser(usersById.get(userId)))
                 .toList();
@@ -678,7 +678,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
                 .toList();
     }
 
-    private AdminStatusSnapshot adminStatusSnapshot(Collection<String> userIds, Map<String, Users> usersById) {
+    private AdminStatusSnapshot adminStatusSnapshot(Collection<String> userIds, Map<String, WorkspaceProfile> usersById) {
         String strongest = "";
         boolean hasSuppressedAdmin = false;
         boolean hasActiveAdmin = false;
@@ -709,7 +709,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return snapshot.hasActiveAdmin() ? STATUS_UNDER_REVIEW : snapshot.strongestSuppressionStatus();
     }
 
-    private String suppressionStatusForUser(Users user) {
+    private String suppressionStatusForUser(WorkspaceProfile user) {
         String profileStatus = safeText(user == null ? null : user.getProfileStatus());
         String status = safeText(user == null ? null : user.getStatus());
         if ("deleted".equals(profileStatus) || STATUS_DELETED.equalsIgnoreCase(status)) {
@@ -724,7 +724,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return "";
     }
 
-    private boolean isActiveUser(Users user) {
+    private boolean isActiveUser(WorkspaceProfile user) {
         return !StringUtils.hasText(suppressionStatusForUser(user));
     }
 
@@ -790,9 +790,9 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
     }
 
-    private Map<String, Users> indexUsers(List<Users> users) {
-        LinkedHashMap<String, Users> result = new LinkedHashMap<>();
-        for (Users user : users == null ? List.<Users>of() : users) {
+    private Map<String, WorkspaceProfile> indexUsers(List<? extends WorkspaceProfile> users) {
+        LinkedHashMap<String, WorkspaceProfile> result = new LinkedHashMap<>();
+        for (WorkspaceProfile user : users == null ? List.<WorkspaceProfile>of() : users) {
             String userId = normalizeId(user == null ? null : user.getId());
             if (StringUtils.hasText(userId)) {
                 result.put(userId, user);

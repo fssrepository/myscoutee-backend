@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 import com.google.firebase.auth.FirebaseToken;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;
-import com.raxim.myscoutee.domain.platform.service.DeploymentFirebaseRuntime;
+import com.raxim.myscoutee.domain.platform.api.FirebaseRuntime;
 
 @Service
 public class DefaultFirebaseTokenVerifier implements FirebaseTokenVerifier {
-    private final DeploymentFirebaseRuntime firebaseRuntime;
+    private final FirebaseRuntime firebaseRuntime;
 
     public DefaultFirebaseTokenVerifier(
-            DeploymentFirebaseRuntime firebaseRuntime) {
+            FirebaseRuntime firebaseRuntime) {
         this.firebaseRuntime = firebaseRuntime;
     }
 

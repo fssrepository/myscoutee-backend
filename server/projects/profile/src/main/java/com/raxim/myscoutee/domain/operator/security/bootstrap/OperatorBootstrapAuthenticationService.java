@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.security.bootstrap;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseService;
+import com.raxim.myscoutee.domain.accounts.api.BootstrapAccounts;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 
 @Service
@@ -52,7 +53,7 @@ public class OperatorBootstrapAuthenticationService {
                     .getBytes(StandardCharsets.US_ASCII);
 
     private final ConfigProperties config;
-    private final FirebaseService firebaseService;
+    private final BootstrapAccounts firebaseService;
     private final Clock clock;
     private final SecureRandom secureRandom;
     private final Object failureLock = new Object();
@@ -64,7 +65,7 @@ public class OperatorBootstrapAuthenticationService {
     @Autowired
     public OperatorBootstrapAuthenticationService(
             ConfigProperties config,
-            FirebaseService firebaseService) {
+            BootstrapAccounts firebaseService) {
         this(
                 config,
                 firebaseService,
@@ -74,7 +75,7 @@ public class OperatorBootstrapAuthenticationService {
 
     OperatorBootstrapAuthenticationService(
             ConfigProperties config,
-            FirebaseService firebaseService,
+            BootstrapAccounts firebaseService,
             Clock clock,
             SecureRandom secureRandom) {
         this.config = config;

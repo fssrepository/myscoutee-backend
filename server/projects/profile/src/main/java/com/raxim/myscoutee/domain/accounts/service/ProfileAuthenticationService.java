@@ -8,6 +8,10 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincip
 @Service
 public class ProfileAuthenticationService implements ProfileAuthentication {
  public AccountIdentity integrationPrincipal(WorkspaceProfile profile) { return new FirebasePrincipal(profile.getUserId(),null,"INTEGRATION",(Users)profile); }
+ public boolean hasFirebaseCredentials(Authentication authentication) { return authentication != null && authentication.getCredentials() instanceof com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential; }
  public boolean isAccount(Authentication authentication) { return authentication!=null && authentication.getPrincipal() instanceof FirebasePrincipal; }
  public Authentication forProfile(Authentication original, WorkspaceProfile profile) { return FirebaseAuthenticationToken.forProfile(original,profile); }
+    public org.springframework.security.core.Authentication trustedPrincipal(org.springframework.security.core.userdetails.UserDetails principal) {
+        return new com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationToken(principal, null, principal.getAuthorities());
+    }
 }

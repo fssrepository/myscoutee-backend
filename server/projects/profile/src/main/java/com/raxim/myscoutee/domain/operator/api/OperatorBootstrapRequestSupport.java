@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.operator.security.bootstrap;
+package com.raxim.myscoutee.domain.operator.api;
 
 import org.springframework.util.StringUtils;
 

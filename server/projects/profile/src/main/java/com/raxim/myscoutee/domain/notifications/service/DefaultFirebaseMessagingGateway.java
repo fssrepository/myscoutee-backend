@@ -10,14 +10,14 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.SendResponse;
-import com.raxim.myscoutee.domain.platform.service.DeploymentFirebaseRuntime;
+import com.raxim.myscoutee.domain.platform.api.FirebaseRuntime;
 
 @Service
 public class DefaultFirebaseMessagingGateway implements FirebaseMessagingGateway {
-    private final DeploymentFirebaseRuntime firebaseRuntime;
+    private final FirebaseRuntime firebaseRuntime;
 
     public DefaultFirebaseMessagingGateway(
-            DeploymentFirebaseRuntime firebaseRuntime) {
+            FirebaseRuntime firebaseRuntime) {
         this.firebaseRuntime = firebaseRuntime;
     }
 

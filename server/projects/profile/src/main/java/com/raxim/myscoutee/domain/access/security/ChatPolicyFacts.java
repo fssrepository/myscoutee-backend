@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.access.security;
 
 import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,9 +34,9 @@ public class ChatPolicyFacts {
         String normalizedChatId = normalizeId(chatId);
         if (actorId == null || normalizedChatId == null) return actorId;
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        WorkspaceProfile profile = authentication != null && authentication.getPrincipal() instanceof FirebasePrincipal principal
-                && actorId.equals(principal.getUserId()) && principal.profileView() != null
-                ? principal.profileView() : usersRepository.findByUserId(actorId).orElse(null);
+        WorkspaceProfile profile = authentication != null && authentication.getPrincipal() instanceof AccountIdentity principal
+                && actorId.equals(principal.getUserId()) && principal.getUser() != null
+                ? principal.getUser() : usersRepository.findByUserId(actorId).orElse(null);
         String accountId = profile == null ? null : normalizeId(profile.getAccountUserId());
         if (accountId == null || accountId.equals(actorId)) return actorId;
         return chatsRepository.findByOwnerUserIdAndChatId(accountId, normalizedChatId)

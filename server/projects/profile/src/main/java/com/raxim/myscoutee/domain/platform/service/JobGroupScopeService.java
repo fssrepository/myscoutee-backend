@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 
 /** Resolves stored workspace ownership at job boundaries; never accepts an admin-supplied scope. */
 @Service
@@ -21,6 +21,7 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
     private final MongoTemplate mongo;
 
     public JobGroupScopeService(MongoTemplate mongo) { this.mongo = mongo; }
@@ -33,8 +34,8 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     }
 
     public java.util.Map<String, List<String>> usersByGroup(java.util.Collection<String> userIds) {
-        var profiles = mongo.find(Query.query(Criteria.where("userId").in(userIds)), Users.class);
-        var byId = new java.util.HashMap<String, Users>();
+        var profiles = this.profiles.findByUserIdIn(userIds);
+        var byId = new java.util.HashMap<String, WorkspaceProfile>();
         profiles.forEach(profile -> byId.put(profile.getUserId(), profile));
         var workspaces = workspaces();
         var result = new java.util.LinkedHashMap<String, List<String>>();
@@ -48,7 +49,7 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     }
 
     public String forUser(String userId) {
-        var user = mongo.findOne(Query.query(Criteria.where("userId").is(userId)), Users.class);
+        var user = profiles.findFirstByUserId(userId);
         return user == null ? JobGroupContext.groupId() : forWorkspace(user.getWorkspaceGroupId());
     }
 
@@ -98,25 +99,4 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
                     .filter(entry -> scope.equals(entry.getValue())).map(java.util.Map.Entry::getKey).toList());
     }
 
-    /** Filter at the database before applying the batch limit; another group's backlog cannot starve this job. */
-    public <T> List<T> findOwned(Query query, Class<T> type, String ownerField) {
-        return findOwned(query, type, ownerField, "users", "userId");
-    }
-
-
-
-    private <T> List<T> findOwned(Query query, Class<T> type, String ownerField, String collection, String foreignField) {
-        List<Document> pipeline = new ArrayList<>();
-        pipeline.add(new Document("$match", query.getQueryObject()));
-        pipeline.add(new Document("$lookup", new Document("from", collection).append("localField", ownerField)
-                .append("foreignField", foreignField).append("as", "__jobOwner")));
-        pipeline.add(new Document("$match", new Document("__jobOwner.0", new Document("$exists", true))));
-        pipeline.add(new Document("$match", workspaceCriteria("__jobOwner.workspaceGroupId").getCriteriaObject()));
-        if (!query.getSortObject().isEmpty()) pipeline.add(new Document("$sort", query.getSortObject()));
-        if (query.getSkip() > 0) pipeline.add(new Document("$skip", query.getSkip()));
-        if (query.getLimit() > 0) pipeline.add(new Document("$limit", query.getLimit()));
-        pipeline.add(new Document("$unset", "__jobOwner"));
-        return mongo.getCollection(mongo.getCollectionName(type)).aggregate(pipeline)
-                .map(row -> mongo.getConverter().read(type, row)).into(new ArrayList<>());
-    }
 }

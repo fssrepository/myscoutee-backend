@@ -59,7 +59,7 @@ class ModelStatusPropagationServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
@@ -114,7 +114,7 @@ class ModelStatusPropagationServiceTest {
         when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of());
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
@@ -154,7 +154,7 @@ class ModelStatusPropagationServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
@@ -198,7 +198,7 @@ class ModelStatusPropagationServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),

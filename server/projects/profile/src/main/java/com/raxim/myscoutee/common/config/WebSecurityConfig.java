@@ -19,7 +19,7 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 
 import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationFilter;
 import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationService;
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
@@ -45,6 +45,7 @@ public class WebSecurityConfig {
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
     @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles;
+    @Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
     @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
@@ -178,7 +179,7 @@ public class WebSecurityConfig {
             operatorBootstrapAuthenticationFilter() {
         return new OperatorBootstrapAuthenticationFilter(
                 operatorBootstrapAuthenticationService,
-                configProperties);
+                configProperties, profileAuthentication);
     }
 
     private SessionMongoRoutingFilter sessionMongoRoutingFilter() {

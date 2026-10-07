@@ -105,11 +105,9 @@ class ScheduledMessageTaskServiceIntegrationTest {
         org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
         var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("status").is("pending"))
                 .with(org.springframework.data.domain.Sort.by("createdDate")).limit(1);
-        var result = JobGroupContext.call("myscoutee-work", () -> scope.findOwned(query,
-                com.raxim.myscoutee.domain.payments.document.Payment.class, "userId"));
+        var result = JobGroupContext.call("myscoutee-work", () -> com.raxim.myscoutee.domain.payments.service.PaymentTestSupport.scopedPayments(mongoTemplate, scope, query));
         assertThat(result).extracting(com.raxim.myscoutee.domain.payments.document.Payment::getUserId).containsExactly("work-owner");
-        assertThat(JobGroupContext.call(null, () -> scope.findOwned(query,
-                com.raxim.myscoutee.domain.payments.document.Payment.class, "userId")))
+        assertThat(JobGroupContext.call(null, () -> com.raxim.myscoutee.domain.payments.service.PaymentTestSupport.scopedPayments(mongoTemplate, scope, query)))
                 .extracting(com.raxim.myscoutee.domain.payments.document.Payment::getUserId).containsExactly("dating-owner");
     }
 
@@ -382,6 +380,8 @@ class ScheduledMessageTaskServiceIntegrationTest {
             com.raxim.myscoutee.domain.groups.service.GroupDirectoryService.class,
             com.raxim.myscoutee.domain.affinity.service.ConfigurationCatalogService.class,
             com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService.class,
+            com.raxim.myscoutee.domain.events.service.EventOwnershipService.class,
+            com.raxim.myscoutee.domain.assets.service.AssetOwnershipService.class,
             JobGroupScopeService.class
     })
     static class Config {

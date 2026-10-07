@@ -14,8 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.accounts.api.AccountMediaSessions;
@@ -31,9 +31,11 @@ public class MediaSessionAccessService implements MediaSessionAccess {
     private static final String DEMO_PREFIX = "demo.";
     private static final SecureRandom RANDOM = new SecureRandom();
     private final AccountMediaSessions sessions;
+    private final ProfileAuthentication profileAuthentication;
 
-    public MediaSessionAccessService(AccountMediaSessions sessions) {
+    public MediaSessionAccessService(AccountMediaSessions sessions, ProfileAuthentication profileAuthentication) {
         this.sessions = sessions;
+        this.profileAuthentication = profileAuthentication;
     }
 
     public Authentication authenticate(HttpServletRequest request) {
@@ -58,8 +60,8 @@ public class MediaSessionAccessService implements MediaSessionAccess {
         if (!"GET".equals(request.getMethod()) || !request.getRequestURI().endsWith("/auth/me")
                 || authentication == null || !authentication.isAuthenticated()
                 || (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO
-                    && !(authentication.getCredentials() instanceof FirebaseCredential))
-                || !(authentication.getPrincipal() instanceof FirebasePrincipal principal)) return;
+                    && !profileAuthentication.hasFirebaseCredentials(authentication))
+                || !(authentication.getPrincipal() instanceof AccountIdentity principal)) return;
         String sessionId = request.getHeader(AccountMediaSessions.SESSION_ID_HEADER);
         if (sessionId == null || sessionId.isBlank()) return;
         var active = sessions.mediaToken(principal.getUserId(), sessionId).orElse(null);
