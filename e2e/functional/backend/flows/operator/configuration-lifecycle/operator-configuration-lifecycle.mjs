@@ -73,8 +73,7 @@ export async function assertResponse({ ctx, result, request }) {
       ...originalPayload.branding,
       productName: `E2E Operator ${runSlug}`.slice(0, 80),
       logoCharacterIndex: 0,
-      logoUrl: managedLogoUrl,
-      themePreset: alternateTheme(original.branding.themePreset)
+      logoUrl: managedLogoUrl
     },
     payment: {
       providerId: 'stripe',
@@ -306,14 +305,6 @@ export async function assertResponse({ ctx, result, request }) {
         }
       },
       {
-        name: 'unsupported branding theme',
-        patch: {
-          branding: {
-            themePreset: 'NEON'
-          }
-        }
-      },
-      {
         name: 'invalid social provider identifier',
         patch: {
           socialLinks: retainedPayload.socialLinks.map((link, index) => index === 0
@@ -522,8 +513,7 @@ function toUpdatePayload(configuration, adminEmails) {
       productName: configuration.branding.productName,
       logoCharacterIndex: configuration.branding.logoCharacterIndex,
       homeLabel: configuration.branding.homeLabel,
-      logoUrl: configuration.branding.logoUrl,
-      themePreset: configuration.branding.themePreset
+      logoUrl: configuration.branding.logoUrl
     },
     payment: {
       providerId: configuration.payment.providerId,
@@ -595,11 +585,6 @@ function assertChangedConfiguration(configuration, expected) {
     configuration.branding
   );
   assert(
-    configuration.branding.themePreset === expected.changedPayload.branding.themePreset,
-    'saved configuration should persist the theme preset',
-    configuration.branding
-  );
-  assert(
     configuration.branding.logoUrl === expected.managedLogoUrl,
     'saved configuration should persist a managed media logo reference',
     configuration.branding
@@ -662,7 +647,6 @@ async function assertPublicProjection(ctx, operatorConfiguration) {
     'logoCharacterIndex',
     'homeLabel',
     'logoUrl',
-    'themePreset',
     'revision',
     'socialLinks',
     'privacyContact'
@@ -672,7 +656,6 @@ async function assertPublicProjection(ctx, operatorConfiguration) {
       && publicConfiguration.logoCharacterIndex === operatorConfiguration.branding.logoCharacterIndex
       && publicConfiguration.homeLabel === operatorConfiguration.branding.homeLabel
       && publicConfiguration.logoUrl === operatorConfiguration.branding.logoUrl
-      && publicConfiguration.themePreset === operatorConfiguration.branding.themePreset
       && publicConfiguration.revision === operatorConfiguration.branding.revision,
     'public deployment configuration should project saved branding',
     publicConfiguration
@@ -728,7 +711,7 @@ function assertSemanticRestore(restored, original, baselineAdminEmails) {
     JSON.stringify(restored.socialLinks) === JSON.stringify(original.socialLinks),
     'restore should recover the original social links'
   );
-  for (const field of ['productName', 'logoCharacterIndex', 'homeLabel', 'logoUrl', 'themePreset']) {
+  for (const field of ['productName', 'logoCharacterIndex', 'homeLabel', 'logoUrl']) {
     assert(
       restored.branding[field] === original.branding[field],
       `restore should recover original branding.${field}`
@@ -751,10 +734,6 @@ function assertSemanticRestore(restored, original, baselineAdminEmails) {
     JSON.stringify(restored.firebase) === JSON.stringify(original.firebase),
     'restore should leave Firebase configuration unchanged'
   );
-}
-
-function alternateTheme(current) {
-  return current === 'OCEAN' ? 'FOREST' : 'OCEAN';
 }
 
 async function loadSeedAdminEmails(currentAdminEmails) {

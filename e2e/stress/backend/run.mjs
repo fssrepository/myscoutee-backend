@@ -223,7 +223,7 @@ function createContext({ baseUrl, mode, runId, vu }) {
     }),
     defaultMaxMs: Number(process.env.E2E_STRESS_DEFAULT_MAX_MS ?? process.env.E2E_DEFAULT_MAX_MS ?? 5000),
     vars: {
-      adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
+      adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'admin-demo-ava',
       e2eUserId: `${process.env.E2E_USER_ID ?? 'e2e-host'}-${runId}`,
       e2eSecondUserId: `${process.env.E2E_SECOND_USER_ID ?? 'e2e-member'}-${runId}`,
       runId,

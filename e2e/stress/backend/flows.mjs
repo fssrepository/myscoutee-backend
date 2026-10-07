@@ -129,7 +129,7 @@ function createCtx(runId) {
       timeoutMs: Number(process.env.E2E_HTTP_TIMEOUT_MS ?? 15000)
     }),
     vars: {
-      adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'myscoutee@gmail.com',
+      adminUserId: process.env.E2E_ADMIN_USER_ID ?? 'admin-demo-ava',
       operatorUserId: process.env.E2E_OPERATOR_USER_ID ?? 'operator@myscoutee.local',
       nonOperatorUserId: process.env.E2E_NON_OPERATOR_USER_ID ?? 'bf057de7c586eede7e84bdc7',
       e2eUserId: `${process.env.E2E_USER_ID ?? 'e2e-host'}-${runId}`,

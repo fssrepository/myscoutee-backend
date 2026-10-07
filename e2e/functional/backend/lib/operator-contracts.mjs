@@ -598,7 +598,6 @@ function assertBranding(value, path) {
     'logoCharacterIndex',
     'homeLabel',
     'logoUrl',
-    'themePreset',
     'revision',
     'socialLinks'
   ], path);
@@ -612,7 +611,6 @@ function assertBranding(value, path) {
   }
   expectString(branding.homeLabel, `${path}.homeLabel`);
   expectString(branding.logoUrl, `${path}.logoUrl`, { allowEmpty: true });
-  expectString(branding.themePreset, `${path}.themePreset`);
   expectNonNegativeInteger(branding.revision, `${path}.revision`);
   assertSocialLinks(branding.socialLinks, `${path}.socialLinks`);
   return branding;
