@@ -109,8 +109,7 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
+                new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
                 activityEventsRepository,
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 activityMembersRepository,
@@ -174,8 +173,7 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
+                new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
                 activityEventsRepository,
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 activityMembersRepository,
@@ -227,8 +225,7 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
+                new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
                 activityEventsRepository,
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 activityMembersRepository,

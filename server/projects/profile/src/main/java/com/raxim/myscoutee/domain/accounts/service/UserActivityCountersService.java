@@ -27,7 +27,7 @@ import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
-import com.raxim.myscoutee.domain.chat.document.Chat;
+
 import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
@@ -40,6 +40,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.ActivityCounters {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.chat.api.ChatDirectory chatDirectory;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
     private final OrganizerFollowingService organizerFollowingService;
 
@@ -361,48 +362,9 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private SupportCaseCounters resolveSupportCaseCounters(String baseGroupId) {
-        List<Document> rows = mongoTemplate.aggregate(
-                Aggregation.newAggregation(
-                        context -> new Document("$match", new Document()
-                                .append("channelType", new Document("$in", List.of("appSupport", "supportCase")))
-                                .append("supportCase.status", new Document("$in", SUPPORT_CASE_STATUSES))
-                                .append("supportBaseGroupId", baseGroupId)
-                                .append("id", new Document("$type", "string").append("$ne", ""))),
-                        context -> new Document("$group", new Document("_id", "$id")
-                                .append("status", new Document("$first", "$supportCase.status"))),
-                        context -> new Document("$group", new Document("_id", "$status")
-                                .append("count", new Document("$sum", 1)))),
-                Chat.class,
-                Document.class)
-                .getMappedResults();
-        int pending = 0;
-        int warned = 0;
-        int picked = 0;
-        int solved = 0;
-        int blocked = 0;
-        for (Document row : rows) {
-            Object rawCount = row == null ? null : row.get("count");
-            int value = rawCount instanceof Number number
-                    ? Math.max(0, number.intValue())
-                    : 0;
-            String status = row == null ? "" : normalizeId(row.getString("_id"));
-            switch (status) {
-                case "pending" -> pending = value;
-                case "warned" -> warned = value;
-                case "picked" -> picked = value;
-                case "solved" -> solved = value;
-                case "blocked" -> blocked = value;
-                default -> {
-                }
-            }
-        }
-        return new SupportCaseCounters(
-                pending,
-                warned,
-                picked,
-                solved,
-                blocked,
-                pending + warned + picked + solved + blocked);
+        var counts = chatDirectory.supportCaseCounts(baseGroupId);
+        int pending = counts.getOrDefault("pending", 0), warned = counts.getOrDefault("warned", 0), picked = counts.getOrDefault("picked", 0), solved = counts.getOrDefault("solved", 0), blocked = counts.getOrDefault("blocked", 0);
+        return new SupportCaseCounters(pending, warned, picked, solved, blocked, pending + warned + picked + solved + blocked);
     }
 
     private EventCounters resolveEventCounters(String userId) {

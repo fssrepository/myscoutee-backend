@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.affinity.api.CampaignGraphs;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
@@ -117,7 +117,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private final EventInviteNotificationService eventInviteNotificationService;
     private final EventCounterExpiryService eventCounterExpiryService;
     private final CheckoutBaskets eventCheckoutBasketService;
-    private final ChatService chatService;
+    private final EventConversations chatService;
     private final NotificationJobs notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
     private final NotificationDelivery notificationOutboxService;
@@ -154,7 +154,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             EventInviteNotificationService eventInviteNotificationService,
             EventCounterExpiryService eventCounterExpiryService,
             CheckoutBaskets eventCheckoutBasketService,
-            ChatService chatService,
+            EventConversations chatService,
             NotificationJobs notificationRuleRegistryService,
             PlatformParametersService platformParametersService,
             NotificationDelivery notificationOutboxService,
@@ -2668,7 +2668,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
 
     private String roomWelcomeMessage(ActivityEvent sourceEvent, boolean tournamentRoomPresentation) {
         if (!tournamentRoomPresentation) {
-            return ChatService.RANDOM_ROOM_WELCOME_MESSAGE;
+            return EventConversations.RANDOM_ROOM_WELCOME_MESSAGE;
         }
         String eventTitle = firstNonBlank(
                 sourceEvent == null ? null : sourceEvent.getTitle(),
@@ -2679,8 +2679,8 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
 
     private String roomWelcomeMessageType(boolean tournamentRoomPresentation) {
         return tournamentRoomPresentation
-                ? ChatService.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE
-                : ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
+                ? EventConversations.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE
+                : EventConversations.RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
     }
 
     private int incrementObservedQueries(AtomicInteger observedQueries) {

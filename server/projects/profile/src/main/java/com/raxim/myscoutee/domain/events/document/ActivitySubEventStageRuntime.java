@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "activity_subevent_stage_runtime_owner_subevent", def = "{'ownerId': 1, 'subEventId': 1}", unique = true),
         @CompoundIndex(name = "activity_subevent_stage_runtime_owner", def = "{'ownerId': 1}")
 })
-public class ActivitySubEventStageRuntime {
+public class ActivitySubEventStageRuntime implements com.raxim.myscoutee.domain.events.api.EventResourceDirectory.StageRuntime {
     @Id
     private String id;
 

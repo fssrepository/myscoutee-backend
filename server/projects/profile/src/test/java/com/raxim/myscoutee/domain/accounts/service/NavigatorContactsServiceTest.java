@@ -55,7 +55,7 @@ class NavigatorContactsServiceTest {
                 navigatorContactsProfilesRepository,
                 homeUserProfileService,
                 userExperienceProfilesService,
-                usersRepository, accessControlService, friendshipFacts, chatAccess, notifications, mongo);
+                usersRepository, accessControlService, friendshipFacts, new com.raxim.myscoutee.domain.chat.service.ContactPermissionService(chatAccess), notifications, mongo);
     }
 
     @Test

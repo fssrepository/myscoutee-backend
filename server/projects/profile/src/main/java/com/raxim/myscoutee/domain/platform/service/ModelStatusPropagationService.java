@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
+import com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
@@ -52,7 +52,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     private final AssetOwnership assetsRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationDelivery notificationOutboxService;
-    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
+    private final AttachmentLifecycle chatAttachmentLifecycleService;
 
     public ModelStatusPropagationService(
             UsersRepository usersRepository,
@@ -61,7 +61,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
             AssetOwnership assetsRepository,
             MongoTemplate mongoTemplate,
             NotificationDelivery notificationOutboxService,
-            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
+            AttachmentLifecycle chatAttachmentLifecycleService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;

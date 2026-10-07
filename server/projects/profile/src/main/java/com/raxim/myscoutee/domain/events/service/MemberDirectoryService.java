@@ -9,6 +9,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 
 @Service
 public class MemberDirectoryService implements MemberDirectory {
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final ActivityMembersRepository members;
     public MemberDirectoryService(ActivityMembersRepository members) { this.members = members; }
     @Override public Optional<ActivityMember> findByOwnerTypeAndOwnerIdAndUserId(String type, String id, String user) { return members.findByOwnerTypeAndOwnerIdAndUserId(type, id, user); }
@@ -22,5 +23,11 @@ public class MemberDirectoryService implements MemberDirectory {
                 .filter(EventVipInvitation::eligible).map(ActivityMember::getEventVipOfferedPricing)
                 .filter(pricing -> !Boolean.FALSE.equals(pricing.enabled()) && pricing.audience() != null
                         && Boolean.TRUE.equals(pricing.audience().enabled()) && pricing.audience().vipPrice() != null).orElse(null);
+    }
+    public Page pageByOwnerAndStatus(String ownerType, String ownerId, String status, int offset, int limit) {
+        var criteria = org.springframework.data.mongodb.core.query.Criteria.where("ownerType").is(ownerType).and("ownerId").is(ownerId).and("status").is(status);
+        long total = mongo.count(new org.springframework.data.mongodb.core.query.Query(criteria), ActivityMember.class);
+        var query = new org.springframework.data.mongodb.core.query.Query(criteria).with(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "userId")).skip(offset).limit(limit);
+        return new Page(total, mongo.find(query, ActivityMember.class));
     }
 }

@@ -23,4 +23,27 @@ public class ChatDirectoryService implements ChatDirectory {
     public ChatDirectoryService(ChatsRepository chats) { this.chats = chats; }
     @Override public Optional<com.raxim.myscoutee.domain.chat.document.Chat> findByOwnerUserIdAndChatId(String owner, String chat) { return chats.findByOwnerUserIdAndChatId(owner, chat); }
     @Override public List<com.raxim.myscoutee.domain.chat.document.Chat> findByChatId(String chat) { return chats.findByChatId(chat); }
+    public java.util.Map<String, Integer> supportCaseCounts(String baseGroupId) {
+        List<Document> rows = mongo.aggregate(
+                org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation(
+                        context -> new Document("$match", new Document()
+                                .append("channelType", new Document("$in", List.of("appSupport", "supportCase")))
+                                .append("supportCase.status", new Document("$in", List.of("pending", "warned", "picked", "solved", "blocked")))
+                                .append("supportBaseGroupId", baseGroupId)
+                                .append("id", new Document("$type", "string").append("$ne", ""))),
+                        context -> new Document("$group", new Document("_id", "$id")
+                                .append("status", new Document("$first", "$supportCase.status"))),
+                        context -> new Document("$group", new Document("_id", "$status")
+                                .append("count", new Document("$sum", 1)))),
+                com.raxim.myscoutee.domain.chat.document.Chat.class,
+                Document.class)
+                .getMappedResults();
+        var result = new java.util.LinkedHashMap<String, Integer>();
+        for (var row : rows) {
+            Object count = row == null ? null : row.get("count");
+            String status = row == null || row.getString("_id") == null ? "" : row.getString("_id").trim();
+            result.put(status, count instanceof Number number ? Math.max(0, number.intValue()) : 0);
+        }
+        return result;
+    }
 }

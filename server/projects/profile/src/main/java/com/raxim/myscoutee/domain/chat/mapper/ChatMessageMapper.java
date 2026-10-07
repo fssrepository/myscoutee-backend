@@ -16,21 +16,21 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageAttachmen
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReactionRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReplyRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageAttachmentDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReactionDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.chat.service.ChatStreamEvent;
 
 @Component
 public class ChatMessageMapper {
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
 
-    public ChatMessageMapper(UsersRepository usersRepository) {
+    public ChatMessageMapper(ProfileDirectory usersRepository) {
         this.usersRepository = usersRepository;
     }
 
@@ -38,10 +38,10 @@ public class ChatMessageMapper {
         return toDto(message, viewerUserId, null);
     }
 
-    public ChatMessageDto toDto(ChatMessage message, String viewerUserId, Map<String, Users> userCache) {
+    public ChatMessageDto toDto(ChatMessage message, String viewerUserId, Map<String, WorkspaceProfile> userCache) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
-        Users sender = findUser(senderId, userCache);
+        WorkspaceProfile sender = findUser(senderId, userCache);
         boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
         String senderName = deletedSender ? deletedUserName() : message == null ? "" : safeText(message.getSender());
         String senderInitials = deletedSender ? deletedUserInitials() : senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials());
@@ -79,7 +79,7 @@ public class ChatMessageMapper {
     public ChatStreamEvent toStreamEvent(String chatId, ChatMessage message) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
-        Users sender = findUser(senderId);
+        WorkspaceProfile sender = findUser(senderId);
         boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
         String senderGender = deletedSender ? "deleted" : senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender());
         return ChatStreamEvent.message(
@@ -116,12 +116,12 @@ public class ChatMessageMapper {
         return toReadAvatarDto(record, findUser(userId));
     }
 
-    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, Map<String, Users> userCache) {
+    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, Map<String, WorkspaceProfile> userCache) {
         String userId = record == null ? "" : safeText(record.getId());
         return toReadAvatarDto(record, findUser(userId, userCache));
     }
 
-    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, Users user) {
+    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, WorkspaceProfile user) {
         String userId = record == null ? "" : safeText(record.getId());
         boolean deletedUser = isDeletedOrPurgedUser(user, userId);
         String gender = deletedUser ? "deleted" : record == null ? "man" : normalizeGender(record.getGender());
@@ -177,12 +177,12 @@ public class ChatMessageMapper {
         return toReactionDto(record, findUser(userId));
     }
 
-    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, Map<String, Users> userCache) {
+    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, Map<String, WorkspaceProfile> userCache) {
         String userId = record == null ? "" : safeText(record.getUserId());
         return toReactionDto(record, findUser(userId, userCache));
     }
 
-    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, Users user) {
+    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, WorkspaceProfile user) {
         String userId = record == null ? "" : safeText(record.getUserId());
         boolean deletedUser = isDeletedOrPurgedUser(user, userId);
         return new ChatMessageReactionDto(
@@ -271,14 +271,14 @@ public class ChatMessageMapper {
         return true;
     }
 
-    private Users findUser(String userId) {
+    private WorkspaceProfile findUser(String userId) {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
         return usersRepository.findByUserId(userId).orElse(null);
     }
 
-    private Users findUser(String userId, Map<String, Users> userCache) {
+    private WorkspaceProfile findUser(String userId, Map<String, WorkspaceProfile> userCache) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return null;
@@ -289,12 +289,12 @@ public class ChatMessageMapper {
         if (userCache.containsKey(normalizedUserId)) {
             return userCache.get(normalizedUserId);
         }
-        Users user = findUser(normalizedUserId);
+        WorkspaceProfile user = findUser(normalizedUserId);
         userCache.put(normalizedUserId, user);
         return user;
     }
 
-    private boolean isDeletedOrPurgedUser(Users user, String userId) {
+    private boolean isDeletedOrPurgedUser(WorkspaceProfile user, String userId) {
         if (!StringUtils.hasText(safeText(userId))) {
             return false;
         }
@@ -311,7 +311,7 @@ public class ChatMessageMapper {
         return "DU";
     }
 
-    private String resolveUserImageUrl(Users user) {
+    private String resolveUserImageUrl(WorkspaceProfile user) {
         if (user == null || user.getImages() == null) {
             return "";
         }

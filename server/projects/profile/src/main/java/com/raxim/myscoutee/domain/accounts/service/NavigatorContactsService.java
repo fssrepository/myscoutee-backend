@@ -5,8 +5,8 @@ import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessDto;
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessSnapshot;
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand;
-import com.raxim.myscoutee.domain.chat.document.ContactChatAccess;
-import com.raxim.myscoutee.domain.chat.repository.ContactChatAccessRepository;
+import com.raxim.myscoutee.domain.chat.api.ContactPermissions.Permission;
+import com.raxim.myscoutee.domain.chat.api.ContactPermissions;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -68,7 +68,7 @@ public class NavigatorContactsService {
     private final AccessPermissions accessControlService;
     private final MongoTemplate mongo;
     private final Friendships friendshipFacts;
-    private final ContactChatAccessRepository chatAccess;
+    private final ContactPermissions chatAccess;
     private final NotificationDelivery notifications;
 
     public NavigatorContactsService(
@@ -78,7 +78,7 @@ public class NavigatorContactsService {
             UsersRepository usersRepository,
             AccessPermissions accessControlService,
             Friendships friendshipFacts,
-            ContactChatAccessRepository chatAccess,
+            ContactPermissions chatAccess,
             NotificationDelivery notifications,
             MongoTemplate mongo) {
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
@@ -119,7 +119,7 @@ public class NavigatorContactsService {
         Users owner = usersRepository.findByUserId(actor).orElse(null);
         Users peer = usersRepository.findByUserId(target).orElse(null);
         if (actor.equals(target) || !availableChatPeer(owner, peer)) throw chatAccessError(404, "Contact unavailable.");
-        String id = ContactChatAccess.pairId(actor, target);
+        String id = chatAccess.pairId(actor, target);
         var current = chatAccess.findById(id).orElse(null);
         String action = command == null ? "" : safeText(command.action());
         String status;
@@ -140,10 +140,11 @@ public class NavigatorContactsService {
                 throw chatAccessError(409, "The request has changed.");
             requester = current.requestedBy(); requestedAt = current.requestedAtIso();
         } else throw chatAccessError(400, "Unknown chat access action.");
-        var next = new ContactChatAccess(id,
+        var draft = new ContactPermissions.Change(id,
                 actor.compareTo(target) < 0 ? actor : target, actor.compareTo(target) < 0 ? target : actor,
                 requester, status, requestedAt, "pending".equals(status) ? null : now, current == null ? null : current.version());
-        try { next = chatAccess.save(next); }
+        Permission next;
+        try { next = chatAccess.save(draft); }
         catch (org.springframework.dao.OptimisticLockingFailureException | org.springframework.dao.DuplicateKeyException conflict) {
             throw chatAccessError(409, "The request has changed.");
         }
@@ -181,7 +182,7 @@ public class NavigatorContactsService {
     }
 
     private ContactChatAccessDto chatAccessDto(
-            ContactChatAccess value, Users peer) {
+            Permission value, Users peer) {
         var contact = new NavigatorContactDto(peer.getUserId(), peer.getUserId(), contactName(peer.getName()),
                 safeText(peer.getInitials()), normalizeGender(peer.getGender()), safeText(peer.getCity()),
                 peer.getImages() == null || peer.getImages().isEmpty() ? "" : peer.getImages().get(0),

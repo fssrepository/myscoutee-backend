@@ -54,4 +54,19 @@ public class EventOwnershipService implements EventOwnership {
         return mongo.findOne(Query.query(new Criteria().orOperator(Criteria.where("_id").is(id),
                 Criteria.where("sourceId").is(id))), ActivityEvent.class);
     }
+    public java.util.List<ActivityEvent> chatNavigationEvents(java.util.Collection<String> eventIds) {
+        Query eventQuery = Query.query(Criteria.where("sourceId").in(eventIds));
+        eventQuery.fields()
+                .include("sourceId")
+                .include("ownerUserId")
+                .include("creatorUserId")
+                .include("admins")
+                .include("title")
+                .include("pendingMembers")
+                .include("subEvents");
+        return mongo.find(eventQuery, ActivityEvent.class);
+    }
+    public com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentSubEvent(SubEvent value) {
+        return com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper.toDto((com.raxim.myscoutee.domain.events.document.SubEventItem) value);
+    }
 }

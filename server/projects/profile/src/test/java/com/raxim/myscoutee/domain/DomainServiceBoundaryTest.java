@@ -37,13 +37,14 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
             java.util.Map.entry("affinity", Set.of("userRates", "userAffinityEdges", "affinityConfigs", "affinityRecomputeTasks")),
             java.util.Map.entry("registry", Set.of()),
+            java.util.Map.entry("chat", Set.of("chats", "chatMessages", "contactChatAccess")),
             java.util.Map.entry("integrations", Set.of("integrationTokens", "integrationWebhookDeliveries", "mcpEventSubscriptions", "integrationExternalIds", "mcpAuthorizations", "integrationWebhookSubscriptions", "mcpOAuthClients", "integrationParticipantInvites")),
             java.util.Map.entry("payments", Set.of("payments", "affiliateRegistrations", "affiliateLinks", "affiliatePartners", "affiliatePaymentContributions", "payment_gateway_operations", "savedPaymentMethods", "paymentMethodRegistrations", "eventCheckoutBasketItems", "paymentProviders", "exchangeRates")),
             java.util.Map.entry("assets", Set.of("assets", "assetRequests")),
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -68,6 +69,8 @@ class DomainServiceBoundaryTest {
                             // These reviewed uses are telemetry/UI categories or GitHub release JSON keys.
                             // Other methods, owner classes and actual collection names remain checked.
                             if ("assets".equals(value) && semanticAssetLabel(name, method)) return;
+                            if ("chats".equals(value) && name.equals(DOMAIN + "administration/service/AdminMonitoringService") && method.equals("categoryFor")) return;
+                            if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("describe")) return;
                             assertThat(COLLECTIONS.get(domain).contains(value)).as("Raw foreign collection in %s.%s: %s", name, method, value)
                                     .isFalse();
                         }
@@ -79,7 +82,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets", "registry", "payments", "integrations", "chat"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;

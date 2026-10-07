@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.api.Assets;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
 import com.raxim.myscoutee.domain.payments.api.EventPayments;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
@@ -133,7 +133,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
-    private final ChatService chatService;
+    private final EventConversations chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessPermissions accessControlService;
     private final UserActivityCountersService userActivityCountersService;
@@ -155,7 +155,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             EventInviteNotificationService eventInviteNotificationService,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
-            ChatService chatService,
+            EventConversations chatService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessPermissions accessControlService,
             UserActivityCountersService userActivityCountersService,

@@ -50,8 +50,6 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentity
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.access.api.RegionSecurity;
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
-import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
@@ -96,8 +94,6 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponse
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
-import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
@@ -235,8 +231,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
     private final RatingDirectory userRatesRepository;
-    private final ChatsRepository chatsRepository;
-    private final ChatMessagesRepository chatMessagesRepository;
+    private final com.raxim.myscoutee.domain.chat.api.ChatReview chatReview;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final AssetOwnership assetsRepository;
@@ -277,8 +272,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             EdgeDirectory userAffinityEdgesRepository,
             UserFriendshipsRepository userFriendshipsRepository,
             RatingDirectory userRatesRepository,
-            ChatsRepository chatsRepository,
-            ChatMessagesRepository chatMessagesRepository,
+            com.raxim.myscoutee.domain.chat.api.ChatReview chatReview,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
             AssetOwnership assetsRepository,
@@ -306,8 +300,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userFriendshipsRepository = userFriendshipsRepository;
         this.userRatesRepository = userRatesRepository;
-        this.chatsRepository = chatsRepository;
-        this.chatMessagesRepository = chatMessagesRepository;
+        this.chatReview = chatReview;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
@@ -802,18 +795,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         String messageId = normalizeOptionalText(request.messageId());
         String assetId = normalizeOptionalText(request.assetId());
         String assetType = normalizeOptionalText(request.assetType());
-        ChatMessage reportedChatMessage = null;
         if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
-            Chat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
+            var reportedChat = chatReview.reportEvidence(userId, targetUserId, chatId, messageId);
             if (reportedChat == null) {
                 return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
             }
-            reportedChatMessage = findChatMessage(reportedChat.getChatId(), messageId);
-            chatId = normalizeOptionalText(reportedChat.getChatId());
-            messageId = normalizeOptionalText(reportedChatMessage == null ? messageId : reportedChatMessage.getId());
+            chatId = normalizeOptionalText(reportedChat.chatId());
+            messageId = normalizeOptionalText(reportedChat.messageId());
             sourceType = "chat";
             sourceId = normalizeOptionalText(firstNonBlank(sourceId, messageId));
-            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChatMessage == null ? null : reportedChatMessage.getText()));
+            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChat.text()));
         }
 
         String reportSyncKey = reportSyncKey(
@@ -2630,54 +2621,11 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private Chat resolveReportableChat(
-            String reporterUserId,
-            String targetUserId,
-            String chatId,
-            String messageId) {
-        String normalizedReporterUserId = normalizeId(reporterUserId);
-        String normalizedTargetUserId = normalizeId(targetUserId);
-        String normalizedChatId = normalizeId(chatId);
-        String normalizedMessageId = normalizeId(messageId);
-        if (!StringUtils.hasText(normalizedReporterUserId)
-                || !StringUtils.hasText(normalizedTargetUserId)
-                || !StringUtils.hasText(normalizedChatId)
-                || !StringUtils.hasText(normalizedMessageId)) {
-            return null;
-        }
-        Chat chat = chatsRepository
-                .findByOwnerUserIdAndChatId(normalizedReporterUserId, normalizedChatId)
-                .orElse(null);
-        if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
-            return null;
-        }
-        ChatMessage message = findChatMessage(normalizedChatId, normalizedMessageId);
-        if (message == null || message.getSenderAvatar() == null) {
-            return null;
-        }
-        return normalizedTargetUserId.equals(normalizeId(message.getSenderAvatar().getId())) ? chat : null;
-    }
 
-    private boolean chatHasMember(Chat chat, String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (chat == null || !StringUtils.hasText(normalizedUserId)) {
-            return false;
-        }
-        return chat.getMemberIds().stream()
-                .map(this::normalizeId)
-                .anyMatch(normalizedUserId::equals);
-    }
 
-    private ChatMessage findChatMessage(String chatId, String messageId) {
-        String normalizedChatId = normalizeId(chatId);
-        String normalizedMessageId = normalizeId(messageId);
-        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedMessageId)) {
-            return null;
-        }
-        return chatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
-                .map(message -> (ChatMessage) message)
-                .orElse(null);
-    }
+
+
+
 
     private String resolveActivityMemberEntryId(ActivityMember member) {
         if (member == null) {

@@ -13,4 +13,5 @@ public interface ChatDirectory {
         String getSupportBaseGroupId(); List<String> getMemberIds(); SupportCase getSupportCase();
     }
     interface SupportCase { String getStatus(); }
+    java.util.Map<String, Integer> supportCaseCounts(String baseGroupId);
 }

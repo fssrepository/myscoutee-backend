@@ -17,4 +17,7 @@ public interface ProfileDirectory {
     boolean existsNotDeleted(String id);
     List<? extends WorkspaceProfile> findNotDeletedByUserIdIn(Collection<String> ids);
     List<String> userIdsByWorkspace(String groupId);
+    long countByUserIdIn(Collection<String> ids);
+    List<? extends WorkspaceProfile> pageByUserIdIn(Collection<String> ids, int offset, int limit);
+    java.util.Set<String> savedContactIds(String userId);
 }

@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 partialFilter = "{'status': 'A'}"),
         @CompoundIndex(name = "activity_resource_owner_key", def = "{'assetOwnerUserId': 1, 'ownerId': 1}")
 })
-public class ActivitySubEventResource {
+public class ActivitySubEventResource implements com.raxim.myscoutee.domain.events.api.EventResourceDirectory.Resource {
     @Id
     private String id;
 
@@ -176,14 +176,14 @@ public class ActivitySubEventResource {
             Integer quantity,
             String addedByUserId,
             Boolean routeEnabled,
-            List<String> routes) {
+            List<String> routes) implements com.raxim.myscoutee.domain.events.api.EventResourceDirectory.AssetSettings {
     }
 
     public record SubEventSupplyContributionEntryRecord(
             String id,
             String userId,
             Integer quantity,
-            String addedAtIso) {
+            String addedAtIso) implements com.raxim.myscoutee.domain.events.api.EventResourceDirectory.SupplyContribution {
     }
 
     public record SubEventResourceMetricRecord(

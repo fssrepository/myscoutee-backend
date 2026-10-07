@@ -30,4 +30,15 @@ public class ProfileDirectoryService implements ProfileDirectory {
         return mongo.find(query, Users.class).stream().map(Users::getUserId).toList();
     }
 
+    public long countByUserIdIn(Collection<String> ids) { return mongo.count(org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").in(ids)), Users.class); }
+    public List<Users> pageByUserIdIn(Collection<String> ids, int offset, int limit) {
+        return mongo.find(org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").in(ids))
+                .with(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "userId")).limit(limit).skip(offset), Users.class);
+    }
+    public java.util.Set<String> savedContactIds(String userId) {
+        var profile = mongo.findOne(org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").is(userId)), com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile.class);
+        var ids = new java.util.LinkedHashSet<String>();
+        if (profile != null) for (var contact : profile.getContacts()) ids.add(contact.getUserId() == null ? "" : contact.getUserId().trim());
+        return ids;
+    }
 }

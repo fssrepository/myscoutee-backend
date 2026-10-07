@@ -11,8 +11,8 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
-import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
@@ -206,11 +206,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final MongoTemplate mongoTemplate;
-    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
+    private final AttachmentLifecycle chatAttachmentLifecycleService;
     private final NotificationDelivery notificationOutboxService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
-    private final ChatService chatService;
+    private final EventConversations chatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessPermissions accessControlService;
@@ -245,11 +245,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             MongoTemplate mongoTemplate,
-            ChatAttachmentLifecycleService chatAttachmentLifecycleService,
+            AttachmentLifecycle chatAttachmentLifecycleService,
             NotificationDelivery notificationOutboxService,
             EventInviteNotificationService eventInviteNotificationService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
-            ChatService chatService,
+            EventConversations chatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessPermissions accessControlService,
@@ -6858,7 +6858,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 throw new IllegalStateException(
                         "Published event " + entry.getKey() + " has no accepted member for its main chat.");
             }
-            ChatService.PublishedMainEventChatResult result =
+            EventConversations.PublishedMainEventChatResult result =
                     chatService.ensurePublishedMainEventChat(entry.getValue(), acceptedUserIds);
             if (result != null
                     && result.createdOwnerUserIds().contains(normalizedActorUserId)) {

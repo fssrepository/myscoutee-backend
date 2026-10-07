@@ -13,12 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tools.jackson.databind.ObjectMapper;
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSocketRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSocketEventDto;
@@ -203,9 +203,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String resolveViewerUserId(WebSocketSession session) {
-        FirebasePrincipal principal = resolvePrincipal(session);
+        AccountIdentity principal = resolvePrincipal(session);
         if (principal != null) {
-            Users user = principal.getUser();
+            WorkspaceProfile user = principal.getUser();
             String principalUserId = user != null && StringUtils.hasText(user.getId())
                     ? user.getId().trim()
                     : (principal.getUserId() == null ? "" : principal.getUserId().trim());
@@ -219,12 +219,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         return resolveRequestedUserId(session);
     }
 
-    private FirebasePrincipal resolvePrincipal(WebSocketSession session) {
+    private AccountIdentity resolvePrincipal(WebSocketSession session) {
         if (!(session.getPrincipal() instanceof org.springframework.security.core.Authentication authentication)) {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        return principal instanceof FirebasePrincipal firebasePrincipal ? firebasePrincipal : null;
+        return principal instanceof AccountIdentity firebasePrincipal ? firebasePrincipal : null;
     }
 
     private void sendSocketError(

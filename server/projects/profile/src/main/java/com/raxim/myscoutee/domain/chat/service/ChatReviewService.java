@@ -78,4 +78,56 @@ public class ChatReviewService implements ChatReview {
     }
 
     private String normalize(String value) { return value == null ? "" : value.trim(); }
+    public ReportEvidence reportEvidence(String reporter, String target, String chatId, String messageId) {
+        var chat = resolveReportableChat(reporter, target, chatId, messageId);
+        if (chat == null) return null;
+        var message = findChatMessage(chat.getChatId(), messageId);
+        return new ReportEvidence(chat.getChatId(), message == null ? messageId : message.getId(), message == null ? null : message.getText());
+    }
+    private Chat resolveReportableChat(
+            String reporterUserId,
+            String targetUserId,
+            String chatId,
+            String messageId) {
+        String normalizedReporterUserId = normalize(reporterUserId);
+        String normalizedTargetUserId = normalize(targetUserId);
+        String normalizedChatId = normalize(chatId);
+        String normalizedMessageId = normalize(messageId);
+        if (!StringUtils.hasText(normalizedReporterUserId)
+                || !StringUtils.hasText(normalizedTargetUserId)
+                || !StringUtils.hasText(normalizedChatId)
+                || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        Chat chat = chatsRepository
+                .findByOwnerUserIdAndChatId(normalizedReporterUserId, normalizedChatId)
+                .orElse(null);
+        if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
+            return null;
+        }
+        ChatMessage message = findChatMessage(normalizedChatId, normalizedMessageId);
+        if (message == null || message.getSenderAvatar() == null) {
+            return null;
+        }
+        return normalizedTargetUserId.equals(normalize(message.getSenderAvatar().getId())) ? chat : null;
+    }
+    private boolean chatHasMember(Chat chat, String userId) {
+        String normalizedUserId = normalize(userId);
+        if (chat == null || !StringUtils.hasText(normalizedUserId)) {
+            return false;
+        }
+        return chat.getMemberIds().stream()
+                .map(this::normalize)
+                .anyMatch(normalizedUserId::equals);
+    }
+    private ChatMessage findChatMessage(String chatId, String messageId) {
+        String normalizedChatId = normalize(chatId);
+        String normalizedMessageId = normalize(messageId);
+        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedMessageId)) {
+            return null;
+        }
+        return chatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
+                .map(message -> (ChatMessage) message)
+                .orElse(null);
+    }
 }

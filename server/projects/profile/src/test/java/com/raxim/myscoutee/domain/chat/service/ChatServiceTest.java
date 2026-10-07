@@ -116,10 +116,9 @@ class ChatServiceTest {
                 chatsRepository,
                 chatMessagesRepository,
                 mongoTemplate,
-                usersRepository,
-                activityMembersRepository,
-                activitySubEventResourcesRepository,
-                activitySubEventStageRuntimeRepository,
+                profileDirectory(),
+                memberDirectory(),
+                new com.raxim.myscoutee.domain.events.service.EventResourceDirectoryService(activitySubEventResourcesRepository, activitySubEventStageRuntimeRepository),
                 homeUserProfileService,
                 userActivityCountersService,
                 chatStreamPublisher,
@@ -129,7 +128,13 @@ class ChatServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 new ChatMapper(),
-                new ChatMessageMapper(usersRepository)), mongoTemplate);
+                new ChatMessageMapper(profileDirectory())), mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountDevices", new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "chatCounters", new com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", homeUserProfileService);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
+        org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
     }
 
     @AfterEach
@@ -1373,5 +1378,15 @@ class ChatServiceTest {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "announcements", new com.raxim.myscoutee.domain.community.service.AnnouncementDirectoryService(mongo));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
         return service;
+    }
+    private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profileDirectory() {
+        var owner = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
+        return owner;
+    }
+    private com.raxim.myscoutee.domain.events.api.MemberDirectory memberDirectory() {
+        var owner = new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
+        return owner;
     }
 }

@@ -41,13 +41,13 @@ may need changes together.
 | 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
 | 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
-| 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
+| 5 | chat | 4 | 8 | Complete: conversation contracts, account writes, event context and chat privacy ownership | 653 regression tests and 98 final focused tests passed; this checkpoint |
 | 6 | assets | 1 | 2 | Complete: asset ownership, booking contracts, privacy and save events | 1,147 regression tests passed; stale alias repaired; 44 final focused tests passed; `07b4c337c` |
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
 | 10 | payments | 8 | 10 | Complete: owner-controlled checkout, accounting, cancellations and scoped jobs | 1,109 regression tests passed; two purge fixtures repaired; 178 focused tests and 31 final boundary/header tests passed; `e7be89bd0` |
-| 11 | integrations | 11 | 15 | Complete: owner-controlled authorization, invitations, publication and webhook jobs | 794 regression tests passed; three security bootstrap fixtures repaired; 167 final focused tests passed; this checkpoint |
+| 11 | integrations | 11 | 15 | Complete: owner-controlled authorization, invitations, publication and webhook jobs | 794 regression tests passed; three security bootstrap fixtures repaired; 167 final focused tests passed; `7108a7b22` |
 | 12 | content | 2 | 5 | Complete: moderation ownership, support review, submissions, counters and privacy | 899 regression, boundary and serialization tests passed; `e7ac81ab3` |
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed; `602f0367b` |
 
-**Completed domains: 16/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
+**Completed domains: 17/21 — #2 notifications, #3 groups, #5 chat, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #11 integrations, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1962,3 +1962,55 @@ security bootstrap fixtures were repaired to register the existing account
 authentication owner. The final 167 focused integration, security, owner-event,
 serialization and boundary tests passed with no failures or skips. The existing
 dev watcher compiled and restarted successfully, and the application is healthy.
+
+### #5 chat: account writes and event context through their owners
+
+- `domain/chat/api/EventConversations.java`: the existing `ChatService` provides
+  event rooms, publication results, owner status changes and system messages.
+  Event callers use this contract and the existing `AttachmentLifecycle` contract.
+- `domain/accounts/api/AccountDevices.java`, `ChatCounters.java` and their
+  services: device registration/deletion and single/bulk unread-counter writes
+  move to accounts. Original matching, device timestamps, account save behavior,
+  `$inc` fields, signs and unordered bulk execution are preserved.
+- `ProfileDirectory` retains batched profile lookup and now owns saved-contact
+  lookup and the existing count/sorted-page queries. `ProfilePresentation`,
+  `SelectedProfile`, `ActivityCounters` and `AccountIdentity` replace concrete
+  account services/principals in chat, its mappers, push delivery and sockets.
+- `MemberDirectory` owns membership count/paging. `EventOwnership` owns the
+  existing projected event navigation lookup and sub-event presentation.
+  `EventResourceDirectory` owns batched resource/runtime reads; its read-only
+  local views are not detached transport representations. Existing storage
+  classes and nested record identities remain unchanged.
+- `domain/chat/service/ChatPrivacyService.java`: the original account-purge chat
+  implementation moves intact into chat, including 100-message pages, attachment
+  deletion, authorship/read/reaction/poll/reply/pin scrubbing and summary refresh.
+  Account purge invokes it at the original point in the sequence.
+- `ContactPermissions` / `ContactPermissionService`: private-contact consent is
+  stored by chat, using the existing pair key and optimistic version guard.
+  Accounts retains actor eligibility, contact saving, counters and notifications.
+- `ChatReview` owns reportability evidence; `ChatDirectory` owns support-case
+  aggregation, preserving chat-id deduplication and base-group filtering.
+- `DomainServiceBoundaryTest` covers incoming/outgoing chat dependencies and raw
+  collection references. Two exact method-level exceptions are semantic telemetry
+  and integration capability labels, not database access.
+
+Functional risk: **medium**, concentrated in unread-counter deltas, chat member
+paging, support-case counters, contact approval version conflicts and account
+purge. WebSocket identity still uses the account-issued principal through its
+interface. Public chat DTOs, URLs, collection names and persisted shapes stay the
+same. No new network hop or per-member query is introduced; previous query
+batching and projections are retained. Severe slowdown risk: **low** for these
+moves, with chat member/header reads and purge batches retained as E2E targets.
+No measured E2E latency claim is made by local tests.
+
+Verification so far: 653 regression tests passed across chat, accounts, events
+and Mongo aliases; the sole failure was an integration capability label caught
+by the collection-name guard. A focused final run checks its narrowly scoped
+exception. The embedded persistence test verifies counter writes/readback,
+workspace filtering, chat-copy deduplication and rejection of a stale consent
+approval. The earlier focused run also exercised account purge and reportability
+through the real owner adapters over the original repository fixtures.
+
+Final verification: all 98 focused chat, embedded persistence, Mongo alias and
+architecture checks passed with no failures or skips. The existing dev watcher
+compiled successfully and the application health check is healthy.

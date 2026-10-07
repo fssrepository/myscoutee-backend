@@ -15,6 +15,7 @@ public interface EventOwnership {
     java.util.List<? extends Event> findAll();
     List<? extends Event> findBySourceId(String sourceId);
     interface Event {
+        String getAvatar();
         Boolean getIsTrashed(); Boolean getIsExpired();
         com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto getMingleConfiguration();
 
@@ -57,6 +58,8 @@ public interface EventOwnership {
         String getUpdatedUser();
         String getStatus(); String getCreatorUserId(); String getWorkspaceGroupId(); String getUpdatedDate(); List<String> getAdmins();
     }
-    interface SubEvent extends EventSchedule.Stage { String location(); String endAt(); }
+    interface SubEvent extends EventSchedule.Stage { String location(); String endAt(); List<com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto> groups(); }
     Event findByIdOrSourceId(String id);
+    List<? extends Event> chatNavigationEvents(java.util.Collection<String> eventIds);
+    com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentSubEvent(SubEvent value);
 }
