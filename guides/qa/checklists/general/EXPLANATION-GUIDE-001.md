@@ -6,7 +6,7 @@ to its intended control. Popup-opening transitions and unsaved editor validation
 Never save a form, send a message, join/leave an event, confirm checkout, create
 a token, or submit any other business action during this case.
 
-Current inventory: 67 explainable screen contexts and 1151 conditional catalog fields.
+Current inventory: 73 explainable screen contexts and 1194 conditional catalog fields.
 Runtime progress counts only the targets available on the current surface.
 The context and step inventory in
 `frontend/src/app/shared/core/local/seed/data/help-center-guide-fields.json` is
@@ -15,9 +15,30 @@ surfaces and shared behavior affected by that change.
 
 ## Expanded Work/Community scope — 2026-10-06
 
-Status: **REOPENED / NOT RUN** for the newly added/changed surfaces. The September PASS covers only its recorded inventory. Follow [MSC-115](../MSC-115_WORK_COMMUNITY_PAIR_QA.md) for actors, reachable content and latest acceptance rules. The canonical `help-center-guide-versions.json` lists 28 revised contexts. Run EN/HU, desktop/mobile, local/HTTP, visible-target highlighting, popup transitions and empty/populated states for these contexts and their affected shared components. Do not execute business mutations during the guide-only portion.
+Status: **REOPENED / NOT RUN** for the newly added/changed surfaces. The September PASS covers only its recorded inventory. Follow [MSC-115](../MSC-115_WORK_COMMUNITY_PAIR_QA.md) for actors, reachable content and latest acceptance rules. The canonical `help-center-guide-versions.json` records each revised context and its current version. Run EN/HU, desktop/mobile, local/HTTP, visible-target highlighting, popup transitions and empty/populated states for these contexts and their affected shared components. Do not execute business mutations during the guide-only portion.
 
 The startup commands below document the earlier Event-only fixture. Do not treat it as the expanded Work/Community baseline: first inspect retained fixture status and prepare the required actors through the existing versioned harness/launcher. No new full campaign browser delegation is implied by this document; the 2026-10-06 delegation is currently limited to login/logout diagnosis.
+
+## Operator / app-admin wiring audit — 2026-10-07
+
+**GAP: dedicated role surfaces have no step guide.** This is a read-only wiring
+audit, not a browser click-through or completed guide implementation:
+
+- Operator's floating guide launcher is excluded by the existing
+  `!isOperatorMode()` template condition.
+- Neither the operator nor app-admin page/popup components register dedicated
+  guide contexts. The runtime surface registry, field catalog and all three
+  Mongo seed copies have no `operator.*` or `admin.*` contexts/revisions.
+- The shared avatar menu registers `navigation.menu` and has seeded EN/HU
+  sections. App-admin can use that common guide when enabled, but it does not
+  cover admin-specific actions. Operator cannot reach it through the launcher.
+- The side-menu Explanations preference is omitted for both privileged roles.
+  Admin's Help/Content Editor is a guide authoring surface, not proof that its
+  own controls or other administrative surfaces have step guides.
+
+Keep these omissions separate from the registered member-surface campaign.
+No privileged workflow or guide visibility condition was changed for this audit.
+Evidence: [operator/app-admin wiring audit](../../evidence/general/EXPLANATION-GUIDE-001-20261007.md#operator--app-admin-wiring-audit).
 
 ## Historical Event-only profiles
 
@@ -75,6 +96,15 @@ open that surface, then inspect the guide through the managed profile. Codex may
 6. Repeat at 390×844 and 1280×900; exercise a short mobile viewport for nested menus. Text must fit within five lines. Open menus must be highlighted and scrollable, with their guide card visible. Menus must not repeatedly reopen between adjacent steps.
 7. Verify Rates and Home have separate slider and Save/Go steps; copy explicitly names the slider and when the value is committed. Verify photo link-copy/remove, gallery navigation, status badges and popup-opening image badges.
 8. Admin Content Editor must expose every registered context. Verify active compact tour defaults and EN/HU field/section parity in frontend-local and all three Mongo seeds. Phone Chrome and the installed PWA must preserve the same Back priority; installation is separately user-authorized.
+9. On the landing article popup and any other surface without a usable guide,
+   click Guide: show a persistent, compact, centered guide-style message,
+   EN “There is no guide for this screen.” / HU “Ehhez a felülethez nincs
+   útmutató.” Do not flash and disappear, show an empty tour, or use targets
+   behind the popup. Verify missing content and absent visible targets, cold
+   and repeated clicks, at desktop/mobile sizes. X, Escape, Back, the shade and
+   another Guide click close only this message; the underlying surface remains.
+   A real load failure retains the separate retry/error explanation. On a
+   supported surface, Next/Back/Done and the existing card placement still work.
 
 Run the full sequence on the populated profile first, then repeat relevant
 surfaces on both no-event profiles. At minimum, verify every context on one
@@ -83,13 +113,145 @@ Explore, Members, Chat, Resources, Sub-events, Rates, Community groups/feed,
 Contacts, and Profile view. Record any context that cannot be reached with its
 exact profile and visible prerequisite; do not infer new role eligibility.
 
+## WebRTC Help-popup follow-up — 2026-10-07
+
+Status: **NOT RUN manually**. This extends the existing explanation-guide case;
+[CHAT-CALL-001](CHAT-CALL-001.md) remains the functional call/media checklist.
+Use that checkpoint's verified actors and prepared waiting, incoming and joined
+call states. Its setup is separate from stepping through Help. The historical
+Event-only launcher above does not prepare a WebRTC call. Revalidate fixture
+readiness after a dev demo reset before using the configured call launcher.
+
+1. In both `chats` and `event.chat`, open the guide and find `chat-call` when
+   the telephone control is rendered. Explain green availability and the red,
+   disabled state. **Next must not start a call.** Check Dating, Work and
+   Community so a scoped guide revision cannot hide the new step.
+2. In a prepared call, open Help. The context is `chat.call`, with 17 catalog
+   fields; the live total includes only rendered targets. Waiting/self-only,
+   incoming and joined states must omit absent peer, admin, accept/decline,
+   spectrum and browser-audio-unlock controls. No raw i18n keys appear.
+3. Walk the visible participant grid, follow-speakers switch, own mic/camera,
+   participant mute/video, enlargement, spectrum, bottom controls and close.
+   The explanation distinguishes local playback controls from an admin's
+   whole-call mute. **Guide navigation never toggles media, joins, declines,
+   moderates or hangs up.**
+4. Open the existing volume panel through its normal control, then Help.
+   The active context becomes `chat.call.volume`, with seven conditional
+   fields. The launcher remains available on the compact popup. The `Én`/`Me`
+   slider explains incoming playback volume, not microphone gain. Peer steps
+   target the controls inside the named participant's block.
+5. Close only Help: volume and call stay open. Close the volume panel: its
+   guide registration is removed and Help belongs to `chat.call` again. Once
+   the functional call check ends the call, Help returns to the parent chat.
+   Repeat opening/closing the child panel; no duplicate guide or load loop.
+6. In the prepared paged/focused call state, highlight only visible tiles and
+   controls, never the hidden page or the chat beneath the call. A missing
+   control is omitted from progress. Return to the grid and reopen Help.
+7. Exercise Next, Back, the step selector and Done with the existing guide
+   behavior. Repeat EN/HU at 390×844 and 1280×900. Preserve the established
+   mobile/desktop placement; text and highlighted controls remain readable.
+8. Check the new call contexts in Admin Content Editor and check local/Mongo
+   catalog parity. Actual calls require the HTTP/signaling fixture; an offline
+   seed audit does not prove a working call or a browser Help click-through.
+
+## First-visit guide-button introduction — 2026-10-07
+
+Status: **NOT RUN manually**. Use the existing isolated anonymous landing
+checkpoint. Do not clear the user's ordinary browser data or manufacture a
+consent record. The existing desktop-beside/mobile-above guide placement and
+launcher positioning are regression expectations, not a request to redesign them.
+
+1. On a fresh isolated profile, open the entry page normally. When consent is
+   ready, the guide button receives exactly **one** introductory step
+   (`landing.guide`, `guide-launcher`, progress `1 / 1`). It explains that the
+   lightbulb opens step-by-step help for the current screen, Next/Back/Done,
+   that both the lightbulb and bell can be dragged or hidden on the red X,
+   and that Side menu → Explanations turns the guide off or back on persistently.
+   The short EN/HU text must fit within five lines without cutting off that
+   recovery instruction; no extra introductory step or popup is added.
+2. Check EN/HU and 390×844/1280×900 with the original responsive positioning.
+   The intro points to the visible lightbulb above the consent shade, not to
+   a control behind consent. Closing the intro leaves consent pending and
+   does not accept, reject or write privacy choices.
+3. Close with Done, X, shade, Escape or system Back in separate fresh-profile
+   runs. Reopening the page must not auto-show the completed introduction.
+   Previously accepted consent must not cause the intro to appear on upgrade.
+   Opening another surface or leaving entry cleans up its temporary context.
+4. After ordinary consent handling, the lightbulb opens the current surface's
+   normal guide. The introduction does not change the internal saved guide
+   ON/OFF preference. A drag remains a drag, without also activating the guide.
+5. At a prepared logged-in surface with both launchers visible, verify their
+   independent hit targets and drag behavior. Never hide or clear notifications
+   merely to make this check pass. Drag one over the other, including near the
+   top edge; after release both must have separate targets. Repeat in Rates
+   list/fullscreen while preserving the stable panel-bottom 56/96px anchor.
+   Hide a launcher on the red X; notifications remain accessible from the side
+   menu. Verify the Explanations OFF/ON preference survives reload and restores
+   the guide. Record the actual surface and viewport for any overlap.
+
+## Consent Accept-button guide — 2026-10-07
+
+Status: full EN/HU manual case **NOT RUN**. The later user-authorized isolated
+browser regression passed in EN at desktop and 390px mobile width; see the dated
+guide evidence. Use the existing anonymous baseline.
+
+1. With the initial consent open, finish the one-step launcher introduction,
+   then click the guide button. Exactly one `landing.consent` step highlights
+   **Accept and continue**; it must remain visible instead of flashing closed.
+2. The short EN/HU text explains acceptance of the data handling terms, browser
+   retention for the current version and a new prompt for a new version. Check
+   five-line fit at both existing desktop/mobile sizes and Help placement.
+3. Closing/reopening Help and Next/Back/Done never accept consent, change an
+   optional choice or dismiss the consent popup. Closing the underlying consent
+   restores the landing guide context. Follow the existing consent case for
+   actual acceptance/version persistence; do not fabricate a consent record.
+4. During content loading or read-only privacy review, the underlying landing
+   tour must not open over the document. Repeat opening the normal initial
+   consent to check that this temporary suppression does not hide its guide.
+5. Close the initial consent **without accepting**. Switch Dating → Work →
+   Community → Dating without reloading. Each first selection shows its own
+   image set; switching alone does not reopen consent. Login still opens consent
+   when the current version is not accepted. Repeat at desktop/mobile sizes.
+6. Expand Privacy: its summary appears once, followed by the last-updated date.
+   Check EN/HU, then open Help: the step selector must show a translated label,
+   not an i18n key. Help itself does not write an acceptance record.
+7. With consent closed, check the landing header in EN/HU at 320, 360 and 390px,
+   plus desktop. For Dating, Work and Community the group button shows its full
+   label and down arrow. Login / Belépés stays on one line; brand, group trigger
+   and Login do not overlap. The trigger still opens the existing group menu.
+
+## Shared launcher check during every QA case
+
+Whenever another test exposes the guide and notification buttons, also check
+that neither covers the other: both icons/counters remain identifiable and each
+has its own usable click/tap area. Check after popup/menu transitions, resize,
+paging and drag release when those actions belong to the active checklist.
+On consent, also check that the floating button does not cover the acceptance
+action. Preserve the existing desktop/mobile positioning and mobile menu hiding
+rules. If overlap is noticed in any new test, record the surface, viewport,
+state and reproduction in that test's evidence and link `EXPLANATION-GUIDE-001`;
+do not mark the surface clean, silently hide a button or redesign the layout.
+
+The 2026-10-07 peer-clearance fix uses registered launcher element references,
+not a document-wide launcher search. Desktop checks peers only. Rates keeps its
+panel anchor and does not enumerate Save/eye controls. Automated geometry and
+operation-count evidence is in
+[the follow-up record](../../evidence/general/EXPLANATION-GUIDE-001-20261007.md);
+it does not replace these manual UI checks.
+
 ## Context inventory
+
+Affiliate/API permissions follow-up: use section 4 of
+[INTEGRATION-ACCESS-001](../api/INTEGRATION-ACCESS-001.md). The existing shield
+steps belong to `profile.integrations`; the selector uses
+`profile.integration-access`. All three workspaces must provide the EN/HU
+guide. Manual execution remains **NOT RUN**.
 
 | Context key | Conditional catalog fields |
 | --- | ---: |
 | `activities.rates` | 40 |
 | `home.game` | 17 |
-| `chats` | 9 |
+| `chats` | 10 |
 | `profile.editor` | 40 |
 | `profile.view` | 9 |
 | `contacts` | 10 |
@@ -109,7 +271,7 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `community.feed` | 27 |
 | `events.followed` | 19 |
 | `event.explore` | 40 |
-| `event.chat` | 7 |
+| `event.chat` | 8 |
 | `event.members` | 21 |
 | `event.checkout` | 31 |
 | `event.resources` | 30 |
@@ -121,13 +283,14 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `event.tournament.groups` | 22 |
 | `event.mingle.configuration` | 7 |
 | `assets.checkout` | 20 |
-| `profile.integrations` | 23 |
+| `profile.integrations` | 27 |
 | `payment.cash.receipt` | 6 |
 | `navigation.menu` | 33 |
 | `members` | 21 |
 | `assets.availability` | 15 |
 | `assets.explore` | 27 |
 | `landing.home` | 5 |
+| `landing.consent` | 1 |
 | `landing.setup` | 5 |
 | `landing.demo` | 6 |
 | `landing.auth` | 7 |
@@ -137,7 +300,7 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `community.case.editor` | 7 |
 | `community.task.editor` | 13 |
 | `work.campaigns` | 12 |
-| `work.campaign.editor` | 22 |
+| `work.campaign.editor` | 23 |
 | `community.home` | 3 |
 | `community.voting` | 3 |
 | `community.announcement.editor` | 10 |
@@ -152,8 +315,13 @@ exact profile and visible prerequisite; do not infer new role eligibility.
 | `community.case.quotations` | 5 |
 | `community.case.quotation.editor` | 5 |
 | `work.campaign.select` | 5 |
-| `work.campaign.history` | 10 |
+| `work.campaign.history` | 11 |
 | `members.select` | 5 |
+| `profile.integration-access` | 3 |
+| `community.service-feedback` | 6 |
+| `chat.call` | 17 |
+| `chat.call.volume` | 7 |
+| `landing.guide` | 1 |
 
 ## Landing and form-pagination follow-up
 

@@ -89,6 +89,8 @@ belong to `api`; externally configured authentication belongs to `identity-acces
 
 ## General UI
 
+- [CHAT-CALL-001](general/CHAT-CALL-001.md) — Saját STUN, WebRTC hang/videó, MLS és koordinátorcsere.
+
 - [SERVICE-FEEDBACK-UI-001](general/SERVICE-FEEDBACK-UI-001.md) — Service image, event-style switch blocks and EN/HU guide extension.
 
 - [EXPLANATION-GUIDE-001](general/EXPLANATION-GUIDE-001.md) — Application-wide compact explanations, guide navigation and floating controls.

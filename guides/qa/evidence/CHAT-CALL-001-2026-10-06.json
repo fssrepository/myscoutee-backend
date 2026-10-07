@@ -1,0 +1,90 @@
+{
+  "id": "CHAT-CALL-001",
+  "task": "MSC-117",
+  "taskUrl": "https://github.com/fssrepository/myscoutee-roadmap/issues/155",
+  "date": "2026-10-06",
+  "manualStatus": "NOT RUN",
+  "fixture": {
+    "scenario": "chat-call",
+    "phase": "fixture-ready",
+    "actors": [
+      "WebRTC Alice (admin)",
+      "WebRTC Bob",
+      "WebRTC Carol"
+    ],
+    "persistedChatMessages": 0
+  },
+  "passed": [
+    {
+      "command": "node --experimental-transform-types --test e2e/functional/backend/flows/chat/call-signaling/chat-call-mls.test.mjs e2e/functional/backend/flows/chat/call-signaling/chat-call-voice-activity.test.mjs",
+      "tests": 5,
+      "scope": "Real browser WASM MLS group state, tamper/replay/wrong call, removal and key rotation; PCM-driven FFT spectrum, speech gap hold, mute/source teardown and unavailable analyser. Final 48-band detector rerun: 2/2 PASS."
+    },
+    {
+      "command": "NODE_EXTRA_CA_CERTS=\"$PWD/server/docker/conf/nginx/keys/nginx.crt\" node --experimental-transform-types --test e2e/functional/backend/flows/chat/call-signaling/chat-call-signaling.test.mjs",
+      "tests": 2,
+      "scope": "Live authenticated chat socket, 3-member MLS signaling, epoch and authority denials, server-authorized mute/release, coordinator failover, cleanup; actual owned STUN stop/start availability push. Final roster/room cleanup refinement retest: 1/1 PASS. Encrypted per-target video receive pause/resume control replay: 1/1 PASS."
+    },
+    {
+      "check": "Existing frontend-sync watcher",
+      "result": "Angular bundle generation completed; nginx sync completed; no separate build."
+    },
+    {
+      "check": "Existing backend Gradle hot-deploy owner",
+      "result": "Compilation completed; real socket tests exercised loaded backend."
+    },
+    {
+      "check": "Own coturn binding/no relay",
+      "result": "UDP STUN binding verified, TURN Allocate ignored; container healthy."
+    },
+    {
+      "command": "docker compose -f docker-compose.e2e.yml config --quiet",
+      "result": "PASS; no disposable stack started."
+    },
+    {
+      "command": "node frontend/scripts/audit-i18n-mongo-seed.js",
+      "result": "PASS: 13438 messages across two source bundles and three seed catalogs."
+    },
+    {
+      "command": "node --max-old-space-size=192 frontend/scripts/check-chat-call-runtime.mjs server/docker/conf/nginx/app/myscoutee",
+      "checks": 4,
+      "scope": "Actual watcher AOT output: viewport signaling and manual prohibition; only video sender replacement; clipped SmartList viewport/deduplication; mobile/laptop layout models, native stepper config, recent-speaker ordering and bounded reactive effects. No browser actions or real RTP measurement."
+    }
+  ],
+  "resolvedVerificationFailures": [
+    "One earlier availability test timed out during backend hot restart; focused rerun passed and the full final socket file passed.",
+    "Angular watcher reported nullable stream capture; corrected local capture and watcher compiled.",
+    "i18n audit found new labels outside messages; moved them into the existing messages owner, audit passed.",
+    "Participant grid initially collapsed to intrinsic content width in the projected SmartList template; explicit full-width flex/grid ownership repairs the reported narrow-column defect. Compiled styles verified; rendered browser layout remains manual."
+  ],
+  "notProven": [
+    "Browser-to-browser RTP audio/video playback, camera switching, zoom/volume/manual mute UI actions.",
+    "Physical microphone audio quality, auto gain processing and noisy/quiet speech behavior.",
+    "Public UDP reachability and ICE connectivity between different external networks.",
+    "Production or disposable E2E deployment.",
+    "Video RTP reduction and restoration under per-participant and viewport receive controls; native swipe/layout and continuous audio through paging/focus/resize require manual media/statistics checks."
+  ],
+  "runtimeBoundary": {
+    "ownStunRunning": true,
+    "dedicatedFixtureRetained": true,
+    "dedicatedBrowsersLaunchedByCodex": false,
+    "manualBrowserControl": "User retains browser checklist control."
+  },
+  "uiSupplement": "Muted tiles use the same frame style in red and a red crossed microphone in the upper-left corner; speaking tiles show a green microphone. Shared frame color prioritizes mute. Watcher compilation verifies template/styles; manual UI checkpoint remains NOT RUN. Camera-off indicator sits below the microphone in red; fullscreen/restore uses constant light background and dark icon. Idle microphone is neutral. Final source/style compilation is verified through the existing watcher. Unavailable phone is mirrored through the existing shared popup action renderer. Receive-video controls negotiate per-peer camera sender replacement with null, leaving audio transceivers intact. Self tile microphone/camera controls and the Me volume-block camera reuse the bottom controls and shared call state; remote corner controls reuse local mute and receive-video state. The unrequested All videos control and its global state were removed. Waiting badge and verification button were removed; the header uses the existing app-menu Follow speakers toggle and standard active palette. Participant pages use the existing SmartList native mobile stepper; mobile 2x2, laptop up to 3x2. Shared SmartList reports actual clipped viewport items, including partial pages during swipe. Offscreen video is paused without changing audio; individual prohibition persists. Recent speakers lead the visible page when following is enabled. Volume panel uses the shared flush body and compact spacing, retaining overflow scrolling. Manual click verification remains NOT RUN.",
+  "chatTaskButtonSupplement": {
+    "reportedDefect": "The Tasks button in a case chat opened the case list underneath the task board, causing extra requests.",
+    "change": "The existing reference-opening flow accepts a list flag. The chat passes false; the case list and its scheduled-task counter request do not start. Existing list/notification navigation remains unchanged. Direct board close clears the standalone session; load errors remain visible.",
+    "focusedAotChecks": {
+      "status": "PASS",
+      "checks": 3,
+      "scope": "Actual watcher-compiled chat handler and store methods: one detail/read request and zero task-counter prefetch; existing list/reference navigation; permission errors, close and late-response isolation. Case-board columns use the already-loaded detail, with no HTTP loader."
+    },
+    "watcher": "Existing frontend-sync compiled and synced the change at 2026-10-06T14:19:23Z; no separate compiler.",
+    "broaderChecker": {
+      "command": "node --max-old-space-size=192 frontend/scripts/check-work-community-reactivity.mjs server/docker/conf/nginx/app/myscoutee",
+      "status": "STOPPED",
+      "detail": "The new chat regression passed. The wider checker later failed on missing current compiled export SeedOperatorRegistryBuilder. A full checker pass is not claimed."
+    },
+    "manualBrowserRetest": "NOT RUN by Codex; browser control remains with the user."
+  }
+}

@@ -2462,7 +2462,7 @@ Execution evidence in progress on 2026-08-14:
 
 ## Chat functional coverage
 
-Chat is executed as six user journeys, not as one-row microtests. Each journey
+Chat is executed as seven user journeys, not as one-row microtests. Each journey
 is presented to the user in one block: purpose, complete click sequence, every
 visible counter/state assertion, and one independent persisted final oracle.
 The former list/history/send/counter/read/reconnect/typing and individual
@@ -2475,6 +2475,8 @@ owners; they are not independently scheduled checkpoints.
 - `CHAT-CONTENT-001` — image, voice, poll and shared-card conversation.
 - `CHAT-GOVERNANCE-001` — canonical members and moderation intake.
 - `CHAT-PUSH-001` — background device delivery and deep-link reconciliation.
+- [`CHAT-CALL-001`](../checklists/general/CHAT-CALL-001.md) — owned STUN,
+  direct WebRTC group calls, participant media controls and coordinator handover.
 
 ### `CHAT-FLOW-001` — everyday conversation and recovery
 
@@ -2705,6 +2707,33 @@ again.
   control block inside `MOBILE-PUSH-LIFECYCLE-001`. Run it in the QA
   environment with an Operator-tested active Firebase revision and the
   physical phone; neither prerequisite turns it into Deployment QA.
+
+### `CHAT-CALL-001` — direct audio/video group calls
+
+The stable [34-step click guide](../checklists/general/CHAT-CALL-001.md) owns
+this journey. Reuse its dedicated Alice/Bob/Carol fixture and the versioned
+two-/three-session browser launcher; this entry does not resume or launch QA.
+
+- Steps 1–12: immediate audio call from the second chat header row, shared
+  full-size popup, camera/microphone controls, synchronized tile and volume
+  controls, mute colors, speech spectrum, follow-speakers switch and HU/EN text.
+- Steps 13–22: three participants, admin mute/release, coordinator departure
+  and rejoin, permission/connection cleanup, live owned-STUN availability and
+  direct ICE media without TURN, including the zero persisted-message oracle.
+- Steps 23–29: native SmartList paging, mobile 2×2 / laptop up-to-3×2 grids,
+  video pause/resume for offscreen tiles with continuous audio, manual video
+  prohibition and recent-speaker ordering. The three-actor fixture does not
+  prove four-/seven-actor full pages; the larger prepared baseline is explicit.
+- Steps 30–34: own-preview silence, separate-device physical audio checks,
+  responsive translations, workspace-specific chat menus and the linked
+  `MSC115-CASE-CHAT` direct Tasks-button regression.
+
+Keep UI observations, per-peer video/audio RTP counters and signaling/security
+evidence distinct. Removing a video element alone does not prove bandwidth
+reduction. The coordinator handles MLS membership; media remains direct mesh,
+not a master/child forwarding tree. The removed verification-code header button
+is not a manual oracle. Record execution in the existing `CHAT-CALL-001` CSV/XLSX
+row and dated evidence; expanding this guide does not establish a manual PASS.
 
 ## Event feedback and Impressions checkpoints
 

@@ -93,6 +93,25 @@ profile.integration-access anchors, correct target descriptions, no overlap with
 copy controls, keyboard/focus behavior, tick/X explanations and nested close.
 Every newly affected guide step must be tested; old guide PASS is not sufficient.
 
+1. In Dating, Work and Community, open Help in the Affiliate/API popup. Check
+   the API-key shield, main MCP shield, individual MCP/OAuth shield and parent
+   Save tick steps when those controls are rendered. Absent controls are skipped.
+2. Open an existing permission selector. Help must switch to
+   `profile.integration-access`: level, conditional Apply tick and Close.
+   Its three catalog fields do not imply three visible steps before editing.
+3. Next/Back/Done must not change permissions, stage a draft or save settings.
+   Closing only Help leaves the selector and its draft intact.
+4. Close the selector: the guide returns to `profile.integrations`. Repeat
+   open/close; no stale child registration or repeated settings load occurs.
+5. Verify all three workspaces load their own EN/HU child guide, not a fallback
+   to Dating. Preserve the established mobile/desktop guide placement and check
+   that guide/bell targets remain separately usable.
+
+The 2026-10-07 development follow-up added the missing enabled-surface entry and
+Work/Community child-guide seeds. Watcher-AOT guide lifecycle and seed parity
+checks passed; this is **not** a permission-enforcement or manual browser PASS.
+See [the guide follow-up evidence](../../evidence/general/EXPLANATION-GUIDE-001-20261007.md).
+
 ## Completion boundary
 
 PASS requires actual HTTP/local save/reload, API/OAuth denial, live MCP discovery

@@ -545,6 +545,7 @@ run_scenario() {
     group-isolation) scenario_script="${SCRIPT_DIR}/scenarios/group-isolation-checkpoints.js" ;;
     community-group) scenario_script="${SCRIPT_DIR}/scenarios/community-group-checkpoints.js" ;;
     browser-sessions) scenario_script="${SCRIPT_DIR}/scenarios/browser-session-checkpoints.js" ;;
+    chat-call) scenario_script="${SCRIPT_DIR}/scenarios/chat-call-checkpoints.js" ;;
     event-rating) scenario_script="${SCRIPT_DIR}/scenarios/event-activity-rating-checkpoints.js" ;;
     integration-api) scenario_script="${SCRIPT_DIR}/scenarios/integration-api-checkpoints.js" ;;
     base-stat) scenario_script="${SCRIPT_DIR}/scenarios/base-stat.js" ;;
@@ -833,6 +834,10 @@ PY
     ;;
   browser-sessions:prepare|browser-sessions:restore)
     [ "$#" -eq 3 ] || { usage >&2; exit 2; }
+    run_scenario "${command}" "${scenario}" 30 "$3"
+    ;;
+  chat-call:stage|chat-call:status|chat-call:ready|chat-call:reset)
+    [ "$#" -eq 3 ] && [ "$3" = "CHAT-CALL-001" ] || fail "WebRTC fixtures require CHAT-CALL-001."
     run_scenario "${command}" "${scenario}" 30 "$3"
     ;;
   graph-rating:stage|graph-rating:status|graph-rating:reset|graph-rating:schedule-layout)

@@ -24,6 +24,7 @@ import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketReques
 import com.raxim.myscoutee.profile.data.dto.activities.ChatDtos.ChatSocketEventDto;
 import com.raxim.myscoutee.profile.service.ChatService;
 import com.raxim.myscoutee.profile.service.ChatWebSocketSessionRegistry;
+import com.raxim.myscoutee.profile.service.ChatCallSignalingService;
 
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -33,16 +34,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ChatService chatService;
     private final ChatWebSocketSessionRegistry sessionRegistry;
     private final ConfigProperties configProperties;
+    private final ChatCallSignalingService calls;
 
     public ChatWebSocketHandler(
             ObjectMapper objectMapper,
             ChatService chatService,
             ChatWebSocketSessionRegistry sessionRegistry,
-            ConfigProperties configProperties) {
+            ConfigProperties configProperties,
+            ChatCallSignalingService calls) {
         this.objectMapper = objectMapper;
         this.chatService = chatService;
         this.sessionRegistry = sessionRegistry;
         this.configProperties = configProperties;
+        this.calls = calls;
     }
 
     @Override
@@ -55,6 +59,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
             sessionRegistry.register(chatId, userId, session);
+            session.setTextMessageSizeLimit(65536);
         });
     }
 
@@ -64,6 +69,27 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         String userId = resolveViewerUserId(session);
         if (!StringUtils.hasText(chatId) || !StringUtils.hasText(userId)) {
             return;
+        }
+        tools.jackson.databind.JsonNode payload;
+        try {
+            payload = objectMapper.readTree(message.getPayload());
+        } catch (Exception exception) {
+            sendSocketError(session, chatId, null, null, "Invalid chat request.");
+            return;
+        }
+        if (payload == null) return;
+        if ("call".equals(payload.path("type").asText(""))) {
+            try {
+                if (message.getPayloadLength() > 65536) throw new IllegalArgumentException("Call signal too large.");
+                var request = objectMapper.treeToValue(payload.path("call"), ChatCallSignalingService.Request.class);
+                runWithSessionMode(session, () -> calls.handle(session, chatId, userId, request));
+                return;
+            } catch (Exception exception) {
+                // Call errors are separate from durable chat-message acknowledgements.
+                sessionRegistry.sendEvent(session, java.util.Map.of("type", "call", "chatId", chatId,
+                        "kind", "error", "error", "Chat call request failed."));
+                return;
+            }
         }
         ChatSocketRequestDto request;
         try {
@@ -130,11 +156,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessionRegistry.unregister(session);
+        calls.disconnected(session);
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         sessionRegistry.unregister(session);
+        calls.disconnected(session);
         if (session.isOpen()) {
             session.close(CloseStatus.SERVER_ERROR);
         }

@@ -1557,6 +1557,20 @@ public class ChatService {
                 .anyMatch(chat -> hasChatAccess(chat, normalizedUserId));
     }
 
+    /** Reuse the chat's existing app-admin or resource-member management authority. */
+    public boolean canModerateCall(String chatId, String userId) {
+        String actor = resolveChatActor(normalizeId(chatId), normalizeId(userId));
+        if (!hasChatAccess(chatId, actor)) return false;
+        if (isAdminUser(findUser(actor))) return true;
+        Chat chat = chatsRepository.findByOwnerUserIdAndChatId(actor, chatId).orElse(null);
+        if (chat == null) chat = chatsRepository.findByChatId(chatId).stream().findFirst().orElse(null);
+        if (chat == null) return false;
+        ChatOwnerParts parts = chatOwnerParts(chat);
+        if (StringUtils.hasText(parts.eventId()) && accessControlService.canManageMembers(OWNER_TYPE_EVENT, parts.eventId(), actor)) return true;
+        if (StringUtils.hasText(parts.groupId()) && accessControlService.canManageMembers(OWNER_TYPE_GROUP, parts.groupId(), actor)) return true;
+        return false;
+    }
+
     public void upsertDevice(ChatDeviceUpsertRequestDto request) {
         if (request == null) {
             return;

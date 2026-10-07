@@ -26,6 +26,18 @@ volumes:
   payment-simulator-data:
 
 services:
+  stun:
+    extends:
+      file: docker-compose-stun.yml
+      service: stun
+    container_name: myscoutee-e2e-stun
+    hostname: stun
+    networks:
+      - e2e
+    ports: !override
+      - "${CHAT_CALL_E2E_STUN_PORT:-13478}:3478/udp"
+      - "${CHAT_CALL_E2E_STUN_PORT:-13478}:3478/tcp"
+
   mcp:
     image: ${MCP_E2E_IMAGE:-myscoutee-mcp:1.5.0-e2e}
     build:
@@ -228,6 +240,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: "6379"
       CHAT_STREAM_BLOCK_MS: "100"
+      CHAT_CALL_STUN_PORT: "${CHAT_CALL_E2E_STUN_PORT:-13478}"
       FIREBASE_ENABLED: "false"
       AUTH_MAX_ACTIVE_SESSIONS: "${AUTH_MAX_ACTIVE_SESSIONS:--1}"
       INTEGRATION_PUBLIC_BASE_URL: "http://localhost/api/integrations/v1"

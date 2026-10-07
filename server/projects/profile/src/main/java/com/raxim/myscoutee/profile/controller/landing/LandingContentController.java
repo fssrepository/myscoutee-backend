@@ -69,7 +69,7 @@ public class LandingContentController {
             @RequestParam(value = "groupId", required = false) String groupId,
             @RequestParam(value = "lang", required = false) String lang) {
         // Only public entry surfaces are exposed; authenticated guides keep their existing route.
-        if (!Set.of("landing.home", "landing.setup",
+        if (!Set.of("landing.home", "landing.guide", "landing.consent", "landing.setup",
                 "landing.demo", "landing.auth", "landing.registration").contains(contextKey)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

@@ -14,7 +14,10 @@ mongo_import_script="${MONGO_IMPORT_SCRIPT:-${seed_root}/mongo_import.sh}"
 debounce_seconds="${MONGODB_SEED_SYNC_DEBOUNCE_SECONDS:-1}"
 reconcile_seconds="${MONGODB_SEED_SYNC_RECONCILE_SECONDS:-2}"
 max_reconcile_passes="${MONGODB_SEED_SYNC_MAX_RECONCILE_PASSES:-0}"
-state_directory="${MONGODB_SEED_SYNC_STATE_DIRECTORY:-/tmp/mongodb-seed-sync-state}"
+# This state belongs to this watcher. Startup still imports the complete seed,
+# so no on-disk cache needs to survive a process restart.
+declare -A fingerprints=()
+declare -A content_hashes=()
 
 log() {
   printf '[mongodb-seed-sync] %s\n' "$*"
@@ -39,28 +42,20 @@ is_positive_number() {
 
 file_fingerprint() {
   local file="$1"
-  stat -c '%s:%y' "${file}" 2>/dev/null
+  stat -L -c '%s:%y:%z:%i' -- "${file}" 2>/dev/null
 }
 
-file_state_path() {
+file_content_hash() {
   local file="$1"
-  local key
-  key="$(printf '%s' "${file}" | sha256sum | awk '{print $1}')"
-  printf '%s/%s' "${state_directory}" "${key}"
+  local digest
+  digest="$(sha256sum < "${file}")" || return 1
+  printf '%s' "${digest%% *}"
 }
 
-record_file_fingerprint() {
-  local file="$1"
-  local fingerprint="$2"
-  printf '%s\n' "${fingerprint}" > "$(file_state_path "${file}")"
-}
-
-recorded_file_fingerprint() {
-  local state_file
-  state_file="$(file_state_path "$1")"
-  if [[ -f "${state_file}" ]]; then
-    cat "${state_file}"
-  fi
+seed_file_fingerprints() {
+  # One stat process per argument-size batch, rather than several subprocesses
+  # per file. NUL-delimited pairs also preserve spaces/newlines in paths.
+  seed_files | xargs -0 -r stat -L --printf='%n\0%s:%y:%z:%i\0' --
 }
 
 seed_files() {
@@ -119,18 +114,32 @@ import_file_until_stable() {
   local before=""
   local after=""
   local collection=""
+  local digest=""
 
   while [[ -f "${file}" ]]; do
     before="$(wait_until_file_stable "${file}")" || return 0
-    collection="$(basename "${file}" .json)"
+    digest="$(file_content_hash "${file}")" || return 1
+    after="$(file_fingerprint "${file}")" || continue
+    [[ "${before}" == "${after}" ]] || continue
+    if [[ "${digest}" == "${content_hashes[${file}]:-}" ]]; then
+      # A touch or an identical rewrite does not reset the Mongo collection.
+      fingerprints["${file}"]="${after}"
+      return 0
+    fi
+    collection="${file##*/}"
+    collection="${collection%.json}"
     log "Importing ${target_database}.${collection} from ${file}"
+    # An importer may partially write before failing, or read a newer version
+    # than we hashed. Never deduplicate against the old successful import then.
+    unset 'fingerprints[${file}]' 'content_hashes[${file}]'
     if ! run_import_file "${file}"; then
       log "Import failed; the unchanged fingerprint was not acknowledged and will be retried: ${file}"
       return 1
     fi
     after="$(file_fingerprint "${file}")"
     if [[ -n "${after}" && "${before}" == "${after}" ]]; then
-      record_file_fingerprint "${file}" "${after}"
+      fingerprints["${file}"]="${after}"
+      content_hashes["${file}"]="${digest}"
       log "Imported stable seed ${target_database}.${collection} (${after})"
       return 0
     fi
@@ -141,26 +150,32 @@ import_file_until_stable() {
 prime_fingerprint_state() {
   local file=""
   local fingerprint=""
-  while IFS= read -r -d '' file; do
-    fingerprint="$(file_fingerprint "${file}")"
-    if [[ -n "${fingerprint}" ]]; then
-      record_file_fingerprint "${file}" "${fingerprint}"
+  local digest=""
+  while IFS= read -r -d '' file && IFS= read -r -d '' fingerprint; do
+    digest="$(file_content_hash "${file}")" || continue
+    if [[ "${fingerprint}" == "$(file_fingerprint "${file}")" ]]; then
+      fingerprints["${file}"]="${fingerprint}"
+      content_hashes["${file}"]="${digest}"
     fi
-  done < <(seed_files)
+  done < <(seed_file_fingerprints)
 }
 
 reconcile_changed_files() {
   local file=""
   local current=""
-  local recorded=""
   local failures=0
-  while IFS= read -r -d '' file; do
-    current="$(file_fingerprint "${file}")"
-    recorded="$(recorded_file_fingerprint "${file}")"
-    if [[ -n "${current}" && "${current}" != "${recorded}" ]]; then
+  local -A present=()
+  while IFS= read -r -d '' file && IFS= read -r -d '' current; do
+    present["${file}"]=1
+    if [[ "${current}" != "${fingerprints[${file}]:-}" ]]; then
       import_file_until_stable "${file}" || failures=$((failures + 1))
     fi
-  done < <(seed_files)
+  done < <(seed_file_fingerprints)
+  for file in "${!fingerprints[@]}"; do
+    if [[ -z "${present[${file}]:-}" ]]; then
+      unset 'fingerprints[${file}]' 'content_hashes[${file}]'
+    fi
+  done
   return "${failures}"
 }
 
@@ -198,7 +213,6 @@ is_positive_number "${debounce_seconds}" || fail "MONGODB_SEED_SYNC_DEBOUNCE_SEC
 is_positive_integer "${reconcile_seconds}" || fail "MONGODB_SEED_SYNC_RECONCILE_SECONDS must be a positive integer."
 is_non_negative_integer "${max_reconcile_passes}" || fail "MONGODB_SEED_SYNC_MAX_RECONCILE_PASSES must be a non-negative integer."
 
-mkdir -p "${state_directory}"
 wait_for_mongo
 
 # Record the pre-import state first. If any file changes while the initial
@@ -208,6 +222,13 @@ until run_import_all; do
   log "Initial seed import failed; retrying without acknowledging any new file fingerprints."
   sleep 2
 done
+# If a seed changed during startup, the importer may have read an intermediate
+# version. Even reverting to the original content must be imported again.
+while IFS= read -r -d '' file && IFS= read -r -d '' fingerprint; do
+  if [[ "${fingerprint}" != "${fingerprints[${file}]:-}" ]]; then
+    unset 'content_hashes[${file}]'
+  fi
+done < <(seed_file_fingerprints)
 log "Initial seed import completed for ${target_database}."
 
 reconcile_pass=0

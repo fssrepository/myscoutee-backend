@@ -2,6 +2,20 @@
 
 This directory keeps QA execution material separate from project plans.
 
+WebRTC: [CHAT-CALL-001](checklists/general/CHAT-CALL-001.md) — 34 numbered steps
+for own Docker STUN, direct group calls, synchronized media controls, native
+participant paging, recent speakers, admin mute, physical audio and chat-header
+regressions. Indexed in the Chat functional coverage of the
+[domain QA pack](manuals/DOMAIN_LIFECYCLE_MANUAL_QA_PACK.md#chat-call-001--direct-audiovideo-group-calls)
+and the existing CSV/XLSX ledger row; execution results remain separate.
+
+In-app Help steps: [EXPLANATION-GUIDE-001](checklists/general/EXPLANATION-GUIDE-001.md)
+includes the call/volume guides and the one-step first-visit launcher introduction.
+During any UI case, record guide/notification launcher overlap when observed;
+both buttons must remain separately identifiable and usable. Preserve the existing
+desktop/mobile placement and menu visibility rules. Link the defect to this guide
+case as well as the scenario where it was found.
+
 Event-format follow-up: [EVENT-MODE-REGRESSION-001](checklists/event/EVENT-MODE-REGRESSION-001.md).
 MSC-116 follow-up: [INTEGRATION-ACCESS-001](checklists/api/INTEGRATION-ACCESS-001.md) and [SERVICE-FEEDBACK-UI-001](checklists/general/SERVICE-FEEDBACK-UI-001.md).
 
