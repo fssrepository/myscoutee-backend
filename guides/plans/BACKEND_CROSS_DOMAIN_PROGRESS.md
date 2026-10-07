@@ -1,7 +1,8 @@
 # MSC-120: Cross-domain separation progress
 
 Status: **21/21 domains implemented and locally verified**, 2026-10-07.
-E2E behavior and performance verification is deferred to 2026-10-08 by user instruction.
+E2E behavior and performance verification started on 2026-10-07 at the user's request.
+See [the E2E report](BACKEND_CROSS_DOMAIN_E2E.md) for runtime evidence and remaining limits.
 This file tracks the cross-domain implementation.
 The earlier package reorganization remains documented in the
 [domain plan](BACKEND_DOMAIN_SEGREGATION.md).
@@ -2303,6 +2304,9 @@ also available in each named commit's complete diff.
 
 ## Final local closeout — 2026-10-07
 
+This records the local-only checkpoint before the later E2E run. Current HTTP,
+load results and remaining Java E2E failures are in [the E2E report](BACKEND_CROSS_DOMAIN_E2E.md).
+
 All **21 domains** have an individual `[MSC-120]` checkpoint commit on
 `refactor/MSC-120-backend-domain-segregation`. No cross-domain commit has been
 merged into master. Master and `origin/master` remain at
@@ -2342,8 +2346,9 @@ its local test task is up-to-date after the successful 1,731-test run.
 ### Remaining verification and highest-risk E2E targets
 
 There is no remaining domain implementation in this 21-domain scope. The next
-session should verify real HTTP journeys and performance; a master merge remains
-subject to the user's later review. Dev is intentionally left running now.
+session was planned to verify real HTTP journeys and performance; the user subsequently
+started that verification on 2026-10-07. A master merge still requires the user's review.
+The E2E report above supersedes this historical runtime state; dev is now stopped.
 **Stop the dev application before starting the E2E application.** Use disposable
 E2E data and the same representative fixtures for any baseline/branch comparison.
 
