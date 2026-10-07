@@ -86463,7 +86463,7 @@
     "_id": "i18n-message-en-guide-community-announcement-editor-close-description",
     "key": "guide.community.announcement.editor.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Return to the announcement list. Save pending text and attachment edits before closing; votes already submitted or other completed actions remain recorded."
   },
   {
     "_id": "i18n-message-en-guide-community-announcement-editor-close-label",
@@ -86475,7 +86475,7 @@
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-delete-description",
     "key": "guide.community.case.board.card-actions:task-delete.description",
     "lang": "en",
-    "value": "Remove this task after reviewing the confirmation."
+    "value": "Remove this task from the board by marking it deleted. The action is sent directly; check the task title and its dependencies before selecting it."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-delete-label",
@@ -86487,7 +86487,7 @@
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-members-description",
     "key": "guide.community.case.board.card-actions:task-members.description",
     "lang": "en",
-    "value": "Open the people assigned to this task."
+    "value": "Inspect this task’s assignees. When you can manage an active case, confirming a changed selection here saves the task’s assignees immediately."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-members-label",
@@ -86499,7 +86499,7 @@
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-progress-description",
     "key": "guide.community.case.board.card-actions:task-progress.description",
     "lang": "en",
-    "value": "The available action follows the task’s current state: start, complete or reopen. Review dependencies before proceeding."
+    "value": "Advance the task from to do to in progress, from in progress to done, or return a done task to to do. The displayed action saves that state change directly."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-progress-label",
@@ -86511,7 +86511,7 @@
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-view-description",
     "key": "guide.community.case.board.card-actions:task-view.description",
     "lang": "en",
-    "value": "Review or edit this task according to your current permissions."
+    "value": "Open this task’s details, including assignees, dates, quotations and dependencies. If editing is available, save your changes with the form’s header tick."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-card-actions-task-view-label",
@@ -86523,7 +86523,7 @@
     "_id": "i18n-message-en-guide-community-case-board-close-description",
     "key": "guide.community.case.board.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the task board and return to the case list or the screen that opened the case. Already saved task changes remain recorded."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-close-label",
@@ -86535,7 +86535,7 @@
     "_id": "i18n-message-en-guide-community-case-board-create-description",
     "key": "guide.community.case.board.create.description",
     "lang": "en",
-    "value": "Create a board task with its own description, assignees, dates, accepted quotations and dependencies."
+    "value": "Prepare a task within this case with a title, assignees, dates and any accepted quotations or dependencies. The task is recorded when you save its form with the header tick."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-create-label",
@@ -86571,7 +86571,7 @@
     "_id": "i18n-message-en-guide-community-case-board-dependencies-close-description",
     "key": "guide.community.case.board.dependencies.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous screen."
+    "value": "Cancel this dependency selection and return to the task form. Confirm the chosen predecessors with the picker’s tick, then save the task to retain them."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-dependencies-close-label",
@@ -86619,7 +86619,7 @@
     "_id": "i18n-message-en-guide-community-case-board-offers-card-actions-view-description",
     "key": "guide.community.case.board.offers.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Inspect this accepted quotation’s provider, amount and terms before linking it to the task. Viewing it leaves the picker’s selection unchanged."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-offers-card-actions-view-label",
@@ -86631,7 +86631,7 @@
     "_id": "i18n-message-en-guide-community-case-board-offers-close-description",
     "key": "guide.community.case.board.offers.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous screen."
+    "value": "Cancel this quotation selection and return to the task form. Use the picker’s tick to apply a selection, then the task’s tick to save the task."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-offers-close-label",
@@ -86655,7 +86655,7 @@
     "_id": "i18n-message-en-guide-community-case-board-task-close-description",
     "key": "guide.community.case.board.task.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close this task form without saving its pending edits. Selections applied to the form, such as quotations and dependencies, still need the task’s save tick to be stored."
   },
   {
     "_id": "i18n-message-en-guide-community-case-board-task-close-label",
@@ -86667,7 +86667,7 @@
     "_id": "i18n-message-en-guide-community-case-editor-close-description",
     "key": "guide.community.case.editor.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the case form without saving pending edits. If you changed the case details or audience, use the header tick first to keep them."
   },
   {
     "_id": "i18n-message-en-guide-community-case-editor-close-label",
@@ -86679,7 +86679,7 @@
     "_id": "i18n-message-en-guide-community-case-quotation-editor-close-description",
     "key": "guide.community.case.quotation.editor.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the quotation form without saving pending edits. Save with its header tick first to keep changes to the amount, note or terms."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotation-editor-close-label",
@@ -86715,7 +86715,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-accept-offer-description",
     "key": "guide.community.case.quotations.card-actions:accept-offer.description",
     "lang": "en",
-    "value": "Review the price and conditions, then accept the quotation through the confirmation."
+    "value": "Record this quotation as accepted. Review its provider, amount and terms first: selecting this action sends the decision directly, without a separate confirmation dialog."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-accept-offer-label",
@@ -86727,7 +86727,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-chat-description",
     "key": "guide.community.case.quotations.card-actions:chat.description",
     "lang": "en",
-    "value": "Open the conversation belonging to this item. Check the participants before sending a message."
+    "value": "Open the conversation linked to this case and quotation to clarify the offered work. Check the participants before sending information about the quotation."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-chat-label",
@@ -86739,7 +86739,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-edit-description",
     "key": "guide.community.case.quotations.card-actions:edit.description",
     "lang": "en",
-    "value": "Open the editor. Changes take effect when you save that form."
+    "value": "As the case manager, edit the quotation’s amount, currency, note and terms where offered. Save the quotation form to record the agreed changes."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-edit-label",
@@ -86751,7 +86751,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-invite-chat-description",
     "key": "guide.community.case.quotations.card-actions:invite-chat.description",
     "lang": "en",
-    "value": "Add this provider to the case conversation when the action is available."
+    "value": "Add this provider to the case conversation when the action is available. This grants participation in that conversation; it does not itself accept the quotation."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-invite-chat-label",
@@ -86763,7 +86763,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-pending-offer-description",
     "key": "guide.community.case.quotations.card-actions:pending-offer.description",
     "lang": "en",
-    "value": "Return the quotation to pending for a new review."
+    "value": "Return this quotation to pending review. This changes the existing offer’s decision state so it can be considered again."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-pending-offer-label",
@@ -86775,7 +86775,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-reject-offer-description",
     "key": "guide.community.case.quotations.card-actions:reject-offer.description",
     "lang": "en",
-    "value": "Reject this quotation after checking its provider and terms."
+    "value": "Record this quotation as rejected. Check that you are acting on the intended provider’s offer; the decision is submitted directly from this menu."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-reject-offer-label",
@@ -86787,7 +86787,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-view-description",
     "key": "guide.community.case.quotations.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Read this provider’s quoted amount, currency, note and work or refund terms. Opening the details does not accept the quotation."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-card-actions-view-label",
@@ -86799,7 +86799,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-close-description",
     "key": "guide.community.case.quotations.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the quotation list and return to the case. Decisions already submitted, such as acceptance or rejection, remain in effect."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-close-label",
@@ -86811,7 +86811,7 @@
     "_id": "i18n-message-en-guide-community-case-quotations-quotation-provider-help-description",
     "key": "guide.community.case.quotations.quotation-provider-help.description",
     "lang": "en",
-    "value": "This message explains the quotation view available to you. Use the offered controls for your own quotation."
+    "value": "Check which quotation actions your role allows here. A provider prepares their own offer, while the case manager records acceptance, rejection or a return to pending."
   },
   {
     "_id": "i18n-message-en-guide-community-case-quotations-quotation-provider-help-label",
@@ -86823,7 +86823,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-cancel-description",
     "key": "guide.community.cases.card-actions:cancel.description",
     "lang": "en",
-    "value": "Cancel this item using the confirmation dialog. Review the affected item first."
+    "value": "Set this case to cancelled so it leaves the active-case view. This sends the change directly; check the case title and intended outcome before selecting it."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-cancel-label",
@@ -86835,7 +86835,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-chat-description",
     "key": "guide.community.cases.card-actions:chat.description",
     "lang": "en",
-    "value": "Open the conversation belonging to this item. Check the participants before sending a message."
+    "value": "Open the conversation linked to this case to coordinate the work. Check its title and participants before sending case-specific information."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-chat-label",
@@ -86847,7 +86847,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-complete-description",
     "key": "guide.community.cases.card-actions:complete.description",
     "lang": "en",
-    "value": "Mark the case as completed after reviewing the work and outstanding tasks."
+    "value": "Mark this case completed when the work is finished. Completion also schedules service feedback; review the task board before submitting this direct state change."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-complete-label",
@@ -86859,7 +86859,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-decline-description",
     "key": "guide.community.cases.card-actions:decline.description",
     "lang": "en",
-    "value": "Decline participation in this case. Review which invitation you are declining."
+    "value": "Decline the invitation to this case. Your participation changes to declined when the action succeeds; use this for an invitation you do not want to accept."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-decline-label",
@@ -86871,7 +86871,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-edit-description",
     "key": "guide.community.cases.card-actions:edit.description",
     "lang": "en",
-    "value": "Open the editor. Changes take effect when you save that form."
+    "value": "Edit the case’s title, type, description and audience. Use the editor’s save tick to persist the changes; simply opening or closing the form does not save them."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-edit-label",
@@ -86883,7 +86883,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-invite-provider-description",
     "key": "guide.community.cases.card-actions:invite-provider.description",
     "lang": "en",
-    "value": "Choose a provider for this case through the service selection window."
+    "value": "Choose a published service and confirm the selection to invite its provider to this case. Check both the service and provider in the picker before confirming."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-invite-provider-label",
@@ -86895,7 +86895,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-join-description",
     "key": "guide.community.cases.card-actions:join.description",
     "lang": "en",
-    "value": "Accept participation in this case after reviewing its purpose and the people involved."
+    "value": "Accept your participation in this case. The action records your accepted membership directly; review the case and your intended role before selecting it."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-join-label",
@@ -86907,7 +86907,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-leave-description",
     "key": "guide.community.cases.card-actions:leave.description",
     "lang": "en",
-    "value": "Leave this case after checking your outstanding responsibilities."
+    "value": "Leave a case you have joined. If you currently manage it, leaving also gives up ownership; check outstanding responsibilities before selecting this immediate action."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-leave-label",
@@ -86919,7 +86919,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-members-description",
     "key": "guide.community.cases.card-actions:members.description",
     "lang": "en",
-    "value": "Review the people involved in this case and their current participation states."
+    "value": "Inspect the case’s participants and whether they are invited, accepted or have left. If you manage the case, the member view also provides the invitation action."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-members-label",
@@ -86931,7 +86931,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-offers-description",
     "key": "guide.community.cases.card-actions:offers.description",
     "lang": "en",
-    "value": "Open this case’s quotations. Review price, work terms and refund terms before deciding."
+    "value": "Compare quotations for this case by provider, amount, currency and terms. Open a quotation’s details before accepting or rejecting it from the quotation list."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-offers-label",
@@ -86943,7 +86943,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-reopen-description",
     "key": "guide.community.cases.card-actions:reopen.description",
     "lang": "en",
-    "value": "Reopen this case when more work is needed."
+    "value": "Return this case to open status so it can be worked on again. The existing case is reused; this does not create a second case."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-reopen-label",
@@ -86955,7 +86955,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-start-description",
     "key": "guide.community.cases.card-actions:start.description",
     "lang": "en",
-    "value": "Move the open case into progress after confirming the action."
+    "value": "Move this case to in progress. Selecting the action submits the state change directly; use it when work on the case is starting."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-start-label",
@@ -86967,7 +86967,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-take-over-description",
     "key": "guide.community.cases.card-actions:take-over.description",
     "lang": "en",
-    "value": "Take over the management of this case when this action is offered. Review the confirmation first."
+    "value": "Become the manager of this case when takeover is available. Selecting this action sends the change directly, so check that you intend to take responsibility before using it."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-take-over-label",
@@ -86979,7 +86979,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-trash-description",
     "key": "guide.community.cases.card-actions:trash.description",
     "lang": "en",
-    "value": "Move this item to the trash. Read the confirmation before proceeding."
+    "value": "Move this case to the trash view. The action changes its state directly, so check that this is the case you intend to remove from normal work."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-trash-label",
@@ -86991,7 +86991,7 @@
     "_id": "i18n-message-en-guide-community-cases-card-actions-view-description",
     "key": "guide.community.cases.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Open this case’s task board to inspect the work, assignments and progress. Viewing the board leaves the case’s current state unchanged."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-card-actions-view-label",
@@ -87003,7 +87003,7 @@
     "_id": "i18n-message-en-guide-community-cases-close-description",
     "key": "guide.community.cases.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the case list and return to the previous screen. Already saved case decisions remain in effect."
   },
   {
     "_id": "i18n-message-en-guide-community-cases-close-label",
@@ -87015,7 +87015,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-close-description",
     "key": "guide.community.home.card-actions:close.description",
     "lang": "en",
-    "value": "Close this voting round after reviewing the confirmation."
+    "value": "End this voting round after confirmation, even if its deadline has not yet arrived. The recorded votes form the closed result and no further votes can be submitted."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-close-label",
@@ -87027,7 +87027,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-edit-description",
     "key": "guide.community.home.card-actions:edit.description",
     "lang": "en",
-    "value": "Open the editor. Changes take effect when you save that form."
+    "value": "Edit the announcement’s text, attachments and supported voting settings. Save the editor to retain changes; use the list’s publication action when a draft is ready to appear."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-edit-label",
@@ -87039,7 +87039,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-feedback-description",
     "key": "guide.community.home.card-actions:feedback.description",
     "lang": "en",
-    "value": "Open the conversation about this notice to ask a question or give feedback."
+    "value": "Open the support conversation linked to this announcement to ask the community’s managers a question or give feedback. Your message is separate from a vote."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-feedback-label",
@@ -87051,7 +87051,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-publish-description",
     "key": "guide.community.home.card-actions:publish.description",
     "lang": "en",
-    "value": "Publish the prepared item so the intended audience can discover it."
+    "value": "Publish this draft announcement in its community. Review the text, attachments and any voting deadline first; selecting the action sends publication directly."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-publish-label",
@@ -87063,7 +87063,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-restore-description",
     "key": "guide.community.home.card-actions:restore.description",
     "lang": "en",
-    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+    "value": "Restore this announcement from trash as a draft. Review it in the draft list and publish separately when you want it to appear again."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-restore-label",
@@ -87075,7 +87075,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-results-description",
     "key": "guide.community.home.card-actions:results.description",
     "lang": "en",
-    "value": "Open the closed vote’s results."
+    "value": "Open this closed vote to inspect the recorded result. The voting round has ended, so this view is for reviewing the outcome rather than submitting another vote."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-results-label",
@@ -87087,7 +87087,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-trash-description",
     "key": "guide.community.home.card-actions:trash.description",
     "lang": "en",
-    "value": "Move this item to the trash. Read the confirmation before proceeding."
+    "value": "Move this announcement to trash after confirming its title. It leaves the current list; use the trash filter if you later need to restore it as a draft."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-trash-label",
@@ -87099,7 +87099,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-unpublish-description",
     "key": "guide.community.home.card-actions:unpublish.description",
     "lang": "en",
-    "value": "Return the published item to draft from this menu."
+    "value": "Withdraw this published announcement back to draft after confirmation. It leaves the published list but remains available to its managers for editing."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-unpublish-label",
@@ -87111,7 +87111,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-view-description",
     "key": "guide.community.home.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Read the full announcement, its attachments and any voting information. Opening it is read-only and does not cast a vote."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-view-label",
@@ -87123,7 +87123,7 @@
     "_id": "i18n-message-en-guide-community-home-card-actions-vote-description",
     "key": "guide.community.home.card-actions:vote.description",
     "lang": "en",
-    "value": "Read the proposal and its attachments before giving your own vote. The window shows the available choices."
+    "value": "Open the voting view and read the proposal before choosing. Submitting asks for confirmation; once recorded, your vote cannot be changed."
   },
   {
     "_id": "i18n-message-en-guide-community-home-card-actions-vote-label",
@@ -87135,7 +87135,7 @@
     "_id": "i18n-message-en-guide-community-home-create-description",
     "key": "guide.community.home.create.description",
     "lang": "en",
-    "value": "Open a new item in the current group. Prepare the text, attachments and voting settings before publishing."
+    "value": "Prepare a new announcement for the current community with text, attachments and, when needed, a voting deadline. Save the draft, then publish it from the list when ready."
   },
   {
     "_id": "i18n-message-en-guide-community-home-create-label",
@@ -87147,7 +87147,7 @@
     "_id": "i18n-message-en-guide-community-service-calendar-card-actions-cancel-description",
     "key": "guide.community.service.calendar.card-actions:cancel.description",
     "lang": "en",
-    "value": "Cancel this appointment through its confirmation. Check its date and customer before proceeding."
+    "value": "Cancel this appointment directly. Check its date and associated case before selecting the action; the cancelled appointment is removed from the calendar view."
   },
   {
     "_id": "i18n-message-en-guide-community-service-calendar-card-actions-cancel-label",
@@ -87159,7 +87159,7 @@
     "_id": "i18n-message-en-guide-community-service-calendar-card-actions-case-description",
     "key": "guide.community.service.calendar.card-actions:case.description",
     "lang": "en",
-    "value": "Open the case belonging to this appointment or assigned task."
+    "value": "Open the case linked to this calendar entry to inspect its work and participants. This takes you from the provider calendar to that case’s task board."
   },
   {
     "_id": "i18n-message-en-guide-community-service-calendar-card-actions-case-label",
@@ -87171,7 +87171,7 @@
     "_id": "i18n-message-en-guide-community-service-calendar-close-description",
     "key": "guide.community.service.calendar.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the provider calendar. Existing appointments and assigned tasks keep their saved dates and states."
   },
   {
     "_id": "i18n-message-en-guide-community-service-calendar-close-label",
@@ -87183,7 +87183,7 @@
     "_id": "i18n-message-en-guide-community-service-calendar-view-trigger-description",
     "key": "guide.community.service.calendar.view:trigger.description",
     "lang": "en",
-    "value": "Switch between the list, weekly and monthly service calendar."
+    "value": "Switch between list, week and month views to inspect the same provider schedule at different scales. Changing the view does not reschedule appointments or assigned tasks."
   },
   {
     "_id": "i18n-message-en-guide-community-service-calendar-view-trigger-label",
@@ -87195,7 +87195,7 @@
     "_id": "i18n-message-en-guide-community-service-editor-close-description",
     "key": "guide.community.service.editor.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the service form without saving pending edits. Use the header tick first to keep changed details, staff or terms; read-only viewing needs no save."
   },
   {
     "_id": "i18n-message-en-guide-community-service-editor-close-label",
@@ -87231,7 +87231,7 @@
     "_id": "i18n-message-en-guide-community-services-basket-description",
     "key": "guide.community.services.basket.description",
     "lang": "en",
-    "value": "Review the selected service; remove it from the basket to choose another."
+    "value": "Inspect the one service currently selected and its provider. Remove it here if you want to cancel that selection or choose a different offering."
   },
   {
     "_id": "i18n-message-en-guide-community-services-basket-label",
@@ -87243,7 +87243,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-author-description",
     "key": "guide.community.services.card-actions:author.description",
     "lang": "en",
-    "value": "Open the provider’s profile to learn who offers the service."
+    "value": "Open the profile of the person offering this service. Check who the provider is before selecting the service or starting an arrangement."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-author-label",
@@ -87255,7 +87255,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-edit-description",
     "key": "guide.community.services.card-actions:edit.description",
     "lang": "en",
-    "value": "Open the editor. Changes take effect when you save that form."
+    "value": "Open this service’s editable details and terms. Save the form to retain changes; publishing or withdrawing an offering is a separate card action."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-edit-label",
@@ -87267,7 +87267,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-publish-description",
     "key": "guide.community.services.card-actions:publish.description",
     "lang": "en",
-    "value": "Publish the prepared item so the intended audience can discover it."
+    "value": "Publish this draft service so it can appear among available offerings. Review its description, price and terms first; selecting this action submits publication directly."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-publish-label",
@@ -87279,7 +87279,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-restore-description",
     "key": "guide.community.services.card-actions:restore.description",
     "lang": "en",
-    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+    "value": "Restore this service from trash as a draft. Review its details and publish it separately when it should be offered again."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-restore-label",
@@ -87291,7 +87291,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-trash-description",
     "key": "guide.community.services.card-actions:trash.description",
     "lang": "en",
-    "value": "Move this item to the trash. Read the confirmation before proceeding."
+    "value": "Move this service to trash so it leaves the normal offerings list. This action is sent directly; the trash view provides restoration as a draft."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-trash-label",
@@ -87303,7 +87303,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-unpublish-description",
     "key": "guide.community.services.card-actions:unpublish.description",
     "lang": "en",
-    "value": "Return the published item to draft from this menu."
+    "value": "Return this published service to draft so it leaves the published-offerings list. The service is retained for editing and later publication."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-unpublish-label",
@@ -87315,7 +87315,7 @@
     "_id": "i18n-message-en-guide-community-services-card-actions-view-description",
     "key": "guide.community.services.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Read the service’s description, price, availability and terms in its detail form. Use these details to decide whether this offering fits the work you need."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-actions-view-label",
@@ -87327,7 +87327,7 @@
     "_id": "i18n-message-en-guide-community-services-card-badge-end-description",
     "key": "guide.community.services.card-badge-end.description",
     "lang": "en",
-    "value": "In a service picker, use the plus to select this service. Review the basket and confirm the selection."
+    "value": "In a service picker, use the plus to place one service in the selection basket. Check its title and provider, then use the header tick to confirm that selection."
   },
   {
     "_id": "i18n-message-en-guide-community-services-card-badge-end-label",
@@ -87339,7 +87339,7 @@
     "_id": "i18n-message-en-guide-community-services-close-description",
     "key": "guide.community.services.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the service list. In selection mode, an unconfirmed basket is discarded and no service is returned to the calling workflow."
   },
   {
     "_id": "i18n-message-en-guide-community-services-close-label",
@@ -87351,7 +87351,7 @@
     "_id": "i18n-message-en-guide-community-services-confirm-description",
     "key": "guide.community.services.confirm.description",
     "lang": "en",
-    "value": "Return the selected service to the case or task that opened this picker."
+    "value": "Confirm the selected service for the workflow that opened this picker. For a case invitation this submits the provider invitation; check the basket before confirming."
   },
   {
     "_id": "i18n-message-en-guide-community-services-confirm-label",
@@ -87363,7 +87363,7 @@
     "_id": "i18n-message-en-guide-community-task-editor-close-description",
     "key": "guide.community.task.editor.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the scheduled-task form without applying pending edits. Save with the header tick first if you want to keep the new timing, recurrence or audience."
   },
   {
     "_id": "i18n-message-en-guide-community-task-editor-close-label",
@@ -87375,7 +87375,7 @@
     "_id": "i18n-message-en-guide-community-tasks-card-actions-edit-description",
     "key": "guide.community.tasks.card-actions:edit.description",
     "lang": "en",
-    "value": "Open the editor. Changes take effect when you save that form."
+    "value": "Change this scheduled task’s description, audience or timing. Review the start time and recurrence, then save the form to apply the schedule changes."
   },
   {
     "_id": "i18n-message-en-guide-community-tasks-card-actions-edit-label",
@@ -87387,7 +87387,7 @@
     "_id": "i18n-message-en-guide-community-tasks-card-actions-restore-description",
     "key": "guide.community.tasks.card-actions:restore.description",
     "lang": "en",
-    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+    "value": "Restore this scheduled task from trash to active status. Its stored timing is retained, so check the schedule before restoring work that may become due."
   },
   {
     "_id": "i18n-message-en-guide-community-tasks-card-actions-restore-label",
@@ -87399,7 +87399,7 @@
     "_id": "i18n-message-en-guide-community-tasks-card-actions-view-description",
     "key": "guide.community.tasks.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Inspect this scheduled task’s purpose, audience, start time and recurrence in a read-only form. Use Edit if you need to change its schedule."
   },
   {
     "_id": "i18n-message-en-guide-community-tasks-card-actions-view-label",
@@ -87411,7 +87411,7 @@
     "_id": "i18n-message-en-guide-community-tasks-close-description",
     "key": "guide.community.tasks.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Return from scheduled tasks to the case list. Closing this view does not pause active schedules; use the task’s pause action for that."
   },
   {
     "_id": "i18n-message-en-guide-community-tasks-close-label",
@@ -87423,7 +87423,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-close-description",
     "key": "guide.community.voting.card-actions:close.description",
     "lang": "en",
-    "value": "Close this voting round after reviewing the confirmation."
+    "value": "End this voting round after confirmation, even if its deadline has not yet arrived. The recorded votes form the closed result and no further votes can be submitted."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-close-label",
@@ -87435,7 +87435,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-edit-description",
     "key": "guide.community.voting.card-actions:edit.description",
     "lang": "en",
-    "value": "Open the editor. Changes take effect when you save that form."
+    "value": "Edit the announcement’s text, attachments and supported voting settings. Save the editor to retain changes; use the list’s publication action when a draft is ready to appear."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-edit-label",
@@ -87447,7 +87447,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-feedback-description",
     "key": "guide.community.voting.card-actions:feedback.description",
     "lang": "en",
-    "value": "Open the conversation about this notice to ask a question or give feedback."
+    "value": "Open the support conversation linked to this announcement to ask the community’s managers a question or give feedback. Your message is separate from a vote."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-feedback-label",
@@ -87459,7 +87459,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-publish-description",
     "key": "guide.community.voting.card-actions:publish.description",
     "lang": "en",
-    "value": "Publish the prepared item so the intended audience can discover it."
+    "value": "Publish this draft announcement in its community. Review the text, attachments and any voting deadline first; selecting the action sends publication directly."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-publish-label",
@@ -87471,7 +87471,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-restore-description",
     "key": "guide.community.voting.card-actions:restore.description",
     "lang": "en",
-    "value": "Restore this item from the trash. Check its resulting state before publishing or resuming it."
+    "value": "Restore this announcement from trash as a draft. Review it in the draft list and publish separately when you want it to appear again."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-restore-label",
@@ -87483,7 +87483,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-results-description",
     "key": "guide.community.voting.card-actions:results.description",
     "lang": "en",
-    "value": "Open the closed vote’s results."
+    "value": "Open this closed vote to inspect the recorded result. The voting round has ended, so this view is for reviewing the outcome rather than submitting another vote."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-results-label",
@@ -87495,7 +87495,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-trash-description",
     "key": "guide.community.voting.card-actions:trash.description",
     "lang": "en",
-    "value": "Move this item to the trash. Read the confirmation before proceeding."
+    "value": "Move this announcement to trash after confirming its title. It leaves the current list; use the trash filter if you later need to restore it as a draft."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-trash-label",
@@ -87507,7 +87507,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-unpublish-description",
     "key": "guide.community.voting.card-actions:unpublish.description",
     "lang": "en",
-    "value": "Return the published item to draft from this menu."
+    "value": "Withdraw this published announcement back to draft after confirmation. It leaves the published list but remains available to its managers for editing."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-unpublish-label",
@@ -87519,7 +87519,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-view-description",
     "key": "guide.community.voting.card-actions:view.description",
     "lang": "en",
-    "value": "Open the selected item and review its details."
+    "value": "Read the full announcement, its attachments and any voting information. Opening it is read-only and does not cast a vote."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-view-label",
@@ -87531,7 +87531,7 @@
     "_id": "i18n-message-en-guide-community-voting-card-actions-vote-description",
     "key": "guide.community.voting.card-actions:vote.description",
     "lang": "en",
-    "value": "Read the proposal and its attachments before giving your own vote. The window shows the available choices."
+    "value": "Open the voting view and read the proposal before choosing. Submitting asks for confirmation; once recorded, your vote cannot be changed."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-card-actions-vote-label",
@@ -87543,7 +87543,7 @@
     "_id": "i18n-message-en-guide-community-voting-close-description",
     "key": "guide.community.voting.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the voting list and return to the previous screen. Submitted votes and completed publication or closure actions remain recorded."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-close-label",
@@ -87555,7 +87555,7 @@
     "_id": "i18n-message-en-guide-community-voting-create-description",
     "key": "guide.community.voting.create.description",
     "lang": "en",
-    "value": "Open a new item in the current group. Prepare the text, attachments and voting settings before publishing."
+    "value": "Prepare a new announcement for the current community with text, attachments and, when needed, a voting deadline. Save the draft, then publish it from the list when ready."
   },
   {
     "_id": "i18n-message-en-guide-community-voting-create-label",
@@ -87657,7 +87657,7 @@
     "_id": "i18n-message-en-guide-members-select-close-description",
     "key": "guide.members.select.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the member picker without confirming its current selection. Use the confirmation tick if you want to apply the chosen people to the workflow that opened it."
   },
   {
     "_id": "i18n-message-en-guide-members-select-close-label",
@@ -87669,7 +87669,7 @@
     "_id": "i18n-message-en-guide-profile-mcp-advanced-close-description",
     "key": "guide.profile.mcp-advanced.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous screen."
+    "value": "Return to API / MCP settings. Generated or revoked credentials have already changed; staged access-pack edits still require the save tick in the parent window."
   },
   {
     "_id": "i18n-message-en-guide-profile-mcp-advanced-close-label",
@@ -87753,7 +87753,7 @@
     "_id": "i18n-message-en-guide-profile-mcp-authorization-close-description",
     "key": "guide.profile.mcp-authorization.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous screen."
+    "value": "Close the authorization request without granting access. When a client request is active, closing sends the refusal back to that client."
   },
   {
     "_id": "i18n-message-en-guide-profile-mcp-authorization-close-label",
@@ -87813,7 +87813,7 @@
     "_id": "i18n-message-en-guide-profile-mcp-details-close-description",
     "key": "guide.profile.mcp-details.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous screen."
+    "value": "Return from this client’s details without saving the parent API / MCP form. If you staged an access-pack change, use the parent window’s save tick to persist it."
   },
   {
     "_id": "i18n-message-en-guide-profile-mcp-details-close-label",
@@ -87873,7 +87873,7 @@
     "_id": "i18n-message-en-guide-work-campaign-editor-close-description",
     "key": "guide.work.campaign.editor.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Close the campaign form. In edit mode, save with its header tick first to retain changes to the campaign’s content and settings; viewing a campaign does not change it."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-editor-close-label",
@@ -87885,7 +87885,7 @@
     "_id": "i18n-message-en-guide-work-campaign-history-close-description",
     "key": "guide.work.campaign.history.close.description",
     "lang": "en",
-    "value": "Return to the previous screen. Save any form changes first if you want to keep them."
+    "value": "Return to the previous screen. This campaign detail view is read-only, so there are no form changes to save."
   },
   {
     "_id": "i18n-message-en-guide-work-campaign-history-close-label",
@@ -87897,7 +87897,7 @@
     "_id": "i18n-message-hu-guide-community-announcement-editor-close-description",
     "key": "guide.community.announcement.editor.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Visszatér a közlemények listájához. Bezárás előtt mentsd a függő szöveg- és mellékletmódosításokat; a már beküldött szavazatok és végrehajtott műveletek rögzítve maradnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-announcement-editor-close-label",
@@ -87909,7 +87909,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-delete-description",
     "key": "guide.community.case.board.card-actions:task-delete.description",
     "lang": "hu",
-    "value": "A megerősítés áttekintése után töröld ezt a részfeladatot."
+    "value": "Töröltnek jelölve eltávolítja a feladatot a tábláról. A művelet közvetlenül indul; kiválasztás előtt ellenőrizd a feladat címét és függőségeit."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-delete-label",
@@ -87921,7 +87921,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-members-description",
     "key": "guide.community.case.board.card-actions:task-members.description",
     "lang": "hu",
-    "value": "Nyisd meg a részfeladathoz rendelt személyeket."
+    "value": "Áttekintheted a feladat felelőseit. Aktív ügy kezelőjeként az itt módosított kiválasztás megerősítése azonnal menti a feladat felelőseit."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-members-label",
@@ -87933,7 +87933,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-progress-description",
     "key": "guide.community.case.board.card-actions:task-progress.description",
     "lang": "hu",
-    "value": "A feladat állapota szerint indítás, befejezés vagy újranyitás érhető el. Előbb nézd át a függőségeket."
+    "value": "A teendőt folyamatban lévőre, a folyamatban lévőt készre állítja, a kész feladatot pedig visszateszi a teendők közé. A kijelzett művelet közvetlenül menti az állapotváltást."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-progress-label",
@@ -87945,7 +87945,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-view-description",
     "key": "guide.community.case.board.card-actions:task-view.description",
     "lang": "hu",
-    "value": "Jogosultságod szerint tekintsd meg vagy szerkeszd ezt a részfeladatot."
+    "value": "Megnyitja a feladat részleteit a felelősökkel, időpontokkal, ajánlatokkal és függőségekkel együtt. Ha szerkesztheted, a változtatásokat az űrlap fejlécének pipájával mentsd."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-card-actions-task-view-label",
@@ -87957,7 +87957,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-close-description",
     "key": "guide.community.case.board.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja a feladattáblát, és visszatér az ügylistához vagy az ügyet megnyitó képernyőhöz. A már mentett feladatmódosítások megmaradnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-close-label",
@@ -87969,7 +87969,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-create-description",
     "key": "guide.community.case.board.create.description",
     "lang": "hu",
-    "value": "Hozz létre részfeladatot saját leírással, felelősökkel, időpontokkal, elfogadott ajánlatokkal és függőségekkel."
+    "value": "Az ügyön belül feladatot készíthetsz címmel, felelősökkel, időpontokkal, elfogadott ajánlatokkal és függőségekkel. A feladatot az űrlap fejlécének pipájával történő mentés rögzíti."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-create-label",
@@ -88005,7 +88005,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-dependencies-close-description",
     "key": "guide.community.case.board.dependencies.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+    "value": "Elveti ezt a függőségkiválasztást, és visszatér a feladat űrlapjához. A választott előfeltételeket a választó pipájával erősítsd meg, majd megőrzésükhöz mentsd a feladatot."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-dependencies-close-label",
@@ -88053,7 +88053,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-offers-card-actions-view-description",
     "key": "guide.community.case.board.offers.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "A feladathoz kapcsolás előtt ellenőrizheted az elfogadott ajánlat szolgáltatóját, összegét és feltételeit. A megtekintés nem változtatja meg a választó kiválasztását."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-offers-card-actions-view-label",
@@ -88065,7 +88065,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-offers-close-description",
     "key": "guide.community.case.board.offers.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+    "value": "Elveti ezt az ajánlatkiválasztást, és visszatér a feladat űrlapjához. A kiválasztást a választó pipája veszi át, a feladatot pedig annak saját pipája menti."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-offers-close-label",
@@ -88089,7 +88089,7 @@
     "_id": "i18n-message-hu-guide-community-case-board-task-close-description",
     "key": "guide.community.case.board.task.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "A függő módosítások mentése nélkül bezárja a feladat űrlapját. Az űrlapra átvett ajánlatok és függőségek tárolásához is szükséges a feladat mentési pipája."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-board-task-close-label",
@@ -88101,7 +88101,7 @@
     "_id": "i18n-message-hu-guide-community-case-editor-close-description",
     "key": "guide.community.case.editor.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Mentés nélkül bezárja az ügy űrlapját. Ha módosítottad az ügy adatait vagy érintettjeit, előbb a fejléc pipájával mentsd azokat."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-editor-close-label",
@@ -88113,7 +88113,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotation-editor-close-description",
     "key": "guide.community.case.quotation.editor.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Mentés nélkül bezárja az ajánlati űrlapot. Az összeg, megjegyzés és feltételek módosításának megőrzéséhez előbb ments a fejléc pipájával."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotation-editor-close-label",
@@ -88149,7 +88149,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-accept-offer-description",
     "key": "guide.community.case.quotations.card-actions:accept-offer.description",
     "lang": "hu",
-    "value": "Nézd át az árat és a feltételeket, majd a megerősítésben fogadd el az ajánlatot."
+    "value": "Elfogadottnak rögzíti ezt az ajánlatot. Előbb ellenőrizd a szolgáltatót, összeget és feltételeket: a kiválasztás külön megerősítő ablak nélkül, közvetlenül küldi el a döntést."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-accept-offer-label",
@@ -88161,7 +88161,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-chat-description",
     "key": "guide.community.case.quotations.card-actions:chat.description",
     "lang": "hu",
-    "value": "Nyisd meg az elemhez tartozó beszélgetést. Üzenetküldés előtt ellenőrizd a résztvevőket."
+    "value": "Megnyitja az ügyhöz és ajánlathoz kapcsolódó beszélgetést a vállalt munka tisztázásához. Ajánlati információ küldése előtt ellenőrizd a résztvevőket."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-chat-label",
@@ -88173,7 +88173,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-edit-description",
     "key": "guide.community.case.quotations.card-actions:edit.description",
     "lang": "hu",
-    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+    "value": "Az ügy kezelőjeként módosíthatod az ajánlat összegét, pénznemét, megjegyzését és feltételeit, ahol ez elérhető. Az egyeztetett változtatásokat az ajánlati űrlap mentése rögzíti."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-edit-label",
@@ -88185,7 +88185,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-invite-chat-description",
     "key": "guide.community.case.quotations.card-actions:invite-chat.description",
     "lang": "hu",
-    "value": "Vond be ezt a szolgáltatót az ügy beszélgetésébe, amikor a művelet elérhető."
+    "value": "Hozzáadja a szolgáltatót az ügy beszélgetéséhez, ha a művelet elérhető. Ez a beszélgetésben való részvételt biztosítja; önmagában nem fogadja el az ajánlatot."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-invite-chat-label",
@@ -88197,7 +88197,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-pending-offer-description",
     "key": "guide.community.case.quotations.card-actions:pending-offer.description",
     "lang": "hu",
-    "value": "Tedd vissza az ajánlatot függő állapotba az újabb áttekintéshez."
+    "value": "Visszaállítja az ajánlatot elbírálásra váró állapotba. A meglévő ajánlat döntési állapotát változtatja meg az újbóli mérlegeléshez."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-pending-offer-label",
@@ -88209,7 +88209,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-reject-offer-description",
     "key": "guide.community.case.quotations.card-actions:reject-offer.description",
     "lang": "hu",
-    "value": "A szolgáltató és a feltételek ellenőrzése után utasítsd el ezt az ajánlatot."
+    "value": "Elutasítottnak rögzíti az ajánlatot. Ellenőrizd, hogy a megfelelő szolgáltató ajánlatán dolgozol; a döntést közvetlenül ebből a menüből küldi el."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-reject-offer-label",
@@ -88221,7 +88221,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-view-description",
     "key": "guide.community.case.quotations.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "Elolvashatod a szolgáltató ajánlati összegét, pénznemét, megjegyzését, munka- és visszatérítési feltételeit. A részletek megnyitása nem fogadja el az ajánlatot."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-card-actions-view-label",
@@ -88233,7 +88233,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-close-description",
     "key": "guide.community.case.quotations.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja az ajánlatlistát, és visszatér az ügyhöz. A már elküldött döntések, például az elfogadás vagy elutasítás, érvényben maradnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-close-label",
@@ -88245,7 +88245,7 @@
     "_id": "i18n-message-hu-guide-community-case-quotations-quotation-provider-help-description",
     "key": "guide.community.case.quotations.quotation-provider-help.description",
     "lang": "hu",
-    "value": "Ez a szöveg jelzi, milyen ajánlatnézet érhető el számodra. A megjelenő vezérlőkkel kezelheted a saját ajánlatodat."
+    "value": "Ellenőrizd, milyen ajánlati műveleteket enged itt a szereped. A szolgáltató a saját ajánlatát készíti, az ügy kezelője pedig az elfogadást, elutasítást vagy elbírálásra visszaállítást rögzíti."
   },
   {
     "_id": "i18n-message-hu-guide-community-case-quotations-quotation-provider-help-label",
@@ -88257,7 +88257,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-cancel-description",
     "key": "guide.community.cases.card-actions:cancel.description",
     "lang": "hu",
-    "value": "A megerősítő ablakban szakítsd meg ezt az elemet. Előbb ellenőrizd, melyik elemről van szó."
+    "value": "Visszavontra állítja az ügyet, így az kikerül az aktív ügyek nézetéből. A módosítás közvetlenül indul; előtte ellenőrizd az ügy címét és a kívánt eredményt."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-cancel-label",
@@ -88269,7 +88269,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-chat-description",
     "key": "guide.community.cases.card-actions:chat.description",
     "lang": "hu",
-    "value": "Nyisd meg az elemhez tartozó beszélgetést. Üzenetküldés előtt ellenőrizd a résztvevőket."
+    "value": "Megnyitja az ügyhöz tartozó beszélgetést a munka egyeztetéséhez. Ügyspecifikus információ küldése előtt ellenőrizd a címet és a résztvevőket."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-chat-label",
@@ -88281,7 +88281,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-complete-description",
     "key": "guide.community.cases.card-actions:complete.description",
     "lang": "hu",
-    "value": "A munka és a hátralévő feladatok áttekintése után jelöld az ügyet befejezettnek."
+    "value": "Befejezettnek jelöli az ügyet, ha a munka elkészült. A lezárás a szolgáltatási visszajelzést is ütemezi; a közvetlen állapotváltás előtt nézd át a feladattáblát."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-complete-label",
@@ -88293,7 +88293,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-decline-description",
     "key": "guide.community.cases.card-actions:decline.description",
     "lang": "hu",
-    "value": "Utasítsd el az ügyben való részvételt. Ellenőrizd, melyik meghívásról döntesz."
+    "value": "Elutasítod az ügyre szóló meghívást. Siker esetén a részvételed elutasított állapotra vált; akkor használd, ha ezt a meghívást nem szeretnéd elfogadni."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-decline-label",
@@ -88305,7 +88305,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-edit-description",
     "key": "guide.community.cases.card-actions:edit.description",
     "lang": "hu",
-    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+    "value": "Szerkesztheted az ügy címét, típusát, leírását és érintetti körét. A módosításokat a szerkesztő mentési pipája rögzíti; az űrlap puszta megnyitása vagy bezárása nem ment."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-edit-label",
@@ -88317,7 +88317,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-invite-provider-description",
     "key": "guide.community.cases.card-actions:invite-provider.description",
     "lang": "hu",
-    "value": "A szolgáltatásválasztó ablakból válassz szolgáltatót ehhez az ügyhöz."
+    "value": "Válassz publikált szolgáltatást, majd erősítsd meg a kiválasztást a szolgáltató ügyhöz hívásához. Megerősítés előtt a szolgáltatást és a szolgáltatót is ellenőrizd a választóban."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-invite-provider-label",
@@ -88329,7 +88329,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-join-description",
     "key": "guide.community.cases.card-actions:join.description",
     "lang": "hu",
-    "value": "Az ügy céljának és érintettjeinek megismerése után fogadd el a részvételt."
+    "value": "Elfogadod a részvételedet ebben az ügyben. A művelet közvetlenül rögzíti az elfogadott tagságot; kiválasztás előtt nézd át az ügyet és a vállalt szerepedet."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-join-label",
@@ -88341,7 +88341,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-leave-description",
     "key": "guide.community.cases.card-actions:leave.description",
     "lang": "hu",
-    "value": "A folyamatban lévő vállalásaid áttekintése után lépj ki az ügyből."
+    "value": "Kilépsz abból az ügyből, amelyhez csatlakoztál. Ha te kezeled, a kilépés a tulajdonosi szerepet is megszünteti; a közvetlen művelet előtt nézd át a fennmaradó feladataidat."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-leave-label",
@@ -88353,7 +88353,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-members-description",
     "key": "guide.community.cases.card-actions:members.description",
     "lang": "hu",
-    "value": "Nézd meg az ügy érintettjeit és a részvételük aktuális állapotát."
+    "value": "Áttekintheted az ügy résztvevőit és azt, hogy meghívottak, elfogadták a részvételt vagy kiléptek. Az ügy kezelőjeként a résztvevői nézetből további embereket is meghívhatsz."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-members-label",
@@ -88365,7 +88365,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-offers-description",
     "key": "guide.community.cases.card-actions:offers.description",
     "lang": "hu",
-    "value": "Nyisd meg az ügy ajánlatait. Döntés előtt nézd át az árat, a munkafeltételeket és a visszatérítési szabályokat."
+    "value": "Hasonlítsd össze az ügy ajánlatait szolgáltató, összeg, pénznem és feltételek szerint. Elfogadás vagy elutasítás előtt nyisd meg az ajánlat részleteit az ajánlatlistában."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-offers-label",
@@ -88377,7 +88377,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-reopen-description",
     "key": "guide.community.cases.card-actions:reopen.description",
     "lang": "hu",
-    "value": "Nyisd újra az ügyet, ha további munkára van szükség."
+    "value": "Újra nyitott állapotba helyezi az ügyet a munka folytatásához. A meglévő ügyet használja tovább, nem hoz létre egy másodikat."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-reopen-label",
@@ -88389,7 +88389,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-start-description",
     "key": "guide.community.cases.card-actions:start.description",
     "lang": "hu",
-    "value": "Megerősítés után állítsd a nyitott ügyet folyamatban lévőre."
+    "value": "Folyamatban lévőre állítja az ügyet. A kiválasztás közvetlenül elküldi az állapotváltást; akkor használd, amikor elkezdődik a munka."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-start-label",
@@ -88401,7 +88401,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-take-over-description",
     "key": "guide.community.cases.card-actions:take-over.description",
     "lang": "hu",
-    "value": "Vedd át az ügy kezelését, amikor ez a művelet elérhető. Előbb olvasd el a megerősítést."
+    "value": "Átveszed az ügy kezelését, ha az átvétel elérhető. A kiválasztás közvetlenül elküldi a módosítást, ezért előtte ellenőrizd, hogy valóban vállalod-e a felelősséget."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-take-over-label",
@@ -88413,7 +88413,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-trash-description",
     "key": "guide.community.cases.card-actions:trash.description",
     "lang": "hu",
-    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+    "value": "A kukába helyezi az ügyet. A művelet közvetlenül módosítja az állapotát, ezért ellenőrizd, hogy ezt az ügyet szeretnéd-e kivenni a szokásos munkából."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-trash-label",
@@ -88425,7 +88425,7 @@
     "_id": "i18n-message-hu-guide-community-cases-card-actions-view-description",
     "key": "guide.community.cases.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "Megnyitja az ügy feladattábláját a munka, a hozzárendelések és a haladás áttekintéséhez. A tábla megtekintése nem változtatja meg az ügy állapotát."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-card-actions-view-label",
@@ -88437,7 +88437,7 @@
     "_id": "i18n-message-hu-guide-community-cases-close-description",
     "key": "guide.community.cases.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja az ügylistát, és visszatér az előző képernyőre. A már rögzített ügykezelési döntések érvényben maradnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-cases-close-label",
@@ -88449,7 +88449,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-close-description",
     "key": "guide.community.home.card-actions:close.description",
     "lang": "hu",
-    "value": "A megerősítés áttekintése után zárd le ezt a szavazást."
+    "value": "Megerősítés után lezárja a szavazási kört akkor is, ha a határidő még nem telt le. A rögzített szavazatok adják a lezárt eredményt, további szavazat nem küldhető be."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-close-label",
@@ -88461,7 +88461,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-edit-description",
     "key": "guide.community.home.card-actions:edit.description",
     "lang": "hu",
-    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+    "value": "Szerkesztheted a közlemény szövegét, mellékleteit és a támogatott szavazási beállításokat. A módosításokat a szerkesztőben mentsd; az elkészült piszkozatot a lista publikálási műveletével teheted láthatóvá."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-edit-label",
@@ -88473,7 +88473,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-feedback-description",
     "key": "guide.community.home.card-actions:feedback.description",
     "lang": "hu",
-    "value": "Nyisd meg a hirdetményhez tartozó beszélgetést kérdéshez vagy visszajelzéshez."
+    "value": "Megnyitja a közleményhez kapcsolódó támogatási beszélgetést, ahol kérdezhetsz a közösség kezelőitől vagy visszajelezhetsz. Az üzenet a szavazattól különálló művelet."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-feedback-label",
@@ -88485,7 +88485,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-publish-description",
     "key": "guide.community.home.card-actions:publish.description",
     "lang": "hu",
-    "value": "Tedd közzé az előkészített elemet, hogy az érintettek megtalálhassák."
+    "value": "Publikálja a piszkozat közleményt a közösségében. Előbb nézd át a szöveget, mellékleteket és az esetleges szavazási határidőt; a kiválasztás közvetlenül kéri a közzétételt."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-publish-label",
@@ -88497,7 +88497,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-restore-description",
     "key": "guide.community.home.card-actions:restore.description",
     "lang": "hu",
-    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+    "value": "Piszkozatként visszaállítja a közleményt a kukából. Nézd át a piszkozatok között, majd külön publikáld, amikor újra láthatóvá szeretnéd tenni."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-restore-label",
@@ -88509,7 +88509,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-results-description",
     "key": "guide.community.home.card-actions:results.description",
     "lang": "hu",
-    "value": "Nyisd meg a lezárt szavazás eredményét."
+    "value": "Megnyitja a lezárt szavazás rögzített eredményét. A szavazási kör véget ért, ezért itt az eredményt tekintheted át, új szavazatot nem adhatsz le."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-results-label",
@@ -88521,7 +88521,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-trash-description",
     "key": "guide.community.home.card-actions:trash.description",
     "lang": "hu",
-    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+    "value": "A cím megerősítése után a kukába helyezi a közleményt. Kikerül az aktuális listából; későbbi, piszkozatként történő visszaállításhoz a kukaszűrőt használd."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-trash-label",
@@ -88533,7 +88533,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-unpublish-description",
     "key": "guide.community.home.card-actions:unpublish.description",
     "lang": "hu",
-    "value": "Ezzel a művelettel a közzétett elem visszakerül a piszkozatok közé."
+    "value": "Megerősítés után visszavonja a publikált közleményt piszkozatra. Kikerül a közzétett listából, de kezelőinek szerkeszthető marad."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-unpublish-label",
@@ -88545,7 +88545,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-view-description",
     "key": "guide.community.home.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "Elolvashatod a teljes közleményt, mellékleteit és esetleges szavazási adatait. A megnyitás csak olvasás, nem ad le szavazatot."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-view-label",
@@ -88557,7 +88557,7 @@
     "_id": "i18n-message-hu-guide-community-home-card-actions-vote-description",
     "key": "guide.community.home.card-actions:vote.description",
     "lang": "hu",
-    "value": "Saját szavazatod megadása előtt olvasd el a javaslatot és mellékleteit. Az ablak mutatja a választható lehetőségeket."
+    "value": "Nyisd meg a szavazási nézetet, és választás előtt olvasd el a javaslatot. A leadás megerősítést kér; a rögzített szavazatodat utána nem módosíthatod."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-card-actions-vote-label",
@@ -88569,7 +88569,7 @@
     "_id": "i18n-message-hu-guide-community-home-create-description",
     "key": "guide.community.home.create.description",
     "lang": "hu",
-    "value": "Nyiss új elemet az aktuális csoportban. Közzététel előtt készítsd el a szöveget, a mellékleteket és a szavazási beállításokat."
+    "value": "Új közleményt készíthetsz az aktuális közösségnek szöveggel, mellékletekkel és szükség esetén szavazási határidővel. Mentsd a piszkozatot, majd elkészülte után publikáld a listából."
   },
   {
     "_id": "i18n-message-hu-guide-community-home-create-label",
@@ -88581,7 +88581,7 @@
     "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-cancel-description",
     "key": "guide.community.service.calendar.card-actions:cancel.description",
     "lang": "hu",
-    "value": "A megerősítő ablakban mondd le az időpontot. Előbb ellenőrizd a dátumot és az ügyfelet."
+    "value": "Közvetlenül lemondja ezt az időpontot. Kiválasztás előtt ellenőrizd a dátumot és a kapcsolódó ügyet; a lemondott időpont kikerül a naptárnézetből."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-cancel-label",
@@ -88593,7 +88593,7 @@
     "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-case-description",
     "key": "guide.community.service.calendar.card-actions:case.description",
     "lang": "hu",
-    "value": "Nyisd meg az időponthoz vagy hozzád rendelt részfeladathoz tartozó ügyet."
+    "value": "Megnyitja a naptárbejegyzéshez tartozó ügyet a munka és résztvevők ellenőrzéséhez. A szolgáltatói naptárból az ügy feladattáblájára visz."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-calendar-card-actions-case-label",
@@ -88605,7 +88605,7 @@
     "_id": "i18n-message-hu-guide-community-service-calendar-close-description",
     "key": "guide.community.service.calendar.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja a szolgáltatói naptárt. A meglévő időpontok és hozzárendelt feladatok mentett dátumai, állapotai megmaradnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-calendar-close-label",
@@ -88617,7 +88617,7 @@
     "_id": "i18n-message-hu-guide-community-service-calendar-view-trigger-description",
     "key": "guide.community.service.calendar.view:trigger.description",
     "lang": "hu",
-    "value": "Válts a szolgáltatáslista, a heti és a havi naptár között."
+    "value": "Lista-, heti és havi nézet között válthatsz ugyanannak a szolgáltatói időbeosztásnak az áttekintéséhez. A nézetváltás nem ütemezi át az időpontokat vagy hozzárendelt feladatokat."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-calendar-view-trigger-label",
@@ -88629,7 +88629,7 @@
     "_id": "i18n-message-hu-guide-community-service-editor-close-description",
     "key": "guide.community.service.editor.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Mentés nélkül bezárja a szolgáltatás űrlapját. A módosított adatok, munkatársak és feltételek megőrzéséhez előbb ments a fejléc pipájával; a csak olvasható nézet nem igényel mentést."
   },
   {
     "_id": "i18n-message-hu-guide-community-service-editor-close-label",
@@ -88665,7 +88665,7 @@
     "_id": "i18n-message-hu-guide-community-services-basket-description",
     "key": "guide.community.services.basket.description",
     "lang": "hu",
-    "value": "Nézd át a kijelölt szolgáltatást; másik választásához töröld a kosárból."
+    "value": "Ellenőrizd a jelenleg kiválasztott egy szolgáltatást és annak szolgáltatóját. Itt törölheted a választást, ha elveted vagy másik ajánlatot szeretnél."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-basket-label",
@@ -88677,7 +88677,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-author-description",
     "key": "guide.community.services.card-actions:author.description",
     "lang": "hu",
-    "value": "Nyisd meg a szolgáltató profilját, és ismerd meg, ki hirdeti a szolgáltatást."
+    "value": "Megnyitja a szolgáltatást kínáló személy profilját. Szolgáltatás kiválasztása vagy egyeztetés kezdése előtt ellenőrizheted, ki a szolgáltató."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-author-label",
@@ -88689,7 +88689,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-edit-description",
     "key": "guide.community.services.card-actions:edit.description",
     "lang": "hu",
-    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+    "value": "Megnyitja a szolgáltatás szerkeszthető adatait és feltételeit. A változtatásokat az űrlap mentése őrzi meg; a közzététel és visszavonás külön kártyaművelet."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-edit-label",
@@ -88701,7 +88701,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-publish-description",
     "key": "guide.community.services.card-actions:publish.description",
     "lang": "hu",
-    "value": "Tedd közzé az előkészített elemet, hogy az érintettek megtalálhassák."
+    "value": "Publikálja a piszkozatként tárolt szolgáltatást, hogy megjelenhessen az elérhető ajánlatok között. Előbb nézd át a leírást, árat és feltételeket; a kiválasztás közvetlenül kéri a közzétételt."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-publish-label",
@@ -88713,7 +88713,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-restore-description",
     "key": "guide.community.services.card-actions:restore.description",
     "lang": "hu",
-    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+    "value": "Piszkozatként visszaállítja a szolgáltatást a kukából. Nézd át az adatait, majd külön publikáld, amikor ismét kínálni szeretnéd."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-restore-label",
@@ -88725,7 +88725,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-trash-description",
     "key": "guide.community.services.card-actions:trash.description",
     "lang": "hu",
-    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+    "value": "A kukába helyezi a szolgáltatást, így kikerül a szokásos ajánlatlistából. A művelet közvetlenül indul; a kuka nézetéből piszkozatként állítható vissza."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-trash-label",
@@ -88737,7 +88737,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-unpublish-description",
     "key": "guide.community.services.card-actions:unpublish.description",
     "lang": "hu",
-    "value": "Ezzel a művelettel a közzétett elem visszakerül a piszkozatok közé."
+    "value": "Visszaállítja a publikált szolgáltatást piszkozatra, így kikerül a közzétett ajánlatok listájából. A szolgáltatás megmarad szerkesztésre és későbbi publikálásra."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-unpublish-label",
@@ -88749,7 +88749,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-actions-view-description",
     "key": "guide.community.services.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "A részletes űrlapon elolvashatod a szolgáltatás leírását, árát, elérhetőségét és feltételeit. Ezek alapján döntsd el, megfelel-e az ajánlat a szükséges munkához."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-actions-view-label",
@@ -88761,7 +88761,7 @@
     "_id": "i18n-message-hu-guide-community-services-card-badge-end-description",
     "key": "guide.community.services.card-badge-end.description",
     "lang": "hu",
-    "value": "A szolgáltatásválasztóban a plusz jelöli ki ezt a szolgáltatást. Nézd át a kosarat, majd erősítsd meg a választást."
+    "value": "Szolgáltatásválasztóban a plusszal tehetsz egy szolgáltatást a kiválasztási kosárba. Ellenőrizd a címét és szolgáltatóját, majd a fejléc pipájával erősítsd meg a választást."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-card-badge-end-label",
@@ -88773,7 +88773,7 @@
     "_id": "i18n-message-hu-guide-community-services-close-description",
     "key": "guide.community.services.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja a szolgáltatáslistát. Kiválasztási módban a meg nem erősített kosár elvész, és nem ad át szolgáltatást a választást kérő folyamatnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-close-label",
@@ -88785,7 +88785,7 @@
     "_id": "i18n-message-hu-guide-community-services-confirm-description",
     "key": "guide.community.services.confirm.description",
     "lang": "hu",
-    "value": "Add vissza a kiválasztott szolgáltatást a választót megnyitó ügynek vagy feladatnak."
+    "value": "Megerősíti a szolgáltatást a választót megnyitó folyamat számára. Ügyhöz híváskor ez elküldi a szolgáltatói meghívást; megerősítés előtt ellenőrizd a kosarat."
   },
   {
     "_id": "i18n-message-hu-guide-community-services-confirm-label",
@@ -88797,7 +88797,7 @@
     "_id": "i18n-message-hu-guide-community-task-editor-close-description",
     "key": "guide.community.task.editor.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "A függő módosítások alkalmazása nélkül bezárja az ütemezett feladat űrlapját. Az új időzítés, ismétlődés vagy érintetti kör megőrzéséhez előbb ments a fejléc pipájával."
   },
   {
     "_id": "i18n-message-hu-guide-community-task-editor-close-label",
@@ -88809,7 +88809,7 @@
     "_id": "i18n-message-hu-guide-community-tasks-card-actions-edit-description",
     "key": "guide.community.tasks.card-actions:edit.description",
     "lang": "hu",
-    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+    "value": "Módosíthatod az ütemezett feladat leírását, érintettjeit vagy időzítését. Ellenőrizd a kezdést és az ismétlődést, majd az ütemezés alkalmazásához mentsd az űrlapot."
   },
   {
     "_id": "i18n-message-hu-guide-community-tasks-card-actions-edit-label",
@@ -88821,7 +88821,7 @@
     "_id": "i18n-message-hu-guide-community-tasks-card-actions-restore-description",
     "key": "guide.community.tasks.card-actions:restore.description",
     "lang": "hu",
-    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+    "value": "Visszaállítja az ütemezett feladatot a kukából aktív állapotba. A tárolt időzítés megmarad, ezért visszaállítás előtt ellenőrizd az esetleg esedékessé váló ütemezést."
   },
   {
     "_id": "i18n-message-hu-guide-community-tasks-card-actions-restore-label",
@@ -88833,7 +88833,7 @@
     "_id": "i18n-message-hu-guide-community-tasks-card-actions-view-description",
     "key": "guide.community.tasks.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "Csak olvasható űrlapon nézheted meg az ütemezett feladat célját, érintettjeit, kezdését és ismétlődését. Az ütemezés módosításához a szerkesztést használd."
   },
   {
     "_id": "i18n-message-hu-guide-community-tasks-card-actions-view-label",
@@ -88845,7 +88845,7 @@
     "_id": "i18n-message-hu-guide-community-tasks-close-description",
     "key": "guide.community.tasks.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Visszatér az ütemezett feladatoktól az ügylistához. A nézet bezárása nem szünetelteti az aktív ütemezéseket; arra a feladat szüneteltetési művelete szolgál."
   },
   {
     "_id": "i18n-message-hu-guide-community-tasks-close-label",
@@ -88857,7 +88857,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-close-description",
     "key": "guide.community.voting.card-actions:close.description",
     "lang": "hu",
-    "value": "A megerősítés áttekintése után zárd le ezt a szavazást."
+    "value": "Megerősítés után lezárja a szavazási kört akkor is, ha a határidő még nem telt le. A rögzített szavazatok adják a lezárt eredményt, további szavazat nem küldhető be."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-close-label",
@@ -88869,7 +88869,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-edit-description",
     "key": "guide.community.voting.card-actions:edit.description",
     "lang": "hu",
-    "value": "Nyisd meg a szerkesztőt. A módosítások az űrlap mentésekor lépnek életbe."
+    "value": "Szerkesztheted a közlemény szövegét, mellékleteit és a támogatott szavazási beállításokat. A módosításokat a szerkesztőben mentsd; az elkészült piszkozatot a lista publikálási műveletével teheted láthatóvá."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-edit-label",
@@ -88881,7 +88881,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-feedback-description",
     "key": "guide.community.voting.card-actions:feedback.description",
     "lang": "hu",
-    "value": "Nyisd meg a hirdetményhez tartozó beszélgetést kérdéshez vagy visszajelzéshez."
+    "value": "Megnyitja a közleményhez kapcsolódó támogatási beszélgetést, ahol kérdezhetsz a közösség kezelőitől vagy visszajelezhetsz. Az üzenet a szavazattól különálló művelet."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-feedback-label",
@@ -88893,7 +88893,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-publish-description",
     "key": "guide.community.voting.card-actions:publish.description",
     "lang": "hu",
-    "value": "Tedd közzé az előkészített elemet, hogy az érintettek megtalálhassák."
+    "value": "Publikálja a piszkozat közleményt a közösségében. Előbb nézd át a szöveget, mellékleteket és az esetleges szavazási határidőt; a kiválasztás közvetlenül kéri a közzétételt."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-publish-label",
@@ -88905,7 +88905,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-restore-description",
     "key": "guide.community.voting.card-actions:restore.description",
     "lang": "hu",
-    "value": "Állítsd vissza a törölt elemet. Közzététel vagy folytatás előtt ellenőrizd az állapotát."
+    "value": "Piszkozatként visszaállítja a közleményt a kukából. Nézd át a piszkozatok között, majd külön publikáld, amikor újra láthatóvá szeretnéd tenni."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-restore-label",
@@ -88917,7 +88917,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-results-description",
     "key": "guide.community.voting.card-actions:results.description",
     "lang": "hu",
-    "value": "Nyisd meg a lezárt szavazás eredményét."
+    "value": "Megnyitja a lezárt szavazás rögzített eredményét. A szavazási kör véget ért, ezért itt az eredményt tekintheted át, új szavazatot nem adhatsz le."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-results-label",
@@ -88929,7 +88929,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-trash-description",
     "key": "guide.community.voting.card-actions:trash.description",
     "lang": "hu",
-    "value": "Helyezd az elemet a töröltek közé. Előbb olvasd el a megerősítést."
+    "value": "A cím megerősítése után a kukába helyezi a közleményt. Kikerül az aktuális listából; későbbi, piszkozatként történő visszaállításhoz a kukaszűrőt használd."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-trash-label",
@@ -88941,7 +88941,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-unpublish-description",
     "key": "guide.community.voting.card-actions:unpublish.description",
     "lang": "hu",
-    "value": "Ezzel a művelettel a közzétett elem visszakerül a piszkozatok közé."
+    "value": "Megerősítés után visszavonja a publikált közleményt piszkozatra. Kikerül a közzétett listából, de kezelőinek szerkeszthető marad."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-unpublish-label",
@@ -88953,7 +88953,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-view-description",
     "key": "guide.community.voting.card-actions:view.description",
     "lang": "hu",
-    "value": "Nyisd meg a kiválasztott elemet, és nézd át a részleteit."
+    "value": "Elolvashatod a teljes közleményt, mellékleteit és esetleges szavazási adatait. A megnyitás csak olvasás, nem ad le szavazatot."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-view-label",
@@ -88965,7 +88965,7 @@
     "_id": "i18n-message-hu-guide-community-voting-card-actions-vote-description",
     "key": "guide.community.voting.card-actions:vote.description",
     "lang": "hu",
-    "value": "Saját szavazatod megadása előtt olvasd el a javaslatot és mellékleteit. Az ablak mutatja a választható lehetőségeket."
+    "value": "Nyisd meg a szavazási nézetet, és választás előtt olvasd el a javaslatot. A leadás megerősítést kér; a rögzített szavazatodat utána nem módosíthatod."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-card-actions-vote-label",
@@ -88977,7 +88977,7 @@
     "_id": "i18n-message-hu-guide-community-voting-close-description",
     "key": "guide.community.voting.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja a szavazási listát, és visszatér az előző képernyőre. A beküldött szavazatok, valamint a végrehajtott publikálási és lezárási műveletek rögzítve maradnak."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-close-label",
@@ -88989,7 +88989,7 @@
     "_id": "i18n-message-hu-guide-community-voting-create-description",
     "key": "guide.community.voting.create.description",
     "lang": "hu",
-    "value": "Nyiss új elemet az aktuális csoportban. Közzététel előtt készítsd el a szöveget, a mellékleteket és a szavazási beállításokat."
+    "value": "Új közleményt készíthetsz az aktuális közösségnek szöveggel, mellékletekkel és szükség esetén szavazási határidővel. Mentsd a piszkozatot, majd elkészülte után publikáld a listából."
   },
   {
     "_id": "i18n-message-hu-guide-community-voting-create-label",
@@ -89091,7 +89091,7 @@
     "_id": "i18n-message-hu-guide-members-select-close-description",
     "key": "guide.members.select.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Az aktuális kiválasztás megerősítése nélkül bezárja a résztvevőválasztót. A kiválasztott emberek átadásához használd a megerősítő pipát."
   },
   {
     "_id": "i18n-message-hu-guide-members-select-close-label",
@@ -89103,7 +89103,7 @@
     "_id": "i18n-message-hu-guide-profile-mcp-advanced-close-description",
     "key": "guide.profile.mcp-advanced.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+    "value": "Visszatér az API / MCP beállításaihoz. A létrehozott vagy visszavont kulcsok változása már megtörtént; az előkészített hozzáférési csomag módosításához még menteni kell a szülőablak pipájával."
   },
   {
     "_id": "i18n-message-hu-guide-profile-mcp-advanced-close-label",
@@ -89187,7 +89187,7 @@
     "_id": "i18n-message-hu-guide-profile-mcp-authorization-close-description",
     "key": "guide.profile.mcp-authorization.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+    "value": "Hozzáférés megadása nélkül bezárja az engedélykérést. Aktív klienskérés esetén a bezárás az elutasítást küldi vissza a kliensnek."
   },
   {
     "_id": "i18n-message-hu-guide-profile-mcp-authorization-close-label",
@@ -89247,7 +89247,7 @@
     "_id": "i18n-message-hu-guide-profile-mcp-details-close-description",
     "key": "guide.profile.mcp-details.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző felületre."
+    "value": "Visszatér a kliens részleteitől a szülő API / MCP űrlap mentése nélkül. Ha hozzáférési csomagot módosítottál, azt a szülőablak mentési pipájával rögzítsd."
   },
   {
     "_id": "i18n-message-hu-guide-profile-mcp-details-close-label",
@@ -89307,7 +89307,7 @@
     "_id": "i18n-message-hu-guide-work-campaign-editor-close-description",
     "key": "guide.work.campaign.editor.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Bezárja a kampány űrlapját. Szerkesztéskor előbb ments a fejléc pipájával a tartalom és beállítások megőrzéséhez; a kampány megtekintése nem módosítja azt."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-editor-close-label",
@@ -89319,7 +89319,7 @@
     "_id": "i18n-message-hu-guide-work-campaign-history-close-description",
     "key": "guide.work.campaign.history.close.description",
     "lang": "hu",
-    "value": "Térj vissza az előző felületre. A megtartani kívánt űrlapmódosításokat előbb mentsd el."
+    "value": "Visszatér az előző képernyőre. Ez a kampányrészlet csak olvasható, ezért nincs mentendő űrlapmódosítás."
   },
   {
     "_id": "i18n-message-hu-guide-work-campaign-history-close-label",
@@ -89367,7 +89367,7 @@
     "_id": "i18n-message-en-guide-policies-editor-close-description",
     "key": "guide.policies.editor.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous form."
+    "value": "Close this term’s editor without applying its pending edits. Use its save tick to apply the term, then save the owning form to persist the complete change."
   },
   {
     "_id": "i18n-message-en-guide-policies-editor-close-label",
@@ -89439,7 +89439,7 @@
     "_id": "i18n-message-en-guide-policies-list-close-description",
     "key": "guide.policies.list.close.description",
     "lang": "en",
-    "value": "Close this window and return to the previous form."
+    "value": "Return to the owning form after reviewing its terms. Any term changes applied here remain part of that form’s draft and are stored only when the owning form is saved."
   },
   {
     "_id": "i18n-message-en-guide-policies-list-close-label",
@@ -89511,7 +89511,7 @@
     "_id": "i18n-message-hu-guide-policies-editor-close-description",
     "key": "guide.policies.editor.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző űrlaphoz."
+    "value": "Az aktuális módosítások átvétele nélkül bezárja a feltétel szerkesztőjét. A feltételt a saját mentési pipájával vedd át, majd a teljes változtatást az azt tartalmazó űrlap mentésével rögzítsd."
   },
   {
     "_id": "i18n-message-hu-guide-policies-editor-close-label",
@@ -89583,7 +89583,7 @@
     "_id": "i18n-message-hu-guide-policies-list-close-description",
     "key": "guide.policies.list.close.description",
     "lang": "hu",
-    "value": "Zárd be ezt az ablakot, és térj vissza az előző űrlaphoz."
+    "value": "Visszatér a feltételeket tartalmazó űrlaphoz. Az itt átvett feltételmódosítások annak piszkozatához tartoznak, és az egész űrlap mentésekor tárolódnak."
   },
   {
     "_id": "i18n-message-hu-guide-policies-list-close-label",
