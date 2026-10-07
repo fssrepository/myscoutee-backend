@@ -247,7 +247,25 @@ public class UserLoginSessionService {
         }
     }
 
+    public void recordBootstrapLogin(String verifiedEmail, HttpServletRequest request) {
+        var user = mongoTemplate.findOne(Query.query(Criteria.where("email").is(verifiedEmail)),
+                com.raxim.myscoutee.profile.data.document.Users.class);
+        if (user == null || !user.isOperator()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Operator identity required.");
+        String attempt = java.util.UUID.randomUUID().toString();
+        UserLoginAudit audit = saveAudit(user.getUserId(), "bootstrap:" + attempt, attempt, "operator-bootstrap",
+                UserLoginAudit.OUTCOME_ACCEPTED, clientDescriptor(request), request, Instant.now().toString());
+        enqueueSecurityWarning(audit, true, "/operator");
+    }
+
     private void enqueueSecurityWarning(UserLoginAudit audit, boolean accepted) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String path = authentication != null && authentication.getAuthorities().stream().anyMatch(a -> "O".equals(a.getAuthority()))
+                ? "/operator" : authentication != null && authentication.getAuthorities().stream().anyMatch(a -> "A".equals(a.getAuthority()))
+                ? "/admin" : "/game";
+        enqueueSecurityWarning(audit, accepted, path);
+    }
+
+    private void enqueueSecurityWarning(UserLoginAudit audit, boolean accepted, String path) {
         String attemptId = safeText(audit.getAttemptId());
         String clientLabel = safeText(audit.getClientLabel());
         String messageKey = accepted
@@ -263,7 +281,7 @@ public class UserLoginSessionService {
         payload.put("loginOutcome", safeText(audit.getOutcome()));
         payload.put("loginAttemptId", attemptId);
         payload.put("notification_tone", accepted ? "warning" : "danger");
-        notificationOutboxService.enqueue(new NotificationIntent(
+        notificationOutboxService.enqueueOnce("security-login:" + attemptId, new NotificationIntent(
                 "security-login",
                 "security",
                 attemptId,
@@ -271,7 +289,7 @@ public class UserLoginSessionService {
                 List.of(audit.getUserId()),
                 "Security alert",
                 fallback,
-                "/game",
+                path,
                 null,
                 null,
                 "security-login-" + attemptId,

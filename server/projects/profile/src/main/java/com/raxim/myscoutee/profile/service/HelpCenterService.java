@@ -120,7 +120,10 @@ public class HelpCenterService {
         if (DOCUMENT_EXPLANATION.equals(kind) && !StringUtils.hasText(context)) {
             return new HelpCenterStateDto(null, List.of(), List.of(), List.of(), List.of());
         }
-        HelpCenterRevision active = revisionsForKind(
+        HelpCenterRevision active = DOCUMENT_EXPLANATION.equals(kind)
+                ? revisionsRepository.findFirstByBaseGroupIdAndDocumentTypeAndLangAndContextKeyAndActiveTrueOrderByVersionDesc(
+                        contentScope(kind, JobGroupContext.groupId()), kind, language, context).orElse(null)
+                : revisionsForKind(
                     revisionsRepository.findByBaseGroupIdOrderByVersionDesc(contentScope(kind, JobGroupContext.groupId())),
                     kind,
                     language,
@@ -158,6 +161,7 @@ public class HelpCenterService {
         String language = contentLang(lang);
         String context = contextKey(kind, contextKey, false);
         ensureAdmin(adminUserId);
+        ensureEditableContext(kind, context);
         return fullState(kind, language, context);
     }
 
@@ -174,6 +178,11 @@ public class HelpCenterService {
         String language = contentLang(request == null ? null : request.lang());
         String context = contextKey(kind, request == null ? null : request.contextKey(), true);
         String actorUserId = ensureAdmin(request == null ? null : request.actorUserId());
+        ensureEditableContext(kind, context);
+        String sourceId = normalize(request == null ? null : request.baseRevisionId());
+        if (StringUtils.hasText(sourceId)) {
+            revisionsRepository.findById(sourceId).ifPresent(this::ensureEditableRevision);
+        }
         List<HelpCenterSection> sections = normalizeSections(request == null ? null : request.sections(), kind);
         HelpCenterRevision saved = saveNewRevisionWithNextVersion(request, kind, language, context, actorUserId, sections);
         String baseRevisionId = normalize(request == null ? null : request.baseRevisionId());
@@ -248,9 +257,12 @@ public class HelpCenterService {
         if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
         }
+        ensureEditableRevision(target);
+        ensureEditableContext(kind, revisionContext(target));
         String language = revisionLang(target);
         String targetContext = revisionContext(target);
-        List<HelpCenterRevision> revisions = revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId());
+        List<HelpCenterRevision> revisions = revisionsForKind(
+                revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId()), kind, language, targetContext);
         for (HelpCenterRevision revision : revisions) {
             String revisionKind = revisionKind(revision);
             String revisionLang = revisionLang(revision);
@@ -286,6 +298,8 @@ public class HelpCenterService {
         if (!kind.equals(revisionKind(target)) || !java.util.Objects.equals(target.getBaseGroupId(), JobGroupContext.groupId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, documentLabel(kind) + " revision not found.");
         }
+        ensureEditableRevision(target);
+        ensureEditableContext(kind, revisionContext(target));
         String language = revisionLang(target);
         String targetContext = revisionContext(target);
         boolean wasActive = Boolean.TRUE.equals(target.getActive());
@@ -355,15 +369,34 @@ public class HelpCenterService {
         return toPrivacyConsentDto(privacyConsentsRepository.save(consent));
     }
 
+    private void ensureEditableRevision(HelpCenterRevision revision) {
+        if (revision.getIsSystem()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "System content is not editable.");
+        }
+    }
+
+    private void ensureEditableContext(String kind, String context) {
+        // A system context stays reserved across languages and base groups, including new drafts.
+        if (DOCUMENT_EXPLANATION.equals(kind) && StringUtils.hasText(context)
+                && revisionsRepository.existsByDocumentTypeAndContextKeyAndIsSystemTrue(kind, context)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "System content is not editable.");
+        }
+    }
+
     private HelpCenterStateDto fullState(String kind, String lang, String contextKey) {
         String language = contentLang(lang);
         String context = contextKey(kind, contextKey, false);
-        List<HelpCenterRevision> revisions = revisionsForKind(revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId()), kind, language, context);
+        List<HelpCenterRevision> groupRevisions = revisionsRepository.findByBaseGroupIdOrderByVersionDesc(JobGroupContext.groupId());
+        java.util.Set<String> systemIds = groupRevisions.stream().filter(HelpCenterRevision::getIsSystem)
+                .map(HelpCenterRevision::getId).collect(java.util.stream.Collectors.toSet());
+        List<HelpCenterRevision> revisions = revisionsForKind(groupRevisions, kind, language, context).stream()
+                .filter(revision -> !revision.getIsSystem()).toList();
         HelpCenterRevision active = revisions.stream()
                 .filter(revision -> Boolean.TRUE.equals(revision.getActive()))
                 .max(Comparator.comparing(HelpCenterRevision::getVersion, Comparator.nullsLast(Integer::compareTo)))
                 .orElse(null);
         List<HelpCenterAuditEntry> auditTrail = auditRepository.findByBaseGroupIdOrderByCreatedDateDesc(JobGroupContext.groupId()).stream()
+                .filter(entry -> !systemIds.contains(entry.getRevisionId()))
                 .filter(entry -> kind.equals(auditKind(entry)))
                 .filter(entry -> language.equals(auditLang(entry)))
                 .toList();
@@ -469,7 +502,8 @@ public class HelpCenterService {
                 normalize(revision.getCreatedDate()),
                 normalize(revision.getCreatedUser()),
                 normalize(revision.getUpdatedDate()),
-                normalize(revision.getUpdatedUser()));
+                normalize(revision.getUpdatedUser()),
+                revision.getIsSystem());
     }
 
     private HelpCenterSectionDto toSectionDto(HelpCenterSection section, String kind) {

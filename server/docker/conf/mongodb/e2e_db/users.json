@@ -12266,7 +12266,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 4
     }
   },
   {
@@ -12329,7 +12330,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 4
     }
   },
   {
@@ -12394,7 +12396,8 @@
         "removed": 0
       },
       "adminJobs": 0,
-      "adminMetrics": 0
+      "adminMetrics": 0,
+      "notifications": 3
     }
   },
   {

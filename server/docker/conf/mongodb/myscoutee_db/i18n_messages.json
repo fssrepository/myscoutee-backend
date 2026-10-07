@@ -81478,5 +81478,4745 @@
     "key": "groups.base",
     "lang": "hu",
     "value": "Főcsoport"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-affinity-graph-close-description",
+    "key": "guide.admin.affinity-graph.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-affinity-graph-close-label",
+    "key": "guide.admin.affinity-graph.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-affinity-graph-overview-description",
+    "key": "guide.admin.affinity-graph.overview.description",
+    "lang": "en",
+    "value": "Inspect the graph and its displayed relationships."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-affinity-graph-overview-label",
+    "key": "guide.admin.affinity-graph.overview.label",
+    "lang": "en",
+    "value": "Affinity graph"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-preview-description",
+    "key": "guide.admin.article-edit.article-preview.description",
+    "lang": "en",
+    "value": "Check how the article will appear."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-preview-label",
+    "key": "guide.admin.article-edit.article-preview.label",
+    "lang": "en",
+    "value": "Preview"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-save-description",
+    "key": "guide.admin.article-edit.article-save.description",
+    "lang": "en",
+    "value": "Save the current article changes."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-article-save-label",
+    "key": "guide.admin.article-edit.article-save.label",
+    "lang": "en",
+    "value": "Save"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-close-description",
+    "key": "guide.admin.article-edit.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-close-label",
+    "key": "guide.admin.article-edit.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-overview-description",
+    "key": "guide.admin.article-edit.overview.description",
+    "lang": "en",
+    "value": "Edit the article and review its preview before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-edit-overview-label",
+    "key": "guide.admin.article-edit.overview.label",
+    "lang": "en",
+    "value": "Edit article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-close-description",
+    "key": "guide.admin.article-view.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-close-label",
+    "key": "guide.admin.article-view.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-overview-description",
+    "key": "guide.admin.article-view.overview.description",
+    "lang": "en",
+    "value": "Review the article as displayed to readers. Close to return to the editor."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-article-view-overview-label",
+    "key": "guide.admin.article-view.overview.label",
+    "lang": "en",
+    "value": "Article preview"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-blocked-users-close-description",
+    "key": "guide.admin.blocked-users.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-blocked-users-close-label",
+    "key": "guide.admin.blocked-users.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-blocked-users-overview-description",
+    "key": "guide.admin.blocked-users.overview.description",
+    "lang": "en",
+    "value": "Inspect restrictions and use the available account actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-blocked-users-overview-label",
+    "key": "guide.admin.blocked-users.overview.label",
+    "lang": "en",
+    "value": "Blocked accounts"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-close-description",
+    "key": "guide.admin.chat-review.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-close-label",
+    "key": "guide.admin.chat-review.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-message-description",
+    "key": "guide.admin.chat-review.message.description",
+    "lang": "en",
+    "value": "Explain the issue briefly and clearly."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-message-label",
+    "key": "guide.admin.chat-review.message.label",
+    "lang": "en",
+    "value": "Warning text"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-overview-description",
+    "key": "guide.admin.chat-review.overview.description",
+    "lang": "en",
+    "value": "Inspect the selected report conversation. A warning sends your message to the affected user."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-overview-label",
+    "key": "guide.admin.chat-review.overview.label",
+    "lang": "en",
+    "value": "Chat review"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-send-warning-description",
+    "key": "guide.admin.chat-review.send-warning.description",
+    "lang": "en",
+    "value": "Send the written warning to the selected user."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-chat-review-send-warning-label",
+    "key": "guide.admin.chat-review.send-warning.label",
+    "lang": "en",
+    "value": "Send warning"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-category-description",
+    "key": "guide.admin.content-moderation.category.description",
+    "lang": "en",
+    "value": "Choose which content category to review."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-category-label",
+    "key": "guide.admin.content-moderation.category.label",
+    "lang": "en",
+    "value": "Content type"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-close-description",
+    "key": "guide.admin.content-moderation.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-close-label",
+    "key": "guide.admin.content-moderation.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-overview-description",
+    "key": "guide.admin.content-moderation.overview.description",
+    "lang": "en",
+    "value": "Review submitted content and apply a decision within your current workspace."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-overview-label",
+    "key": "guide.admin.content-moderation.overview.label",
+    "lang": "en",
+    "value": "Content moderation"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-settings-description",
+    "key": "guide.admin.content-moderation.settings.description",
+    "lang": "en",
+    "value": "Configure the moderation rules for this workspace."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-settings-label",
+    "key": "guide.admin.content-moderation.settings.label",
+    "lang": "en",
+    "value": "Moderation settings"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-status-description",
+    "key": "guide.admin.content-moderation.status.description",
+    "lang": "en",
+    "value": "Filter by the current review state."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-content-moderation-status-label",
+    "key": "guide.admin.content-moderation.status.label",
+    "lang": "en",
+    "value": "Status"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-close-description",
+    "key": "guide.admin.feedback.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-close-label",
+    "key": "guide.admin.feedback.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-detail-close-description",
+    "key": "guide.admin.feedback-detail.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-detail-close-label",
+    "key": "guide.admin.feedback-detail.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-detail-overview-description",
+    "key": "guide.admin.feedback-detail.overview.description",
+    "lang": "en",
+    "value": "Read the submitted feedback and choose the appropriate review action."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-detail-overview-label",
+    "key": "guide.admin.feedback-detail.overview.label",
+    "lang": "en",
+    "value": "Review feedback"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-feedback-review-status-filter-description",
+    "key": "guide.admin.feedback.feedback-review-status-filter.description",
+    "lang": "en",
+    "value": "Filter feedback by review state."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-feedback-review-status-filter-label",
+    "key": "guide.admin.feedback.feedback-review-status-filter.label",
+    "lang": "en",
+    "value": "Filter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-overview-description",
+    "key": "guide.admin.feedback.overview.description",
+    "lang": "en",
+    "value": "Open a feedback item to read it and record its review state."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-feedback-overview-label",
+    "key": "guide.admin.feedback.overview.label",
+    "lang": "en",
+    "value": "Feedback"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-graph-help-close-description",
+    "key": "guide.admin.graph-help.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-graph-help-close-label",
+    "key": "guide.admin.graph-help.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-graph-help-overview-description",
+    "key": "guide.admin.graph-help.overview.description",
+    "lang": "en",
+    "value": "This explanation describes the selected chart and how to read it."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-graph-help-overview-label",
+    "key": "guide.admin.graph-help.overview.label",
+    "lang": "en",
+    "value": "Chart explanation"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-close-description",
+    "key": "guide.admin.help-editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-close-label",
+    "key": "guide.admin.help-editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-help-document-description",
+    "key": "guide.admin.help-editor.help-document.description",
+    "lang": "en",
+    "value": "Choose the document or editable guide to work on."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-help-document-label",
+    "key": "guide.admin.help-editor.help-document.label",
+    "lang": "en",
+    "value": "Document"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-help-language-description",
+    "key": "guide.admin.help-editor.help-language.description",
+    "lang": "en",
+    "value": "Each language has its own revisions."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-help-language-label",
+    "key": "guide.admin.help-editor.help-language.label",
+    "lang": "en",
+    "value": "Language"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-help-new-revision-description",
+    "key": "guide.admin.help-editor.help-new-revision.description",
+    "lang": "en",
+    "value": "Create a draft; users see it after activation."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-help-new-revision-label",
+    "key": "guide.admin.help-editor.help-new-revision.label",
+    "lang": "en",
+    "value": "New revision"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-overview-description",
+    "key": "guide.admin.help-editor.overview.description",
+    "lang": "en",
+    "value": "Manage help, policy and editable guide revisions. System guides are maintained with the application and are hidden here."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-help-editor-overview-label",
+    "key": "guide.admin.help-editor.overview.label",
+    "lang": "en",
+    "value": "Content editor"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-home-overview-description",
+    "key": "guide.admin.home.overview.description",
+    "lang": "en",
+    "value": "Open your avatar menu to choose moderation, content, jobs or monitoring. Notification and guide controls are also there."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-home-overview-label",
+    "key": "guide.admin.home.overview.label",
+    "lang": "en",
+    "value": "Administration"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-close-description",
+    "key": "guide.admin.idea-editor.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-close-label",
+    "key": "guide.admin.idea-editor.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-idea-filter-description",
+    "key": "guide.admin.idea-editor.idea-filter.description",
+    "lang": "en",
+    "value": "Switch between published items, drafts and trash."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-idea-filter-label",
+    "key": "guide.admin.idea-editor.idea-filter.label",
+    "lang": "en",
+    "value": "Filter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-idea-language-description",
+    "key": "guide.admin.idea-editor.idea-language.description",
+    "lang": "en",
+    "value": "Choose the article language."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-idea-language-label",
+    "key": "guide.admin.idea-editor.idea-language.label",
+    "lang": "en",
+    "value": "Language"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-idea-new-description",
+    "key": "guide.admin.idea-editor.idea-new.description",
+    "lang": "en",
+    "value": "Create a new article draft."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-idea-new-label",
+    "key": "guide.admin.idea-editor.idea-new.label",
+    "lang": "en",
+    "value": "New article"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-overview-description",
+    "key": "guide.admin.idea-editor.overview.description",
+    "lang": "en",
+    "value": "Manage articles, drafts and published content in the selected language."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-idea-editor-overview-label",
+    "key": "guide.admin.idea-editor.overview.label",
+    "lang": "en",
+    "value": "Articles"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-item-preview-close-description",
+    "key": "guide.admin.item-preview.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-item-preview-close-label",
+    "key": "guide.admin.item-preview.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-item-preview-overview-description",
+    "key": "guide.admin.item-preview.overview.description",
+    "lang": "en",
+    "value": "Inspect the reported item before returning to its review."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-item-preview-overview-label",
+    "key": "guide.admin.item-preview.overview.label",
+    "lang": "en",
+    "value": "Reported item"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-job-parameter-close-description",
+    "key": "guide.admin.job-parameter.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-job-parameter-close-label",
+    "key": "guide.admin.job-parameter.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-job-parameter-overview-description",
+    "key": "guide.admin.job-parameter.overview.description",
+    "lang": "en",
+    "value": "Edit the selected job parameter and save the change."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-job-parameter-overview-label",
+    "key": "guide.admin.job-parameter.overview.label",
+    "lang": "en",
+    "value": "Job parameter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-job-parameter-parameter-save-description",
+    "key": "guide.admin.job-parameter.parameter-save.description",
+    "lang": "en",
+    "value": "Apply this parameter value."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-job-parameter-parameter-save-label",
+    "key": "guide.admin.job-parameter.parameter-save.label",
+    "lang": "en",
+    "value": "Save parameter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-moderation-settings-close-description",
+    "key": "guide.admin.moderation-settings.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-moderation-settings-close-label",
+    "key": "guide.admin.moderation-settings.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-moderation-settings-overview-description",
+    "key": "guide.admin.moderation-settings.overview.description",
+    "lang": "en",
+    "value": "Configure automatic review and enabled moderation categories, then save."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-moderation-settings-overview-label",
+    "key": "guide.admin.moderation-settings.overview.label",
+    "lang": "en",
+    "value": "Moderation settings"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-moderation-settings-save-description",
+    "key": "guide.admin.moderation-settings.save.description",
+    "lang": "en",
+    "value": "Apply these moderation settings."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-moderation-settings-save-label",
+    "key": "guide.admin.moderation-settings.save.label",
+    "lang": "en",
+    "value": "Save"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-monitoring-close-description",
+    "key": "guide.admin.monitoring.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-monitoring-close-label",
+    "key": "guide.admin.monitoring.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-monitoring-monitoring-filter-description",
+    "key": "guide.admin.monitoring.monitoring-filter.description",
+    "lang": "en",
+    "value": "Choose the monitoring events to display."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-monitoring-monitoring-filter-label",
+    "key": "guide.admin.monitoring.monitoring-filter.label",
+    "lang": "en",
+    "value": "Filter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-monitoring-overview-description",
+    "key": "guide.admin.monitoring.overview.description",
+    "lang": "en",
+    "value": "Review operational measurements and recent application activity."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-monitoring-overview-label",
+    "key": "guide.admin.monitoring.overview.label",
+    "lang": "en",
+    "value": "Monitoring"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminarticle-description",
+    "key": "guide.admin.navigation.adminArticle.description",
+    "lang": "en",
+    "value": "Manage article drafts and publications."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminarticle-label",
+    "key": "guide.admin.navigation.adminArticle.label",
+    "lang": "en",
+    "value": "Articles"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminchat-description",
+    "key": "guide.admin.navigation.adminChat.description",
+    "lang": "en",
+    "value": "Inspect reports and send appropriate warnings."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminchat-label",
+    "key": "guide.admin.navigation.adminChat.label",
+    "lang": "en",
+    "value": "Chat review"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-admincontent-description",
+    "key": "guide.admin.navigation.adminContent.description",
+    "lang": "en",
+    "value": "Edit help, policies and editable guides; system guides are hidden."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-admincontent-label",
+    "key": "guide.admin.navigation.adminContent.label",
+    "lang": "en",
+    "value": "Content"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminfeedback-description",
+    "key": "guide.admin.navigation.adminFeedback.description",
+    "lang": "en",
+    "value": "Review user feedback."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminfeedback-label",
+    "key": "guide.admin.navigation.adminFeedback.label",
+    "lang": "en",
+    "value": "Feedback"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-admingraph-description",
+    "key": "guide.admin.navigation.adminGraph.description",
+    "lang": "en",
+    "value": "Explore the affinity graph."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-admingraph-label",
+    "key": "guide.admin.navigation.adminGraph.label",
+    "lang": "en",
+    "value": "Graph"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminjobs-description",
+    "key": "guide.admin.navigation.adminJobs.description",
+    "lang": "en",
+    "value": "Configure delivery rules and scheduled jobs."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminjobs-label",
+    "key": "guide.admin.navigation.adminJobs.label",
+    "lang": "en",
+    "value": "Jobs"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminmetrics-description",
+    "key": "guide.admin.navigation.adminMetrics.description",
+    "lang": "en",
+    "value": "Inspect operational metrics and activity."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminmetrics-label",
+    "key": "guide.admin.navigation.adminMetrics.label",
+    "lang": "en",
+    "value": "Monitoring"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminmoderation-description",
+    "key": "guide.admin.navigation.adminModeration.description",
+    "lang": "en",
+    "value": "Review submitted content."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminmoderation-label",
+    "key": "guide.admin.navigation.adminModeration.label",
+    "lang": "en",
+    "value": "Moderation"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminparams-description",
+    "key": "guide.admin.navigation.adminParams.description",
+    "lang": "en",
+    "value": "Manage application parameters and their history."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminparams-label",
+    "key": "guide.admin.navigation.adminParams.label",
+    "lang": "en",
+    "value": "Parameters"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminpaymentauthorizations-description",
+    "key": "guide.admin.navigation.adminPaymentAuthorizations.description",
+    "lang": "en",
+    "value": "Review pending payment authorizations."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminpaymentauthorizations-label",
+    "key": "guide.admin.navigation.adminPaymentAuthorizations.label",
+    "lang": "en",
+    "value": "Authorizations"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminpaymentsimulator-description",
+    "key": "guide.admin.navigation.adminPaymentSimulator.description",
+    "lang": "en",
+    "value": "Open the configured payment test environment."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminpaymentsimulator-label",
+    "key": "guide.admin.navigation.adminPaymentSimulator.label",
+    "lang": "en",
+    "value": "Payment simulator"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminreports-description",
+    "key": "guide.admin.navigation.adminReports.description",
+    "lang": "en",
+    "value": "Review reported users and their evidence."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminreports-label",
+    "key": "guide.admin.navigation.adminReports.label",
+    "lang": "en",
+    "value": "Reports"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminstats-description",
+    "key": "guide.admin.navigation.adminStats.description",
+    "lang": "en",
+    "value": "Inspect application statistics."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-adminstats-label",
+    "key": "guide.admin.navigation.adminStats.label",
+    "lang": "en",
+    "value": "Statistics"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-explanations-description",
+    "key": "guide.admin.navigation.explanations.description",
+    "lang": "en",
+    "value": "Switch guides off or on. Both floating buttons can be dragged to a convenient position."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-explanations-label",
+    "key": "guide.admin.navigation.explanations.label",
+    "lang": "en",
+    "value": "Guide button"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-notification-launcher-description",
+    "key": "guide.admin.navigation.notification-launcher.description",
+    "lang": "en",
+    "value": "Show or hide the floating notification button. Your inbox and delivery settings remain available."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-notification-launcher-label",
+    "key": "guide.admin.navigation.notification-launcher.label",
+    "lang": "en",
+    "value": "Notification button"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-notifications-description",
+    "key": "guide.admin.navigation.notifications.description",
+    "lang": "en",
+    "value": "Open your inbox, mark messages read and manage alert muting."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-notifications-label",
+    "key": "guide.admin.navigation.notifications.label",
+    "lang": "en",
+    "value": "Notifications"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-settings-description",
+    "key": "guide.admin.navigation.settings.description",
+    "lang": "en",
+    "value": "Open language, policy, help and sign-out actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-navigation-settings-label",
+    "key": "guide.admin.navigation.settings.label",
+    "lang": "en",
+    "value": "Settings"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-notifications-close-description",
+    "key": "guide.admin.notifications.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-notifications-close-label",
+    "key": "guide.admin.notifications.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-notifications-overview-description",
+    "key": "guide.admin.notifications.overview.description",
+    "lang": "en",
+    "value": "Manage delivery rules, schedules and job runs. This is separate from your personal notification inbox."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-notifications-overview-label",
+    "key": "guide.admin.notifications.overview.label",
+    "lang": "en",
+    "value": "Jobs and notifications"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-notifications-process-filter-description",
+    "key": "guide.admin.notifications.process-filter.description",
+    "lang": "en",
+    "value": "Choose which jobs and delivery rules to display."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-notifications-process-filter-label",
+    "key": "guide.admin.notifications.process-filter.label",
+    "lang": "en",
+    "value": "Filter jobs"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-edit-close-description",
+    "key": "guide.admin.parameter-edit.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-edit-close-label",
+    "key": "guide.admin.parameter-edit.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-edit-overview-description",
+    "key": "guide.admin.parameter-edit.overview.description",
+    "lang": "en",
+    "value": "Check the value and its validation before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-edit-overview-label",
+    "key": "guide.admin.parameter-edit.overview.label",
+    "lang": "en",
+    "value": "Edit parameter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-edit-save-edit-description",
+    "key": "guide.admin.parameter-edit.save-edit.description",
+    "lang": "en",
+    "value": "Save the parameter value."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-edit-save-edit-label",
+    "key": "guide.admin.parameter-edit.save-edit.label",
+    "lang": "en",
+    "value": "Save"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-history-close-description",
+    "key": "guide.admin.parameter-history.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-history-close-label",
+    "key": "guide.admin.parameter-history.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-history-overview-description",
+    "key": "guide.admin.parameter-history.overview.description",
+    "lang": "en",
+    "value": "Review earlier changes and their authors."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-parameter-history-overview-label",
+    "key": "guide.admin.parameter-history.overview.label",
+    "lang": "en",
+    "value": "Parameter history"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-params-close-description",
+    "key": "guide.admin.params.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-params-close-label",
+    "key": "guide.admin.params.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-params-overview-description",
+    "key": "guide.admin.params.overview.description",
+    "lang": "en",
+    "value": "Inspect current configuration, edit a parameter or view its history."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-params-overview-label",
+    "key": "guide.admin.params.overview.label",
+    "lang": "en",
+    "value": "Application parameters"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-authorizations-close-description",
+    "key": "guide.admin.payment-authorizations.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-authorizations-close-label",
+    "key": "guide.admin.payment-authorizations.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-authorizations-overview-description",
+    "key": "guide.admin.payment-authorizations.overview.description",
+    "lang": "en",
+    "value": "Review pending payment authorizations and decide only after checking their details."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-authorizations-overview-label",
+    "key": "guide.admin.payment-authorizations.overview.label",
+    "lang": "en",
+    "value": "Payment authorizations"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-simulator-close-description",
+    "key": "guide.admin.payment-simulator.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-simulator-close-label",
+    "key": "guide.admin.payment-simulator.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-simulator-overview-description",
+    "key": "guide.admin.payment-simulator.overview.description",
+    "lang": "en",
+    "value": "Inspect simulated payment outcomes and use the provided test controls."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-payment-simulator-overview-label",
+    "key": "guide.admin.payment-simulator.overview.label",
+    "lang": "en",
+    "value": "Payment simulator"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-process-detail-close-description",
+    "key": "guide.admin.process-detail.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-process-detail-close-label",
+    "key": "guide.admin.process-detail.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-process-detail-overview-description",
+    "key": "guide.admin.process-detail.overview.description",
+    "lang": "en",
+    "value": "Review channels, parameters and recent runs before changing the rule."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-process-detail-overview-label",
+    "key": "guide.admin.process-detail.overview.label",
+    "lang": "en",
+    "value": "Job details"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-process-detail-process-detail-save-description",
+    "key": "guide.admin.process-detail.process-detail-save.description",
+    "lang": "en",
+    "value": "Save the configured delivery rule."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-process-detail-process-detail-save-label",
+    "key": "guide.admin.process-detail.process-detail-save.label",
+    "lang": "en",
+    "value": "Save rule"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-report-detail-close-description",
+    "key": "guide.admin.report-detail.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-report-detail-close-label",
+    "key": "guide.admin.report-detail.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-report-detail-overview-description",
+    "key": "guide.admin.report-detail.overview.description",
+    "lang": "en",
+    "value": "Read the report and its context before choosing a review action."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-report-detail-overview-label",
+    "key": "guide.admin.report-detail.overview.label",
+    "lang": "en",
+    "value": "Review report"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-blocked-users-description",
+    "key": "guide.admin.reports.blocked-users.description",
+    "lang": "en",
+    "value": "Inspect blocked accounts and their moderation state."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-blocked-users-label",
+    "key": "guide.admin.reports.blocked-users.label",
+    "lang": "en",
+    "value": "Blocked accounts"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-close-description",
+    "key": "guide.admin.reports.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-close-label",
+    "key": "guide.admin.reports.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-overview-description",
+    "key": "guide.admin.reports.overview.description",
+    "lang": "en",
+    "value": "Open a report to inspect its evidence and available review actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-overview-label",
+    "key": "guide.admin.reports.overview.label",
+    "lang": "en",
+    "value": "Reports"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-reports-review-status-filter-description",
+    "key": "guide.admin.reports.reports-review-status-filter.description",
+    "lang": "en",
+    "value": "Choose pending or reviewed reports."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-reports-reports-review-status-filter-label",
+    "key": "guide.admin.reports.reports-review-status-filter.label",
+    "lang": "en",
+    "value": "Filter"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-schedule-edit-close-description",
+    "key": "guide.admin.schedule-edit.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-schedule-edit-close-label",
+    "key": "guide.admin.schedule-edit.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-schedule-edit-overview-description",
+    "key": "guide.admin.schedule-edit.overview.description",
+    "lang": "en",
+    "value": "Set when the selected job runs, including its interval or start time."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-schedule-edit-overview-label",
+    "key": "guide.admin.schedule-edit.overview.label",
+    "lang": "en",
+    "value": "Schedule"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-schedule-edit-schedule-save-description",
+    "key": "guide.admin.schedule-edit.schedule-save.description",
+    "lang": "en",
+    "value": "Apply the selected schedule."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-schedule-edit-schedule-save-label",
+    "key": "guide.admin.schedule-edit.schedule-save.label",
+    "lang": "en",
+    "value": "Save schedule"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-stats-close-description",
+    "key": "guide.admin.stats.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-stats-close-label",
+    "key": "guide.admin.stats.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-stats-overview-description",
+    "key": "guide.admin.stats.overview.description",
+    "lang": "en",
+    "value": "Explore the displayed period and metrics. Use chart help for the selected graph."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-stats-overview-label",
+    "key": "guide.admin.stats.overview.label",
+    "lang": "en",
+    "value": "Statistics"
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-stats-stats-refresh-description",
+    "key": "guide.admin.stats.stats-refresh.description",
+    "lang": "en",
+    "value": "Refresh the displayed statistics."
+  },
+  {
+    "_id": "i18n-message-en-guide-admin-stats-stats-refresh-label",
+    "key": "guide.admin.stats.stats-refresh.label",
+    "lang": "en",
+    "value": "Refresh"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-affinity-graph-description",
+    "key": "guide.context.admin.affinity-graph.description",
+    "lang": "en",
+    "value": "Inspect the graph and its displayed relationships."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-affinity-graph-summary",
+    "key": "guide.context.admin.affinity-graph.summary",
+    "lang": "en",
+    "value": "Inspect the graph and its displayed relationships."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-affinity-graph-title",
+    "key": "guide.context.admin.affinity-graph.title",
+    "lang": "en",
+    "value": "Affinity graph"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-article-edit-description",
+    "key": "guide.context.admin.article-edit.description",
+    "lang": "en",
+    "value": "Edit the article and review its preview before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-article-edit-summary",
+    "key": "guide.context.admin.article-edit.summary",
+    "lang": "en",
+    "value": "Edit the article and review its preview before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-article-edit-title",
+    "key": "guide.context.admin.article-edit.title",
+    "lang": "en",
+    "value": "Edit article"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-article-view-description",
+    "key": "guide.context.admin.article-view.description",
+    "lang": "en",
+    "value": "Review the article as displayed to readers. Close to return to the editor."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-article-view-summary",
+    "key": "guide.context.admin.article-view.summary",
+    "lang": "en",
+    "value": "Review the article as displayed to readers. Close to return to the editor."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-article-view-title",
+    "key": "guide.context.admin.article-view.title",
+    "lang": "en",
+    "value": "Article preview"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-blocked-users-description",
+    "key": "guide.context.admin.blocked-users.description",
+    "lang": "en",
+    "value": "Inspect restrictions and use the available account actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-blocked-users-summary",
+    "key": "guide.context.admin.blocked-users.summary",
+    "lang": "en",
+    "value": "Inspect restrictions and use the available account actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-blocked-users-title",
+    "key": "guide.context.admin.blocked-users.title",
+    "lang": "en",
+    "value": "Blocked accounts"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-chat-review-description",
+    "key": "guide.context.admin.chat-review.description",
+    "lang": "en",
+    "value": "Inspect the selected report conversation. A warning sends your message to the affected user."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-chat-review-summary",
+    "key": "guide.context.admin.chat-review.summary",
+    "lang": "en",
+    "value": "Inspect the selected report conversation. A warning sends your message to the affected user."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-chat-review-title",
+    "key": "guide.context.admin.chat-review.title",
+    "lang": "en",
+    "value": "Chat review"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-content-moderation-description",
+    "key": "guide.context.admin.content-moderation.description",
+    "lang": "en",
+    "value": "Review submitted content and apply a decision within your current workspace."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-content-moderation-summary",
+    "key": "guide.context.admin.content-moderation.summary",
+    "lang": "en",
+    "value": "Review submitted content and apply a decision within your current workspace."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-content-moderation-title",
+    "key": "guide.context.admin.content-moderation.title",
+    "lang": "en",
+    "value": "Content moderation"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-feedback-description",
+    "key": "guide.context.admin.feedback.description",
+    "lang": "en",
+    "value": "Open a feedback item to read it and record its review state."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-feedback-detail-description",
+    "key": "guide.context.admin.feedback-detail.description",
+    "lang": "en",
+    "value": "Read the submitted feedback and choose the appropriate review action."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-feedback-detail-summary",
+    "key": "guide.context.admin.feedback-detail.summary",
+    "lang": "en",
+    "value": "Read the submitted feedback and choose the appropriate review action."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-feedback-detail-title",
+    "key": "guide.context.admin.feedback-detail.title",
+    "lang": "en",
+    "value": "Review feedback"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-feedback-summary",
+    "key": "guide.context.admin.feedback.summary",
+    "lang": "en",
+    "value": "Open a feedback item to read it and record its review state."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-feedback-title",
+    "key": "guide.context.admin.feedback.title",
+    "lang": "en",
+    "value": "Feedback"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-graph-help-description",
+    "key": "guide.context.admin.graph-help.description",
+    "lang": "en",
+    "value": "This explanation describes the selected chart and how to read it."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-graph-help-summary",
+    "key": "guide.context.admin.graph-help.summary",
+    "lang": "en",
+    "value": "This explanation describes the selected chart and how to read it."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-graph-help-title",
+    "key": "guide.context.admin.graph-help.title",
+    "lang": "en",
+    "value": "Chart explanation"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-help-editor-description",
+    "key": "guide.context.admin.help-editor.description",
+    "lang": "en",
+    "value": "Manage help, policy and editable guide revisions. System guides are maintained with the application and are hidden here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-help-editor-summary",
+    "key": "guide.context.admin.help-editor.summary",
+    "lang": "en",
+    "value": "Manage help, policy and editable guide revisions. System guides are maintained with the application and are hidden here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-help-editor-title",
+    "key": "guide.context.admin.help-editor.title",
+    "lang": "en",
+    "value": "Content editor"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-home-description",
+    "key": "guide.context.admin.home.description",
+    "lang": "en",
+    "value": "Open your avatar menu to choose moderation, content, jobs or monitoring. Notification and guide controls are also there."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-home-summary",
+    "key": "guide.context.admin.home.summary",
+    "lang": "en",
+    "value": "Open your avatar menu to choose moderation, content, jobs or monitoring. Notification and guide controls are also there."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-home-title",
+    "key": "guide.context.admin.home.title",
+    "lang": "en",
+    "value": "Administration"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-idea-editor-description",
+    "key": "guide.context.admin.idea-editor.description",
+    "lang": "en",
+    "value": "Manage articles, drafts and published content in the selected language."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-idea-editor-summary",
+    "key": "guide.context.admin.idea-editor.summary",
+    "lang": "en",
+    "value": "Manage articles, drafts and published content in the selected language."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-idea-editor-title",
+    "key": "guide.context.admin.idea-editor.title",
+    "lang": "en",
+    "value": "Articles"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-item-preview-description",
+    "key": "guide.context.admin.item-preview.description",
+    "lang": "en",
+    "value": "Inspect the reported item before returning to its review."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-item-preview-summary",
+    "key": "guide.context.admin.item-preview.summary",
+    "lang": "en",
+    "value": "Inspect the reported item before returning to its review."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-item-preview-title",
+    "key": "guide.context.admin.item-preview.title",
+    "lang": "en",
+    "value": "Reported item"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-job-parameter-description",
+    "key": "guide.context.admin.job-parameter.description",
+    "lang": "en",
+    "value": "Edit the selected job parameter and save the change."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-job-parameter-summary",
+    "key": "guide.context.admin.job-parameter.summary",
+    "lang": "en",
+    "value": "Edit the selected job parameter and save the change."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-job-parameter-title",
+    "key": "guide.context.admin.job-parameter.title",
+    "lang": "en",
+    "value": "Job parameter"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-moderation-settings-description",
+    "key": "guide.context.admin.moderation-settings.description",
+    "lang": "en",
+    "value": "Configure automatic review and enabled moderation categories, then save."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-moderation-settings-summary",
+    "key": "guide.context.admin.moderation-settings.summary",
+    "lang": "en",
+    "value": "Configure automatic review and enabled moderation categories, then save."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-moderation-settings-title",
+    "key": "guide.context.admin.moderation-settings.title",
+    "lang": "en",
+    "value": "Moderation settings"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-monitoring-description",
+    "key": "guide.context.admin.monitoring.description",
+    "lang": "en",
+    "value": "Review operational measurements and recent application activity."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-monitoring-summary",
+    "key": "guide.context.admin.monitoring.summary",
+    "lang": "en",
+    "value": "Review operational measurements and recent application activity."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-monitoring-title",
+    "key": "guide.context.admin.monitoring.title",
+    "lang": "en",
+    "value": "Monitoring"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-navigation-description",
+    "key": "guide.context.admin.navigation.description",
+    "lang": "en",
+    "value": "Administration menu"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-navigation-summary",
+    "key": "guide.context.admin.navigation.summary",
+    "lang": "en",
+    "value": "Administration menu"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-navigation-title",
+    "key": "guide.context.admin.navigation.title",
+    "lang": "en",
+    "value": "Administration menu"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-notifications-description",
+    "key": "guide.context.admin.notifications.description",
+    "lang": "en",
+    "value": "Manage delivery rules, schedules and job runs. This is separate from your personal notification inbox."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-notifications-summary",
+    "key": "guide.context.admin.notifications.summary",
+    "lang": "en",
+    "value": "Manage delivery rules, schedules and job runs. This is separate from your personal notification inbox."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-notifications-title",
+    "key": "guide.context.admin.notifications.title",
+    "lang": "en",
+    "value": "Jobs and notifications"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-parameter-edit-description",
+    "key": "guide.context.admin.parameter-edit.description",
+    "lang": "en",
+    "value": "Check the value and its validation before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-parameter-edit-summary",
+    "key": "guide.context.admin.parameter-edit.summary",
+    "lang": "en",
+    "value": "Check the value and its validation before saving."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-parameter-edit-title",
+    "key": "guide.context.admin.parameter-edit.title",
+    "lang": "en",
+    "value": "Edit parameter"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-parameter-history-description",
+    "key": "guide.context.admin.parameter-history.description",
+    "lang": "en",
+    "value": "Review earlier changes and their authors."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-parameter-history-summary",
+    "key": "guide.context.admin.parameter-history.summary",
+    "lang": "en",
+    "value": "Review earlier changes and their authors."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-parameter-history-title",
+    "key": "guide.context.admin.parameter-history.title",
+    "lang": "en",
+    "value": "Parameter history"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-params-description",
+    "key": "guide.context.admin.params.description",
+    "lang": "en",
+    "value": "Inspect current configuration, edit a parameter or view its history."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-params-summary",
+    "key": "guide.context.admin.params.summary",
+    "lang": "en",
+    "value": "Inspect current configuration, edit a parameter or view its history."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-params-title",
+    "key": "guide.context.admin.params.title",
+    "lang": "en",
+    "value": "Application parameters"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-payment-authorizations-description",
+    "key": "guide.context.admin.payment-authorizations.description",
+    "lang": "en",
+    "value": "Review pending payment authorizations and decide only after checking their details."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-payment-authorizations-summary",
+    "key": "guide.context.admin.payment-authorizations.summary",
+    "lang": "en",
+    "value": "Review pending payment authorizations and decide only after checking their details."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-payment-authorizations-title",
+    "key": "guide.context.admin.payment-authorizations.title",
+    "lang": "en",
+    "value": "Payment authorizations"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-payment-simulator-description",
+    "key": "guide.context.admin.payment-simulator.description",
+    "lang": "en",
+    "value": "Inspect simulated payment outcomes and use the provided test controls."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-payment-simulator-summary",
+    "key": "guide.context.admin.payment-simulator.summary",
+    "lang": "en",
+    "value": "Inspect simulated payment outcomes and use the provided test controls."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-payment-simulator-title",
+    "key": "guide.context.admin.payment-simulator.title",
+    "lang": "en",
+    "value": "Payment simulator"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-process-detail-description",
+    "key": "guide.context.admin.process-detail.description",
+    "lang": "en",
+    "value": "Review channels, parameters and recent runs before changing the rule."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-process-detail-summary",
+    "key": "guide.context.admin.process-detail.summary",
+    "lang": "en",
+    "value": "Review channels, parameters and recent runs before changing the rule."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-process-detail-title",
+    "key": "guide.context.admin.process-detail.title",
+    "lang": "en",
+    "value": "Job details"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-report-detail-description",
+    "key": "guide.context.admin.report-detail.description",
+    "lang": "en",
+    "value": "Read the report and its context before choosing a review action."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-report-detail-summary",
+    "key": "guide.context.admin.report-detail.summary",
+    "lang": "en",
+    "value": "Read the report and its context before choosing a review action."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-report-detail-title",
+    "key": "guide.context.admin.report-detail.title",
+    "lang": "en",
+    "value": "Review report"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-reports-description",
+    "key": "guide.context.admin.reports.description",
+    "lang": "en",
+    "value": "Open a report to inspect its evidence and available review actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-reports-summary",
+    "key": "guide.context.admin.reports.summary",
+    "lang": "en",
+    "value": "Open a report to inspect its evidence and available review actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-reports-title",
+    "key": "guide.context.admin.reports.title",
+    "lang": "en",
+    "value": "Reports"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-schedule-edit-description",
+    "key": "guide.context.admin.schedule-edit.description",
+    "lang": "en",
+    "value": "Set when the selected job runs, including its interval or start time."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-schedule-edit-summary",
+    "key": "guide.context.admin.schedule-edit.summary",
+    "lang": "en",
+    "value": "Set when the selected job runs, including its interval or start time."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-schedule-edit-title",
+    "key": "guide.context.admin.schedule-edit.title",
+    "lang": "en",
+    "value": "Schedule"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-stats-description",
+    "key": "guide.context.admin.stats.description",
+    "lang": "en",
+    "value": "Explore the displayed period and metrics. Use chart help for the selected graph."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-stats-summary",
+    "key": "guide.context.admin.stats.summary",
+    "lang": "en",
+    "value": "Explore the displayed period and metrics. Use chart help for the selected graph."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-admin-stats-title",
+    "key": "guide.context.admin.stats.title",
+    "lang": "en",
+    "value": "Statistics"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-claim-description",
+    "key": "guide.context.operator.claim.description",
+    "lang": "en",
+    "value": "Choose company verification or an existing client code. The current review state is shown here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-claim-summary",
+    "key": "guide.context.operator.claim.summary",
+    "lang": "en",
+    "value": "Choose company verification or an existing client code. The current review state is shown here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-claim-title",
+    "key": "guide.context.operator.claim.title",
+    "lang": "en",
+    "value": "Operator claim"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-community-description",
+    "key": "guide.context.operator.community.description",
+    "lang": "en",
+    "value": "Read the operator community information and available announcements here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-community-summary",
+    "key": "guide.context.operator.community.summary",
+    "lang": "en",
+    "value": "Read the operator community information and available announcements here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-community-title",
+    "key": "guide.context.operator.community.title",
+    "lang": "en",
+    "value": "Operator community"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-configuration-description",
+    "key": "guide.context.operator.configuration.description",
+    "lang": "en",
+    "value": "Open a section to configure branding, administrators, privacy contacts and service connections. Save changes in that section."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-configuration-summary",
+    "key": "guide.context.operator.configuration.summary",
+    "lang": "en",
+    "value": "Open a section to configure branding, administrators, privacy contacts and service connections. Save changes in that section."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-configuration-title",
+    "key": "guide.context.operator.configuration.title",
+    "lang": "en",
+    "value": "Deployment configuration"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-deployments-description",
+    "key": "guide.context.operator.deployments.description",
+    "lang": "en",
+    "value": "These nodes belong to the selected operator. Inspect their reported status and contribution."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-deployments-summary",
+    "key": "guide.context.operator.deployments.summary",
+    "lang": "en",
+    "value": "These nodes belong to the selected operator. Inspect their reported status and contribution."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-deployments-title",
+    "key": "guide.context.operator.deployments.title",
+    "lang": "en",
+    "value": "Operator deployments"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-home-description",
+    "key": "guide.context.operator.home.description",
+    "lang": "en",
+    "value": "Manage this node from the action buttons. Your avatar menu contains notifications and guide controls."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-home-summary",
+    "key": "guide.context.operator.home.summary",
+    "lang": "en",
+    "value": "Manage this node from the action buttons. Your avatar menu contains notifications and guide controls."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-home-title",
+    "key": "guide.context.operator.home.title",
+    "lang": "en",
+    "value": "Operator workspace"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-navigation-description",
+    "key": "guide.context.operator.navigation.description",
+    "lang": "en",
+    "value": "Operator menu"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-navigation-summary",
+    "key": "guide.context.operator.navigation.summary",
+    "lang": "en",
+    "value": "Operator menu"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-navigation-title",
+    "key": "guide.context.operator.navigation.title",
+    "lang": "en",
+    "value": "Operator menu"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-registration-description",
+    "key": "guide.context.operator.registration.description",
+    "lang": "en",
+    "value": "Review registration, heartbeat and measurement delivery for this deployment."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-registration-summary",
+    "key": "guide.context.operator.registration.summary",
+    "lang": "en",
+    "value": "Review registration, heartbeat and measurement delivery for this deployment."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-registration-title",
+    "key": "guide.context.operator.registration.title",
+    "lang": "en",
+    "value": "Registry connection"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-revenue-description",
+    "key": "guide.context.operator.revenue.description",
+    "lang": "en",
+    "value": "Review the ledger, settlement state and report delivery. Amounts follow the displayed currency and period."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-revenue-summary",
+    "key": "guide.context.operator.revenue.summary",
+    "lang": "en",
+    "value": "Review the ledger, settlement state and report delivery. Amounts follow the displayed currency and period."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-revenue-title",
+    "key": "guide.context.operator.revenue.title",
+    "lang": "en",
+    "value": "Revenue"
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-updates-description",
+    "key": "guide.context.operator.updates.description",
+    "lang": "en",
+    "value": "Compare installed and available versions; progress and errors appear here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-updates-summary",
+    "key": "guide.context.operator.updates.summary",
+    "lang": "en",
+    "value": "Compare installed and available versions; progress and errors appear here."
+  },
+  {
+    "_id": "i18n-message-en-guide-context-operator-updates-title",
+    "key": "guide.context.operator.updates.title",
+    "lang": "en",
+    "value": "Updates"
+  },
+  {
+    "_id": "i18n-message-en-guide-navigation-menu-notification-launcher-description",
+    "key": "guide.navigation.menu.notification-launcher.description",
+    "lang": "en",
+    "value": "Show or hide the floating notification button. Your inbox and delivery settings remain available."
+  },
+  {
+    "_id": "i18n-message-en-guide-navigation-menu-notification-launcher-label",
+    "key": "guide.navigation.menu.notification-launcher.label",
+    "lang": "en",
+    "value": "Notification button"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-close-description",
+    "key": "guide.operator.claim.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-close-label",
+    "key": "guide.operator.claim.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-attestation-description",
+    "key": "guide.operator.claim.operator-claim-attestation.description",
+    "lang": "en",
+    "value": "Confirm that you may act for this legal entity."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-attestation-label",
+    "key": "guide.operator.claim.operator-claim-attestation.label",
+    "lang": "en",
+    "value": "Authority"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-legal-name-description",
+    "key": "guide.operator.claim.operator-claim-legal-name.description",
+    "lang": "en",
+    "value": "Use the registered legal name of your company."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-legal-name-label",
+    "key": "guide.operator.claim.operator-claim-legal-name.label",
+    "lang": "en",
+    "value": "Legal name"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-client-code-description",
+    "key": "guide.operator.claim.operator-claim-path-client-code.description",
+    "lang": "en",
+    "value": "Use the code from an existing verified operator."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-client-code-label",
+    "key": "guide.operator.claim.operator-claim-path-client-code.label",
+    "lang": "en",
+    "value": "Client code"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-company-description",
+    "key": "guide.operator.claim.operator-claim-path-company.description",
+    "lang": "en",
+    "value": "Enter the legal entity and the authorized contact."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-claim-path-company-label",
+    "key": "guide.operator.claim.operator-claim-path-company.label",
+    "lang": "en",
+    "value": "Company"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-redeem-token-description",
+    "key": "guide.operator.claim.operator-redeem-token.description",
+    "lang": "en",
+    "value": "Submit the entered client code to link this deployment."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-operator-redeem-token-label",
+    "key": "guide.operator.claim.operator-redeem-token.label",
+    "lang": "en",
+    "value": "Redeem"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-overview-description",
+    "key": "guide.operator.claim.overview.description",
+    "lang": "en",
+    "value": "Choose company verification or an existing client code. The current review state is shown here."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-claim-overview-label",
+    "key": "guide.operator.claim.overview.label",
+    "lang": "en",
+    "value": "Operator claim"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-community-close-description",
+    "key": "guide.operator.community.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-community-close-label",
+    "key": "guide.operator.community.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-community-overview-description",
+    "key": "guide.operator.community.overview.description",
+    "lang": "en",
+    "value": "Read the operator community information and available announcements here."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-community-overview-label",
+    "key": "guide.operator.community.overview.label",
+    "lang": "en",
+    "value": "Operator community"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-close-description",
+    "key": "guide.operator.configuration.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-close-label",
+    "key": "guide.operator.configuration.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-admin-emails-description",
+    "key": "guide.operator.configuration.operator-save-admin-emails.description",
+    "lang": "en",
+    "value": "Save the accounts allowed to use app administration."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-admin-emails-label",
+    "key": "guide.operator.configuration.operator-save-admin-emails.label",
+    "lang": "en",
+    "value": "Administrators"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-branding-description",
+    "key": "guide.operator.configuration.operator-save-branding.description",
+    "lang": "en",
+    "value": "Save the product identity displayed on this deployment."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-branding-label",
+    "key": "guide.operator.configuration.operator-save-branding.label",
+    "lang": "en",
+    "value": "Branding"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-firebase-description",
+    "key": "guide.operator.configuration.operator-save-firebase.description",
+    "lang": "en",
+    "value": "Save credentials before testing or activating the connection."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-firebase-label",
+    "key": "guide.operator.configuration.operator-save-firebase.label",
+    "lang": "en",
+    "value": "Firebase"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-privacy-contact-description",
+    "key": "guide.operator.configuration.operator-save-privacy-contact.description",
+    "lang": "en",
+    "value": "Save the controller and contact shown in privacy information."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-privacy-contact-label",
+    "key": "guide.operator.configuration.operator-save-privacy-contact.label",
+    "lang": "en",
+    "value": "Privacy contact"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-tls-description",
+    "key": "guide.operator.configuration.operator-save-tls.description",
+    "lang": "en",
+    "value": "Save certificate settings; use the available checks before activation."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-operator-save-tls-label",
+    "key": "guide.operator.configuration.operator-save-tls.label",
+    "lang": "en",
+    "value": "TLS"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-overview-description",
+    "key": "guide.operator.configuration.overview.description",
+    "lang": "en",
+    "value": "Open a section to configure branding, administrators, privacy contacts and service connections. Save changes in that section."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-configuration-overview-label",
+    "key": "guide.operator.configuration.overview.label",
+    "lang": "en",
+    "value": "Deployment configuration"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-deployments-close-description",
+    "key": "guide.operator.deployments.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-deployments-close-label",
+    "key": "guide.operator.deployments.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-deployments-overview-description",
+    "key": "guide.operator.deployments.overview.description",
+    "lang": "en",
+    "value": "These nodes belong to the selected operator. Inspect their reported status and contribution."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-deployments-overview-label",
+    "key": "guide.operator.deployments.overview.label",
+    "lang": "en",
+    "value": "Operator deployments"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-claim-description",
+    "key": "guide.operator.home.claim.description",
+    "lang": "en",
+    "value": "Link the deployment to your verified operator identity."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-claim-label",
+    "key": "guide.operator.home.claim.label",
+    "lang": "en",
+    "value": "Operator claim"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-configuration-description",
+    "key": "guide.operator.home.configuration.description",
+    "lang": "en",
+    "value": "Configure this deployment and its connected services."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-configuration-label",
+    "key": "guide.operator.home.configuration.label",
+    "lang": "en",
+    "value": "Configuration"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-leaderboard-description",
+    "key": "guide.operator.home.leaderboard.description",
+    "lang": "en",
+    "value": "Select a claimed operator to view its deployments."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-leaderboard-label",
+    "key": "guide.operator.home.leaderboard.label",
+    "lang": "en",
+    "value": "Network ranking"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-registration-description",
+    "key": "guide.operator.home.registration.description",
+    "lang": "en",
+    "value": "Manage registration and measurement reporting."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-registration-label",
+    "key": "guide.operator.home.registration.label",
+    "lang": "en",
+    "value": "Registry connection"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-revenue-description",
+    "key": "guide.operator.home.revenue.description",
+    "lang": "en",
+    "value": "Inspect revenue, receipts and synchronization."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-revenue-label",
+    "key": "guide.operator.home.revenue.label",
+    "lang": "en",
+    "value": "Revenue"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-updates-description",
+    "key": "guide.operator.home.updates.description",
+    "lang": "en",
+    "value": "Check available versions and update progress."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-home-updates-label",
+    "key": "guide.operator.home.updates.label",
+    "lang": "en",
+    "value": "Updates"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-explanations-description",
+    "key": "guide.operator.navigation.explanations.description",
+    "lang": "en",
+    "value": "Switch guides off or on. Both floating buttons can be dragged to a convenient position."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-explanations-label",
+    "key": "guide.operator.navigation.explanations.label",
+    "lang": "en",
+    "value": "Guide button"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-notification-launcher-description",
+    "key": "guide.operator.navigation.notification-launcher.description",
+    "lang": "en",
+    "value": "Show or hide the floating notification button. Your inbox and delivery settings remain available."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-notification-launcher-label",
+    "key": "guide.operator.navigation.notification-launcher.label",
+    "lang": "en",
+    "value": "Notification button"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-notifications-description",
+    "key": "guide.operator.navigation.notifications.description",
+    "lang": "en",
+    "value": "Open your inbox, mark messages read and manage alert muting."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-notifications-label",
+    "key": "guide.operator.navigation.notifications.label",
+    "lang": "en",
+    "value": "Notifications"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-settings-description",
+    "key": "guide.operator.navigation.settings.description",
+    "lang": "en",
+    "value": "Open language, policy, help and sign-out actions."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-navigation-settings-label",
+    "key": "guide.operator.navigation.settings.label",
+    "lang": "en",
+    "value": "Settings"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-close-description",
+    "key": "guide.operator.registration.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-close-label",
+    "key": "guide.operator.registration.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-disconnect-description",
+    "key": "guide.operator.registration.disconnect.description",
+    "lang": "en",
+    "value": "Disconnect this deployment from the Registry."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-disconnect-label",
+    "key": "guide.operator.registration.disconnect.label",
+    "lang": "en",
+    "value": "Disconnect"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-overview-description",
+    "key": "guide.operator.registration.overview.description",
+    "lang": "en",
+    "value": "Review registration, heartbeat and measurement delivery for this deployment."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-overview-label",
+    "key": "guide.operator.registration.overview.label",
+    "lang": "en",
+    "value": "Registry connection"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-refresh-description",
+    "key": "guide.operator.registration.refresh.description",
+    "lang": "en",
+    "value": "Fetch the current registration and delivery state."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-refresh-label",
+    "key": "guide.operator.registration.refresh.label",
+    "lang": "en",
+    "value": "Refresh status"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-register-description",
+    "key": "guide.operator.registration.register.description",
+    "lang": "en",
+    "value": "Register this deployment with the displayed Registry."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-register-label",
+    "key": "guide.operator.registration.register.label",
+    "lang": "en",
+    "value": "Connect"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-synchronize-measurements-description",
+    "key": "guide.operator.registration.synchronize-measurements.description",
+    "lang": "en",
+    "value": "Synchronize pending measurement reports."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-registration-synchronize-measurements-label",
+    "key": "guide.operator.registration.synchronize-measurements.label",
+    "lang": "en",
+    "value": "Send measurements"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-revenue-close-description",
+    "key": "guide.operator.revenue.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-revenue-close-label",
+    "key": "guide.operator.revenue.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-revenue-operator-synchronize-revenue-description",
+    "key": "guide.operator.revenue.operator-synchronize-revenue.description",
+    "lang": "en",
+    "value": "Send pending revenue reports through the existing delivery queue."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-revenue-operator-synchronize-revenue-label",
+    "key": "guide.operator.revenue.operator-synchronize-revenue.label",
+    "lang": "en",
+    "value": "Synchronize"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-revenue-overview-description",
+    "key": "guide.operator.revenue.overview.description",
+    "lang": "en",
+    "value": "Review the ledger, settlement state and report delivery. Amounts follow the displayed currency and period."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-revenue-overview-label",
+    "key": "guide.operator.revenue.overview.label",
+    "lang": "en",
+    "value": "Revenue"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-close-description",
+    "key": "guide.operator.updates.close.description",
+    "lang": "en",
+    "value": "Return to the previous surface."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-close-label",
+    "key": "guide.operator.updates.close.label",
+    "lang": "en",
+    "value": "Close"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-operator-apply-update-description",
+    "key": "guide.operator.updates.operator-apply-update.description",
+    "lang": "en",
+    "value": "Start the displayed update and follow its progress here."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-operator-apply-update-label",
+    "key": "guide.operator.updates.operator-apply-update.label",
+    "lang": "en",
+    "value": "Install"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-operator-refresh-update-description",
+    "key": "guide.operator.updates.operator-refresh-update.description",
+    "lang": "en",
+    "value": "Refresh the available signed release information."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-operator-refresh-update-label",
+    "key": "guide.operator.updates.operator-refresh-update.label",
+    "lang": "en",
+    "value": "Check"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-operator-rollback-update-description",
+    "key": "guide.operator.updates.operator-rollback-update.description",
+    "lang": "en",
+    "value": "Restore the supported previous release when available."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-operator-rollback-update-label",
+    "key": "guide.operator.updates.operator-rollback-update.label",
+    "lang": "en",
+    "value": "Restore version"
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-overview-description",
+    "key": "guide.operator.updates.overview.description",
+    "lang": "en",
+    "value": "Compare installed and available versions; progress and errors appear here."
+  },
+  {
+    "_id": "i18n-message-en-guide-operator-updates-overview-label",
+    "key": "guide.operator.updates.overview.label",
+    "lang": "en",
+    "value": "Updates"
+  },
+  {
+    "_id": "i18n-message-en-notification-launcher-toggle",
+    "key": "notification.launcher.toggle",
+    "lang": "en",
+    "value": "Notification button"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-affinity-graph-close-description",
+    "key": "guide.admin.affinity-graph.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-affinity-graph-close-label",
+    "key": "guide.admin.affinity-graph.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-affinity-graph-overview-description",
+    "key": "guide.admin.affinity-graph.overview.description",
+    "lang": "hu",
+    "value": "A gráf és a megjelenített kapcsolatok áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-affinity-graph-overview-label",
+    "key": "guide.admin.affinity-graph.overview.label",
+    "lang": "hu",
+    "value": "Kapcsolódási gráf"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-preview-description",
+    "key": "guide.admin.article-edit.article-preview.description",
+    "lang": "hu",
+    "value": "Ellenőrizd a cikk megjelenését."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-preview-label",
+    "key": "guide.admin.article-edit.article-preview.label",
+    "lang": "hu",
+    "value": "Előnézet"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-save-description",
+    "key": "guide.admin.article-edit.article-save.description",
+    "lang": "hu",
+    "value": "A cikk módosításainak mentése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-article-save-label",
+    "key": "guide.admin.article-edit.article-save.label",
+    "lang": "hu",
+    "value": "Mentés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-close-description",
+    "key": "guide.admin.article-edit.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-close-label",
+    "key": "guide.admin.article-edit.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-overview-description",
+    "key": "guide.admin.article-edit.overview.description",
+    "lang": "hu",
+    "value": "Szerkeszd a cikket, majd mentés előtt ellenőrizd az előnézetet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-edit-overview-label",
+    "key": "guide.admin.article-edit.overview.label",
+    "lang": "hu",
+    "value": "Cikk szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-close-description",
+    "key": "guide.admin.article-view.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-close-label",
+    "key": "guide.admin.article-view.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-overview-description",
+    "key": "guide.admin.article-view.overview.description",
+    "lang": "hu",
+    "value": "A cikk olvasói nézetének ellenőrzése. Bezárás után visszatérsz a szerkesztőhöz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-article-view-overview-label",
+    "key": "guide.admin.article-view.overview.label",
+    "lang": "hu",
+    "value": "Cikk előnézete"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-blocked-users-close-description",
+    "key": "guide.admin.blocked-users.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-blocked-users-close-label",
+    "key": "guide.admin.blocked-users.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-blocked-users-overview-description",
+    "key": "guide.admin.blocked-users.overview.description",
+    "lang": "hu",
+    "value": "A korlátozások áttekintése és az elérhető fiókműveletek használata."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-blocked-users-overview-label",
+    "key": "guide.admin.blocked-users.overview.label",
+    "lang": "hu",
+    "value": "Letiltott fiókok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-close-description",
+    "key": "guide.admin.chat-review.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-close-label",
+    "key": "guide.admin.chat-review.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-message-description",
+    "key": "guide.admin.chat-review.message.description",
+    "lang": "hu",
+    "value": "Röviden és érthetően írd le a problémát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-message-label",
+    "key": "guide.admin.chat-review.message.label",
+    "lang": "hu",
+    "value": "Figyelmeztetés szövege"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-overview-description",
+    "key": "guide.admin.chat-review.overview.description",
+    "lang": "hu",
+    "value": "A bejelentéshez tartozó beszélgetés. A figyelmeztetés elküldi az üzenetedet az érintett felhasználónak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-overview-label",
+    "key": "guide.admin.chat-review.overview.label",
+    "lang": "hu",
+    "value": "Beszélgetés ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-send-warning-description",
+    "key": "guide.admin.chat-review.send-warning.description",
+    "lang": "hu",
+    "value": "A megírt figyelmeztetés küldése a kiválasztott felhasználónak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-chat-review-send-warning-label",
+    "key": "guide.admin.chat-review.send-warning.label",
+    "lang": "hu",
+    "value": "Figyelmeztetés küldése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-category-description",
+    "key": "guide.admin.content-moderation.category.description",
+    "lang": "hu",
+    "value": "Válaszd ki az áttekintendő tartalomtípust."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-category-label",
+    "key": "guide.admin.content-moderation.category.label",
+    "lang": "hu",
+    "value": "Tartalomtípus"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-close-description",
+    "key": "guide.admin.content-moderation.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-close-label",
+    "key": "guide.admin.content-moderation.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-overview-description",
+    "key": "guide.admin.content-moderation.overview.description",
+    "lang": "hu",
+    "value": "A beküldött tartalmak áttekintése és elbírálása az aktuális munkaterületen."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-overview-label",
+    "key": "guide.admin.content-moderation.overview.label",
+    "lang": "hu",
+    "value": "Tartalommoderálás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-settings-description",
+    "key": "guide.admin.content-moderation.settings.description",
+    "lang": "hu",
+    "value": "A munkaterület moderálási szabályainak beállítása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-settings-label",
+    "key": "guide.admin.content-moderation.settings.label",
+    "lang": "hu",
+    "value": "Moderálási beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-status-description",
+    "key": "guide.admin.content-moderation.status.description",
+    "lang": "hu",
+    "value": "Szűrés az elbírálás állapotára."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-content-moderation-status-label",
+    "key": "guide.admin.content-moderation.status.label",
+    "lang": "hu",
+    "value": "Állapot"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-close-description",
+    "key": "guide.admin.feedback.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-close-label",
+    "key": "guide.admin.feedback.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-detail-close-description",
+    "key": "guide.admin.feedback-detail.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-detail-close-label",
+    "key": "guide.admin.feedback-detail.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-detail-overview-description",
+    "key": "guide.admin.feedback-detail.overview.description",
+    "lang": "hu",
+    "value": "Olvasd el a beküldött visszajelzést, majd válaszd a megfelelő műveletet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-detail-overview-label",
+    "key": "guide.admin.feedback-detail.overview.label",
+    "lang": "hu",
+    "value": "Visszajelzés kezelése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-feedback-review-status-filter-description",
+    "key": "guide.admin.feedback.feedback-review-status-filter.description",
+    "lang": "hu",
+    "value": "Visszajelzések szűrése az elbírálás állapotára."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-feedback-review-status-filter-label",
+    "key": "guide.admin.feedback.feedback-review-status-filter.label",
+    "lang": "hu",
+    "value": "Szűrés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-overview-description",
+    "key": "guide.admin.feedback.overview.description",
+    "lang": "hu",
+    "value": "Nyiss meg egy visszajelzést az elolvasásához és az elbírálási állapot rögzítéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-feedback-overview-label",
+    "key": "guide.admin.feedback.overview.label",
+    "lang": "hu",
+    "value": "Visszajelzések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-graph-help-close-description",
+    "key": "guide.admin.graph-help.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-graph-help-close-label",
+    "key": "guide.admin.graph-help.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-graph-help-overview-description",
+    "key": "guide.admin.graph-help.overview.description",
+    "lang": "hu",
+    "value": "Ez a magyarázat a kiválasztott grafikon értelmezését segíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-graph-help-overview-label",
+    "key": "guide.admin.graph-help.overview.label",
+    "lang": "hu",
+    "value": "Grafikonmagyarázat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-close-description",
+    "key": "guide.admin.help-editor.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-close-label",
+    "key": "guide.admin.help-editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-help-document-description",
+    "key": "guide.admin.help-editor.help-document.description",
+    "lang": "hu",
+    "value": "Válaszd ki a dokumentumot vagy szerkeszthető guide-ot."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-help-document-label",
+    "key": "guide.admin.help-editor.help-document.label",
+    "lang": "hu",
+    "value": "Dokumentum"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-help-language-description",
+    "key": "guide.admin.help-editor.help-language.description",
+    "lang": "hu",
+    "value": "Minden nyelv saját verziókkal rendelkezik."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-help-language-label",
+    "key": "guide.admin.help-editor.help-language.label",
+    "lang": "hu",
+    "value": "Nyelv"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-help-new-revision-description",
+    "key": "guide.admin.help-editor.help-new-revision.description",
+    "lang": "hu",
+    "value": "Hozz létre vázlatot; a felhasználók aktiválás után látják."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-help-new-revision-label",
+    "key": "guide.admin.help-editor.help-new-revision.label",
+    "lang": "hu",
+    "value": "Új verzió"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-overview-description",
+    "key": "guide.admin.help-editor.overview.description",
+    "lang": "hu",
+    "value": "Súgó-, szabályzat- és szerkeszthető guide-verziók. A rendszer-guide-ok az alkalmazással frissülnek, itt nem jelennek meg."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-help-editor-overview-label",
+    "key": "guide.admin.help-editor.overview.label",
+    "lang": "hu",
+    "value": "Tartalomszerkesztő"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-home-overview-description",
+    "key": "guide.admin.home.overview.description",
+    "lang": "hu",
+    "value": "Az avatar menüből nyílik a moderálás, tartalom, feladatok és megfigyelés. Az értesítés és guide kapcsolója is ott van."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-home-overview-label",
+    "key": "guide.admin.home.overview.label",
+    "lang": "hu",
+    "value": "Adminisztráció"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-close-description",
+    "key": "guide.admin.idea-editor.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-close-label",
+    "key": "guide.admin.idea-editor.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-idea-filter-description",
+    "key": "guide.admin.idea-editor.idea-filter.description",
+    "lang": "hu",
+    "value": "Váltás a közzétett cikkek, vázlatok és a lomtár között."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-idea-filter-label",
+    "key": "guide.admin.idea-editor.idea-filter.label",
+    "lang": "hu",
+    "value": "Szűrés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-idea-language-description",
+    "key": "guide.admin.idea-editor.idea-language.description",
+    "lang": "hu",
+    "value": "Válaszd ki a cikkek nyelvét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-idea-language-label",
+    "key": "guide.admin.idea-editor.idea-language.label",
+    "lang": "hu",
+    "value": "Nyelv"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-idea-new-description",
+    "key": "guide.admin.idea-editor.idea-new.description",
+    "lang": "hu",
+    "value": "Új cikkvázlat létrehozása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-idea-new-label",
+    "key": "guide.admin.idea-editor.idea-new.label",
+    "lang": "hu",
+    "value": "Új cikk"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-overview-description",
+    "key": "guide.admin.idea-editor.overview.description",
+    "lang": "hu",
+    "value": "Cikkek, vázlatok és közzétett tartalmak kezelése a kiválasztott nyelven."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-idea-editor-overview-label",
+    "key": "guide.admin.idea-editor.overview.label",
+    "lang": "hu",
+    "value": "Cikkek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-item-preview-close-description",
+    "key": "guide.admin.item-preview.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-item-preview-close-label",
+    "key": "guide.admin.item-preview.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-item-preview-overview-description",
+    "key": "guide.admin.item-preview.overview.description",
+    "lang": "hu",
+    "value": "Tekintsd át a bejelentett tartalmat, majd térj vissza az elbíráláshoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-item-preview-overview-label",
+    "key": "guide.admin.item-preview.overview.label",
+    "lang": "hu",
+    "value": "Bejelentett tartalom"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-job-parameter-close-description",
+    "key": "guide.admin.job-parameter.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-job-parameter-close-label",
+    "key": "guide.admin.job-parameter.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-job-parameter-overview-description",
+    "key": "guide.admin.job-parameter.overview.description",
+    "lang": "hu",
+    "value": "Módosítsd a kiválasztott feladatparamétert, majd ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-job-parameter-overview-label",
+    "key": "guide.admin.job-parameter.overview.label",
+    "lang": "hu",
+    "value": "Feladatparaméter"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-job-parameter-parameter-save-description",
+    "key": "guide.admin.job-parameter.parameter-save.description",
+    "lang": "hu",
+    "value": "A paraméterérték alkalmazása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-job-parameter-parameter-save-label",
+    "key": "guide.admin.job-parameter.parameter-save.label",
+    "lang": "hu",
+    "value": "Paraméter mentése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-moderation-settings-close-description",
+    "key": "guide.admin.moderation-settings.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-moderation-settings-close-label",
+    "key": "guide.admin.moderation-settings.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-moderation-settings-overview-description",
+    "key": "guide.admin.moderation-settings.overview.description",
+    "lang": "hu",
+    "value": "Állítsd be az automatikus ellenőrzést és a moderált kategóriákat, majd ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-moderation-settings-overview-label",
+    "key": "guide.admin.moderation-settings.overview.label",
+    "lang": "hu",
+    "value": "Moderálási beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-moderation-settings-save-description",
+    "key": "guide.admin.moderation-settings.save.description",
+    "lang": "hu",
+    "value": "A moderálási beállítások alkalmazása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-moderation-settings-save-label",
+    "key": "guide.admin.moderation-settings.save.label",
+    "lang": "hu",
+    "value": "Mentés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-monitoring-close-description",
+    "key": "guide.admin.monitoring.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-monitoring-close-label",
+    "key": "guide.admin.monitoring.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-monitoring-monitoring-filter-description",
+    "key": "guide.admin.monitoring.monitoring-filter.description",
+    "lang": "hu",
+    "value": "A megjelenített megfigyelési események kiválasztása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-monitoring-monitoring-filter-label",
+    "key": "guide.admin.monitoring.monitoring-filter.label",
+    "lang": "hu",
+    "value": "Szűrés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-monitoring-overview-description",
+    "key": "guide.admin.monitoring.overview.description",
+    "lang": "hu",
+    "value": "Működési mérések és az alkalmazás legutóbbi eseményeinek áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-monitoring-overview-label",
+    "key": "guide.admin.monitoring.overview.label",
+    "lang": "hu",
+    "value": "Megfigyelés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminarticle-description",
+    "key": "guide.admin.navigation.adminArticle.description",
+    "lang": "hu",
+    "value": "Cikkvázlatok és publikációk kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminarticle-label",
+    "key": "guide.admin.navigation.adminArticle.label",
+    "lang": "hu",
+    "value": "Cikkek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminchat-description",
+    "key": "guide.admin.navigation.adminChat.description",
+    "lang": "hu",
+    "value": "Bejelentések ellenőrzése és indokolt figyelmeztetések küldése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminchat-label",
+    "key": "guide.admin.navigation.adminChat.label",
+    "lang": "hu",
+    "value": "Beszélgetések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-admincontent-description",
+    "key": "guide.admin.navigation.adminContent.description",
+    "lang": "hu",
+    "value": "Súgók, szabályzatok és szerkeszthető guide-ok; a rendszer-guide-ok rejtettek."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-admincontent-label",
+    "key": "guide.admin.navigation.adminContent.label",
+    "lang": "hu",
+    "value": "Tartalom"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminfeedback-description",
+    "key": "guide.admin.navigation.adminFeedback.description",
+    "lang": "hu",
+    "value": "Felhasználói visszajelzések kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminfeedback-label",
+    "key": "guide.admin.navigation.adminFeedback.label",
+    "lang": "hu",
+    "value": "Visszajelzések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-admingraph-description",
+    "key": "guide.admin.navigation.adminGraph.description",
+    "lang": "hu",
+    "value": "A kapcsolódási gráf megtekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-admingraph-label",
+    "key": "guide.admin.navigation.adminGraph.label",
+    "lang": "hu",
+    "value": "Gráf"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminjobs-description",
+    "key": "guide.admin.navigation.adminJobs.description",
+    "lang": "hu",
+    "value": "Kézbesítési szabályok és időzített feladatok kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminjobs-label",
+    "key": "guide.admin.navigation.adminJobs.label",
+    "lang": "hu",
+    "value": "Feladatok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminmetrics-description",
+    "key": "guide.admin.navigation.adminMetrics.description",
+    "lang": "hu",
+    "value": "Működési mutatók és események áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminmetrics-label",
+    "key": "guide.admin.navigation.adminMetrics.label",
+    "lang": "hu",
+    "value": "Megfigyelés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminmoderation-description",
+    "key": "guide.admin.navigation.adminModeration.description",
+    "lang": "hu",
+    "value": "Beküldött tartalmak elbírálása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminmoderation-label",
+    "key": "guide.admin.navigation.adminModeration.label",
+    "lang": "hu",
+    "value": "Moderálás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminparams-description",
+    "key": "guide.admin.navigation.adminParams.description",
+    "lang": "hu",
+    "value": "Alkalmazásparaméterek és előzmények kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminparams-label",
+    "key": "guide.admin.navigation.adminParams.label",
+    "lang": "hu",
+    "value": "Paraméterek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentauthorizations-description",
+    "key": "guide.admin.navigation.adminPaymentAuthorizations.description",
+    "lang": "hu",
+    "value": "Függő fizetési engedélyezések kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentauthorizations-label",
+    "key": "guide.admin.navigation.adminPaymentAuthorizations.label",
+    "lang": "hu",
+    "value": "Engedélyezések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentsimulator-description",
+    "key": "guide.admin.navigation.adminPaymentSimulator.description",
+    "lang": "hu",
+    "value": "A beállított fizetési tesztkörnyezet megnyitása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminpaymentsimulator-label",
+    "key": "guide.admin.navigation.adminPaymentSimulator.label",
+    "lang": "hu",
+    "value": "Fizetési szimulátor"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminreports-description",
+    "key": "guide.admin.navigation.adminReports.description",
+    "lang": "hu",
+    "value": "Bejelentett felhasználók és bizonyítékok áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminreports-label",
+    "key": "guide.admin.navigation.adminReports.label",
+    "lang": "hu",
+    "value": "Bejelentések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminstats-description",
+    "key": "guide.admin.navigation.adminStats.description",
+    "lang": "hu",
+    "value": "Alkalmazásstatisztikák áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-adminstats-label",
+    "key": "guide.admin.navigation.adminStats.label",
+    "lang": "hu",
+    "value": "Statisztika"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-explanations-description",
+    "key": "guide.admin.navigation.explanations.description",
+    "lang": "hu",
+    "value": "A guide ki- és bekapcsolása. Mindkét lebegő gombot a megfelelő helyre húzhatod."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-explanations-label",
+    "key": "guide.admin.navigation.explanations.label",
+    "lang": "hu",
+    "value": "Guide gomb"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-notification-launcher-description",
+    "key": "guide.admin.navigation.notification-launcher.description",
+    "lang": "hu",
+    "value": "A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-notification-launcher-label",
+    "key": "guide.admin.navigation.notification-launcher.label",
+    "lang": "hu",
+    "value": "Értesítési gomb"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-notifications-description",
+    "key": "guide.admin.navigation.notifications.description",
+    "lang": "hu",
+    "value": "Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-notifications-label",
+    "key": "guide.admin.navigation.notifications.label",
+    "lang": "hu",
+    "value": "Értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-settings-description",
+    "key": "guide.admin.navigation.settings.description",
+    "lang": "hu",
+    "value": "Nyelv, szabályzatok, súgó és kijelentkezés."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-navigation-settings-label",
+    "key": "guide.admin.navigation.settings.label",
+    "lang": "hu",
+    "value": "Beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-notifications-close-description",
+    "key": "guide.admin.notifications.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-notifications-close-label",
+    "key": "guide.admin.notifications.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-notifications-overview-description",
+    "key": "guide.admin.notifications.overview.description",
+    "lang": "hu",
+    "value": "Kézbesítési szabályok, időzítések és futások kezelése. A saját értesítéseidet az értesítési központban találod."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-notifications-overview-label",
+    "key": "guide.admin.notifications.overview.label",
+    "lang": "hu",
+    "value": "Feladatok és értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-notifications-process-filter-description",
+    "key": "guide.admin.notifications.process-filter.description",
+    "lang": "hu",
+    "value": "A megjelenített feladatok és kézbesítési szabályok kiválasztása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-notifications-process-filter-label",
+    "key": "guide.admin.notifications.process-filter.label",
+    "lang": "hu",
+    "value": "Feladatok szűrése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-edit-close-description",
+    "key": "guide.admin.parameter-edit.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-edit-close-label",
+    "key": "guide.admin.parameter-edit.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-edit-overview-description",
+    "key": "guide.admin.parameter-edit.overview.description",
+    "lang": "hu",
+    "value": "Mentés előtt ellenőrizd az értéket és az ellenőrzés eredményét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-edit-overview-label",
+    "key": "guide.admin.parameter-edit.overview.label",
+    "lang": "hu",
+    "value": "Paraméter módosítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-edit-save-edit-description",
+    "key": "guide.admin.parameter-edit.save-edit.description",
+    "lang": "hu",
+    "value": "A paraméterérték mentése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-edit-save-edit-label",
+    "key": "guide.admin.parameter-edit.save-edit.label",
+    "lang": "hu",
+    "value": "Mentés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-history-close-description",
+    "key": "guide.admin.parameter-history.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-history-close-label",
+    "key": "guide.admin.parameter-history.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-history-overview-description",
+    "key": "guide.admin.parameter-history.overview.description",
+    "lang": "hu",
+    "value": "A korábbi változtatások és szerzőik áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-parameter-history-overview-label",
+    "key": "guide.admin.parameter-history.overview.label",
+    "lang": "hu",
+    "value": "Paraméterelőzmények"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-params-close-description",
+    "key": "guide.admin.params.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-params-close-label",
+    "key": "guide.admin.params.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-params-overview-description",
+    "key": "guide.admin.params.overview.description",
+    "lang": "hu",
+    "value": "Az aktuális beállítások áttekintése, paraméter módosítása vagy előzményeinek megnyitása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-params-overview-label",
+    "key": "guide.admin.params.overview.label",
+    "lang": "hu",
+    "value": "Alkalmazásparaméterek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-authorizations-close-description",
+    "key": "guide.admin.payment-authorizations.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-authorizations-close-label",
+    "key": "guide.admin.payment-authorizations.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-authorizations-overview-description",
+    "key": "guide.admin.payment-authorizations.overview.description",
+    "lang": "hu",
+    "value": "Ellenőrizd a függő fizetési engedélyezések részleteit, mielőtt döntesz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-authorizations-overview-label",
+    "key": "guide.admin.payment-authorizations.overview.label",
+    "lang": "hu",
+    "value": "Fizetési engedélyezések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-simulator-close-description",
+    "key": "guide.admin.payment-simulator.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-simulator-close-label",
+    "key": "guide.admin.payment-simulator.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-simulator-overview-description",
+    "key": "guide.admin.payment-simulator.overview.description",
+    "lang": "hu",
+    "value": "Szimulált fizetési eredmények és a rendelkezésre álló tesztvezérlők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-payment-simulator-overview-label",
+    "key": "guide.admin.payment-simulator.overview.label",
+    "lang": "hu",
+    "value": "Fizetési szimulátor"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-process-detail-close-description",
+    "key": "guide.admin.process-detail.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-process-detail-close-label",
+    "key": "guide.admin.process-detail.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-process-detail-overview-description",
+    "key": "guide.admin.process-detail.overview.description",
+    "lang": "hu",
+    "value": "A szabály módosítása előtt ellenőrizd a csatornákat, paramétereket és korábbi futásokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-process-detail-overview-label",
+    "key": "guide.admin.process-detail.overview.label",
+    "lang": "hu",
+    "value": "Feladat részletei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-process-detail-process-detail-save-description",
+    "key": "guide.admin.process-detail.process-detail-save.description",
+    "lang": "hu",
+    "value": "A beállított kézbesítési szabály mentése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-process-detail-process-detail-save-label",
+    "key": "guide.admin.process-detail.process-detail-save.label",
+    "lang": "hu",
+    "value": "Szabály mentése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-report-detail-close-description",
+    "key": "guide.admin.report-detail.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-report-detail-close-label",
+    "key": "guide.admin.report-detail.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-report-detail-overview-description",
+    "key": "guide.admin.report-detail.overview.description",
+    "lang": "hu",
+    "value": "Az elbírálás előtt olvasd el a bejelentést és annak körülményeit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-report-detail-overview-label",
+    "key": "guide.admin.report-detail.overview.label",
+    "lang": "hu",
+    "value": "Bejelentés elbírálása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-blocked-users-description",
+    "key": "guide.admin.reports.blocked-users.description",
+    "lang": "hu",
+    "value": "A letiltott fiókok és moderálási állapotuk megtekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-blocked-users-label",
+    "key": "guide.admin.reports.blocked-users.label",
+    "lang": "hu",
+    "value": "Letiltott fiókok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-close-description",
+    "key": "guide.admin.reports.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-close-label",
+    "key": "guide.admin.reports.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-overview-description",
+    "key": "guide.admin.reports.overview.description",
+    "lang": "hu",
+    "value": "Nyiss meg egy bejelentést a bizonyítékok és az elbírálási műveletek megtekintéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-overview-label",
+    "key": "guide.admin.reports.overview.label",
+    "lang": "hu",
+    "value": "Bejelentések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-reports-review-status-filter-description",
+    "key": "guide.admin.reports.reports-review-status-filter.description",
+    "lang": "hu",
+    "value": "Függő vagy már elbírált bejelentések kiválasztása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-reports-reports-review-status-filter-label",
+    "key": "guide.admin.reports.reports-review-status-filter.label",
+    "lang": "hu",
+    "value": "Szűrés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-schedule-edit-close-description",
+    "key": "guide.admin.schedule-edit.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-schedule-edit-close-label",
+    "key": "guide.admin.schedule-edit.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-schedule-edit-overview-description",
+    "key": "guide.admin.schedule-edit.overview.description",
+    "lang": "hu",
+    "value": "Állítsd be a feladat futását: időközét vagy kezdési időpontját."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-schedule-edit-overview-label",
+    "key": "guide.admin.schedule-edit.overview.label",
+    "lang": "hu",
+    "value": "Időzítés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-schedule-edit-schedule-save-description",
+    "key": "guide.admin.schedule-edit.schedule-save.description",
+    "lang": "hu",
+    "value": "A kiválasztott időzítés alkalmazása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-schedule-edit-schedule-save-label",
+    "key": "guide.admin.schedule-edit.schedule-save.label",
+    "lang": "hu",
+    "value": "Időzítés mentése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-stats-close-description",
+    "key": "guide.admin.stats.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-stats-close-label",
+    "key": "guide.admin.stats.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-stats-overview-description",
+    "key": "guide.admin.stats.overview.description",
+    "lang": "hu",
+    "value": "A kijelzett időszak és mutatók áttekintése. A grafikon súgója az adott ábrát magyarázza."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-stats-overview-label",
+    "key": "guide.admin.stats.overview.label",
+    "lang": "hu",
+    "value": "Statisztika"
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-stats-stats-refresh-description",
+    "key": "guide.admin.stats.stats-refresh.description",
+    "lang": "hu",
+    "value": "A megjelenített statisztikák frissítése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-admin-stats-stats-refresh-label",
+    "key": "guide.admin.stats.stats-refresh.label",
+    "lang": "hu",
+    "value": "Frissítés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-affinity-graph-description",
+    "key": "guide.context.admin.affinity-graph.description",
+    "lang": "hu",
+    "value": "A gráf és a megjelenített kapcsolatok áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-affinity-graph-summary",
+    "key": "guide.context.admin.affinity-graph.summary",
+    "lang": "hu",
+    "value": "A gráf és a megjelenített kapcsolatok áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-affinity-graph-title",
+    "key": "guide.context.admin.affinity-graph.title",
+    "lang": "hu",
+    "value": "Kapcsolódási gráf"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-article-edit-description",
+    "key": "guide.context.admin.article-edit.description",
+    "lang": "hu",
+    "value": "Szerkeszd a cikket, majd mentés előtt ellenőrizd az előnézetet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-article-edit-summary",
+    "key": "guide.context.admin.article-edit.summary",
+    "lang": "hu",
+    "value": "Szerkeszd a cikket, majd mentés előtt ellenőrizd az előnézetet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-article-edit-title",
+    "key": "guide.context.admin.article-edit.title",
+    "lang": "hu",
+    "value": "Cikk szerkesztése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-article-view-description",
+    "key": "guide.context.admin.article-view.description",
+    "lang": "hu",
+    "value": "A cikk olvasói nézetének ellenőrzése. Bezárás után visszatérsz a szerkesztőhöz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-article-view-summary",
+    "key": "guide.context.admin.article-view.summary",
+    "lang": "hu",
+    "value": "A cikk olvasói nézetének ellenőrzése. Bezárás után visszatérsz a szerkesztőhöz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-article-view-title",
+    "key": "guide.context.admin.article-view.title",
+    "lang": "hu",
+    "value": "Cikk előnézete"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-blocked-users-description",
+    "key": "guide.context.admin.blocked-users.description",
+    "lang": "hu",
+    "value": "A korlátozások áttekintése és az elérhető fiókműveletek használata."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-blocked-users-summary",
+    "key": "guide.context.admin.blocked-users.summary",
+    "lang": "hu",
+    "value": "A korlátozások áttekintése és az elérhető fiókműveletek használata."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-blocked-users-title",
+    "key": "guide.context.admin.blocked-users.title",
+    "lang": "hu",
+    "value": "Letiltott fiókok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-chat-review-description",
+    "key": "guide.context.admin.chat-review.description",
+    "lang": "hu",
+    "value": "A bejelentéshez tartozó beszélgetés. A figyelmeztetés elküldi az üzenetedet az érintett felhasználónak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-chat-review-summary",
+    "key": "guide.context.admin.chat-review.summary",
+    "lang": "hu",
+    "value": "A bejelentéshez tartozó beszélgetés. A figyelmeztetés elküldi az üzenetedet az érintett felhasználónak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-chat-review-title",
+    "key": "guide.context.admin.chat-review.title",
+    "lang": "hu",
+    "value": "Beszélgetés ellenőrzése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-content-moderation-description",
+    "key": "guide.context.admin.content-moderation.description",
+    "lang": "hu",
+    "value": "A beküldött tartalmak áttekintése és elbírálása az aktuális munkaterületen."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-content-moderation-summary",
+    "key": "guide.context.admin.content-moderation.summary",
+    "lang": "hu",
+    "value": "A beküldött tartalmak áttekintése és elbírálása az aktuális munkaterületen."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-content-moderation-title",
+    "key": "guide.context.admin.content-moderation.title",
+    "lang": "hu",
+    "value": "Tartalommoderálás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-feedback-description",
+    "key": "guide.context.admin.feedback.description",
+    "lang": "hu",
+    "value": "Nyiss meg egy visszajelzést az elolvasásához és az elbírálási állapot rögzítéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-feedback-detail-description",
+    "key": "guide.context.admin.feedback-detail.description",
+    "lang": "hu",
+    "value": "Olvasd el a beküldött visszajelzést, majd válaszd a megfelelő műveletet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-feedback-detail-summary",
+    "key": "guide.context.admin.feedback-detail.summary",
+    "lang": "hu",
+    "value": "Olvasd el a beküldött visszajelzést, majd válaszd a megfelelő műveletet."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-feedback-detail-title",
+    "key": "guide.context.admin.feedback-detail.title",
+    "lang": "hu",
+    "value": "Visszajelzés kezelése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-feedback-summary",
+    "key": "guide.context.admin.feedback.summary",
+    "lang": "hu",
+    "value": "Nyiss meg egy visszajelzést az elolvasásához és az elbírálási állapot rögzítéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-feedback-title",
+    "key": "guide.context.admin.feedback.title",
+    "lang": "hu",
+    "value": "Visszajelzések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-graph-help-description",
+    "key": "guide.context.admin.graph-help.description",
+    "lang": "hu",
+    "value": "Ez a magyarázat a kiválasztott grafikon értelmezését segíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-graph-help-summary",
+    "key": "guide.context.admin.graph-help.summary",
+    "lang": "hu",
+    "value": "Ez a magyarázat a kiválasztott grafikon értelmezését segíti."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-graph-help-title",
+    "key": "guide.context.admin.graph-help.title",
+    "lang": "hu",
+    "value": "Grafikonmagyarázat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-help-editor-description",
+    "key": "guide.context.admin.help-editor.description",
+    "lang": "hu",
+    "value": "Súgó-, szabályzat- és szerkeszthető guide-verziók. A rendszer-guide-ok az alkalmazással frissülnek, itt nem jelennek meg."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-help-editor-summary",
+    "key": "guide.context.admin.help-editor.summary",
+    "lang": "hu",
+    "value": "Súgó-, szabályzat- és szerkeszthető guide-verziók. A rendszer-guide-ok az alkalmazással frissülnek, itt nem jelennek meg."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-help-editor-title",
+    "key": "guide.context.admin.help-editor.title",
+    "lang": "hu",
+    "value": "Tartalomszerkesztő"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-home-description",
+    "key": "guide.context.admin.home.description",
+    "lang": "hu",
+    "value": "Az avatar menüből nyílik a moderálás, tartalom, feladatok és megfigyelés. Az értesítés és guide kapcsolója is ott van."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-home-summary",
+    "key": "guide.context.admin.home.summary",
+    "lang": "hu",
+    "value": "Az avatar menüből nyílik a moderálás, tartalom, feladatok és megfigyelés. Az értesítés és guide kapcsolója is ott van."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-home-title",
+    "key": "guide.context.admin.home.title",
+    "lang": "hu",
+    "value": "Adminisztráció"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-idea-editor-description",
+    "key": "guide.context.admin.idea-editor.description",
+    "lang": "hu",
+    "value": "Cikkek, vázlatok és közzétett tartalmak kezelése a kiválasztott nyelven."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-idea-editor-summary",
+    "key": "guide.context.admin.idea-editor.summary",
+    "lang": "hu",
+    "value": "Cikkek, vázlatok és közzétett tartalmak kezelése a kiválasztott nyelven."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-idea-editor-title",
+    "key": "guide.context.admin.idea-editor.title",
+    "lang": "hu",
+    "value": "Cikkek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-item-preview-description",
+    "key": "guide.context.admin.item-preview.description",
+    "lang": "hu",
+    "value": "Tekintsd át a bejelentett tartalmat, majd térj vissza az elbíráláshoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-item-preview-summary",
+    "key": "guide.context.admin.item-preview.summary",
+    "lang": "hu",
+    "value": "Tekintsd át a bejelentett tartalmat, majd térj vissza az elbíráláshoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-item-preview-title",
+    "key": "guide.context.admin.item-preview.title",
+    "lang": "hu",
+    "value": "Bejelentett tartalom"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-job-parameter-description",
+    "key": "guide.context.admin.job-parameter.description",
+    "lang": "hu",
+    "value": "Módosítsd a kiválasztott feladatparamétert, majd ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-job-parameter-summary",
+    "key": "guide.context.admin.job-parameter.summary",
+    "lang": "hu",
+    "value": "Módosítsd a kiválasztott feladatparamétert, majd ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-job-parameter-title",
+    "key": "guide.context.admin.job-parameter.title",
+    "lang": "hu",
+    "value": "Feladatparaméter"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-moderation-settings-description",
+    "key": "guide.context.admin.moderation-settings.description",
+    "lang": "hu",
+    "value": "Állítsd be az automatikus ellenőrzést és a moderált kategóriákat, majd ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-moderation-settings-summary",
+    "key": "guide.context.admin.moderation-settings.summary",
+    "lang": "hu",
+    "value": "Állítsd be az automatikus ellenőrzést és a moderált kategóriákat, majd ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-moderation-settings-title",
+    "key": "guide.context.admin.moderation-settings.title",
+    "lang": "hu",
+    "value": "Moderálási beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-monitoring-description",
+    "key": "guide.context.admin.monitoring.description",
+    "lang": "hu",
+    "value": "Működési mérések és az alkalmazás legutóbbi eseményeinek áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-monitoring-summary",
+    "key": "guide.context.admin.monitoring.summary",
+    "lang": "hu",
+    "value": "Működési mérések és az alkalmazás legutóbbi eseményeinek áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-monitoring-title",
+    "key": "guide.context.admin.monitoring.title",
+    "lang": "hu",
+    "value": "Megfigyelés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-navigation-description",
+    "key": "guide.context.admin.navigation.description",
+    "lang": "hu",
+    "value": "Adminisztrációs menü"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-navigation-summary",
+    "key": "guide.context.admin.navigation.summary",
+    "lang": "hu",
+    "value": "Adminisztrációs menü"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-navigation-title",
+    "key": "guide.context.admin.navigation.title",
+    "lang": "hu",
+    "value": "Adminisztrációs menü"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-notifications-description",
+    "key": "guide.context.admin.notifications.description",
+    "lang": "hu",
+    "value": "Kézbesítési szabályok, időzítések és futások kezelése. A saját értesítéseidet az értesítési központban találod."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-notifications-summary",
+    "key": "guide.context.admin.notifications.summary",
+    "lang": "hu",
+    "value": "Kézbesítési szabályok, időzítések és futások kezelése. A saját értesítéseidet az értesítési központban találod."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-notifications-title",
+    "key": "guide.context.admin.notifications.title",
+    "lang": "hu",
+    "value": "Feladatok és értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-parameter-edit-description",
+    "key": "guide.context.admin.parameter-edit.description",
+    "lang": "hu",
+    "value": "Mentés előtt ellenőrizd az értéket és az ellenőrzés eredményét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-parameter-edit-summary",
+    "key": "guide.context.admin.parameter-edit.summary",
+    "lang": "hu",
+    "value": "Mentés előtt ellenőrizd az értéket és az ellenőrzés eredményét."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-parameter-edit-title",
+    "key": "guide.context.admin.parameter-edit.title",
+    "lang": "hu",
+    "value": "Paraméter módosítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-parameter-history-description",
+    "key": "guide.context.admin.parameter-history.description",
+    "lang": "hu",
+    "value": "A korábbi változtatások és szerzőik áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-parameter-history-summary",
+    "key": "guide.context.admin.parameter-history.summary",
+    "lang": "hu",
+    "value": "A korábbi változtatások és szerzőik áttekintése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-parameter-history-title",
+    "key": "guide.context.admin.parameter-history.title",
+    "lang": "hu",
+    "value": "Paraméterelőzmények"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-params-description",
+    "key": "guide.context.admin.params.description",
+    "lang": "hu",
+    "value": "Az aktuális beállítások áttekintése, paraméter módosítása vagy előzményeinek megnyitása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-params-summary",
+    "key": "guide.context.admin.params.summary",
+    "lang": "hu",
+    "value": "Az aktuális beállítások áttekintése, paraméter módosítása vagy előzményeinek megnyitása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-params-title",
+    "key": "guide.context.admin.params.title",
+    "lang": "hu",
+    "value": "Alkalmazásparaméterek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-payment-authorizations-description",
+    "key": "guide.context.admin.payment-authorizations.description",
+    "lang": "hu",
+    "value": "Ellenőrizd a függő fizetési engedélyezések részleteit, mielőtt döntesz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-payment-authorizations-summary",
+    "key": "guide.context.admin.payment-authorizations.summary",
+    "lang": "hu",
+    "value": "Ellenőrizd a függő fizetési engedélyezések részleteit, mielőtt döntesz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-payment-authorizations-title",
+    "key": "guide.context.admin.payment-authorizations.title",
+    "lang": "hu",
+    "value": "Fizetési engedélyezések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-payment-simulator-description",
+    "key": "guide.context.admin.payment-simulator.description",
+    "lang": "hu",
+    "value": "Szimulált fizetési eredmények és a rendelkezésre álló tesztvezérlők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-payment-simulator-summary",
+    "key": "guide.context.admin.payment-simulator.summary",
+    "lang": "hu",
+    "value": "Szimulált fizetési eredmények és a rendelkezésre álló tesztvezérlők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-payment-simulator-title",
+    "key": "guide.context.admin.payment-simulator.title",
+    "lang": "hu",
+    "value": "Fizetési szimulátor"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-process-detail-description",
+    "key": "guide.context.admin.process-detail.description",
+    "lang": "hu",
+    "value": "A szabály módosítása előtt ellenőrizd a csatornákat, paramétereket és korábbi futásokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-process-detail-summary",
+    "key": "guide.context.admin.process-detail.summary",
+    "lang": "hu",
+    "value": "A szabály módosítása előtt ellenőrizd a csatornákat, paramétereket és korábbi futásokat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-process-detail-title",
+    "key": "guide.context.admin.process-detail.title",
+    "lang": "hu",
+    "value": "Feladat részletei"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-report-detail-description",
+    "key": "guide.context.admin.report-detail.description",
+    "lang": "hu",
+    "value": "Az elbírálás előtt olvasd el a bejelentést és annak körülményeit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-report-detail-summary",
+    "key": "guide.context.admin.report-detail.summary",
+    "lang": "hu",
+    "value": "Az elbírálás előtt olvasd el a bejelentést és annak körülményeit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-report-detail-title",
+    "key": "guide.context.admin.report-detail.title",
+    "lang": "hu",
+    "value": "Bejelentés elbírálása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-reports-description",
+    "key": "guide.context.admin.reports.description",
+    "lang": "hu",
+    "value": "Nyiss meg egy bejelentést a bizonyítékok és az elbírálási műveletek megtekintéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-reports-summary",
+    "key": "guide.context.admin.reports.summary",
+    "lang": "hu",
+    "value": "Nyiss meg egy bejelentést a bizonyítékok és az elbírálási műveletek megtekintéséhez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-reports-title",
+    "key": "guide.context.admin.reports.title",
+    "lang": "hu",
+    "value": "Bejelentések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-schedule-edit-description",
+    "key": "guide.context.admin.schedule-edit.description",
+    "lang": "hu",
+    "value": "Állítsd be a feladat futását: időközét vagy kezdési időpontját."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-schedule-edit-summary",
+    "key": "guide.context.admin.schedule-edit.summary",
+    "lang": "hu",
+    "value": "Állítsd be a feladat futását: időközét vagy kezdési időpontját."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-schedule-edit-title",
+    "key": "guide.context.admin.schedule-edit.title",
+    "lang": "hu",
+    "value": "Időzítés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-stats-description",
+    "key": "guide.context.admin.stats.description",
+    "lang": "hu",
+    "value": "A kijelzett időszak és mutatók áttekintése. A grafikon súgója az adott ábrát magyarázza."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-stats-summary",
+    "key": "guide.context.admin.stats.summary",
+    "lang": "hu",
+    "value": "A kijelzett időszak és mutatók áttekintése. A grafikon súgója az adott ábrát magyarázza."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-admin-stats-title",
+    "key": "guide.context.admin.stats.title",
+    "lang": "hu",
+    "value": "Statisztika"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-claim-description",
+    "key": "guide.context.operator.claim.description",
+    "lang": "hu",
+    "value": "Válassz céges igazolást vagy meglévő ügyfélkódot. Itt látszik az elbírálás állapota."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-claim-summary",
+    "key": "guide.context.operator.claim.summary",
+    "lang": "hu",
+    "value": "Válassz céges igazolást vagy meglévő ügyfélkódot. Itt látszik az elbírálás állapota."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-claim-title",
+    "key": "guide.context.operator.claim.title",
+    "lang": "hu",
+    "value": "Operátori igénylés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-community-description",
+    "key": "guide.context.operator.community.description",
+    "lang": "hu",
+    "value": "Itt olvashatod az operátori közösség információit és az elérhető közleményeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-community-summary",
+    "key": "guide.context.operator.community.summary",
+    "lang": "hu",
+    "value": "Itt olvashatod az operátori közösség információit és az elérhető közleményeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-community-title",
+    "key": "guide.context.operator.community.title",
+    "lang": "hu",
+    "value": "Operátori közösség"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-configuration-description",
+    "key": "guide.context.operator.configuration.description",
+    "lang": "hu",
+    "value": "A szekciókban az arculatot, adminokat, adatvédelmi kapcsolatot és szolgáltatásokat állíthatod be. Szekciónként ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-configuration-summary",
+    "key": "guide.context.operator.configuration.summary",
+    "lang": "hu",
+    "value": "A szekciókban az arculatot, adminokat, adatvédelmi kapcsolatot és szolgáltatásokat állíthatod be. Szekciónként ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-configuration-title",
+    "key": "guide.context.operator.configuration.title",
+    "lang": "hu",
+    "value": "Telepítési beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-deployments-description",
+    "key": "guide.context.operator.deployments.description",
+    "lang": "hu",
+    "value": "Ezek a kiválasztott operátor node-jai. Nézd meg a jelentett állapotukat és hozzájárulásukat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-deployments-summary",
+    "key": "guide.context.operator.deployments.summary",
+    "lang": "hu",
+    "value": "Ezek a kiválasztott operátor node-jai. Nézd meg a jelentett állapotukat és hozzájárulásukat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-deployments-title",
+    "key": "guide.context.operator.deployments.title",
+    "lang": "hu",
+    "value": "Operátori telepítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-home-description",
+    "key": "guide.context.operator.home.description",
+    "lang": "hu",
+    "value": "A gombokkal kezelheted ezt a node-ot. Az avatar menüben találod az értesítéseket és a guide kapcsolóit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-home-summary",
+    "key": "guide.context.operator.home.summary",
+    "lang": "hu",
+    "value": "A gombokkal kezelheted ezt a node-ot. Az avatar menüben találod az értesítéseket és a guide kapcsolóit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-home-title",
+    "key": "guide.context.operator.home.title",
+    "lang": "hu",
+    "value": "Operátori felület"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-navigation-description",
+    "key": "guide.context.operator.navigation.description",
+    "lang": "hu",
+    "value": "Operátori menü"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-navigation-summary",
+    "key": "guide.context.operator.navigation.summary",
+    "lang": "hu",
+    "value": "Operátori menü"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-navigation-title",
+    "key": "guide.context.operator.navigation.title",
+    "lang": "hu",
+    "value": "Operátori menü"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-registration-description",
+    "key": "guide.context.operator.registration.description",
+    "lang": "hu",
+    "value": "A telepítés regisztrációja, életjele és mérési jelentései."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-registration-summary",
+    "key": "guide.context.operator.registration.summary",
+    "lang": "hu",
+    "value": "A telepítés regisztrációja, életjele és mérési jelentései."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-registration-title",
+    "key": "guide.context.operator.registration.title",
+    "lang": "hu",
+    "value": "Registry-kapcsolat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-revenue-description",
+    "key": "guide.context.operator.revenue.description",
+    "lang": "hu",
+    "value": "A főkönyv, elszámolások és jelentésküldés állapota. Az összegek a kijelzett pénznemhez és időszakhoz tartoznak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-revenue-summary",
+    "key": "guide.context.operator.revenue.summary",
+    "lang": "hu",
+    "value": "A főkönyv, elszámolások és jelentésküldés állapota. Az összegek a kijelzett pénznemhez és időszakhoz tartoznak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-revenue-title",
+    "key": "guide.context.operator.revenue.title",
+    "lang": "hu",
+    "value": "Bevételek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-updates-description",
+    "key": "guide.context.operator.updates.description",
+    "lang": "hu",
+    "value": "Itt láthatod a telepített és elérhető verziót, a folyamat állapotát és hibáit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-updates-summary",
+    "key": "guide.context.operator.updates.summary",
+    "lang": "hu",
+    "value": "Itt láthatod a telepített és elérhető verziót, a folyamat állapotát és hibáit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-context-operator-updates-title",
+    "key": "guide.context.operator.updates.title",
+    "lang": "hu",
+    "value": "Frissítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-navigation-menu-notification-launcher-description",
+    "key": "guide.navigation.menu.notification-launcher.description",
+    "lang": "hu",
+    "value": "A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-navigation-menu-notification-launcher-label",
+    "key": "guide.navigation.menu.notification-launcher.label",
+    "lang": "hu",
+    "value": "Értesítési gomb"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-close-description",
+    "key": "guide.operator.claim.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-close-label",
+    "key": "guide.operator.claim.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-attestation-description",
+    "key": "guide.operator.claim.operator-claim-attestation.description",
+    "lang": "hu",
+    "value": "Igazold, hogy jogosult vagy a jogi személy nevében eljárni."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-attestation-label",
+    "key": "guide.operator.claim.operator-claim-attestation.label",
+    "lang": "hu",
+    "value": "Jogosultság"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-legal-name-description",
+    "key": "guide.operator.claim.operator-claim-legal-name.description",
+    "lang": "hu",
+    "value": "A cég bejegyzett, hivatalos nevét add meg."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-legal-name-label",
+    "key": "guide.operator.claim.operator-claim-legal-name.label",
+    "lang": "hu",
+    "value": "Hivatalos név"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-client-code-description",
+    "key": "guide.operator.claim.operator-claim-path-client-code.description",
+    "lang": "hu",
+    "value": "Egy meglévő, igazolt operátortól kapott kód használata."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-client-code-label",
+    "key": "guide.operator.claim.operator-claim-path-client-code.label",
+    "lang": "hu",
+    "value": "Ügyfélkód"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-company-description",
+    "key": "guide.operator.claim.operator-claim-path-company.description",
+    "lang": "hu",
+    "value": "Add meg a jogi személyt és a meghatalmazott kapcsolattartót."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-claim-path-company-label",
+    "key": "guide.operator.claim.operator-claim-path-company.label",
+    "lang": "hu",
+    "value": "Cég"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-redeem-token-description",
+    "key": "guide.operator.claim.operator-redeem-token.description",
+    "lang": "hu",
+    "value": "A megadott ügyfélkóddal kapcsold hozzá a telepítést."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-operator-redeem-token-label",
+    "key": "guide.operator.claim.operator-redeem-token.label",
+    "lang": "hu",
+    "value": "Beváltás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-overview-description",
+    "key": "guide.operator.claim.overview.description",
+    "lang": "hu",
+    "value": "Válassz céges igazolást vagy meglévő ügyfélkódot. Itt látszik az elbírálás állapota."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-claim-overview-label",
+    "key": "guide.operator.claim.overview.label",
+    "lang": "hu",
+    "value": "Operátori igénylés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-community-close-description",
+    "key": "guide.operator.community.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-community-close-label",
+    "key": "guide.operator.community.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-community-overview-description",
+    "key": "guide.operator.community.overview.description",
+    "lang": "hu",
+    "value": "Itt olvashatod az operátori közösség információit és az elérhető közleményeket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-community-overview-label",
+    "key": "guide.operator.community.overview.label",
+    "lang": "hu",
+    "value": "Operátori közösség"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-close-description",
+    "key": "guide.operator.configuration.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-close-label",
+    "key": "guide.operator.configuration.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-admin-emails-description",
+    "key": "guide.operator.configuration.operator-save-admin-emails.description",
+    "lang": "hu",
+    "value": "Az alkalmazás adminisztrációjára jogosult fiókok mentése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-admin-emails-label",
+    "key": "guide.operator.configuration.operator-save-admin-emails.label",
+    "lang": "hu",
+    "value": "Adminisztrátorok"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-branding-description",
+    "key": "guide.operator.configuration.operator-save-branding.description",
+    "lang": "hu",
+    "value": "A telepítésen megjelenő arculat mentése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-branding-label",
+    "key": "guide.operator.configuration.operator-save-branding.label",
+    "lang": "hu",
+    "value": "Arculat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-firebase-description",
+    "key": "guide.operator.configuration.operator-save-firebase.description",
+    "lang": "hu",
+    "value": "Mentsd a hitelesítő adatokat a kapcsolat tesztelése vagy aktiválása előtt."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-firebase-label",
+    "key": "guide.operator.configuration.operator-save-firebase.label",
+    "lang": "hu",
+    "value": "Firebase"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-privacy-contact-description",
+    "key": "guide.operator.configuration.operator-save-privacy-contact.description",
+    "lang": "hu",
+    "value": "Az adatvédelmi tájékoztató adatkezelőjének és kapcsolatának mentése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-privacy-contact-label",
+    "key": "guide.operator.configuration.operator-save-privacy-contact.label",
+    "lang": "hu",
+    "value": "Adatvédelmi kapcsolat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-tls-description",
+    "key": "guide.operator.configuration.operator-save-tls.description",
+    "lang": "hu",
+    "value": "Tanúsítványbeállítások mentése; aktiválás előtt használd az ellenőrzéseket."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-operator-save-tls-label",
+    "key": "guide.operator.configuration.operator-save-tls.label",
+    "lang": "hu",
+    "value": "TLS"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-overview-description",
+    "key": "guide.operator.configuration.overview.description",
+    "lang": "hu",
+    "value": "A szekciókban az arculatot, adminokat, adatvédelmi kapcsolatot és szolgáltatásokat állíthatod be. Szekciónként ments."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-configuration-overview-label",
+    "key": "guide.operator.configuration.overview.label",
+    "lang": "hu",
+    "value": "Telepítési beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-deployments-close-description",
+    "key": "guide.operator.deployments.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-deployments-close-label",
+    "key": "guide.operator.deployments.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-deployments-overview-description",
+    "key": "guide.operator.deployments.overview.description",
+    "lang": "hu",
+    "value": "Ezek a kiválasztott operátor node-jai. Nézd meg a jelentett állapotukat és hozzájárulásukat."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-deployments-overview-label",
+    "key": "guide.operator.deployments.overview.label",
+    "lang": "hu",
+    "value": "Operátori telepítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-claim-description",
+    "key": "guide.operator.home.claim.description",
+    "lang": "hu",
+    "value": "Kapcsold a telepítést az igazolt operátori azonosítódhoz."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-claim-label",
+    "key": "guide.operator.home.claim.label",
+    "lang": "hu",
+    "value": "Operátori igénylés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-configuration-description",
+    "key": "guide.operator.home.configuration.description",
+    "lang": "hu",
+    "value": "A telepítés és a kapcsolódó szolgáltatások beállításai."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-configuration-label",
+    "key": "guide.operator.home.configuration.label",
+    "lang": "hu",
+    "value": "Beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-leaderboard-description",
+    "key": "guide.operator.home.leaderboard.description",
+    "lang": "hu",
+    "value": "Egy igazolt operátort kiválasztva láthatod a telepítéseit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-leaderboard-label",
+    "key": "guide.operator.home.leaderboard.label",
+    "lang": "hu",
+    "value": "Hálózati rangsor"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-registration-description",
+    "key": "guide.operator.home.registration.description",
+    "lang": "hu",
+    "value": "A regisztráció és a mérési jelentések kezelése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-registration-label",
+    "key": "guide.operator.home.registration.label",
+    "lang": "hu",
+    "value": "Registry-kapcsolat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-revenue-description",
+    "key": "guide.operator.home.revenue.description",
+    "lang": "hu",
+    "value": "Bevételek, bizonylatok és szinkronizálás."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-revenue-label",
+    "key": "guide.operator.home.revenue.label",
+    "lang": "hu",
+    "value": "Bevételek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-updates-description",
+    "key": "guide.operator.home.updates.description",
+    "lang": "hu",
+    "value": "Az elérhető verziót és a frissítés állapotát mutatja."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-home-updates-label",
+    "key": "guide.operator.home.updates.label",
+    "lang": "hu",
+    "value": "Frissítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-explanations-description",
+    "key": "guide.operator.navigation.explanations.description",
+    "lang": "hu",
+    "value": "A guide ki- és bekapcsolása. Mindkét lebegő gombot a megfelelő helyre húzhatod."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-explanations-label",
+    "key": "guide.operator.navigation.explanations.label",
+    "lang": "hu",
+    "value": "Guide gomb"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-notification-launcher-description",
+    "key": "guide.operator.navigation.notification-launcher.description",
+    "lang": "hu",
+    "value": "A lebegő értesítési gomb ki- és bekapcsolása. Az értesítési központ és a kézbesítési beállítások továbbra is elérhetők."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-notification-launcher-label",
+    "key": "guide.operator.navigation.notification-launcher.label",
+    "lang": "hu",
+    "value": "Értesítési gomb"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-notifications-description",
+    "key": "guide.operator.navigation.notifications.description",
+    "lang": "hu",
+    "value": "Nyisd meg az értesítési központot, jelöld olvasottnak az üzeneteket, és kezeld a némítást."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-notifications-label",
+    "key": "guide.operator.navigation.notifications.label",
+    "lang": "hu",
+    "value": "Értesítések"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-settings-description",
+    "key": "guide.operator.navigation.settings.description",
+    "lang": "hu",
+    "value": "Nyelv, szabályzatok, súgó és kijelentkezés."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-navigation-settings-label",
+    "key": "guide.operator.navigation.settings.label",
+    "lang": "hu",
+    "value": "Beállítások"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-close-description",
+    "key": "guide.operator.registration.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-close-label",
+    "key": "guide.operator.registration.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-disconnect-description",
+    "key": "guide.operator.registration.disconnect.description",
+    "lang": "hu",
+    "value": "A telepítés leválasztása a Registryről."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-disconnect-label",
+    "key": "guide.operator.registration.disconnect.label",
+    "lang": "hu",
+    "value": "Leválasztás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-overview-description",
+    "key": "guide.operator.registration.overview.description",
+    "lang": "hu",
+    "value": "A telepítés regisztrációja, életjele és mérési jelentései."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-overview-label",
+    "key": "guide.operator.registration.overview.label",
+    "lang": "hu",
+    "value": "Registry-kapcsolat"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-refresh-description",
+    "key": "guide.operator.registration.refresh.description",
+    "lang": "hu",
+    "value": "A regisztráció és a jelentésküldés aktuális állapotának lekérése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-refresh-label",
+    "key": "guide.operator.registration.refresh.label",
+    "lang": "hu",
+    "value": "Állapot frissítése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-register-description",
+    "key": "guide.operator.registration.register.description",
+    "lang": "hu",
+    "value": "Regisztráld ezt a telepítést a megjelenített Registryben."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-register-label",
+    "key": "guide.operator.registration.register.label",
+    "lang": "hu",
+    "value": "Csatlakozás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-synchronize-measurements-description",
+    "key": "guide.operator.registration.synchronize-measurements.description",
+    "lang": "hu",
+    "value": "A függőben lévő mérési jelentések szinkronizálása."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-registration-synchronize-measurements-label",
+    "key": "guide.operator.registration.synchronize-measurements.label",
+    "lang": "hu",
+    "value": "Mérések küldése"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-revenue-close-description",
+    "key": "guide.operator.revenue.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-revenue-close-label",
+    "key": "guide.operator.revenue.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-revenue-operator-synchronize-revenue-description",
+    "key": "guide.operator.revenue.operator-synchronize-revenue.description",
+    "lang": "hu",
+    "value": "A függő bevételi jelentések küldése a kézbesítési soron keresztül."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-revenue-operator-synchronize-revenue-label",
+    "key": "guide.operator.revenue.operator-synchronize-revenue.label",
+    "lang": "hu",
+    "value": "Szinkronizálás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-revenue-overview-description",
+    "key": "guide.operator.revenue.overview.description",
+    "lang": "hu",
+    "value": "A főkönyv, elszámolások és jelentésküldés állapota. Az összegek a kijelzett pénznemhez és időszakhoz tartoznak."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-revenue-overview-label",
+    "key": "guide.operator.revenue.overview.label",
+    "lang": "hu",
+    "value": "Bevételek"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-close-description",
+    "key": "guide.operator.updates.close.description",
+    "lang": "hu",
+    "value": "Visszatérés az előző felülethez."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-close-label",
+    "key": "guide.operator.updates.close.label",
+    "lang": "hu",
+    "value": "Bezárás"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-operator-apply-update-description",
+    "key": "guide.operator.updates.operator-apply-update.description",
+    "lang": "hu",
+    "value": "Indítsd a megjelenített frissítést, és itt kövesd az állapotát."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-operator-apply-update-label",
+    "key": "guide.operator.updates.operator-apply-update.label",
+    "lang": "hu",
+    "value": "Telepítés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-operator-refresh-update-description",
+    "key": "guide.operator.updates.operator-refresh-update.description",
+    "lang": "hu",
+    "value": "Az elérhető, aláírt kiadás adatainak frissítése."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-operator-refresh-update-label",
+    "key": "guide.operator.updates.operator-refresh-update.label",
+    "lang": "hu",
+    "value": "Ellenőrzés"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-operator-rollback-update-description",
+    "key": "guide.operator.updates.operator-rollback-update.description",
+    "lang": "hu",
+    "value": "Az előző, támogatott kiadás visszaállítása, ha elérhető."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-operator-rollback-update-label",
+    "key": "guide.operator.updates.operator-rollback-update.label",
+    "lang": "hu",
+    "value": "Verzió visszaállítása"
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-overview-description",
+    "key": "guide.operator.updates.overview.description",
+    "lang": "hu",
+    "value": "Itt láthatod a telepített és elérhető verziót, a folyamat állapotát és hibáit."
+  },
+  {
+    "_id": "i18n-message-hu-guide-operator-updates-overview-label",
+    "key": "guide.operator.updates.overview.label",
+    "lang": "hu",
+    "value": "Frissítések"
+  },
+  {
+    "_id": "i18n-message-hu-notification-launcher-toggle",
+    "key": "notification.launcher.toggle",
+    "lang": "hu",
+    "value": "Értesítési gomb"
+  },
+  {
+    "_id": "i18n-message-en-notification-action-open",
+    "key": "notification.action.open",
+    "lang": "en",
+    "value": "Open"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-feedback-submitted-message",
+    "key": "notification.kind.feedback-submitted.message",
+    "lang": "en",
+    "value": "A member sent feedback."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-feedback-submitted-title",
+    "key": "notification.kind.feedback-submitted.title",
+    "lang": "en",
+    "value": "New feedback"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-node-member-joined-message",
+    "key": "notification.kind.node-member-joined.message",
+    "lang": "en",
+    "value": "A new member completed registration on this node."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-node-member-joined-title",
+    "key": "notification.kind.node-member-joined.title",
+    "lang": "en",
+    "value": "New node member"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-release-available-message",
+    "key": "notification.kind.release-available.message",
+    "lang": "en",
+    "value": "MyScoutee {releaseVersion} is available. Review it before installing."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-release-available-title",
+    "key": "notification.kind.release-available.title",
+    "lang": "en",
+    "value": "New MyScoutee version"
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-report-submitted-message",
+    "key": "notification.kind.report-submitted.message",
+    "lang": "en",
+    "value": "A report is waiting for review."
+  },
+  {
+    "_id": "i18n-message-en-notification-kind-report-submitted-title",
+    "key": "notification.kind.report-submitted.title",
+    "lang": "en",
+    "value": "New report"
+  },
+  {
+    "_id": "i18n-message-hu-notification-action-open",
+    "key": "notification.action.open",
+    "lang": "hu",
+    "value": "Megnyitás"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-feedback-submitted-message",
+    "key": "notification.kind.feedback-submitted.message",
+    "lang": "hu",
+    "value": "Egy tag visszajelzést küldött."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-feedback-submitted-title",
+    "key": "notification.kind.feedback-submitted.title",
+    "lang": "hu",
+    "value": "Új visszajelzés"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-node-member-joined-message",
+    "key": "notification.kind.node-member-joined.message",
+    "lang": "hu",
+    "value": "Egy új tag befejezte a regisztrációt ezen a node-on."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-node-member-joined-title",
+    "key": "notification.kind.node-member-joined.title",
+    "lang": "hu",
+    "value": "Új tag a node-on"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-release-available-message",
+    "key": "notification.kind.release-available.message",
+    "lang": "hu",
+    "value": "Elérhető a MyScoutee {releaseVersion}. Telepítés előtt nézd át a frissítést."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-release-available-title",
+    "key": "notification.kind.release-available.title",
+    "lang": "hu",
+    "value": "Új MyScoutee-verzió"
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-report-submitted-message",
+    "key": "notification.kind.report-submitted.message",
+    "lang": "hu",
+    "value": "Egy bejelentés ellenőrzésre vár."
+  },
+  {
+    "_id": "i18n-message-hu-notification-kind-report-submitted-title",
+    "key": "notification.kind.report-submitted.title",
+    "lang": "hu",
+    "value": "Új bejelentés"
   }
 ]

@@ -53,7 +53,55 @@ public class OperatorUpdateReleaseService {
 
     public record ReleasePage(String checkedAt, List<OperatorAnnouncementDto> items) {}
 
-    public ReleasePage releases() { return releases(null); }
+    private com.raxim.myscoutee.profile.service.notifications.RoleNotificationService notifications;
+    private com.raxim.myscoutee.common.config.properties.RegistryProperties registryProperties;
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner sessionRunner;
+
+    @Autowired
+    void setNotificationDelivery(com.raxim.myscoutee.profile.service.notifications.RoleNotificationService notifications,
+            com.raxim.myscoutee.common.config.properties.RegistryProperties registryProperties,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner sessionRunner) {
+        this.notifications = notifications;
+        this.registryProperties = registryProperties;
+        this.sessionRunner = sessionRunner;
+    }
+
+    public ReleasePage releases() {
+        ReleasePage page = releases(null);
+        notifyNewRelease(page);
+        return page;
+    }
+
+    // Discovery is bounded and independent of browser activity. Never downloads or installs a package.
+    @org.springframework.scheduling.annotation.Scheduled(initialDelayString = "PT2M", fixedDelayString = "PT6H")
+    public void checkReleaseNotifications() {
+        if (notifications == null || !Files.isRegularFile(properties.getReleasePublicKeyPath()) || !knownInstalledVersion()) return;
+        try {
+            ReleasePage page = releases(null);
+            sessionRunner.runAcrossConfiguredDatabases(() -> notifyNewRelease(page));
+        } catch (RuntimeException exception) {
+            org.slf4j.LoggerFactory.getLogger(getClass()).warn("Scheduled release notification check failed: {}", exception.getMessage());
+        }
+    }
+
+    private boolean knownInstalledVersion() {
+        if (registryProperties == null) return false;
+        try {
+            RegistryProtocol.requireSemanticVersion(registryProperties.getSoftwareVersion(), "installed version");
+            return true;
+        } catch (IllegalArgumentException exception) { return false; }
+    }
+
+    private void notifyNewRelease(ReleasePage page) {
+        if (notifications == null || !knownInstalledVersion()) return;
+        for (OperatorAnnouncementDto item : page.items()) {
+            String version = item.updateManifest().releaseVersion();
+            if (RegistryProtocol.compareSemanticVersions(RegistryProtocol.requireSemanticVersion(version, "release version"),
+                    RegistryProtocol.requireSemanticVersion(registryProperties.getSoftwareVersion(), "installed version")) > 0) {
+                notifications.releaseAvailable(version);
+            }
+        }
+    }
 
     public OperatorAnnouncementDto findVersion(String version) {
         RegistryProtocol.requireSemanticVersion(version, "rollback version");

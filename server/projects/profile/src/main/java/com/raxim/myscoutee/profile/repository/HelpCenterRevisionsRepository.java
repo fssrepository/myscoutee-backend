@@ -8,6 +8,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.profile.data.document.HelpCenterRevision;
 
 public interface HelpCenterRevisionsRepository extends MongoRepository<HelpCenterRevision, String> {
+    Optional<HelpCenterRevision> findFirstByBaseGroupIdAndDocumentTypeAndLangAndContextKeyAndActiveTrueOrderByVersionDesc(
+            String baseGroupId, String documentType, String lang, String contextKey);
+
+    boolean existsByDocumentTypeAndContextKeyAndIsSystemTrue(String documentType, String contextKey);
+
     Optional<HelpCenterRevision> findFirstByActiveTrueOrderByVersionDesc();
 
     List<HelpCenterRevision> findAllByOrderByVersionDesc();

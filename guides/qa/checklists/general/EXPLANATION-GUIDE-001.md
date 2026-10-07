@@ -6,7 +6,9 @@ to its intended control. Popup-opening transitions and unsaved editor validation
 Never save a form, send a message, join/leave an event, confirm checkout, create
 a token, or submit any other business action during this case.
 
-Current inventory: 73 explainable screen contexts and 1194 conditional catalog fields.
+Current inventory: 110 explainable screen contexts and 1331 conditional catalog fields.
+The 37 system role contexts / 136 fields are covered by
+[ROLE-GUIDES-NOTIFICATIONS-001](ROLE-GUIDES-NOTIFICATIONS-001.md).
 Runtime progress counts only the targets available on the current surface.
 The context and step inventory in
 `frontend/src/app/shared/core/local/seed/data/help-center-guide-fields.json` is
@@ -21,24 +23,14 @@ The startup commands below document the earlier Event-only fixture. Do not treat
 
 ## Operator / app-admin wiring audit — 2026-10-07
 
-**GAP: dedicated role surfaces have no step guide.** This is a read-only wiring
-audit, not a browser click-through or completed guide implementation:
-
-- Operator's floating guide launcher is excluded by the existing
-  `!isOperatorMode()` template condition.
-- Neither the operator nor app-admin page/popup components register dedicated
-  guide contexts. The runtime surface registry, field catalog and all three
-  Mongo seed copies have no `operator.*` or `admin.*` contexts/revisions.
-- The shared avatar menu registers `navigation.menu` and has seeded EN/HU
-  sections. App-admin can use that common guide when enabled, but it does not
-  cover admin-specific actions. Operator cannot reach it through the launcher.
-- The side-menu Explanations preference is omitted for both privileged roles.
-  Admin's Help/Content Editor is a guide authoring surface, not proof that its
-  own controls or other administrative surfaces have step guides.
-
-Keep these omissions separate from the registered member-surface campaign.
-No privileged workflow or guide visibility condition was changed for this audit.
-Evidence: [operator/app-admin wiring audit](../../evidence/general/EXPLANATION-GUIDE-001-20261007.md#operator--app-admin-wiring-audit).
+The earlier wiring audit found missing role contexts and excluded Operator
+launchers. MSC-118 has implemented 37 protected system contexts, shared role
+launchers/menu preferences and role notifications. Follow the dedicated
+[ROLE-GUIDES-NOTIFICATIONS-001](ROLE-GUIDES-NOTIFICATIONS-001.md) checklist and
+[development evidence](../../evidence/general/ROLE-GUIDES-NOTIFICATIONS-001-20261007.md).
+**Manual role click-through remains NOT RUN.** The prior
+[read-only audit](../../evidence/general/EXPLANATION-GUIDE-001-20261007.md#operator--app-admin-wiring-audit)
+remains historical evidence of the original gap.
 
 ## Historical Event-only profiles
 
@@ -95,7 +87,8 @@ open that surface, then inspect the guide through the managed profile. Codex may
 5. Click popup-opening controls to verify that the guide transfers to the new surface. An ordinary action, shade click, Escape or system Back ends the guide first. Subsequent Back closes a submenu, then its parent popup or side menu. Never submit a business action.
 6. Repeat at 390×844 and 1280×900; exercise a short mobile viewport for nested menus. Text must fit within five lines. Open menus must be highlighted and scrollable, with their guide card visible. Menus must not repeatedly reopen between adjacent steps.
 7. Verify Rates and Home have separate slider and Save/Go steps; copy explicitly names the slider and when the value is committed. Verify photo link-copy/remove, gallery navigation, status badges and popup-opening image badges.
-8. Admin Content Editor must expose every registered context. Verify active compact tour defaults and EN/HU field/section parity in frontend-local and all three Mongo seeds. Phone Chrome and the installed PWA must preserve the same Back priority; installation is separately user-authorized.
+8. Admin Content Editor must expose registered editable contexts and exclude
+   `isSystem` contexts. System guides still load normally on their own surfaces. Verify active compact tour defaults and EN/HU field/section parity in frontend-local and all three Mongo seeds. Phone Chrome and the installed PWA must preserve the same Back priority; installation is separately user-authorized.
 9. On the landing article popup and any other surface without a usable guide,
    click Guide: show a persistent, compact, centered guide-style message,
    EN “There is no guide for this screen.” / HU “Ehhez a felülethez nincs
