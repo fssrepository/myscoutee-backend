@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.platform.service;
 
 import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
-import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentCredentialResolver;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -78,7 +77,7 @@ public class DeploymentConfigurationCrypto implements com.raxim.myscoutee.domain
             DeploymentConfiguration.Payment payment = configuration.getPayment();
             if (payment != null && payment.getCredentialEnvelope() != null) {
                 verify(
-                        DeploymentPaymentCredentialResolver.credentialPurpose(
+                        com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose(
                                 payment.getProviderId()),
                         payment.getCredentialEnvelope());
             }

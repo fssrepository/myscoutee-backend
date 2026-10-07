@@ -56,7 +56,9 @@ class PaymentMethodExpiryTaskServiceTest {
                 eq("Scanning expired saved payment cards."),
                 eq("payment-method-expiry-task"),
                 any(Instant.class))).thenReturn(rule);
-        when(scope.findOwned(any(org.springframework.data.mongodb.core.query.Query.class), eq(SavedPaymentMethod.class), eq("userId"))).thenReturn(List.of(method), List.of());
+        var jobs = mock(PaymentJobQueries.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "paymentJobs", jobs);
+        when(jobs.find(any(org.springframework.data.mongodb.core.query.Query.class), eq(SavedPaymentMethod.class), any())).thenReturn(List.of(method), List.of());
         when(repository.markExpired(eq("payment-method-1"), eq("user-1"), anyString())).thenReturn(1L);
 
         service.markExpiredAndNotify();

@@ -23,4 +23,5 @@ public interface MemberDirectory {
         String getUpdatedDate();
         String getUpdatedUser(); String getUserId(); String getRole(); String getStatus(); }
     List<? extends Member> findAcceptedByOwnerTypeOwnerIdInAndUserId(String type, java.util.Collection<String> ids, String userId, String status);
+    com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto vipPricingOffer(String sourceId, String userId);
 }

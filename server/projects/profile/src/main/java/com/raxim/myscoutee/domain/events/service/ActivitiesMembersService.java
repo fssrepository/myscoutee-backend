@@ -6,8 +6,8 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.payments.service.PaymentService;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
+import com.raxim.myscoutee.domain.payments.api.EventPayments;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
@@ -68,7 +68,7 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
-public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.MemberAudience {
+public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.CheckoutMemberships, com.raxim.myscoutee.domain.events.api.MemberAudience {
     @org.springframework.beans.factory.annotation.Autowired
     private JobGroupScopeService jobGroupScope;
 
@@ -128,8 +128,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final Assets assetsService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
-    private final EventCheckoutBasketService eventCheckoutBasketService;
-    private final PaymentService paymentService;
+    private final CheckoutBaskets eventCheckoutBasketService;
+    private final EventPayments paymentService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
@@ -150,8 +150,8 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             Assets assetsService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
-            EventCheckoutBasketService eventCheckoutBasketService,
-            PaymentService paymentService,
+            CheckoutBaskets eventCheckoutBasketService,
+            EventPayments paymentService,
             EventInviteNotificationService eventInviteNotificationService,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,

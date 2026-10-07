@@ -20,7 +20,7 @@ import com.raxim.myscoutee.domain.payments.dto.PaymentDtos.PaymentMethodRegistra
 import com.raxim.myscoutee.domain.payments.dto.PaymentDtos.PaymentMethodRegistrationCallbackDto;
 import com.raxim.myscoutee.domain.payments.dto.PaymentDtos.PaymentMethodRegistrationRequestDto;
 import com.raxim.myscoutee.domain.payments.dto.PaymentDtos.SavedPaymentMethodsPageDto;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.payments.service.SavedPaymentMethodsService;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient;
 import com.raxim.myscoutee.domain.payments.service.PaymentRefundService;
@@ -29,13 +29,13 @@ import com.raxim.myscoutee.domain.payments.service.PaymentRefundService;
 @RequestMapping("/payment-methods")
 public class SavedPaymentMethodsController {
     private final SavedPaymentMethodsService service;
-    private final HomeUserProfileService homeUserProfileService;
+    private final SelectedProfile homeUserProfileService;
     private final PaymentSimulatorRegistrationClient simulatorClient;
     private final PaymentRefundService paymentRefundService;
 
     public SavedPaymentMethodsController(
             SavedPaymentMethodsService service,
-            HomeUserProfileService homeUserProfileService,
+            SelectedProfile homeUserProfileService,
             PaymentSimulatorRegistrationClient simulatorClient,
             PaymentRefundService paymentRefundService) {
         this.service = service;

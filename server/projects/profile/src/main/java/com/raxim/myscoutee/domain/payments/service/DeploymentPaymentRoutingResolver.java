@@ -10,21 +10,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
 public class DeploymentPaymentRoutingResolver {
-    private final DeploymentConfigurationRepository repository;
+    private final DeploymentSettings repository;
     private final boolean simulatorEnabled;
     private final String simulatorApplicationBaseUrl;
     private final String simulatorBarionMerchantAccount;
 
     @Autowired
     public DeploymentPaymentRoutingResolver(
-            DeploymentConfigurationRepository repository,
+            DeploymentSettings repository,
             @Value("${payment.simulator.enabled:false}") boolean simulatorEnabled,
             @Value("${payment.simulator.applicationBaseUrl:}") String simulatorApplicationBaseUrl,
             @Value("${payment.simulator.barionMerchantAccount:}") String simulatorBarionMerchantAccount) {
@@ -35,7 +35,7 @@ public class DeploymentPaymentRoutingResolver {
     }
 
     DeploymentPaymentRoutingResolver(
-            DeploymentConfigurationRepository repository) {
+            DeploymentSettings repository) {
         this(repository, false, "", "");
     }
 
@@ -58,11 +58,11 @@ public class DeploymentPaymentRoutingResolver {
                             ? simulatorBarionMerchantAccount
                             : null);
         }
-        DeploymentConfiguration configuration = repository
-                .findById(DeploymentConfiguration.SINGLETON_ID)
+        Configuration configuration = repository
+                .findById(DeploymentSettings.SINGLETON_ID)
                 .orElseThrow(() -> unavailable(
                         "Deployment payment routing is unavailable."));
-        DeploymentConfiguration.Payment payment = configuration.getPayment();
+        DeploymentSettings.Payment payment = configuration.getPayment();
         if (payment == null
                 || !normalizedProvider.equals(normalize(payment.getProviderId()))) {
             throw unavailable(

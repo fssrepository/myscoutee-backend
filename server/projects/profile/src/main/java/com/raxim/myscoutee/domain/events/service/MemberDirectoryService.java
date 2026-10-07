@@ -17,4 +17,10 @@ public class MemberDirectoryService implements MemberDirectory {
     @Override public java.util.List<ActivityMember> findByOwnerTypeAndOwnerIdIn(String type, java.util.Collection<String> ids) { return members.findByOwnerTypeAndOwnerIdIn(type, ids); }
     @Override public java.util.List<ActivityMember> findAll() { return members.findAll(); }
     @Override public List<ActivityMember> findAcceptedByOwnerTypeOwnerIdInAndUserId(String type, java.util.Collection<String> ids, String userId, String status) { return members.findAcceptedByOwnerTypeOwnerIdInAndUserId(type, ids, userId, status); }
+    @Override public com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto vipPricingOffer(String sourceId, String userId) {
+        return members.findByOwnerTypeAndOwnerIdAndUserId("event", sourceId, userId)
+                .filter(EventVipInvitation::eligible).map(ActivityMember::getEventVipOfferedPricing)
+                .filter(pricing -> !Boolean.FALSE.equals(pricing.enabled()) && pricing.audience() != null
+                        && Boolean.TRUE.equals(pricing.audience().enabled()) && pricing.audience().vipPrice() != null).orElse(null);
+    }
 }

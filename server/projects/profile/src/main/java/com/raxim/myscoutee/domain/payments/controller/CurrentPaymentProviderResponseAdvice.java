@@ -8,14 +8,11 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.raxim.myscoutee.domain.events.controller.ActivitiesEventsController;
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderResponse;
 import com.raxim.myscoutee.domain.payments.service.CurrentPaymentProviderService;
 import com.raxim.myscoutee.domain.payments.service.CurrentPaymentProviderService.Snapshot;
 
-@RestControllerAdvice(assignableTypes = {
-        ActivitiesEventsController.class,
-        PaymentRestController.class
-})
+@RestControllerAdvice(assignableTypes = PaymentProviderResponse.class)
 public class CurrentPaymentProviderResponseAdvice implements ResponseBodyAdvice<Object> {
     private final CurrentPaymentProviderService currentPaymentProviderService;
 
@@ -29,8 +26,7 @@ public class CurrentPaymentProviderResponseAdvice implements ResponseBodyAdvice<
             MethodParameter returnType,
             Class<? extends HttpMessageConverter<?>> converterType) {
         Class<?> controllerType = returnType.getContainingClass();
-        return ActivitiesEventsController.class.isAssignableFrom(controllerType)
-                || PaymentRestController.class.isAssignableFrom(controllerType);
+        return PaymentProviderResponse.class.isAssignableFrom(controllerType);
     }
 
     @Override

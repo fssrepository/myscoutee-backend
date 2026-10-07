@@ -27,6 +27,20 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 class MongoConverterConfigTest {
     @Test
     @org.junit.jupiter.api.Tag("standard")
+    void affiliateAttributionReloadsAsRootAndEmbeddedValueWithoutATypeDiscriminator() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration("member", "owner", "code", "now");
+        var document = new Document(); converter.write(value, document);
+        assertThat(document.getString("_class")).isEqualTo("com.raxim.myscoutee.profile.data.document.AffiliateRegistration");
+        assertThat(converter.read(Object.class, document)).isEqualTo(value);
+        var user = new Users(); user.setUserId("member"); user.setAffiliateRegistration(value);
+        var profile = new Document(); converter.write(user, profile);
+        profile.get("affiliateRegistration", Document.class).remove("_class");
+        assertThat(converter.read(Users.class, profile).getAffiliateRegistration()).isEqualTo(value);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
     void assetValuesRetainTheirHistoricalStoredIdentities() {
         var converter = domainConverter();
         var booking = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(

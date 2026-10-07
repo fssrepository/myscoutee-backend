@@ -171,7 +171,7 @@ class ActivitiesEventsServiceTest {
     @BeforeEach
     void setUp() {
         lenient().when(eventCheckoutBasketService.loadCardStatesByEvent(anyString(), anyList()))
-                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
+                .thenReturn(new com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of()));
         service = new ActivitiesEventsService(
                 campaigns,
                 activityEventsRepository,
@@ -2757,7 +2757,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
                 .thenReturn(List.of(canonical, suppressed));
         when(eventCheckoutBasketService.loadCardStatesByEvent("viewer", List.of("watched-event")))
-                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
+                .thenReturn(new com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -2823,7 +2823,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(List.of("shared-event")))
                 .thenReturn(List.of(canonical, otherMemberTrash));
         when(eventCheckoutBasketService.loadCardStatesByEvent("riley", List.of("shared-event")))
-                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
+                .thenReturn(new com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "riley", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));

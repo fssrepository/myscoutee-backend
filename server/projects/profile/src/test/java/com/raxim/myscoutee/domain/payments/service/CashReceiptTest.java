@@ -28,6 +28,8 @@ class CashReceiptTest {
     private final CashReceiptRequestDto request = new CashReceiptRequestDto(
             "b5e0289c-1b09-47ca-8ba1-20cf5e2dcb02", "payer", 20D, "EUR", "Lunch");
 
+    @org.junit.jupiter.api.BeforeEach void wireOwners() { PaymentTestSupport.wire(service, mongo); }
+
     @org.junit.jupiter.params.ParameterizedTest
     @org.junit.jupiter.params.provider.ValueSource(strings={"cash","bank-transfer"})
     void receiptPersistsBothPartiesAndNoteAndRetriesDoNotAddAnotherPayment(String method) {

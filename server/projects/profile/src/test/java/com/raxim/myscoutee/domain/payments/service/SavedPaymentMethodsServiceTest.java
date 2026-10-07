@@ -46,9 +46,9 @@ class SavedPaymentMethodsServiceTest {
         when(payments.findByUserIdOrderByCreatedDateDesc("payer-group")).thenReturn(List.of(payment));
         when(payments.findByRecipientUserIdOrderByCreatedDateDesc("asset-owner")).thenReturn(List.of(payment));
         SavedPaymentMethodsService service = new SavedPaymentMethodsService(
-                mock(SavedPaymentMethodsRepository.class), mock(PaymentMethodRegistrationsRepository.class),
-                payments, mock(PaymentSimulatorRegistrationClient.class),
-                mock(DeploymentPaymentProviderResolver.class), mock(UsersRepository.class));
+                mock(SavedPaymentMethodsRepository.class),  mock(PaymentMethodRegistrationsRepository.class),
+                payments,  mock(PaymentSimulatorRegistrationClient.class),
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
         assertThat(service.queryHistory("payer-group", "all", 0, 20).items()).singleElement().satisfies(item -> {
             assertThat(item.id()).isEqualTo("asset-payment");
             assertThat(item.direction()).isEqualTo("expense");
@@ -92,8 +92,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class),
-                mock(UsersRepository.class));
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
 
         service.delete("user-1", "pm-1");
 
@@ -128,8 +127,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class),
-                mock(UsersRepository.class));
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
 
         service.delete("user-1", "pm-1");
 
@@ -159,17 +157,16 @@ class SavedPaymentMethodsServiceTest {
                 registrations,
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class),
-                mock(UsersRepository.class));
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
 
         when(simulator.configuration()).thenReturn(
-                new PaymentSimulatorRegistrationClient.GatewayConfiguration("none", false, true, ""));
+                new com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration("none", false, true, ""));
         var cashOnlyPage = service.queryPage("user-1", 0, 6);
         assertThat(cashOnlyPage.canAdd()).isFalse();
         assertThat(cashOnlyPage.currentProvider()).isEqualTo("none");
 
         when(simulator.configuration()).thenReturn(
-                new PaymentSimulatorRegistrationClient.GatewayConfiguration(
+                new com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration(
                         "stripe", true, true, "sk_test_generated"));
         var stripePage = service.queryPage("user-1", 0, 6);
         assertThat(stripePage.canAdd()).isTrue();
@@ -187,7 +184,7 @@ class SavedPaymentMethodsServiceTest {
         SavedPaymentMethod selectable = paymentMethod("selectable", "stripe", "active", 202912, "2026-09-06T00:00:00Z");
         when(simulator.isEnabled()).thenReturn(true);
         when(simulator.configuration()).thenReturn(
-                new PaymentSimulatorRegistrationClient.GatewayConfiguration(
+                new com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration(
                         "stripe", true, true, "sk_test_generated"));
         when(registrations.findByUserIdAndStatusOrderByCreatedAtIsoDesc("user-1", "pending"))
                 .thenReturn(List.of());
@@ -202,8 +199,7 @@ class SavedPaymentMethodsServiceTest {
                 registrations,
                 mock(PaymentsRepository.class),
                 simulator,
-                mock(DeploymentPaymentProviderResolver.class),
-                mock(UsersRepository.class));
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)));
 
         assertThat(service.queryPage("user-1", 0, 6).items())
                 .extracting(item -> item.id())
@@ -277,8 +273,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 payments,
                 mock(PaymentSimulatorRegistrationClient.class),
-                mock(DeploymentPaymentProviderResolver.class),
-                users);
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
 
         var payerPage = service.queryHistory("nova", "all", 0, 20);
         assertThat(payerPage.pendingRefundCount()).isZero();
@@ -359,8 +354,7 @@ class SavedPaymentMethodsServiceTest {
                 mock(PaymentMethodRegistrationsRepository.class),
                 payments,
                 mock(PaymentSimulatorRegistrationClient.class),
-                mock(DeploymentPaymentProviderResolver.class),
-                users);
+                mock(DeploymentPaymentProviderResolver.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users));
 
         var all = service.queryHistory("riley", "all", 0, 20);
         assertThat(all.spendingTotals()).containsEntry("HUF", 3200D);

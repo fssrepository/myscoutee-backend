@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.payments.service.AffiliateService;
+import com.raxim.myscoutee.domain.payments.api.Affiliates;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,11 +18,11 @@ public class IntegrationSettingsService {
     private final IntegrationTokenService tokens;
     private final McpAuthorizationService mcp;
     private final UsersRepository users;
-    private final AffiliateService affiliates;
+    private final Affiliates affiliates;
     private final IntegrationPublicEndpointResolver endpoint;
 
     public IntegrationSettingsService(IntegrationTokenService tokens, McpAuthorizationService mcp,
-            UsersRepository users, AffiliateService affiliates, IntegrationPublicEndpointResolver endpoint) {
+            UsersRepository users, Affiliates affiliates, IntegrationPublicEndpointResolver endpoint) {
         this.tokens = tokens; this.mcp = mcp; this.users = users;
         this.affiliates = affiliates; this.endpoint = endpoint;
     }

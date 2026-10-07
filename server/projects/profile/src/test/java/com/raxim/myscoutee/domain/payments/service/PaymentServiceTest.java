@@ -356,9 +356,7 @@ class PaymentServiceTest {
         RecordingPaymentProcessor stripe = new RecordingPaymentProcessor("stripe");
         ActivityEventsRepository eventsRepository = org.mockito.Mockito.mock(ActivityEventsRepository.class);
         when(eventsRepository.findBySourceId("asset-1")).thenReturn(List.of());
-        EventCheckoutPricingService pricingService = new EventCheckoutPricingService(
-                eventsRepository,
-                org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class),
+        EventCheckoutPricingService pricingService = new EventCheckoutPricingService(new com.raxim.myscoutee.domain.events.service.EventOwnershipService(eventsRepository), new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository.class)),
                 org.mockito.Mockito.mock(TranslationService.class));
         PaymentService service = new PaymentService(
                 List.of(stripe),

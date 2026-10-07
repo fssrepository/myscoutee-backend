@@ -15,9 +15,9 @@ import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
-import com.raxim.myscoutee.domain.payments.service.PaymentService;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
+import com.raxim.myscoutee.domain.payments.api.CheckoutPricing;
+import com.raxim.myscoutee.domain.payments.api.EventPayments;
 import java.util.Map;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
 
@@ -89,7 +89,7 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotsQueryDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChangeRequestDto;
-import com.raxim.myscoutee.domain.payments.document.Payment;
+import com.raxim.myscoutee.domain.payments.api.PaymentView;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDto;
@@ -147,7 +147,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.FeedEvents {
+public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents {
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -198,9 +198,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
-    private final PaymentService paymentService;
-    private final EventCheckoutBasketService eventCheckoutBasketService;
-    private final EventCheckoutPricingService eventCheckoutPricingService;
+    private final EventPayments paymentService;
+    private final CheckoutBaskets eventCheckoutBasketService;
+    private final CheckoutPricing eventCheckoutPricingService;
     private final ScheduledMessages scheduledMessageTaskService;
     private final AffinityScores absoluteAffinityService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
@@ -237,9 +237,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             ActivitiesMembersService activitiesMembersService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
-            PaymentService paymentService,
-            EventCheckoutBasketService eventCheckoutBasketService,
-            EventCheckoutPricingService eventCheckoutPricingService,
+            EventPayments paymentService,
+            CheckoutBaskets eventCheckoutBasketService,
+            CheckoutPricing eventCheckoutPricingService,
             ScheduledMessages scheduledMessageTaskService,
             AffinityScores absoluteAffinityService,
             AffinityStatusChanges affinityRecomputeTaskService,
@@ -532,7 +532,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                     .filter(StringUtils::hasText)
                     .forEach(trackedSourceIds::add);
         }
-        EventCheckoutBasketService.CheckoutCardStates checkoutStates = checkoutCardStates(viewer == null ? null : viewer.userId(), scopedEvents);
+        CheckoutBaskets.CheckoutCardStates checkoutStates = checkoutCardStates(viewer == null ? null : viewer.userId(), scopedEvents);
         Map<String, String> checkoutResultStatesBySourceId = checkoutStates.resultStates();
         return new EventQueryContext(
                 scopedEvents,
@@ -3411,7 +3411,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
     }
 
-    public EventParticipationActionResultDto finalizeAuthorizedPayment(Payment payment) {
+    public EventParticipationActionResultDto finalizeAuthorizedPayment(com.raxim.myscoutee.domain.payments.api.PaymentView payment) {
         if (payment == null || !StringUtils.hasText(payment.getCheckoutSessionId())) {
             return null;
         }
@@ -5768,10 +5768,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return List.of();
         }
         EventQueryContext current = ACTIVE_CONTEXT.get();
-        EventCheckoutBasketService.CheckoutCardStates checkoutStates = current != null
+        CheckoutBaskets.CheckoutCardStates checkoutStates = current != null
                 && current.checkoutResultStatesBySourceId() != null
                 && !current.checkoutResultStatesBySourceId().isEmpty()
-                        ? new EventCheckoutBasketService.CheckoutCardStates(current.checkoutResultStatesBySourceId(),
+                        ? new CheckoutBaskets.CheckoutCardStates(current.checkoutResultStatesBySourceId(),
                                 current.checkoutPendingReasonsBySourceId())
                         : checkoutCardStates(viewer == null ? null : viewer.userId(), hydratedRecords);
         Map<String, String> checkoutResultStatesBySourceId = checkoutStates.resultStates();
@@ -5827,12 +5827,12 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                 .orElse("");
     }
 
-    private EventCheckoutBasketService.CheckoutCardStates checkoutCardStates(
+    private CheckoutBaskets.CheckoutCardStates checkoutCardStates(
             String userId,
             List<ActivityEvent> records) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
-            return new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of());
+            return new CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of());
         }
         List<String> sourceIds = records.stream()
                 .map(ActivityEvent::getSourceId)

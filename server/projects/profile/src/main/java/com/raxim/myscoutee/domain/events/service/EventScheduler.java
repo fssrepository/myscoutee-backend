@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.affinity.api.CampaignGraphs;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
@@ -116,7 +116,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private final ActivityTournamentGroupCounterService activityTournamentGroupCounterService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final EventCounterExpiryService eventCounterExpiryService;
-    private final EventCheckoutBasketService eventCheckoutBasketService;
+    private final CheckoutBaskets eventCheckoutBasketService;
     private final ChatService chatService;
     private final NotificationJobs notificationRuleRegistryService;
     private final PlatformParametersService platformParametersService;
@@ -153,7 +153,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             ActivityTournamentGroupCounterService activityTournamentGroupCounterService,
             EventInviteNotificationService eventInviteNotificationService,
             EventCounterExpiryService eventCounterExpiryService,
-            EventCheckoutBasketService eventCheckoutBasketService,
+            CheckoutBaskets eventCheckoutBasketService,
             ChatService chatService,
             NotificationJobs notificationRuleRegistryService,
             PlatformParametersService platformParametersService,
@@ -856,7 +856,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
         AtomicInteger observedQueries = new AtomicInteger(1);
         publishRandomProgress(progressConsumer, 0, 0, events.size(), 0, observedQueries.get(), "Loaded " + events.size() + " event record(s).");
-        
+
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Map<String, Set<String>> existingTournamentUserIdsByEventId = new LinkedHashMap<>();
@@ -965,7 +965,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 return;
             }
             FGraph eventGraph = eventGraph(event, graph, campaignGraphs, tournamentUserIds, priorityOffGroups);
-            
+
             if (eventGraph.getNodes().isEmpty()) return;
 
             // Standard for-loop inside the lambda, so we use 'continue' here
@@ -973,7 +973,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             for (int subEventIndex = 0; subEventIndex < subEvents.size(); subEventIndex += 1) {
                 SubEventItem subEvent = subEvents.get(subEventIndex);
                 String subEventId = normalizeId(subEvent == null ? null : subEvent.id());
-                if (!StringUtils.hasText(subEventId)) continue; 
+                if (!StringUtils.hasText(subEventId)) continue;
                 int currentSubEvent = processedSubEvents.get() + 1;
                 publishRandomProgress(
                         progressConsumer,
@@ -1013,7 +1013,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
 
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
                         eventId, subEventId, subEvent, stageEligibleUserIds, true, "random", observedQueries, eventDocumentsById);
-                        
+
                 if (targets.isEmpty()) {
                     int processedSubEvent = processedSubEvents.incrementAndGet();
                     publishRandomProgress(
@@ -1026,7 +1026,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                             "Skipped sub-event " + processedSubEvent + "/" + totalSubEvents + "; no target groups.");
                     continue;
                 }
-                
+
                 List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
                         event,
                         stageGraph,
@@ -1038,7 +1038,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                         requireExactTargetCoverage,
                         includeAllAcceptedMembers && requireExactTargetCoverage,
                         beforeRoomNotifications);
-                        
+
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
                 int processedSubEvent = processedSubEvents.incrementAndGet();
@@ -1069,7 +1069,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         }));
         publishRandomProgress(progressConsumer, 96, snapshotsByEventId.size(), snapshotsByEventId.size(), requiredUserIds.size(),
                 observedQueries.get(), "Finalizing random event groups after " + observedQueries.get() + " backend lookup(s).");
-        
+
         return plans;
     }
 
@@ -1133,7 +1133,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                     .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
                     .toList();
         }
-        
+
         Set<String> priorityOffGroups = priorityOffGroups(events);
         events = events.stream().filter(event -> !priorityOffGroups.contains(normalizeId(event.getWorkspaceGroupId()))).toList();
         if (events.isEmpty()) return List.of();
@@ -1141,18 +1141,18 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
-        
+
         for (ActivityEvent event : events) {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) {
                 continue;
             }
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) continue;
-            
+
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
             snapshotsByEventId.put(eventId, snapshot);
             requiredUserIds.add(normalizeId(event.getCreatorUserId()));
-            
+
             if (snapshot != null) {
                 requiredUserIds.addAll(snapshot.acceptedMemberUserIds());
                 requiredUserIds.addAll(snapshot.pendingMemberUserIds());
@@ -1178,16 +1178,16 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
         events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) return;
-            
+
             String eventId = normalizeId(event.getSourceId());
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
-            
+
             int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
             int reservedInvitations = reservedInvitationCount(snapshot);
             int openSpots = Math.max(
                     0,
                     safeCount(event.getCapacityTotal()) - acceptedMembers - reservedInvitations);
-            
+
             if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
             Set<String> lockedUserIds = new LinkedHashSet<>();
@@ -1206,7 +1206,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                         .filter(StringUtils::hasText)
                         .forEach(lockedUserIds::add);
             }
-            
+
             FGraph eventGraph = StringUtils.hasText(event.getCampaignId())
                     ? campaignGraphs.getOrDefault(event.getCampaignId(), new FGraph()) : graph;
             Set<String> candidateUserIds = new LinkedHashSet<>(eventGraph.getNodes().keySet());
@@ -1219,25 +1219,25 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
 
             InviteBatchPlan plan = eventGeneratorByPriority.generate(new PriorityGeneratorRequest(
                     eventId, eventGraph, candidateUserIds, lockedUserIds, Range.of(openSpots, openSpots), List.of(), true, 0d));
-                    
+
             if (plan.invitedUserIds().isEmpty()) return;
 
             // These DB writes now execute concurrently across cores
             List<String> persistedInviteUserIds = activitiesMembersService.inviteUsers(
                     eventId, resolveInviterUserId(event), plan.invitedUserIds(), event);
-                    
+
             if (!persistedInviteUserIds.isEmpty()) {
                 recordPlanMarker("priority", MARKER_ACTION_INVITE_BATCH, eventId, eventId, persistedInviteUserIds);
                 eventInviteNotificationService.notifyInvitees(
                         event,
                         persistedInviteUserIds,
                         resolveInviterUserId(event));
-                
+
                 // Thread-safe addition
                 plans.add(new InviteBatchPlan(eventId, persistedInviteUserIds));
             }
         }));
-        
+
         return plans;
     }
 
@@ -1283,22 +1283,22 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 .filter(this::shouldReviewTournamentStages)
                 .filter(event -> !advancementOnly || hasFinalizedTournamentTransition(event))
                 .toList();
-        
+
         // --- PHASE 1: PRE-FETCH (Runs Sequentially) ---
         // Gather all users and snapshots up front to eliminate N+1 database queries
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Map<String, Set<String>> existingTournamentUserIdsByEventId = new LinkedHashMap<>();
         Set<String> allRequiredUserIds = new LinkedHashSet<>();
-        
+
         for (ActivityEvent event : events) {
             if (event == null || event.getSubEvents() == null) continue;
-            
+
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) continue;
-            
+
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
             snapshotsByEventId.put(eventId, snapshot);
-            
+
             if (snapshot != null && snapshot.acceptedMemberUserIds() != null) {
                 allRequiredUserIds.addAll(snapshot.acceptedMemberUserIds());
             }
@@ -1306,7 +1306,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             existingTournamentUserIdsByEventId.put(eventId, existingTournamentUserIds);
             allRequiredUserIds.addAll(existingTournamentUserIds);
         }
-        
+
         Set<String> priorityOffGroups=priorityOffGroups(events);
         FGraph globalGraph=allRequiredUserIds.isEmpty()||events.stream().allMatch(e->priorityOffGroups.contains(normalizeId(e.getWorkspaceGroupId())))
             ? participantGraph(allRequiredUserIds):buildGraphSnapshot(allRequiredUserIds);
@@ -1319,17 +1319,17 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             if (event == null || event.getSubEvents() == null || !shouldReviewTournamentStages(event)) {
                 return;
             }
-            
+
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) return;
-            
+
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
             Set<String> acceptedUserIds = snapshot == null
                     ? new LinkedHashSet<>()
                     : new LinkedHashSet<>(normalizeUserIds(snapshot.acceptedMemberUserIds()));
             Set<String> tournamentUserIds = new LinkedHashSet<>(acceptedUserIds);
             tournamentUserIds.addAll(existingTournamentUserIdsByEventId.getOrDefault(eventId, Set.of()));
-            
+
             FGraph eventGraph = tournamentUserIds.isEmpty()
                     ? new FGraph()
                     : eventGraph(event, globalGraph, campaignGraphs, tournamentUserIds, priorityOffGroups);
@@ -1347,15 +1347,15 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 }
 
                 String subEventId = normalizeId(subEvent.id());
-                
+
                 activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId);
                 EventLeaderboardStateDto state = activitiesEventLeaderboardService.queryState(eventId, subEventId);
-                
+
                 if (state == null) {
                     logDiagnostic("score", eventId, subEventId, "Leaderboard state lookup returned no data.");
-                    continue; 
+                    continue;
                 }
-                
+
                 if (state.groups().stream().anyMatch(group -> !group.advancingMemberIds().isEmpty())) {
                     states.add(state); // Thread-safe addition
                 }
@@ -2764,18 +2764,18 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         return userIds.stream()
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
-                .distinct() 
+                .distinct()
                 .toList();
     }
 
     private List<String> mergeUserIds(Collection<String> left, Collection<String> right) {
         if (left == null) left = List.of();
         if (right == null) right = List.of();
-        
+
         // OPTIMIZATION: LinkedHashSet guarantees O(1) inserts while preventing duplicates
         Set<String> merged = new LinkedHashSet<>(normalizeUserIds(left));
         merged.addAll(normalizeUserIds(right));
-        
+
         return merged.stream().sorted().toList();
     }
 
@@ -2814,10 +2814,10 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(normalized.getBytes(StandardCharsets.UTF_8));
-            
+
             // OPTIMIZATION: Replaces the slow, memory-heavy String.format loop
             return java.util.HexFormat.of().formatHex(hash);
-            
+
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("Missing SHA-256 support for scheduler plan markers.", exception);
         }

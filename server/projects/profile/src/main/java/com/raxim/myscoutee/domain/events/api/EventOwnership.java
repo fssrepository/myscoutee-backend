@@ -11,6 +11,13 @@ public interface EventOwnership {
     java.util.List<? extends Event> findAll();
     List<? extends Event> findBySourceId(String sourceId);
     interface Event {
+        String getOrganizerUserId();
+        com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto getPricing();
+        Boolean getPaymentDeadlineEnabled(); Integer getPaymentDeadlineHours(); String getCancelledAtIso();
+        String getParentEventId(); Boolean getGenerated(); String getEventType(); String getSlotTemplateId();
+        java.util.List<com.raxim.myscoutee.common.dto.SharedDtos.EventSlotOccurrenceDto> getUpcomingSlots();
+        java.util.List<com.raxim.myscoutee.common.dto.SharedDtos.EventSlotTemplateDto> getSlotTemplates();
+        java.util.List<com.raxim.myscoutee.common.dto.SharedDtos.SubEventDefinitionDto> getSubEventDefinitions();
         Boolean getIsAdmin(); String getCreatorName(); String getCreatorInitials(); Double getDistanceKm(); String getEndAtIso();
         String getTimeframe(); String getImageUrl(); String getSourceLink(); Boolean getPublished();
         String getCampaignId();

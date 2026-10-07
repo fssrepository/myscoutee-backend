@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
 import com.raxim.myscoutee.domain.groups.api.Groups;
-import com.raxim.myscoutee.domain.payments.service.AffiliateService;
+import com.raxim.myscoutee.domain.payments.api.Affiliates;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -48,7 +48,7 @@ public class IntegrationParticipantInviteService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.accounts.repository.UsersRepository users;
     @org.springframework.beans.factory.annotation.Autowired
-    private AffiliateService affiliates;
+    private Affiliates affiliates;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
     private ActivitiesEventsService eventActions;

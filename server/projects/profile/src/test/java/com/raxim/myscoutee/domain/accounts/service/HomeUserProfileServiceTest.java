@@ -251,7 +251,7 @@ class HomeUserProfileServiceTest {
 
     @Test
     void newProfileCarriesReferralIntoSavedProfileAndAudit() {
-        var referral = new com.raxim.myscoutee.domain.payments.document.AffiliateRegistration(
+        var referral = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration(
                 "new-member", "referrer", "code", "2026-09-22T00:00:00Z");
         when(usersRepository.findByUserId("new-member")).thenReturn(Optional.empty());
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -274,7 +274,7 @@ class HomeUserProfileServiceTest {
     @Test
     void retryAfterAuditFailureKeepsOriginalAttribution() {
         Users existing = projectedUser("active", 0d);
-        var referral = new com.raxim.myscoutee.domain.payments.document.AffiliateRegistration(
+        var referral = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration(
                 "active", "original-referrer", "original-code", "2026-09-22T00:00:00Z");
         existing.setAffiliateRegistration(referral);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(existing));

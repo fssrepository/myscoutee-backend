@@ -1,8 +1,9 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates;
+import com.raxim.myscoutee.domain.events.api.CheckoutMemberships;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -37,9 +38,11 @@ import com.raxim.myscoutee.domain.payments.repository.EventCheckoutBasketItemsRe
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.payments.api.CheckoutResults {
+public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.payments.api.CheckoutResults, com.raxim.myscoutee.domain.payments.api.CheckoutBaskets {
+    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCheckoutBasketService.class);
     private static final List<String> ACTIVE_STATUSES = List.of("draft", "confirmed", "waiting", "approval-pending", "approved", "pay");
@@ -53,7 +56,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
     private final EventCheckoutBasketItemsRepository repository;
     private final MongoTemplate mongoTemplate;
     private final NotificationJobs notificationRuleRegistryService;
-    private final org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService;
+    private final org.springframework.beans.factory.ObjectProvider<CheckoutMemberships> membersService;
     private final EventCheckoutPricingService checkoutPricing;
     private final java.util.concurrent.ConcurrentMap<String, AtomicBoolean> processingByGroup = new java.util.concurrent.ConcurrentHashMap<>();
 
@@ -61,7 +64,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
             EventCheckoutBasketItemsRepository repository,
             MongoTemplate mongoTemplate,
             NotificationJobs notificationRuleRegistryService,
-            org.springframework.beans.factory.ObjectProvider<ActivitiesMembersService> membersService,
+            org.springframework.beans.factory.ObjectProvider<CheckoutMemberships> membersService,
             EventCheckoutPricingService checkoutPricing) {
         this.membersService = membersService;
         this.checkoutPricing = checkoutPricing;
@@ -137,7 +140,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
                         .toList()));
     }
 
-    public record CheckoutCardStates(Map<String, String> resultStates, Map<String, String> pendingReasons) {}
+
 
     public Map<String, String> loadResultStatesByEvent(String userId, Collection<String> sourceIds) {
         return loadCardStatesByEvent(userId, sourceIds).resultStates();
@@ -536,7 +539,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
                     Criteria.where("expiresAtIso").exists(true).nin("", null),
                     Criteria.where("expiresAtIso").lte(nowIso)));
             List<EventCheckoutBasketItem> dueItems = JobGroupContext.isActive()
-                    ? jobGroupScope.findOwned(query, EventCheckoutBasketItem.class, "userId")
+                    ? paymentJobs.find(query, EventCheckoutBasketItem.class, EventCheckoutBasketItem::getUserId)
                     : mongoTemplate.find(query, EventCheckoutBasketItem.class);
             query.addCriteria(Criteria.where("_id").in(dueItems.stream().map(EventCheckoutBasketItem::getId).toList()));
             var expiredOwners = new java.util.HashSet<String>();

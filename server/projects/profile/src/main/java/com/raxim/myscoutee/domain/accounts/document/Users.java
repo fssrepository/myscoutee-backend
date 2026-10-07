@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.accounts.document;
 
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
-import com.raxim.myscoutee.domain.payments.document.AffiliateRegistration;
+import com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

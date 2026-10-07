@@ -58,6 +58,7 @@ import com.raxim.myscoutee.domain.operator.service.OperatorGlobalIdentityService
 
 @Service
 public class DeletedAccountPurgeService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.payments.api.PaymentPrivacy paymentPrivacy;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentPrivacy contentPrivacy;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.AffinityPrivacy affinityPrivacy;
     @org.springframework.beans.factory.annotation.Autowired
@@ -717,7 +718,7 @@ public class DeletedAccountPurgeService {
         contentPrivacy.purgeReports(userId);
         deleteDocumentsByAnyField("userSessionActions", List.of("userId", "createdUser", "updatedUser"), userId);
         contentPrivacy.purgeFeedViews(userId);
-        deleteDocumentsByAnyField("payments", List.of("userId"), userId);
+        paymentPrivacy.purgePayerRecords(userId);
         emailPrivacy.purgeDeliveryData(userId);
         notificationPrivacy.purgeDeliveryData(userId);
         anonymizeUserFieldsByAnyField(

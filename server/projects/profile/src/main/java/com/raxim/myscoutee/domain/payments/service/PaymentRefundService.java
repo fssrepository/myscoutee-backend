@@ -18,13 +18,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.payments.document.Payment;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class PaymentRefundService {
+public class PaymentRefundService implements com.raxim.myscoutee.domain.payments.api.PaymentRefunds {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+
     private static final Set<String> REFUNDABLE_STATUSES = Set.of(
             "authorized", "captured", "approved", "partially_refunded");
 
@@ -162,10 +166,7 @@ public class PaymentRefundService {
     }
 
     private void incrementRecipientPendingCounter(String recipientUserId) {
-        mongoTemplate.updateFirst(
-                Query.query(Criteria.where("userId").is(recipientUserId)),
-                new Update().inc("paymentRefundsPending", 1),
-                Users.class);
+        accountPaymentTotals.incrementPendingRefunds(recipientUserId);
     }
 
     private void enqueueRefundNotification(
@@ -181,7 +182,7 @@ public class PaymentRefundService {
         String type = approved ? "payment-refund-approved" : "payment-refund-requested";
         Map<String, String> payload = new LinkedHashMap<>();
         payload.put("paymentId", paymentId);
-        var recipient=mongoTemplate.findOne(Query.query(Criteria.where("userId").is(recipientUserId)),Users.class);
+        var recipient=profiles.findFirstByUserId(recipientUserId);
         if(recipient!=null&&recipient.getWorkspaceGroupId()!=null)payload.put("workspaceGroupId",recipient.getWorkspaceGroupId());
         payload.put("sourceId", sourceId);
         payload.put("refundRequestStatus", approved ? "approved" : "pending");

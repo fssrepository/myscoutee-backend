@@ -51,4 +51,5 @@ public interface WorkspaceProfile {
     java.util.Map<String, Double> getPaymentSpentTotals();
     java.util.Map<String, Double> getPaymentIncomeTotals();
     java.util.Map<String, Double> getPaymentAllTotals();
+    Integer getPaymentRefundsPending();
 }

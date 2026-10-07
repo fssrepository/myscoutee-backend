@@ -11,13 +11,15 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.payments.document.AffiliateLink;
-import com.raxim.myscoutee.domain.payments.document.AffiliateRegistration;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.AffiliateSummaryDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationParticipantSummaryDto;
 
 @Service
-public class AffiliateService {
+public class AffiliateService implements com.raxim.myscoutee.domain.payments.api.Affiliates {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+
     private final MongoTemplate mongo;
     @org.springframework.beans.factory.annotation.Autowired
     private AffiliateRevenueService revenue;
@@ -34,31 +36,19 @@ public class AffiliateService {
 
     public AffiliateSummaryDto summary(String owner) {
         String url = link(owner);
-        long registered = mongo.count(Query.query(Criteria.where("referrerUserId").is(owner)), AffiliateRegistration.class);
+        long registered = mongo.count(Query.query(Criteria.where("referrerUserId").is(owner)), AffiliateRegistration.class, "affiliateRegistrations");
         return new AffiliateSummaryDto(url, registered, revenue == null ? null : revenue.summary(owner));
     }
 
-    public IntegrationParticipantSummaryDto participantSummary(String owner) {
-        // One external participant can be invited to several events. Count the person once.
-        var row = mongo.getCollection("integrationParticipantInvites").aggregate(List.of(
-                new Document("$match", new Document("ownerUserId", owner).append("reusable", new Document("$ne", true))),
-                new Document("$group", new Document("_id", "$participantId").append("registered",
-                        new Document("$max", new Document("$cond", List.of(
-                                new Document("$ne", List.of(new Document("$ifNull", List.of("$claimedUserId", "")), "")), 1, 0))))),
-                new Document("$group", new Document("_id", null).append("imported", new Document("$sum", 1))
-                        .append("registered", new Document("$sum", "$registered")))
-        )).first();
-        return row == null ? new IntegrationParticipantSummaryDto(0, 0)
-                : new IntegrationParticipantSummaryDto(((Number) row.get("registered")).longValue(),
-                        ((Number) row.get("imported")).longValue());
-    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.integrations.api.ParticipantStatistics participantStatistics;
+    public IntegrationParticipantSummaryDto participantSummary(String owner) { return participantStatistics.participantSummary(owner); }
 
     public AffiliateRegistration resolveRegistration(String code, String userId) {
         if (code == null || !code.matches("[a-f0-9-]{36}")) return null;
         var link = mongo.findOne(Query.query(Criteria.where("code").is(code)), AffiliateLink.class);
         if (link == null || link.ownerUserId().equals(userId)) return null;
-        if (!mongo.exists(Query.query(Criteria.where("userId").is(link.ownerUserId())
-                .and("deletedAtIso").in(null, "")), Users.class)) return null;
+        if (!profiles.existsNotDeleted(link.ownerUserId())) return null;
         return new AffiliateRegistration(userId, link.ownerUserId(), link.code(), Instant.now().toString());
     }
 
@@ -68,6 +58,6 @@ public class AffiliateService {
         mongo.upsert(Query.query(Criteria.where("_id").is(registration.userId())), new Update()
                 .setOnInsert("referrerUserId", registration.referrerUserId())
                 .setOnInsert("code", registration.code())
-                .setOnInsert("registeredAtIso", registration.registeredAtIso()), AffiliateRegistration.class);
+                .setOnInsert("registeredAtIso", registration.registeredAtIso()), AffiliateRegistration.class, "affiliateRegistrations");
     }
 }

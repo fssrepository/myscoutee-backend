@@ -70,7 +70,7 @@ class DeploymentConfigurationCryptoTest {
                 "000102030405060708090a0b0c0d0e0f"
                         + "101112131415161718191a1b1c1d1e1f\n");
         var envelope = crypto.encrypt(
-                DeploymentPaymentCredentialResolver.credentialPurpose("stripe"),
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
                 "operator-secret");
         byte[] ciphertext = Base64.getDecoder().decode(envelope.getCiphertext());
         ciphertext[ciphertext.length - 1] ^= 0x01;
@@ -81,7 +81,7 @@ class DeploymentConfigurationCryptoTest {
                 .contains("could not be decrypted");
 
         envelope = crypto.encrypt(
-                DeploymentPaymentCredentialResolver.credentialPurpose("stripe"),
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
                 "operator-secret");
         configuration = configuration(envelope);
         DeploymentConfigurationCrypto wrongKey = crypto(

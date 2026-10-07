@@ -80,8 +80,7 @@ class DeploymentPaymentProviderResolverTest {
                 mock(PaymentProviderService.class);
         when(providerService.availableProviders())
                 .thenReturn(availableProviders);
-        return new Fixture(new DeploymentPaymentProviderResolver(
-                repository,
+        return new Fixture(new DeploymentPaymentProviderResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository),
                 providerService));
     }
 

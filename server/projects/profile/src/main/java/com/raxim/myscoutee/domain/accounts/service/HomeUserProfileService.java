@@ -12,8 +12,8 @@ import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
-import com.raxim.myscoutee.domain.payments.service.AffiliateService;
-import com.raxim.myscoutee.domain.payments.service.SavedPaymentMethodsService;
+import com.raxim.myscoutee.domain.payments.api.Affiliates;
+import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
 import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
@@ -224,7 +224,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private ContentRegistration contentModeration;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private SavedPaymentMethodsService savedPaymentMethods;
+    private PaymentMethods savedPaymentMethods;
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
@@ -255,7 +255,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
     private final Assets assetsService;
-    private final AffiliateService affiliateService;
+    private final Affiliates affiliateService;
     private NotificationJobs notificationRuleRegistryService;
     private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
 
@@ -297,7 +297,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
             Assets assetsService,
-            AffiliateService affiliateService,
+            Affiliates affiliateService,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;

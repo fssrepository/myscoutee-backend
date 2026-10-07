@@ -9,29 +9,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
-import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 import com.raxim.myscoutee.domain.payments.service.PaymentProviderChangedException;
 
 @Service
 public class DeploymentPaymentProviderResolver {
-    private final DeploymentConfigurationRepository repository;
+    private final DeploymentSettings repository;
     private final PaymentProviderService paymentProviderService;
 
     public DeploymentPaymentProviderResolver(
-            DeploymentConfigurationRepository repository,
+            DeploymentSettings repository,
             PaymentProviderService paymentProviderService) {
         this.repository = Objects.requireNonNull(repository);
         this.paymentProviderService = Objects.requireNonNull(paymentProviderService);
     }
 
     public String resolveActiveProvider(String requestedProvider) {
-        DeploymentConfiguration configuration = repository
-                .findById(DeploymentConfiguration.SINGLETON_ID)
+        Configuration configuration = repository
+                .findById(DeploymentSettings.SINGLETON_ID)
                 .orElseThrow(() -> unavailable(
                         "Deployment payment configuration is unavailable."));
-        DeploymentConfiguration.Payment payment = configuration.getPayment();
+        DeploymentSettings.Payment payment = configuration.getPayment();
         String activeProvider = normalize(
                 payment == null ? null : payment.getProviderId());
         if (!StringUtils.hasText(activeProvider)) {

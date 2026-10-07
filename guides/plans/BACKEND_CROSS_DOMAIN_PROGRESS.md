@@ -46,7 +46,7 @@ may need changes together.
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
-| 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
+| 10 | payments | 8 | 10 | Complete: owner-controlled checkout, accounting, cancellations and scoped jobs | 1,109 regression tests passed; two purge fixtures repaired; 178 focused tests and 31 final boundary/header tests passed; checkpoint commit follows |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
 | 12 | content | 2 | 5 | Complete: moderation ownership, support review, submissions, counters and privacy | 899 regression, boundary and serialization tests passed; `e7ac81ab3` |
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
@@ -57,9 +57,9 @@ may need changes together.
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
 | 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; `2bb3bd0ae` |
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
-| 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed |
+| 21 | registry | 0 | 0 | Complete: operations, signed enrollment evidence, protocol values and configuration contracts | 270 regression tests, 48 focused tests and 15 final alias tests passed; `602f0367b` |
 
-**Completed domains: 14/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
+**Completed domains: 15/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #10 payments, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media, #20 localization and #21 registry.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1807,3 +1807,87 @@ Exact changed files for this checkpoint (repository-relative):
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/RegistryTestIdentity.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/api/GlobalIdentityVoprfClientTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/registry/config/RegistryConfigurationBindingTest.java`
+
+
+### #10 payments: owner-controlled checkout, accounting and cancellation
+
+- `domain/payments/api/{EventPayments,CheckoutBaskets,CheckoutPricing,PaymentRefunds,
+  PaymentMethods,CurrentPaymentProvider,PaymentProviders,PaymentSimulatorConfiguration,
+  ExchangeRateConfiguration,Affiliates}.java` expose the existing implementations.
+  Existing event, account, integration, operator and deployment callers use these
+  contracts. Provider selection, checkout state transitions, refund provider calls,
+  authorization checks and public response fields remain in their existing order.
+- `domain/payments/api/PaymentView.java` is a **local read-only view**, not a detached
+  transport payload. Event fulfillment and operator accounting read this view.
+  `EventPayments.completeEventCancellation` accepts the locally owned snapshot;
+  the payment owner performs the mutation. A future HTTP adapter must define a
+  versioned command and detached transport values before replacing this call.
+- `domain/payments/api/EventPaymentCancellations.java` and
+  `domain/payments/service/EventPaymentCancellationService.java` take the existing
+  payment queries, unordered enqueue bulk, version increments, changed-terms
+  eligibility predicate and cancellation acknowledgement guard out of
+  `domain/events/service/EventCancellationService.java`. Event membership,
+  notification and event completion operations retain their original order.
+- `domain/payments/api/PaymentRevenue.java` and its owner service keep the existing
+  narrow repository candidate query used by `OperatorRevenueService`.
+- `domain/accounts/api/PaymentTotals.java` and `AccountPaymentTotalsService`
+  own the existing atomic spending/income/all-total increments, receipt reversal
+  marker, pending-refund counter guards and summary-currency read/write.
+  `ProfileDirectory{,Service}` gains the original account queries used by
+  checkout, refunds, affiliate attribution and the payment simulator.
+- `domain/events/api/{EventOwnership,MemberDirectory,EventCheckout,
+  CheckoutMemberships}.java` expose the existing pricing facts, VIP offer
+  eligibility, event fulfillment and expired-reservation commands. Existing
+  event implementations provide them; payment code no longer accesses event
+  or membership repositories. Collection-valued views remain local read-only
+  views and are not claimed to be remotely serializable contracts.
+- `domain/platform/api/DeploymentSettings.java` and its owner service expose
+  existing payment configuration values. The original configuration document
+  implements the read-only view. `PaymentCredentialPurpose` owns the same pure
+  encryption-purpose computation used by both configuration and payments.
+- `domain/integrations/api/ParticipantStatistics.java` and its owner service
+  execute the original participant-invite aggregation, including unique-person
+  counting and claimed-user eligibility. Affiliate results retain their shape.
+- `domain/payments/dto/AffiliateRegistration.java` moves the immutable attribution
+  value out of persistence implementation packages. Accounts can embed that
+  value. Payment-owned Mongo operations name the original collection explicitly;
+  `mongo-domain-types.properties` retains the historical discriminator. Reload
+  verification covers root values and embedded records without `_class`.
+- `PaymentPrivacy{,Service}` preserves account purge's exact payer-only deletion
+  query and its place in the purge sequence. `AffiliateIndexInitializer` owns
+  the same two affiliate indexes for the existing real/demo database factories.
+- `PaymentProviderResponse` marks exactly the existing event and payment
+  controllers for the existing response advice. The provider response header
+  keeps its previous value and availability condition.
+- `common/mongo/OwnerScopedQuery.java`, `accounts/api/AccountJobScopes.java`,
+  `accounts/service/AccountJobScopeService.java` and
+  `payments/service/PaymentJobQueries.java` replace payment jobs' foreign `users`
+  lookup with a sorted candidate cursor and account-owned projected selection
+  in batches of at most 1,000 candidates. Scope filtering still precedes skip
+  and limit. Missing owners remain excluded; duplicate owner rows retain the
+  previous any-match (`$in`) / no-match (`$nin`) semantics. Cursors close on early
+  limit, exhaustion and failure. Payment tasks preserve their original result
+  batch sizes (20/100), query predicates and subsequent update/version guards.
+  The database query plan changes: each candidate batch adds one projected
+  owner query, and unrelated-workspace candidates may be scanned. Concurrent
+  owner reassignment can be observed between batches instead of within a single
+  join operation. No transaction or snapshot consistency was added.
+
+| Area | Functional regression risk | Severe slowdown risk | E2E focus |
+| --- | --- | --- | --- |
+| Payment/refund/receipt accounting | High | Low; same atomic writes and provider calls | Retry, duplicate callback, partial refund, two-party receipt reversal, account totals |
+| Event cancellation and changed paid terms | High | Low; original payment predicates, guarded bulk and 20-payment batch | Interrupted cancellation, pending refund, membership removal, late payment, notification deduplication |
+| Scoped payment jobs | Medium; account-scope observation is now batched | Medium to high for a large unrelated-workspace backlog; no measured percentage claimed | Default/private scopes, backlog skew, concurrent workspace reassignment, cursor closure, throughput |
+| Checkout pricing and reservations | Medium | Low; original owner queries and pricing algorithm | VIP offer, optional slots, capacity, expired basket, saved card |
+| Affiliate attribution, configuration and privacy | Medium | Low; same queries, immutable value and indexes | Legacy profile reload, provider credentials, participant counts, payer purge |
+
+Verification status and checkpoint commit are recorded in the numbered table.
+No E2E performance result is claimed by the local checks.
+
+Payment checkpoint evidence: the running dev watcher compiled successfully and
+restarted the application; Docker health is healthy. The expanded regression
+run passed 1,109 tests and exposed two fixture-wiring failures in the purge test.
+After wiring the real payment privacy owner, all 178 focused tests passed,
+including embedded Mongo parity, cancellation guards and attribution reload.
+The final expanded collection-boundary and response-header checks passed all
+31 tests. Integration/E2E and performance measurements remain separate work.

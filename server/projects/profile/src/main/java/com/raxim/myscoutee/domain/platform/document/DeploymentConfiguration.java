@@ -2,7 +2,6 @@ package com.raxim.myscoutee.domain.platform.document;
 
 import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
-import com.raxim.myscoutee.domain.payments.document.Payment;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "deploymentConfigurations")
-public class DeploymentConfiguration {
+public class DeploymentConfiguration implements com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration {
     public static final String SINGLETON_ID = "deployment-configuration";
     public static final int SCHEMA_VERSION = 5;
 
@@ -156,7 +155,7 @@ public class DeploymentConfiguration {
         }
     }
 
-    public static class Payment {
+    public static class Payment implements com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Payment {
         private String exchangeRateUrl;
         public String getExchangeRateUrl() { return exchangeRateUrl; }
         public void setExchangeRateUrl(String value) { exchangeRateUrl = value; }

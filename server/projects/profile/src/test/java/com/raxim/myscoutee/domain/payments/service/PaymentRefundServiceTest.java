@@ -149,6 +149,8 @@ class PaymentRefundServiceTest {
                 outbox,
                 mongo);
 
+        private Fixture() { PaymentTestSupport.wire(service, mongo); }
+
         private Payment payment(String status) {
             Payment payment = new Payment();
             payment.setId("payment-1");

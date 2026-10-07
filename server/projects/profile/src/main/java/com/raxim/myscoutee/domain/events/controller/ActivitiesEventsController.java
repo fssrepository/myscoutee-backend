@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
-import com.raxim.myscoutee.domain.payments.service.CurrentPaymentProviderService;
+import com.raxim.myscoutee.domain.payments.api.CurrentPaymentProvider;
 import com.raxim.myscoutee.domain.events.service.EventWatchService;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventInvitationContextDto;
@@ -44,16 +44,16 @@ import com.raxim.myscoutee.domain.events.service.ActivitiesEventFeedbackService;
 
 @RestController
 @RequestMapping("/activities/events")
-public class ActivitiesEventsController {
+public class ActivitiesEventsController implements com.raxim.myscoutee.domain.payments.api.PaymentProviderResponse {
     private final ActivitiesEventsService activitiesEventsService;
     private final ActivitiesEventFeedbackService activitiesEventFeedbackService;
-    private final CurrentPaymentProviderService currentPaymentProviderService;
+    private final CurrentPaymentProvider currentPaymentProviderService;
     private final EventWatchService eventWatchService;
 
     public ActivitiesEventsController(
             ActivitiesEventsService activitiesEventsService,
             ActivitiesEventFeedbackService activitiesEventFeedbackService,
-            CurrentPaymentProviderService currentPaymentProviderService,
+            CurrentPaymentProvider currentPaymentProviderService,
             EventWatchService eventWatchService) {
         this.activitiesEventsService = activitiesEventsService;
         this.activitiesEventFeedbackService = activitiesEventFeedbackService;

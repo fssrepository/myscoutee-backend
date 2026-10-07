@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.payments.service;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.payments.document.AffiliateLink;
-import com.raxim.myscoutee.domain.payments.document.AffiliateRegistration;
+import com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -22,16 +22,21 @@ class AffiliateServiceTest {
     private final AffiliateService service = new AffiliateService(mongo);
     private static final String CODE = "00000000-0000-4000-8000-000000000001";
 
+    @org.junit.jupiter.api.BeforeEach void owners() {
+        var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(null);
+        org.springframework.test.util.ReflectionTestUtils.setField(profiles, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profiles", profiles);
+    }
     @Test
     void settingsReturnsStablePublicLinkAndOwnerScopedCount() {
         when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(AffiliateLink.class)))
                 .thenReturn(new AffiliateLink("owner", CODE, "2026-09-22T00:00:00Z"));
-        when(mongo.count(any(Query.class), eq(AffiliateRegistration.class))).thenReturn(2L);
+        when(mongo.count(any(Query.class), eq(AffiliateRegistration.class), eq("affiliateRegistrations"))).thenReturn(2L);
         var result = service.summary("owner");
         assertThat(result.url()).isEqualTo("/entry?affiliate=" + CODE);
         assertThat(result.registered()).isEqualTo(2);
         var query = ArgumentCaptor.forClass(Query.class);
-        verify(mongo).count(query.capture(), eq(AffiliateRegistration.class));
+        verify(mongo).count(query.capture(), eq(AffiliateRegistration.class), eq("affiliateRegistrations"));
         assertThat(query.getValue().getQueryObject().getString("referrerUserId")).isEqualTo("owner");
     }
 
@@ -64,7 +69,7 @@ class AffiliateServiceTest {
         service.recordRegistration(registration);
         var update = ArgumentCaptor.forClass(Update.class);
         var query = ArgumentCaptor.forClass(Query.class);
-        verify(mongo).upsert(query.capture(), update.capture(), eq(AffiliateRegistration.class));
+        verify(mongo).upsert(query.capture(), update.capture(), eq(AffiliateRegistration.class), eq("affiliateRegistrations"));
         assertThat(query.getValue().getQueryObject().getString("_id")).isEqualTo("member");
         assertThat(update.getValue().getUpdateObject().keySet()).containsExactly("$setOnInsert");
     }

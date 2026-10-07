@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
+import com.raxim.myscoutee.domain.events.api.EventCheckout;
 
 import org.springframework.stereotype.Service;
 
@@ -12,11 +12,11 @@ import com.raxim.myscoutee.domain.payments.service.PaymentService.GatewayTransit
 @Service
 public class PaymentAuthorizationCoordinator {
     private final PaymentService paymentService;
-    private final ActivitiesEventsService activitiesEventsService;
+    private final EventCheckout activitiesEventsService;
 
     public PaymentAuthorizationCoordinator(
             PaymentService paymentService,
-            ActivitiesEventsService activitiesEventsService) {
+            EventCheckout activitiesEventsService) {
         this.paymentService = paymentService;
         this.activitiesEventsService = activitiesEventsService;
     }

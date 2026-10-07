@@ -32,14 +32,14 @@ import com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod;
 import com.raxim.myscoutee.domain.payments.repository.PaymentMethodRegistrationsRepository;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.payments.repository.SavedPaymentMethodsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient.GatewayRegistration;
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
-public class SavedPaymentMethodsService {
+public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.payments.api.PaymentMethods {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
     private static final Logger LOG = LoggerFactory.getLogger(SavedPaymentMethodsService.class);
@@ -54,7 +54,7 @@ public class SavedPaymentMethodsService {
     private final PaymentsRepository paymentsRepository;
     private final PaymentSimulatorRegistrationClient simulatorClient;
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
-    private final UsersRepository usersRepository;
+    private final ProfileDirectory usersRepository;
 
     @Value("${payment.registration.ttl:PT10M}")
     private Duration registrationTtl = DEFAULT_REGISTRATION_TTL;
@@ -65,7 +65,7 @@ public class SavedPaymentMethodsService {
             PaymentsRepository paymentsRepository,
             PaymentSimulatorRegistrationClient simulatorClient,
             DeploymentPaymentProviderResolver paymentProviderResolver,
-            UsersRepository usersRepository) {
+            ProfileDirectory usersRepository) {
         this.paymentMethodsRepository = paymentMethodsRepository;
         this.registrationsRepository = registrationsRepository;
         this.paymentsRepository = paymentsRepository;
@@ -670,7 +670,7 @@ public class SavedPaymentMethodsService {
 
     private Map<String, Double> spendingTotals(String userId) {
         Map<String, Double> stored = usersRepository.findByUserId(userId)
-                .map(com.raxim.myscoutee.domain.accounts.document.Users::getPaymentSpentTotals)
+                .map(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile::getPaymentSpentTotals)
                 .orElse(Map.of());
         Map<String, Double> normalized = new LinkedHashMap<>();
         stored.entrySet().stream()
@@ -687,7 +687,7 @@ public class SavedPaymentMethodsService {
 
     private Map<String, Double> incomeTotals(String userId) {
         Map<String, Double> stored = usersRepository.findByUserId(userId)
-                .map(com.raxim.myscoutee.domain.accounts.document.Users::getPaymentIncomeTotals)
+                .map(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile::getPaymentIncomeTotals)
                 .orElse(Map.of());
         return normalizedTotals(stored);
     }

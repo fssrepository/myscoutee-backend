@@ -12,4 +12,8 @@ public interface ProfileDirectory {
     List<? extends WorkspaceProfile> findByUserIdIn(Collection<String> userIds);
     List<? extends WorkspaceProfile> findByEmailIn(Collection<String> emails);
     List<? extends WorkspaceProfile> findByAccountUserId(String accountId);
+    WorkspaceProfile findFirstByUserId(String id);
+    boolean existsNotDeleted(String id);
+    List<? extends WorkspaceProfile> findNotDeletedByUserIdIn(Collection<String> ids);
+    List<String> userIdsByWorkspace(String groupId);
 }

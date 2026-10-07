@@ -1,8 +1,7 @@
 package com.raxim.myscoutee.domain.operator.service;
 
 import com.raxim.myscoutee.domain.operator.mapper.OperatorConfigurationMapper;
-import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentCredentialResolver;
-import com.raxim.myscoutee.domain.payments.service.PaymentProviderService;
+import com.raxim.myscoutee.domain.payments.api.PaymentProviders;
 import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
 import com.raxim.myscoutee.domain.platform.service.DeploymentFirebaseRuntime;
 import com.raxim.myscoutee.domain.platform.service.OperatorFirebaseCapabilityClient;
@@ -54,7 +53,7 @@ import com.raxim.myscoutee.domain.platform.service.OperatorFirebaseCapabilityCli
 @Service
 public class OperatorConfigurationService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.payments.service.ExchangeRateSource exchangeRateSource;
+    private com.raxim.myscoutee.domain.payments.api.ExchangeRateConfiguration exchangeRateSource;
     public static final String FIREBASE_AUTHENTICATION_PURPOSE =
             "firebase-authentication-credential";
     public static final String FIREBASE_MESSAGING_PURPOSE =
@@ -93,7 +92,7 @@ public class OperatorConfigurationService {
 
     private final DeploymentConfigurationRepository repository;
     private final AppSettingsService appSettingsService;
-    private final PaymentProviderService paymentProviderService;
+    private final PaymentProviders paymentProviderService;
     private final OperatorConfigurationMapper mapper;
     private final DeploymentConfigurationCrypto crypto;
     private final OperatorFirebaseCapabilityClient firebaseCapabilityClient;
@@ -106,7 +105,7 @@ public class OperatorConfigurationService {
     public OperatorConfigurationService(
             DeploymentConfigurationRepository repository,
             AppSettingsService appSettingsService,
-            PaymentProviderService paymentProviderService,
+            PaymentProviders paymentProviderService,
             OperatorConfigurationMapper mapper,
             DeploymentConfigurationCrypto crypto,
             OperatorFirebaseCapabilityClient firebaseCapabilityClient,
@@ -125,7 +124,7 @@ public class OperatorConfigurationService {
     OperatorConfigurationService(
             DeploymentConfigurationRepository repository,
             AppSettingsService appSettingsService,
-            PaymentProviderService paymentProviderService,
+            PaymentProviders paymentProviderService,
             OperatorConfigurationMapper mapper,
             DeploymentConfigurationCrypto crypto,
             Clock clock) {
@@ -143,7 +142,7 @@ public class OperatorConfigurationService {
     OperatorConfigurationService(
             DeploymentConfigurationRepository repository,
             AppSettingsService appSettingsService,
-            PaymentProviderService paymentProviderService,
+            PaymentProviders paymentProviderService,
             OperatorConfigurationMapper mapper,
             DeploymentConfigurationCrypto crypto,
             Clock clock,
@@ -162,7 +161,7 @@ public class OperatorConfigurationService {
     OperatorConfigurationService(
             DeploymentConfigurationRepository repository,
             AppSettingsService appSettingsService,
-            PaymentProviderService paymentProviderService,
+            PaymentProviders paymentProviderService,
             OperatorConfigurationMapper mapper,
             DeploymentConfigurationCrypto crypto,
             Clock clock,
@@ -828,7 +827,7 @@ public class OperatorConfigurationService {
             payment.setMerchantAccount(merchantAccount);
             if (StringUtils.hasText(credential)) {
                 payment.setCredentialEnvelope(crypto.encrypt(
-                        DeploymentPaymentCredentialResolver.credentialPurpose(provider),
+                        com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose(provider),
                         credential));
                 payment.setCredentialMask(maskCredential(credential));
             } else if (providerChanged) {

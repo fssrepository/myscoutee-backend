@@ -16,7 +16,7 @@ import com.raxim.myscoutee.domain.payments.repository.PaymentProviderRepository;
 import com.raxim.myscoutee.domain.payments.service.PaymentProcessor;
 
 @Service
-public class PaymentProviderService {
+public class PaymentProviderService implements com.raxim.myscoutee.domain.payments.api.PaymentProviders {
     private final PaymentProviderRepository repository;
     private final PaymentProviderMapper mapper;
     private final Set<String> processorIds;

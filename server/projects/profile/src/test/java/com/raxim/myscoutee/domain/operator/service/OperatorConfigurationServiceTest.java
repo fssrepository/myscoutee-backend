@@ -119,7 +119,7 @@ class OperatorConfigurationServiceTest {
                 .doesNotContain("auth-secret-material")
                 .doesNotContain("messaging-secret-material");
         assertThat(fixture.crypto().decrypt(
-                DeploymentPaymentCredentialResolver.credentialPurpose("stripe"),
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
                 document.getPayment().getCredentialEnvelope()))
                 .isEqualTo("sk_live_super-secret-1234");
 

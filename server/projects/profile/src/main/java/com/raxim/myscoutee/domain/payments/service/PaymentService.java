@@ -37,7 +37,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 import com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutRequestDto;
@@ -45,7 +45,7 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationRuleDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnership;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentProviderResolver;
@@ -55,7 +55,11 @@ import com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundResult;
 import com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundStatus;
 
 @Service
-public class PaymentService implements com.raxim.myscoutee.domain.payments.api.AssetPayments {
+public class PaymentService implements com.raxim.myscoutee.domain.payments.api.AssetPayments, com.raxim.myscoutee.domain.payments.api.EventPayments {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+
     private static final String BOOKING_STATUS_INITIATED = "initiated";
     private static final String BOOKING_STATUS_JOINED = "joined";
     private static final String BOOKING_STATUS_CANCELLED = "cancelled";
@@ -82,7 +86,7 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
     private final SavedPaymentMethodsService savedPaymentMethodsService;
     private final MongoTemplate mongoTemplate;
-    private final ActivityEventsRepository activityEventsRepository;
+    private final EventOwnership activityEventsRepository;
     private final AssetOwnership assetsRepository;
 
     @Value("${payment.enablePay:false}")
@@ -97,7 +101,7 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
             DeploymentPaymentProviderResolver paymentProviderResolver,
             SavedPaymentMethodsService savedPaymentMethodsService,
             MongoTemplate mongoTemplate,
-            ActivityEventsRepository activityEventsRepository,
+            EventOwnership activityEventsRepository,
             AssetOwnership assetsRepository) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
@@ -498,7 +502,8 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
     }
 
     /** Complete one authorized cancellation; the original payment retains cumulative totals. */
-    public Payment completeEventCancellation(Payment payment, String reason) {
+    public Payment completeEventCancellation(com.raxim.myscoutee.domain.payments.api.PaymentView snapshot, String reason) {
+        Payment payment = (Payment) snapshot;
         Payment refunded = approvePolicyRefund(payment, nowIso(), safeAmount(payment.getAmount()),
                 payment.getCurrency(), reason, "Event booking cancelled; full remaining amount returned.");
         if (!BOOKING_STATUS_CANCELLED.equals(refunded.getBookingStatus())
@@ -1429,10 +1434,9 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         String payerId = normalizeId(request.payerUserId());
         if (!hasText(payerId) || payerId.equals(recipientId))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another member.");
-        var participants = mongoTemplate.find(Query.query(Criteria.where("userId").in(payerId, recipientId)
-                .and("deletedAtIso").in(null, "")), Users.class);
-        Users payer = participants.stream().filter(user -> payerId.equals(user.getUserId())).findFirst().orElse(null);
-        Users recipient = participants.stream().filter(user -> recipientId.equals(user.getUserId())).findFirst().orElse(null);
+        var participants = profiles.findNotDeletedByUserIdIn(java.util.Arrays.asList(payerId, recipientId));
+        WorkspaceProfile payer = participants.stream().filter(user -> payerId.equals(user.getUserId())).findFirst().orElse(null);
+        WorkspaceProfile recipient = participants.stream().filter(user -> recipientId.equals(user.getUserId())).findFirst().orElse(null);
         if (!WorkspaceContext.sameWorkspace(payer, recipient))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member unavailable.");
         String id = "cash:" + recipientId + ":" + request.requestId();
@@ -1481,20 +1485,16 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
                 new Update().set("status", "deleted").set("accountedSpentAmount", 0D), Payment.class);
         // Each user's reversal and its receipt marker commit together. A retry
         // completes either side after interruption without applying it twice.
-        reverseCashReceiptTotal(payment.getUserId(), payment, "paymentSpentTotals");
-        reverseCashReceiptTotal(recipientId, payment, "paymentIncomeTotals");
+        reverseCashReceiptTotal(payment.getUserId(), payment, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.SPENT);
+        reverseCashReceiptTotal(recipientId, payment, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.INCOME);
         payment.setStatus("deleted");
         payment.setAccountedSpentAmount(0D);
         return savedPaymentMethodsService.mutationDto(payment, recipientId);
     }
 
-    private void reverseCashReceiptTotal(String userId, Payment payment, String directionField) {
+    private void reverseCashReceiptTotal(String userId, Payment payment, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction directionField) {
         String currency = safeCurrency(payment.getCurrency()).toUpperCase(java.util.Locale.ROOT);
-        mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(userId)
-                        .and("cashReceiptReversals").ne(payment.getId())),
-                new Update().inc(directionField + "." + currency, -safeAmount(payment.getAmount()))
-                        .inc("paymentAllTotals." + currency, -safeAmount(payment.getAmount()))
-                        .addToSet("cashReceiptReversals", payment.getId()), Users.class);
+        accountPaymentTotals.reverseReceipt(userId, payment.getId(), directionField, currency, safeAmount(payment.getAmount()));
     }
 
     private Payment saveAndProjectSpending(Payment payment) {
@@ -1526,20 +1526,17 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         if (mongoTemplate != null
                 && currency.matches("[A-Z]{3}")
                 && Math.abs(delta) >= 0.005D) {
-            incrementPaymentTotal(userId, "paymentSpentTotals", currency, delta);
-            incrementPaymentTotal(userId, "paymentAllTotals", currency, delta);
-            incrementPaymentTotal(recipientUserId, "paymentIncomeTotals", currency, delta);
-            incrementPaymentTotal(recipientUserId, "paymentAllTotals", currency, delta);
+            incrementPaymentTotal(userId, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.SPENT, currency, delta);
+            incrementPaymentTotal(userId, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.ALL, currency, delta);
+            incrementPaymentTotal(recipientUserId, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.INCOME, currency, delta);
+            incrementPaymentTotal(recipientUserId, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.ALL, currency, delta);
         }
         return saved;
     }
 
-    private void incrementPaymentTotal(String userId, String field, String currency, double delta) {
+    private void incrementPaymentTotal(String userId, com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction field, String currency, double delta) {
         if (!hasText(userId)) return;
-        mongoTemplate.updateFirst(
-                Query.query(Criteria.where("userId").is(userId)),
-                new Update().inc(field + "." + currency, delta),
-                Users.class);
+        accountPaymentTotals.increment(userId, field, currency, delta);
     }
 
     private String resolvePaymentRecipientUserId(Payment payment) {
@@ -1750,17 +1747,15 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         if (pendingRequest) history.setRefundRequestStatus("approved");
         Payment saved = paymentsRepository.save(history);
         if (pendingRequest && mongoTemplate != null) {
-            mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(saved.getRecipientUserId())
-                            .and("paymentRefundsPending").gt(0)),
-                    new Update().inc("paymentRefundsPending", -1), Users.class);
+            accountPaymentTotals.decrementPendingRefunds(saved.getRecipientUserId());
         }
         double delta = roundSignedMoney(amount - previousAmount);
         String currency = safeCurrency(saved.getCurrency()).toUpperCase(java.util.Locale.ROOT);
         if (mongoTemplate != null && currency.matches("[A-Z]{3}") && Math.abs(delta) >= 0.005D) {
-            incrementPaymentTotal(saved.getUserId(), "paymentIncomeTotals", currency, delta);
-            incrementPaymentTotal(saved.getUserId(), "paymentAllTotals", currency, delta);
-            incrementPaymentTotal(saved.getRecipientUserId(), "paymentSpentTotals", currency, delta);
-            incrementPaymentTotal(saved.getRecipientUserId(), "paymentAllTotals", currency, delta);
+            incrementPaymentTotal(saved.getUserId(), com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.INCOME, currency, delta);
+            incrementPaymentTotal(saved.getUserId(), com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.ALL, currency, delta);
+            incrementPaymentTotal(saved.getRecipientUserId(), com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.SPENT, currency, delta);
+            incrementPaymentTotal(saved.getRecipientUserId(), com.raxim.myscoutee.domain.accounts.api.PaymentTotals.Direction.ALL, currency, delta);
         }
         return saved;
     }

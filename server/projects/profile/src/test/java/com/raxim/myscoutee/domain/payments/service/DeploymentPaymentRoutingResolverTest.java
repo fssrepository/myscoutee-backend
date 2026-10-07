@@ -35,7 +35,7 @@ class DeploymentPaymentRoutingResolverTest {
                 .thenReturn(Optional.of(configuration));
 
         var routing =
-                new DeploymentPaymentRoutingResolver(repository).require("barion");
+                new DeploymentPaymentRoutingResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository)).require("barion");
 
         assertThat(routing.merchantAccount())
                 .isEqualTo("merchant@example.test");
@@ -55,7 +55,7 @@ class DeploymentPaymentRoutingResolverTest {
                         null,
                         null)));
         DeploymentPaymentRoutingResolver resolver =
-                new DeploymentPaymentRoutingResolver(repository);
+                new DeploymentPaymentRoutingResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository));
 
         assertThatThrownBy(() -> resolver.require("stripe"))
                 .isInstanceOf(ResponseStatusException.class)
@@ -70,8 +70,7 @@ class DeploymentPaymentRoutingResolverTest {
         DeploymentConfigurationRepository repository =
                 mock(DeploymentConfigurationRepository.class);
         DeploymentPaymentRoutingResolver resolver =
-                new DeploymentPaymentRoutingResolver(
-                        repository,
+                new DeploymentPaymentRoutingResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository),
                         true,
                         "http://localhost/",
                         "merchant@myscoutee.local");
@@ -98,8 +97,7 @@ class DeploymentPaymentRoutingResolverTest {
                         "https://live.example.test",
                         null)));
         DeploymentPaymentRoutingResolver resolver =
-                new DeploymentPaymentRoutingResolver(
-                        repository,
+                new DeploymentPaymentRoutingResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository),
                         true,
                         "https://demo.example.test",
                         "merchant@demo.invalid");

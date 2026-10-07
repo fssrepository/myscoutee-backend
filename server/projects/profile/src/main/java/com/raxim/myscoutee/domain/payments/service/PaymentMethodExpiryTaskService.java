@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Instant;
 import java.time.YearMonth;
@@ -25,8 +25,10 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class PaymentMethodExpiryTaskService {
+    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentMethodExpiryTaskService.class);
     private static final String ACTIVE = "active";
@@ -102,11 +104,11 @@ public class PaymentMethodExpiryTaskService {
         int currentExpiryKey = now.getYear() * 100 + now.getMonthValue();
         int expiredCount = 0;
         while (true) {
-            List<SavedPaymentMethod> candidates = jobGroupScope.findOwned(
+            List<SavedPaymentMethod> candidates = paymentJobs.find(
                     org.springframework.data.mongodb.core.query.Query.query(
                         org.springframework.data.mongodb.core.query.Criteria.where("status").is(ACTIVE)
                             .and("expiryKey").lt(currentExpiryKey).and("expiredNotifiedAtIso").is(null))
-                        .with(org.springframework.data.domain.Sort.by("expiryKey")).limit(100), SavedPaymentMethod.class, "userId");
+                        .with(org.springframework.data.domain.Sort.by("expiryKey")).limit(100), SavedPaymentMethod.class, SavedPaymentMethod::getUserId);
             if (candidates.isEmpty()) {
                 return expiredCount;
             }
