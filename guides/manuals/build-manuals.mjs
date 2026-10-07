@@ -37,6 +37,14 @@ const manuals = [
     documentId: 'MSC-API-001',
     documentVersion: '1.0.1',
     releaseDate: '2026-09-20'
+  },
+  {
+    source: 'myscoutee-mcp-user-guide-en.html',
+    output: 'MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf',
+    title: 'MCP User Guide',
+    documentId: 'MSC-MCP-001',
+    documentVersion: '1.0.0',
+    releaseDate: '2026-10-07'
   }
 ];
 const selectedDocumentId = process.argv[2]?.trim();

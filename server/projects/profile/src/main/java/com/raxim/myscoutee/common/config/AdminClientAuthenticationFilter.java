@@ -29,7 +29,13 @@ public class AdminClientAuthenticationFilter extends OncePerRequestFilter {
                 request.getHeader(IntegrationTokenAuthenticationFilter.CLIENT_ID_HEADER), request.getRemoteAddr(), IntegrationTokenService.ADMIN_SCOPE);
         SecurityContextHolder.clearContext();
         if (client == null) { response.sendError(401); return; }
-        try { access.requireAdmin(client.ownerUserId()); }
+        try {
+            var owner = access.requireAdmin(client.ownerUserId());
+            var permissions = owner.getIntegrationAccess();
+            if (permissions != null && permissions.clientMode(client.tokenId()) == com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.BLOCKED) {
+                response.sendError(403); return;
+            }
+        }
         catch (ResponseStatusException denied) { response.sendError(403); return; }
         var authentication = new UsernamePasswordAuthenticationToken(client.ownerUserId(), null, List.of(new SimpleGrantedAuthority("ADMIN_CLIENT")));
         authentication.setDetails(client); SecurityContextHolder.getContext().setAuthentication(authentication);

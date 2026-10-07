@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.profile.service.IntegrationTokenService;
+import com.raxim.myscoutee.profile.service.IntegrationRoleAccessService;
 import com.raxim.myscoutee.profile.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.profile.repository.UsersRepository;
 import com.raxim.myscoutee.profile.data.document.IntegrationAccess;
@@ -34,13 +35,15 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
     private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.profile.service.McpAuthorizationService> mcp;
 
     private final UsersRepository users;
+    private final IntegrationRoleAccessService roles;
     private final CommunityGroupProfilesService profiles;
 
     public IntegrationTokenAuthenticationFilter(IntegrationTokenService tokenService,
-            UsersRepository users, CommunityGroupProfilesService profiles) {
+            UsersRepository users, CommunityGroupProfilesService profiles, IntegrationRoleAccessService roles) {
         this.tokenService = tokenService;
         this.users = users;
         this.profiles = profiles;
+        this.roles = roles;
     }
 
     @Override
@@ -54,6 +57,7 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        response.setHeader("Cache-Control", "no-store");
         String authorization = request.getHeader("Authorization");
         String rawToken = StringUtils.hasText(authorization) && authorization.startsWith(BEARER_PREFIX)
                 ? authorization.substring(BEARER_PREFIX.length()).trim()
@@ -74,7 +78,8 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
         // session's active group must never retarget a running integration.
         SecurityContextHolder.clearContext();
         var owner = users.findByUserId(client.ownerUserId()).orElse(null);
-        if (owner == null) {
+        try { roles.requireActive(owner); }
+        catch (ResponseStatusException denied) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

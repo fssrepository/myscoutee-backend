@@ -25,8 +25,9 @@ class McpEventsServiceTest {
     final McpEventCallbackClient callbacks = mock(McpEventCallbackClient.class);
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final JsonMapper json = JsonMapper.builder().build();
+    final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
     final McpEventsService service = new McpEventsService(subscriptions, users, assets, eventQueries,
-            mock(CommunityGroupProfilesService.class), oauth, crypto, callbacks, json, mongo);
+            mock(CommunityGroupProfilesService.class), oauth, crypto, callbacks, json, mongo, roles);
     final AuthenticatedIntegrationClient client = new AuthenticatedIntegrationClient("alice", "token-a", "shared-chatgpt",
             "mcp", IntegrationAccess.Mode.FULL, "grant-a");
     final String secret = "whsec_" + Base64.getEncoder().encodeToString(new byte[32]);
@@ -121,4 +122,28 @@ class McpEventsServiceTest {
         assertThat(service.deliver(delivery)).isEqualTo(410);
         verifyNoInteractions(callbacks);
     }
+    @Test void readPackCannotSubscribeAndRoleRevocationStopsDelivery() throws Exception {
+        var read = client.withAccess(IntegrationAccess.Mode.READ);
+        assertThat(service.catalog(read)).containsEntry("events", List.of());
+        owner.setIntegrationAccess(new IntegrationAccess(2, IntegrationAccess.Mode.READ, Map.of("token-a", IntegrationAccess.Mode.FULL)));
+        assertThatThrownBy(() -> service.subscribe(read, request(null))).isInstanceOf(McpEventsService.ProtocolException.class);
+        owner.setIntegrationAccess(new IntegrationAccess(3, IntegrationAccess.Mode.FULL, Map.of("token-a", IntegrationAccess.Mode.FULL)));
+        when(roles.privileged(owner)).thenReturn(true);
+        when(roles.admin(owner)).thenReturn(true);
+        assertThat(service.catalog(client).toString()).contains("admin.attention").doesNotContain("event.changed", "operator.attention");
+        var roleRequest = new Request("admin.attention", Map.of("resourceId", "node"), request(null).delivery(), null, null);
+        var result = service.subscribe(client, roleRequest);
+        var saved = org.mockito.ArgumentCaptor.forClass(McpEventSubscription.class);
+        verify(subscriptions).save(saved.capture());
+        var subscription = saved.getValue();
+        when(subscriptions.findById(result.id())).thenReturn(Optional.of(subscription));
+        var delivery = new IntegrationWebhookDelivery();
+        delivery.setSubscriptionId(subscription.id); delivery.setOwnerUserId("alice");
+        delivery.setEventType("admin.attention"); delivery.setResourceExternalId("node");
+        delivery.setSubscriptionGeneration(subscription.generation);
+        when(roles.admin(owner)).thenReturn(false);
+        assertThat(service.deliver(delivery)).isEqualTo(410);
+        verifyNoInteractions(eventQueries, assets);
+    }
+
 }

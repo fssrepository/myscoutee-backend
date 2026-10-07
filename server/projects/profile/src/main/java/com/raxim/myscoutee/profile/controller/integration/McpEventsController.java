@@ -35,8 +35,7 @@ public class McpEventsController {
         return protocol(() -> events.unsubscribe(client(auth), request));
     }
     private AuthenticatedIntegrationClient client(Authentication auth) {
-        capabilities.requireWrite(auth, null);
-        var client = (AuthenticatedIntegrationClient) auth.getDetails();
+        var client = capabilities.requireClient(auth);
         if (client.grantId() == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return client;
     }

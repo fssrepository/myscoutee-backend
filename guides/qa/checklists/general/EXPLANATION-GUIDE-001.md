@@ -6,7 +6,7 @@ to its intended control. Popup-opening transitions and unsaved editor validation
 Never save a form, send a message, join/leave an event, confirm checkout, create
 a token, or submit any other business action during this case.
 
-Current inventory: 110 explainable screen contexts and 1331 conditional catalog fields.
+Current inventory: 118 explainable screen contexts and 1458 conditional catalog fields.
 The 37 system role contexts / 136 fields are covered by
 [ROLE-GUIDES-NOTIFICATIONS-001](ROLE-GUIDES-NOTIFICATIONS-001.md).
 Runtime progress counts only the targets available on the current surface.
@@ -413,3 +413,53 @@ Preserve the user-authorized phone installation; end only the owned QA session.
 - On mobile Home and fullscreen Rates, drag the divider to both endpoints. Guide and notification retain their vertical positions, ordered above the eye row. Tap/hold alone must not move the divider or launchers. Keep desktop positioning unchanged and mobile photos at the accepted `contain` fit.
 - Next/Back guide navigation must retain the mounted guide card and reposition it without closing/reopening it.
 - For the explicitly requested filter follow-up, preserve the actor's preferences, change one selected option, apply and reload, then restore it. The Home filter badge counts selected options plus narrowed ranges, independently of the discovery result total and Ratings badge.
+
+
+## MSC-119 — complete MSC-114 onward guide wiring audit — 2026-10-07
+
+Status: **REOPENED / NOT RUN**. Earlier PASS evidence does not cover this extension.
+Source audit: [MSC-119 guide wiring](../../evidence/general/MSC-119_GUIDE_WIRING_20261007.md).
+Use the existing fixture and managed-launcher rules. Guide navigation must never
+execute ratings, votes, client generation, permission saves or other business actions.
+
+1. On an actual no-guide surface, confirm that the translated “Explanations” /
+   “Magyarázatok” heading shares the X button's header row. Repeat for a genuine
+   load error. X, Escape, Back and the launcher retain their existing behavior.
+2. Open Work home, Community service discovery and a community noticeboard.
+   Each must show its own guide, including empty-list states; no missing-guide
+   message caused by an absent surface root. Open and close child windows, then
+   verify that the parent guide is restored. Repeat after changing workspace.
+3. Follow the Work campaign list, editor/details, campaign-specific ratings,
+   aggregate ratings, history and member selection. Check read-only history text:
+   it explains reading images and documents, not editing or uploading them.
+4. Follow Community cases, scheduled tasks, the case board and task editor,
+   quotations/editor, services/editor/picker/calendar and completed service
+   feedback. Verify each available card-menu action has its matching explanation;
+   hidden actions must not create phantom steps. Verify all plus/header controls,
+   selected-member labels, date/frequency fields and read-only states.
+5. Open task quotation and dependency pickers. Their own guides cover available
+   cards, selection basket, apply and close; closing restores the task guide.
+   Do not apply or save selections in this guide-only case.
+6. From quotation work/refund terms, open the shared terms list and term editor.
+   Verify their independent `policies.list` / `policies.editor` contexts, translated
+   field descriptions and return to the quotation guide. Repeat in an existing
+   Event form because the same shared component owns both uses.
+7. Service feedback highlights four independent labelled choices, carousel
+   navigation and submit. Check the service image identifies the subject.
+   Do not submit answers. This differs from the discovery interest criteria.
+8. Follow API / MCP settings, the four-pack permission window, the actual help
+   popup, Advanced, client technical details and OAuth authorization. Each child
+   has the right context and restores the parent after close. Check Main Blocked
+   versus new-client Write defaults, draft tick versus parent save, role-only
+   statistics, Read versus Full/Events, and AI-provider support descriptions.
+   Authorization approval and key generation belong to the separate API cases.
+9. Revisit affected Side-menu entries and the existing MSC-118 role guide pack.
+   Protected system-guide metadata and administrative editor exclusion must remain.
+10. Repeat changed surfaces in EN/HU, desktop/mobile and frontend-local/HTTP.
+    Verify the same current sections in Dating, Work and Community; an old scoped
+    revision must not hide newer fields. Test a pre-existing system seed upgrade
+    through the normal seed flow and preserve an administrator-edited revision.
+    Record screenshots and actual step counts only after execution.
+
+Functional/browser execution, layer placement and device-specific rendering:
+**NOT RUN**. Compilation and seed/contract checks are development evidence only.

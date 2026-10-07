@@ -1,6 +1,6 @@
 # MCP-EVENTS-001 — OAuth users, subscriptions and bounded delivery
 
-MSC-116 stable checklist. **NOT RUN.** Source implementation/build results do not
+MSC-116 / MSC-119 stable checklist. **NOT RUN.** Source implementation/build results do not
 mark these cases PASS. Use the existing fixture and launcher when execution is
 authorized; never operate the user's browser as part of documentation work.
 
@@ -24,8 +24,8 @@ personal payloads. Keep HTTP/local settings guide QA in INTEGRATION-ACCESS-001.
 3. On /mcp/private with MCP-Protocol-Version 2026-07-28, server/discover advertises
    events. events/list returns only permitted definitions. Anonymous /mcp and the
    static API-key stdio package do not advertise background Events.
-4. Write returns an empty event catalog. Full on both main MCP and client permits
-   subscription. Group profiles do not expose base assets. The current three names
+4. Write and Read return an empty event catalog. Full on both main MCP and client permits
+   subscription. Group profiles do not expose base assets. For member profiles, the three names
    are event.changed, event.encounters and asset.changed; each requires resourceId.
 
 ## Subscribe, refresh, unsubscribe
@@ -99,3 +99,19 @@ UI and public directory publication remain outside this implementation.
 
 Record exact commits/image ID, executed cases and remaining unproven boundaries
 in the matrix. Revoke disposable credentials and restore only test-owned state.
+
+## MSC-119 role Events (NOT RUN)
+
+- Full/Full admin discovers only admin.attention; operator only operator.attention
+  (both if actually both roles). Filter resourceId=node; another resource is denied.
+- Exercise the existing MSC-118 producers: new node member for both roles;
+  report/feedback for admin; new release for operator. Outbox materialization queues
+  one compact kind per subscription. Replay of the same outbox item does not create
+  a duplicate delivery or reset retry state. Payload has no member IDs or secrets.
+- Read the authorized aggregate/paged reports after the signal, without changing
+  human unread/viewed state or invoking any mutation. No extra polling worker.
+- Revoke role, block owner, lower either pack to Read, revoke grant or expire it
+  with a queued delivery: no callback leaves the server. Unsubscribe works after
+  Full→Read. Existing throttle/restart/SSRF/signature checks apply equally to roles.
+- Host support is verified separately. A paid subscription or successful ordinary
+  Claude MCP connection alone is not proof of Events interoperability.

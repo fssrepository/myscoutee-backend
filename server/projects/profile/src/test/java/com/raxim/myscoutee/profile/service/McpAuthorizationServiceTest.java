@@ -43,6 +43,7 @@ class McpAuthorizationServiceTest {
         client.setExpiresAtIso(Instant.now().plusSeconds(86400).toString());
         when(tokens.findById(id)).thenReturn(Optional.of(client));
         Users owner = new Users(); owner.setUserId("owner"); owner.setName("Owner");
+        owner.setIntegrationAccess(new com.raxim.myscoutee.profile.data.document.IntegrationAccess(1, com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.WRITE, Map.of()));
         when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
     }
     @AfterEach void cleanup() { MongoSessionModeContext.clear(); }
@@ -189,7 +190,7 @@ class McpAuthorizationServiceTest {
         client.setOauthClientId(publicId);
         var second = new IntegrationToken(); second.setId("bob-token"); second.setOwnerUserId("bob");
         second.setScope("mcp"); second.setOauthClientId(publicId); second.setExpiresAtIso(client.getExpiresAtIso());
-        var bob = new Users(); bob.setUserId("bob");
+        var bob = new Users(); bob.setUserId("bob"); bob.setIntegrationAccess(new com.raxim.myscoutee.profile.data.document.IntegrationAccess(1, com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.WRITE, Map.of()));
         when(users.findByUserId("bob")).thenReturn(Optional.of(bob));
         when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner")).thenReturn(List.of(client));
         when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("bob")).thenReturn(List.of(second));
@@ -269,4 +270,14 @@ class McpAuthorizationServiceTest {
             assertThatThrownBy(()->McpAuthorizationService.redirectUri(url)).isInstanceOf(ResponseStatusException.class);
         assertThat(McpAuthorizationService.redirectUri("http://127.0.0.1:4352/callback")).contains("4352");
     }
+    @Test void absentMcpPreferenceIsBlockedWithoutGeneratingAConnection() {
+        var owner = new Users(); owner.setUserId("owner");
+        when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
+        assertThat(service.context("owner", request()).accessMode()).isEqualTo(com.raxim.myscoutee.profile.data.document.IntegrationAccess.Mode.BLOCKED);
+        assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(request(), true, "owner")))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        verify(keys, never()).create(anyString(), any(), anyString());
+        verify(grants, never()).save(any());
+    }
+
 }

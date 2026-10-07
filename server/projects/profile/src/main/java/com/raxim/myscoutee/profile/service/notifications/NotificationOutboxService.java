@@ -62,6 +62,8 @@ public class NotificationOutboxService {
     @Autowired
     private JobGroupScopeService jobGroupScope;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private ObjectProvider<com.raxim.myscoutee.profile.service.IntegrationWebhookService> integrationWebhooks;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final PlatformParametersService platformParametersService;
@@ -326,6 +328,9 @@ public class NotificationOutboxService {
         UserNotificationService userNotificationService = userNotificationServiceProvider.getIfAvailable();
         if (userNotificationService != null) {
             userNotificationService.materialize(item);
+            if (integrationWebhooks != null && ("app-admin".equals(item.getEntityType()) || "operator".equals(item.getEntityType()))) {
+                integrationWebhooks.getObject().enqueueRoleAttention(item);
+            }
         }
     }
 

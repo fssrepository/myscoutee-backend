@@ -1,6 +1,17 @@
 # INTEGRATION-ACCESS-001 — API/MCP access packs and domain operations
 
-Stable checklist for MSC-116. Record execution status/evidence in the QA matrix,
+## Publication preparation follow-up — MSC-119, 2026-10-07
+
+Execution remains **NOT RUN**. After consolidation, include the MCP repository's
+`plugins/PUBLICATION_HANDOFF.md` and canonical five positive/three negative review
+cases in host QA. Check the actual packaged 1.6.0 version, all explicit tool effect
+annotations, two-account OAuth isolation, permitted reads/organizing commands,
+and refusal of personal decisions/privileged writes. Anonymous-help packages
+must use their separate help-only cases. The ZIP/source checks recorded in the
+handoff do not mark these functional cases PASS. Reconcile the other session's
+latest checklist/ledger changes before executing the full campaign.
+
+Stable checklist for MSC-116 and MSC-119. Record execution status/evidence in the QA matrix,
 not this document. Previous API or explanation-guide PASS results do not cover
 this extension. Tests are scheduled separately; creating this checklist is not a
 PASS. Use the versioned fixture/browser launcher when a fixture-backed run is
@@ -19,10 +30,10 @@ Use disposable resources. Never put tokens or private messages into evidence.
 1. Open Profile → API/integrations. Confirm a shield button beside each API key's
    copy control, the main MCP URL, each manual MCP client and each OAuth client.
 2. Open each selector. Its label identifies the target. Check fixed red Blocked,
-   amber Write, green Full segments, current-state label and changing shield color.
+   amber Write, blue Read, green Full segments, current-state label and changing shield color.
    The short explanation below follows the selected pack inside the standard
    light-blue message block. Ordinary rating controls retain their original appearance.
-3. Move between the three choices: no network request. X restores the opening
+3. Move between the four choices: no network request. X restores the opening
    selection. A changed-state tick stages the choice and closes the nested popup.
 4. Stage different values for API, main MCP and a client. The parent tick appears.
    Save once: exactly one settings PUT includes all values/revision. Reopen and
@@ -119,3 +130,53 @@ and stale-call rejection, sampled SDK operations and human-decision exclusions.
 Source compilation/schema comparison alone is not sufficient. Release and public
 plugin submission remain separate. Revoke disposable keys and remove only the
 resources created by this checkpoint through the existing cleanup flow.
+
+## MSC-119 extension — defaults, Events separation and privileged readers
+
+Status: **NOT RUN**. Earlier guide checks do not establish these new behaviors.
+
+1. On an account without saved access preferences, main MCP is Blocked; fresh
+   API/manual MCP client packs remain Write. Generating a key has no added approval
+   step and does not enable the main link. Explicit old Write/Full preferences persist.
+2. Set main/client combinations Read/Full and Full/Read: normal permitted queries
+   work, Events catalog is empty and subscriptions fail. Full/Full permits only the
+   current role/domain's catalog. Full→Read stops queued delivery and preserves reads.
+3. Admin settings load existing desktop API keys plus MCP rows in one GET. Its
+   parent tick saves both atomically. Blocking the old admin key stops overview;
+   do not regress the existing desktop endpoint. Local and HTTP drafts round-trip.
+4. Role MCP/regular integration connections: Write exposes no role operations;
+   Read/Full exposes adminOverview for app-admin and operatorMeasurements /
+   operatorRevenueReports for operator. Member/group identities cannot discover
+   or invoke these. Force a call with another identity or a revoked role: denied.
+5. Role integration credentials cannot invoke member organizing commands, legacy
+   /watch setup, moderation, payment, update approval, report sync or configuration
+   changes. No new writes are granted by Full. Existing interactive buttons work.
+6. Open `?` help: connection steps, four packs, Events purpose/setup/stop/limitations,
+   role readers and manual key help in EN/HU. Run its own guide, close, reopen;
+   return to the parent context without leaking its registration.
+7. Run permission guide: level, selected-pack explanation, Apply and Close targets.
+   Run both parent and help guides in base, Work, Community and role profiles.
+   Local seed reset and HTTP seeded revisions both contain the updated sections.
+   Existing user-edited help is not silently overwritten.
+
+
+## MSC-119 MCP User Guide verification — NOT RUN
+
+Use MSC-MCP-001, `guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf`.
+Artifact generation, source anchors, text extraction, the cover/table rendering
+and identical backend/frontend copies were checked; these are document checks.
+
+- [ ] Follow the automatic OAuth setup with separate ChatGPT and Claude users;
+  verify each consents to their own intended profile rather than a publisher account.
+- [ ] Follow the client-generation table for API and manual MCP credentials;
+  verify one-time reveal, expiry, cap, revocation and unchanged generation flow.
+- [ ] Match the four-pack and main/client tables to actual saved behavior,
+  including nested tick versus parent save and the initial main Blocked state.
+- [ ] Check the host's actual Scheduled location, account/workspace availability
+  and chosen execution environment; do not mark supported solely from documentation.
+- [ ] Follow Events setup only on a host advertising the extension; use
+  MCP-EVENTS-001 for lifecycle, role checks, delivery and stopping.
+- [ ] Confirm human ratings, ballots and personal decisions remain unavailable;
+  an ordinary Read pack is cumulative and is not a read-only member credential.
+- [ ] Check PDF links from both public README catalogs after deployment of the
+  documented revision. A source branch push does not imply a marketplace release.

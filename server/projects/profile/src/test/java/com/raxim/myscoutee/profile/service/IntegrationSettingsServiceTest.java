@@ -72,6 +72,12 @@ class IntegrationSettingsServiceTest {
             assertThat(access.effective("key", true).ordinal()).isEqualTo(Math.min(main.ordinal(), client.ordinal()));
             assertThat(access.effective("key", false)).isEqualTo(client);
         }
-        assertThat(IntegrationAccess.initial().effective("new", true)).isEqualTo(IntegrationAccess.Mode.WRITE);
+        assertThat(IntegrationAccess.initial().effective("new", true)).isEqualTo(IntegrationAccess.Mode.BLOCKED);
     }
+    @Test void readPackCapsFullClientAndKeepsApiDefaultWrite() {
+        var access = new IntegrationAccess(1, IntegrationAccess.Mode.READ, Map.of("mcp", IntegrationAccess.Mode.FULL));
+        assertThat(access.effective("mcp", true)).isEqualTo(IntegrationAccess.Mode.READ);
+        assertThat(IntegrationAccess.initial().effective("api", false)).isEqualTo(IntegrationAccess.Mode.WRITE);
+    }
+
 }
