@@ -43,12 +43,12 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.Chat;
-import com.raxim.myscoutee.profile.data.document.ChatMessage;
-import com.raxim.myscoutee.profile.data.document.AffinityConfig;
-import com.raxim.myscoutee.profile.data.document.AffinityRecomputeTask;
-import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
-import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.domain.chat.document.Chat;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage;
+import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
+import com.raxim.myscoutee.domain.affinity.document.AffinityRecomputeTask;
+import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
+import com.raxim.myscoutee.domain.accounts.document.Users;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;

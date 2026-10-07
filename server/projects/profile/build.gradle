@@ -9,6 +9,16 @@ plugins {
 group = 'com.raxim'
 version = System.getenv('MYSCOUTEE_VERSION') ?: '1.3.0'
 
+// JUnit compilation must never replace the classes used by the running dev app.
+def junitTasks = ['test', 'standardTest', 'embeddedTest', 'integrationTest',
+                  'qualificationTest', 'testClasses', 'compileTestJava', 'jacocoTestReport']
+def isolatedJunitBuild = providers.gradleProperty('isolatedJUnit')
+    .map { it.toBoolean() }
+    .orElse(gradle.startParameter.taskNames.any { junitTasks.contains(it.tokenize(':').last()) })
+if (isolatedJunitBuild.get()) {
+    layout.buildDirectory = layout.projectDirectory.dir('build/junit')
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(25)
@@ -110,10 +120,37 @@ tasks.named('jacocoTestReport') {
 
 tasks.named('test') {
 	useJUnitPlatform {
-		excludeTags 'qualification'
+		excludeTags 'qualification', 'integration'
 	}
 
 	finalizedBy jacocoTestReport
+}
+
+['standard', 'embedded'].each { level ->
+    tasks.register("${level}Test", Test) {
+        description = "Runs the ${level} JUnit group without external integration tests."
+        group = 'verification'
+        testClassesDirs = sourceSets.test.output.classesDirs
+        classpath = sourceSets.test.runtimeClasspath
+        shouldRunAfter test
+        useJUnitPlatform {
+            includeTags level
+            excludeTags 'qualification', 'integration'
+        }
+    }
+}
+
+tasks.register('integrationTest', Test) {
+    description = 'Runs opt-in integration tests; excluded from the default unit suite.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    shouldRunAfter test
+    useJUnitPlatform {
+        includeTags 'integration'
+        excludeTags 'qualification'
+    }
 }
 
 tasks.register('qualificationTest', Test) {
@@ -175,7 +212,7 @@ tasks.register('e2eTest', Test) {
 	classpath = sourceSets.e2eTest.runtimeClasspath
 	shouldRunAfter test
 	useJUnitPlatform {
-		includeTags 'e2e'
+		includeTags project.findProperty('e2eTestTag') ?: 'e2e'
 	}
 }
 
@@ -190,7 +227,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 def profileHotReloadEnabled = providers.environmentVariable('PROFILEMANAGEMENT_HOT_RELOAD')
-	.map { it.equalsIgnoreCase('true') }
+	.map { it.equalsIgnoreCase('true') && !isolatedJunitBuild.get() }
 	.orElse(false)
 
 tasks.named('bootRun') {

@@ -13,18 +13,18 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
-import com.raxim.myscoutee.common.config.properties.AffinityRecomputeProperties;
-import com.raxim.myscoutee.common.config.properties.AdminStatsProperties;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.common.config.properties.EmailProperties;
-import com.raxim.myscoutee.common.config.properties.FirebaseProperties;
-import com.raxim.myscoutee.common.config.properties.MediaStorageProperties;
+import com.raxim.myscoutee.domain.affinity.config.AffinityRecomputeProperties;
+import com.raxim.myscoutee.domain.administration.config.AdminStatsProperties;
+import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.email.config.EmailProperties;
+import com.raxim.myscoutee.domain.accounts.config.FirebaseProperties;
+import com.raxim.myscoutee.domain.media.config.MediaStorageProperties;
 import com.raxim.myscoutee.common.config.properties.OperatorConfigurationProperties;
 import com.raxim.myscoutee.common.config.properties.OperatorTlsProperties;
 import com.raxim.myscoutee.common.config.properties.OperatorUpdateProperties;
-import com.raxim.myscoutee.common.config.properties.RegistryProperties;
-import com.raxim.myscoutee.common.config.properties.RegistryDemoProperties;
-import com.raxim.myscoutee.common.config.properties.RegionSecurityProperties;
+import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.config.RegistryDemoProperties;
+import com.raxim.myscoutee.domain.access.config.RegionSecurityProperties;
 
 @Configuration
 @EnableConfigurationProperties({

@@ -1,0 +1,1345 @@
+{
+  "baseline": "8af73cf0a",
+  "main_classes": 682,
+  "mapped_classes": 645,
+  "domain_class_counts": {
+    "access": 39,
+    "accounts": 58,
+    "administration": 15,
+    "affinity": 33,
+    "assets": 11,
+    "campaigns": 8,
+    "chat": 21,
+    "community": 34,
+    "content": 29,
+    "email": 33,
+    "events": 100,
+    "groups": 13,
+    "help": 9,
+    "integrations": 50,
+    "localization": 10,
+    "media": 11,
+    "notifications": 22,
+    "operator": 61,
+    "payments": 52,
+    "platform": 21,
+    "registry": 14
+  },
+  "collections": {
+    "access": [
+      "accessGrants",
+      "accessPolicyDefinitions"
+    ],
+    "accounts": [
+      "accountPurgeJobs",
+      "navigatorContacts",
+      "privacyConsents",
+      "userExperienceProfiles",
+      "userFilterPreferences",
+      "userFriendships",
+      "userLoginAudits",
+      "userPageFilterPreferences",
+      "userSessionActions",
+      "userSessionStates",
+      "users"
+    ],
+    "administration": [
+      "adminMonitoring",
+      "adminStats"
+    ],
+    "affinity": [
+      "adminAffinityGraphEdges",
+      "adminAffinityGraphForests",
+      "adminAffinityGraphLayouts",
+      "adminAffinityGraphNodes",
+      "affinityConfigs",
+      "affinityRecomputeTasks",
+      "userAffinityEdges",
+      "userRates"
+    ],
+    "assets": [
+      "assetRequests",
+      "assets"
+    ],
+    "campaigns": [
+      "campaignRatingSummaries",
+      "campaigns"
+    ],
+    "chat": [
+      "chats",
+      "contactChatAccess"
+    ],
+    "community": [
+      "communityAnnouncements",
+      "communityProviders",
+      "communityScheduledTasks",
+      "serviceCases",
+      "serviceFeedback",
+      "serviceOfferings",
+      "serviceProviderCalendars"
+    ],
+    "content": [
+      "contentModerationItems",
+      "contentModerationState",
+      "ideaPosts",
+      "photoFeedPosts",
+      "shareTokens",
+      "userFeedback",
+      "userReports"
+    ],
+    "email": [
+      "emailCampaignRules",
+      "emailOutbox",
+      "emailTemplates",
+      "operatorEmailConfigurations",
+      "scheduledMessageDeliveries",
+      "scheduledMessageRuns",
+      "scheduledMessageTasks"
+    ],
+    "events": [
+      "activityEventRuntimeItems",
+      "activityMembers",
+      "activityMingleRounds",
+      "activityMingleSessions",
+      "activityResources",
+      "activitySubEventGroups",
+      "activitySubEventStageRuntime",
+      "eventFeedbackAnswers",
+      "eventFeedbackStates",
+      "eventLeaderboardEntries",
+      "eventTicketAudit",
+      "eventTickets",
+      "eventWatchSubscriptions",
+      "events"
+    ],
+    "groups": [
+      "communityGroups"
+    ],
+    "help": [
+      "helpCenterAudit",
+      "helpCenterGuideFields",
+      "helpCenterRevisions"
+    ],
+    "integrations": [
+      "integrationExternalIds",
+      "integrationParticipantInvites",
+      "integrationTokens",
+      "integrationWebhookDeliveries",
+      "integrationWebhookSubscriptions",
+      "mcpAuthorizations",
+      "mcpEventSubscriptions",
+      "mcpOAuthClients"
+    ],
+    "localization": [
+      "i18n_bundles",
+      "i18n_messages"
+    ],
+    "media": [],
+    "notifications": [
+      "notificationOutbox",
+      "notificationRuleConfigs",
+      "notificationTemplates",
+      "userNotifications"
+    ],
+    "operator": [
+      "globalIdentityLinkStates",
+      "globalIdentityPresenceChunkOutbox",
+      "operatorClaimSubmissionSnapshots",
+      "operatorRegistryEndpoints",
+      "operatorRegistrySettings",
+      "qualifiedMauReportOutbox",
+      "revenueReportOutbox"
+    ],
+    "payments": [
+      "affiliateLinks",
+      "affiliateRegistrations",
+      "eventCheckoutBasketItems",
+      "paymentMethodRegistrations",
+      "paymentProviders",
+      "payment_gateway_operations",
+      "payments",
+      "savedPaymentMethods"
+    ],
+    "platform": [
+      "appSettings",
+      "countryPartitions",
+      "deploymentConfigurations",
+      "schedulerPlanMarkers"
+    ],
+    "registry": []
+  },
+  "dependencies": [
+    {
+      "from": "access",
+      "to": "accounts",
+      "imports": 6
+    },
+    {
+      "from": "access",
+      "to": "administration",
+      "imports": 1
+    },
+    {
+      "from": "access",
+      "to": "assets",
+      "imports": 2
+    },
+    {
+      "from": "access",
+      "to": "chat",
+      "imports": 2
+    },
+    {
+      "from": "access",
+      "to": "events",
+      "imports": 4
+    },
+    {
+      "from": "access",
+      "to": "media",
+      "imports": 1
+    },
+    {
+      "from": "access",
+      "to": "platform",
+      "imports": 1
+    },
+    {
+      "from": "accounts",
+      "to": "access",
+      "imports": 7
+    },
+    {
+      "from": "accounts",
+      "to": "administration",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "affinity",
+      "imports": 7
+    },
+    {
+      "from": "accounts",
+      "to": "assets",
+      "imports": 11
+    },
+    {
+      "from": "accounts",
+      "to": "chat",
+      "imports": 17
+    },
+    {
+      "from": "accounts",
+      "to": "content",
+      "imports": 6
+    },
+    {
+      "from": "accounts",
+      "to": "email",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "events",
+      "imports": 23
+    },
+    {
+      "from": "accounts",
+      "to": "groups",
+      "imports": 4
+    },
+    {
+      "from": "accounts",
+      "to": "integrations",
+      "imports": 1
+    },
+    {
+      "from": "accounts",
+      "to": "media",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "notifications",
+      "imports": 7
+    },
+    {
+      "from": "accounts",
+      "to": "operator",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "payments",
+      "imports": 3
+    },
+    {
+      "from": "accounts",
+      "to": "platform",
+      "imports": 14
+    },
+    {
+      "from": "administration",
+      "to": "accounts",
+      "imports": 6
+    },
+    {
+      "from": "administration",
+      "to": "affinity",
+      "imports": 8
+    },
+    {
+      "from": "administration",
+      "to": "chat",
+      "imports": 2
+    },
+    {
+      "from": "administration",
+      "to": "content",
+      "imports": 9
+    },
+    {
+      "from": "administration",
+      "to": "help",
+      "imports": 4
+    },
+    {
+      "from": "administration",
+      "to": "notifications",
+      "imports": 7
+    },
+    {
+      "from": "administration",
+      "to": "platform",
+      "imports": 7
+    },
+    {
+      "from": "affinity",
+      "to": "accounts",
+      "imports": 26
+    },
+    {
+      "from": "affinity",
+      "to": "administration",
+      "imports": 11
+    },
+    {
+      "from": "affinity",
+      "to": "assets",
+      "imports": 3
+    },
+    {
+      "from": "affinity",
+      "to": "campaigns",
+      "imports": 1
+    },
+    {
+      "from": "affinity",
+      "to": "community",
+      "imports": 1
+    },
+    {
+      "from": "affinity",
+      "to": "content",
+      "imports": 1
+    },
+    {
+      "from": "affinity",
+      "to": "events",
+      "imports": 7
+    },
+    {
+      "from": "affinity",
+      "to": "groups",
+      "imports": 2
+    },
+    {
+      "from": "affinity",
+      "to": "notifications",
+      "imports": 6
+    },
+    {
+      "from": "affinity",
+      "to": "platform",
+      "imports": 11
+    },
+    {
+      "from": "assets",
+      "to": "access",
+      "imports": 4
+    },
+    {
+      "from": "assets",
+      "to": "accounts",
+      "imports": 5
+    },
+    {
+      "from": "assets",
+      "to": "administration",
+      "imports": 1
+    },
+    {
+      "from": "assets",
+      "to": "affinity",
+      "imports": 2
+    },
+    {
+      "from": "assets",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "assets",
+      "to": "content",
+      "imports": 1
+    },
+    {
+      "from": "assets",
+      "to": "events",
+      "imports": 10
+    },
+    {
+      "from": "assets",
+      "to": "localization",
+      "imports": 1
+    },
+    {
+      "from": "assets",
+      "to": "notifications",
+      "imports": 2
+    },
+    {
+      "from": "assets",
+      "to": "payments",
+      "imports": 2
+    },
+    {
+      "from": "campaigns",
+      "to": "accounts",
+      "imports": 4
+    },
+    {
+      "from": "campaigns",
+      "to": "affinity",
+      "imports": 5
+    },
+    {
+      "from": "campaigns",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "campaigns",
+      "to": "groups",
+      "imports": 2
+    },
+    {
+      "from": "campaigns",
+      "to": "media",
+      "imports": 2
+    },
+    {
+      "from": "chat",
+      "to": "access",
+      "imports": 4
+    },
+    {
+      "from": "chat",
+      "to": "accounts",
+      "imports": 14
+    },
+    {
+      "from": "chat",
+      "to": "administration",
+      "imports": 2
+    },
+    {
+      "from": "chat",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "chat",
+      "to": "assets",
+      "imports": 3
+    },
+    {
+      "from": "chat",
+      "to": "campaigns",
+      "imports": 1
+    },
+    {
+      "from": "chat",
+      "to": "community",
+      "imports": 2
+    },
+    {
+      "from": "chat",
+      "to": "events",
+      "imports": 11
+    },
+    {
+      "from": "chat",
+      "to": "groups",
+      "imports": 3
+    },
+    {
+      "from": "chat",
+      "to": "notifications",
+      "imports": 3
+    },
+    {
+      "from": "chat",
+      "to": "platform",
+      "imports": 1
+    },
+    {
+      "from": "community",
+      "to": "accounts",
+      "imports": 12
+    },
+    {
+      "from": "community",
+      "to": "affinity",
+      "imports": 2
+    },
+    {
+      "from": "community",
+      "to": "campaigns",
+      "imports": 1
+    },
+    {
+      "from": "community",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "community",
+      "to": "email",
+      "imports": 1
+    },
+    {
+      "from": "community",
+      "to": "events",
+      "imports": 10
+    },
+    {
+      "from": "community",
+      "to": "groups",
+      "imports": 19
+    },
+    {
+      "from": "community",
+      "to": "media",
+      "imports": 3
+    },
+    {
+      "from": "community",
+      "to": "notifications",
+      "imports": 5
+    },
+    {
+      "from": "community",
+      "to": "payments",
+      "imports": 1
+    },
+    {
+      "from": "community",
+      "to": "platform",
+      "imports": 4
+    },
+    {
+      "from": "content",
+      "to": "accounts",
+      "imports": 13
+    },
+    {
+      "from": "content",
+      "to": "administration",
+      "imports": 13
+    },
+    {
+      "from": "content",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "content",
+      "to": "assets",
+      "imports": 3
+    },
+    {
+      "from": "content",
+      "to": "chat",
+      "imports": 7
+    },
+    {
+      "from": "content",
+      "to": "events",
+      "imports": 5
+    },
+    {
+      "from": "content",
+      "to": "groups",
+      "imports": 1
+    },
+    {
+      "from": "content",
+      "to": "help",
+      "imports": 3
+    },
+    {
+      "from": "content",
+      "to": "media",
+      "imports": 12
+    },
+    {
+      "from": "content",
+      "to": "notifications",
+      "imports": 3
+    },
+    {
+      "from": "content",
+      "to": "platform",
+      "imports": 6
+    },
+    {
+      "from": "email",
+      "to": "accounts",
+      "imports": 10
+    },
+    {
+      "from": "email",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "email",
+      "to": "community",
+      "imports": 1
+    },
+    {
+      "from": "email",
+      "to": "events",
+      "imports": 4
+    },
+    {
+      "from": "email",
+      "to": "localization",
+      "imports": 4
+    },
+    {
+      "from": "email",
+      "to": "notifications",
+      "imports": 9
+    },
+    {
+      "from": "email",
+      "to": "platform",
+      "imports": 16
+    },
+    {
+      "from": "events",
+      "to": "access",
+      "imports": 17
+    },
+    {
+      "from": "events",
+      "to": "accounts",
+      "imports": 32
+    },
+    {
+      "from": "events",
+      "to": "administration",
+      "imports": 4
+    },
+    {
+      "from": "events",
+      "to": "affinity",
+      "imports": 15
+    },
+    {
+      "from": "events",
+      "to": "assets",
+      "imports": 6
+    },
+    {
+      "from": "events",
+      "to": "campaigns",
+      "imports": 1
+    },
+    {
+      "from": "events",
+      "to": "chat",
+      "imports": 4
+    },
+    {
+      "from": "events",
+      "to": "content",
+      "imports": 1
+    },
+    {
+      "from": "events",
+      "to": "email",
+      "imports": 1
+    },
+    {
+      "from": "events",
+      "to": "groups",
+      "imports": 3
+    },
+    {
+      "from": "events",
+      "to": "media",
+      "imports": 6
+    },
+    {
+      "from": "events",
+      "to": "notifications",
+      "imports": 20
+    },
+    {
+      "from": "events",
+      "to": "payments",
+      "imports": 12
+    },
+    {
+      "from": "events",
+      "to": "platform",
+      "imports": 14
+    },
+    {
+      "from": "groups",
+      "to": "accounts",
+      "imports": 15
+    },
+    {
+      "from": "groups",
+      "to": "administration",
+      "imports": 1
+    },
+    {
+      "from": "groups",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "groups",
+      "to": "content",
+      "imports": 3
+    },
+    {
+      "from": "groups",
+      "to": "events",
+      "imports": 9
+    },
+    {
+      "from": "groups",
+      "to": "integrations",
+      "imports": 1
+    },
+    {
+      "from": "help",
+      "to": "access",
+      "imports": 3
+    },
+    {
+      "from": "help",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "help",
+      "to": "administration",
+      "imports": 1
+    },
+    {
+      "from": "help",
+      "to": "content",
+      "imports": 1
+    },
+    {
+      "from": "help",
+      "to": "platform",
+      "imports": 3
+    },
+    {
+      "from": "integrations",
+      "to": "access",
+      "imports": 6
+    },
+    {
+      "from": "integrations",
+      "to": "accounts",
+      "imports": 14
+    },
+    {
+      "from": "integrations",
+      "to": "administration",
+      "imports": 2
+    },
+    {
+      "from": "integrations",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "integrations",
+      "to": "assets",
+      "imports": 10
+    },
+    {
+      "from": "integrations",
+      "to": "campaigns",
+      "imports": 6
+    },
+    {
+      "from": "integrations",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "integrations",
+      "to": "community",
+      "imports": 11
+    },
+    {
+      "from": "integrations",
+      "to": "events",
+      "imports": 22
+    },
+    {
+      "from": "integrations",
+      "to": "groups",
+      "imports": 8
+    },
+    {
+      "from": "integrations",
+      "to": "media",
+      "imports": 2
+    },
+    {
+      "from": "integrations",
+      "to": "notifications",
+      "imports": 1
+    },
+    {
+      "from": "integrations",
+      "to": "operator",
+      "imports": 4
+    },
+    {
+      "from": "integrations",
+      "to": "payments",
+      "imports": 2
+    },
+    {
+      "from": "integrations",
+      "to": "platform",
+      "imports": 10
+    },
+    {
+      "from": "media",
+      "to": "access",
+      "imports": 2
+    },
+    {
+      "from": "media",
+      "to": "accounts",
+      "imports": 4
+    },
+    {
+      "from": "notifications",
+      "to": "accounts",
+      "imports": 12
+    },
+    {
+      "from": "notifications",
+      "to": "administration",
+      "imports": 19
+    },
+    {
+      "from": "notifications",
+      "to": "chat",
+      "imports": 5
+    },
+    {
+      "from": "notifications",
+      "to": "content",
+      "imports": 2
+    },
+    {
+      "from": "notifications",
+      "to": "email",
+      "imports": 3
+    },
+    {
+      "from": "notifications",
+      "to": "events",
+      "imports": 2
+    },
+    {
+      "from": "notifications",
+      "to": "platform",
+      "imports": 18
+    },
+    {
+      "from": "operator",
+      "to": "accounts",
+      "imports": 14
+    },
+    {
+      "from": "operator",
+      "to": "assets",
+      "imports": 4
+    },
+    {
+      "from": "operator",
+      "to": "events",
+      "imports": 3
+    },
+    {
+      "from": "operator",
+      "to": "payments",
+      "imports": 4
+    },
+    {
+      "from": "operator",
+      "to": "platform",
+      "imports": 12
+    },
+    {
+      "from": "operator",
+      "to": "registry",
+      "imports": 106
+    },
+    {
+      "from": "payments",
+      "to": "accounts",
+      "imports": 6
+    },
+    {
+      "from": "payments",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "payments",
+      "to": "events",
+      "imports": 45
+    },
+    {
+      "from": "payments",
+      "to": "groups",
+      "imports": 1
+    },
+    {
+      "from": "payments",
+      "to": "integrations",
+      "imports": 4
+    },
+    {
+      "from": "payments",
+      "to": "localization",
+      "imports": 1
+    },
+    {
+      "from": "payments",
+      "to": "notifications",
+      "imports": 10
+    },
+    {
+      "from": "payments",
+      "to": "operator",
+      "imports": 3
+    },
+    {
+      "from": "payments",
+      "to": "platform",
+      "imports": 18
+    },
+    {
+      "from": "platform",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "platform",
+      "to": "affinity",
+      "imports": 2
+    },
+    {
+      "from": "platform",
+      "to": "assets",
+      "imports": 2
+    },
+    {
+      "from": "platform",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "platform",
+      "to": "events",
+      "imports": 4
+    },
+    {
+      "from": "platform",
+      "to": "groups",
+      "imports": 1
+    },
+    {
+      "from": "platform",
+      "to": "notifications",
+      "imports": 2
+    },
+    {
+      "from": "platform",
+      "to": "operator",
+      "imports": 5
+    },
+    {
+      "from": "platform",
+      "to": "payments",
+      "imports": 3
+    }
+  ],
+  "repository_dependencies": [
+    {
+      "from": "access",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "access",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "access",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "access",
+      "to": "events",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "affinity",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "assets",
+      "imports": 3
+    },
+    {
+      "from": "accounts",
+      "to": "chat",
+      "imports": 5
+    },
+    {
+      "from": "accounts",
+      "to": "content",
+      "imports": 2
+    },
+    {
+      "from": "accounts",
+      "to": "events",
+      "imports": 10
+    },
+    {
+      "from": "accounts",
+      "to": "notifications",
+      "imports": 1
+    },
+    {
+      "from": "administration",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "administration",
+      "to": "affinity",
+      "imports": 2
+    },
+    {
+      "from": "administration",
+      "to": "notifications",
+      "imports": 2
+    },
+    {
+      "from": "affinity",
+      "to": "accounts",
+      "imports": 7
+    },
+    {
+      "from": "affinity",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "affinity",
+      "to": "events",
+      "imports": 3
+    },
+    {
+      "from": "assets",
+      "to": "accounts",
+      "imports": 1
+    },
+    {
+      "from": "assets",
+      "to": "events",
+      "imports": 1
+    },
+    {
+      "from": "campaigns",
+      "to": "accounts",
+      "imports": 1
+    },
+    {
+      "from": "campaigns",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "campaigns",
+      "to": "chat",
+      "imports": 1
+    },
+    {
+      "from": "campaigns",
+      "to": "groups",
+      "imports": 1
+    },
+    {
+      "from": "chat",
+      "to": "accounts",
+      "imports": 4
+    },
+    {
+      "from": "chat",
+      "to": "community",
+      "imports": 1
+    },
+    {
+      "from": "chat",
+      "to": "events",
+      "imports": 3
+    },
+    {
+      "from": "community",
+      "to": "accounts",
+      "imports": 5
+    },
+    {
+      "from": "community",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "community",
+      "to": "events",
+      "imports": 2
+    },
+    {
+      "from": "community",
+      "to": "groups",
+      "imports": 2
+    },
+    {
+      "from": "content",
+      "to": "accounts",
+      "imports": 1
+    },
+    {
+      "from": "content",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "content",
+      "to": "chat",
+      "imports": 2
+    },
+    {
+      "from": "content",
+      "to": "events",
+      "imports": 1
+    },
+    {
+      "from": "email",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "email",
+      "to": "notifications",
+      "imports": 2
+    },
+    {
+      "from": "events",
+      "to": "accounts",
+      "imports": 9
+    },
+    {
+      "from": "events",
+      "to": "affinity",
+      "imports": 4
+    },
+    {
+      "from": "events",
+      "to": "platform",
+      "imports": 1
+    },
+    {
+      "from": "groups",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "groups",
+      "to": "content",
+      "imports": 1
+    },
+    {
+      "from": "groups",
+      "to": "events",
+      "imports": 3
+    },
+    {
+      "from": "help",
+      "to": "accounts",
+      "imports": 1
+    },
+    {
+      "from": "integrations",
+      "to": "accounts",
+      "imports": 6
+    },
+    {
+      "from": "integrations",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "integrations",
+      "to": "events",
+      "imports": 5
+    },
+    {
+      "from": "integrations",
+      "to": "groups",
+      "imports": 2
+    },
+    {
+      "from": "integrations",
+      "to": "platform",
+      "imports": 1
+    },
+    {
+      "from": "notifications",
+      "to": "accounts",
+      "imports": 5
+    },
+    {
+      "from": "notifications",
+      "to": "email",
+      "imports": 2
+    },
+    {
+      "from": "operator",
+      "to": "accounts",
+      "imports": 3
+    },
+    {
+      "from": "operator",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "operator",
+      "to": "events",
+      "imports": 1
+    },
+    {
+      "from": "operator",
+      "to": "payments",
+      "imports": 1
+    },
+    {
+      "from": "operator",
+      "to": "platform",
+      "imports": 1
+    },
+    {
+      "from": "payments",
+      "to": "accounts",
+      "imports": 1
+    },
+    {
+      "from": "payments",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "payments",
+      "to": "events",
+      "imports": 3
+    },
+    {
+      "from": "payments",
+      "to": "platform",
+      "imports": 5
+    },
+    {
+      "from": "platform",
+      "to": "accounts",
+      "imports": 1
+    },
+    {
+      "from": "platform",
+      "to": "affinity",
+      "imports": 1
+    },
+    {
+      "from": "platform",
+      "to": "assets",
+      "imports": 1
+    },
+    {
+      "from": "platform",
+      "to": "events",
+      "imports": 2
+    }
+  ],
+  "unit_test_class_counts": {
+    "access": 8,
+    "accounts": 14,
+    "administration": 6,
+    "affinity": 11,
+    "assets": 6,
+    "campaigns": 2,
+    "chat": 3,
+    "community": 6,
+    "content": 9,
+    "email": 12,
+    "events": 27,
+    "groups": 4,
+    "help": 1,
+    "integrations": 16,
+    "localization": 2,
+    "media": 3,
+    "notifications": 10,
+    "operator": 31,
+    "payments": 22,
+    "platform": 9,
+    "registry": 10
+  },
+  "current_main_classes": 679,
+  "dependency_method": "Explicit current-source imports; static counts, not runtime calls."
+}

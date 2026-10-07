@@ -7,14 +7,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.NoOpDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-import com.raxim.myscoutee.profile.data.document.AffinityConfig;
-import com.raxim.myscoutee.profile.data.document.UserRate;
-import com.raxim.myscoutee.profile.data.dto.rates.RatesDtos.UserRateRecordDto;
-import com.raxim.myscoutee.profile.repository.AffinityConfigsRepository;
-import com.raxim.myscoutee.profile.repository.UserExperienceProfilesRepository;
-import com.raxim.myscoutee.profile.repository.UserRatesRepository;
-import com.raxim.myscoutee.profile.repository.UsersRepository;
-import com.raxim.myscoutee.profile.service.AffinityCalculationService;
+import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
+import com.raxim.myscoutee.domain.affinity.document.UserRate;
+import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRateRecordDto;
+import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
+import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
+import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
+import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.affinity.service.AffinityCalculationService;
 
 /** Executes existing watcher-compiled code. No application compilation, server or database writes. */
 class RatingPrecisionProbe {
@@ -26,7 +26,8 @@ class RatingPrecisionProbe {
                 stub(AffinityConfigsRepository.class, Map.of("findFirstByActiveTrueOrderByVersionDesc", Optional.of(config))),
                 stub(UsersRepository.class, Map.of("findByUserIdIn", List.of())),
                 stub(UserRatesRepository.class, Map.of("findRelevantByUserIds", List.of())),
-                stub(UserExperienceProfilesRepository.class, Map.of("findByUserIdIn", List.of())));
+                stub(UserExperienceProfilesRepository.class, Map.of("findByUserIdIn", List.of())),
+                stub(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class, Map.of()));
         for (double score : new double[]{1, 6.25, 6.75, 20d / 3d, 10}) {
             var single = rate("single", "a", "b", score);
             var pair = rate("pair", "c", "d", score);

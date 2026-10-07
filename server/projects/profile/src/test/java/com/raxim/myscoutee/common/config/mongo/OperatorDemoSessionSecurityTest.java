@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+@org.junit.jupiter.api.Tag("standard")
 class OperatorDemoSessionSecurityTest {
     @Test
     void demoHeaderDoesNotMakeOperatorApiPublic() {

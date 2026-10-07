@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
+import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import jakarta.servlet.http.Cookie;
 
+@org.junit.jupiter.api.Tag("standard")
 class SessionMongoRoutingFilterTest {
     @AfterEach
     void clearMode() {

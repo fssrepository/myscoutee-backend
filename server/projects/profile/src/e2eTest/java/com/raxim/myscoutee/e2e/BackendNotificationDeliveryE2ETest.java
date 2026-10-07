@@ -51,11 +51,11 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.Chat;
-import com.raxim.myscoutee.profile.data.document.NotificationOutboxItem;
-import com.raxim.myscoutee.profile.data.document.Users;
-import com.raxim.myscoutee.profile.service.notifications.FirebaseMessagingGateway;
+import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.chat.document.Chat;
+import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
+import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;

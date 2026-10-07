@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raxim.myscoutee.common.config.bootstrap.OperatorBootstrapRequestSupport;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.service.media.MediaSessionAccessService;
+import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

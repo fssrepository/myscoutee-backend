@@ -31,14 +31,14 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import com.google.firebase.auth.FirebaseToken;
-import com.raxim.myscoutee.common.config.FirebaseConfig;
+import com.raxim.myscoutee.domain.accounts.config.FirebaseConfig;
 import com.raxim.myscoutee.Main;
-import com.raxim.myscoutee.common.config.firebase.FirebaseTokenVerifier;
-import com.raxim.myscoutee.common.config.firebase.dto.FirebaseCredential;
-import com.raxim.myscoutee.common.config.firebase.exception.FirebaseTokenInvalidException;
-import com.raxim.myscoutee.common.config.properties.ConfigProperties;
-import com.raxim.myscoutee.profile.data.document.AppSettings;
-import com.raxim.myscoutee.profile.service.AppSettingsService;
+import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier;
+import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
+import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;
+import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.document.AppSettings;
+import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;

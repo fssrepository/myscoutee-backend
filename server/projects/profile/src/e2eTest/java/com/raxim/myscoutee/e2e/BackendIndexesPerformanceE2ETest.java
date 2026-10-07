@@ -36,12 +36,12 @@ import org.springframework.test.context.DynamicPropertySource;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.profile.data.document.Chat;
-import com.raxim.myscoutee.profile.data.document.ChatMessage;
-import com.raxim.myscoutee.profile.data.document.ActivityEvent;
-import com.raxim.myscoutee.profile.data.document.ActivityMember;
-import com.raxim.myscoutee.profile.data.document.Payment;
-import com.raxim.myscoutee.profile.data.document.Users;
+import com.raxim.myscoutee.domain.chat.document.Chat;
+import com.raxim.myscoutee.domain.chat.document.ChatMessage;
+import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.payments.document.Payment;
+import com.raxim.myscoutee.domain.accounts.document.Users;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
