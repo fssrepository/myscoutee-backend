@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.administration.document.AdminStatsSnapshot;
+
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -30,7 +30,7 @@ import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class AdminGraphScienceService {
+public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affinity.api.GraphScience {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String STATUS_ACCEPTED = "accepted";
     private static final int TIMELINE_DAYS = 14;
@@ -53,21 +53,11 @@ public class AdminGraphScienceService {
         this.usersRepository = usersRepository;
     }
 
-    public void refresh(AdminStatsSnapshot snapshot) {
-        if (snapshot == null) {
-            return;
-        }
-        GraphScienceResult result = calculate("global".equals(snapshot.getStatsKey()) ? null : snapshot.getStatsKey());
-        snapshot.setGraphHealthScore(result.healthScore());
-        snapshot.setGraphHealthLabelKey(result.healthLabelKey());
-        snapshot.setGraphInsightKey(result.insightKey());
-        snapshot.setGraphMetrics(result.metrics());
-        snapshot.setGraphBridgeUsers(result.bridgeUsers());
-        snapshot.setGraphCommunities(result.communities());
-        snapshot.setGraphSignals(result.signals());
-        snapshot.setDailyGraphActivity(mergeDailyGraphActivity(
-                snapshot.getDailyGraphActivity(),
-                result.dailyGraphActivity()));
+    @Override public GraphScienceResult refresh(String statsKey, Map<String, Map<String, Long>> existing) {
+        GraphScienceResult result = calculate("global".equals(statsKey) ? null : statsKey);
+        return new GraphScienceResult(result.healthScore(), result.healthLabelKey(), result.insightKey(),
+                result.metrics(), result.bridgeUsers(), result.communities(), result.signals(),
+                mergeDailyGraphActivity(existing, result.dailyGraphActivity()));
     }
 
     private Map<String, Map<String, Long>> mergeDailyGraphActivity(
@@ -652,16 +642,6 @@ public class AdminGraphScienceService {
             return null;
         }
     }
-
-    private record GraphScienceResult(
-            int healthScore,
-            String healthLabelKey,
-            String insightKey,
-            Map<String, Long> metrics,
-            Map<String, Long> bridgeUsers,
-            Map<String, Long> communities,
-            Map<String, Long> signals,
-            Map<String, Map<String, Long>> dailyGraphActivity) {}
 
     private static final class GraphEdge {
         private final String left;

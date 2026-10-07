@@ -1,5 +1,9 @@
 package com.raxim.myscoutee.domain.administration.service;
 
+import com.raxim.myscoutee.domain.accounts.api.AdminCounterRefresh;
+
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+
 import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
@@ -33,7 +37,7 @@ public class AdminStatsTelemetryWorkerService {
     private final ObjectMapper objectMapper;
     private final AdminStatsService adminStatsService;
     private final AdminMonitoringService adminMonitoringService;
-    private final AdminMenuCounterService adminMenuCounterService;
+    private final AdminCounterRefresh adminMenuCounterService;
     private final AdminStatsProperties properties;
     private final RedisStreamRetentionService redisStreamRetentionService;
 
@@ -45,7 +49,7 @@ public class AdminStatsTelemetryWorkerService {
             ObjectMapper objectMapper,
             AdminStatsService adminStatsService,
             AdminMonitoringService adminMonitoringService,
-            AdminMenuCounterService adminMenuCounterService,
+            AdminCounterRefresh adminMenuCounterService,
             AdminStatsProperties properties,
             RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;

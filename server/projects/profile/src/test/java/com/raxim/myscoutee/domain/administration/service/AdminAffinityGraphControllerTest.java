@@ -27,7 +27,7 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGrap
 import com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphService;
 import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 import com.raxim.myscoutee.domain.administration.service.AdminMonitoringService;
-import com.raxim.myscoutee.domain.administration.service.AdminParamsService;
+import com.raxim.myscoutee.domain.affinity.service.AdminParamsService;
 import com.raxim.myscoutee.domain.administration.service.AdminStatsService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeMetricsService;
 import com.raxim.myscoutee.domain.help.service.HelpCenterService;

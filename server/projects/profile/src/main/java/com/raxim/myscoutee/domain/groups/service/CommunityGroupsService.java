@@ -4,7 +4,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
@@ -45,12 +45,12 @@ public class CommunityGroupsService {
     private final CommunityGroupProfilesService groupProfiles;
     private final ContentModerationService moderation;
     private final UserReportSubmissionsRepository reports;
-    private final AdminTelemetryService telemetry;
+    private final OperationalTelemetry telemetry;
     private final UserActivityCountersService counters;
     private final com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications;
     public CommunityGroupsService(CommunityGroupsRepository groups, ActivityMembersRepository memberships,
             UsersRepository users, HomeUserProfileService profiles, CommunityGroupProfilesService groupProfiles,
-            ContentModerationService moderation, UserReportSubmissionsRepository reports, AdminTelemetryService telemetry, UserActivityCountersService counters,
+            ContentModerationService moderation, UserReportSubmissionsRepository reports, OperationalTelemetry telemetry, UserActivityCountersService counters,
             com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications) {
         this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.groupProfiles = groupProfiles;
         this.moderation = moderation; this.reports = reports; this.telemetry = telemetry; this.counters = counters; this.notifications = notifications;

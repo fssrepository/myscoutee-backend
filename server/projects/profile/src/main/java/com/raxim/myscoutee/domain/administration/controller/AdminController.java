@@ -35,14 +35,14 @@ import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminActionRe
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostSaveRequestDto;
-import com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityGraph;
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
 import com.raxim.myscoutee.domain.administration.service.AdminMonitoringService;
-import com.raxim.myscoutee.domain.administration.service.AdminParamsService;
+import com.raxim.myscoutee.domain.affinity.api.AffinityParameters;
 import com.raxim.myscoutee.domain.administration.service.AdminStatsService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeMetricsService;
+import com.raxim.myscoutee.domain.affinity.api.RecomputeMetrics;
 import com.raxim.myscoutee.domain.help.api.HelpCenter;
-import com.raxim.myscoutee.domain.content.service.IdeaPostsService;
+import com.raxim.myscoutee.domain.content.api.IdeaPosts;
 import com.raxim.myscoutee.domain.notifications.api.NotificationAdministration;
 
 import java.util.List;
@@ -50,26 +50,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-    private final AdminModerationService adminModerationService;
+    private final AdministrativeAccess adminModerationService;
     private final HelpCenter helpCenterService;
-    private final IdeaPostsService ideaPostsService;
+    private final IdeaPosts ideaPostsService;
     private final NotificationAdministration adminNotificationService;
     private final AdminStatsService adminStatsService;
-    private final AdminParamsService adminParamsService;
+    private final AffinityParameters adminParamsService;
     private final AdminMonitoringService adminMonitoringService;
-    private final AdminAffinityGraphService adminAffinityGraphService;
-    private final AffinityRecomputeMetricsService affinityRecomputeMetricsService;
+    private final AffinityGraph adminAffinityGraphService;
+    private final RecomputeMetrics affinityRecomputeMetricsService;
 
     public AdminController(
-            AdminModerationService adminModerationService,
+            AdministrativeAccess adminModerationService,
             HelpCenter helpCenterService,
-            IdeaPostsService ideaPostsService,
+            IdeaPosts ideaPostsService,
             NotificationAdministration adminNotificationService,
             AdminStatsService adminStatsService,
-            AdminParamsService adminParamsService,
+            AffinityParameters adminParamsService,
             AdminMonitoringService adminMonitoringService,
-            AdminAffinityGraphService adminAffinityGraphService,
-            AffinityRecomputeMetricsService affinityRecomputeMetricsService) {
+            AffinityGraph adminAffinityGraphService,
+            RecomputeMetrics affinityRecomputeMetricsService) {
         this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
@@ -102,7 +102,7 @@ public class AdminController {
     }
 
     @GetMapping("/affinity-recompute/metrics")
-    public AffinityRecomputeMetricsService.Snapshot affinityRecomputeMetrics() {
+    public RecomputeMetrics.Snapshot affinityRecomputeMetrics() {
         return affinityRecomputeMetricsService.snapshot();
     }
 

@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.chat.service;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 
 import com.raxim.myscoutee.domain.chat.document.ContactChatAccess;
@@ -162,8 +162,8 @@ public class ChatService {
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
     private final NotificationInbox userNotificationService;
-    private final AdminTelemetryService adminTelemetryService;
-    private final AdminMenuCounterService adminMenuCounterService;
+    private final OperationalTelemetry adminTelemetryService;
+    private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
     private final ChatMapper chatMapper;
     private final ChatMessageMapper chatMessageMapper;
@@ -182,8 +182,8 @@ public class ChatService {
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
             NotificationInbox userNotificationService,
-            AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService,
+            OperationalTelemetry adminTelemetryService,
+            AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
             ChatMapper chatMapper,
             ChatMessageMapper chatMessageMapper) {

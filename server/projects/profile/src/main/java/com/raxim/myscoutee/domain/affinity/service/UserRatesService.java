@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.affinity.service;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.community.service.ServiceFeedbackService;
 import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
 
@@ -69,7 +69,7 @@ public class UserRatesService {
     private final AffinityCalculationService affinityCalculationService;
     private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final NotificationDelivery notificationOutboxService;
     private final OrganizerFollowingService organizerFollowingService;
@@ -82,7 +82,7 @@ public class UserRatesService {
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             NotificationDelivery notificationOutboxService,
             OrganizerFollowingService organizerFollowingService) {
@@ -105,7 +105,7 @@ public class UserRatesService {
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             OrganizerFollowingService organizerFollowingService) {
         this(
                 userRatesRepository,
@@ -1338,7 +1338,6 @@ public class UserRatesService {
         }
         return normalizeOptionalText(rate.displayId());
     }
-
 
     private String resolveCreatedUser(
             UserRateRecordDto rate,

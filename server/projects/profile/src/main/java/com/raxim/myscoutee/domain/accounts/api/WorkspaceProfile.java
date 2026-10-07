@@ -11,6 +11,7 @@ public interface WorkspaceProfile {
     String getStatus();
     String getHostTier();
     String getStatusText();
+    String getEmail();
     String getName();
     String getCity();
     List<String> getImages();

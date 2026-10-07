@@ -50,8 +50,8 @@ may need changes together.
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
 | 12 | content | 2 | 5 | Pending; existing admin-access methods exposed through interface | Whole domain not separated |
 | 13 | email | 2 | 5 | Pending; process catalog and notification template boundary touched | Whole domain not separated |
-| 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; access checkpoint |
-| 15 | administration | 4 | 7 | Pending; telemetry interface and notification counters touched | Whole domain not separated |
+| 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
+| 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; administration checkpoint |
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
 | 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 6/21 — #2 notifications, #9 campaigns, #14 access, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 7/21 — #2 notifications, #9 campaigns, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -628,7 +628,7 @@ imports, private attachments, and saved rating projection reload.
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java` | Verification only | Low; same queries and batching |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationCampaignCreateTest.java` | Verification only | Low; same queries and batching |
 
-## #14 access checkpoint
+## #14 `fb4695886`
 
 The current policy evaluator implements `AccessPermissions`; callers use this
 contract. Policy keys/annotations already belonged to the access API; the grant
@@ -753,3 +753,92 @@ private media and forwarded attachments, moderation privileges and revocation.
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsServiceTest.java` | Verification only | Low; same query count/order |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesServiceTest.java` | Verification only | Low; same query count/order |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventWatchServiceTest.java` | Verification only | Low; same query count/order |
+
+### #15 administration complete
+
+- Existing administration, content and affinity services now expose operation interfaces.
+  The affinity parameter editor and its regression tests moved to affinity; its HTTP
+  paths, payloads, validation, history and recomputation behavior remain unchanged.
+- Account-owned `AdminProfileCounterService` performs the existing profile reads,
+  counter updates and conditional saves. Administration owns queue facts and monitoring
+  snapshots. Counters remain cached once per workspace within each refresh; there are
+  no extra database reads per administrator.
+- Account-owned `ProfileStatisticsService` retains the existing scoped population,
+  status normalization, seed/staff exclusions and full-scan behavior. Affinity returns
+  calculated graph values; administration applies them to its own stored snapshot.
+- Telemetry uses an API event record with identical JSON fields. Integration statistics
+  use an administration-owned query with the same filter and projection. No Mongo
+  document classes or stored type aliases changed in this checkpoint.
+- Break risk: medium for Spring injection, workspace-scoped counters, graph history and
+  affinity configuration editing. Severe slowdown risk: low from this change, because
+  batching, query filters/counts and existing scans are retained. Existing graph/full
+  profile scans remain an E2E observation point, not a newly introduced optimization.
+- Evidence: 382 focused standard/embedded tests passed with no failures, errors or skips,
+  including both administration boundary directions, graph history, audience resolution,
+  configuration history, account/integration consumers and two new counter tests proving
+  workspace batching, unchanged-save suppression and context restoration. Existing dev
+  watcher compiled successfully and the application health check passed. E2E not run yet.
+- Public views and record payloads describe the in-process boundary; they do not prove
+  remote deployment or measured latency equivalence.
+
+Exact files in the administration checkpoint (including owner and consumer updates):
+
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AdminCounterRefresh.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileStatistics.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/AdminProfileCounterService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileStatisticsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdminAudience.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdminTelemetryEvent.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdministrativeQueues.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdministrativeStatistics.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/controller/AdminController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminAudienceService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminMenuCounterService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminMonitoringService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminParamsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminStatsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminStatsTelemetryWorkerService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminTelemetryEvent.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminTelemetryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdministrativeStatisticsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AffinityGraph.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/AffinityParameters.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/GraphScience.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/RecomputeMetrics.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/RecomputeQueue.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AdminAffinityGraphService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AdminGraphScienceService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AdminParamsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/AffinityRecomputeMetricsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/RecomputeQueueService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/service/UserRatesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/AdministrativeAccess.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/IdeaPosts.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/AdminModerationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/IdeaPostsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventFeedbackService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventCounterExpiryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityGroupsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/repository/AdminClientRepository.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/AdminClientAccessService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/AdminClientService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/JobAudience.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/AdminProfileCounterServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/administration/service/AdminAffinityGraphControllerTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/administration/service/AdminAudienceServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/administration/service/AdminMonitoringServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/administration/service/AdminParamsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/administration/service/AdminStatsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AdminGraphScienceServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/affinity/service/AdminParamsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/AdminModerationServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/AdminClientServiceTest.java`

@@ -5,17 +5,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.data.domain.Sort;
-import com.raxim.myscoutee.domain.administration.document.AdminStatsSnapshot;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeStatistics;
 
 @Repository
 public class AdminClientRepository {
     private final MongoTemplate mongo;
-    public AdminClientRepository(MongoTemplate mongo) { this.mongo = mongo; }
-    public AdminStatsSnapshot stats() {
-        Query query = Query.query(Criteria.where("statsKey").is("global"));
-        query.fields().include("generatedAtIso", "activeProfileGenders", "dailyActivity");
-        return mongo.findOne(query, AdminStatsSnapshot.class);
-    }
+    private final AdministrativeStatistics statistics;
+    public AdminClientRepository(MongoTemplate mongo, AdministrativeStatistics statistics) { this.mongo = mongo; this.statistics = statistics; }
+    public AdministrativeStatistics.Summary stats() { return statistics.global(); }
     public long unresolvedReports() { return unresolved("userReports"); }
     public long unresolvedFeedback() { return unresolved("userFeedback"); }
     private long unresolved(String collection) {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.affinity.document.AffinityRecomputeTask;
 
 @Service
-public class AffinityRecomputeMetricsService {
+public class AffinityRecomputeMetricsService implements com.raxim.myscoutee.domain.affinity.api.RecomputeMetrics {
     private static final class Counters {
         final LongAdder scheduledPasses = new LongAdder();
         final LongAdder wakeupPasses = new LongAdder();
@@ -150,25 +150,4 @@ public class AffinityRecomputeMetricsService {
         return value == null ? "" : value.trim();
     }
 
-    public record Snapshot(
-            long scheduledPasses,
-            long wakeupPasses,
-            long emptyPasses,
-            long busySkips,
-            long taskReadCount,
-            long avgTaskReadMs,
-            long tasksDue,
-            long tasksLeased,
-            long dueToRunningSamples,
-            long avgDueToRunningMs,
-            long enqueueToRunningSamples,
-            long avgEnqueueToRunningMs,
-            long recomputeRuntimeSamples,
-            long avgRecomputeRuntimeMs,
-            long changeStreamEvents,
-            long changeStreamIgnoredEvents,
-            long changeStreamImmediateWakeups,
-            long changeStreamTimerWakeups,
-            long changeStreamFutureTimers,
-            long changeStreamErrors) {}
 }

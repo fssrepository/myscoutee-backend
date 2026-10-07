@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.content.service;
 
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.media.api.MediaStorage;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 import java.util.Map;
@@ -53,7 +53,7 @@ import com.raxim.myscoutee.domain.content.repository.LandingArticlesRepository.L
 import com.raxim.myscoutee.domain.content.mapper.IdeaPostMapper;
 
 @Service
-public class IdeaPostsService {
+public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.IdeaPosts {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DEFAULT_LANG = "en";
     private static final int EXCERPT_MAX_LENGTH = 180;
@@ -76,7 +76,7 @@ public class IdeaPostsService {
     private final ConfigProperties configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final AppSettingsService appSettingsService;
     private final LandingArticlesRepository landingArticlesRepository;
     private final IdeaPostMapper ideaPostMapper;
@@ -87,7 +87,7 @@ public class IdeaPostsService {
             ConfigProperties configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             AppSettingsService appSettingsService,
             LandingArticlesRepository landingArticlesRepository,
             IdeaPostMapper ideaPostMapper,

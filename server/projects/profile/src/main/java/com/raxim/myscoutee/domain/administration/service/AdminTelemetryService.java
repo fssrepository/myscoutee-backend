@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.domain.administration.service;
 
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+
 import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,7 +25,7 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class AdminTelemetryService implements com.raxim.myscoutee.domain.administration.api.OperationalTelemetry {
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
 
     public static String streamKey(AdminStatsProperties properties, String groupId) {
         var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();

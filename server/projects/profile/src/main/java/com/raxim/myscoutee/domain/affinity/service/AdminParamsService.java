@@ -1,7 +1,11 @@
-package com.raxim.myscoutee.domain.administration.service;
+package com.raxim.myscoutee.domain.affinity.service;
+
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+
+import com.raxim.myscoutee.domain.administration.api.AdminAudience;
 
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,7 +37,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 import tools.jackson.databind.ObjectMapper;
 
 @Service
-public class AdminParamsService {
+public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.api.AffinityParameters {
     private static final String CONFIG_KEY = "default";
     private static final List<String> DISTANCE_STRATEGIES = List.of("linear", "exponential", "bucketed");
     private static final List<SectionDefinition> SECTIONS = List.of(
@@ -45,22 +49,22 @@ public class AdminParamsService {
             new SectionDefinition("notifications", "Notifications"),
             new SectionDefinition("jobs", "Jobs"));
 
-    private final AdminModerationService admins;
+    private final AdministrativeAccess admins;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final ObjectMapper objectMapper;
     private final NotificationDelivery notificationOutboxService;
-    private final AdminAudienceService adminAudienceService;
+    private final AdminAudience adminAudienceService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
 
     public AdminParamsService(
-            AdminModerationService admins,
+            AdministrativeAccess admins,
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
             NotificationDelivery notificationOutboxService,
-            AdminAudienceService adminAudienceService,
+            AdminAudience adminAudienceService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService) {
+            OperationalTelemetry adminTelemetryService) {
         this.admins = admins;
         this.affinityConfigsRepository = affinityConfigsRepository;
         this.objectMapper = objectMapper;

@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.assets.service;
 
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
@@ -128,7 +128,7 @@ public class AssetsService {
     private final MongoTemplate mongoTemplate;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final NotificationDelivery notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final AccessPermissions accessControlService;
@@ -148,7 +148,7 @@ public class AssetsService {
             MongoTemplate mongoTemplate,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             NotificationDelivery notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
             AccessPermissions accessControlService,

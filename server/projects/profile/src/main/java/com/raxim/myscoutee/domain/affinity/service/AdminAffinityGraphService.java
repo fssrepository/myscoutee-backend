@@ -42,7 +42,7 @@ import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepositor
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class AdminAffinityGraphService {
+public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.affinity.api.AffinityGraph {
     private static final Set<String> ACTIVE_GRAPH_PROFILE_STATUSES = Set.of("public", "friends only", "host only");
     private static final int MAX_DEPTH = 3;
     private static final int MAX_ZOOM = 6;

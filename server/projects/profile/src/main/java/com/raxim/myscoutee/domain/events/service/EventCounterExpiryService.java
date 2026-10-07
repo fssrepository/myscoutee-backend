@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
@@ -56,7 +56,7 @@ public class EventCounterExpiryService {
     private final UsersRepository usersRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationJobs notificationRuleRegistryService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final UserActivityCountersService userActivityCountersService;
     private final EventFriendshipProjectionService eventFriendshipProjectionService;
     private final int batchSize;
@@ -82,7 +82,7 @@ public class EventCounterExpiryService {
             UsersRepository usersRepository,
             MongoTemplate mongoTemplate,
             NotificationJobs notificationRuleRegistryService,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             UserActivityCountersService userActivityCountersService,
             EventFriendshipProjectionService eventFriendshipProjectionService,
             @Value("${events.counter-expiry.batch-size:200}") int batchSize) {

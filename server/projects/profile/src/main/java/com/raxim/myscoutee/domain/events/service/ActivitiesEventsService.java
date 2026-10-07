@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.events.service;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
@@ -200,7 +200,7 @@ public class ActivitiesEventsService {
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final MongoTemplate mongoTemplate;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
     private final NotificationDelivery notificationOutboxService;
@@ -239,7 +239,7 @@ public class ActivitiesEventsService {
             ScheduledMessageTaskService scheduledMessageTaskService,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             MongoTemplate mongoTemplate,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
             NotificationDelivery notificationOutboxService,

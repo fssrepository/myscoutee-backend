@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
@@ -132,7 +132,7 @@ public class ActivitiesMembersService {
     private final PaymentService paymentService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final ChatService chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final AccessPermissions accessControlService;
@@ -154,7 +154,7 @@ public class ActivitiesMembersService {
             PaymentService paymentService,
             EventInviteNotificationService eventInviteNotificationService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             ChatService chatService,
             EventSlotReadModelService eventSlotReadModelService,
             AccessPermissions accessControlService,
@@ -4697,7 +4697,6 @@ public class ActivitiesMembersService {
         }
         return false;
     }
-
 
     private boolean canCancelEventInvitation(String eventId, String actorUserId, String targetUserId) {
         ActivityMember target = findEventMember(eventId, targetUserId);

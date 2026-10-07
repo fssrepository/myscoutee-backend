@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.administration.document.AdminStatsSnapshot;
+
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -54,26 +54,24 @@ class AdminGraphScienceServiceTest {
                 member("event-1", "u1", "accepted", "2026-05-11T09:00:00Z"),
                 member("event-1", "u4", "accepted", "2026-05-11T09:05:00Z")));
 
-        AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
-
-        new AdminGraphScienceService(
+        var snapshot = new AdminGraphScienceService(
                 userAffinityEdgesRepository,
                 userRatesRepository,
                 activityMembersRepository,
                 usersRepository)
-                .refresh(snapshot);
+                .refresh(null, Map.of());
 
-        assertThat(snapshot.getGraphHealthScore()).isBetween(20, 100);
-        assertThat(snapshot.getGraphHealthLabelKey()).startsWith("stats.graph.health.");
-        assertThat(snapshot.getGraphInsightKey()).startsWith("stats.graph.insight.");
-        assertThat(snapshot.getGraphMetrics())
+        assertThat(snapshot.healthScore()).isBetween(20, 100);
+        assertThat(snapshot.healthLabelKey()).startsWith("stats.graph.health.");
+        assertThat(snapshot.insightKey()).startsWith("stats.graph.insight.");
+        assertThat(snapshot.metrics())
                 .containsEntry("users", 4L)
                 .containsKey("edges")
                 .containsKey("weak-tie-ratio")
                 .containsKey("recurring-edge-ratio");
-        assertThat(snapshot.getGraphSignals())
+        assertThat(snapshot.signals())
                 .containsKeys("reachability-2-hop", "clustering", "bridge-coverage");
-        assertThat(snapshot.getDailyGraphActivity()).hasSize(14);
+        assertThat(snapshot.dailyGraphActivity()).hasSize(14);
     }
 
     @Test
@@ -98,20 +96,18 @@ class AdminGraphScienceServiceTest {
                 "bridgeUsers", 9L,
                 "communities", 9L,
                 "clusterQuality", 99L));
-        AdminStatsSnapshot snapshot = new AdminStatsSnapshot();
-        snapshot.setDailyGraphActivity(existing);
 
-        new AdminGraphScienceService(
+        var snapshot = new AdminGraphScienceService(
                 userAffinityEdgesRepository,
                 userRatesRepository,
                 activityMembersRepository,
                 usersRepository)
-                .refresh(snapshot);
+                .refresh(null, existing);
 
-        assertThat(snapshot.getDailyGraphActivity()).hasSize(14);
-        assertThat(snapshot.getDailyGraphActivity().get(yesterdayKey))
+        assertThat(snapshot.dailyGraphActivity()).hasSize(14);
+        assertThat(snapshot.dailyGraphActivity().get(yesterdayKey))
                 .containsExactlyInAnyOrderEntriesOf(historical);
-        assertThat(snapshot.getDailyGraphActivity().get(todayKey))
+        assertThat(snapshot.dailyGraphActivity().get(todayKey))
                 .containsEntry("activeEdges", 0L)
                 .containsEntry("bridgeUsers", 0L)
                 .containsEntry("communities", 0L)

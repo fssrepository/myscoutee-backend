@@ -18,13 +18,13 @@ public class AdminClientService {
     public Overview overview(String owner) {
         var user = access.requireAdmin(owner);
         var stats = repository.stats();
-        Map<String, Long> genders = stats == null || stats.getActiveProfileGenders() == null ? Map.of() : stats.getActiveProfileGenders();
+        Map<String, Long> genders = stats == null || stats.activeProfileGenders() == null ? Map.of() : stats.activeProfileGenders();
         var activity = user.getActivities(); var chat = activity == null ? null : activity.chat();
         var support = chat == null ? null : chat.supportCases();
-        var daily = stats == null ? null : stats.getDailyActivity();
+        var daily = stats == null ? null : stats.dailyActivity();
         var today = LocalDate.now(ZoneOffset.UTC);
-        return new Overview(new Statistics(stats != null && stats.getActiveProfileGenders() != null,
-                stats == null ? null : stats.getGeneratedAtIso(), genders.values().stream().mapToLong(Long::longValue).sum(), genders,
+        return new Overview(new Statistics(stats != null && stats.activeProfileGenders() != null,
+                stats == null ? null : stats.generatedAtIso(), genders.values().stream().mapToLong(Long::longValue).sum(), genders,
                 registrations(daily, today, 7), registrations(daily, today, 30)),
                 new Attention(chat == null ? 0 : count(chat.all()), repository.unreadVersion(owner),
                         repository.unresolvedReports(), repository.unresolvedFeedback(), support == null ? 0 : count(support.pending()) + count(support.warned()) + count(support.picked()),

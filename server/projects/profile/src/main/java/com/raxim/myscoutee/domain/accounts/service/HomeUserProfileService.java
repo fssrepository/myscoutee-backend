@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
@@ -254,8 +254,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final RegionSecurity regionSecurityProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
-    private final AdminMenuCounterService adminMenuCounterService;
+    private final OperationalTelemetry adminTelemetryService;
+    private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
     private final AssetsService assetsService;
     private final AffiliateService affiliateService;
@@ -296,8 +296,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             RegionSecurity regionSecurityProperties,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService,
+            OperationalTelemetry adminTelemetryService,
+            AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
             AssetsService assetsService,
             AffiliateService affiliateService,

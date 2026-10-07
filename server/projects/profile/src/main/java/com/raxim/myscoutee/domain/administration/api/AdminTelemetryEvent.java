@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.administration.service;
+package com.raxim.myscoutee.domain.administration.api;
 
 import java.util.Map;
 

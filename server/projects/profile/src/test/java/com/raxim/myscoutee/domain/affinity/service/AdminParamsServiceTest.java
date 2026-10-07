@@ -1,4 +1,8 @@
-package com.raxim.myscoutee.domain.administration.service;
+package com.raxim.myscoutee.domain.affinity.service;
+
+import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
+
+import com.raxim.myscoutee.domain.administration.service.AdminAudienceService;
 
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.content.service.AdminModerationService;

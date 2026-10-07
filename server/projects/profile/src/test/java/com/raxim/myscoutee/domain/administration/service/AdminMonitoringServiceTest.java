@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.administration.service;
 
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+
 import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
