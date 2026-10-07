@@ -86,7 +86,7 @@ public class ServiceOfferingsService {
         validate(actor,r);var old=r.id()==null?null:visible(actor,r.id());
         if(old!=null&&(!actor.equals(old.ownerAccountId())||"trash".equals(old.status())))throw error(HttpStatus.FORBIDDEN);
         if(old!=null&&!Objects.equals(old.version(),r.version()))throw error(HttpStatus.CONFLICT);
-        if (r.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.service.MediaAccessPaths.ownedImageReference(url, profileId(actor)))) throw error(HttpStatus.BAD_REQUEST);
+        if (r.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(url, profileId(actor)))) throw error(HttpStatus.BAD_REQUEST);
         String now=Instant.now().toString();
         var s=persist(new ServiceOffering(old==null?UUID.randomUUID().toString():old.id(),CommunityGroup.COMMUNITY_BASE_ID,actor,
             r.title().trim(),r.description().trim(),r.category(),List.copyOf(r.imageUrls()),r.maxDistanceKm(),r.languages().stream().distinct().toList(),r.staffAccountIds().stream().distinct().toList(),

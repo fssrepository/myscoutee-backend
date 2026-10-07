@@ -7,7 +7,7 @@ import com.raxim.myscoutee.domain.community.repository.CommunityAnnouncementsRep
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
-import com.raxim.myscoutee.domain.media.document.DocumentAttachment;
+import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 
 import java.time.Instant;
@@ -73,9 +73,9 @@ public class CommunityAnnouncementsService {
         if (old != null && !Objects.equals(old.version(), r.version())) throw error(HttpStatus.CONFLICT);
         if (old != null && !old.ballots().isEmpty() && !r.voting()) throw error(HttpStatus.CONFLICT);
         String deadline = r.voting() ? iso(r.deadlineIso()) : null, now = iso(Instant.now().toString());
-        var attachments = r.attachments() == null ? List.<com.raxim.myscoutee.domain.media.document.DocumentAttachment>of() : r.attachments();
+        var attachments = r.attachments() == null ? List.<com.raxim.myscoutee.domain.media.dto.DocumentAttachment>of() : r.attachments();
         if (attachments.size() > 10) throw error(HttpStatus.BAD_REQUEST);
-        for (var file : attachments) com.raxim.myscoutee.domain.media.service.DocumentAttachments.validate(file, List.of(r.userId(), actor), old == null ? List.of() : old.attachments());
+        for (var file : attachments) com.raxim.myscoutee.domain.media.api.DocumentAttachments.validate(file, List.of(r.userId(), actor), old == null ? List.of() : old.attachments());
         boolean reopened = old != null && "published".equals(old.status()) && r.voting() && deadline.compareTo(now) > 0
                 && !Objects.equals(deadline, old.deadlineIso());
         var a = persist(new CommunityAnnouncement(old == null ? UUID.randomUUID().toString() : old.id(), r.communityId(), old == null ? actor : old.authorAccountId(),

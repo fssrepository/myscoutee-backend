@@ -7,10 +7,6 @@ import java.util.Base64;
 import java.util.HexFormat;
 import java.util.List;
 
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,27 +18,22 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredent
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.accounts.document.UserSessionState;
-import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
+import com.raxim.myscoutee.domain.accounts.api.AccountMediaSessions;
+import com.raxim.myscoutee.domain.media.api.MediaSessionAccess;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /** Media-only credential scoped to the authenticated app session and its database. */
 @Service
-public class MediaSessionAccessService {
+public class MediaSessionAccessService implements MediaSessionAccess {
     private static final String COOKIE = "myscoutee_media_session";
     private static final String DEMO_PREFIX = "demo.";
     private static final SecureRandom RANDOM = new SecureRandom();
-    private final MongoTemplate mongo;
+    private final AccountMediaSessions sessions;
 
-    public MediaSessionAccessService(MongoTemplate mongo) {
-        this.mongo = mongo;
-    }
-
-    public static boolean isPrivateRead(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return "/media/private".equals(path) || "/api/media/private".equals(path);
+    public MediaSessionAccessService(AccountMediaSessions sessions) {
+        this.sessions = sessions;
     }
 
     public Authentication authenticate(HttpServletRequest request) {
@@ -58,8 +49,7 @@ public class MediaSessionAccessService {
             return null;
         }
         // The primary-key lookup stays bounded by the user's two active sessions.
-        boolean active = mongo.exists(Query.query(Criteria.where("_id").is(userId)
-                .and("activeSessions").elemMatch(Criteria.where("mediaTokenHash").is(hash(value)))), UserSessionState.class);
+        boolean active = sessions.acceptsMediaToken(userId, hash(value));
         return active ? UsernamePasswordAuthenticationToken.authenticated(userId, null,
                 List.of(new SimpleGrantedAuthority("MEDIA"))) : null;
     }
@@ -70,25 +60,19 @@ public class MediaSessionAccessService {
                 || (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO
                     && !(authentication.getCredentials() instanceof FirebaseCredential))
                 || !(authentication.getPrincipal() instanceof FirebasePrincipal principal)) return;
-        String sessionId = request.getHeader(UserLoginSessionService.SESSION_ID_HEADER);
+        String sessionId = request.getHeader(AccountMediaSessions.SESSION_ID_HEADER);
         if (sessionId == null || sessionId.isBlank()) return;
-        Query session = Query.query(Criteria.where("_id").is(principal.getUserId())
-                .and("activeSessions.sessionId").is(sessionId));
-        session.fields().include("activeSessions");
-        UserSessionState state = mongo.findOne(session, UserSessionState.class);
-        if (state == null) return;
-        var active = state.getActiveSessions().stream().filter(s -> sessionId.equals(s.getSessionId())).findFirst().orElse(null);
+        var active = sessions.mediaToken(principal.getUserId(), sessionId).orElse(null);
         if (active == null) return;
         String existing = cookie(request);
         if (!existing.isEmpty() && sessionMode(request) == MongoSessionModeContext.currentMode()
-                && hash(existing).equals(active.getMediaTokenHash())) return;
+                && hash(existing).equals(active.hash())) return;
         byte[] bytes = new byte[32];
         RANDOM.nextBytes(bytes);
         String value = (MongoSessionModeContext.currentMode() == MongoSessionMode.DEMO ? DEMO_PREFIX : "")
                 + Base64.getUrlEncoder().withoutPadding().encodeToString(principal.getUserId().getBytes(StandardCharsets.UTF_8))
                 + "." + HexFormat.of().formatHex(bytes);
-        if (mongo.updateFirst(session, new Update().set("activeSessions.$.mediaTokenHash", hash(value)), UserSessionState.class)
-                .getMatchedCount() != 1) return;
+        if (!sessions.replaceMediaToken(principal.getUserId(), sessionId, hash(value))) return;
         response.addHeader(HttpHeaders.SET_COOKIE, ResponseCookie.from(COOKIE, value)
                 .httpOnly(true).secure(request.isSecure()).sameSite("Strict").path("/").build().toString());
     }

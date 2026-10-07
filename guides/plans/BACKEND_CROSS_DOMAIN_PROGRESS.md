@@ -54,12 +54,12 @@ may need changes together.
 | 15 | administration | 4 | 7 | Pending; telemetry interface and notification counters touched | Whole domain not separated |
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
-| 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; help checkpoint |
-| 19 | media | 0 | 0 | Pending: raw Mongo and service-boundary review | — |
+| 18 | help | 1 | 1 | Complete: help service, account consent and privacy contracts; owner indexes | 138 focused tests and 3 consent contract tests passed; `9368dcd92` |
+| 19 | media | 0 | 0 | Complete: storage/session contracts and owner indexes | 67 boundary/media/security tests and 30 consumer/serialization tests passed; media checkpoint |
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 3/21 — #2 notifications, #18 help and #20 localization.** A domain is complete when foreign
+**Completed domains: 4/21 — #2 notifications, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -464,3 +464,80 @@ Exact checkpoint files follow. Most authorization callers only change imports.
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/controller/ActivitiesResourcesControllerPolicyTest.java` | Verification only | Low; same operations |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesServiceTest.java` | Verification only | Low; same operations |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/help/service/HelpCenterServiceTest.java` | Verification only | Low; same operations |
+
+## #19 media checkpoint
+
+Existing media storage implements `MediaStorage`. Image-set result values move
+to that contract; path/attachment validation becomes an explicit public API. The
+four-field attachment record is a shared value, not a media repository entity,
+and now lives in `media.dto`. Its Mongo compatibility entry still writes and
+reads the original profile-package identity. A nested Object-valued BSON
+round-trip test verifies that identity as well as the fields.
+
+`MediaSessionAccess` exposes the current HTTP security adapter. Its implementation
+uses `AccountMediaSessions` for session lookup, token verification and replacement;
+only accounts reads/writes `UserSessionState`. Cookie format, whole-cookie hashing,
+REAL/DEMO separation, session revocation and conditional positional update remain
+unchanged. Authentication remains one primary-key existence query, cookie issuance
+retains one projected lookup and one conditional update.
+
+Indexes previously initialized by media belong to assets, events, content,
+campaigns and chat. Their names, keys, sparse/unique settings and REAL/DEMO
+database coverage are unchanged. Media has no remaining Mongo access.
+
+Verification: 67 focused media/security/purge/boundary tests, then 30 consumer and
+Mongo serialization tests passed. Wrong realm/token, revocation and absent session
+negative paths remain covered. No E2E or measured latency claim. The local servlet
+and MultipartFile adapter contracts still require transport adaptation for a
+future separate process; this checkpoint does not claim remote readiness.
+
+Break risk: medium for authentication wiring and attachment serialization; low for
+unchanged index and storage operations. Severe slowdown risk: low; no additional
+queries, file operations or network calls. E2E focus: authenticated private media
+reads, session revoke/logout, REAL/DEMO isolation, image import/deletion, attachments
+after save/reload and indexed media authorization.
+
+| File | Break risk | Severe slowdown risk |
+| --- | --- | --- |
+| `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md` | Documentation only | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/mongo/SessionMongoRoutingFilter.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/MediaPolicyFacts.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountMediaSessions.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/security/firebase/FirebaseFilter.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/AccountMediaSessionService.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/UserLoginSessionService.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/config/AssetsMediaIndexInitializer.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/config/CampaignsMediaIndexInitializer.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/document/Campaign.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/dto/CampaignDtos.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/campaigns/service/CampaignsService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/config/ChatMediaIndexInitializer.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/document/CommunityAnnouncement.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/dto/CommunityAnnouncementDtos.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityAnnouncementsService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/ServiceOfferingsService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/config/ContentMediaIndexInitializer.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/IdeaPostsService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/PhotoFeedService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/config/EventsMediaIndexInitializer.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationSyncService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/api/DocumentAttachments.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/api/MediaAccessPaths.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/api/MediaSessionAccess.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/api/MediaStorage.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/config/MediaPolicyIndexInitializer.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/controller/MediaController.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/document/DocumentAttachment.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/dto/DocumentAttachment.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/service/DocumentAttachments.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/service/MediaAccessPaths.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/service/MediaSessionAccessService.java` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/media/service/MediaStorageService.java` | Low: same implementation/index, exposed contract | Low; same operations |
+| `server/projects/profile/src/main/resources/mongo-domain-types.properties` | Medium: session or serialized value boundary | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/MediaPolicyFactsTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/controller/MediaControllerTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/service/MediaAccessPathsTest.java` | Verification only | Low; same operations |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/media/service/MediaSessionAccessServiceTest.java` | Verification only | Low; same operations |

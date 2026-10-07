@@ -15,7 +15,7 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseT
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
-import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
+import com.raxim.myscoutee.domain.media.api.MediaSessionAccess;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,14 +32,14 @@ public class FirebaseFilter extends OncePerRequestFilter {
     private final ConfigProperties configProperties;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final UserLoginSessionService userLoginSessionService;
-    private final MediaSessionAccessService mediaSessionAccess;
+    private final MediaSessionAccess mediaSessionAccess;
 
     public FirebaseFilter(
             FirebaseService firebaseService,
             ConfigProperties configProperties,
             FirebaseTokenVerifier firebaseTokenVerifier,
             UserLoginSessionService userLoginSessionService,
-            MediaSessionAccessService mediaSessionAccess) {
+            MediaSessionAccess mediaSessionAccess) {
         this.firebaseService = firebaseService;
         this.configProperties = configProperties;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
@@ -52,7 +52,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        if (MediaSessionAccessService.isPrivateRead(request)) {
+        if (MediaSessionAccess.isPrivateRead(request)) {
             Authentication media = mediaSessionAccess.authenticate(request);
             if (media == null || !("GET".equals(request.getMethod()) || "HEAD".equals(request.getMethod()))) {
                 response.setHeader("Cache-Control", "no-store");

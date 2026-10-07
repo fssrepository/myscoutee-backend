@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.community.dto;
 
 import java.util.List;
 import java.util.Map;
-import com.raxim.myscoutee.domain.media.document.DocumentAttachment;
+import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
 
 public final class CommunityAnnouncementDtos {
     private CommunityAnnouncementDtos() {}

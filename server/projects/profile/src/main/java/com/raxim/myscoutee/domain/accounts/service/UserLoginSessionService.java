@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserLoginSessionService {
-    public static final String SESSION_ID_HEADER = "X-App-Session-Id";
+    public static final String SESSION_ID_HEADER = com.raxim.myscoutee.domain.accounts.api.AccountMediaSessions.SESSION_ID_HEADER;
 
     private static final int MAX_OPAQUE_ID_LENGTH = 128;
     private static final String SECURITY_NOTIFICATION_TITLE_KEY =

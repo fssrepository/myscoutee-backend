@@ -43,7 +43,7 @@ public class SessionMongoRoutingFilter extends OncePerRequestFilter {
             return configProperties != null && configProperties.isMcpDemoEnabled()
                     ? MongoSessionMode.DEMO : MongoSessionMode.REAL;
         }
-        if (MediaSessionAccessService.isPrivateRead(request)) {
+        if (com.raxim.myscoutee.domain.media.api.MediaSessionAccess.isPrivateRead(request)) {
             return MediaSessionAccessService.sessionMode(request);
         }
         if (OperatorBootstrapRequestSupport.isLoginRequest(request)

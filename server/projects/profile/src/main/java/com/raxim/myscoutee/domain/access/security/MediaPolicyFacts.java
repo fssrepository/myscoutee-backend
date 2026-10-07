@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
-import com.raxim.myscoutee.domain.media.service.MediaAccessPaths;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 
 /** Current resource visibility; only small indexed metadata reads, never event graph reconstruction. */
 @Component

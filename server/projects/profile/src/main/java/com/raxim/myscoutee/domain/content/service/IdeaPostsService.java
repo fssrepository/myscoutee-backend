@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService;
+import com.raxim.myscoutee.domain.media.api.MediaStorage;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 import java.util.Map;
 import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto;
@@ -80,7 +80,7 @@ public class IdeaPostsService {
     private final AppSettingsService appSettingsService;
     private final LandingArticlesRepository landingArticlesRepository;
     private final IdeaPostMapper ideaPostMapper;
-    private final MediaStorageService mediaStorageService;
+    private final MediaStorage mediaStorageService;
 
     public IdeaPostsService(
             AdminModerationService admins,
@@ -91,7 +91,7 @@ public class IdeaPostsService {
             AppSettingsService appSettingsService,
             LandingArticlesRepository landingArticlesRepository,
             IdeaPostMapper ideaPostMapper,
-            MediaStorageService mediaStorageService) {
+            MediaStorage mediaStorageService) {
         this.admins = admins;
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;

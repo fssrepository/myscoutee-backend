@@ -145,10 +145,10 @@ public class CampaignsService {
         return saveRecord(actor, request, null, allocatedId);
     }
     private Item saveRecord(Users actor, Save request, Campaign old, String id) {
-        if (request.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.service.MediaAccessPaths.ownedImageReference(url, actor.getUserId()))) throw error(HttpStatus.BAD_REQUEST);
-        var attachments = request.attachments() == null ? List.<com.raxim.myscoutee.domain.media.document.DocumentAttachment>of() : request.attachments();
+        if (request.imageUrls().stream().anyMatch(url -> !com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(url, actor.getUserId()))) throw error(HttpStatus.BAD_REQUEST);
+        var attachments = request.attachments() == null ? List.<com.raxim.myscoutee.domain.media.dto.DocumentAttachment>of() : request.attachments();
         if (attachments.size() > 10) throw error(HttpStatus.BAD_REQUEST);
-        for (var file : attachments) com.raxim.myscoutee.domain.media.service.DocumentAttachments.validate(file, List.of(actor.getUserId()), old == null ? List.of() : old.attachments());
+        for (var file : attachments) com.raxim.myscoutee.domain.media.api.DocumentAttachments.validate(file, List.of(actor.getUserId()), old == null ? List.of() : old.attachments());
         String now = Instant.now().toString();
         return dto(actor, persist(new Campaign(id, actor.getWorkspaceGroupId(), actor.getUserId(),
             request.title().trim(), request.description().trim(), request.kind(), request.category(), List.copyOf(request.imageUrls()), List.copyOf(attachments),

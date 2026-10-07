@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.integrations.service;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
 import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService;
+import com.raxim.myscoutee.domain.media.api.MediaStorage;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationEv
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationSyncResponseDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationSyncResultDto;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationExternalIdsRepository;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService.StoredImageSet;
+import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @Service
 public class IntegrationSyncService {
@@ -59,14 +59,14 @@ public class IntegrationSyncService {
     private final MongoTemplate mongoTemplate;
     private final AssetsService assetsService;
     private final ActivitiesEventsService eventsService;
-    private final MediaStorageService mediaStorageService;
+    private final MediaStorage mediaStorageService;
 
     public IntegrationSyncService(
             IntegrationExternalIdsRepository externalIdsRepository,
             MongoTemplate mongoTemplate,
             AssetsService assetsService,
             ActivitiesEventsService eventsService,
-            MediaStorageService mediaStorageService, CampaignsService campaignsService) {
+            MediaStorage mediaStorageService, CampaignsService campaignsService) {
         this.externalIdsRepository = externalIdsRepository;
         this.mongoTemplate = mongoTemplate;
         this.assetsService = assetsService;

@@ -166,6 +166,19 @@ class MongoConverterConfigTest {
         assertThat(converter.read(Object.class, document)).isEqualTo(new FutureSnapshot("value"));
     }
 
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void attachmentContractRetainsStoredTypeIdentity() {
+        var converter = domainConverter();
+        var attachment = new com.raxim.myscoutee.domain.media.dto.DocumentAttachment(
+                "report.pdf", "/api/media/private?key=private/documents/u/e/report.pdf", "application/pdf", 42);
+        var document = new Document();
+        converter.write(new Payload(attachment), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.document.DocumentAttachment");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(attachment);
+    }
+
     private MappingMongoConverter domainConverter() {
         var converter = mappingMongoConverter();
         MongoConverterConfig.preserveDottedMongoMapKeys()

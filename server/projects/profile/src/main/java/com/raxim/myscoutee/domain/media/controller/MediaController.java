@@ -25,9 +25,9 @@ import com.raxim.myscoutee.domain.media.dto.MediaDtos.MediaUploadResponseDto;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.media.service.MediaStorageService;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService.StoredImageSet;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService.StoredMediaObject;
-import com.raxim.myscoutee.domain.media.service.MediaAccessPaths;
+import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
+import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredMediaObject;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 
 @RestController
 @RequestMapping("/media")

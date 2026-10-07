@@ -13,9 +13,9 @@ import org.springframework.data.mongodb.core.query.Query;
 class MediaPolicyFactsTest {
     @Test void editorCannotRepublishAnotherAuthorsPrivateImageOrACommunityDocument() {
         var prefix = "/api/media/private?key=";
-        assertThat(com.raxim.myscoutee.domain.media.service.MediaAccessPaths.ownedImageReference(prefix + "private%2Fimages%2Fgroup-work-author%2Fdraft%2Fx.webp", "group:work:author")).isTrue();
-        assertThat(com.raxim.myscoutee.domain.media.service.MediaAccessPaths.ownedImageReference(prefix + "private/images/other/draft/x.webp", "author")).isFalse();
-        assertThat(com.raxim.myscoutee.domain.media.service.MediaAccessPaths.ownedImageReference(prefix + "private/documents/author/draft/x.pdf", "author")).isFalse();
+        assertThat(com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(prefix + "private%2Fimages%2Fgroup-work-author%2Fdraft%2Fx.webp", "group:work:author")).isTrue();
+        assertThat(com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(prefix + "private/images/other/draft/x.webp", "author")).isFalse();
+        assertThat(com.raxim.myscoutee.domain.media.api.MediaAccessPaths.ownedImageReference(prefix + "private/documents/author/draft/x.pdf", "author")).isFalse();
     }
     @Test void serviceImagesRequirePublishedOfferingAndCommunityMembership() {
         var mongo = mock(MongoTemplate.class);

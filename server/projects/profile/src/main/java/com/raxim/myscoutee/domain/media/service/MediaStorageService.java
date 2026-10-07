@@ -32,13 +32,13 @@ import org.springframework.web.util.UriUtils;
 import com.raxim.myscoutee.domain.media.config.MediaStorageProperties;
 import com.raxim.myscoutee.domain.media.service.MediaObjectStoreClient;
 import com.raxim.myscoutee.domain.media.service.MediaObjectStoreClient.StoredObject;
-import com.raxim.myscoutee.domain.media.service.MediaAccessPaths;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
-public class MediaStorageService {
+public class MediaStorageService implements com.raxim.myscoutee.domain.media.api.MediaStorage {
     private static final String IMAGE_MEDIA_KIND = "images";
     private static final String AUDIO_MEDIA_KIND = "audio";
     private static final String IMAGE_VARIANT_CONTENT_TYPE = "image/webp";
@@ -601,7 +601,7 @@ public class MediaStorageService {
     }
 
     private String sanitizeSegment(String value) {
-        return com.raxim.myscoutee.domain.media.service.MediaAccessPaths.storageSegment(value);
+        return com.raxim.myscoutee.domain.media.api.MediaAccessPaths.storageSegment(value);
     }
 
     private String resolveExtension(String originalFilename, String contentType) {
@@ -650,19 +650,6 @@ public class MediaStorageService {
         } catch (IllegalArgumentException ex) {
             return "";
         }
-    }
-
-    public record StoredMediaObject(
-            byte[] bytes,
-            String contentType) {
-    }
-
-    public record StoredImageSet(
-            String imageUrl,
-            String originalUrl,
-            String smallUrl,
-            String mediumUrl,
-            String largeUrl) {
     }
 
     private record ImportedImage(

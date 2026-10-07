@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.media.service.MediaStorageService;
+import com.raxim.myscoutee.domain.media.api.MediaStorage;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
@@ -83,7 +83,7 @@ public class DeletedAccountPurgeService {
     private final AssetsRepository assetsRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
-    private final MediaStorageService mediaStorageService;
+    private final MediaStorage mediaStorageService;
     private final MongoTemplate mongoTemplate;
     private final PlatformParametersService platformParametersService;
     private NotificationJobs notificationRuleRegistryService;
@@ -98,7 +98,7 @@ public class DeletedAccountPurgeService {
             AssetsRepository assetsRepository,
             ActivityMembersRepository activityMembersRepository,
             AccountPurgeJobsRepository accountPurgeJobsRepository,
-            MediaStorageService mediaStorageService,
+            MediaStorage mediaStorageService,
             MongoTemplate mongoTemplate,
             PlatformParametersService platformParametersService) {
         this.usersRepository = usersRepository;

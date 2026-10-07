@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.campaigns.dto;
 
 import java.util.List;
-import com.raxim.myscoutee.domain.media.document.DocumentAttachment;
+import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
 
 public final class CampaignDtos {
     private CampaignDtos() {}

@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.media.service;
 
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;

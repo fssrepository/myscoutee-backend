@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.media.service;
+package com.raxim.myscoutee.domain.media.api;
 
 import java.util.Arrays;
 import java.util.List;

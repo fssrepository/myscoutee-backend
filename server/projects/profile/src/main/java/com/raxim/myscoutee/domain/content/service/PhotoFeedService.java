@@ -18,7 +18,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.content.dto.PhotoFeedDtos.*;
 import com.raxim.myscoutee.domain.content.repository.PhotoFeedRepository;
 import com.raxim.myscoutee.domain.content.mapper.PhotoFeedMapper;
-import com.raxim.myscoutee.domain.media.service.MediaAccessPaths;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
 
 @Service
