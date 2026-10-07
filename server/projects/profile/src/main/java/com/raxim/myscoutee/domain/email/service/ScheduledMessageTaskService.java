@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.email.service;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.community.service.ServiceFeedbackService;
 import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
-import com.raxim.myscoutee.domain.localization.service.TranslationService;
+import com.raxim.myscoutee.domain.localization.api.Translations;
 import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
@@ -121,7 +121,7 @@ public class ScheduledMessageTaskService {
     private ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider;
     private DeploymentBrandingResolver deploymentBrandingResolver;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
-    private TranslationService translationService;
+    private Translations translationService;
     private final ScheduledExecutorService taskExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable, "scheduled-message-task-controller");
         thread.setDaemon(true);
@@ -185,7 +185,7 @@ public class ScheduledMessageTaskService {
     }
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    void setTranslationService(TranslationService translationService) {
+    void setTranslationService(Translations translationService) {
         this.translationService = translationService;
     }
 

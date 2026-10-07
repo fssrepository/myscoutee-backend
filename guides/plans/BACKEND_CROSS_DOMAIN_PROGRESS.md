@@ -15,7 +15,8 @@ The earlier package reorganization remains documented in the
   not establish a complete boundary.
 - **Create a separate `[MSC-120]` commit after each domain is separated and
   verified.** Name the domain in the commit and record its verification and
-  commit identifier below. A partial boundary is not a completed domain.
+  commit identifier below. A partial boundary is not a completed domain. Keep
+  these domain checkpoint commits separate even though their MSC number matches.
 - Keep these domain numbers stable and use them in chat progress reports.
 - Repository Markdown and commit messages must be written in English.
 - Reuse existing services behind domain interfaces, with domain-owned transfer
@@ -37,7 +38,7 @@ may need changes together.
 | # | Domain | Files | Imports | Status | Verification / commit |
 | ---: | --- | ---: | ---: | --- | --- |
 | 1 | accounts | 4 | 23 | In progress: notification recipient, preference and counter API | First boundary tests passed; remaining account boundaries pending |
-| 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; notification checkpoint commit |
+| 2 | notifications | 6 | 7 | Complete: incoming/outgoing business-domain contracts and persistence ownership | 1638 local tests passed; final 38 focused tests passed; `96a049287` |
 | 3 | groups | 4 | 7 | Pending; group-name API and notification index ownership touched | Whole domain not separated |
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
@@ -55,10 +56,10 @@ may need changes together.
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
 | 18 | help | 1 | 1 | Pending | — |
 | 19 | media | 0 | 0 | Pending: raw Mongo and service-boundary review | — |
-| 20 | localization | 0 | 0 | Pending: full boundary review | — |
+| 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; localization checkpoint commit |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 1/21 — #2 notifications.** A domain is complete when foreign
+**Completed domains: 2/21 — #2 notifications and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -162,11 +163,11 @@ no percentage slowdown is asserted without measurement.
 | 1–2 | Repeated targeted JUnit run | 76 tests passed | — |
 | 1–2 | Expanded notification/accounts/email regression runs | Snapshot-fixture stubbing and generic provider declarations repaired; superseded by passing full suite | — |
 | 1–2 | Existing dev hot-deploy compiler | Successful builds and application restart observed; not E2E proof | — |
-| 2 | Full local suite, then final scheduler/boundary checks | 1638 passed, then 38 passed; no failures or skips | Notification checkpoint |
+| 2 | Full local suite, then final scheduler/boundary checks | 1638 passed, then 38 passed; no failures or skips | `96a049287` |
 
 Notification checkpoint commit subject:
 `[MSC-120] Isolate notifications behind domain service contracts`.
-The hash is recorded in the next checkpoint to avoid a self-referencing commit ID.
+Commit: `96a0492874f2be4fb8c02bfe4b64b90dff8d3dcf` (pushed to the working branch).
 Master remains at the pinned baseline.
 
 Final evidence for this checkpoint:
@@ -334,3 +335,52 @@ Unlisted algorithms and endpoint payloads are outside this commit's changes.
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/notifications/service/UserNotificationServiceTest.java` | Verification only | None in production |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/PaymentRefundServiceTest.java` | Verification only | None in production |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/DeploymentBrandingResolverTest.java` | Verification only | None in production |
+
+
+## #20 localization checkpoint — complete
+
+`Translations` and `TranslationBundles` expose the existing owners directly.
+Six foreign consumers in assets, payments and email now depend on these contracts.
+The localized message bodies, language negotiation, realm-specific caches, bundle
+version handling and refresh schedule are unchanged. No new query or network call
+is introduced; functional and severe slowdown risk are low. Future remote adapters
+must propagate the request locale and database realm rather than assuming local
+thread context. No remote adapter is implemented in this checkpoint.
+
+The notification boundary test is generalized as `domain/DomainServiceBoundaryTest`
+and reused for both completed domains. It checks both dependency directions and
+foreign collection literals in production bytecode. The localization HTTP
+controller still owns its existing service and returns the unchanged DTO.
+
+Verification: the existing isolated runner passed **132 tests, 0 failures,
+0 errors, 0 skipped**, selecting `domain.localization.*`,
+`domain.DomainServiceBoundaryTest`, `domain.email.*`,
+`domain.assets.service.AssetsServiceTest` and
+`domain.payments.service.EventCheckoutPricingServiceTest`. The selection includes
+standard and embedded tests. The dev watcher built successfully, restarted the
+application, and the application container remains healthy. E2E was not run.
+
+Commit subject: `[MSC-120] Isolate localization behind translation contracts`.
+The hash will be recorded in the next domain checkpoint. Master stays at
+`752ba4d15`; only the working branch receives this commit.
+
+### #20 exact changed files and risk
+
+All production changes below are interface declarations, implementation
+bindings or consumer type replacements. Their bodies, query counts and public
+HTTP serialization are unchanged. Functional risk: low; severe slowdown risk:
+low. The shared architecture test changes only verification.
+
+- `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/controller/PublicEmailUnsubscribeController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/DeletedAccountWarningWorker.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/EmailPresentationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/localization/api/TranslationBundles.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/localization/api/Translations.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/localization/service/I18nService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/localization/service/TranslationService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/service/EventCheckoutPricingService.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/notifications/NotificationDomainBoundaryTest.java`

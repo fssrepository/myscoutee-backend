@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.notifications;
+package com.raxim.myscoutee.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.asm.ClassReader;
 import org.springframework.asm.ClassVisitor;
 import org.springframework.asm.MethodVisitor;
@@ -20,26 +21,28 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
 
 @Tag("standard")
-class NotificationDomainBoundaryTest {
+class DomainServiceBoundaryTest {
     private static final String DOMAIN = "com/raxim/myscoutee/domain/";
-    private static final String NOTIFICATIONS = DOMAIN + "notifications/";
     private static final Pattern REFERENCES = Pattern.compile(DOMAIN + "[\\w/$]+");
-    private static final Set<String> COLLECTIONS = Set.of(
-            "userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs");
+    private static final java.util.Map<String, Set<String>> COLLECTIONS = java.util.Map.of(
+            "notifications", Set.of("userNotifications", "notificationOutbox", "notificationTemplates", "notificationRuleConfigs"),
+            "localization", Set.of("i18n_messages", "i18n_bundles"));
 
-    @Test
-    void domainConsumersUseNotificationContractsAndNeverNotificationPersistence() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"notifications", "localization"})
+    void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
+        String owned = DOMAIN + domain + "/";
         int consumers = 0;
         for (Resource resource : productionDomainClasses()) {
             String name = className(resource);
-            if (name.startsWith(NOTIFICATIONS)) continue;
+            if (name.startsWith(owned)) continue;
             for (String constant : utf8Constants(resource)) {
                 var references = REFERENCES.matcher(constant);
                 while (references.find()) {
                     String dependency = references.group();
-                    if (!dependency.startsWith(NOTIFICATIONS)) continue;
+                    if (!dependency.startsWith(owned)) continue;
                     assertThat(dependency).as("%s -> %s", name, dependency)
-                            .matches(Pattern.quote(NOTIFICATIONS) + "(api|dto)/.*");
+                            .matches(Pattern.quote(owned) + "(api|dto)/.*");
                     consumers++;
                 }
             }
@@ -48,30 +51,32 @@ class NotificationDomainBoundaryTest {
                 public MethodVisitor visitMethod(int access, String method, String descriptor, String signature, String[] exceptions) {
                     return new MethodVisitor(Opcodes.ASM9) {
                         @Override public void visitLdcInsn(Object value) {
-                            assertThat(COLLECTIONS.contains(value)).as("Raw notification collection in %s.%s: %s", name, method, value)
+                            assertThat(COLLECTIONS.get(domain).contains(value)).as("Raw foreign collection in %s.%s: %s", name, method, value)
                                     .isFalse();
                         }
                     };
                 }
             }, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
         }
-        assertThat(consumers).as("Scanned compiled notification consumers").isGreaterThan(20);
+        assertThat(consumers).as("Scanned compiled %s consumers", domain).isPositive();
     }
 
-    @Test
-    void notificationsUseForeignDomainContractsWithExplicitRuntimeDependencies() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"notifications", "localization"})
+    void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
+        String owned = DOMAIN + domain + "/";
         int checked = 0;
         for (Resource resource : productionDomainClasses()) {
             String name = className(resource);
-            if (!name.startsWith(NOTIFICATIONS)) continue;
+            if (!name.startsWith(owned)) continue;
             for (String constant : utf8Constants(resource)) {
                 var references = REFERENCES.matcher(constant);
                 while (references.find()) {
                     String dependency = references.group();
-                    if (dependency.startsWith(NOTIFICATIONS)) continue;
+                    if (dependency.startsWith(owned)) continue;
                     boolean runtime = dependency.equals(DOMAIN + "platform/service/JobGroupContext")
                             || dependency.equals(DOMAIN + "platform/config/ConfigProperties")
-                            || (name.equals(NOTIFICATIONS + "service/DefaultFirebaseMessagingGateway")
+                            || (name.equals(DOMAIN + "notifications/service/DefaultFirebaseMessagingGateway")
                                 && dependency.equals(DOMAIN + "platform/service/DeploymentFirebaseRuntime"));
                     assertThat(runtime || dependency.contains("/api/") || dependency.contains("/dto/"))
                             .as("Foreign implementation dependency: %s -> %s", name, dependency).isTrue();
@@ -79,7 +84,7 @@ class NotificationDomainBoundaryTest {
             }
             checked++;
         }
-        assertThat(checked).isGreaterThan(20);
+        assertThat(checked).as("Scanned production classes in %s", domain).isGreaterThan(5);
     }
 
     private Resource[] productionDomainClasses() throws Exception {

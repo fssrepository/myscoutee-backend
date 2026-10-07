@@ -10,7 +10,7 @@ import com.raxim.myscoutee.domain.events.service.ActivitiesResourcesService;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
 import com.raxim.myscoutee.domain.events.service.EventTicketAuditService;
 import com.raxim.myscoutee.domain.events.service.EventTicketService;
-import com.raxim.myscoutee.domain.localization.service.TranslationService;
+import com.raxim.myscoutee.domain.localization.api.Translations;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
 
@@ -135,7 +135,7 @@ public class AssetsService {
     private final UserActivityCountersService userActivityCountersService;
     private ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider;
     private EventTicketAuditService eventTicketAuditService;
-    private TranslationService translationService;
+    private Translations translationService;
     private EventCheckoutBasketService eventCheckoutBasketService;
 
     public AssetsService(
@@ -181,7 +181,7 @@ public class AssetsService {
     }
 
     @Autowired(required = false)
-    void setTranslationService(TranslationService translationService) {
+    void setTranslationService(Translations translationService) {
         this.translationService = translationService;
     }
 

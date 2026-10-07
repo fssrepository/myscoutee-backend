@@ -5,16 +5,16 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
-import com.raxim.myscoutee.domain.localization.service.I18nService;
+import com.raxim.myscoutee.domain.localization.api.TranslationBundles;
 import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
 
 @Service
 public class EmailPresentationService {
     private static final Pattern BODY = Pattern.compile("(?is)<body[^>]*>(.*?)</body>");
     private final DeploymentBrandingResolver branding;
-    private final I18nService i18n;
+    private final TranslationBundles i18n;
     private final EmailUnsubscribeService subscriptions;
-    public EmailPresentationService(DeploymentBrandingResolver branding, I18nService i18n, EmailUnsubscribeService subscriptions) {
+    public EmailPresentationService(DeploymentBrandingResolver branding, TranslationBundles i18n, EmailUnsubscribeService subscriptions) {
         this.branding = branding; this.i18n = i18n; this.subscriptions = subscriptions;
     }
 

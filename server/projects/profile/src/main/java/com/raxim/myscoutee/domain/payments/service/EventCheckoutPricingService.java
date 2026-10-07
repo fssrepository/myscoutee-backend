@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.payments.service;
 
 import com.raxim.myscoutee.domain.events.service.EventVipInvitation;
-import com.raxim.myscoutee.domain.localization.service.TranslationService;
+import com.raxim.myscoutee.domain.localization.api.Translations;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -51,13 +51,13 @@ public class EventCheckoutPricingService {
     public static final String INVALID_PROMO_CODE_MESSAGE_KEY = "event.checkout.promo.invalid";
 
     private final ActivityEventsRepository activityEventsRepository;
-    private final TranslationService translationService;
+    private final Translations translationService;
     private final ActivityMembersRepository activityMembersRepository;
 
     public EventCheckoutPricingService(
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
-            TranslationService translationService) {
+            Translations translationService) {
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.translationService = translationService;
