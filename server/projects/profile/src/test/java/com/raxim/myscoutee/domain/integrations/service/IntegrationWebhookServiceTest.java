@@ -206,6 +206,7 @@ class IntegrationWebhookServiceTest {
                 true,
                 100,
                 100);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate));
     }
 
     @Test

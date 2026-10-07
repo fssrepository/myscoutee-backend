@@ -37,7 +37,7 @@ import com.raxim.myscoutee.domain.payments.repository.EventCheckoutBasketItemsRe
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class EventCheckoutBasketService {
+public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.payments.api.CheckoutResults {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
 

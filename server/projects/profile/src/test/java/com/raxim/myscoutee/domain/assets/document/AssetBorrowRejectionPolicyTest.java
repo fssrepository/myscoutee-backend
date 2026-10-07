@@ -13,7 +13,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 
 @org.junit.jupiter.api.Tag("standard")

@@ -48,8 +48,8 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserChatCountersDto;
@@ -1359,6 +1359,7 @@ class ChatServiceTest {
     }
 
     private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo));
         var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class));
         org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "ratings", ratings);

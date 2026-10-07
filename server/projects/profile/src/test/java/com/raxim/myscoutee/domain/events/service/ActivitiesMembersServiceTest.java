@@ -713,7 +713,7 @@ class ActivitiesMembersServiceTest {
         scopedAsset.setAssetId("asset-1");
         scopedAsset.setOwnerUserId("owner-1");
         scopedAsset.setTitle("City-to-Lake SUV");
-        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        scopedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "invitee-1",
                 "Lucas Lane",
@@ -723,7 +723,7 @@ class ActivitiesMembersServiceTest {
                 "",
                 "invite",
                 "2026-07-23T00:00:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         "event-1",
                         "Seattle Wildflower Meetup",
                         "subevent-1",
@@ -779,7 +779,7 @@ class ActivitiesMembersServiceTest {
         scopedAsset.setAssetId("asset-1");
         scopedAsset.setOwnerUserId("owner-1");
         scopedAsset.setTitle("City-to-Lake SUV");
-        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        scopedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "manager-1",
                 "Asset Manager",
@@ -789,7 +789,7 @@ class ActivitiesMembersServiceTest {
                 "Promoted to asset manager.",
                 "invite",
                 "2026-07-23T00:00:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         "event-1",
                         "Seattle Wildflower Meetup",
                         "subevent-1",
@@ -854,7 +854,7 @@ class ActivitiesMembersServiceTest {
         scopedAsset.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
         scopedAsset.setTitle("City-to-Lake SUV");
         scopedAsset.setStatus("UR");
-        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        scopedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "manager-1",
                 "Asset Manager",
@@ -982,7 +982,7 @@ class ActivitiesMembersServiceTest {
         scopedAsset.setAssetId("asset-1");
         scopedAsset.setOwnerUserId("owner-1");
         scopedAsset.setTitle("City-to-Lake SUV");
-        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        scopedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "borrower-1",
                 "Nagy Eszter",
@@ -992,7 +992,7 @@ class ActivitiesMembersServiceTest {
                 "",
                 "borrow",
                 "2026-07-23T18:37:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         "event-1",
                         "Creative Nights Series",
                         "subevent-1",
@@ -1059,7 +1059,7 @@ class ActivitiesMembersServiceTest {
     void approvingScopedBorrowReturnsOnlyTheBorrowerAsAcceptedManager() {
         String eventId = "event-1:slot:slot-1:2026-09-09T02:24:00Z";
         String subEventId = "subevent-1";
-        Asset.AssetRequestBookingRecord booking = new Asset.AssetRequestBookingRecord(
+        com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord booking = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                 eventId,
                 "QA Event",
                 subEventId,
@@ -1080,7 +1080,7 @@ class ActivitiesMembersServiceTest {
         pendingAsset.setOwnerUserId("asset-owner");
         pendingAsset.setTitle("Paid Transport");
         pendingAsset.setStatus("A");
-        pendingAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        pendingAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "borrower-1",
                 "Nova Social",
@@ -1096,7 +1096,7 @@ class ActivitiesMembersServiceTest {
         acceptedAsset.setOwnerUserId("asset-owner");
         acceptedAsset.setTitle("Paid Transport");
         acceptedAsset.setStatus("A");
-        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        acceptedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "borrower-1",
                 "Nova Social",
@@ -1239,7 +1239,7 @@ class ActivitiesMembersServiceTest {
         scopedAsset.setOwnerUserId("asset-owner");
         scopedAsset.setTitle("Owner transport");
         scopedAsset.setStatus("A");
-        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        scopedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "target",
                 "Target User",
@@ -1249,7 +1249,7 @@ class ActivitiesMembersServiceTest {
                 "Awaiting invitation response.",
                 "invite",
                 "2026-09-01T08:00:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         eventId,
                         "Event",
                         subEventId,
@@ -1314,7 +1314,7 @@ class ActivitiesMembersServiceTest {
         scopedAsset.setOwnerUserId("asset-owner");
         scopedAsset.setTitle("Owner transport");
         scopedAsset.setStatus("A");
-        scopedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        scopedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "manager-1",
                 "Asset Manager",
@@ -1324,7 +1324,7 @@ class ActivitiesMembersServiceTest {
                 "Promoted to asset manager.",
                 "invite",
                 "2026-09-03T08:00:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         eventId,
                         "Event",
                         subEventId,
@@ -1405,7 +1405,7 @@ class ActivitiesMembersServiceTest {
         pendingAsset.setOwnerUserId("asset-owner");
         pendingAsset.setTitle("Group transport");
         pendingAsset.setStatus("A");
-        pendingAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        pendingAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "invitee",
                 "Invited User",
@@ -1415,7 +1415,7 @@ class ActivitiesMembersServiceTest {
                 "Awaiting invitation response.",
                 "invite",
                 "2026-09-03T08:00:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         eventId,
                         "Tournament",
                         subEventId,
@@ -1436,7 +1436,7 @@ class ActivitiesMembersServiceTest {
         acceptedAsset.setOwnerUserId("asset-owner");
         acceptedAsset.setTitle("Group transport");
         acceptedAsset.setStatus("A");
-        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        acceptedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "invitee",
                 "Invited User",
@@ -1500,7 +1500,7 @@ class ActivitiesMembersServiceTest {
         acceptedAsset.setOwnerUserId("asset-owner");
         acceptedAsset.setTitle("Group transport");
         acceptedAsset.setStatus("A");
-        acceptedAsset.setRequests(List.of(new Asset.AssetRequestRecord(
+        acceptedAsset.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "member-1",
                 "Accepted Member",
@@ -1510,7 +1510,7 @@ class ActivitiesMembersServiceTest {
                 "Approved and synced with the plan.",
                 "borrow",
                 "2026-09-03T08:00:00Z",
-                new Asset.AssetRequestBookingRecord(
+                new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
                         eventId,
                         "Tournament",
                         subEventId,

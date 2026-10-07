@@ -38,6 +38,10 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 @org.junit.jupiter.api.Tag("standard")
 class DeletedAccountPurgeServiceTest {
     private void wireGlobalJob(DeletedAccountPurgeService service, MongoTemplate mongoTemplate) {
+        var owner = org.springframework.test.util.ReflectionTestUtils.getField(service, "assetsRepository");
+        var repository = (AssetsRepository) org.springframework.test.util.ReflectionTestUtils.getField(owner, "assets");
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetPrivacy", new com.raxim.myscoutee.domain.assets.service.AssetPrivacyService(repository, mongoTemplate,
+            (com.raxim.myscoutee.domain.media.api.MediaStorage) org.springframework.test.util.ReflectionTestUtils.getField(service, "mediaStorageService")));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "contentPrivacy", new com.raxim.myscoutee.domain.content.service.ContentPrivacyService(mongoTemplate,
             (com.raxim.myscoutee.domain.media.api.MediaStorage) org.springframework.test.util.ReflectionTestUtils.getField(service, "mediaStorageService")));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "affinityPrivacy", new com.raxim.myscoutee.domain.affinity.service.AffinityPrivacyService(mongoTemplate));
@@ -106,7 +110,7 @@ class DeletedAccountPurgeServiceTest {
                 chatsRepository,
                 chatMessagesRepository,
                 activityEventsRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
@@ -171,7 +175,7 @@ class DeletedAccountPurgeServiceTest {
                 chatsRepository,
                 chatMessagesRepository,
                 activityEventsRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,
@@ -224,7 +228,7 @@ class DeletedAccountPurgeServiceTest {
                 chatsRepository,
                 chatMessagesRepository,
                 activityEventsRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 activityMembersRepository,
                 accountPurgeJobsRepository,
                 mediaStorageService,

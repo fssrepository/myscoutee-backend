@@ -47,4 +47,8 @@ public class EventOwnershipService implements EventOwnership {
     }
     private String normalizeId(String value) { return value == null ? "" : value.trim(); }
     @Override public java.util.Optional<ActivityEvent> findById(String id) { return events.findById(id); }
+    @Override public ActivityEvent findByIdOrSourceId(String id) {
+        return mongo.findOne(Query.query(new Criteria().orOperator(Criteria.where("_id").is(id),
+                Criteria.where("sourceId").is(id))), ActivityEvent.class);
+    }
 }

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
+import com.raxim.myscoutee.domain.assets.api.Assets;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
@@ -59,7 +59,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ActivitiesResourcesService {
+public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.events.api.ResourceAssignments {
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_DELETED = "D";
 
@@ -67,7 +67,7 @@ public class ActivitiesResourcesService {
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final UsersRepository usersRepository;
-    private final AssetsService assetsService;
+    private final Assets assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
     private final AccessPermissions accessControlService;
     private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
@@ -81,7 +81,7 @@ public class ActivitiesResourcesService {
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityEventsRepository activityEventsRepository,
             UsersRepository usersRepository,
-            AssetsService assetsService,
+            Assets assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
             AccessPermissions accessControlService,
             ActivitySubEventResourceMapper activitySubEventResourceMapper,

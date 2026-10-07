@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.payments.service;
+import com.raxim.myscoutee.domain.payments.dto.AssetPaymentReplacement;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
@@ -45,7 +46,7 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChange
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.domain.payments.service.PaymentGateway.AuthorizationResult;
@@ -54,7 +55,7 @@ import com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundResult;
 import com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundStatus;
 
 @Service
-public class PaymentService {
+public class PaymentService implements com.raxim.myscoutee.domain.payments.api.AssetPayments {
     private static final String BOOKING_STATUS_INITIATED = "initiated";
     private static final String BOOKING_STATUS_JOINED = "joined";
     private static final String BOOKING_STATUS_CANCELLED = "cancelled";
@@ -82,7 +83,7 @@ public class PaymentService {
     private final SavedPaymentMethodsService savedPaymentMethodsService;
     private final MongoTemplate mongoTemplate;
     private final ActivityEventsRepository activityEventsRepository;
-    private final AssetsRepository assetsRepository;
+    private final AssetOwnership assetsRepository;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
@@ -97,7 +98,7 @@ public class PaymentService {
             SavedPaymentMethodsService savedPaymentMethodsService,
             MongoTemplate mongoTemplate,
             ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository) {
+            AssetOwnership assetsRepository) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
@@ -845,15 +846,6 @@ public class PaymentService {
                 && hasText(payment.getContextSubEventId())
                 && !normalizeId(expectedSubEventId).equals(normalizeId(payment.getContextSubEventId()))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The " + label + " payment Sub-event scope does not match.");
-        }
-    }
-
-    public record AssetPaymentReplacement(
-            String predecessorPaymentId,
-            String successorPaymentId,
-            boolean paymentRequired) {
-        public static AssetPaymentReplacement free() {
-            return new AssetPaymentReplacement(null, null, false);
         }
     }
 

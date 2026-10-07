@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageAttachmen
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 
 @Service
-public class ChatAttachmentLifecycleService {
+public class ChatAttachmentLifecycleService implements com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle {
     private static final String TYPE_EVENT = "event";
     private static final String TYPE_ASSET = "asset";
     private static final String STATUS_AVAILABLE = "available";

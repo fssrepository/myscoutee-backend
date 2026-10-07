@@ -57,12 +57,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.community.dto.CaseConversation;
 
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
@@ -76,7 +76,7 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReplyReco
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventSupplyContributionEntryRecord;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseAssigneeRecord;
 import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseRecord;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDeviceDeleteRequestDto;
@@ -114,6 +114,8 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
 public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConversations, com.raxim.myscoutee.domain.chat.api.SupportMessages {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
+
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.RatingDirectory ratings;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
@@ -788,10 +790,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConv
     }
 
     private Asset findServiceChatAsset(String assetId) {
-        Criteria identity = new Criteria().orOperator(
-                Criteria.where("_id").is(assetId),
-                Criteria.where("assetId").is(assetId));
-        return mongoTemplate.findOne(Query.query(identity), Asset.class);
+        return assetOwnership.findByIdOrAssetId(assetId);
     }
 
     private List<Chat> reconcileServiceChatParticipants(
@@ -2562,9 +2561,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.CaseConv
         if (ownerUserIds.isEmpty() || assetIds.isEmpty()) {
             return Map.of();
         }
-        Query query = new Query(Criteria.where("ownerUserId").in(ownerUserIds).and("assetId").in(assetIds));
         Map<String, Asset> result = new LinkedHashMap<>();
-        for (Asset asset : mongoTemplate.find(query, Asset.class)) {
+        for (Asset asset : assetOwnership.findByOwnersAndIds(ownerUserIds, assetIds)) {
             String ownerUserId = normalizeId(asset == null ? null : asset.getOwnerUserId());
             String assetId = normalizeId(asset == null ? null : asset.getAssetId());
             if (StringUtils.hasText(ownerUserId) && StringUtils.hasText(assetId)) {

@@ -38,7 +38,7 @@ class McpEventsServiceTest {
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final JsonMapper json = JsonMapper.builder().build();
     final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
-    final McpEventsService service = new McpEventsService(subscriptions, users, assets, eventQueries,
+    final McpEventsService service = new McpEventsService(subscriptions, users, new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assets), eventQueries,
             mock(CommunityGroupProfilesService.class), oauth, crypto, callbacks, json, mongo, roles);
     final AuthenticatedIntegrationClient client = new AuthenticatedIntegrationClient("alice", "token-a", "shared-chatgpt",
             "mcp", IntegrationAccess.Mode.FULL, "grant-a");

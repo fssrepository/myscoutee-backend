@@ -43,14 +43,14 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.accounts.repository.AccountPurgeJobsRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
@@ -83,7 +83,8 @@ public class DeletedAccountPurgeService {
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final AssetsRepository assetsRepository;
+    @Autowired private com.raxim.myscoutee.domain.assets.api.AssetPrivacy assetPrivacy;
+    private final AssetOwnership assetsRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
     private final MediaStorage mediaStorageService;
@@ -98,7 +99,7 @@ public class DeletedAccountPurgeService {
             ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository,
             ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository,
+            AssetOwnership assetsRepository,
             ActivityMembersRepository activityMembersRepository,
             AccountPurgeJobsRepository accountPurgeJobsRepository,
             MediaStorage mediaStorageService,
@@ -256,7 +257,7 @@ public class DeletedAccountPurgeService {
             purgeOwnedEvents(ownedEvents, job.getOwnedEventIds());
 
             markStage(job, "owned-assets");
-            List<Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
+            List<? extends Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
             job.setOwnedAssetIds(mergeIds(job.getOwnedAssetIds(), assetIds(ownedAssets)));
             saveJob(job);
             purgeOwnedAssets(ownedAssets, job.getOwnedAssetIds());
@@ -266,7 +267,7 @@ public class DeletedAccountPurgeService {
             purgeManagedEventAdminReferences(userId);
 
             markStage(job, "asset-requests");
-            purgeRemainingAssetRequests(userId);
+            assetPrivacy.purgeRemainingAssetRequests(userId);
 
             markStage(job, "activity-resources");
             purgeActivityResources(userId, job.getOwnedEventIds(), job.getOwnedAssetIds());
@@ -488,7 +489,7 @@ public class DeletedAccountPurgeService {
         }
     }
 
-    private List<String> assetIds(List<Asset> ownedAssets) {
+    private List<String> assetIds(List<? extends Asset> ownedAssets) {
         return (ownedAssets == null ? List.<Asset>of() : ownedAssets).stream()
                 .filter(Objects::nonNull)
                 .map(Asset::getAssetId)
@@ -498,13 +499,9 @@ public class DeletedAccountPurgeService {
                 .toList();
     }
 
-    private void purgeOwnedAssets(List<Asset> ownedAssets, Collection<String> assetIds) {
-        List<Asset> assets = ownedAssets == null ? List.of() : ownedAssets;
-        for (Asset asset : assets) {
-            if (asset != null) {
-                deletePurgeMedia(asset.getImageUrl());
-            }
-        }
+    private void purgeOwnedAssets(List<? extends Asset> ownedAssets, Collection<String> assetIds) {
+        List<? extends Asset> assets = ownedAssets == null ? List.of() : ownedAssets;
+        assetPrivacy.purgeOwnedMedia(assets);
         if (assetIds != null && !assetIds.isEmpty()) {
             List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
             if (members != null && !members.isEmpty()) {
@@ -512,7 +509,7 @@ public class DeletedAccountPurgeService {
             }
         }
         if (!assets.isEmpty()) {
-            assetsRepository.deleteAll(assets);
+            assetPrivacy.deleteOwnedRecords(assets);
         }
     }
 
@@ -581,27 +578,7 @@ public class DeletedAccountPurgeService {
         }
     }
 
-    private void purgeRemainingAssetRequests(String userId) {
-        List<Asset> assetsWithRequests = mongoTemplate.find(
-                Query.query(Criteria.where("requests.userId").is(userId)),
-                Asset.class);
-        List<Asset> changedAssets = new ArrayList<>();
-        for (Asset asset : assetsWithRequests == null ? List.<Asset>of() : assetsWithRequests) {
-            if (asset == null || asset.getRequests() == null || asset.getRequests().isEmpty()) {
-                continue;
-            }
-            List<Asset.AssetRequestRecord> retainedRequests = asset.getRequests().stream()
-                    .filter(request -> request != null && !userId.equals(safeText(request.userId())))
-                    .toList();
-            if (retainedRequests.size() != asset.getRequests().size()) {
-                asset.setRequests(new ArrayList<>(retainedRequests));
-                changedAssets.add(asset);
-            }
-        }
-        if (!changedAssets.isEmpty()) {
-            assetsRepository.saveAll(changedAssets);
-        }
-    }
+
 
     private void purgeActivityResources(String userId, Collection<String> ownedEventIds, Collection<String> ownedAssetIds) {
         deleteDocumentsByAnyField(

@@ -19,6 +19,7 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog configurations;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
     private final MongoTemplate mongo;
 
     public JobGroupScopeService(MongoTemplate mongo) { this.mongo = mongo; }
@@ -57,9 +58,16 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
             var config = configurations.find(id);
             return config == null ? JobGroupContext.groupId() : "default".equals(config.getKey()) ? null : config.getKey();
         }
-        String collection = switch (type) { case "event" -> "events"; case "asset" -> "assets"; default -> null; };
-        if (collection == null) return JobGroupContext.groupId();
-        String field = switch (type) { case "event" -> "sourceId"; case "asset" -> "assetId"; default -> "_id"; };
+        if ("asset".equals(type)) {
+            var record = assetOwnership.findJobScope(id);
+            if (record == null) return JobGroupContext.groupId();
+            if (record.workspaceGroupId() != null) return forWorkspace(record.workspaceGroupId());
+            String owner = record.ownerUserId() == null ? record.creatorUserId() : record.ownerUserId();
+            return owner == null ? null : forUser(owner);
+        }
+        if (!"event".equals(type)) return JobGroupContext.groupId();
+        String collection = "events";
+        String field = "sourceId";
         var record = mongo.findOne(Query.query(Criteria.where(field).is(id)), Document.class, collection);
         if (record == null) return JobGroupContext.groupId();
         if (record.getString("workspaceGroupId") != null) return forWorkspace(record.getString("workspaceGroupId"));

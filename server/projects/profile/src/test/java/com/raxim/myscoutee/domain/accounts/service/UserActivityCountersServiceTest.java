@@ -29,7 +29,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -70,7 +70,7 @@ class UserActivityCountersServiceTest {
                 usersRepository,
                 activityEventsRepository,
                 activityMembersRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 eventFeedbackStatesRepository,
                 eventWatchSubscriptionsRepository,
                 eventParticipationTicketService,
@@ -476,8 +476,8 @@ class UserActivityCountersServiceTest {
         return asset;
     }
 
-    private Asset.AssetRequestRecord assetRequest(String status, String requestKind) {
-        return new Asset.AssetRequestRecord(
+    private com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord assetRequest(String status, String requestKind) {
+        return new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 status + '-' + requestKind,
                 "member",
                 "Member",

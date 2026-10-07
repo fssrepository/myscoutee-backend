@@ -45,7 +45,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationToken;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
@@ -67,7 +67,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 @Service
-public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
+public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.AssetChanges, com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
+
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
@@ -254,9 +256,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
                 }
             }
         } else if ("asset".equals(member.getOwnerType())) {
-            Asset asset = mongoTemplate.findOne(
-                    Query.query(Criteria.where("assetId").is(member.getOwnerId())),
-                    Asset.class);
+            Asset asset = assetOwnership.findFirstByAssetId(member.getOwnerId());
             if (asset != null) {
                 enqueue(asset, change);
             }

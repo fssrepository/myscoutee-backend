@@ -14,6 +14,7 @@ public final class GroupTestSupport {
     public static com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobScope(MongoTemplate mongo) {
         var scope = new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(mongo);
         ReflectionTestUtils.setField(scope, "groupDirectory", directory(mongo));
+        ReflectionTestUtils.setField(scope, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo));
         return scope;
     }
     public static GroupDirectoryService directory(MongoTemplate mongo) {

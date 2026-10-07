@@ -23,17 +23,17 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -74,7 +74,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private final UsersRepository usersRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
-    private final AssetsRepository assetsRepository;
+    private final AssetOwnership assetsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
@@ -84,7 +84,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             UsersRepository usersRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
-            AssetsRepository assetsRepository,
+            AssetOwnership assetsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             EventParticipationTicketService eventParticipationTicketService,

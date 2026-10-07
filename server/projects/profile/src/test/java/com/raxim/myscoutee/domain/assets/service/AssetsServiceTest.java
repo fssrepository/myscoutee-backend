@@ -46,13 +46,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.mongodb.client.result.UpdateResult;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetPolicyRecord;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetPolicyRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.assets.document.AssetRequest;
 import com.raxim.myscoutee.domain.events.document.EventTicket;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
@@ -344,11 +344,11 @@ class AssetsServiceTest {
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(existing));
         when(mongoTemplate.find(any(Query.class), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -358,7 +358,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.statusDeleteEventAssignmentRequestsForUsers(
                 List.of("asset-1"),
@@ -396,11 +396,11 @@ class AssetsServiceTest {
 
         Users groupProfile = user("u2-group", "Member Two", "MT"); groupProfile.setAccountUserId("u2");
         when(usersRepository.findByUserId("u2-group")).thenReturn(Optional.of(groupProfile));
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -410,7 +410,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         Map<String, AssetDetailDto> details = service.queryAssignableAssetDetails(
                 "u2-group", "event-1", "sub-1", Set.of("asset-1"));
@@ -445,11 +445,11 @@ class AssetsServiceTest {
         when(usersRepository.findByUserId("u2")).thenReturn(Optional.of(user("u2", "Manager Two", "MT")));
         when(usersRepository.findByUserIdIn(List.of("u1"))).thenReturn(List.of(owner));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -459,7 +459,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         List<AssetDto> cards = service.queryAssets("u2");
 
@@ -491,11 +491,11 @@ class AssetsServiceTest {
                 .thenReturn(List.of());
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -505,7 +505,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         Map<String, AssetDetailDto> details = service.queryReferencedAssetDetails("u2", Set.of("asset-1"));
 
@@ -787,7 +787,7 @@ class AssetsServiceTest {
         assertThat(response.valid()).isFalse();
         assertThat(response.reason()).isEqualTo("already_used");
         assertThat(response.ticket()).isNull();
-        verify(auditService).recordAlreadyUsedAttempt(
+        verify(auditService).recordReplay(
                 eq(ticket),
                 eq(event),
                 eq("scanner-user"),
@@ -843,7 +843,7 @@ class AssetsServiceTest {
 
         assertThat(response.valid()).isFalse();
         assertThat(response.reason()).isEqualTo("not_found");
-        verify(auditService, never()).recordAlreadyUsedAttempt(any(), any(), any(), any());
+        verify(auditService, never()).recordReplay(any(), any(), any(), any());
         verify(notificationOutboxService, never()).enqueue(any(NotificationIntent.class));
     }
 
@@ -880,11 +880,11 @@ class AssetsServiceTest {
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
         stubBorrowWindow(mongoTemplate);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -894,7 +894,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
@@ -979,7 +979,7 @@ class AssetsServiceTest {
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = asset();
         asset.setRequests(List.of(
                 scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment"),
@@ -1003,11 +1003,11 @@ class AssetsServiceTest {
         when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
                 .thenReturn("u2");
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -1017,7 +1017,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
@@ -1060,7 +1060,7 @@ class AssetsServiceTest {
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = asset();
         asset.setRequests(List.of(
                 scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment")));
@@ -1079,11 +1079,11 @@ class AssetsServiceTest {
                 "event-1", "subevent-1", "asset-1", "u2", "u2"))
                 .thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -1093,7 +1093,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
@@ -1116,7 +1116,7 @@ class AssetsServiceTest {
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = asset();
         asset.setRequests(List.of(
                 scopedBorrowRequest("manager-request", "u2", "accepted", 3200d, null, "manager-payment"),
@@ -1126,11 +1126,11 @@ class AssetsServiceTest {
         when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
                 .thenReturn("u2");
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -1140,7 +1140,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
@@ -1160,7 +1160,7 @@ class AssetsServiceTest {
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = asset();
         asset.setPoliciesEnabled(true);
         asset.setPolicies(List.of(new AssetPolicyRecord(
@@ -1192,17 +1192,17 @@ class AssetsServiceTest {
         successor.setPaymentAllTotals(Map.of("HUF", 3200d));
         when(usersRepository.findByUserId("u3")).thenReturn(Optional.of(successor));
         when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(user("u4", "Remaining Four", "RF")));
-        PaymentService.AssetPaymentReplacement replacement =
-                new PaymentService.AssetPaymentReplacement("old-payment", "new-payment", true);
+        com.raxim.myscoutee.domain.payments.dto.AssetPaymentReplacement replacement =
+                new com.raxim.myscoutee.domain.payments.dto.AssetPaymentReplacement("old-payment", "new-payment", true);
         when(paymentService.validateAssetPaymentReplacement(
                 "manager-payment", "successor-payment", "u2", "u3", "asset-1", "event-1", "subevent-1"))
                 .thenReturn(replacement);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 paymentService,
                 mock(MongoTemplate.class),
@@ -1212,7 +1212,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         var rejected = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
@@ -1303,11 +1303,11 @@ class AssetsServiceTest {
         when(accessControlService.canCurrentActorRequestAssetBorrow("u1", "event-1")).thenReturn(true);
         stubBorrowWindow(mongoTemplate);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1317,7 +1317,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         var joined = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                 "asset-1",
@@ -1343,18 +1343,18 @@ class AssetsServiceTest {
         ActivityMembersRepository activityMembersRepository = mock(ActivityMembersRepository.class);
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         Asset asset = assetWithEventRequest();
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
         when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
         when(activitiesResourcesService.scopedAssetManagerUserId("event-1", "subevent-1", "asset-1"))
                 .thenReturn("runtime-manager");
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -1364,7 +1364,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         assertThat(service.canManageScopedAssetMembers(
@@ -1423,11 +1423,11 @@ class AssetsServiceTest {
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(asset));
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -1437,7 +1437,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                userActivityCountersService);
+                userActivityCountersService));
 
         service.statusDeleteAssignmentScopeRequests(
                 "runtime-manager",
@@ -1495,11 +1495,11 @@ class AssetsServiceTest {
         when(usersRepository.findByUserId("u4")).thenReturn(Optional.of(invitedUser));
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1509,7 +1509,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         String assetOwnerUserId = service.syncScopedRequestsFromMemberEntries(
                 "asset-1",
@@ -1571,11 +1571,11 @@ class AssetsServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("asset", "asset-1")).thenReturn(List.of());
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1585,7 +1585,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 mock(AccessControlService.class),
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.syncScopedRequestsFromMemberEntries(
                 "asset-1",
@@ -1649,11 +1649,11 @@ class AssetsServiceTest {
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1663,7 +1663,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -1728,11 +1728,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1742,7 +1742,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -1792,11 +1792,11 @@ class AssetsServiceTest {
         when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1806,7 +1806,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -1849,11 +1849,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(activityMembersRepository.save(any(ActivityMember.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1863,7 +1863,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -1907,11 +1907,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(0L, 0L, null));
         when(accessControlService.canCurrentActorPromoteAssetManager("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1921,7 +1921,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -1964,11 +1964,11 @@ class AssetsServiceTest {
         when(mongoTemplate.updateFirst(any(), any(), eq(Asset.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -1978,7 +1978,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.revokeManager(new AssetMakeManagerRequestDto("u3", "asset-1", "u2"));
 
@@ -2022,11 +2022,11 @@ class AssetsServiceTest {
                 .thenReturn(Optional.of(actorManager));
         when(accessControlService.canCurrentActorPromoteAssetManager("u3", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2036,7 +2036,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.revokeManager(new AssetMakeManagerRequestDto("u3", "asset-1", "u2"));
 
@@ -2076,11 +2076,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(0L, 0L, null));
         when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2090,7 +2090,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -2132,11 +2132,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(accessControlService.canCurrentActorDeleteAsset("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2146,7 +2146,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 chatAttachmentLifecycleService,
                 accessControlService,
-                userActivityCountersService);
+                userActivityCountersService));
 
         AssetDto card = service.leaveOwnership(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -2182,7 +2182,7 @@ class AssetsServiceTest {
         UserActivityCountersService userActivityCountersService = mock(UserActivityCountersService.class);
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
         Asset asset = assetWithEventRequest();
@@ -2202,11 +2202,11 @@ class AssetsServiceTest {
         when(accessControlService.canCurrentActorDeleteAsset("u1", "asset-1")).thenReturn(true);
         when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2216,7 +2216,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                userActivityCountersService);
+                userActivityCountersService));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         AssetDto card = service.leaveOwnership(new AssetDeleteRequestDto("u1", "asset-1"));
@@ -2243,7 +2243,7 @@ class AssetsServiceTest {
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         NotificationOutboxService notificationOutboxService = mock(NotificationOutboxService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
         Asset asset = asset();
@@ -2263,11 +2263,11 @@ class AssetsServiceTest {
         when(accessControlService.canCurrentActorDeleteAsset("u1", "asset-1")).thenReturn(true);
         when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2277,7 +2277,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         AssetDto card = service.leaveOwnership(new AssetDeleteRequestDto("u1", "asset-1"));
@@ -2297,7 +2297,7 @@ class AssetsServiceTest {
         AccessControlService accessControlService = mock(AccessControlService.class);
         ActivitiesResourcesService activitiesResourcesService = mock(ActivitiesResourcesService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.events.api.ResourceAssignments> activitiesResourcesServiceProvider = mock(ObjectProvider.class);
 
         Asset asset = assetWithEventRequest();
         asset.setStatus("UR");
@@ -2318,11 +2318,11 @@ class AssetsServiceTest {
         when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
         when(activitiesResourcesServiceProvider.getIfAvailable()).thenReturn(activitiesResourcesService);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2332,7 +2332,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         service.setActivitiesResourcesServiceProvider(activitiesResourcesServiceProvider);
 
         AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
@@ -2390,11 +2390,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2404,7 +2404,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -2464,11 +2464,11 @@ class AssetsServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(accessControlService.canCurrentActorTakeOverAsset("u2", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2478,7 +2478,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -2505,11 +2505,11 @@ class AssetsServiceTest {
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(accessControlService.canCurrentActorDeleteAsset("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2519,7 +2519,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -2564,11 +2564,11 @@ class AssetsServiceTest {
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(accessControlService.canCurrentActorRestoreAsset("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2578,7 +2578,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.restore(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -2611,11 +2611,11 @@ class AssetsServiceTest {
         when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
         when(accessControlService.canCurrentActorReplaceAssets("u1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2625,7 +2625,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.replace(new AssetReplaceRequestDto("u1", List.of(assetCard("asset-1").toAssetDto())));
 
@@ -2638,11 +2638,11 @@ class AssetsServiceTest {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2652,7 +2652,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.delete(new AssetDeleteRequestDto("u1", "asset-1"));
 
@@ -2665,11 +2665,11 @@ class AssetsServiceTest {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2679,7 +2679,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.takeOver(new AssetDeleteRequestDto("u2", "asset-1"));
 
@@ -2692,11 +2692,11 @@ class AssetsServiceTest {
         AssetsRepository assetsRepository = mock(AssetsRepository.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2706,7 +2706,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         AssetDto card = service.makeManager(new AssetMakeManagerRequestDto("u1", "asset-1", "u2"));
 
@@ -2731,11 +2731,11 @@ class AssetsServiceTest {
         when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2745,7 +2745,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetUpsertRequestDto("u1", assetCard("asset-1")));
 
@@ -2830,11 +2830,11 @@ class AssetsServiceTest {
         when(absoluteAffinityService.resolveAssetBoost(any(), eq(owner))).thenReturn(7d);
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2844,7 +2844,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new AssetUpsertRequestDto("u1", assetCardWithPricing("asset-1", pricing)));
 
@@ -2861,11 +2861,11 @@ class AssetsServiceTest {
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2875,7 +2875,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetUpsertRequestDto("u1", assetCard("asset-1")));
 
@@ -2902,11 +2902,11 @@ class AssetsServiceTest {
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("u2");
         stubBorrowWindow(mongoTemplate);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -2916,7 +2916,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
@@ -2978,11 +2978,11 @@ class AssetsServiceTest {
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -2992,7 +2992,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -3015,11 +3015,11 @@ class AssetsServiceTest {
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -3029,7 +3029,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -3053,11 +3053,11 @@ class AssetsServiceTest {
         when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
         when(accessControlService.canCurrentActorApproveAssetBorrow("u2", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -3067,7 +3067,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new AssetUpsertRequestDto(
                 "u1",
@@ -3116,11 +3116,11 @@ class AssetsServiceTest {
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("u2");
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -3130,7 +3130,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         AssetMemberRequestDto accepted = new AssetMemberRequestDto(
                 pending.id(),
                 pending.userId(),
@@ -3217,11 +3217,11 @@ class AssetsServiceTest {
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("u2");
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -3231,7 +3231,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
@@ -3281,11 +3281,11 @@ class AssetsServiceTest {
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("u1");
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -3295,7 +3295,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
@@ -3340,11 +3340,11 @@ class AssetsServiceTest {
         when(accessControlService.resolveActorUserId(authentication)).thenReturn("u1");
         when(mongoTemplate.find(any(), eq(AssetRequest.class))).thenReturn(List.of());
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -3354,7 +3354,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
@@ -3383,11 +3383,11 @@ class AssetsServiceTest {
         Asset existing = assetWithEventRequest();
         when(assetsRepository.findByAssetId("asset-1")).thenReturn(Optional.of(existing));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -3397,7 +3397,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         var left = service.applyMemberStatusChange(new AssetMemberStatusChangeRequestDto(
                 "asset-1",
@@ -3421,11 +3421,11 @@ class AssetsServiceTest {
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorRejectAssetBorrow("u2", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -3435,7 +3435,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
 
@@ -3456,11 +3456,11 @@ class AssetsServiceTest {
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(existing));
         when(accessControlService.canCurrentActorCancelAssetBorrow("u2", "asset-1")).thenReturn(true);
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -3470,7 +3470,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
 
         service.upsert(new AssetUpsertRequestDto("u1", assetCard("asset-1", "Spoofed Title", 2, List.of())));
 
@@ -3521,11 +3521,11 @@ class AssetsServiceTest {
         when(accessControlService.canCurrentActorEditAsset("u1", "asset-1")).thenReturn(true);
         when(assetsRepository.save(any(Asset.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        AssetsService service = new AssetsService(
+        AssetsService service = AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
                 mock(FriendshipFacts.class),
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 paymentService,
                 mock(MongoTemplate.class),
@@ -3535,7 +3535,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
         AssetMemberRequestDto updatedRequest = new AssetMemberRequestDto(
                 "request-1",
                 "u2",
@@ -3819,11 +3819,11 @@ class AssetsServiceTest {
             EventParticipationTicketService ticketService,
             NotificationOutboxService notificationOutboxService,
             AccessControlService accessControlService) {
-        return new AssetsService(
+        return AssetTestSupport.wire(new AssetsService(
                 mock(AssetsRepository.class),
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 friendshipFacts,
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 ticketService,
                 mock(PaymentService.class),
                 mock(MongoTemplate.class),
@@ -3833,7 +3833,7 @@ class AssetsServiceTest {
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
     }
 
     private AssetsService assetReadService(
@@ -3842,11 +3842,11 @@ class AssetsServiceTest {
             FriendshipFacts friendshipFacts,
             MongoTemplate mongoTemplate,
             AccessControlService accessControlService) {
-        return new AssetsService(
+        return AssetTestSupport.wire(new AssetsService(
                 assetsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 friendshipFacts,
-                mock(ActivityMembersRepository.class),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(mock(ActivityMembersRepository.class)),
                 mock(EventParticipationTicketService.class),
                 mock(PaymentService.class),
                 mongoTemplate,
@@ -3856,7 +3856,7 @@ class AssetsServiceTest {
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class),
                 accessControlService,
-                mock(UserActivityCountersService.class));
+                mock(UserActivityCountersService.class)));
     }
 
     private EventTicket checkedInTicket() {

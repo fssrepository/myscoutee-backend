@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 
 @Component
 public class IntegrationResourceChangeListener extends AbstractMongoEventListener<Object> {
@@ -23,8 +23,7 @@ public class IntegrationResourceChangeListener extends AbstractMongoEventListene
             webhookService.enqueue(activityEvent);
         } else if (source instanceof ActivityMember activityMember) {
             webhookService.enqueue(activityMember);
-        } else if (source instanceof Asset asset) {
-            webhookService.enqueue(asset);
+
         }
     }
 }

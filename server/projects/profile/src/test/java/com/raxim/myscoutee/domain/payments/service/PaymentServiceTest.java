@@ -758,7 +758,7 @@ class PaymentServiceTest {
         successor.setCurrency("HUF");
         savePayment(paymentsBySession, successor);
 
-        PaymentService.AssetPaymentReplacement replacement = service.validateAssetPaymentReplacement(
+        com.raxim.myscoutee.domain.payments.dto.AssetPaymentReplacement replacement = service.validateAssetPaymentReplacement(
                 "old-session",
                 "new-session",
                 "old-manager",

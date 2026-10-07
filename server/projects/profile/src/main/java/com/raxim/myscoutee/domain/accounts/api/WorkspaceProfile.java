@@ -48,4 +48,7 @@ public interface WorkspaceProfile {
     interface UserImpressionsRecord { UserImpressionsSectionRecord host(); UserImpressionsSectionRecord member(); }
     interface UserImpressionsSectionRecord { Integer unreadCount(); Double averageRating(); Integer peopleMet(); Integer totalEvents(); Integer repeatCount(); Integer noShowCount(); List<String> vibeBadges(); List<String> personalityBadges(); List<? extends UserPersonalityTraitRecord> personalityTraits(); List<String> categoryBadges(); }
     interface UserPersonalityTraitRecord { String id(); String label(); Integer percent(); Integer evidenceCount(); String lastRatedAtIso(); }
+    java.util.Map<String, Double> getPaymentSpentTotals();
+    java.util.Map<String, Double> getPaymentIncomeTotals();
+    java.util.Map<String, Double> getPaymentAllTotals();
 }

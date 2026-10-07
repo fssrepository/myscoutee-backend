@@ -46,4 +46,37 @@ public class AssetOwnershipService implements AssetOwnership {
     }
     private String normalizeId(String value) { return value == null ? "" : value.trim(); }
     @Override public java.util.Optional<com.raxim.myscoutee.domain.assets.document.Asset> findById(String id) { return assets.findById(id); }
+    @Override public Optional<com.raxim.myscoutee.domain.assets.document.Asset> findByOwnerUserIdAndAssetId(String owner, String id) { return assets.findByOwnerUserIdAndAssetId(owner, id); }
+    @Override public java.util.List<com.raxim.myscoutee.domain.assets.document.Asset> findByOwnerUserIdOrderByUpdatedDateDesc(String owner) { return assets.findByOwnerUserIdOrderByUpdatedDateDesc(owner); }
+    @Override public Asset findByIdOrAssetId(String id) { return mongo.findOne(Query.query(new Criteria().orOperator(Criteria.where("_id").is(id), Criteria.where("assetId").is(id))), com.raxim.myscoutee.domain.assets.document.Asset.class); }
+    @Override public Asset findFirstByAssetId(String id) { return mongo.findOne(Query.query(Criteria.where("assetId").is(id)), com.raxim.myscoutee.domain.assets.document.Asset.class); }
+    @Override public java.util.List<com.raxim.myscoutee.domain.assets.document.Asset> findByOwnersAndIds(java.util.Collection<String> owners, java.util.Collection<String> ids) { return mongo.find(new Query(Criteria.where("ownerUserId").in(owners).and("assetId").in(ids)), com.raxim.myscoutee.domain.assets.document.Asset.class); }
+    @Override public boolean ownedExists(String owner, String id) { return mongo.exists(Query.query(Criteria.where("ownerUserId").is(owner).and("assetId").is(id)), com.raxim.myscoutee.domain.assets.document.Asset.class); }
+
+    @Override public boolean updateStatusIfSnapshotCurrent(Asset asset, String nextStatus, String previousStatus) {
+        if (asset == null) {
+            return false;
+        }
+        String id = normalizeId(asset.getId());
+        if (!StringUtils.hasText(id)) {
+            return false;
+        }
+        Criteria criteria = Criteria.where("_id").is(id);
+        String updatedDate = normalizeId(asset.getUpdatedDate());
+        if (StringUtils.hasText(updatedDate)) {
+            criteria = criteria.and("updatedDate").is(updatedDate);
+        }
+        Update update = new Update().set("status", nextStatus);
+        if (StringUtils.hasText(previousStatus)) {
+            update.set("statusBeforeSuppression", previousStatus);
+        } else {
+            update.unset("statusBeforeSuppression");
+        }
+        UpdateResult result = mongo.updateFirst(new Query(criteria), update, com.raxim.myscoutee.domain.assets.document.Asset.class);
+        return result.getMatchedCount() > 0;
+    }
+    @Override public Scope findJobScope(String id) {
+        var record = mongo.findOne(Query.query(Criteria.where("assetId").is(id)), org.bson.Document.class, "assets");
+        return record == null ? null : new Scope(record.getString("workspaceGroupId"), record.getString("ownerUserId"), record.getString("creatorUserId"));
+    }
 }

@@ -22,11 +22,11 @@ import org.springframework.util.StringUtils;
 import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
@@ -49,7 +49,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     private final UsersRepository usersRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
-    private final AssetsRepository assetsRepository;
+    private final AssetOwnership assetsRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationDelivery notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
@@ -58,7 +58,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
             UsersRepository usersRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
-            AssetsRepository assetsRepository,
+            AssetOwnership assetsRepository,
             MongoTemplate mongoTemplate,
             NotificationDelivery notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
@@ -150,7 +150,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     }
 
     private RecomputeTargets applyAssetStatuses(String userId) {
-        List<Asset> assets = new ArrayList<>(affectedResponsibleAssetsByDocumentId(userId).values());
+        List<? extends Asset> assets = new ArrayList<>(affectedResponsibleAssetsByDocumentId(userId).values());
         if (assets.isEmpty()) {
             return RecomputeTargets.empty();
         }
@@ -266,7 +266,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (!StringUtils.hasText(previousStatus)) {
             previousStatus = STATUS_ACTIVE;
         }
-        boolean updated = updateAssetStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
+        boolean updated = assetsRepository.updateStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
         if (updated) {
             enqueueAssetStatusNotification(asset, suppressionStatus, previousStatus);
             markAssetAttachmentUnavailable(asset, suppressionStatus);
@@ -290,7 +290,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
         String previousStatus = safeText(asset.getStatusBeforeSuppression());
         String restoredStatus = StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE;
-        boolean updated = updateAssetStatusIfSnapshotCurrent(
+        boolean updated = assetsRepository.updateStatusIfSnapshotCurrent(
                 asset,
                 restoredStatus,
                 null);
@@ -472,28 +472,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return result.getMatchedCount() > 0;
     }
 
-    private boolean updateAssetStatusIfSnapshotCurrent(Asset asset, String nextStatus, String previousStatus) {
-        if (asset == null) {
-            return false;
-        }
-        String id = normalizeId(asset.getId());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(asset.getUpdatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        Update update = new Update().set("status", nextStatus);
-        if (StringUtils.hasText(previousStatus)) {
-            update.set("statusBeforeSuppression", previousStatus);
-        } else {
-            update.unset("statusBeforeSuppression");
-        }
-        UpdateResult result = mongoTemplate.updateFirst(new Query(criteria), update, Asset.class);
-        return result.getMatchedCount() > 0;
-    }
+
 
     private boolean canRestoreEvent(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
         if (!isOperationalEvent(event)) {
@@ -564,7 +543,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         return result;
     }
 
-    private Map<String, Set<String>> resolveResponsibleUserIdsByAssetId(Collection<Asset> assets) {
+    private Map<String, Set<String>> resolveResponsibleUserIdsByAssetId(Collection<? extends Asset> assets) {
         LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
         LinkedHashMap<String, Asset> assetsByAssetId = new LinkedHashMap<>();
         LinkedHashSet<String> assetIds = new LinkedHashSet<>();
@@ -710,7 +689,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
         String ownerUserId = normalizeId(asset.getOwnerUserId());
         return asset.getRequests().stream()
-                .map(Asset.AssetRequestRecord::userId)
+                .map(com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord::userId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .filter(userId -> !userId.equals(ownerUserId))
@@ -821,7 +800,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
     }
 
-    private void addAssets(Map<String, Asset> target, List<Asset> assets) {
+    private void addAssets(Map<String, Asset> target, List<? extends Asset> assets) {
         for (Asset asset : assets == null ? List.<Asset>of() : assets) {
             String documentId = normalizeId(asset == null ? null : asset.getId());
             if (StringUtils.hasText(documentId)) {

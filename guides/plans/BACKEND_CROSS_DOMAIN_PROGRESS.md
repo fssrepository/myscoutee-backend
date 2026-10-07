@@ -42,13 +42,13 @@ may need changes together.
 | 3 | groups | 4 | 7 | Complete: group contracts, workspace ownership, membership commands and scoped queries | 1671 local tests and 65 final focused tests passed; `052ddb8b7` |
 | 4 | events | 8 | 14 | Pending; member-attention API and random-assignment summary added | Whole domain not separated |
 | 5 | chat | 4 | 8 | Pending; presence interface and shared Redis helper ownership touched | Whole domain not separated |
-| 6 | assets | 1 | 2 | Pending | — |
+| 6 | assets | 1 | 2 | Complete: asset ownership, booking contracts, privacy and save events | 1,147 regression tests passed; stale alias repaired; 44 final focused tests passed |
 | 7 | affinity | 6 | 11 | Complete: owner-controlled inputs, derived writes, rating evidence and calculation contracts | 1680 local tests and 31 final focused tests passed; `b1d603881` |
 | 8 | community | 6 | 10 | Complete: community operations, case conversation values and owner-controlled reads | 625 regression, contract and serialization tests passed; `92f3cde2d` |
 | 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
-| 12 | content | 2 | 5 | Complete: moderation ownership, support review, submissions, counters and privacy | 899 regression, boundary and serialization tests passed; commit recorded by this checkpoint |
+| 12 | content | 2 | 5 | Complete: moderation ownership, support review, submissions, counters and privacy | 899 regression, boundary and serialization tests passed; `e7ac81ab3` |
 | 13 | email | 2 | 5 | Complete: scheduled messaging, account lifecycle, privacy and configuration contracts | 814 regression tests and 67 final focused tests passed; `636d4c239` |
 | 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; `fb4695886` |
 | 15 | administration | 4 | 7 | Complete: owner-controlled counters, profile statistics, graph results and administration contracts | 382 focused tests passed; `c5dceafa1` |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 12/21 — #2 notifications, #3 groups, #7 affinity, #8 community, #9 campaigns, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 13/21 — #2 notifications, #3 groups, #6 assets, #7 affinity, #8 community, #9 campaigns, #12 content, #13 email, #14 access, #15 administration, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -1528,3 +1528,145 @@ Changed files for this checkpoint (repository-relative):
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/ContentModerationServiceTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/ModerationOwnershipTest.java`
 - `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/content/service/PhotoFeedServiceTest.java`
+
+
+## #6 assets: ownership and collaboration checkpoint
+
+Status: complete. Checkpoint subject: `[MSC-120] Isolate asset ownership and booking collaboration`.
+
+The asset owner now publishes the existing `Assets` operations and `AssetOwnership`
+read views. Foreign callers no longer import asset repositories, documents or
+service implementations. The existing batch reads retain their original query
+predicates, ordering and result scope. Read views remain local owner-managed
+objects; they are not detached values or proof of HTTP deployability.
+
+- Account/profile reads use `ProfileDirectory` and `WorkspaceProfile`; account
+  counter refreshes use `ActivityCounters`.
+- Asset participation is still owned by events. `AssetMemberships` now performs
+  the existing manager promotion, duplicate-key handling and deletion. Promotion
+  retains the same `_id` (or owner/type/user) and updated-date/role/status guards,
+  creation metadata and precise set/unset fields. Asset authorization and the
+  subsequent asset-request projection stay in their original order.
+- `ParticipationTickets`, `TicketAudit`, `ResourceAssignments`, `AssetPayments`,
+  `CheckoutResults` and `AttachmentLifecycle` expose existing implementations.
+  No network hop, payment policy, ticket lifecycle or resource reassignment rule
+  was added. The lazy resource-service lookup is retained.
+- Borrow-window reads move to the event owner with the same ID/source-ID query.
+  Chat asset reads, integration existence reads and job-target scope reads move
+  to the asset owner without replacing the original predicates.
+- Asset status projection uses the original optimistic update, including its
+  matched-count result and unchanged caller snapshot. Asset privacy splits media
+  deletion, record deletion and request cleanup into owner commands; the account
+  coordinator keeps media/member/asset deletion order and resumable job IDs.
+- The typed asset save listener emits through `AssetChanges`. The generic
+  integration listener no longer emits asset saves, preventing duplicate delivery.
+- Asset request, booking and policy records move unchanged to `AssetDetails`;
+  explicit legacy nested Mongo aliases preserve stored identities. The asset
+  catalog moves to the API package and its historical alias is updated. The
+  nonpersisted payment-replacement result moves to payments DTOs.
+
+| Changed boundary | Functional regression risk | Severe slowdown risk | E2E focus |
+| --- | --- | --- | --- |
+| Manager promotion and request projection | High: two existing guarded writes still have their original partial-success window | Low: same queries and writes | Concurrent promotion, revoke, ownership release/takeover, retry after conflict |
+| Booking/resource/payment calls | High impact if sequencing changes | Low: existing implementations and batch calls retained | Paid/free booking, manager replacement, cancellation and inventory restoration |
+| Ticket snapshot/check-in/replay | Medium | Low: same bulk holder lookup and check-in implementation | Multi-profile ticket list, check-in, duplicate scan and replay warning |
+| Chat/webhook reads and typed save listener | Medium | Low: no added reads on save, batch chat lookup retained | Asset service chat and exactly one integration event per save |
+| Status and account erasure commands | High impact if incorrect | Low: original write guards and deletion order | Suppression/restoration, retryable purge and retained request cleanup |
+| Immutable value moves and stored aliases | Medium | Low: same record fields and serialized content | Reload existing requests, policies, booking and inventory flags |
+
+Verification so far: the original 63 asset service tests pass. The broader run
+executed 1,148 tests: 1,147 passed and the alias-resolution test found the moved
+catalog's stale class mapping. That mapping was repaired; all **44 final serialization,
+owner-command and two-sided boundary tests passed**, with no errors or skips. Added tests cover stale
+promotion, duplicate creation, preserved creation metadata, the single asset save
+producer and all three historical nested asset aliases. Remaining `assets` string
+literals in foreign domains were inspected: they are telemetry/UI categories and
+GitHub release JSON keys, not collection accesses; the guard records those exact
+semantic method exceptions.
+
+Dev hot-deploy compiled successfully and restarted a healthy application. No E2E
+server or latency measurement has run for this checkpoint. Risk estimates are not
+measured slowdown percentages.
+
+Exact changed files for this checkpoint (repository-relative):
+
+- `server/projects/profile/src/e2eTest/java/com/raxim/myscoutee/e2e/BackendChatMediaE2ETest.java`
+- `server/projects/profile/src/e2eTest/java/com/raxim/myscoutee/e2e/BackendContentMediaE2ETest.java`
+- `server/projects/profile/src/e2eTest/java/com/raxim/myscoutee/e2e/BackendEmailAccountSchedulersE2ETest.java`
+- `server/projects/profile/src/e2eTest/java/com/raxim/myscoutee/e2e/BackendLifecycleE2ETest.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/ProfileDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetCatalog.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetOwnership.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetPrivacy.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/Assets.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/document/Asset.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/document/AssetRequest.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/dto/AssetDetails.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/dto/AssetsDtos.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/mapper/AssetAvailabilityMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetAvailabilityService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetCatalog.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetIntegrationChangeListener.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetOwnershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetPrivacyService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/AttachmentLifecycle.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatAttachmentLifecycleService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/AssetMemberships.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventOwnership.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/MemberDirectory.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/ParticipationTickets.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/ResourceAssignments.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/TicketAudit.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/EventTicket.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/mapper/ActivityEventSubEventsMapper.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/AssetMembershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventOwnershipService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventParticipationTicketService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventTicketAuditService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventTicketService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/MemberDirectoryService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/api/AssetChanges.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationReadController.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationResourceChangeListener.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationSyncService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationWebhookService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/McpEventsService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/api/AssetPayments.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/api/CheckoutResults.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/dto/AssetPaymentReplacement.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/service/EventCheckoutBasketService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/payments/service/PaymentService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeService.java`
+- `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/ModelStatusPropagationService.java`
+- `server/projects/profile/src/main/resources/mongo-domain-types.properties`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/MongoConverterConfigTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/AccessControlServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/UserActivityCountersServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/document/AssetBorrowCancellationRegressionTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/document/AssetBorrowRejectionPolicyTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/document/AssetBorrowWindowRegressionTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/mapper/AssetAvailabilityMapperTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/service/AssetBoundaryOwnershipTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/service/AssetTestSupport.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/service/AssetsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/service/GroupTestSupport.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationWebhookServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/McpEventsServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/operator/service/OperatorRevenueServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/payments/service/PaymentServiceTest.java`
+- `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/ModelStatusPropagationServiceTest.java`

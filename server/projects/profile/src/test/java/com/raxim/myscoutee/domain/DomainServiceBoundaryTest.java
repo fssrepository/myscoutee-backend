@@ -36,10 +36,11 @@ class DomainServiceBoundaryTest {
             java.util.Map.entry("groups", Set.of("communityGroups")),
             java.util.Map.entry("community", Set.of("serviceCases", "serviceOfferings", "serviceFeedback", "serviceProviderCalendars", "communityAnnouncements", "communityScheduledTasks")),
             java.util.Map.entry("affinity", Set.of("userRates", "userAffinityEdges", "affinityConfigs", "affinityRecomputeTasks")),
+            java.util.Map.entry("assets", Set.of("assets", "assetRequests")),
             java.util.Map.entry("content", Set.of("userReports", "userFeedback", "photoFeedPosts", "photoFeedViews", "ideaPosts", "shareTokens", "contentModerationItems", "contentModerationState")));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -61,6 +62,9 @@ class DomainServiceBoundaryTest {
                 public MethodVisitor visitMethod(int access, String method, String descriptor, String signature, String[] exceptions) {
                     return new MethodVisitor(Opcodes.ASM9) {
                         @Override public void visitLdcInsn(Object value) {
+                            // These reviewed uses are telemetry/UI categories or GitHub release JSON keys.
+                            // Other methods, owner classes and actual collection names remain checked.
+                            if ("assets".equals(value) && semanticAssetLabel(name, method)) return;
                             assertThat(COLLECTIONS.get(domain).contains(value)).as("Raw foreign collection in %s.%s: %s", name, method, value)
                                     .isFalse();
                         }
@@ -72,7 +76,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access", "administration", "email", "groups", "community", "affinity", "content", "assets"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;
@@ -95,6 +99,17 @@ class DomainServiceBoundaryTest {
             checked++;
         }
         assertThat(checked).as("Scanned production classes in %s", domain).isGreaterThan(5);
+    }
+
+    private boolean semanticAssetLabel(String name, String method) {
+        var methods = switch (name.substring(DOMAIN.length())) {
+            case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "assetsCategory", "categoryFor", "nodeFor");
+            case "administration/service/AdminStatsService" -> Set.of("applyTelemetryEvents", "applyDailyActivity", "timelineItems");
+            case "affinity/service/AdminParamsService" -> Set.of("<clinit>", "fieldsFor", "applySection", "copySection");
+            case "operator/service/OperatorUpdateReleaseService" -> Set.of("releases");
+            default -> Set.<String>of();
+        };
+        return methods.contains(method) || methods.stream().anyMatch(owner -> method.startsWith("lambda$" + owner + "$"));
     }
 
     private Resource[] productionDomainClasses() throws Exception {

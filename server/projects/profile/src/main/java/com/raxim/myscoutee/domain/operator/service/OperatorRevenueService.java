@@ -28,17 +28,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorRevenueDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingSlotOverrideDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.registry.RegistryProtocol;
 
@@ -62,7 +62,7 @@ public class OperatorRevenueService {
     private static final String REQUEST_KIND_BORROW = "borrow";
 
     private final ActivityEventsRepository activityEventsRepository;
-    private final AssetsRepository assetsRepository;
+    private final AssetOwnership assetsRepository;
     private final PaymentsRepository paymentsRepository;
     private final OperatorRevenueMapper mapper;
     private final Clock clock;
@@ -70,7 +70,7 @@ public class OperatorRevenueService {
     @Autowired
     public OperatorRevenueService(
             ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository,
+            AssetOwnership assetsRepository,
             PaymentsRepository paymentsRepository,
             OperatorRevenueMapper mapper) {
         this(
@@ -83,7 +83,7 @@ public class OperatorRevenueService {
 
     OperatorRevenueService(
             ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository,
+            AssetOwnership assetsRepository,
             PaymentsRepository paymentsRepository,
             OperatorRevenueMapper mapper,
             Clock clock) {
@@ -296,7 +296,7 @@ public class OperatorRevenueService {
 
     private void accumulateAssets(
             Accumulation accumulation,
-            List<Asset> assets) {
+            List<? extends Asset> assets) {
         for (Asset asset : nonNull(assets)) {
             if (!StringUtils.hasText(safeText(asset.getAssetId()))) {
                 continue;

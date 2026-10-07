@@ -920,7 +920,7 @@ class AccessControlServiceTest {
         authenticateAs("u2");
         Asset released = asset("asset-1", "u1", "UR");
         released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
-        released.setRequests(List.of(new Asset.AssetRequestRecord(
+        released.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "u2",
                 "Member Two",

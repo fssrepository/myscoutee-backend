@@ -4,7 +4,7 @@ import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
+import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
@@ -41,7 +41,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto;
@@ -125,7 +125,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
-    private final AssetsService assetsService;
+    private final Assets assetsService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventCheckoutBasketService eventCheckoutBasketService;
@@ -147,7 +147,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
-            AssetsService assetsService,
+            Assets assetsService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
             EventCheckoutBasketService eventCheckoutBasketService,
@@ -381,7 +381,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
                 members.add(owner);
             }
         }
-        for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
+        for (com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord request : asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord>of() : asset.getRequests()) {
             String requestUserId = normalizeId(request == null ? null : request.userId());
             ActivityMember member = scopedAssetRequestMember(
                     asset,
@@ -468,7 +468,7 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
 
     private ActivityMember scopedAssetRequestMember(
             Asset asset,
-            Asset.AssetRequestRecord request,
+            com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord request,
             ActivityMember storedAssetMember,
             String scopedManagerUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());

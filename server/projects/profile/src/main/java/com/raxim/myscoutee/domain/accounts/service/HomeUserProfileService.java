@@ -8,7 +8,7 @@ import com.raxim.myscoutee.domain.administration.api.AdministratorClassification
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
+import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
 import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
@@ -49,7 +49,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentityEmail;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.access.api.RegionSecurity;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
@@ -100,7 +100,7 @@ import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.domain.content.api.UserFeedback;
@@ -239,7 +239,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final ChatMessagesRepository chatMessagesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
-    private final AssetsRepository assetsRepository;
+    private final AssetOwnership assetsRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
@@ -254,7 +254,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final OperationalTelemetry adminTelemetryService;
     private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
-    private final AssetsService assetsService;
+    private final Assets assetsService;
     private final AffiliateService affiliateService;
     private NotificationJobs notificationRuleRegistryService;
     private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
@@ -281,7 +281,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             ChatMessagesRepository chatMessagesRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
-            AssetsRepository assetsRepository,
+            AssetOwnership assetsRepository,
             EventParticipationTicketService eventParticipationTicketService,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
@@ -296,7 +296,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             OperationalTelemetry adminTelemetryService,
             AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
-            AssetsService assetsService,
+            Assets assetsService,
             AffiliateService affiliateService,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;

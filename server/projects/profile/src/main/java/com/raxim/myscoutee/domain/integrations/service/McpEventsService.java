@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
@@ -36,7 +36,7 @@ public class McpEventsService {
     private final IntegrationRoleAccessService roles;
     private final McpEventSubscriptionsRepository subscriptions;
     private final UsersRepository users;
-    private final AssetsRepository assets;
+    private final AssetOwnership assets;
     private final IntegrationEventQueryService events;
     private final CommunityGroupProfilesService profiles;
     private final McpAuthorizationService oauth;
@@ -46,7 +46,7 @@ public class McpEventsService {
     private final org.springframework.data.mongodb.core.MongoTemplate mongo;
 
     public McpEventsService(McpEventSubscriptionsRepository subscriptions, UsersRepository users,
-            AssetsRepository assets, IntegrationEventQueryService events, CommunityGroupProfilesService profiles,
+            AssetOwnership assets, IntegrationEventQueryService events, CommunityGroupProfilesService profiles,
             McpAuthorizationService oauth, DeploymentConfigurationCrypto crypto, McpEventCallbackClient callbacks,
             ObjectMapper json, org.springframework.data.mongodb.core.MongoTemplate mongo, IntegrationRoleAccessService roles) {
         this.subscriptions = subscriptions; this.users = users; this.assets = assets; this.events = events;

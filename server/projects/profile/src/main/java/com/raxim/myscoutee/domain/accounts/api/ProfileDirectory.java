@@ -11,4 +11,5 @@ public interface ProfileDirectory {
     Optional<? extends WorkspaceProfile> findByUserId(String userId);
     List<? extends WorkspaceProfile> findByUserIdIn(Collection<String> userIds);
     List<? extends WorkspaceProfile> findByEmailIn(Collection<String> emails);
+    List<? extends WorkspaceProfile> findByAccountUserId(String accountId);
 }

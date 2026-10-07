@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.events.document.EventTicketAudit;
 import com.raxim.myscoutee.domain.events.repository.EventTicketAuditRepository;
 
 @Service
-public class EventTicketAuditService {
+public class EventTicketAuditService implements com.raxim.myscoutee.domain.events.api.TicketAudit {
     private final EventTicketAuditRepository repository;
 
     public EventTicketAuditService(EventTicketAuditRepository repository) {
@@ -20,8 +20,8 @@ public class EventTicketAuditService {
     }
 
     public EventTicketAudit recordAlreadyUsedAttempt(
-            EventTicket ticket,
-            ActivityEvent event,
+            com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket ticket,
+            com.raxim.myscoutee.domain.events.api.EventOwnership.Event event,
             String actorUserId,
             Instant attemptedAt) {
         String ticketId = text(ticket == null ? null : ticket.getId());
@@ -62,5 +62,9 @@ public class EventTicketAuditService {
 
     private String text(String value) {
         return value == null ? "" : value.trim();
+    }
+    @Override public void recordReplay(com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket ticket,
+            com.raxim.myscoutee.domain.events.api.EventOwnership.Event event, String actor, Instant at) {
+        recordAlreadyUsedAttempt(ticket, event, actor, at);
     }
 }

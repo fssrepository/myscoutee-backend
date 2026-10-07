@@ -27,6 +27,24 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 class MongoConverterConfigTest {
     @Test
     @org.junit.jupiter.api.Tag("standard")
+    void assetValuesRetainTheirHistoricalStoredIdentities() {
+        var converter = domainConverter();
+        var booking = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
+                "event", "Event", "stage", "Stage", "slot", "Slot", "Window", "start", "end", 2,
+                30d, "EUR", java.util.List.of("policy"), "payment", true);
+        var request = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
+                "request", "user", "Name", "NM", "man", "accepted", "note", "borrow", "now", booking);
+        var policy = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetPolicyRecord("policy", "Policy", "Description", true);
+        for (Object value : java.util.List.of(booking, request, policy)) {
+            var document = new Document(); converter.write(new Payload(value), document);
+            assertThat(document.get("value", Document.class).getString("_class"))
+                    .isEqualTo("com.raxim.myscoutee.profile.data.document.Asset$" + value.getClass().getSimpleName());
+            assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+        }
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
     void feedCounterValueRetainsHistoricalIdentityAndCounts() {
         var converter = domainConverter();
         var value = new com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord(7, java.util.Map.of("accepted", 3L));

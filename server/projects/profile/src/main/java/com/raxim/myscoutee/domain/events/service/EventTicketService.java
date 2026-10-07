@@ -420,7 +420,7 @@ public class EventTicketService {
             boolean valid,
             String reason,
             EventTicket ticket,
-            ActivityEvent event) {
+            ActivityEvent event) implements com.raxim.myscoutee.domain.events.api.ParticipationTickets.CheckIn {
         public static CheckInResult checkedIn(EventTicket ticket, ActivityEvent event) {
             return new CheckInResult(true, "valid", ticket, event);
         }

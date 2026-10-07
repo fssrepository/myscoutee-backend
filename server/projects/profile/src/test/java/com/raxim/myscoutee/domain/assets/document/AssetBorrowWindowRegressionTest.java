@@ -17,8 +17,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 
 @org.junit.jupiter.api.Tag("standard")
@@ -62,7 +62,7 @@ class AssetBorrowWindowRegressionTest {
             var alternatives = query.getQueryObject().getList("$or", org.bson.Document.class);
             return alternatives.stream().anyMatch(item -> runtime.equals(item.getString("sourceId"))) ? event : null;
         });
-        return service;
+        return com.raxim.myscoutee.domain.assets.service.AssetTestSupport.wire(service);
     }
 
     private boolean valid(AssetsService service, AssetRequestRecord request) {

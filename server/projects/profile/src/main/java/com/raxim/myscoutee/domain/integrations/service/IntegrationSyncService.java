@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
+import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.media.api.MediaStorage;
@@ -30,8 +30,8 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.campaigns.dto.CampaignDtos;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationCampaignSyncItemDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationCampaignSyncRequestDto;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDto;
@@ -49,6 +49,8 @@ import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @Service
 public class IntegrationSyncService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
+
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final String RESOURCE_ASSET = "asset";
@@ -58,14 +60,14 @@ public class IntegrationSyncService {
 
     private final IntegrationExternalIdsRepository externalIdsRepository;
     private final MongoTemplate mongoTemplate;
-    private final AssetsService assetsService;
+    private final Assets assetsService;
     private final ActivitiesEventsService eventsService;
     private final MediaStorage mediaStorageService;
 
     public IntegrationSyncService(
             IntegrationExternalIdsRepository externalIdsRepository,
             MongoTemplate mongoTemplate,
-            AssetsService assetsService,
+            Assets assetsService,
             ActivitiesEventsService eventsService,
             MediaStorage mediaStorageService, Campaigns campaignsService) {
         this.externalIdsRepository = externalIdsRepository;
@@ -322,10 +324,7 @@ public class IntegrationSyncService {
             return campaignCatalog.ownedExists(ownerUserId, internalId);
         }
         if (RESOURCE_ASSET.equals(resourceType)) {
-            return mongoTemplate.exists(
-                    Query.query(Criteria.where("ownerUserId").is(ownerUserId)
-                            .and("assetId").is(internalId)),
-                    Asset.class);
+            return assetOwnership.ownedExists(ownerUserId, internalId);
         }
         return mongoTemplate.exists(
                 Query.query(Criteria.where("ownerUserId").is(ownerUserId)

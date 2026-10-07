@@ -11,6 +11,7 @@ public interface EventOwnership {
     java.util.List<? extends Event> findAll();
     List<? extends Event> findBySourceId(String sourceId);
     interface Event {
+        Boolean getIsAdmin(); String getCreatorName(); String getCreatorInitials(); Double getDistanceKm(); String getEndAtIso();
         String getTimeframe(); String getImageUrl(); String getSourceLink(); Boolean getPublished();
         String getCampaignId();
         String getId();
@@ -42,5 +43,6 @@ public interface EventOwnership {
         String getUpdatedUser();
         String getStatus(); String getCreatorUserId(); String getWorkspaceGroupId(); String getUpdatedDate(); List<String> getAdmins();
     }
-    interface SubEvent extends EventSchedule.Stage { String location(); }
+    interface SubEvent extends EventSchedule.Stage { String location(); String endAt(); }
+    Event findByIdOrSourceId(String id);
 }

@@ -166,7 +166,7 @@ class HomeUserProfileServiceTest {
                 chatMessagesRepository,
                 activityEventsRepository,
                 activityMembersRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 eventParticipationTicketService,
                 eventFeedbackStatesRepository,
                 eventFeedbackAnswersRepository,

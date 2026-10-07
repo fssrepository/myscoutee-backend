@@ -62,7 +62,7 @@ class ModelStatusPropagationServiceTest {
                 usersRepository,
                 eventsRepository,
                 membersRepository,
-                assetsRepository,
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class));
@@ -117,7 +117,7 @@ class ModelStatusPropagationServiceTest {
                 usersRepository,
                 eventsRepository,
                 membersRepository,
-                assetsRepository,
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class));
@@ -157,7 +157,7 @@ class ModelStatusPropagationServiceTest {
                 usersRepository,
                 eventsRepository,
                 membersRepository,
-                assetsRepository,
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class));
@@ -201,7 +201,7 @@ class ModelStatusPropagationServiceTest {
                 usersRepository,
                 eventsRepository,
                 membersRepository,
-                assetsRepository,
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class));
