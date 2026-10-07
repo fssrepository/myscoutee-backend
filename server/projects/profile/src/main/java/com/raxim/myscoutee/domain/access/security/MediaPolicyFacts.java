@@ -1,13 +1,10 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
 import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
@@ -19,13 +16,33 @@ public class MediaPolicyFacts {
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService adminCounters;
-    private final MongoTemplate mongo;
-    private final FriendshipFacts friendships;
+    private com.raxim.myscoutee.domain.administration.api.AdministratorClassification adminCounters;
+    private final com.raxim.myscoutee.domain.accounts.api.AccountMediaVisibility accounts;
+    private final com.raxim.myscoutee.domain.groups.api.GroupMediaVisibility groups;
+    private final com.raxim.myscoutee.domain.community.api.CommunityMediaVisibility community;
+    private final com.raxim.myscoutee.domain.assets.api.AssetMediaVisibility assets;
+    private final com.raxim.myscoutee.domain.events.api.EventMediaVisibility events;
+    private final com.raxim.myscoutee.domain.content.api.ContentMediaVisibility content;
+    private final com.raxim.myscoutee.domain.chat.api.ChatMediaVisibility chat;
+    private final Friendships friendships;
     private final ChatPolicyFacts chats;
 
-    public MediaPolicyFacts(MongoTemplate mongo, FriendshipFacts friendships, ChatPolicyFacts chats) {
-        this.mongo = mongo;
+    public MediaPolicyFacts(
+            com.raxim.myscoutee.domain.accounts.api.AccountMediaVisibility accounts,
+            com.raxim.myscoutee.domain.groups.api.GroupMediaVisibility groups,
+            com.raxim.myscoutee.domain.community.api.CommunityMediaVisibility community,
+            com.raxim.myscoutee.domain.assets.api.AssetMediaVisibility assets,
+            com.raxim.myscoutee.domain.events.api.EventMediaVisibility events,
+            com.raxim.myscoutee.domain.content.api.ContentMediaVisibility content,
+            com.raxim.myscoutee.domain.chat.api.ChatMediaVisibility chat,
+            Friendships friendships, ChatPolicyFacts chats) {
+        this.accounts = accounts;
+        this.groups = groups;
+        this.community = community;
+        this.assets = assets;
+        this.events = events;
+        this.content = content;
+        this.chat = chat;
         this.friendships = friendships;
         this.chats = chats;
     }
@@ -41,71 +58,58 @@ public class MediaPolicyFacts {
         if (MediaAccessPaths.storageSegment(viewer).equals(owner)) return true; // Upload preview, including unsaved own drafts.
         List<String> urls = variantUrls(key, "images".equals(parts[offset]));
         if ("images".equals(parts[offset]) && (owner.equals(entity) || "profile-onboarding".equals(entity))) {
-            Document profile = find("users", Criteria.where("userId").is(owner), "profileStatus", "images");
-            return profile != null && profile.getString("profileStatus") != null
-                    && !profile.getString("profileStatus").isBlank() && visible(profile.getString("profileStatus"), owner, viewer);
+            var profile = accounts.profile(owner);
+            return profile != null && profile.profileStatus() != null
+                    && !profile.profileStatus().isBlank() && visible(profile.profileStatus(), owner, viewer);
         }
-        Document announcement = find("communityAnnouncements", Criteria.where("attachments.url").in(urls), "communityId", "status");
+        var announcement = community.announcement(urls);
         if (announcement != null) {
-            var group = find("communityGroups", Criteria.where("_id").is(announcement.getString("communityId")), "lifecycleStatus");
-            if (group == null || List.of("deleted", "under-review").contains(group.getString("lifecycleStatus") == null ? "" : group.getString("lifecycleStatus"))) return false;
-            var profile = find("users", Criteria.where("userId").is(viewer), "accountUserId");
-            String account = profile == null || profile.getString("accountUserId") == null ? viewer : profile.getString("accountUserId");
-            var membership = find("activityMembers", Criteria.where("ownerType").is("community").and("ownerId").is(announcement.getString("communityId"))
-                    .and("userId").is(account).and("status").is("accepted"), "role");
-            return membership != null && ("published".equals(announcement.getString("status")) || "Admin".equals(membership.getString("role")));
+            var group = groups.group(announcement.communityId());
+            if (group == null || List.of("deleted", "under-review").contains(group.lifecycleStatus() == null ? "" : group.lifecycleStatus())) return false;
+            var profile = accounts.profile(viewer);
+            String account = profile == null || profile.accountUserId() == null ? viewer : profile.accountUserId();
+            var membership = events.acceptedCommunityMember(announcement.communityId(), account);
+            return membership != null && ("published".equals(announcement.status()) || "Admin".equals(membership.role()));
         }
         var campaign = campaignCatalog.mediaReference(urls);
         if (campaign != null) {
-            var profile = find("users", Criteria.where("userId").is(viewer), "workspaceGroupId");
+            var profile = accounts.profile(viewer);
             return "published".equals(campaign.status()) && profile != null
-                    && java.util.Objects.equals(profile.getString("workspaceGroupId"), campaign.workspaceGroupId());
+                    && java.util.Objects.equals(profile.workspaceGroupId(), campaign.workspaceGroupId());
         }
-        Document service = find("serviceOfferings", Criteria.where("imageUrls").in(urls), "baseGroupId", "status");
+        var service = community.offering(urls);
         if (service != null) {
-            var profile = find("users", Criteria.where("userId").is(viewer), "workspaceGroupId", "accountUserId");
-            if (!"published".equals(service.getString("status")) || profile == null) return false;
-            String account = profile.getString("accountUserId") == null ? viewer : profile.getString("accountUserId");
-            return find("activityMembers", Criteria.where("ownerType").is("community").and("ownerId").is(service.getString("baseGroupId"))
-                    .and("userId").is(account).and("status").is("accepted"), "userId") != null;
+            var profile = accounts.profile(viewer);
+            if (!"published".equals(service.status()) || profile == null) return false;
+            String account = profile.accountUserId() == null ? viewer : profile.accountUserId();
+            return events.acceptedCommunityMember(service.baseGroupId(), account) != null;
         }
-        Document asset = find("assets", Criteria.where("imageUrl").in(urls), "ownerUserId", "visibility", "status", "moderationStatus");
-        if (asset != null) return canModerate(viewer, asset) || active(asset) && visible(asset.getString("visibility"), asset.getString("ownerUserId"), viewer);
-        Document event = find("events", new Criteria().orOperator(Criteria.where("imageUrl").in(urls), Criteria.where("imageUrls").in(urls)), "creatorUserId", "organizerUserId", "admins",
-                "moderationStatus", "visibility", "status", "published", "acceptedMemberUserIds", "invitedMemberUserIds", "pendingRequestMemberUserIds");
+        var asset = assets.asset(urls);
+        if (asset != null) return canModerate(viewer, asset.moderationStatus()) || active(asset.status()) && visible(asset.visibility(), asset.ownerUserId(), viewer);
+        var event = events.event(urls);
         if (event != null) {
-            if (canModerate(viewer, event)) return true;
-            if (viewer.equals(event.getString("creatorUserId")) || viewer.equals(event.getString("organizerUserId"))
-                    || contains(event, "admins", viewer) || contains(event, "acceptedMemberUserIds", viewer)
-                    || contains(event, "invitedMemberUserIds", viewer) || contains(event, "pendingRequestMemberUserIds", viewer)) return true;
+            if (canModerate(viewer, event.moderationStatus())) return true;
+            if (viewer.equals(event.creatorUserId()) || viewer.equals(event.organizerUserId())
+                    || contains(event.admins(), viewer) || contains(event.acceptedMemberUserIds(), viewer)
+                    || contains(event.invitedMemberUserIds(), viewer) || contains(event.pendingRequestMemberUserIds(), viewer)) return true;
             // Event publication is represented by the canonical lifecycle status. The
             // legacy `published` field is no longer stored on newly created events.
-            return active(event)
-                    && visible(event.getString("visibility"), event.getString("creatorUserId"), viewer);
+            return active(event.status())
+                    && visible(event.visibility(), event.creatorUserId(), viewer);
         }
-        Document feed = find("photoFeedPosts", Criteria.where("imageUrls").in(urls).and("deleted").ne(true), "moderationStatus");
-        if (feed != null && ("accepted".equals(feed.getString("moderationStatus")) || canModerate(viewer, feed))) return true;
-        Query messageQuery = Query.query(new Criteria().orOperator(
-                Criteria.where("attachments.url").in(urls), Criteria.where("attachments.previewUrl").in(urls)));
-        messageQuery.fields().include("chatId").include("deletedAtIso");
-        // The same attachment can be forwarded to several chats; any currently accessible chat suffices.
-        for (Document message : mongo.find(messageQuery, Document.class, "chatMessages")) {
-            if ((message.getString("deletedAtIso") == null || message.getString("deletedAtIso").isBlank())
-                    && chats.canAccessChat(message.getString("chatId"), viewer)) return true;
+        var feed = content.feedPost(urls);
+        if (feed != null && ("accepted".equals(feed.moderationStatus()) || canModerate(viewer, feed.moderationStatus()))) return true;
+        // A forwarded attachment is readable when any current chat grants access.
+        for (var message : chat.messages(urls)) {
+            if ((message.deletedAtIso() == null || message.deletedAtIso().isBlank())
+                    && chats.canAccessChat(message.chatId(), viewer)) return true;
         }
         return false;
     }
 
-    private boolean canModerate(String viewer, Document resource) {
-        if (adminCounters == null || resource.getString("moderationStatus") == null) return false;
-        var user = mongo.findOne(Query.query(Criteria.where("userId").is(viewer)), com.raxim.myscoutee.domain.accounts.document.Users.class);
-        return adminCounters.isAdminUser(user);
-    }
-
-    private Document find(String collection, Criteria criteria, String... fields) {
-        Query query = Query.query(criteria);
-        for (String field : fields) query.fields().include(field);
-        return mongo.findOne(query, Document.class, collection);
+    private boolean canModerate(String viewer, String moderationStatus) {
+        if (adminCounters == null || moderationStatus == null) return false;
+        return adminCounters.isAdminUser(accounts.administratorCandidate(viewer));
     }
 
     private boolean visible(String visibility, String owner, String viewer) {
@@ -118,12 +122,12 @@ public class MediaPolicyFacts {
         };
     }
 
-    private boolean active(Document record) {
-        return "A".equals(record.getString("status")) || "active".equals(record.getString("status"));
+    private boolean active(String status) {
+        return "A".equals(status) || "active".equals(status);
     }
 
-    private boolean contains(Document record, String field, String viewer) {
-        return record.get(field) instanceof List<?> values && values.contains(viewer);
+    private boolean contains(List<?> values, String viewer) {
+        return values != null && values.contains(viewer);
     }
 
     private List<String> variantUrls(String key, boolean image) {

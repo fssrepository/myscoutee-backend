@@ -95,7 +95,7 @@ class EventWatchServiceTest {
         UserActivityCountersService counters = mock(UserActivityCountersService.class);
         NotificationOutboxService outbox = mock(NotificationOutboxService.class);
         return new Fixture(
-                new EventWatchService(subscriptions, events, profiles, mock(com.raxim.myscoutee.domain.access.security.FriendshipFacts.class), counters, outbox),
+                new EventWatchService(subscriptions, events, profiles, mock(com.raxim.myscoutee.domain.accounts.service.FriendshipFacts.class), counters, outbox),
                 subscriptions,
                 events,
                 profiles,

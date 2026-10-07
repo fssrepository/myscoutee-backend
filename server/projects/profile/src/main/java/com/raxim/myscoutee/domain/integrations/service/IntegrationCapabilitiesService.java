@@ -16,7 +16,7 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincip
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationConnectDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationGroupScopeDto;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -26,11 +26,11 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 public class IntegrationCapabilitiesService {
     private final CommunityGroupsService groups;
     private final CommunityGroupsRepository groupRepository;
-    private final AccessControlService access;
+    private final AccessPermissions access;
     private final IntegrationRoleAccessService roles;
 
     public IntegrationCapabilitiesService(CommunityGroupsService groups,
-            CommunityGroupsRepository groupRepository, AccessControlService access, IntegrationRoleAccessService roles) {
+            CommunityGroupsRepository groupRepository, AccessPermissions access, IntegrationRoleAccessService roles) {
         this.groups = groups;
         this.groupRepository = groupRepository;
         this.access = access; this.roles = roles;

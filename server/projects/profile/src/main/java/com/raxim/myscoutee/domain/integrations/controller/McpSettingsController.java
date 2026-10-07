@@ -3,15 +3,15 @@ package com.raxim.myscoutee.domain.integrations.controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.raxim.myscoutee.domain.integrations.dto.McpDtos;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.McpAuthorizationService;
 
 @RestController
 @RequestMapping("/integrations/mcp")
 public class McpSettingsController {
     private final McpAuthorizationService service;
-    private final AccessControlService access;
-    public McpSettingsController(McpAuthorizationService service, AccessControlService access) {
+    private final AccessPermissions access;
+    public McpSettingsController(McpAuthorizationService service, AccessPermissions access) {
         this.service = service; this.access = access;
     }
     @GetMapping("/settings")

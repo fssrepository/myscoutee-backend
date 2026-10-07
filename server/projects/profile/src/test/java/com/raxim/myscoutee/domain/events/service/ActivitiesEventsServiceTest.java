@@ -83,7 +83,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRep
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.service.FriendshipFacts;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper;

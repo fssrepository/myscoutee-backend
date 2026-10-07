@@ -22,7 +22,7 @@ import com.raxim.myscoutee.domain.affinity.repository.AffinityRecomputeTasksRepo
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class AdminMenuCounterService {
+public class AdminMenuCounterService implements com.raxim.myscoutee.domain.administration.api.AdministratorClassification {
     private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
 
     private final NotificationCatalog notificationCatalog;
@@ -82,7 +82,7 @@ public class AdminMenuCounterService {
         return usersRepository.save(updated);
     }
 
-    public boolean isAdminUser(Users user) {
+    public boolean isAdminUser(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile user) {
         if (user == null) {
             return false;
         }

@@ -70,14 +70,7 @@ public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain
         users.findByAccountUserId(accountId).forEach(user -> result.put(user.getWorkspaceGroupId(), user));
         return result;
     }
-    public static String currentGroupId() {
-        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal principal)
-            return principal.getUser() == null ? null : principal.getUser().getWorkspaceGroupId();
-        return null;
-    }
-    public static boolean allows(String groupId) { return Objects.equals(currentGroupId(), groupId); }
-    public static boolean sameWorkspace(Users left, Users right) {
-        return left != null && right != null && Objects.equals(left.getWorkspaceGroupId(), right.getWorkspaceGroupId());
-    }
+    public static String currentGroupId() { return com.raxim.myscoutee.domain.groups.api.WorkspaceContext.currentGroupId(); }
+    public static boolean allows(String groupId) { return com.raxim.myscoutee.domain.groups.api.WorkspaceContext.allows(groupId); }
+    public static boolean sameWorkspace(Users left, Users right) { return com.raxim.myscoutee.domain.groups.api.WorkspaceContext.sameWorkspace(left, right); }
 }

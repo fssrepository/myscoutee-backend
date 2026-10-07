@@ -1139,7 +1139,7 @@ class ChatServiceTest {
             assertThat(chat.getOwnerId()).isNull();
             assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
         });
-        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class));
+        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)));
         when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
         assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
         assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();

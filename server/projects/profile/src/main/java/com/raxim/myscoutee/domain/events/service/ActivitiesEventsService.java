@@ -56,7 +56,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 import org.springframework.util.StringUtils;
 
 import tools.jackson.core.type.TypeReference;
@@ -131,7 +131,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntime
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper;
@@ -188,7 +188,7 @@ public class ActivitiesEventsService {
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final UsersRepository usersRepository;
-    private final FriendshipFacts friendshipFacts;
+    private final Friendships friendshipFacts;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
@@ -209,7 +209,7 @@ public class ActivitiesEventsService {
     private final ChatService chatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventDetailMapper activityEventDetailMapper;
@@ -227,7 +227,7 @@ public class ActivitiesEventsService {
             ActivityMembersRepository activityMembersRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
             UsersRepository usersRepository,
-            FriendshipFacts friendshipFacts,
+            Friendships friendshipFacts,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             HomeUserProfileService homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
@@ -248,7 +248,7 @@ public class ActivitiesEventsService {
             ChatService chatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventSlotReadModelService eventSlotReadModelService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             UserActivityCountersService userActivityCountersService,
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventDetailMapper activityEventDetailMapper,

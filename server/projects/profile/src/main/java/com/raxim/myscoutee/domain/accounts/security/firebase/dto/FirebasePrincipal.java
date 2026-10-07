@@ -94,6 +94,8 @@ public class FirebasePrincipal implements UserDetails {
         return emailVerified;
     }
 
+    public com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profileView() { return user; }
+
     public Users getUser() {
         return user;
     }

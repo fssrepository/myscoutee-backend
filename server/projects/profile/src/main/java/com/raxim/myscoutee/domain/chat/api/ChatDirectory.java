@@ -1,0 +1,14 @@
+package com.raxim.myscoutee.domain.chat.api;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface ChatDirectory {
+    Optional<? extends Chat> findByOwnerUserIdAndChatId(String ownerId, String chatId);
+    List<? extends Chat> findByChatId(String chatId);
+    interface Chat {
+        String getChatId(); String getOwnerId(); String getOwnerUserId(); String getChannelType();
+        String getSupportBaseGroupId(); List<String> getMemberIds(); SupportCase getSupportCase();
+    }
+    interface SupportCase { String getStatus(); }
+}

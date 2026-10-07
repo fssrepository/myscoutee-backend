@@ -48,7 +48,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
@@ -95,7 +95,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
@@ -121,7 +121,7 @@ public class AssetsService {
 
     private final AssetsRepository assetsRepository;
     private final UsersRepository usersRepository;
-    private final FriendshipFacts friendshipFacts;
+    private final Friendships friendshipFacts;
     private final ActivityMembersRepository activityMembersRepository;
     private final EventParticipationTicketService eventParticipationTicketService;
     private final PaymentService paymentService;
@@ -131,7 +131,7 @@ public class AssetsService {
     private final AdminTelemetryService adminTelemetryService;
     private final NotificationDelivery notificationOutboxService;
     private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private ObjectProvider<ActivitiesResourcesService> activitiesResourcesServiceProvider;
     private EventTicketAuditService eventTicketAuditService;
@@ -141,7 +141,7 @@ public class AssetsService {
     public AssetsService(
             AssetsRepository assetsRepository,
             UsersRepository usersRepository,
-            FriendshipFacts friendshipFacts,
+            Friendships friendshipFacts,
             ActivityMembersRepository activityMembersRepository,
             EventParticipationTicketService eventParticipationTicketService,
             PaymentService paymentService,
@@ -151,7 +151,7 @@ public class AssetsService {
             AdminTelemetryService adminTelemetryService,
             NotificationDelivery notificationOutboxService,
             ChatAttachmentLifecycleService chatAttachmentLifecycleService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             UserActivityCountersService userActivityCountersService) {
         this.assetsRepository = assetsRepository;
         this.usersRepository = usersRepository;

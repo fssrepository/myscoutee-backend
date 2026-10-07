@@ -22,7 +22,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
         @CompoundIndex(name = "chat_owner_channel_relevance", def = "{'ownerUserId': 1, 'channelType': 1, 'unread': -1, 'dateIso': -1, 'id': 1}"),
         @CompoundIndex(name = "chat_owner_support_status_date", def = "{'ownerUserId': 1, 'supportCase.status': 1, 'dateIso': -1, 'id': 1}")
 })
-public class Chat {
+public class Chat implements com.raxim.myscoutee.domain.chat.api.ChatDirectory.Chat {
     @MongoId(FieldType.STRING)
     private String mongoId;
 
@@ -247,7 +247,7 @@ public class Chat {
         this.messages = messages == null ? new ArrayList<>() : messages;
     }
 
-    public static class SupportCaseRecord {
+    public static class SupportCaseRecord implements com.raxim.myscoutee.domain.chat.api.ChatDirectory.SupportCase {
         private String status;
         private SupportCaseAssigneeRecord assignee;
         private String updatedAtIso;

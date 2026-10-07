@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.access.security;
+package com.raxim.myscoutee.domain.accounts.service;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,7 +11,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 
 /** One indexed adjacency read per viewer/request; no process-wide authorization cache. */
 @Component
-public class FriendshipFacts {
+public class FriendshipFacts implements com.raxim.myscoutee.domain.accounts.api.Friendships {
     private final UserFriendshipsRepository friendships;
 
     public FriendshipFacts(UserFriendshipsRepository friendships) {

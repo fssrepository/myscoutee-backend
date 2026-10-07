@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.document.Users.FollowingRecord;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 
 /** Following is independent of event watch subscriptions and avatar activity totals.
  * Reads return the stored state. Event mutations and the existing expiry worker own updates. */
@@ -25,8 +25,8 @@ public class OrganizerFollowingService {
     private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
 
     private final MongoTemplate mongo;
-    private final FriendshipFacts friendships;
-    public OrganizerFollowingService(MongoTemplate mongo, FriendshipFacts friendships) {
+    private final Friendships friendships;
+    public OrganizerFollowingService(MongoTemplate mongo, Friendships friendships) {
         this.mongo = mongo;
         this.friendships = friendships;
     }

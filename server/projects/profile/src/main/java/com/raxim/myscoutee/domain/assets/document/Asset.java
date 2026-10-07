@@ -16,7 +16,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_asset_id", def = "{'ownerUserId': 1, 'assetId': 1}", unique = true),
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
-public class Asset {
+public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset {
     @org.springframework.data.mongodb.core.index.Indexed
     private String workspaceGroupId;
     public String getWorkspaceGroupId() { return workspaceGroupId; }
@@ -324,7 +324,7 @@ public class Asset {
             String note,
             String requestKind,
             String requestedAtIso,
-            AssetRequestBookingRecord booking) {
+            AssetRequestBookingRecord booking) implements com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request {
     }
 
     public record AssetRequestBookingRecord(

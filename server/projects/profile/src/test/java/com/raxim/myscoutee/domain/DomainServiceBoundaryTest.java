@@ -29,10 +29,11 @@ class DomainServiceBoundaryTest {
             "localization", Set.of("i18n_messages", "i18n_bundles"),
             "help", Set.of("helpCenterRevisions", "helpCenterAudit", "helpCenterGuideFields"),
             "media", Set.of(),
-            "campaigns", Set.of("campaigns"));
+            "campaigns", Set.of("campaigns"),
+            "access", Set.of("accessGrants", "accessPolicyDefinitions"));
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access"})
     void domainConsumersUseContractsAndNeverForeignPersistence(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int consumers = 0;
@@ -65,7 +66,7 @@ class DomainServiceBoundaryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns"})
+    @ValueSource(strings = {"notifications", "localization", "help", "media", "campaigns", "access"})
     void completedDomainsUseForeignContractsWithExplicitRuntimeDependencies(String domain) throws Exception {
         String owned = DOMAIN + domain + "/";
         int checked = 0;

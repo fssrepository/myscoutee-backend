@@ -84,7 +84,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.service.FriendshipFacts;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;

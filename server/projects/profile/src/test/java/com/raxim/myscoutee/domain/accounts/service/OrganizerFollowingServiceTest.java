@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.service.FriendshipFacts;
 
 @org.junit.jupiter.api.Tag("standard")
 class OrganizerFollowingServiceTest {

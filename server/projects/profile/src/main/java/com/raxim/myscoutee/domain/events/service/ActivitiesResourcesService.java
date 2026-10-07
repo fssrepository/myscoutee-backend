@@ -53,7 +53,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRep
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
@@ -69,7 +69,7 @@ public class ActivitiesResourcesService {
     private final UsersRepository usersRepository;
     private final AssetsService assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
@@ -83,7 +83,7 @@ public class ActivitiesResourcesService {
             UsersRepository usersRepository,
             AssetsService assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             ActivitySubEventResourceMapper activitySubEventResourceMapper,
             EventSlotReadModelService eventSlotReadModelService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,

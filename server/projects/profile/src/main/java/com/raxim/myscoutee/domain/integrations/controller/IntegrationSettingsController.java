@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationSettingsDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationTokenCreateRequestDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationTokenCreatedDto;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationSettingsService;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationSettingsUpdateDto;
@@ -22,12 +22,12 @@ import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationSe
 @RequestMapping("/integrations")
 public class IntegrationSettingsController {
     private final IntegrationTokenService tokenService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final IntegrationSettingsService settingsService;
 
     public IntegrationSettingsController(
             IntegrationTokenService tokenService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             IntegrationSettingsService settingsService) {
         this.tokenService = tokenService;
         this.accessControlService = accessControlService;

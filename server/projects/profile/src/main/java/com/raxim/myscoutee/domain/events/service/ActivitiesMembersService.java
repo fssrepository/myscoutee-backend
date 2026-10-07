@@ -64,7 +64,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
@@ -135,7 +135,7 @@ public class ActivitiesMembersService {
     private final AdminTelemetryService adminTelemetryService;
     private final ChatService chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
     private final ActivityMemberMapper activityMemberMapper;
@@ -157,7 +157,7 @@ public class ActivitiesMembersService {
             AdminTelemetryService adminTelemetryService,
             ChatService chatService,
             EventSlotReadModelService eventSlotReadModelService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             UserActivityCountersService userActivityCountersService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,
             ActivityMemberMapper activityMemberMapper) {

@@ -29,13 +29,13 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class IntegrationParticipantInviteService {
     private final MongoTemplate mongo;
     private final ActivityEventsRepository events;
-    private final AccessControlService access;
+    private final AccessPermissions access;
     private final ActivitiesMembersService members;
     private final IntegrationPublicEndpointResolver endpoint;
     private final HomeUserProfileService profiles;
@@ -50,7 +50,7 @@ public class IntegrationParticipantInviteService {
     private ActivitiesEventsService eventActions;
     private final SecureRandom random = new SecureRandom();
 
-    public IntegrationParticipantInviteService(MongoTemplate mongo, ActivityEventsRepository events, AccessControlService access,
+    public IntegrationParticipantInviteService(MongoTemplate mongo, ActivityEventsRepository events, AccessPermissions access,
             ActivitiesMembersService members, IntegrationPublicEndpointResolver endpoint, HomeUserProfileService profiles) {
         this.mongo = mongo; this.events = events; this.access = access; this.members = members; this.endpoint = endpoint; this.profiles = profiles;
     }

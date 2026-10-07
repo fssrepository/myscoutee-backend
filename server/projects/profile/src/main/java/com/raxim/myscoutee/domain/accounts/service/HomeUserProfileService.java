@@ -47,7 +47,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentityEmail;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
-import com.raxim.myscoutee.domain.access.config.RegionSecurityProperties;
+import com.raxim.myscoutee.domain.access.api.RegionSecurity;
 import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
@@ -116,7 +116,7 @@ import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsReposi
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.CurrentProfile {
@@ -251,12 +251,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final UserSessionActionsRepository userSessionActionsRepository;
     private final ScheduledMessageTaskService scheduledMessageTaskService;
     private final CountryPartitionService countryPartitionService;
-    private final RegionSecurityProperties regionSecurityProperties;
+    private final RegionSecurity regionSecurityProperties;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final AssetsService assetsService;
     private final AffiliateService affiliateService;
     private NotificationJobs notificationRuleRegistryService;
@@ -293,12 +293,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UserSessionActionsRepository userSessionActionsRepository,
             ScheduledMessageTaskService scheduledMessageTaskService,
             CountryPartitionService countryPartitionService,
-            RegionSecurityProperties regionSecurityProperties,
+            RegionSecurity regionSecurityProperties,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             AssetsService assetsService,
             AffiliateService affiliateService,
             com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroupsRepository) {

@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.domain.access.api.AccessGrantEffect;
 public interface AccessPolicyData {
     boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId);
 

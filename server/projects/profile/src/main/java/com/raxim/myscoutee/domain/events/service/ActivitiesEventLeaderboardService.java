@@ -51,7 +51,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsReposito
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.EventLeaderboardEntriesRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService.StoredMemberState;
 
 @Service
@@ -73,7 +73,7 @@ public class ActivitiesEventLeaderboardService {
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository;
     private final ActivitiesMembersService activitiesMembersService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     private ActivityMingleRoundsRepository activityMingleRoundsRepository;
     private final EventGeneratorByScore scoreGenerator = new EventGeneratorByScore();
@@ -84,7 +84,7 @@ public class ActivitiesEventLeaderboardService {
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             EventLeaderboardEntriesRepository eventLeaderboardEntriesRepository,
             ActivitiesMembersService activitiesMembersService,
-            AccessControlService accessControlService) {
+            AccessPermissions accessControlService) {
         this.activityEventsRepository = activityEventsRepository;
         this.activitySubEventGroupsRepository = activitySubEventGroupsRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;

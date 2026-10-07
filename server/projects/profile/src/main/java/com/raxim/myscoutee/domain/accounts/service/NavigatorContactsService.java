@@ -43,8 +43,8 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.domain.accounts.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 
 @Service
 public class NavigatorContactsService {
@@ -65,9 +65,9 @@ public class NavigatorContactsService {
     private final HomeUserProfileService homeUserProfileService;
     private final UserExperienceProfilesService userExperienceProfilesService;
     private final UsersRepository usersRepository;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final MongoTemplate mongo;
-    private final FriendshipFacts friendshipFacts;
+    private final Friendships friendshipFacts;
     private final ContactChatAccessRepository chatAccess;
     private final NotificationDelivery notifications;
 
@@ -76,8 +76,8 @@ public class NavigatorContactsService {
             HomeUserProfileService homeUserProfileService,
             UserExperienceProfilesService userExperienceProfilesService,
             UsersRepository usersRepository,
-            AccessControlService accessControlService,
-            FriendshipFacts friendshipFacts,
+            AccessPermissions accessControlService,
+            Friendships friendshipFacts,
             ContactChatAccessRepository chatAccess,
             NotificationDelivery notifications,
             MongoTemplate mongo) {

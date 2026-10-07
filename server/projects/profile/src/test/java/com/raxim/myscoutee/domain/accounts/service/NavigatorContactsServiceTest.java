@@ -25,7 +25,7 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.service.FriendshipFacts;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 
 @ExtendWith(MockitoExtension.class)

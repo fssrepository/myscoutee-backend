@@ -53,7 +53,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsReposito
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper.EventFeedbackStatRecord;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
@@ -74,7 +74,7 @@ public class ActivitiesEventFeedbackService {
     private final UsersRepository usersRepository;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final AdminTelemetryService adminTelemetryService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final UserActivityCountersService userActivityCountersService;
     private final EventFeedbackStatMapper eventFeedbackStatMapper;
     private final NotificationDelivery notificationOutboxService;
@@ -88,7 +88,7 @@ public class ActivitiesEventFeedbackService {
             UsersRepository usersRepository,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             UserActivityCountersService userActivityCountersService,
             EventFeedbackStatMapper eventFeedbackStatMapper,
             NotificationDelivery notificationOutboxService) {

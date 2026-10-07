@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -49,7 +49,7 @@ public class EventWatchService {
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final HomeUserProfileService homeUserProfileService;
-    private final FriendshipFacts friendshipFacts;
+    private final Friendships friendshipFacts;
     private final UserActivityCountersService userActivityCountersService;
     private final NotificationDelivery notificationOutboxService;
 
@@ -57,7 +57,7 @@ public class EventWatchService {
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventsRepository activityEventsRepository,
             HomeUserProfileService homeUserProfileService,
-            FriendshipFacts friendshipFacts,
+            Friendships friendshipFacts,
             UserActivityCountersService userActivityCountersService,
             NotificationDelivery notificationOutboxService) {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;

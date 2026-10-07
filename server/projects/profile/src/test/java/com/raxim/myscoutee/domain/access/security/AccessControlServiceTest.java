@@ -81,8 +81,8 @@ class AccessControlServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
-                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)));
+                new MemberPolicyFacts(new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository), new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository), new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
+                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class))));
         service.loadAccessControlCacheAtStartup();
     }
 

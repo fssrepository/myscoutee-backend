@@ -45,12 +45,12 @@ may need changes together.
 | 6 | assets | 1 | 2 | Pending | — |
 | 7 | affinity | 6 | 11 | Pending | — |
 | 8 | community | 6 | 10 | Pending | — |
-| 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; campaigns checkpoint |
+| 9 | campaigns | 1 | 4 | Complete: campaign, profile, rating and conversation contracts | 145 regression/boundary tests and 101 final consumer tests passed; `5264877a1` |
 | 10 | payments | 8 | 10 | Pending; exchange-rate job interface added | Whole domain not separated |
 | 11 | integrations | 11 | 15 | Pending; role-attention interface added | Whole domain not separated |
 | 12 | content | 2 | 5 | Pending; existing admin-access methods exposed through interface | Whole domain not separated |
 | 13 | email | 2 | 5 | Pending; process catalog and notification template boundary touched | Whole domain not separated |
-| 14 | access | 3 | 7 | Pending | — |
+| 14 | access | 3 | 7 | Complete: owning-domain permission facts and public access contract | 1655 local tests and 195 final focused tests passed; access checkpoint |
 | 15 | administration | 4 | 7 | Pending; telemetry interface and notification counters touched | Whole domain not separated |
 | 16 | operator | 4 | 7 | Pending; role-notification API call updated | Whole domain not separated |
 | 17 | platform | 2 | 5 | Pending; notification policy, audience, settings and branding contracts added | Whole domain not separated |
@@ -59,7 +59,7 @@ may need changes together.
 | 20 | localization | 0 | 0 | Complete: translation and bundle service contracts | 132 focused tests passed; `6f8f086f0` |
 | 21 | registry | 0 | 0 | Pending: full boundary review | — |
 
-**Completed domains: 5/21 — #2 notifications, #9 campaigns, #18 help, #19 media and #20 localization.** A domain is complete when foreign
+**Completed domains: 6/21 — #2 notifications, #9 campaigns, #14 access, #18 help, #19 media and #20 localization.** A domain is complete when foreign
 persistence operations go through the owning domain, remaining dependencies are
 explicitly documented, and relevant regression and boundary tests pass. This
 is distinct from proving separate-process deployment or E2E performance.
@@ -627,3 +627,129 @@ imports, private attachments, and saved rating projection reload.
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/campaigns/service/CampaignsServiceTest.java` | Verification only | Low; same queries and batching |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java` | Verification only | Low; same queries and batching |
 | `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationCampaignCreateTest.java` | Verification only | Low; same queries and batching |
+
+## #14 access checkpoint
+
+The current policy evaluator implements `AccessPermissions`; callers use this
+contract. Policy keys/annotations already belonged to the access API; the grant
+effect enum and region-security read contract now do too. The evaluator, named
+Spring bean, annotations, policy cache, conditional ordering and denial behavior
+are unchanged.
+
+Membership/event/asset/chat facts consume read-only contracts from their owners.
+The existing documents implement those narrow local views; no persisted type or
+field changes. Case participant calculation stays with community. Administrator
+classification exposes its existing rules through an interface. The principal's
+`profileView()` accessor avoids adding a JavaBean/JSON property. Workspace-context
+selection is exposed from groups and retains its existing security-context logic.
+
+Friendship adjacency queries and their request/realm-scoped cache move together
+to accounts. Media-policy Mongo reads move to their respective accounts, groups,
+community, assets, events, content and chat owners. Access retains decision order
+and consumes typed metadata, including all forwarded chat attachment candidates.
+There is no foreign repository, document reference or raw collection read left
+in access. No process-wide authorization cache or new fallback was introduced.
+
+Queries retain their existing filters and cardinality. The small account-media
+projection consistently selects profile status/account/workspace IDs; it no longer
+loads the unused profile-image array. Membership media checks share the existing
+accepted-member filter and project role. Other media projections are unchanged.
+Read-only local views are not detached snapshots or independent deployment proof.
+
+Verification: the complete standard/embedded suite passed **1655 tests, zero
+failures/errors/skips**, followed by **195 passing access/groups/auth/boundary
+tests** after the final principal accessor naming adjustment. The dev watcher
+compiled and restarted successfully; the container is healthy. No E2E application
+or latency benchmark ran.
+
+Break risk: high impact for a wrong authorization result; medium likelihood
+estimate due to the number of moved boundaries. Severe slowdown risk: low; query
+count/order and request-cache scope are retained, with small metadata mapping
+cost. E2E focus: wrong-user/realm denials, event/asset management and takeover,
+accepted/blocked participants, account-vs-workspace contact chats, support scope,
+private media and forwarded attachments, moderation privileges and revocation.
+
+| File | Break risk | Severe slowdown risk |
+| --- | --- | --- |
+| `guides/plans/BACKEND_CROSS_DOMAIN_PROGRESS.md` | Documentation only | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/AccessGrantEffect.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/AccessPermissions.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/api/RegionSecurity.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/config/RegionSecurityProperties.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/AccessControlService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/AccessGrantEffect.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/AccessPolicyData.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/ChatPolicyFacts.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/FriendshipFacts.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/MediaPolicyFacts.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/MemberPolicyFacts.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/condition/ExplicitAllowCondition.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/access/security/condition/NoExplicitDenyCondition.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/AccountMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/Friendships.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/WorkspaceProfile.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/security/firebase/dto/FirebasePrincipal.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/AccountMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/FriendshipFacts.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/NavigatorContactsService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/OrganizerFollowingService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdministratorClassification.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/service/AdminMenuCounterService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetOwnership.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/document/Asset.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetAvailabilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetOwnershipService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/service/AssetsService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/ChatDirectory.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/api/ChatMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/document/Chat.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatDirectoryService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/CaseParticipants.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/api/CommunityMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CaseParticipantsService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/community/service/CommunityMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/api/ContentMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/content/service/ContentMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventOwnership.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/MemberDirectory.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/controller/CalendarExportController.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/ActivityEvent.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/document/ActivityMember.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventFeedbackService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventLeaderboardService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesMingleService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventOwnershipService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventTicketService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventWatchService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/MemberDirectoryService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupMediaVisibility.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/WorkspaceContext.java` | Low: explicit read/permission contract | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/CommunityGroupProfilesService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/service/GroupMediaVisibilityService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/AdminClientSettingsController.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationApiController.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/IntegrationSettingsController.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/controller/McpSettingsController.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationCapabilitiesService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/main/java/com/raxim/myscoutee/domain/integrations/service/IntegrationParticipantInviteService.java` | Medium; high impact if permission facts differ | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/AccessControlServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/FriendshipFactsTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/access/security/MediaPolicyFactsTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/NavigatorContactsServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/OrganizerFollowingServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/assets/service/AssetsServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesResourcesServiceTest.java` | Verification only | Low; same query count/order |
+| `server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventWatchServiceTest.java` | Verification only | Low; same query count/order |

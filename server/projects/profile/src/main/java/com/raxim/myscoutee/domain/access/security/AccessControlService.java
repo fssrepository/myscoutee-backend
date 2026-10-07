@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.domain.access.api.AccessGrantEffect;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import com.raxim.myscoutee.domain.access.repository.AccessPolicyDefinitionsRepos
 import jakarta.annotation.PostConstruct;
 
 @Service("accessControl")
-public class AccessControlService implements AccessPolicyData, com.raxim.myscoutee.domain.access.api.ConsentAuthorization {
+public class AccessControlService implements AccessPolicyData, com.raxim.myscoutee.domain.access.api.AccessPermissions {
     private static final String EFFECT_ALLOW = "allow";
     private static final String EFFECT_DENY = "deny";
 

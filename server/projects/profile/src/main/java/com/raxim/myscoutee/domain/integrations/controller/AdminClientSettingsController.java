@@ -6,18 +6,18 @@ import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
 
 @RestController
 @RequestMapping("/admin/client-api")
 public class AdminClientSettingsController {
-    private final AccessControlService actors;
+    private final AccessPermissions actors;
     private final AdminClientAccessService access;
     private final IntegrationTokenService tokens;
     private final IntegrationSettingsService settings;
-    public AdminClientSettingsController(AccessControlService actors, AdminClientAccessService access, IntegrationTokenService tokens, IntegrationSettingsService settings) {
+    public AdminClientSettingsController(AccessPermissions actors, AdminClientAccessService access, IntegrationTokenService tokens, IntegrationSettingsService settings) {
         this.actors = actors; this.access = access; this.tokens = tokens; this.settings = settings;
     }
     private String owner(Authentication authentication) {

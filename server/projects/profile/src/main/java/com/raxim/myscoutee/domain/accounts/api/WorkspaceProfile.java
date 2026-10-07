@@ -8,6 +8,9 @@ public interface WorkspaceProfile {
     String getAccountUserId();
     String getWorkspaceGroupId();
     String getProfileStatus();
+    String getStatus();
+    String getHostTier();
+    String getStatusText();
     String getName();
     String getCity();
     List<String> getImages();

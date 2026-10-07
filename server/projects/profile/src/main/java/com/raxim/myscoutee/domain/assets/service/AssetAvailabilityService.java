@@ -19,7 +19,7 @@ public class AssetAvailabilityService {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.access.security.AccessControlService access;
+    private com.raxim.myscoutee.domain.access.api.AccessPermissions access;
 
 
     public AssetAvailabilityService(

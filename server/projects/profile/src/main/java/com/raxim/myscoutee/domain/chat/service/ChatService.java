@@ -103,7 +103,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntime
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMapper;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
@@ -164,7 +164,7 @@ public class ChatService {
     private final NotificationInbox userNotificationService;
     private final AdminTelemetryService adminTelemetryService;
     private final AdminMenuCounterService adminMenuCounterService;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final ChatMapper chatMapper;
     private final ChatMessageMapper chatMessageMapper;
     private final ExecutorService chatWriteExecutor = Executors.newVirtualThreadPerTaskExecutor();
@@ -184,7 +184,7 @@ public class ChatService {
             NotificationInbox userNotificationService,
             AdminTelemetryService adminTelemetryService,
             AdminMenuCounterService adminMenuCounterService,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             ChatMapper chatMapper,
             ChatMessageMapper chatMessageMapper) {
         this.chatsRepository = chatsRepository;
