@@ -90,7 +90,7 @@ class LocalizationHttpTest {
             assertEquals(expected, actual);
             assertEquals("hu", actual.lang());
             assertEquals(mode.name() + " üdvözlet", actual.data().get("greeting"));
-            assertNull(remote.getBundle("hu", null, actual.version()).data());
+            assertEquals(actual.data(), remote.getBundle("hu", null, actual.version()).data());
             assertEquals(200, request(LocalizationProtocol.PATH + "?lang=hu&version=" + actual.version(), TOKEN, mode.name()).statusCode());
             assertEquals(local.getBundle("zz", null, null), remote.getBundle("zz", null, null));
         }
@@ -228,6 +228,13 @@ class LocalizationHttpTest {
             "org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
     @Import({LocalizationServerConfiguration.class, ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes() {
+            return mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        }
+        @Bean com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases() {
+            return new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo");
+        }
+
         @Bean I18nService canonicalOwner() {
             var bundles = mock(I18nBundleRepository.class);
             var messages = mock(I18nMessageRepository.class);

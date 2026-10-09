@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import select
 import shlex
 import shutil
 import subprocess
@@ -30,6 +31,7 @@ NAME = 'myscoutee-msc121'
 CIDR = '192.168.173.0/24'
 IP = '192.168.173.10'
 MEMORY_MIB = 8192
+OBSERVE_INTERVAL_SECONDS = 1
 ADDRESSES = {'libvirt_pool.lab', 'libvirt_network.lab', 'libvirt_volume.base',
              'libvirt_volume.system', 'libvirt_volume.bootstrap',
              'libvirt_cloudinit_disk.bootstrap', 'libvirt_domain.lab'}
@@ -37,7 +39,7 @@ PRIVATE_FILES = {'ubuntu-noble.qcow2', 'ubuntu-noble.download', 'id_ed25519',
                  'id_ed25519.pub', 'known_hosts', 'known_hosts.old', 'kubeconfig',
                  'inputs.tfvars.json', 'terraform.tfstate', 'terraform.tfstate.backup',
                  'start.tfplan', 'destroy.tfplan', 'workloads.json', 'workload-secrets.json',
-                 'forward.env', 'mongo-replicaset.json'}
+                 'forward.env', 'mongo-replicaset.json', 'mongo-statefulset.json'}
 
 
 def run(*args, check=True, timeout=60):
@@ -223,8 +225,101 @@ def ssh(*command, timeout=30, check=True):
     return run(*ssh_command(*command), timeout=timeout, check=check)
 
 
+class GuestObserver:
+    """One bounded, read-only SSH stream for the lifetime of this terminal view."""
+    def __init__(self):
+        self.process = None
+        self.watch = True
+
+    def close(self):
+        if self.process is not None:
+            if self.process.poll() is None:
+                self.process.terminate()
+                try:
+                    self.process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    self.process.kill()
+                    self.process.wait(timeout=3)
+            self.process.stdout.close()
+            self.process = None
+
+    def read(self):
+        if self.process is None or self.process.poll() is not None:
+            self.close()
+            command = 'sudo python3 -u -' + (' --watch' if self.watch else '')
+            self.process = subprocess.Popen(ssh_command(command), stdin=subprocess.PIPE,
+                                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True)
+            self.process.stdin.write((SHELL / 'infra/guest/observe.py').read_text())
+            self.process.stdin.close()
+        if not select.select([self.process.stdout], [], [], 25)[0]:
+            self.close()
+            raise RuntimeError('Guest observation timed out; next snapshot will reconnect.')
+        line = self.process.stdout.readline()
+        if not line:
+            self.close()
+            raise RuntimeError('Guest observation disconnected; next snapshot will reconnect.')
+        try:
+            frame = json.loads(line)
+        except ValueError as error:
+            self.close()
+            raise RuntimeError('Invalid guest observation; next snapshot will reconnect.') from error
+        return frame.get('snapshot', frame.get('error', 'Guest observation unavailable.'))
+
+
+_guest_observer = GuestObserver()
+_vm_observation = None
+_monitoring_observation = None
+_monitoring_cpu = {}
+
+
+def monitoring_snapshot():
+    """Read cgroup counters; Docker discovery is separate from the one-second rates."""
+    global _monitoring_observation
+    now = time.monotonic()
+    if _monitoring_observation is None or now - _monitoring_observation[0] >= 5:
+        ids = run('docker', 'ps', '-q', '--filter', 'label=com.docker.compose.project=msc121-observability').stdout.split()
+        entries = []
+        if ids:
+            for entry in json.loads(run('docker', 'inspect', *ids).stdout):
+                if not entry['State']['Running']:
+                    continue
+                pid = entry['State']['Pid']
+                group = next(line.split(':', 2)[2] for line in Path(f'/proc/{pid}/cgroup').read_text().splitlines()
+                             if line.startswith('0::'))
+                entries.append(((entry['Id'], entry['State']['StartedAt']), entry['Name'].removeprefix('/msc121-observability-'),
+                                Path('/sys/fs/cgroup') / group.lstrip('/')))
+        _monitoring_observation = (now, entries)
+    entries = _monitoring_observation[1]
+    if not entries:
+        _monitoring_cpu.clear()
+        return ['\nHost monitoring: stopped.']
+    lines = ['\nHOST DOCKER / MONITORING', '%-24s %8s   %s' % ('CONTAINER', 'CPU %', 'RAM / LIMIT')]
+    active = {entry[0] for entry in entries}
+    for key in list(_monitoring_cpu):
+        if key not in active:
+            del _monitoring_cpu[key]
+    for key, name, root in entries:
+        try:
+            cpu = int(dict(line.split() for line in (root / 'cpu.stat').read_text().splitlines())['usage_usec'])
+            memory = int((root / 'memory.current').read_text())
+            inactive = int(dict(line.split() for line in (root / 'memory.stat').read_text().splitlines()).get('inactive_file', 0))
+            limit = (root / 'memory.max').read_text().strip()
+        except FileNotFoundError:
+            _monitoring_observation = None
+            lines.append(name + ': stopped/replaced; refreshing inventory.')
+            continue
+        at = time.monotonic()
+        previous = _monitoring_cpu.get(key)
+        _monitoring_cpu[key] = (at, cpu)
+        rate = '%.2f%%' % (max(0, cpu - previous[1]) / max(0.000001, at - previous[0]) / 10000) if previous else '-'
+        maximum = 'unlimited' if limit == 'max' else '%.0f MiB' % (int(limit) / 1024 ** 2)
+        lines.append('%-24s %8s   %.1f MiB / %s' % (name, rate, max(0, memory - inactive) / 1024 ** 2, maximum))
+    return lines
+
+
 def observe_snapshot():
     """Collect first, then repaint once; slow SSH must not blank the screen."""
+    global _vm_observation
     lines = ['MyScoutee MSC-121 | ' + time.strftime('%Y-%m-%d %H:%M:%S %Z'),
              'App :18080  |  Grafana :13000  |  Prometheus :19090  (localhost)',
              '']
@@ -233,37 +328,35 @@ def observe_snapshot():
     try:
         with (VM / 'lock').open('a') as lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            resources = ownership()
+            if _vm_observation is None or time.monotonic() - _vm_observation[0] >= 30:
+                resources = ownership()
+                info = virsh('dominfo', NAME).stdout if 'libvirt_domain.lab' in resources else ''
+                _vm_observation = (time.monotonic(), resources, info)
+            _, resources, info = _vm_observation
             if 'libvirt_domain.lab' not in resources:
+                _guest_observer.close()
                 lines.append('VM: absent. Explicit startup: python3 microservices/tools/vm.py start')
             else:
-                info = virsh('dominfo', NAME).stdout
                 facts = dict(line.split(':', 1) for line in info.splitlines() if ':' in line)
                 lines.append('VM           %s | %s vCPU | %.1f GiB assigned | autostart: %s' % (
                     facts.get('State', '?').strip(), facts.get('CPU(s)', '?').strip(),
                     int(facts['Max memory'].split()[0]) / 1024 ** 2, facts.get('Autostart', '?').strip()))
-                if virsh('domstate', NAME).stdout.strip() == 'running':
-                    # One SSH connection per snapshot; no secrets, logs or mutations.
-                    command = 'python3 -c ' + shlex.quote((SHELL / 'infra/guest/observe.py').read_text())
-                    result = ssh(command, timeout=30, check=False)
-                    lines.append('\n' + result.stdout.rstrip())
-                    if result.returncode:
-                        lines.append('Guest observation incomplete: ' + result.stderr.strip()[:500])
+        # Waiting for the next streamed sample must not hold the lifecycle lock.
+        if 'libvirt_domain.lab' in resources and facts.get('State', '').strip() == 'running':
+            lines.append('\n' + _guest_observer.read())
+        else:
+            _guest_observer.close()
     except BlockingIOError:
+        # No guest frames are consumed while a lifecycle operation holds this
+        # lock. Close the producer too, or its pipe replays old startup samples
+        # at one frame/second after the deployment has already become ready.
+        _guest_observer.close()
+        _vm_observation = None
         lines.append('VM lifecycle operation in progress; next snapshot will retry.')
     except (RuntimeError, OSError, subprocess.SubprocessError) as error:
         lines.append('VM observation unavailable: ' + str(error))
     try:
-        ids = run('docker', 'ps', '-q', '--filter', 'label=com.docker.compose.project=msc121-observability').stdout.split()
-        if ids:
-            stats = run('docker', 'stats', '--no-stream', '--format', '{{json .}}', *ids, timeout=8).stdout
-            lines.append('\nHOST DOCKER / MONITORING')
-            lines.append('%-24s %8s   %s' % ('CONTAINER', 'CPU %', 'RAM / LIMIT'))
-            for raw in stats.splitlines():
-                entry = json.loads(raw)
-                lines.append('%-24s %8s   %s' % (entry['Name'].removeprefix('msc121-observability-'), entry['CPUPerc'], entry['MemUsage']))
-        else:
-            lines.append('\nHost monitoring: stopped.')
+        lines.extend(monitoring_snapshot())
     except (OSError, subprocess.SubprocessError) as error:
         lines.append('Monitoring observation unavailable: ' + str(error))
     return '\n'.join(lines)
@@ -278,7 +371,7 @@ def terminal_frame(snapshot, columns, rows):
     height = max(1, rows - 2)
     if len(lines) > height:
         lines = lines[:max(0, height - 1)] + ['[Resize for more rows; vm.py observe --once shows the full report.]']
-    footer = 'Refresh: 1s | Ctrl+C closes this view only; the VM keeps running.'
+    footer = f'Refresh: {OBSERVE_INTERVAL_SECONDS}s; inventory: 5s | Ctrl+C closes only this view.'
     return '\n'.join(line[:width] for line in [*lines, footer])
 
 
@@ -286,7 +379,13 @@ def observe(once=False):
     """Read-only view in one alternate screen; never hold a lock between reads."""
     interactive = sys.stdout.isatty() and not once
     input_mode = None
+    _guest_observer.watch = not once
     try:
+        if once:
+            try:
+                monitoring_snapshot()  # Prime CPU counters before the bounded guest sample.
+            except (OSError, subprocess.SubprocessError):
+                pass  # The normal frame reports monitoring availability.
         if interactive:
             if sys.stdin.isatty():
                 input_mode = termios.tcgetattr(sys.stdin.fileno())
@@ -311,8 +410,9 @@ def observe(once=False):
                 print(snapshot, flush=True)
             if once:
                 return
-            time.sleep(max(0, 1 - (time.monotonic() - started)))
+            time.sleep(max(0, OBSERVE_INTERVAL_SECONDS - (time.monotonic() - started)))
     finally:
+        _guest_observer.close()
         if interactive:
             sys.stdout.write('\033[?25h\033[?1049l\033[?1007r')
             sys.stdout.flush()
@@ -435,22 +535,29 @@ def mongo_backup_cleanup():
         return []
     if folder.is_symlink() or not folder.is_dir():
         raise RuntimeError('Unexpected Mongo backup directory; preserved')
-    receipt = VM / 'mongo-replicaset.json'
-    if not receipt.is_file() or receipt.is_symlink():
-        raise RuntimeError('Mongo backup ownership receipt missing; preserved')
-    state = json.loads(receipt.read_text())
-    relative = state.get('backup', '')
-    if not re.fullmatch(r'backups/mongo-before-replicaset-\d{8}T\d{6}Z\.archive\.gz', relative):
-        raise RuntimeError('Unexpected Mongo backup path; preserved')
-    archive = VM / relative
-    entries = list(folder.iterdir())
-    if not entries:
-        return []  # Resume an interrupted owned cleanup after archive deletion.
-    if entries != [archive] or archive.is_symlink() or not archive.is_file():
+    expected = []
+    for purpose in ('replicaset', 'statefulset'):
+        receipt = VM / ('mongo-' + purpose + '.json')
+        if not receipt.exists():
+            continue
+        if not receipt.is_file() or receipt.is_symlink():
+            raise RuntimeError('Mongo backup ownership receipt missing; preserved')
+        state = json.loads(receipt.read_text())
+        relative = state.get('backup', '')
+        if not relative:
+            continue  # Fresh replica initialization has no conversion archive.
+        if not re.fullmatch(r'backups/mongo-before-' + purpose + r'-\d{8}T\d{6}Z\.archive\.gz', relative):
+            raise RuntimeError('Unexpected Mongo backup path; preserved')
+        archive = VM / relative
+        if archive.exists():
+            if archive.is_symlink() or not archive.is_file():
+                raise RuntimeError('Unexpected Mongo backup entries; preserved')
+            if hashlib.sha256(archive.read_bytes()).hexdigest() != state.get('sha256'):
+                raise RuntimeError('Mongo backup changed; preserved')
+            expected.append(archive)
+    if set(folder.iterdir()) != set(expected):
         raise RuntimeError('Unexpected Mongo backup entries; preserved')
-    if hashlib.sha256(archive.read_bytes()).hexdigest() != state.get('sha256'):
-        raise RuntimeError('Mongo backup changed; preserved')
-    return [archive]
+    return expected
 
 
 def destroy():

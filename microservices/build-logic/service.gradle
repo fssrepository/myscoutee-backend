@@ -38,7 +38,7 @@ if (domains.contains('accounts')) {
 if (assembly.starters.contains('data-redis')) explicitImports += 'com.raxim.myscoutee.common.redis.RedisStreamRetentionService'
 
 def sharedPaths = [
-    'common/util/**', 'common/converter/**', 'common/mongo/**',
+    'common/runtime/**', 'common/util/**', 'common/converter/**', 'common/mongo/**',
     'common/controller/PaymentProviderChangedExceptionHandler.java',
     'common/measurement/MongoEvidenceCursor.java', 'common/security/policy/**', 'common/security/media/**',
     'common/config/repository/**', 'common/config/caching/**',
@@ -47,6 +47,7 @@ def sharedPaths = [
     'common/config/JsonConfig.java', 'common/config/CachingConfig.java',
     'common/config/mongo/SessionRoutingMongoDatabaseFactory.java',
     'common/config/mongo/ScheduledMongoSessionRunner.java',
+    'common/config/mongo/MongoChangeStreamService.java',
     'common/config/mongo/DemoSessionRequestSupport.java'
 ]
 if (domains.contains('accounts')) sharedPaths += ['common/config/WebSecurityConfig.java', 'common/config/mongo/SessionMongoRoutingFilter.java']

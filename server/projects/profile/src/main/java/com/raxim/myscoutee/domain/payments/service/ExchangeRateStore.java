@@ -17,14 +17,19 @@ public class ExchangeRateStore {
     private final MongoTemplate mongo;
     public ExchangeRateStore(MongoTemplate mongo) { this.mongo = mongo; }
 
-    @Cacheable(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.domain.platform.api.JobGroupContext).key()")
+    @Cacheable(value = "exchange_rates", sync = true, key = "T(com.raxim.myscoutee.domain.payments.service.ExchangeRateStore).cacheKey()")
     public List<Document> observations() {
         return mongo.getCollection("exchangeRates").find(new Document("baseGroupId", JobGroupContext.groupId())).sort(new Document("_id", -1)).limit(400)
                 .map(row -> { if (row.getString("date") != null) row.put("_id", row.getString("date")); return row; })
                 .into(new java.util.ArrayList<>());
     }
 
-    @CacheEvict(value = "exchange_rates", key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name() + ':' + T(com.raxim.myscoutee.domain.platform.api.JobGroupContext).key()")
+    public static Object cacheKey() {
+        return new org.springframework.cache.interceptor.SimpleKey(
+                com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode(), JobGroupContext.groupId());
+    }
+
+    @CacheEvict(value = "exchange_rates", allEntries = true)
     public void save(List<Document> observations) {
         var writes = observations.stream().map(row -> {
             String date = row.getString("_id");
@@ -34,6 +39,14 @@ public class ExchangeRateStore {
                     new Document("$setOnInsert", scoped), new UpdateOptions().upsert(true));
         }).toList();
         if (!writes.isEmpty()) mongo.getCollection("exchangeRates").bulkWrite(writes);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchObservations(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            org.springframework.cache.CacheManager caches) {
+        Runnable invalidate = () -> java.util.Objects.requireNonNull(caches.getCache("exchange_rates")).clear();
+        changes.watch("exchange-rate-cache", java.util.Set.of("exchangeRates"), java.util.Set.of(),
+                () -> { invalidate.run(); return null; });
     }
 
     public static Quote quote(List<Document> rows, LocalDate paymentDate, String currency) {

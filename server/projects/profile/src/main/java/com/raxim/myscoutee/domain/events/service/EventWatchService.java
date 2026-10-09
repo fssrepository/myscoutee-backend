@@ -52,6 +52,12 @@ public class EventWatchService {
     private final FriendshipReads friendshipFacts;
     private final ActivityCounters userActivityCountersService;
     private final NotificationDelivery notificationOutboxService;
+    private java.util.function.BooleanSupplier subscriptionsPresent = () -> true;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void watchWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        subscriptionsPresent = changes.watchPresence("event-watch-presence", Set.of("eventWatchSubscriptions"),
+                eventWatchSubscriptionsRepository::hasSubscriptions);
+    }
 
     public EventWatchService(
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
@@ -141,7 +147,10 @@ public class EventWatchService {
 
     @Scheduled(fixedDelayString = "${events.watchlist.check-delay-ms:60000}")
     public void notifyWhenEventBecomesAvailable() {
-        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("event-watchlist", this::notifyWhenEventBecomesAvailableInGroup));
+        groupDatabases.runAcrossConfiguredDatabases(() -> {
+            if (subscriptionsPresent.getAsBoolean())
+                groupRules.runScheduledGroups("event-watchlist", this::notifyWhenEventBecomesAvailableInGroup);
+        });
     }
 
     private void notifyWhenEventBecomesAvailableInGroup() {

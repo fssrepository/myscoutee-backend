@@ -20,6 +20,12 @@ qualification limits are recorded in [PROGRESS.md](PROGRESS.md).
 
 ### Latest delegated qualification
 
+UK regional entry also passes: London, Edinburgh, Cardiff and Belfast resolve
+to `country:gb` with the security gate enabled; Dublin is rejected. The managed
+`MSC121-UK-ENTRY` checkpoint and `tools/check-uk-entry.mjs` verify an existing
+non-first London demo member through native HTTP login, `/game` and logout.
+Canonical coordinates and country geometry are unchanged.
+
 The managed native-HTTP browser check passes landing/consent/carousel, native
 DEMO login, event/explore popups, Work → Dating workspace switches and logout.
 It rejects a frontend-local fallback as evidence of working HTTP services.
@@ -48,29 +54,51 @@ python3 microservices/tools/measure-stress.py server-read-sweep
 `deploy/runtime.json` enables `mongoReplicaSet` and sets a 3-core Mongo CPU ceiling.
 Both members reuse the same locked Mongo image; no additional image build occurs.
 Each has 768 MiB RAM limit and a 256 MiB WiredTiger cache. Their CPU limits share
-the existing four guest CPUs; limits do not reserve cores. The original `mongodb`
-PVC remains intact; `mongodb-secondary` has a separate retained PVC.
+the existing four guest CPUs; limits do not reserve cores. One **StatefulSet**
+`mongodb` owns `mongodb-0` and `mongodb-1`, each with a retained 4-GiB claim
+(`data-mongodb-0` / `data-mongodb-1`). The existing member DNS aliases `mongodb`
+and `mongodb-secondary` select the corresponding pod; application URIs and
+replica membership do not change. `mongodb-members` is the governing headless
+Service. Parallel pod creation permits both voting members to recover together.
 
 ```sh
-python3 microservices/tools/mongo_replica.py configure
+# Existing two-Deployment lab: guarded data-preserving conversion.
+python3 microservices/tools/mongo_replica.py statefulset
+# Read/verify replica health:
 python3 microservices/tools/mongo_replica.py status
 ```
 
-Conversion stops the six backends, makes a private authenticated archive,
-validates its compressed stream and hash, applies the existing Helm chart,
-initializes exactly `msc121`, verifies unchanged collection counts, checks a
-majority write on the secondary, removes the probe, and starts the backends.
-The backup, key, credentials and conversion receipt live in private lab state,
-not Git. Rerunning verifies the receipt and replica configuration and does not
-repeat conversion or coordinated shutdown. Normal startup reuses that state.
-The canonical seed importer uses replica-set primary discovery as well.
+The StatefulSet conversion stops the six backends and makes a new private
+Mongo archive, validates gzip and SHA-256, and records namespace/controller/PVC/
+PV identities, document counts, collection hashes and indexes. It stops both
+old Mongo pods, sets the original PVs to **Retain**, prebinds the new ordinal
+claims to those exact volumes, and replaces the controllers through Helm.
+It verifies unchanged REAL/DEMO data and indexes, then exercises a majority
+write and a secondary read, cleans the probe and restarts the six backends.
+The source is `tools/mongo_replica.py`; interrupted conversion resumes from
+`mongo-statefulset.json`. Normal chart updates refuse unconverted legacy data.
+A verified rerun checks volume identities and replication without restarting.
+
+The backup, credentials and receipts stay in private lab state, not Git. The
+receipt records the archive path/checksum and the original resource manifests.
+Do not blindly Helm-rollback to the old Deployment chart: its old claim names
+no longer own the data. Keep the retained PVs and archive; diagnose a failed
+step and rerun the migration instead of deleting/reprovisioning storage.
+Archive decompression/hash and live data preservation were verified; an archive
+restore into a separate database has not been exercised by this migration.
+
+Fresh `workloads.py up` creates ordinal claims and initializes the replica using
+the existing initialization owner. Seed import/restart, lifecycle stop/status,
+and the one-second observer understand the StatefulSet. The observer aggregates
+its two pods into the `mongodb` **2/2** workload row. No service image build or
+pull is required for this controller change.
 
 Member Services are headless and publish not-ready pod addresses. Each member
 waits for its own DNS name to resolve to its pod IP before Mongo starts. This
 avoids a simultaneous VM-restart race where Mongo validates its stored member
 name before a normal Service has ready endpoints and both nodes remain removed.
 The versioned Helm upgrade replaces only the two owned legacy ClusterIP Services
-while backends are stopped; PVCs and replica membership names remain unchanged.
+while backends are stopped; replica membership names remain unchanged.
 See the [Kubernetes DNS documentation](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/).
 
 Both members vote: **two members require both for majority writes**. This lab
@@ -307,7 +335,12 @@ and domain index initializers remain in their original owners; their runtime
 completion still depends on resolving the missing backend connections.
 
 The other supporting images reuse the sibling repositories' canonical production
-Dockerfiles. Release builds are explicit and serial:
+Dockerfiles. Kubernetes probes for MCP, registry and payment simulator call their
+existing `/healthz` endpoints directly; they do not spawn the image's healthcheck
+CLI. Startup/readiness/liveness periods remain 2/10/30 seconds. STUN keeps its
+protocol-level exec check. Compose continues to use the canonical image checks.
+This configuration belongs to Helm, not VM/Terraform settings.
+Release builds are explicit and serial:
 
 ```sh
 bash microservices/tools/lab.sh support-images
@@ -344,6 +377,33 @@ Run from any directory:
 `jars` runs the serial Gradle build, management-port security tests and artifact
 audit. `images` packages existing audited JARs. `build` performs both in order.
 The resource preflight refuses to compete with a detected dev build owner.
+
+For a local Java correction, select the affected assemblies instead of running
+the full `lab.sh build`. For example, the integration publisher belongs to
+`identity`, while event workers belong to `community`:
+
+```sh
+microservices/gradlew --offline --no-daemon --max-workers=1 \
+  -Dorg.gradle.jvmargs=-Xmx1024m :identity:bootJar :community:bootJar
+```
+
+Audit and package those assemblies only, using their existing generated
+Dockerfiles and cached runtime image. `--offline` fails if a dependency is
+missing rather than downloading it. Shared implementation or contract changes
+may require additional consumers; identify those from `assemblies.json` and
+the transport bindings. Image import transfers only identities absent from the
+guest cache. The existing coordinated backend stop/upgrade guard still applies;
+selective compilation does not remove that deployment safety rule.
+
+The `vm.py observe` terminal samples container cgroup CPU and memory counters
+once per second through one persistent SSH connection. Kubernetes and Docker
+inventory refresh every five seconds; VM identity metadata refreshes every 30
+seconds. It does not launch `kubectl`, `crictl` or `docker stats` for every CPU
+sample. A replaced container requires a fresh pair of samples, so its first CPU
+rate is shown as unavailable instead of reusing an old counter. The guest's
+existing TLS credentials stay inside the guest; closing the terminal closes
+its observation connection. `vm.py observe --once` remains a bounded snapshot.
+Host Grafana and Prometheus CPU are displayed separately from VM workloads.
 
 Before packaging another image, `python3 microservices/tools/check-contexts.py`
 can refresh each real assembly's Spring context serially using its built JAR,
@@ -462,6 +522,15 @@ activation and guest save/resume are included in this boundary; see the
 [libvirt daemon documentation](https://libvirt.org/daemons.html).
 
 Terraform owns VM/network/storage resources; cloud-init configures the guest.
+Persist accepted VM tuning in `infra/terraform`, guest OS tuning in its
+versioned `infra/guest`/cloud-init inputs, pod tuning in `deploy/chart`, and
+application behavior in the canonical Java/configuration owner. Record the
+reason, before/after evidence, rollout and rollback in
+[PROGRESS.md](PROGRESS.md#idle-cpu-investigation--2026-10-09-open). A temporary
+experiment must restore its original setting unless the change is adopted
+through that owner. Updating cloud-init source alone does not reconcile an
+already-provisioned guest; verify existing-VM application separately and never
+replace its system/data disks to apply tuning.
 State, SSH keys, known hosts, downloaded tools/images and kubeconfig remain under
 `~/.local/state/myscoutee-microservices/msc121/`, with private permissions. Normal
 SSH and Kubernetes configuration are untouched. The guest SSH host key is pinned
@@ -592,42 +661,92 @@ credential rejection, bounded errors and live metrics. They do not prove Mongo
 persistence, inter-pod networking or delegated user authority. The contract check
 reuses Ajv from the backend checkout's existing frontend dependencies.
 
+## Empty scheduled passes and chat waits
+
+Content moderation, event watching, promotional email planning and scheduled
+basket expiry use the existing shared Mongo change stream to remember whether
+the current database contains candidate work. An empty pass returns from memory;
+no new watcher process, polling query or scheduler-rule cache is introduced.
+The check is separate for REAL/DEMO, with aliases sharing the REAL cursor when
+both modes use one database. Subscribe-before-reconcile, change-during-query
+rescheduling and reconnect reconciliation come from `MongoChangeStreamService`.
+Disconnected streams do not declare their old presence result authoritative.
+
+Presence includes future candidates and committed moderation effects. Therefore
+time passing or an admin edit cannot make a truly empty collection silently
+become due work. When candidates exist, the established scheduler still checks
+current admin configuration and retains its atomic claim/history path. Withheld
+moderation items remain candidates for release when moderation is disabled;
+active promotional workers retain their cancellation path. Basket expiry still
+receives its existing owner HTTP call, but the owner skips empty claims/queries.
+This is suppression of empty I/O, not removal of every minute timer or conversion
+of all remaining workers to exact deadline scheduling. Admin telemetry's
+clock-derived graph/queue refresh is retained in this change.
+
+Chat Redis `XREAD` defaults to a 10-second blocking wait (also in dev/E2E Compose).
+Incoming records wake it immediately; this is not a delivery/batching delay.
+The dedicated chat consumer thread and Spring/Lettuce's dedicated blocking
+connection leave normal Redis operations available. Default Lettuce command
+timeout is 60 seconds; custom deployment timeouts must remain above the selected
+block time. `CHAT_STREAM_BLOCK_MS` remains configurable.
+`python3 packaging/tests/chat-redis-blocking-test.py` verifies the actual packaged
+client libraries against isolated cached Redis: concurrent SET/GET, immediate
+XADD wakeup, empty timeout and interrupt shutdown. It does not use application data.
+
 ## Landing availability without application requests
 
-The production nginx image owns one small health sampler, shared by monolith
-and Kubernetes packaging. The default target is `profilemanagement:8080/health`;
-Helm supplies the six service groups' private `:8081/health` URLs. It samples
-them concurrently with one-second timeouts every two seconds and atomically
-writes `/tmp/myscoutee-status/status.json`. All configured groups must be UP.
-The public `/api/runtime-status` response exposes only `ready` and `checkedAt`,
-with `Cache-Control: no-store`; it does not expose management details.
+Kubernetes uses the **existing readiness probes** (`/health`, every five seconds).
+The gateway's canonical Go status receiver is built with the infrastructure
+adapter in [`runtime-status/kubernetes.go`](runtime-status/kubernetes.go). One
+namespace-scoped EndpointSlice list/watch tracks the configured backend Services;
+all expected Services need at least one ready, non-terminating endpoint. Losing
+one redundant pod does not change the aggregate. No separate backend heartbeat,
+Redis status store, or additional health request is used in Kubernetes.
 
-Nginx uses [SSI](https://nginx.org/en/docs/http/ngx_http_ssi_module.html) to include
-that same JSON snapshot in the HTML head. The browser reads it before importing
-the application, without an initial status fetch or waiting for a poll timer.
-An anonymous landing uses HTTP when ready, or the existing GitHub Pages local
-adapters when unavailable. Local mode therefore reuses the original slides,
-translations, articles and social links; real Firebase login stays unavailable.
-Real/operator/support sessions are never converted to synthetic users.
+The adapter and its Dockerfile live under `microservices`; the Helm chart owns
+its ServiceAccount and namespace-only `list/watch endpointslices` Role. No
+cluster-wide or Secret-reading permission is granted. Projected service-account
+tokens are reread on each API connection. TLS uses the mounted cluster CA.
+An initial list supplies a resourceVersion, followed by a watch. Normal 30-second
+watch timeouts resume from that version; failed watches and expired versions
+invalidate readiness and reconcile a fresh list after a two-second retry delay.
+Each connection has a 40-second deadline, bounding a silent API stall; discovery
+and Kubernetes probe/node detection delays still apply. The latest known state
+must not be treated as indefinitely healthy after losing the observer.
 
-Subsequent checks run every ten seconds and on focus/network changes, with one
-request in flight and no requests while hidden. Landing recovery changes mode
-through a fresh bootstrap; an open form/popup defers the reload. Active demo
-sessions retain the existing recovery-on-natural-reload policy. A missing,
-malformed or older-than-ten-seconds snapshot is not ready. Navigation fetches
-fresh HTML with a bounded cached-shell fallback; cached HTML loses its old
-readiness snapshot, while hashed bundles retain their existing cache policy.
+**Monolith / Compose / E2E remain independent of Kubernetes.** Their canonical
+receiver is built without the adapter and retains authenticated backend pushes
+every five seconds and twenty-second per-instance leases. The existing dedicated
+credential volume and shutdown DOWN message remain. Expiration wakes SSE readers
+at the next lease deadline; it does not poll the application. The private push
+listener exists only in this mode.
 
-For the current user-owned frontend checkpoint, keep the six backends at zero:
+Both modes expose the same public `/api/runtime-status` snapshot (`ready`,
+`known`, `checkedAt`) and `/api/runtime-status/events` SSE stream through nginx.
+The stream sends an initial snapshot and aggregate changes, including recovery.
+Fifteen-second transport pings keep the connection observable; they are not
+backend probes. The browser marks a failed or silent (45 seconds) stream
+unavailable and reconnects. A local ten-second timer still retries deferred safe
+navigation (such as waiting for a popup to close), but performs no status HTTP
+poll. Initial page/eligible-session bootstrap reads and existing identity/data
+switching restrictions remain. Native local/GitHub builds do not open this stream.
+No Kubernetes objects, credentials or management details reach the browser.
 
-```sh
-python3 microservices/tools/workloads.py frontend-up
-```
+Nginx still embeds the snapshot in the HTML head through SSI. A missing,
+malformed or older-than-ten-seconds bootstrap snapshot is not ready. Anonymous
+landing recovery uses a fresh bootstrap and existing local adapters; an open
+form/popup defers it. Real/operator/support identities are never converted to
+synthetic users, and active demo recovery retains its natural-reload policy.
+Cached-shell fallback still removes old readiness snapshots.
 
-This deploys the locked frontend artifact without building it. The separate
-`lab.sh frontend-image` release action builds changed source; `workloads.py
-lock-images` records that artifact before deployment. Full backend startup uses
-`workloads.py up` only after the frontend checkpoint is handed back.
+Build via the existing `tools/lab.sh frontend-image` action (optimized Angular
+bundle, canonical receiver image, then microservices adapter), or
+`tools/lab.sh frontend-package` for receiver-only packaging of an existing
+bundle. The Docker builds use cached images and `--network=none --pull=false`.
+No Java, supporting-service or Terraform VM rebuild is required. Disabling the
+old heartbeat through Helm environment configuration does restart the six Java
+pods once. Full monolith E2E and browser-operated failover are separate proof
+boundaries from the focused receiver and frontend tests.
 
 ## Required final application milestone
 
@@ -695,3 +814,12 @@ Service images and JARs remain available.
 The VM's graceful stop/restart preserved identity. Terraform destroy then removed
 all seven resources and the owned disk directory, and repeated destroy/stop passed.
 The recreated VM is running by explicit startup; host boot enablement remains disabled.
+
+## Remaining database polling
+
+The numbered [database polling audit](DATABASE_POLLING_AUDIT.md) records the
+existing service owners, default cadences, empty-queue reads, deadline/recovery
+requirements and follow-up boundaries. Affinity task discovery now uses one
+change stream per configured database with fallback polling disabled. Normal
+Compose replica defaults and isolated bootstrap verification are documented in
+[the packaging guide](../packaging/README.md#default-mongo-replica-set-and-change-streams).

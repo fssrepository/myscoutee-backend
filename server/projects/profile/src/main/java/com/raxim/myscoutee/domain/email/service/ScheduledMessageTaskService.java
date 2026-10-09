@@ -37,7 +37,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -195,7 +194,6 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         taskExecutor.shutdownNow();
     }
 
-    @Scheduled(fixedDelayString = "${scheduled-messages.task-poll-delay-ms:1800000}")
     public void runDueTasks() {
         if (scheduledMongoSessionRunner == null) {
             runDueTasksForCurrentDatabase();
@@ -204,7 +202,30 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         scheduledMongoSessionRunner.runAcrossConfiguredDatabases(this::runDueTasksForCurrentDatabase);
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchScheduledTasks(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("scheduled-messages", java.util.Set.of("scheduledMessageTasks", "notificationRuleConfigs"),
+                java.util.Set.of("status", "suspended", "dueAtIso", "enabled", "timing", "scheduleSlots"), () -> {
+                    runDueTasksForCurrentDatabase();
+                    Query query = Query.query(Criteria.where("status").is(STATUS_SCHEDULED)
+                            .and("suspended").ne(true).and("dueAtIso").ne(null)).with(Sort.by("dueAtIso"));
+                    var next = mongoTemplate.findOne(query, ScheduledMessageTask.class);
+                    if (next == null) return null;
+                    Instant due = parseInstant(next.getDueAtIso());
+                    if (due == null) return null;
+                    Instant now = Instant.now();
+                    Instant enterLookahead = due.minusMillis(workerLookaheadMs());
+                    if (enterLookahead.isAfter(now)) return enterLookahead;
+                    return due.isAfter(now) ? due : now.plusSeconds(5);
+                });
+    }
+
     private void runDueTasksForCurrentDatabase() {
+        // Reconcile retained timers even when their job rule has been disabled or removed.
+        // Execution still checks the current rule and atomically claims the latest document.
+        scheduledTaskState.values().stream()
+                .map(ScheduledMessageTask::getBaseGroupId).distinct().toList()
+                .forEach(group -> JobGroupContext.run(group, this::reconcileLocalWorkersFromDb));
         var registry = notificationRuleRegistry();
         if (registry != null) registry.forEachGroup(NotificationJobs.RULE_SCHEDULED_MESSAGES, this::runDueTasksForCurrentDatabaseInGroup);
     }
@@ -227,7 +248,6 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             return;
         }
         try {
-            reconcileLocalWorkersFromDb();
             Instant horizon = startedAt.plusMillis(workerLookaheadMs());
             Query query = Query.query(Criteria
                     .where("baseGroupId").is(JobGroupContext.groupId()).and("status").is(STATUS_SCHEDULED)

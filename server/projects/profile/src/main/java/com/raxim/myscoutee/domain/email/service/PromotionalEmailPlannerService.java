@@ -74,6 +74,12 @@ public class PromotionalEmailPlannerService {
     private DeploymentBranding deploymentBrandingResolver;
     private final ExecutorService ruleExecutor = Executors.newVirtualThreadPerTaskExecutor();
     private final Map<String, Future<?>> runningRuleTasks = new ConcurrentHashMap<>();
+    private java.util.function.BooleanSupplier campaignsPresent = () -> true;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void watchWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        campaignsPresent = changes.watchPresence("email-campaign-presence", Set.of("emailCampaignRules"),
+                emailCampaignRulesRepository::existsByEnabledTrue);
+    }
 
     public PromotionalEmailPlannerService(
             EmailProperties emailProperties,
@@ -116,7 +122,14 @@ public class PromotionalEmailPlannerService {
 
     @Scheduled(fixedDelayString = "${email.promotions.scheduler-poll-delay-ms:60000}")
     public void planScheduledPromotionalEmails() {
-        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("promotional-email-planning", this::planScheduledPromotionalEmailsInGroup));
+        groupDatabases.runAcrossConfiguredDatabases(() -> {
+            // Keep cancellation/recovery reachable after the final campaign is
+            // disabled. Static disabled configuration needs no group admission.
+            boolean runningInMode = runningRuleTasks.keySet().stream()
+                    .anyMatch(key -> key.startsWith(MongoSessionModeContext.currentMode().name() + ":"));
+            if (runningInMode || (promotionsEnabled() && campaignsPresent.getAsBoolean()))
+                groupRules.runScheduledGroups("promotional-email-planning", this::planScheduledPromotionalEmailsInGroup);
+        });
     }
 
     private void planScheduledPromotionalEmailsInGroup() {

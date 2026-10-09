@@ -14,7 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 // Boot selects Spring Data Web or Data REST support from each assembly's
 // classpath. Enabling both explicitly registers duplicate pageable resolvers.
-@Import({MongoRoutingConfig.class, MongoConverterConfig.class, JsonConfig.class,
+@Import({com.raxim.myscoutee.common.runtime.RuntimeStatusPublisher.class, MongoRoutingConfig.class, MongoConverterConfig.class, JsonConfig.class,
         CachingConfig.class, ScheduledMongoSessionRunner.class,
+        com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class,
         com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler.class})
 public class ServiceInfrastructureConfiguration {}

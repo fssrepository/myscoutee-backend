@@ -71,21 +71,25 @@ public class AdminStatsService {
     }
 
     public void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId) {
+        applyTelemetryEvents(events, lastStreamId, true);
+    }
+
+    public void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId, boolean refreshDerived) {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) return;
         List<AdminTelemetryEvent> batch = events == null ? List.of() : events;
         var scoped = adminModerationService.baseProfileEvents(batch);
         if (JobGroupContext.isActive()) {
             String key = JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId();
-            applyTelemetryEvents(scoped.getOrDefault(key, List.of()), lastStreamId, adminStatsRepository.ensureSnapshot(JobGroupContext.groupId()));
+            applyTelemetryEvents(scoped.getOrDefault(key, List.of()), lastStreamId, adminStatsRepository.ensureSnapshot(JobGroupContext.groupId()), refreshDerived);
             return;
         }
         for (var entry : scoped.entrySet()) {
-            if (!"global".equals(entry.getKey())) applyTelemetryEvents(entry.getValue(), lastStreamId, adminStatsRepository.ensureSnapshot(entry.getKey()));
+            if (!"global".equals(entry.getKey())) applyTelemetryEvents(entry.getValue(), lastStreamId, adminStatsRepository.ensureSnapshot(entry.getKey()), refreshDerived);
         }
-        applyTelemetryEvents(scoped.getOrDefault("global", List.of()), lastStreamId, adminStatsRepository.ensureGlobalSnapshot());
+        applyTelemetryEvents(scoped.getOrDefault("global", List.of()), lastStreamId, adminStatsRepository.ensureGlobalSnapshot(), refreshDerived);
     }
 
-    private void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId, AdminStatsSnapshot snapshot) {
+    private void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId, AdminStatsSnapshot snapshot, boolean refreshDerived) {
         Map<String, Long> counters = new LinkedHashMap<>(safeMap(snapshot.getCounters()));
         Map<String, Long> attention = new LinkedHashMap<>(safeMap(snapshot.getAttention()));
         Map<String, Long> topCities = new LinkedHashMap<>(safeMap(snapshot.getTopCities()));
@@ -188,8 +192,10 @@ public class AdminStatsService {
         if (StringUtils.hasText(safeText(lastStreamId))) {
             snapshot.setLastTelemetryStreamId(safeText(lastStreamId));
         }
-        refreshGraph(snapshot);
-        refreshProfileCounts(snapshot);
+        if (refreshDerived) {
+            refreshGraph(snapshot);
+            refreshProfileCounts(snapshot);
+        }
         adminStatsRepository.save(snapshot);
     }
 

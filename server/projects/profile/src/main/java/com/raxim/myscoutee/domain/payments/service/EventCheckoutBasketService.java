@@ -40,6 +40,14 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 @Service
 public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.payments.api.CheckoutResults, com.raxim.myscoutee.domain.payments.api.CheckoutBaskets {
     @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+    private java.util.function.BooleanSupplier reservationsPresent = () -> true;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void watchScheduledWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        reservationsPresent = changes.watchPresence("checkout-expiry-presence", Set.of("eventCheckoutBasketItems"),
+                () -> mongoTemplate.exists(new Query(new Criteria().andOperator(
+                        Criteria.where("status").in(PURGEABLE_STATUSES), reservationResultStateCriteria(),
+                        Criteria.where("expiresAtIso").exists(true).nin("", null))), EventCheckoutBasketItem.class));
+    }
 
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
@@ -503,6 +511,7 @@ public class EventCheckoutBasketService implements com.raxim.myscoutee.domain.pa
     }
 
     public int purgeExpiredDraftBasketsScheduled(Instant now) {
+        if (!reservationsPresent.getAsBoolean()) return 0;
         return purgeExpiredDraftBaskets(now, true);
     }
 

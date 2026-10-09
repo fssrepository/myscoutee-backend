@@ -66,6 +66,7 @@ services:
         NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.3.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
+      MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     #  WAIT_FOR: profilemanagement:8080
     ports:
@@ -73,6 +74,7 @@ services:
       - 443:443
       - 127.0.0.1:27017-27019:27017-27019
     volumes:
+      - runtime-status-credentials:/run/myscoutee-runtime-status
       - ./docker/conf/nginx/conf/http:/etc/nginx/dev-templates:ro
       - ./docker/images/nginx/dev/nginx-entrypoint.sh:/scripts/nginx-entrypoint.sh:ro
       - ./docker/.qa-mobile-runtime:/var/lib/myscoutee-qa:ro
@@ -103,13 +105,15 @@ services:
       #- certbot
     #command: ["/scripts/wait-for-it.sh", "-t", "0", "profilemanagement:8080", "--", "nginx", "-g", "daemon off;"]
   mongodb:
+    extends:
+      file: docker-compose.replicaset.yml
+      service: mongodb
     image: ${MONGO_IMAGE}
     container_name: mongodb
     hostname: mongodb
     env_file:
       # Committed development-only credentials. Production uses .env.secrets.
       - docker-dev.env
-    #entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
     environment:
       CHAT_CALL_STUN_URLS: "${CHAT_CALL_STUN_URLS:-}"
       CHAT_CALL_STUN_PORT: "${CHAT_CALL_STUN_PORT:-3478}"
@@ -212,6 +216,9 @@ services:
       - ./data:/workspace/data
       - ./docker/scripts/prepare_dev_runtime_directories.sh:/prepare-runtime-directories.sh:ro
   profilemanagement:
+    extends:
+      file: docker-compose.replicaset.yml
+      service: profilemanagement
     image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.3.0-dev}
     pull_policy: build
     build:
@@ -230,6 +237,9 @@ services:
       - -lc
       - /bin/sh /workspace/docker/scripts/ensure_operator_configuration_master_key.sh && exec bash /workspace/docker/scripts/start_profilemanagement_dev.sh
     environment:
+      MYSCOUTEE_RUNTIME_STATUS_ENABLED: "true"
+      MYSCOUTEE_RUNTIME_STATUS_URL: http://nginx:9081/internal/runtime-status
+      MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
       HOME: /workspace
       # Do not share Gradle locks with host-side IDE/CLI daemons. The repository
       # is bind-mounted, so the default /workspace/.gradle path is the host cache.
@@ -243,7 +253,7 @@ services:
       MONGODB_DEMO_DATABASE: "${MONGO_DEMO_DATABASE}"
       SPRING_DATA_REDIS_HOST: "redis"
       SPRING_DATA_REDIS_PORT: "6379"
-      CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-100}"
+      CHAT_STREAM_BLOCK_MS: "${CHAT_STREAM_BLOCK_MS:-10000}"
       USERS_DELETED_ACCOUNT_PURGE_DELAY_MS: "${USERS_DELETED_ACCOUNT_PURGE_DELAY_MS:-60000}"
       FIREBASE_ENABLED: "false"
       AUTH_MAX_ACTIVE_SESSIONS: "${AUTH_MAX_ACTIVE_SESSIONS:--1}"
@@ -295,6 +305,7 @@ services:
     ports:
       - "127.0.0.1:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}:${PROFILEMANAGEMENT_DEBUG_PORT:-5005}"
     volumes:
+      - runtime-status-credentials:/run/myscoutee-runtime-status:ro
       - ./:/workspace
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -480,6 +491,7 @@ services:
     stop_grace_period: 15s
 
 volumes:
+  runtime-status-credentials: {}
   registry-dev-demo-data:
     name: "${LOCAL_REGISTRY_DEMO_VOLUME_NAME:-myscoutee-registry-dev-demo-data-v1}"
   payment-simulator-dev-data:

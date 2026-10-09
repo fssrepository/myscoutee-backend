@@ -54,6 +54,9 @@ public class AffinityRecomputeTaskService implements com.raxim.myscoutee.domain.
 
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
+    @Autowired
+    private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases;
+
     private final AffinityRecomputeTasksRepository tasksRepository;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
@@ -87,11 +90,21 @@ public class AffinityRecomputeTaskService implements com.raxim.myscoutee.domain.
 
     @PostConstruct
     void ensureIndexes() {
+        databases.runAcrossConfiguredDatabases(this::ensureIndexesForCurrentDatabase);
+    }
+
+    private void ensureIndexesForCurrentDatabase() {
         mongoTemplate.indexOps(AffinityRecomputeTask.class)
                 .createIndex(new Index()
                         .named("affinity_recompute_task_key")
                         .on("taskKey", Sort.Direction.ASC)
                         .unique());
+        mongoTemplate.indexOps(AffinityRecomputeTask.class)
+                .createIndex(new Index()
+                        .named("affinity_recompute_group_status_available")
+                        .on("baseGroupId", Sort.Direction.ASC)
+                        .on("status", Sort.Direction.ASC)
+                        .on("availableAtIso", Sort.Direction.ASC));
         mongoTemplate.indexOps(AffinityRecomputeTask.class)
                 .createIndex(new Index()
                         .named("affinity_recompute_task_status_available")

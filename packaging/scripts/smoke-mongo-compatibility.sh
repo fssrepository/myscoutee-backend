@@ -60,7 +60,7 @@ compose_files() {
   local replica_set_enabled
   replica_set_enabled="$(read_env_file_value MONGO_REPLICA_SET_ENABLED "${ENV_FILE}" || true)"
 
-  if is_truthy "${replica_set_enabled}"; then
+  if is_truthy "${replica_set_enabled:-true}"; then
     files+=(-f "${SERVER_DIR}/docker-compose.replicaset.yml")
   fi
 

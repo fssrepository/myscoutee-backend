@@ -19,6 +19,12 @@ public final class CheckoutMembershipsEndpoint {
         return read(request, CheckoutMembershipsProtocol.Expire.class, CheckoutMembershipsProtocol::valid, command ->
                 com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> receipt(() -> owner.expirePendingCheckoutMembership(command.userId(), command.eventId(), command.nowIso()))));
     }
+    @PostMapping(value = CheckoutMembershipsProtocol.CANCELLATIONS, produces = "application/json")
+    public ResponseEntity<?> cancellations(HttpServletRequest request) throws java.io.IOException {
+        return read(request, CheckoutMembershipsProtocol.CancellationWakeup.class, CheckoutMembershipsProtocol::valid, command ->
+                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(true, command.scope().groupId(),
+                        () -> receipt(owner::finishPendingCancellations)));
+    }
     private CheckoutMembershipsProtocol.Receipt receipt(Runnable action) { action.run(); return new CheckoutMembershipsProtocol.Receipt(true); }
     private <T> ResponseEntity<?> read(HttpServletRequest request, Class<T> type, Predicate<T> valid, Function<T, Object> action)
             throws java.io.IOException {

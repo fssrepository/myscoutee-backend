@@ -33,4 +33,11 @@ public final class RemoteCheckoutMemberships extends RemoteReadTransport impleme
         }
     }
 
+    @Override public void finishPendingCancellations() {
+        var command = new CheckoutMembershipsProtocol.CancellationWakeup(CheckoutMembershipsProtocol.Scope.current());
+        if (!CheckoutMembershipsProtocol.valid(command)) throw new IllegalArgumentException("Cancellation wakeup requires a job scope");
+        exchange(CheckoutMembershipsProtocol.CANCELLATIONS, mapper.writeValueAsBytes(command),
+                new TypeReference<CheckoutMembershipsProtocol.Receipt>() {}, "checkout-memberships.cancellations",
+                CheckoutMembershipsProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.completed()));
+    }
 }

@@ -8,6 +8,8 @@ sourceSets.main.java {
     include '**/transport/**'
 }
 sourceSets.test.java {
+    include 'com/raxim/myscoutee/common/config/mongo/MongoChangeStreamService.java'
+    include 'com/raxim/myscoutee/common/config/mongo/ScheduledMongoSessionRunner.java'
     srcDir rootProject.backendJava
     include 'com/raxim/myscoutee/microservices/**'
     include 'com/raxim/myscoutee/common/config/JsonConfig.java'

@@ -31,6 +31,94 @@ seed_mongo = module('seed-mongo')
 mongo_replica = module('mongo_replica')
 
 
+class MongoStatefulMigrationTest(unittest.TestCase):
+    def row(self):
+        return {'target': 'data-mongodb-0', 'claim': {'metadata': {'name': 'mongodb', 'uid': 'claim-uid'}},
+                'pv': {'metadata': {'uid': 'volume-uid'}, 'spec': {'local': {'path': '/original'},
+                    'nodeAffinity': {'node': 'owned'}, 'claimRef': {'name': 'mongodb',
+                        'namespace': workloads.NAMESPACE, 'uid': 'claim-uid'}}}}
+
+    def test_rebind_rejects_changed_disk_location_and_foreign_claim(self):
+        for mutate in (lambda p: p['metadata'].update(uid='other'),
+                       lambda p: p['spec']['local'].update(path='/empty'),
+                       lambda p: p['spec']['claimRef'].update(uid='foreign')):
+            row = self.row()
+            pv = json.loads(json.dumps(row['pv']))
+            mutate(pv)
+            with self.assertRaises(RuntimeError):
+                mongo_replica.validate_volume(row, pv)
+
+    def test_rebind_accepts_only_original_or_recorded_target_claim(self):
+        row = self.row()
+        mongo_replica.validate_volume(row, row['pv'])
+        row['targetUid'] = 'new-uid'
+        pv = json.loads(json.dumps(row['pv']))
+        pv['spec']['claimRef'].update(name='data-mongodb-0', uid='new-uid')
+        mongo_replica.validate_volume(row, pv)
+
+    def test_rebind_retains_volume_before_releasing_claim_and_pins_target(self):
+        row = self.row()
+        row['pv']['metadata'].update(name='pv-original', resourceVersion='1')
+        row['pv']['spec']['persistentVolumeReclaimPolicy'] = 'Delete'
+        row['claim']['metadata']['labels'] = workloads.LABEL
+        row['claim']['spec'] = {'volumeName': 'pv-original', 'storageClassName': 'local-path',
+                                'accessModes': ['ReadWriteOnce'], 'volumeMode': 'Filesystem',
+                                'resources': {'requests': {'storage': '4Gi'}}}
+        pv = json.loads(json.dumps(row['pv']))
+        claims = {'mongodb': row['claim']}
+        operations = []
+        def command(*args, **kwargs):
+            if args[:2] == ('patch', 'pv'):
+                patch_ops = json.loads(args[-1])
+                change = patch_ops[-1]
+                if change['path'].endswith('persistentVolumeReclaimPolicy'):
+                    pv['spec']['persistentVolumeReclaimPolicy'] = change['value']
+                    operations.append('retain')
+                else:
+                    self.assertNotIn('mongodb', claims)
+                    self.assertEqual('new-uid', change['value']['uid'])
+                    pv['spec']['claimRef'] = change['value']
+                    operations.append('rebind')
+            elif args[0] == 'create':
+                target = json.loads(kwargs['data'])
+                self.assertEqual('pv-original', target['spec']['volumeName'])
+                target['metadata']['uid'] = 'new-uid'
+                claims[target['metadata']['name']] = target
+                operations.append('prebind')
+            elif 'delete' in args:
+                self.assertEqual('Retain', pv['spec']['persistentVolumeReclaimPolicy'])
+                del claims['mongodb']
+                operations.append('release')
+        with patch.object(mongo_replica.w, 'kube_json', side_effect=lambda *a: json.loads(json.dumps(pv))), \
+             patch.object(mongo_replica.w, 'kube', side_effect=command), \
+             patch.object(mongo_replica, 'existing', side_effect=lambda kind, name: claims.get(name)), \
+             patch.object(mongo_replica, 'save_state'):
+            mongo_replica.rebind_volume(row, {'volumes': [row]})
+        self.assertEqual(['retain', 'prebind', 'release', 'rebind'], operations)
+
+    def test_chart_cannot_implicitly_replace_legacy_data(self):
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(mongo_replica, 'STATEFUL_STATE', Path(directory) / 'receipt'), \
+             patch.object(mongo_replica, 'existing', return_value={'kind': 'Deployment'}):
+            with self.assertRaisesRegex(RuntimeError, 'mongo_replica.py statefulset'):
+                mongo_replica.require_stateful_volumes()
+
+    def test_partial_migration_blocks_normal_chart_apply(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = Path(directory) / 'receipt'
+            receipt.write_text(json.dumps({'phase': 'backed-up'}))
+            with patch.object(mongo_replica, 'STATEFUL_STATE', receipt), \
+                 patch.object(mongo_replica, 'existing', return_value=None), \
+                 patch.object(mongo_replica, 'verify_receipt'):
+                with self.assertRaisesRegex(RuntimeError, 'incomplete'):
+                    mongo_replica.require_stateful_volumes()
+
+    def test_stateful_member_exec_keeps_ordinal_identity(self):
+        with patch.object(mongo_replica, 'workload', return_value='statefulset/mongodb'):
+            self.assertEqual('pod/mongodb-0', mongo_replica.member_target())
+            self.assertEqual('pod/mongodb-1', mongo_replica.member_target('mongodb-secondary'))
+
+
 class MongoServiceMigrationTest(unittest.TestCase):
     def service(self, name='mongodb'):
         return {'metadata': {'name': name, 'uid': 'owned-uid', 'labels': workloads.LABEL}, 'spec': {'clusterIP': '10.43.0.5'}}
@@ -230,7 +318,7 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
              patch.object(seed_mongo, 'claim_bootstrap') as claim:
             with self.assertRaisesRegex(RuntimeError, 'changed across pod replacement'):
                 seed_mongo.verify_persistence('fingerprint','owned',True)
-            self.assertEqual(2,kube.call_count)
+            self.assertEqual(3,kube.call_count)
             claim.assert_not_called()
 
     def test_real_database_cannot_inherit_a_wildcard_demo_seed_policy(self):
@@ -477,12 +565,107 @@ class HostSafetyTest(unittest.TestCase):
 
 
 class VmSafetyTest(unittest.TestCase):
+    def test_lifecycle_pause_discards_the_guest_producer_instead_of_queueing_frames(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory)
+            with (state / 'lock').open('a') as lock:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                with patch.object(vm, 'VM', state), \
+                     patch.object(vm._guest_observer, 'close') as close, \
+                     patch.object(vm._guest_observer, 'read') as read, \
+                     patch.object(vm, 'monitoring_snapshot', return_value=[]):
+                    self.assertIn('lifecycle operation in progress', vm.observe_snapshot())
+                    close.assert_called_once()
+                    read.assert_not_called()
+
+    def test_waiting_for_a_monitor_sample_does_not_hold_the_vm_lifecycle_lock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory)
+            def read():
+                with (state / 'lock').open('a') as lock:
+                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return 'guest sample'
+            metadata = 'State: running\nCPU(s): 4\nMax memory: 8388608 KiB\nAutostart: disable\n'
+            with patch.object(vm, 'VM', state), \
+                 patch.object(vm, '_vm_observation', (time.monotonic(), {'libvirt_domain.lab': {}}, metadata)), \
+                 patch.object(vm._guest_observer, 'read', side_effect=read), \
+                 patch.object(vm, 'monitoring_snapshot', return_value=[]):
+                self.assertIn('guest sample', vm.observe_snapshot())
+
+    def test_guest_counter_rates_reset_for_a_replaced_container(self):
+        spec = importlib.util.spec_from_file_location('guest_observe', Path(__file__).parents[1] / 'infra/guest/observe.py')
+        guest = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(guest)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'cpu.stat').write_text('usage_usec 100000\n')
+            (root / 'memory.current').write_text('1000\n')
+            (root / 'memory.stat').write_text('inactive_file 200\n')
+            sampler = guest.ContainerSamples()
+            metadata = {'namespace': 'test', 'name': 'pod'}
+            sampler.containers = [(metadata, {'name': 'app', 'containerID': 'old'}, root)]
+            with patch.object(guest.time, 'monotonic', side_effect=[1, 2, 3]):
+                self.assertEqual([{'pods': []}], sampler.sample())
+                (root / 'cpu.stat').write_text('usage_usec 350000\n')
+                value = sampler.sample()[0]['pods'][0]['containers'][0]
+                self.assertEqual(250000000, value['cpu']['usageNanoCores'])
+                self.assertEqual(800, value['memory']['workingSetBytes'])
+                sampler.containers = [(metadata, {'name': 'app', 'containerID': 'replacement'}, root)]
+                self.assertEqual([{'pods': []}], sampler.sample())
+            (root / 'cpu.stat').unlink()
+            self.assertEqual([{'pods': []}], sampler.sample())
+
+    def test_host_monitoring_reads_counter_deltas_without_launching_docker_stats(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'cpu.stat').write_text('usage_usec 100000\n')
+            (root / 'memory.current').write_text('1048576\n')
+            (root / 'memory.stat').write_text('inactive_file 0\n')
+            (root / 'memory.max').write_text('268435456\n')
+            with patch.object(vm, '_monitoring_observation', (1, [('id', 'test', root)])), \
+                 patch.object(vm, '_monitoring_cpu', {}), \
+                 patch.object(vm.time, 'monotonic', side_effect=[1, 1, 2, 2]), \
+                 patch.object(vm, 'run') as run:
+                self.assertIn('1.0 MiB / 256 MiB', '\n'.join(vm.monitoring_snapshot()))
+                (root / 'cpu.stat').write_text('usage_usec 350000\n')
+                self.assertIn('25.00%', '\n'.join(vm.monitoring_snapshot()))
+                run.assert_not_called()
+
+    def test_monitor_reuses_one_guest_connection_and_closes_only_its_child(self):
+        process = unittest.mock.MagicMock()
+        process.poll.return_value = None
+        process.stdout.readline.side_effect = [json.dumps({'snapshot': 'first'}) + '\n',
+                                               json.dumps({'snapshot': 'second'}) + '\n']
+        observer = vm.GuestObserver()
+        with patch.object(vm.subprocess, 'Popen', return_value=process) as start, \
+             patch.object(vm.select, 'select', return_value=([process.stdout], [], [])):
+            self.assertEqual('first', observer.read())
+            self.assertEqual('second', observer.read())
+            start.assert_called_once()
+            self.assertIn('sudo python3 -u - --watch', start.call_args.args[0])
+            process.stdin.write.assert_called_once()
+            observer.close()
+            process.terminate.assert_called_once()
+            process.wait.assert_called_once_with(timeout=3)
+            self.assertIsNone(observer.process)
+
+    def test_monitor_disconnect_reconnects_without_returning_a_stale_frame(self):
+        observer = vm.GuestObserver()
+        process = unittest.mock.MagicMock()
+        process.poll.return_value = None
+        process.stdout.readline.return_value = ''
+        with patch.object(vm.subprocess, 'Popen', return_value=process), \
+             patch.object(vm.select, 'select', return_value=([process.stdout], [], [])):
+            with self.assertRaisesRegex(RuntimeError, 'disconnected'):
+                observer.read()
+        self.assertIsNone(observer.process)
+
     def test_monitor_suppresses_scroll_key_echo_and_restores_terminal(self):
         master, slave = pty.openpty()
         fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', 24, 80, 0, 0))
         original = termios.tcgetattr(slave)
         code = ("import sys; sys.path.insert(0, sys.argv[1]); import vm; "
-                "vm.observe_snapshot=lambda: 'frame';\n"
+                "vm.observe_snapshot=lambda: 'frame'; vm.OBSERVE_INTERVAL_SECONDS=0.1;\n"
                 "try: vm.observe()\n"
                 "except KeyboardInterrupt: pass\n")
         child = subprocess.Popen([sys.executable, '-c', code, str(Path(__file__).parent)],

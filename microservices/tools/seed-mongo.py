@@ -18,6 +18,7 @@ import tarfile
 import tempfile
 
 import workloads as w
+import mongo_replica
 
 DATABASES = {'msc121_real': 'myscoutee_db', 'msc121_demo': 'demo_db'}
 STATE_DB = 'msc121_bootstrap'
@@ -76,7 +77,7 @@ def catalog_baseline_fingerprint(files, allowlist, catalog):
 def mongo(script):
     prefix = "db.getSiblingDB('admin').auth(process.env.MONGO_INITDB_ROOT_USERNAME,process.env.MONGO_INITDB_ROOT_PASSWORD);\n"
     host = ['--host', 'msc121/mongodb:27017,mongodb-secondary:27017'] if w.CONFIG.get('mongoReplicaSet') else []
-    result = w.kube('-n', w.NAMESPACE, 'exec', 'deployment/mongodb', '--',
+    result = w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--',
                     'mongosh', *host, '--quiet', '--eval', prefix + script, timeout=120)
     return json.loads(result.stdout.strip().splitlines()[-1])
 
@@ -132,8 +133,9 @@ print(JSON.stringify(result));
 def verify_persistence(fingerprint, namespace_uid, restart):
     before=snapshot(fingerprint, namespace_uid)
     if restart:
-        w.kube('-n', w.NAMESPACE, 'rollout', 'restart', 'deployment/mongodb')
-        w.kube('-n', w.NAMESPACE, 'rollout', 'status', 'deployment/mongodb', '--timeout=90s', timeout=100)
+        controller = mongo_replica.workload()
+        w.kube('-n', w.NAMESPACE, 'rollout', 'restart', controller)
+        w.kube('-n', w.NAMESPACE, 'rollout', 'status', controller, '--timeout=90s', timeout=100)
         if snapshot(fingerprint, namespace_uid) != before:
             raise RuntimeError('Mongo content, indexes or bootstrap marker changed across pod replacement.')
     counts={name:{'collections':len(collections),'documents':sum(row['count'] for row in collections.values())}
@@ -143,7 +145,7 @@ def verify_persistence(fingerprint, namespace_uid, restart):
 
 def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=None):
     directory = '/tmp/msc121-seed-' + fingerprint[:16]
-    w.kube('-n', w.NAMESPACE, 'exec', 'deployment/mongodb', '--', 'mkdir', '-p', directory)
+    w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'mkdir', '-p', directory)
     try:
         with tempfile.TemporaryFile() as archive:
             with tarfile.open(fileobj=archive, mode='w:gz', dereference=True) as tar:
@@ -151,12 +153,12 @@ def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=Non
                     tar.add(path, arcname=name, recursive=False)
             archive.seek(0)
             command = shlex.join(['sudo', 'k3s', 'kubectl', '-n', w.NAMESPACE,
-                                 'exec', '-i', 'deployment/mongodb', '--', 'tar', '-xzf', '-', '-C', directory])
+                                 'exec', '-i', mongo_replica.member_target(), '--', 'tar', '-xzf', '-', '-C', directory])
             subprocess.run(w.vm.ssh_command(command), stdin=archive, capture_output=True, check=True, timeout=120)
         for database, source in databases.items():
             print('Importing canonical ' + source + ' into owned ' + database + ' using the prod allowlist.', flush=True)
             single_file = directory + '/' + source + '/' + catalog + '.json' if catalog else ''
-            w.kube('-n', w.NAMESPACE, 'exec', 'deployment/mongodb', '--', 'env',
+            w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'env',
                    'MONGO_IMPORT_HOST=' + ('msc121/mongodb:27017,mongodb-secondary:27017' if w.CONFIG.get('mongoReplicaSet') else '127.0.0.1'),
                    'MONGO_SEED_ROOT=' + directory, 'MONGO_APP_DATABASE=' + database,
                    'MONGO_SEED_DIRECTORY=' + source, 'MONGO_IMPORT_ALL_SEED_DATABASES=false',
@@ -165,7 +167,7 @@ def import_files(files, allowlist, fingerprint, databases=DATABASES, catalog=Non
                    'MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=' + allowlist,
                    'bash', directory + '/mongo_import.sh', timeout=1200)
     finally:
-        w.kube('-n', w.NAMESPACE, 'exec', 'deployment/mongodb', '--', 'rm', '-rf', directory, check=False)
+        w.kube('-n', w.NAMESPACE, 'exec', mongo_replica.member_target(), '--', 'rm', '-rf', directory, check=False)
 
 
 def add_catalog(files, allowlist, fingerprint, namespace_uid, catalog, previous):
@@ -249,7 +251,7 @@ def main(argv=None):
             deployment = w.kube_json('-n', w.NAMESPACE, 'get', 'deployment', name)
             if deployment['spec'].get('replicas', 1) != 0 or deployment.get('status', {}).get('replicas', 0):
                 raise RuntimeError('Stop all owned backends with workloads.py frontend-up before seed bootstrap.')
-        deployment = w.kube_json('-n', w.NAMESPACE, 'get', 'deployment', 'mongodb')
+        deployment = w.kube_json('-n', w.NAMESPACE, 'get', mongo_replica.workload())
         if any(deployment['metadata'].get('labels', {}).get(key) != value for key, value in w.LABEL.items()):
             raise RuntimeError('Refusing unowned MongoDB deployment.')
         if deployment['spec']['template']['spec']['containers'][0]['image'] != w.image_lock()['mongodb']['reference']:

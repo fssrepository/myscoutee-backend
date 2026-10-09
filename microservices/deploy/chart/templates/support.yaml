@@ -1,4 +1,6 @@
-# Supporting prod images: same binaries, startup modes and health checks as Compose.
+# Supporting prod images: same binaries, startup modes and health endpoints as Compose.
+# HTTP probes call the existing endpoint directly, without spawning a healthcheck
+# process in the container. STUN retains its protocol-level exec probe.
 {{- range $name, $service := .Values.supportServices }}
 {{- if $service.storage }}
 ---
@@ -106,14 +108,26 @@ spec:
         - {name: stun-udp, containerPort: 3478, protocol: UDP}
         {{- end }}
         startupProbe:
+          {{- if $service.healthPath }}
+          httpGet: {path: {{ $service.healthPath | quote }}, port: service}
+          {{- else }}
           exec: {command: {{ toJson $service.healthCommand }}}
+          {{- end }}
           periodSeconds: 2
           failureThreshold: 45
         readinessProbe:
+          {{- if $service.healthPath }}
+          httpGet: {path: {{ $service.healthPath | quote }}, port: service}
+          {{- else }}
           exec: {command: {{ toJson $service.healthCommand }}}
+          {{- end }}
           periodSeconds: 10
         livenessProbe:
+          {{- if $service.healthPath }}
+          httpGet: {path: {{ $service.healthPath | quote }}, port: service}
+          {{- else }}
           exec: {command: {{ toJson $service.healthCommand }}}
+          {{- end }}
           periodSeconds: 30
         volumeMounts:
         - {name: tmp, mountPath: /tmp}

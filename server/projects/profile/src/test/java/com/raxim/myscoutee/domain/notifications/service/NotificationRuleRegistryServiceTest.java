@@ -27,6 +27,70 @@ import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 @org.junit.jupiter.api.Tag("standard")
 class NotificationRuleRegistryServiceTest {
     @Test
+    void telemetryWorkerKeepsHistoryAndFailuresWithoutFeedingItselfOnSuccess() {
+        var repository = mock(NotificationRuleConfigsRepository.class);
+        var mongo = mock(MongoTemplate.class);
+        var telemetry = mock(AdminTelemetryService.class);
+        var socket = mock(AdminNotificationSocketSessionRegistry.class);
+        var service = new NotificationRuleRegistryService(repository, socket, mongo, telemetry);
+        var rule = new NotificationRuleConfig();
+        rule.setRuleKey("admin-telemetry"); rule.setEnabled(true);
+        when(repository.findByBaseGroupIdAndRuleKey(null, "admin-telemetry")).thenReturn(Optional.of(rule));
+        when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(NotificationRuleConfig.class)))
+                .thenReturn(rule);
+        service.beginRun("admin-telemetry", "start", "admin-telemetry");
+        service.recordRun("admin-telemetry", 0, "completed", "done", "admin-telemetry");
+        verifyNoInteractions(telemetry);
+        verify(socket, times(2)).broadcastRuleRuntime(rule);
+        var updates = ArgumentCaptor.forClass(Update.class);
+        verify(mongo, times(2)).findAndModify(any(Query.class), updates.capture(), any(FindAndModifyOptions.class), eq(NotificationRuleConfig.class));
+        var terminal = updates.getAllValues().get(1).getUpdateObject();
+        assertThat(terminal.get("$push", Document.class)).containsKey("runHistory");
+        assertThat(terminal.get("$set", Document.class)).containsEntry("runState.lastRunStatus", "completed");
+        service.recordRun("admin-telemetry", 0, "failed", "failure", "admin-telemetry");
+        verify(telemetry).record(eq("jobs.run.failed"), eq("jobs"), eq("admin-telemetry"), eq("admin-telemetry"), eq(1L), any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void unchangedSchedulesAreReadFromStreamSnapshotButDueAdmissionRemainsAuthoritative() {
+        var repository = mock(NotificationRuleConfigsRepository.class);
+        var mongo = mock(MongoTemplate.class);
+        var service = new NotificationRuleRegistryService(repository,
+                mock(AdminNotificationSocketSessionRegistry.class), mongo, mock(AdminTelemetryService.class));
+        var rule = new NotificationRuleConfig(); rule.setRuleKey("rule"); rule.setEnabled(false);
+        when(repository.findAll()).thenReturn(java.util.List.of(rule));
+        var changes = mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        service.watchScheduling(changes, new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("same", "same"));
+        var callback = ArgumentCaptor.forClass(java.util.function.Supplier.class);
+        verify(changes).watch(eq("job-schedules"), any(), any(), callback.capture(), any(), any());
+        callback.getValue().get();
+        org.mockito.Mockito.clearInvocations(repository);
+        try {
+            for (var mode : com.raxim.myscoutee.common.config.mongo.MongoSessionMode.values()) {
+                com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
+                for (int i = 0; i < 5; i++) {
+                    assertThat(service.configuredGroupIds(java.util.Set.of("rule"))).containsExactly((String) null);
+                    assertThat(service.beginScheduledRun("rule", "tick", "worker", Instant.now())).isNull();
+                    assertThat(service.shouldRunScheduledRule("rule", Instant.now())).isFalse();
+                }
+            }
+            verifyNoInteractions(repository, mongo);
+            var enabled = new NotificationRuleConfig(); enabled.setRuleKey("rule"); enabled.setEnabled(true);
+            enabled.setTriggerKind("scheduled_process");
+            var timing = new NotificationRuleConfig.Timing(); timing.setMode("interval");
+            timing.setIntervalAmount(1); timing.setIntervalUnit("minutes"); timing.setTimezone("UTC"); timing.setTime("00:00"); enabled.setTiming(timing);
+            when(repository.findAll()).thenReturn(java.util.List.of(enabled));
+            callback.getValue().get();
+            // A disable racing after the stream snapshot must still prevent the actual claim.
+            when(repository.findByBaseGroupIdAndRuleKey(null, "rule")).thenReturn(Optional.of(rule));
+            assertThat(service.beginScheduledRun("rule", "tick", "worker", Instant.now())).isNull();
+            verify(repository).findByBaseGroupIdAndRuleKey(null, "rule");
+            verifyNoInteractions(mongo);
+        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear(); }
+    }
+
+    @Test
     void scheduledClaimAloneRejectsMissingDisabledAndNotDueRulesWithoutWriting() {
         var repository = mock(NotificationRuleConfigsRepository.class);
         var mongo = mock(MongoTemplate.class);

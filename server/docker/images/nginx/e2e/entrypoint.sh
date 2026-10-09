@@ -22,4 +22,5 @@ chmod 0644 "${certificate_path}"
 chmod 0600 "${private_key_path}"
 nginx -t
 
+/scripts/runtime-status-receiver &
 exec nginx -g "daemon off;"

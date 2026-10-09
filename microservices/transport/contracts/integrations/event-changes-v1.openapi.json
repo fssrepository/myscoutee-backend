@@ -3,7 +3,7 @@
   "info": {
     "title": "MyScoutee event-changes",
     "version": "1.0.0",
-    "description": "Event owner emits the thirteen existing integration event-change fields or the existing detached membership view. Native webhook selection/queue logic retained; no copied integration worker. REAL/DEMO and job scope preserved. 2 MiB request and 8 MiB response bounds; no-store. Cross-owner write/reply recovery remains milestone 16."
+    "description": "Event owner emits the thirteen existing integration event-change fields or the existing detached membership view. Native webhook selection/queue logic retained; no copied integration worker. REAL/DEMO and job scope preserved. 2 MiB request and 8 MiB response bounds; no-store. Cross-owner write/reply recovery remains milestone 16. Scoped change-stream wakeups resume persisted pending work; acknowledgment remains with its existing owner."
   },
   "paths": {
     "/_internal/v1/integrations/event-changes/event": {
@@ -140,6 +140,112 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/MemberChange"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/integrations/event-changes/encounters": {
+      "post": {
+        "operationId": "event_changes_encounters",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncounterWakeup"
               }
             }
           }
@@ -2154,6 +2260,30 @@
         "required": [
           "code"
         ]
+      },
+      "EncounterWakeup": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scope"
+        ],
+        "properties": {
+          "scope": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Scope"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "const": true
+                  }
+                }
+              }
+            ]
+          }
+        }
       }
     }
   }

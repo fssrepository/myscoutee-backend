@@ -19,6 +19,10 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.microservices.bootstrap.ServiceSecurityConfiguration;
 import com.raxim.myscoutee.microservices.transport.accounts.*;
+import com.raxim.myscoutee.microservices.transport.events.*;
+import com.raxim.myscoutee.microservices.transport.integrations.*;
+import com.raxim.myscoutee.domain.events.api.CheckoutMemberships;
+import com.raxim.myscoutee.domain.integrations.api.EventChanges;
 import com.raxim.myscoutee.microservices.transport.chat.*;
 import com.raxim.myscoutee.microservices.transport.email.*;
 import com.raxim.myscoutee.microservices.transport.notifications.*;
@@ -41,6 +45,8 @@ class RecoveryCommandsHttpTest {
                 "myscoutee.remote.attachment-lifecycle.command-token=" + TOKEN,
                 "myscoutee.remote.scheduled-messages.command-token=" + TOKEN,
                 "myscoutee.remote.notification-jobs.command-token=" + TOKEN,
+                "myscoutee.remote.event-changes.command-token=" + TOKEN,
+                "myscoutee.remote.checkout-memberships.command-token=" + TOKEN,
                 "spring.main.banner-mode=off", "logging.level.root=WARN").run();
         origin = URI.create("http://127.0.0.1:" + server.getEnvironment().getProperty("local.server.port"));
     }
@@ -86,19 +92,44 @@ class RecoveryCommandsHttpTest {
         }
         verify(owner).restoreClaimedPendingCount("event-job", 0, "events", started);
     }
+    @Test void changeWakeupsRetainWorkspaceAndDatabaseAndRequireScope() {
+        var encounters = server.getBean(EventChanges.class);
+        var cancellations = server.getBean(CheckoutMemberships.class);
+        org.mockito.stubbing.Answer<Void> scopeCheck = call -> {
+            assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode());
+            assertTrue(JobGroupContext.isActive());
+            assertEquals("workspace", JobGroupContext.groupId());
+            return null;
+        };
+        doAnswer(scopeCheck).when(encounters).publishPendingEncounters();
+        doAnswer(scopeCheck).when(cancellations).finishPendingCancellations();
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        try (var remoteEvents = new RemoteEventChanges(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics);
+             var remoteMemberships = new RemoteCheckoutMemberships(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics)) {
+            assertThrows(IllegalArgumentException.class, remoteEvents::publishPendingEncounters);
+            assertThrows(IllegalArgumentException.class, remoteMemberships::finishPendingCancellations);
+            JobGroupContext.run("workspace", () -> {
+                remoteEvents.publishPendingEncounters(); remoteMemberships.finishPendingCancellations();
+            });
+        }
+        verify(encounters).publishPendingEncounters();
+        verify(cancellations).finishPendingCancellations();
+    }
     @SpringBootConfiguration
     @EnableAutoConfiguration(excludeName = {"org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration",
             "org.springframework.boot.data.mongodb.autoconfigure.DataMongoAutoConfiguration",
             "org.springframework.boot.data.mongodb.autoconfigure.DataMongoRepositoriesAutoConfiguration",
             "org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
     @Import({ActivityCountersServerConfiguration.class, AttachmentLifecycleServerConfiguration.class,
-            ScheduledMessagesServerConfiguration.class, NotificationJobsServerConfiguration.class, ServiceSecurityConfiguration.class})
+            ScheduledMessagesServerConfiguration.class, NotificationJobsServerConfiguration.class, EventChangesServerConfiguration.class, CheckoutMembershipsServerConfiguration.class, ServiceSecurityConfiguration.class})
     static class Fixture {
         @Bean ActivityCounters counters() { return mock(ActivityCounters.class); }
         @Bean ServiceFeedbackCounters feedback() { return mock(ServiceFeedbackCounters.class); }
         @Bean FeedCounts feeds() { return mock(FeedCounts.class); }
         @Bean AttachmentLifecycle attachments() { return mock(AttachmentLifecycle.class); }
         @Bean ScheduledMessages messages() { return mock(ScheduledMessages.class); }
+        @Bean EventChanges eventChanges() { return mock(EventChanges.class); }
+        @Bean CheckoutMemberships checkoutMemberships() { return mock(CheckoutMemberships.class); }
         @Bean NotificationJobs jobs() { return mock(NotificationJobs.class); }
     }
 }

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.affinity.config.AffinityRecomputeProperties;
-import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.affinity.document.AffinityRecomputeTask;
@@ -77,15 +76,25 @@ public class AffinityRecomputeWorkerService {
     }
 
     private void runDueTasksForCurrentDatabase() {
+        if (!properties.isEnabled()
+                || (properties.isChangeStreamEnabled()
+                        && !properties.isChangeStreamFallbackPollEnabled())) {
+            return;
+        }
         var registry = taskService.notificationRuleRegistry();
-        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_AFFINITY_RECOMPUTE, this::runDueTasksForCurrentDatabaseInGroup);
+        // Do not query every workspace's remote rule once a second when there is
+        // no due work in this database. The existing scheduled rule still owns admission.
+        if (registry != null && mongoTemplate.exists(Query.query(Criteria.where("status")
+                .is(AffinityRecomputeTaskService.STATUS_PENDING)
+                .and("availableAtIso").lte(Instant.now().toString())), AffinityRecomputeTask.class)) {
+            registry.forEachGroup(NotificationJobs.RULE_AFFINITY_RECOMPUTE, this::runDueTasksForCurrentDatabaseInGroup);
+        }
     }
 
     private void runDueTasksForCurrentDatabaseInGroup() {
         if (!properties.isEnabled()
                 || (properties.isChangeStreamEnabled()
-                        && !properties.isChangeStreamFallbackPollEnabled()
-                        && MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO)) {
+                        && !properties.isChangeStreamFallbackPollEnabled())) {
             return;
         }
         Instant startedAt = Instant.now();

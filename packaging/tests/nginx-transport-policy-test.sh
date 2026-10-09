@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 NGINX_ROOT="${REPO_ROOT}/server/docker"
-BASE_IMAGE="${NGINX_TEST_BASE_IMAGE:-myscoutee-nginx:1.0.0-base}"
+BASE_IMAGE="${NGINX_TEST_BASE_IMAGE:-myscoutee-nginx:1.3.0-prod}"
 TEST_ROOT="$(mktemp -d)"
 RUNNING_CONTAINERS=()
 
@@ -90,6 +90,7 @@ docker_args() {
     --add-host payment-simulator:127.0.0.1 \
     --add-host mongodb:127.0.0.1 \
     -e DOMAIN=transport.test \
+    -e MYSCOUTEE_RUNTIME_STATUS_TOKEN=0123456789abcdef0123456789abcdef \
     -v "${NGINX_ROOT}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
     -v "${SPRING_TEMPLATE}:/etc/nginx/myscoutee-templates/spring.conf:ro" \
     -v "${ENTRYPOINT}:/scripts/nginx-production-entrypoint.sh:ro" \

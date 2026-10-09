@@ -18,7 +18,7 @@ public class AffinityRecomputeProperties {
     private Duration adminStatusChangedDebounce = Duration.ofMinutes(1);
     private Duration configChangedDebounce = Duration.ofMinutes(15);
     private boolean changeStreamEnabled = false;
-    private boolean changeStreamFallbackPollEnabled = true;
+    private boolean changeStreamFallbackPollEnabled = false;
     private Duration changeStreamWakeupCoalesce = Duration.ofMillis(250);
     private Duration changeStreamReconnectDelay = Duration.ofSeconds(5);
 

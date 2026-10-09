@@ -313,16 +313,18 @@ def chart_values(backends_enabled=True):
 
 
 def chart_objects():
+    mongo = ([('Secret', 'mongodb-replica-key'), ('StatefulSet', 'mongodb'),
+              ('Service', 'mongodb'), ('Service', 'mongodb-secondary'), ('Service', 'mongodb-members')]
+             if CONFIG.get('mongoReplicaSet') else
+             [('PersistentVolumeClaim', 'mongodb'), ('Deployment', 'mongodb'), ('Service', 'mongodb')])
     return [('Secret', 'runtime'), ('Secret', 'mongodb-bootstrap'), ('Secret', 'minio-bootstrap'), ('Secret', 'payment-simulator'),
-            *([('Secret', 'mongodb-replica-key'), ('PersistentVolumeClaim', 'mongodb-secondary'),
-               ('Deployment', 'mongodb-secondary'), ('Service', 'mongodb-secondary')] if CONFIG.get('mongoReplicaSet') else []),
-            ('Secret', 'actor-delegation-issuer'),
+            *mongo, ('Secret', 'actor-delegation-issuer'),
             *[('Secret', 'transport-' + name) for name in SERVICES],
+            ('ServiceAccount', 'runtime-status'), ('Role', 'runtime-status'), ('RoleBinding', 'runtime-status'),
             ('ConfigMap', 'runtime'), ('ConfigMap', 'mongodb-init'), ('ConfigMap', 'frontend'),
-            ('Service', 'metrics-gateway'),
-            ('PersistentVolumeClaim', 'mongodb'), ('PersistentVolumeClaim', 'minio'),
+            ('Service', 'metrics-gateway'), ('PersistentVolumeClaim', 'minio'),
             ('PersistentVolumeClaim', 'registry'), ('PersistentVolumeClaim', 'registry-client'), ('PersistentVolumeClaim', 'payment-simulator'),
-            *[(kind, name) for name in [*SERVICES, *CONFIG['dependencies']] for kind in ['Deployment', 'Service']]]
+            *[(kind, name) for name in [*SERVICES, *CONFIG['dependencies']] if name != 'mongodb' for kind in ['Deployment', 'Service']]]
 
 
 def helm(*args, values=None, timeout=180, check=True):
@@ -403,8 +405,9 @@ def migrate_mongo_member_services(services):
 
 def deploy_chart(check_only=False, backends_enabled=True):
     if CONFIG.get('mongoReplicaSet') and not check_only:
-        from mongo_replica import configured, require_conversion_receipt, initialize
+        from mongo_replica import configured, require_conversion_receipt, initialize, require_stateful_volumes
         require_conversion_receipt()
+        require_stateful_volumes()
         if backends_enabled and not configured():
             deploy_chart(backends_enabled=False)
             initialize()
@@ -459,7 +462,7 @@ def deploy_chart(check_only=False, backends_enabled=True):
 
 def status():
     if namespace_owned():
-        print(kube('-n', NAMESPACE, 'get', 'deployments,pods,services,pvc', '-o', 'wide').stdout)
+        print(kube('-n', NAMESPACE, 'get', 'deployments,statefulsets,pods,services,pvc', '-o', 'wide').stdout)
     else:
         print('No application namespace has been created.')
 
@@ -532,6 +535,12 @@ def main():
                         if any(obj['metadata'].get('labels', {}).get(k) != v for k, v in LABEL.items()):
                             raise RuntimeError('Refusing to scale an unowned deployment: ' + name)
                         kube('-n', NAMESPACE, 'scale', 'deployment/' + name, '--replicas=0')
+                mongo = kube('-n', NAMESPACE, 'get', 'statefulset/mongodb', '--ignore-not-found', '-o', 'json')
+                if mongo.stdout.strip():
+                    obj = json.loads(mongo.stdout)
+                    if any(obj['metadata'].get('labels', {}).get(k) != v for k, v in LABEL.items()):
+                        raise RuntimeError('Refusing to scale an unowned Mongo StatefulSet')
+                    kube('-n', NAMESPACE, 'scale', 'statefulset/mongodb', '--replicas=0')
                 print('Owned workloads scaled to zero; volumes retained.')
         else:
             status()

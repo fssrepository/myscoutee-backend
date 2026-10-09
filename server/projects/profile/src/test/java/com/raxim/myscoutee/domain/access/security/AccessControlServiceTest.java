@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -151,13 +149,33 @@ class AccessControlServiceTest {
     }
 
     @Test
-    void refreshAccessControlCacheIsScheduledForThirtyMinuteInMemoryReloads() throws Exception {
-        Method method = AccessControlService.class.getDeclaredMethod("refreshAccessControlCache");
-
-        Scheduled scheduled = method.getAnnotation(Scheduled.class);
-
-        assertThat(scheduled).isNotNull();
-        assertThat(scheduled.fixedDelayString()).isEqualTo("${access-control.cache-refresh-ms:1800000}");
+    @SuppressWarnings("unchecked")
+    void policyChangesRemainDatabaseScopedAndArmGrantExpiry() {
+        var changes = org.mockito.Mockito.mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        service.watchAccessPolicy(changes, new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo"));
+        var callback = org.mockito.ArgumentCaptor.forClass(java.util.function.Supplier.class);
+        verify(changes).watch(org.mockito.ArgumentMatchers.eq("access-policy"), any(), any(), callback.capture(), any(), any());
+        var grant = grant("u1", "resource.assign", "event", "event-1", "allow");
+        var expiry = java.time.Instant.now().plusSeconds(60);
+        grant.setExpiresAtIso(expiry.toString());
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant));
+        assertThat(callback.getValue().get()).isEqualTo(expiry);
+        assertThat(service.hasExplicitGrant("u1", "resource.assign", "event", "event-1",
+                com.raxim.myscoutee.domain.access.api.AccessGrantEffect.ALLOW)).isTrue();
+        clearInvocations(accessGrantsRepository, accessPolicyDefinitionsRepository);
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        when(accessGrantsRepository.findAll()).thenReturn(List.of());
+        assertThat(callback.getValue().get()).isNull();
+        assertThat(service.hasExplicitGrant("u1", "resource.assign", "event", "event-1",
+                com.raxim.myscoutee.domain.access.api.AccessGrantEffect.ALLOW)).isFalse();
+        MongoSessionModeContext.set(MongoSessionMode.REAL);
+        assertThat(service.hasExplicitGrant("u1", "resource.assign", "event", "event-1",
+                com.raxim.myscoutee.domain.access.api.AccessGrantEffect.ALLOW)).isTrue();
+        when(accessGrantsRepository.findAll()).thenReturn(List.of(grant));
+        grant.setExpiresAtIso(java.time.Instant.now().minusSeconds(1).toString());
+        assertThat(callback.getValue().get()).isNull();
+        assertThat(service.hasExplicitGrant("u1", "resource.assign", "event", "event-1",
+                com.raxim.myscoutee.domain.access.api.AccessGrantEffect.ALLOW)).isFalse();
     }
 
     @Test

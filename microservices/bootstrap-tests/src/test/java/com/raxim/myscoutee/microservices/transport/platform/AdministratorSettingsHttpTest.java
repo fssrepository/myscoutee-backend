@@ -113,6 +113,13 @@ class AdministratorSettingsHttpTest {
     @EnableAutoConfiguration(excludeName={"org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration","org.springframework.boot.data.mongodb.autoconfigure.DataMongoAutoConfiguration","org.springframework.boot.data.mongodb.autoconfigure.DataMongoRepositoriesAutoConfiguration","org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
     @Import({JsonConfig.class,AdministratorSettingsServerConfiguration.class,ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes() {
+            return mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        }
+        @Bean com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases() {
+            return new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo");
+        }
+
         @Bean AppSettingsService owner(AppSettingsRepository repository){return spy(new AppSettingsService(repository));}
         @Bean AppSettingsRepository repository(){var repository=mock(AppSettingsRepository.class);when(repository.findBySettingsKey("global")).thenAnswer(call->Optional.of(documents.get(MongoSessionModeContext.currentMode())));return repository;}
     }

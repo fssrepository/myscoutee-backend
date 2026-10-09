@@ -16,10 +16,16 @@ import com.raxim.myscoutee.domain.localization.repository.I18nMessageRepository;
 public class DBMessageSource extends AbstractMessageSource {
 
     private final I18nMessageRepository i18nMessageRepository;
-    private final Map<String, Map<String, String>> cachedMessages = new ConcurrentHashMap<>();
+    private volatile Map<String, Map<String, String>> cachedMessages = new ConcurrentHashMap<>();
 
     public DBMessageSource(I18nMessageRepository i18nMessageRepository) {
         this.i18nMessageRepository = i18nMessageRepository;
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchMessages(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("server-translations", java.util.Set.of("i18n_messages"), java.util.Set.of(),
+                () -> { refreshCache(); return null; }, () -> {}, this::refreshCache);
     }
 
     @Override
@@ -36,8 +42,11 @@ public class DBMessageSource extends AbstractMessageSource {
 
     private Map<String, String> messages(String lang) {
         String key = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode().name() + ":" + lang;
-        if (cachedMessages.size() >= 64 && !cachedMessages.containsKey(key)) cachedMessages.clear();
-        return cachedMessages.computeIfAbsent(key, ignored -> loadMessagesForLang(lang));
+        Map<String, Map<String, String>> generation = cachedMessages;
+        if (generation.size() >= 64 && !generation.containsKey(key)) {
+            refreshCache(); generation = cachedMessages;
+        }
+        return generation.computeIfAbsent(key, ignored -> loadMessagesForLang(lang));
     }
 
     private Map<String, String> loadMessagesForLang(String lang) {
@@ -48,6 +57,6 @@ public class DBMessageSource extends AbstractMessageSource {
 
     // Refresh cache method
     public void refreshCache() {
-        cachedMessages.clear();
+        cachedMessages = new ConcurrentHashMap<>();
     }
 }

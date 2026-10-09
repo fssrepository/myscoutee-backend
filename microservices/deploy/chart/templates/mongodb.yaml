@@ -1,15 +1,12 @@
-{{- $members := list "mongodb" }}
-{{- if $.Values.mongodb.replicaSet }}{{ $members = append $members "mongodb-secondary" }}{{ end }}
-{{- range $name := $members }}
----
+{{- if not .Values.mongodb.replicaSet }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ $name }}
+  name: mongodb
   namespace: {{ $.Release.Namespace }}
   labels:
     app.kubernetes.io/part-of: myscoutee-msc121
-    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/name: mongodb
     app.kubernetes.io/managed-by: Helm
   annotations:
     helm.sh/resource-policy: keep
@@ -20,29 +17,41 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.mongodb.storage }}
+{{- end }}
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ ternary "StatefulSet" "Deployment" .Values.mongodb.replicaSet }}
 metadata:
-  name: {{ $name }}
+  name: mongodb
   namespace: {{ $.Release.Namespace }}
   labels:
     app.kubernetes.io/part-of: myscoutee-msc121
-    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/name: mongodb
     app.kubernetes.io/managed-by: Helm
 spec:
+  {{- if .Values.mongodb.replicaSet }}
+  serviceName: mongodb-members
+  replicas: 2
+  podManagementPolicy: Parallel
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  updateStrategy:
+    type: RollingUpdate
+  {{- else }}
   replicas: 1
-  revisionHistoryLimit: 2
   strategy:
     type: Recreate
+  {{- end }}
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ $name }}
+      app.kubernetes.io/name: mongodb
   template:
     metadata:
       labels:
         app.kubernetes.io/part-of: myscoutee-msc121
-        app.kubernetes.io/name: {{ $name }}
+        app.kubernetes.io/name: mongodb
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
@@ -61,12 +70,19 @@ spec:
           cp /secret/keyfile /key/keyfile
           chown 999:999 /key/keyfile
           chmod 0400 /key/keyfile
+          case "$HOSTNAME" in
+            mongodb-0) MEMBER_HOST="mongodb.$NAMESPACE.svc.cluster.local" ;;
+            mongodb-1) MEMBER_HOST="mongodb-secondary.$NAMESPACE.svc.cluster.local" ;;
+            *) exit 1 ;;
+          esac
+          export MEMBER_HOST
           # Mongo validates its stored member address before listening. Resolve
           # our headless member name to this pod before that validation begins.
           timeout 60 sh -ec 'until getent ahostsv4 "$MEMBER_HOST" | awk "{print \$1}" | grep -Fxq "$POD_IP"; do sleep 1; done'
         env:
-        - name: MEMBER_HOST
-          value: {{ printf "%s.%s.svc.cluster.local" $name $.Release.Namespace | quote }}
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef: {fieldPath: metadata.namespace}
         - name: POD_IP
           valueFrom:
             fieldRef: {fieldPath: status.podIP}
@@ -78,7 +94,7 @@ spec:
         - {name: replica-key, mountPath: /key}
       {{- end }}
       containers:
-      - name: {{ $name }}
+      - name: mongodb
         image: {{ $.Values.images.mongodb.reference | quote }}
         imagePullPolicy: {{ $.Values.imagePullPolicy }}
         resources:
@@ -90,15 +106,19 @@ spec:
             memory: {{ $.Values.mongodb.memoryMiB }}Mi
         securityContext:
           allowPrivilegeEscalation: false
-          {{- if eq $name "mongodb-secondary" }}
-          runAsUser: 999
-          runAsGroup: 999
-          runAsNonRoot: true
-          {{- end }}
-        {{- if and $.Values.mongodb.replicaSet (eq $name "mongodb-secondary") }}
-        command: [mongod]
+        {{- if .Values.mongodb.replicaSet }}
+        command: [/bin/sh, -ec]
         {{- end }}
         args:
+        {{- if .Values.mongodb.replicaSet }}
+        - |
+          case "$HOSTNAME" in
+            mongodb-0) exec docker-entrypoint.sh mongod "$@" ;;
+            mongodb-1) exec gosu mongodb mongod "$@" ;;
+            *) exit 1 ;;
+          esac
+        - --
+        {{- end }}
         - --bind_ip_all
         - --wiredTigerCacheSizeGB
         - '0.25'
@@ -133,12 +153,49 @@ spec:
       - name: replica-key
         emptyDir: {}
       {{- end }}
+      {{- if not .Values.mongodb.replicaSet }}
       - name: data
         persistentVolumeClaim:
-          claimName: {{ $name }}
+          claimName: mongodb
+      {{- end }}
       - name: init
         configMap:
           name: mongodb-init
+  {{- if .Values.mongodb.replicaSet }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app.kubernetes.io/part-of: myscoutee-msc121
+        app.kubernetes.io/name: mongodb
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: local-path
+      resources:
+        requests:
+          storage: {{ .Values.mongodb.storage }}
+  {{- end }}
+{{- if .Values.mongodb.replicaSet }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-members
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/name: mongodb
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: mongodb
+  ports:
+  - {name: service, port: 27017, targetPort: 27017}
+{{- end }}
+{{- $members := list "mongodb" }}
+{{- if .Values.mongodb.replicaSet }}{{ $members = append $members "mongodb-secondary" }}{{ end }}
+{{- range $index, $name := $members }}
 ---
 apiVersion: v1
 kind: Service
@@ -148,18 +205,16 @@ metadata:
   labels:
     app.kubernetes.io/part-of: myscoutee-msc121
     app.kubernetes.io/name: {{ $name }}
-    app.kubernetes.io/managed-by: Helm
 spec:
-  selector:
-    app.kubernetes.io/name: {{ $name }}
-  type: ClusterIP
   {{- if $.Values.mongodb.replicaSet }}
   clusterIP: None
   publishNotReadyAddresses: true
+  selector:
+    statefulset.kubernetes.io/pod-name: mongodb-{{ $index }}
+  {{- else }}
+  selector:
+    app.kubernetes.io/name: mongodb
   {{- end }}
   ports:
-  - name: service
-    port: 27017
-    targetPort: 27017
-
+  - {name: service, port: 27017, targetPort: 27017}
 {{- end }}

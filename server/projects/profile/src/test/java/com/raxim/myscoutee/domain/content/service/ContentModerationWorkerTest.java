@@ -42,4 +42,19 @@ class ContentModerationWorkerTest {
         assertThrows(IllegalStateException.class, worker::tick);
         verify(rules).recordRun(eq(key), eq(0), eq("failed"), eq("database unavailable"), eq(key), any());
     }
+    @Test void emptyPassSkipsOwnersButNewWorkStillUsesCurrentAdminRule() {
+        var pending = new java.util.concurrent.atomic.AtomicBoolean(false);
+        org.springframework.test.util.ReflectionTestUtils.setField(worker, "workPresent",
+                (java.util.function.BooleanSupplier) pending::get);
+        worker.tick();
+        verifyNoInteractions(service, rules);
+        pending.set(true);
+        worker.tick(); // admin has not enabled/admitted this rule
+        verify(service).drainPending();
+        verify(service, never()).approveDue();
+        when(rules.shouldRunScheduledRule(eq(key), any())).thenReturn(true);
+        when(rules.beginScheduledRun(eq(key), anyString(), eq(key), any())).thenReturn(new NotificationRuleConfig());
+        worker.tick(); // admin edit takes effect without changing the data-presence flag
+        verify(service).approveDue();
+    }
 }

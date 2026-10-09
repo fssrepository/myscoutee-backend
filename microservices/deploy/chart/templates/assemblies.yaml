@@ -41,6 +41,35 @@ spec:
         {{- end }}
         seccompProfile:
           type: RuntimeDefault
+      {{- if has "affinity" $service.domains }}
+      # UserRatesService initializes account projections and group-scoped edges.
+      # Wait before starting its JVM; failed dependency startup is not a JVM crash.
+      initContainers:
+      - name: wait-for-startup-owners
+        image: {{ $.Values.images.redis.reference | quote }}
+        imagePullPolicy: {{ $.Values.imagePullPolicy }}
+        command: [/bin/sh, -ec]
+        args:
+        - |
+          {{- range $owner, $candidate := $.Values.services }}
+          {{- if and (ne $owner $name) (or (has "accounts" $candidate.domains) (has "groups" $candidate.domains)) }}
+          until wget -q -T 2 -O /dev/null http://{{ $owner }}:8081/health; do
+            sleep 2
+          done
+          {{- end }}
+          {{- end }}
+          echo 'Startup owners are ready.'
+        resources:
+          requests: {cpu: 5m, memory: 8Mi}
+          limits: {cpu: 50m, memory: 32Mi}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          runAsGroup: 10001
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities: {drop: [ALL]}
+      {{- end }}
       containers:
       - name: {{ $name }}
         image: {{ index $.Values.images $name "reference" | quote }}
@@ -76,6 +105,18 @@ spec:
         {{- if has "accounts" $service.domains }}
         - secretRef:
             name: actor-delegation-issuer
+        {{- end }}
+        env:
+        # Kubernetes already probes /health; the gateway watches EndpointSlices.
+        - name: MYSCOUTEE_RUNTIME_STATUS_ENABLED
+          value: "false"
+        {{- if has "affinity" $service.domains }}
+        # Match the production replica-set override: reconnect reconciles the
+        # durable queue; no periodic affinity polling in stream mode.
+        - name: AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED
+          value: {{ ternary "true" "false" $.Values.mongodb.replicaSet | quote }}
+        - name: AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED
+          value: "false"
         {{- end }}
         volumeMounts:
         {{- if has "registry" $service.domains }}

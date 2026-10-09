@@ -1,10 +1,581 @@
 # MSC-121 — numbered delivery progress
 
-Updated: 2026-10-09. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
+Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision 101; all six backend and nine supporting deployments are Ready after the final current-source image rollout, one replica each. The headless VM retains **8192 MiB / 4 vCPU**, with host-boot autostart disabled. Supporting data volumes were retained throughout the coordinated backend upgrade.
+**Last verified lab state:** Helm revision **123**; six backend and seven supporting Deployments Ready, plus one Mongo StatefulSet **2/2 Ready**. Its original two data volumes, REAL/DEMO document counts, collection hashes and indexes were preserved. Majority-write/secondary-read and idempotent migration rerun pass. The headless VM remains **8192 MiB / 4 vCPU**, host-boot autostart disabled.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## Administrative closeout — 2026-10-10
+
+MSC-121 is **Closed / Project Done**, including the October-9 idle/runtime
+follow-ups below. The next 12 backend backup commits and one frontend backup
+commit are consolidated into their immediately preceding MSC-121 commits,
+preserving their source trees and the separate MSC-122 plan. Restorable Project
+snapshots and README summaries are refreshed; extraction remains Todo.
+
+Final task accounting: **634,373,124 tokens**, **30.466665 active h** /
+**30.420657 allocated h**, **$889.43 Standard API equivalent**, through
+**2026-10-09T15:12:03.126Z**. Initial template/licensing/components turns and this
+October-10 publication turn are excluded. The roadmap heatmap includes October 9 (**140,711,289**), revises
+October 8 to **416,565,655**, and totals
+**42,358,256,064**. Account lifetime **40,111,683,863** through October 9 is a
+separate overlapping measure, not an additional task budget.
+
+October-10 read-only closure check: the existing guest SSH endpoint timed out;
+no VM start, rebuild or redeployment was performed. The last verified revision
+123 evidence below remains the runtime boundary.
+
+Latest implementation verification is recorded below. Earlier full-flow results
+retain their original deployment/source boundary; no new full monolith/browser
+E2E or settled CPU improvement is claimed for the final Redis reader.
+
+## Blocking Redis telemetry reader — 2026-10-09
+
+Deployed **Helm revision 123**. One canonical identity-owned reader now waits on
+all eligible telemetry streams using blocking XREAD; the minute processing
+trigger only checks memory and retains existing admin admission/timing rules.
+Each stream buffers at most one existing-size batch, with suspended groups
+excluded from more reads until their batch is processed. Other groups continue
+independently. Read failures back off; shutdown interrupts the owned thread.
+
+Durable stats/monitoring cursors are checked separately after admission to avoid
+reapplying a prefetched batch committed by another instance and to resume a
+partial projection commit. Startup begins at the earlier cursor. No schema,
+Terraform or Helm runtime override is needed. Details and remaining timed work
+are in [polling audit, section 10](DATABASE_POLLING_AUDIT.md#10-p16-blocking-multiplexed-redis-telemetry-reader--2026-10-09).
+
+**28 focused standard JUnit tests passed**, including blocking-thread isolation,
+shutdown, bounded buffering, suspension, multi-stream independence, removed
+scopes, duplicate-prefetch suppression and partial commit recovery. Offline
+identity bootJar build, source assembly audit and Helm lint passed. Only the
+identity image changed; packaging disabled network/pulls. The existing upgrade
+guard restarted all six Java workloads. Support services and volumes remained.
+All 15 pods returned Ready. Live Redis inspection confirmed identity's blocked
+XREAD connection separately from chat. All six mode/group passes completed and
+stats/monitoring durable cursors matched on new deployment-time records. Startup
+owner failures recovered automatically. No full browser/monolith E2E or
+post-change settled CPU improvement is claimed.
+
+## Admin telemetry empty-work suppression — 2026-10-09
+
+Deployed **Helm revision 122**. The canonical telemetry worker skips unchanged
+empty batches before job admission/history writes. Graph/profile projections
+refresh only after source invalidation or UTC rollover; ordinary telemetry can
+update its counters without a full graph rebuild. Existing admin schedules and
+atomic admission remain authoritative. Self start/success telemetry is omitted;
+job history, runtime publication and self-failure telemetry remain.
+
+Queue snapshots are not saved when unchanged; background source/write failures
+retain pending reconciliation instead of silently persisting zero. The existing
+Mongo change-stream transport handles invalidation, mode isolation and reconnect.
+See [polling audit, section 9](DATABASE_POLLING_AUDIT.md#9-p16-skip-unchanged-telemetry-projections--2026-10-09)
+for semantics, remaining reads and freshness limits.
+
+Verification: **22 focused standard JUnit tests passed**, source assembly audit,
+offline identity/communication bootJar builds and Helm lint passed. Only the two
+affected images were rebuilt (`--network=none --pull=false`) and transferred
+locally; other images hit the guest cache. The existing coordinated upgrade
+guard restarted all six backend workloads. Support services/data volumes and
+Terraform settings were unchanged. All workloads returned Ready with zero new
+backend restarts. Startup remote-owner failures were recorded and automatically
+recovered in all six telemetry scopes on the next scheduled pass.
+
+Live observation after startup reconciliation: the graph-refresh request counter
+stayed **12** across the next full minute, and **all six** telemetry job timestamps
+remained unchanged. Admin enabled/timing settings matched the pre-deploy values.
+See [the CPU report](IDLE_CPU_PROFILE_2026-10-09.md#admin-telemetry-empty-pass-correction--helm-revision-122)
+for measured boundaries and the transient admin-badge invalidation during recovery.
+
+No full browser/E2E campaign or matched warmed-up CPU comparison is claimed.
+
+## Kubernetes-owned runtime status and shared SSE — 2026-10-09
+
+Deployed **Helm revision 121**. Kubernetes-only discovery code and packaging live
+in `microservices/runtime-status`; Helm owns the namespace-scoped EndpointSlice
+list/watch permission. The existing receiver is reused with a build-time state
+source. Six backend heartbeat publishers are disabled only in Helm. Live guest
+inspection found **zero Java runtime-status publisher threads**. Canonical
+monolith / Compose / E2E pushes, credentials and twenty-second leases remain.
+
+The browser uses the shared status SSE endpoint: initial snapshot, aggregate
+changes and recovery, with transport-only pings every fifteen seconds. It no
+longer fetches runtime status every ten seconds; the existing local timer only
+retries safe navigation after transient UI blockers. Both sources expose the
+same `ready`, `known`, `checkedAt` snapshot. Kubernetes observation loss marks
+state unknown, and reconnect reconciles authoritative discovery state. Browser
+connection failure / a silent 45-second stream cannot retain a stale green state.
+
+Verification:
+- Canonical receiver tests and the microservices adapter's five Go cases pass:
+  leases, SSE expiry/recovery without heartbeat duplication, redundant pod loss,
+  last-ready/terminating endpoint loss, unknown state, list/watch resourceVersion,
+  projected-token rotation, watch error 410 and interrupted observation.
+- **16 frontend tests pass**, including no periodic fetch, pushed failure and
+  recovery, popup protection, disconnect and silent-stream reconnection.
+- **2 packaged monolith HTTP tests pass**, including credentials, multiple
+  services, real twenty-second expiration and receiver restart. This is not a
+  full monolith E2E campaign.
+- **61 infrastructure tests pass**, Helm lint and shell/Python syntax pass.
+- Optimized Angular bundle and both receiver variants build offline from cached
+  dependencies. Only one changed frontend image was transferred to the guest;
+  no Java or supporting-service image was rebuilt. Six Java pods restarted once
+  to apply the heartbeat-disable environment setting. All seven changed pods
+  became Ready with zero restarts; support workloads and data volumes remained.
+- Live HTTP/SSE through public nginx observed `ready=false, known=true` while
+  backends started, then a single `ready=true` transition 30.3 seconds into the
+  observation. Healthy watch renewals produced no aggregate state flapping.
+  Kubernetes credentials and object details are absent from the public stream.
+
+The first adapter packaging attempt used an overly broad Docker build context
+and failed on permissions in an existing Mongo data directory. The final
+version uses only the adapter directory plus the canonical receiver as a named
+context; no data permissions or database files were changed. The first Python
+unittest invocation used the wrong import root; the versioned script invocation
+passed all 61 tests. No full browser-operated flow or new CPU improvement is
+claimed; the Java processes have just restarted.
+
+Evidence: `/tmp/myscoutee-kube-status-{package,monolith-http,infra-tests,deploy}.log`,
+`/tmp/myscoutee-kube-status-ui-tests2.log`, and
+`/tmp/myscoutee-kube-status-live-sse.log`. Build/deploy remain the existing
+`lab.sh frontend-image` / `workloads.py lock-images` / `workloads.py up` paths.
+No Terraform VM setting changes are required; RBAC/runtime changes are versioned
+in their Helm owner. Parent and frontend submodule source changes remain uncommitted.
+
+## Reduced heartbeat cadence and empty work guards — 2026-10-09
+
+Deployed **Helm revision 120**. Backend readiness publication is **5 s** with a
+**20 s** receiver lease; HTTP timeout stays 1 s. The receiver tolerates missed
+publications and still expires crashed publishers; graceful shutdown sends DOWN.
+Browser refresh and snapshot-age rules are unchanged. Chat's empty blocking
+Redis wait is **10 s**, including dev/E2E Compose defaults; its override remains.
+
+Four empty scheduler paths reuse `MongoChangeStreamService.watchPresence`:
+moderation, event watching, promotional planning and the basket-expiry owner.
+Only candidate presence is retained per database, not admin schedule/enabled
+settings. Future work, moderation recovery effects and running campaign
+cancellation remain eligible. Active work still uses current authoritative
+admin rules and claims; the cheap minute timer remains. Basket-owner HTTP and
+admin telemetry's time-derived refresh remain explicit limits. Details are in
+[the polling audit](DATABASE_POLLING_AUDIT.md#8-empty-scheduled-work-suppression--2026-10-09-follow-up).
+
+Verification passed: focused standard JUnit suites for shared stream lifecycle /
+presence / database aliases, moderation including admin re-enable, event watches,
+promotional planning, checkout baskets, runtime publication and owner scheduling;
+Go receiver lease tests including still-ready at 15 s and expiry at 20 s; two
+packaged HTTP/credential/restart tests; changed Compose configuration validation;
+all six assembly/JAR ownership checks and Helm lint. Serial offline builds used
+cached layers. Only six affected Java images and frontend packaging changed;
+Angular and supporting images were not rebuilt. Seven locally built images were
+transferred to the existing guest cache. No external image download was required.
+All workloads Ready after rollout; new Java/frontend pods have zero restarts.
+
+Actual packaged Spring/Lettuce against isolated Redis: empty wait **10,250 ms**;
+concurrent SET/GET **5 ms**; XADD-to-read wakeup **5 ms**; interrupted blocking
+reader exits within the two-second assertion. The client default command timeout
+exceeds the chosen block duration. Test container/data were removed. This is a
+client/transport proof, not a browser-to-browser chat latency claim.
+
+Startup observation: notification-outbox emitted five remote-owner retry warnings
+while the coordinated Java rollout was coming up (last at 13:42:42Z). No further
+worker failures appeared in the latest two-minute check at 13:45:51Z. All new
+Java/frontend pods remained Ready with zero restarts; no presence-query failures
+were observed.
+
+Live 71.7-second observation after rollout: **no new runs** for basket purge,
+moderation, event watching or promotional planning in any of the six REAL/DEMO
+group scopes. **Admin telemetry advanced in all six scopes** and public runtime
+readiness stayed true. Redis recorded **13 total XREAD calls** in this interval
+(includes admin and chat consumers), with zero command failures. This validates
+empty-pass suppression; it is not a post-warm-up CPU benchmark. Before rollout,
+both databases had zero watched subscriptions, withheld/pending moderation and
+basket items; REAL had zero enabled campaigns and DEMO had six. Existing static
+email capability gates still apply to those DEMO campaigns.
+Evidence: `/tmp/myscoutee-idle-presence-live.json` and
+`/tmp/myscoutee-idle-presence-before.json`. No live fixture mutation or browser
+workflow was performed; admin re-enable behavior is covered by focused tests.
+
+## Accepted idle baseline and periodic activity attribution — 2026-10-09
+
+The user accepts the measured approximately 8% whole-host baseline. Follow-up
+scope is identifying small recurring work, not eliminating every fluctuation.
+Read-only job history confirms five rules running every 60–61 seconds in six
+REAL/DEMO group scopes; Mongo logs confirm minute storage checkpoints. Existing
+Prometheus counters identify owner admission/due checks, job telemetry and admin
+queue/graph reads. Observer, health, scrape and stream timeout cadences are mapped
+in the [CPU report](IDLE_CPU_PROFILE_2026-10-09.md#periodic-activity-identified-after-the-accepted-8-baseline).
+No new code/runtime change, build, restart or ongoing profiler was introduced.
+This establishes recurring work sources, not exact per-route CPU attribution.
+
+## Idle CPU continuation: direct support probes — 2026-10-09
+
+Deployed revision **119**: MCP, registry and payment simulator probes call
+existing `/healthz` endpoints directly from Kubernetes, preserving 2/10/30-second
+startup/readiness/liveness periods. STUN keeps its protocol check. Helm lint and
+live endpoint checks pass; all workloads Ready. Only three support pods changed;
+Java/frontend pod identities and images are unchanged. No build/download ran.
+The configuration is persisted in Helm; no VM/Terraform setting changed.
+
+Matched-length 60-second observations: MCP **0.452 → 0.015%**, simulator
+**0.387 → 0.015%**, registry **0.828 → 0.568%** of one core. Guest pod aggregate
+**21.139 → 17.751%**; QEMU **69.153 → 63.078%**. The complete host averaged
+**8.09% of 12 logical CPUs** after rollout. These are live observations with
+sampler overhead and changing background activity, not a claim that the entire
+difference is caused by this patch. See the full
+[CPU report](IDLE_CPU_PROFILE_2026-10-09.md) for attribution and limits.
+
+No JIT flags changed. Admin telemetry's Redis conversion remains open: its
+current rule-gated pass also owns time-derived refreshes and emits its own job
+telemetry. Blind event-triggering would introduce self-wakeups. No rule,
+counter refresh or observability was removed to claim lower CPU.
+
+## Backend-published frontend readiness — 2026-10-09
+
+The user required backend-to-frontend publication. The earlier gateway health
+sampler implemented the opposite direction and is replaced, not retained as a
+fallback. Canonical `RuntimeStatusPublisher` checks only its own in-process
+Actuator health and POSTs a scoped lease to the frontend receiver. The existing
+public JSON/SSI/browser contract stays in place. Missing publishers expire after
+ten seconds; receiver restart starts unavailable. The small Go receiver performs
+no outbound health requests, no periodic scan and no database work. Health work
+runs outside the application's shared job scheduler. Local backend health
+sampling and Kubernetes probes still exist; this does not claim all health
+checking has disappeared.
+
+Durable owners: canonical Java; nginx receiver/image/route; dev, prod and E2E
+Compose; Helm publisher environment, private ClusterIP and scoped Secrets;
+existing lab credential and image-lock owners. VM hardware and Terraform need
+no change. Compose credentials use a dedicated generated volume, read-only in
+the backend. Existing business volumes and browser adapters were not changed.
+
+Verification: Go lease/auth/body-bound/old-instance/restart unit checks;
+two focused Java HTTP tests; real packaged receiver HTTP/auth/expiry/restart
+tests with networking disabled, including generated Compose credentials readable
+by a non-root backend user and retained across receiver restart; nginx transport
+policy and SSI tests; all three
+Compose files validate; Helm lint passes; 61 infrastructure tests pass; all six
+Java JAR ownership audits pass. Compilation/packaging was serial and offline,
+using cached images; only six affected Java images and frontend packaging were
+rebuilt. Angular and support images were not rebuilt. Helm revision **118** is
+deployed: all six backend Deployments and frontend Ready, zero restarts in the
+new containers. Live runtime status changed from false during startup to true
+only after the six publishers were available. Public POST returns 403; private
+unauthenticated POST returns 401. Frontend process inspection shows nginx plus
+the receiver, with no shell health-probe loop.
+
+Frontend cgroup CPU after rollout: **0.291% average / 2.480% maximum** over
+30 one-second samples, working set **5.34 MiB**. The earlier 180-second sample
+was **2.91% average**, working set **3.3 MiB**. These are different observation
+windows; they support a narrower frontend observation, not a matched whole-VM
+benchmark. JVM restart/warmup makes an immediate overall CPU comparison invalid.
+Raw logs: `/tmp/myscoutee-runtime-status-{junit,http,nginx,infra-final,rollout}.log`;
+CPU: `/tmp/myscoutee-runtime-status-frontend-cpu.json`. Full dev/prod/E2E stacks
+and browser business flows were not launched for this change.
+
+The earlier JIT question remains a separate tuning decision: images already
+use `-XX:ActiveProcessorCount=2`, and the captured JVMs each had a C2 worker.
+Limiting compilation to C1 can remove C2 compilation peaks, but may worsen
+steady request throughput/CPU; no such JVM default has been changed without a
+matched latency/throughput measurement. Redis administrative telemetry remains
+the queued stream follow-up; total idle CPU is still an open investigation.
+
+## Backend cache freshness / stream rollout — 2026-10-09
+
+The complete backend cache inventory and per-owner findings are recorded as
+C01–C20 in [DATABASE_POLLING_AUDIT.md](DATABASE_POLLING_AUDIT.md#7-backend-cache-freshness-audit--source-corrections-and-verification).
+Confirmed defects fixed: cross-mode/workspace profile snapshots, indefinite
+translation and integration-endpoint caches, alias refresh, stale scheduler
+metadata, exchange-rate load/eviction races, branding fallback scope, remote
+Firebase activation and S3 bucket-existence memoization. Job configuration saves
+refresh before returning; other-instance changes use stream invalidation, and
+actual work admission remains an authoritative Mongo operation.
+
+Focused standard and embedded JUnit checks pass, including an isolated real
+replica-set change stream, external job-rule enable/delete and delivery after
+a server-killed cursor. Four focused
+bootstrap HTTP suites pass (recovery commands, administrator settings, bundle
+localization and message translations). All six affected Java assemblies built
+serially offline and passed JAR domain-ownership checks. Docker packaging reused
+cached runtimes with network disabled; frontend/support images were not rebuilt.
+Helm revision **117** is deployed: six backend Deployments Ready, no backend
+container restarts, Mongo StatefulSet 2/2 Ready. All six services have their two
+REAL/DEMO change-stream cursors open (12 total). The affinity init gate waited
+for identity/community readiness and its JVM started without crashing. Initial
+remote-owner unavailability was retried during startup. Subsequent logs across
+all six backends contained no repeating change-work failure or disconnect.
+A later 30-second sample measured QEMU 81.97%, JVMs 19.04%, Mongo 6.00%, and
+separate Prometheus/Grafana 0.45%/1.63% (100% = one core). The pre-expansion sample
+was 88.17% / 24.10% / 8.16% respectively, but the later JVM total still includes
+8.55% compiler-thread CPU. A subsequent 30-second window instead measured
+QEMU 98.81%, JVMs 28.30% (including 9.20% compiler threads), Mongo 8.32%, and
+Prometheus/Grafana 0.46%/1.72%. The windows fluctuate: **sustained total CPU
+improvement is not established**. Host System Monitor itself used 8.88% of one
+core in the earlier window; desktop/VS Code processes are separate from VM and
+monitoring CPU. This is not full business-flow QA.
+
+## Idle CPU investigation — 2026-10-09 (OPEN)
+
+Latest synchronized host/guest attribution: [three-minute CPU profile,
+11:11–11:14 Europe/Prague](IDLE_CPU_PROFILE_2026-10-09.md). Guest pods averaged
+27.15% of one core combined. QEMU averaged 73.33% including the guest; host
+monitoring containers 2.11%; other host work 59.58%. The largest host spike
+was dominated by VS Code; a separate VM spike included 71.4% in Java compiler
+threads. Guest k3s/container runtime and the gateway's two-second six-backend
+health loop are identified separately. No runtime setting changed for this
+measurement; temporary diagnostic samplers have exited.
+
+The high idle CPU report is **not resolved**. Lower observer overhead and fewer
+empty job writes are verified separately; neither proves acceptable total idle
+consumption. CPU percentages below use **100% = one logical CPU core**, not the
+whole twelve-thread host.
+
+1. **Verified: empty local work gates.** Canonical webhook delivery now checks
+   due `PENDING`/`RETRY` work and expired `SENDING` leases once per REAL/DEMO
+   database before workspace orchestration. Affinity recompute and timed Mingle
+   advancement likewise skip orchestration when no due work exists. Existing
+   tick intervals, ownership, rule admission and work claims remain in place.
+   The webhook due check uses `integration_webhook_delivery_due`; empty live
+   queries examine zero documents/keys. All three queues had no due work in
+   either database after revision 108.
+2. **Verified: empty scoped jobs produce no run bookkeeping.** Encounter
+   publication and event cancellation prepare their existing scoped work lists
+   before claiming a scheduled job, then reuse those same lists. Empty lists
+   cause no run history, progress broadcast or job telemetry. The shared
+   `NotificationJobs.runScheduledGroup` extracts the existing admission/history
+   implementation; no second scheduler or wire endpoint was introduced. These
+   workers still poll for work; remaining scope lookups are not eliminated.
+3. **Verified: observation stays at one-second CPU resolution.** The final
+   terminal uses one persistent SSH connection and reads container cgroup CPU
+   deltas and memory counters directly. Host monitoring uses the same counter
+   method instead of launching `docker stats` each frame. Kubernetes/Docker
+   inventory refresh every five seconds; VM identity metadata every 30 seconds.
+   Replaced containers need fresh counter pairs. Stream waits do not hold the
+   VM lifecycle lock. Temporary ten-second CPU display and kubelet-summary
+   sampling were replaced after the user required the original visibility.
+   The guest observer used 0.9% of one core in a bounded ten-second sample.
+   The transient old-launcher/new-script permission error was corrected; the
+   current guest reader starts through the existing authorized sudo path.
+4. **Verified: external monitoring is separate.** A bounded Prometheus/Grafana
+   ON/OFF/ON experiment left applications unchanged and restored both monitors.
+   VM samples were 130.2% / 147.0% / 128.8%; turning monitoring off did not show a
+   VM reduction in these windows. Steady host monitor samples were approximately
+   0.3–0.5% Prometheus and 1.1–1.6% Grafana (startup can cost more). Internal
+   application operational telemetry is a different source of work and is not
+   included in those monitor percentages.
+5. **Verified: targeted build and local transfer.** The latest source change
+   built only `:identity:bootJar :community:bootJar`, with Gradle `--offline`,
+   `--max-workers=1`, and the existing cache. Both selected JAR ownership audits
+   passed; only those two Docker images were packaged with cached runtime
+   images, `--network=none --pull=false`. The versioned lock/stop/up flow deployed
+   Helm revision **108**, all six backends and nine supporting deployments Ready.
+   The coordinated upgrade guard still restarts backend processes; selective
+   compilation does not bypass it. Other images hit the guest cache. During the
+   107-second rollout, `virbr-msc121` transmitted **412,542,995 bytes**, while
+   Wi-Fi received **368,292 bytes** and transmitted **323,402 bytes**. This proves
+   that rollout's large image transfer stayed on the host-to-VM path; screenshots
+   alone cannot retrospectively attribute every earlier network spike.
+6. **Validation and remaining work.** The worker suite passed 21 focused JUnit
+   cases (webhook, affinity, timed Mingle); the subsequent scoped-job suite passed
+   eight (encounter retry/acknowledgment, empty/rejected admission, cancellation
+   work sources, shared orchestration). Infrastructure tests passed **54 cases**,
+   including one persistent connection, disconnection handling, CPU counter
+   deltas/replacement, lifecycle-lock release, and terminal cleanup. No full
+   browser/business-flow campaign was run. Initial 16-second versus final
+   40-second sample rates: scheduled begins **9.74 → 2.27/s**, run records
+   **8.61 → 1.07/s**, operational telemetry **17.22 → 2.75/s**. Other jobs remain
+   included in these counters. After the latest restart the VM still measured
+   **120.3%**. A later 40-second sample with the final one-second observer was
+   **102.8% VM CPU**, including approximately **39.6% across the six Java
+   backends** and **10.4% across the two Mongo containers**. Host monitoring was
+   **2.1% separately**. These are short, unmatched warmup windows, not proof of
+   a sustained reduction or acceptable idle usage; the remaining VM CPU is not
+   yet attributed to individual infrastructure/kernel/virtualization owners.
+
+7. **Verified: communication idle work (revision 109, retained in 111).**
+   Only `:communication:bootJar` was compiled offline with one worker; only its
+   image was packaged with the cached runtime, `--network=none --pull=false`.
+   `ChatStreamConsumer` now uses a 1000-ms blocking Redis read instead of 100 ms.
+   This is an empty-read timeout, not a delivery/batching delay: six temporary,
+   isolated stream probes measured write-to-wakeup 0.96–1.53 ms (100 ms timeout)
+   versus 0.68–1.07 ms (1000 ms timeout); all keys were removed. No end-to-end
+   browser chat latency claim follows from that probe. Redis 30-second command
+   rates: XREAD **6.648 → 2.124/s**, HELLO **5.457 → 0.929/s**. Notification
+   outbox scheduling skips admission when no due work exists. Reconciliation
+   only writes changed pending counts/units; all six REAL/DEMO outbox rule
+   states remained identical across post-deploy snapshots. Sixteen focused
+   JUnit cases passed, followed by the corrected due-rule admission test.
+8. **Verified: StatefulSet conversion (revisions 110/111).** One controller,
+   two stable pods and two separate retained claims replace the old two
+   Deployments. `mongo_replica.py statefulset` owns the private fresh backup,
+   UID/location-checked PV rebinding, content/index/count comparison, replica
+   probe, restart and resumable receipt. Original DNS aliases remain intact.
+   The rerun verified the replica without repeating conversion or restarts.
+   The chart, seed helper, lifecycle and one-second observer are versioned.
+   Both replica and standalone charts render; infrastructure tests pass 60
+   cases. This changes controller ownership, not Mongo replication cost.
+9. **KVM/container attribution remains OPEN.** Before the Mongo migration,
+   a 30-second process sample attributed 25.51% to six JVMs, 8.75% to Mongo,
+   10.22% to k3s, 2.10% to containerd and 0.97% to the guest observer. Host QEMU
+   used 86.66% in that sample. A different settled 40-second window after the
+   communication fix measured QEMU 97.64%, Java containers 33.89%, Mongo
+   containers 10.23%, and host monitoring 1.81%. These windows are not matched
+   controls. Do not subtract unrelated samples or call QEMU's entire CPU
+   virtualization overhead: it includes guest execution. A post-migration
+   sample still included heavy JVM startup and is not an idle baseline.
+   A later settled 30-second sample after StatefulSet conversion measured six
+   JVMs 22.12%, Mongo 5.89%, k3s 7.03%, containerd 1.73%, observer 0.77% and Redis
+   0.40%. QEMU total was 66.87%, including 54.08% guest CPU; approximate
+   non-guest CPU was 12.79%. These are bounded samples, not matched controls or
+   proof of a KVM tuning benefit.
+10. **Affinity change streams and polling.** Historical commit `bc0334785`
+    (author date 2026-05-27, consolidated committer date in September) introduced
+    the stream as opt-in: base default false, replica override true. It did not
+    switch an existing true default off. The KVM replica topology later omitted
+    that application override. Revision 112 enabled the stream, but still had
+    six live subscriptions (three workspaces × two databases) and fallback
+    polling. Revision 113 deployed one stream per database and disabled periodic
+    fallback in both REAL and DEMO. Revisions 114/115 completed the two-database
+    index initializer and remote-admission retry handling. Only affinity was
+    rebuilt offline; other image references were reused. Opening a stream precedes startup/reconnect
+    reconciliation; future tasks retain timers. Actual remaining work retries,
+    including transient remote admission failure; an empty queue schedules no
+    repeated task query. The 30-second Mongo await timeout does not delay a new
+    event. Existing 250-ms affinity coalescing is separate from Redis/chat.
+    Mongo can temporarily retain idle server cursors from stopped pods; count
+    active subscriptions by the current affinity pod client address rather than
+    treating every old idle cursor as current application activity.
+11. **Normal replica defaults and retained overrides.** Dev, prod, E2E and
+    packaged Compose now inherit their existing replica override automatically.
+    The override files remain. A single-node Compose deployment has one Mongo
+    process, with replica/oplog support; KVM retains two members. Shared bootstrap
+    handles fresh volumes and existing standalone data with authentication and
+    a persisted key. Five Compose resolutions, the packaged renamed override,
+    and isolated cached-Mongo conversion/stream/restart/fresh-start checks pass.
+    No image was pulled. Full source-only Debian packaging was attempted but
+    stopped at the pre-existing unclassified-seed ownership gate (including
+    landingSlides/helpCenterGuideFields); that gate was not bypassed. No new
+    Debian artifact or rebuilt E2E Mongo image is claimed.
+12. **Index and remaining-polling audit.** Affinity task indexes were incomplete
+    across the two lab databases: REAL had the status index and DEMO the group
+    index. The existing initializer now creates the documented indexes in each
+    distinct configured database. No session routing, database role or wipe
+    behavior changes. Seventeen focused affinity JUnit cases pass, including
+    both-database index initialization, no periodic Mongo work in stream mode,
+    startup/reconnect scope and pending-work retry termination; the admission
+    failure case was subsequently rechecked in the seven-case stream suite.
+    [DATABASE_POLLING_AUDIT.md](DATABASE_POLLING_AUDIT.md) lists 34 numbered
+    scheduled paths with owners, default cadences, data and follow-up boundaries.
+    It distinguishes business deadlines, empty polling, Redis/STUN and monitoring.
+    The other listed polling paths have not been blanket-disabled.
+    Live revision-115 check: zero pending affinity tasks in both databases and
+    two active stream `getMore` operations from the current pod. Over 30 seconds,
+    task index access counters increased only by the one explicit diagnostic
+    `countDocuments` per database; all other task indexes had zero increments.
+    This supports the no-idle-task-read result alongside the worker guard tests;
+    it does not mean the whole affinity process or Mongo is idle.
+    Final rollout reached six Ready backends. Affinity restarted twice while its
+    existing `UserRatesService` startup remote read returned UNAVAILABLE before
+    the dependency was ready; it then started successfully. Revision 116 added
+    the dependency init gate; the full revision-117 restart verified it with zero
+    affinity container restarts.
+
+13. **Final bounded CPU observation (revision 115).** The first 30-second window
+    after rollout still included substantial JIT startup. A subsequent window
+    measured QEMU **92.15%**, six Java processes **31.90%**, both Mongo processes
+    **8.46%**, k3s **9.76%**, containerd **2.16%**, guest Python observation
+    **1.07%** and Redis **0.57%**. Host Prometheus was **0.44%**, Grafana **1.52%**,
+    separate from QEMU. Java compiler threads still accounted for **11.63%**
+    inside Java's total, so this is not a fully quiescent baseline or a matched
+    before/after claim. Process `/proc/*/stat` deltas over one shared 30-second
+    guest interval supplied process CPU; host cgroup `cpu.stat` deltas supplied
+    monitoring CPU. QEMU guest-time accounting differed from user-time deltas
+    in this short window; do not derive virtualization overhead by subtraction
+    from this final sample. The high idle-load investigation remains OPEN.
+
+**Durable configuration ownership:** VM CPU/memory, hardware type, virtio disk
+and network belong to `infra/terraform/main.tf`; guest OS configuration belongs
+to the versioned `infra/guest`/cloud-init inputs; Kubernetes workloads, probes,
+resource limits and PVC policy belong to `deploy/chart`; application wait and
+worker behavior belongs to canonical Java/configuration. Never leave a proven
+fix only in a live `virsh`, `kubectl`, sysfs or shell command. Document bounded
+experiments and restore rejected settings; promote only measured improvements
+to their existing configuration owner. Private backups/credentials stay out of Git.
+
+**KVM configuration audit:** live XML matches Terraform's KVM acceleration,
+`host-passthrough` CPU, four vCPUs and virtio I/O; there is no emulated VGA/display.
+Host `halt_poll_ns` is 200000 ns; the guest's current cpuidle driver is `none`.
+The available governor parameter alone does not prove active guest halt polling.
+The subsequent bounded experiment below restored the original setting; no
+permanent host/guest halt-poll change has been adopted.
+[Linux KVM documentation](https://docs.kernel.org/virt/kvm/halt-polling.html)
+explains the latency/CPU tradeoff and per-VM capability. A bounded comparison
+must keep workload, observer, monitoring and warmup fixed, measure guest CPU
+and QEMU host time separately, and also check request latency before adopting a
+setting. The installed QEMU 6.2 lacks `query-stats-schemas`; this is a diagnostic
+limitation, not evidence that polling caused the observed CPU usage.
+
+**Bounded KVM halt-poll experiment (revision 117):** libvirt's cumulative
+`cpu.haltpoll.success.time` / `fail.time` counters permit direct attribution.
+All four guest vCPUs initially exposed `MSR_KVM_POLL_CONTROL` (`0x4b564d05`)
+with value `1`. A guest-local Python process cleared only bit 0, waited 70
+seconds and restored each original value in `finally`. Host-global
+`halt_poll_ns`, application settings, pod counts and monitoring were untouched.
+The [kernel MSR contract](https://cdn.kernel.org/doc/html/latest/virt/kvm/x86/msr.html)
+defines this per-vCPU host-poll control. Thirty-second samples, with
+100% representing one core:
+
+| Phase | QEMU total CPU | Successful halt polling | Unsuccessful halt polling |
+| --- | ---: | ---: | ---: |
+| Original setting | 74.50% | 3.33% | 2.20% |
+| Polling disabled, first window | 64.30% | 0.00% | 0.00% |
+| Polling disabled, second window | 71.22% | 0.00% | 0.00% |
+| Original setting restored | 70.08% | 3.48% | 2.20% |
+
+This attributes about 5.5 percentage points of one core to active host waiting;
+it does not explain the remaining VM load. Total CPU fluctuates, and application
+latency was not measured in this experiment, so **no new default is justified
+yet**. Readback confirmed value `1` on all four vCPUs afterwards. All pods were
+Ready; the six backend containers and both Mongo members still had zero restarts.
+Raw local evidence: `/tmp/myscoutee-haltpoll-ab.jsonl`. The table is the durable
+record; the temporary file is not required to understand the result. No VM,
+application or image rebuild/restart/download was required. Terraform was not
+changed for a temporary setting that was restored.
+
+A separate post-restoration 30-second process sample measured six JVMs at
+16.27% combined, Mongo at 7.69%, k3s at 10.82% and containerd at 2.00%.
+Prometheus/Grafana were 0.47%/1.67% separately on the host. QEMU measured 81.18%
+over the enclosing host interval, which also includes guest process discovery;
+do not subtract the narrower guest sample to label the difference as pure
+virtualization overhead. Java compiler activity was still present. Local raw
+evidence: `/tmp/myscoutee-idle-current.json`. The remaining idle-load work stays
+open; these are attribution samples, not proof that the user's CPU problem is
+resolved.
+
+**Administrative telemetry follow-up:** P16 still reads its existing Redis
+stream on a scheduled pass and refreshes graph/profile/menu projections even
+when the stream is empty. An event-driven continuation must preserve durable
+cursors, REAL/DEMO and group boundaries, admission rules, startup/reconnect
+catch-up and time-dependent counters. It is queued, not implemented. Two REAL
+admin-telemetry rules were observed with old `running` claims; the existing
+two-hour stale-claim protection can delay their recovery after worker loss.
+No live claims or claim-duration settings were modified. A five-minute
+Prometheus window also showed approximately 1.58 scheduled-admission, 0.84 due,
+0.65 group-discovery and 0.93 operational-telemetry HTTP calls per second;
+cached negative DB checks do not eliminate those owner-to-owner requests.
+
+**Continuation targets:** attribute remaining application CPU by worker/thread;
+examine repeated workspace-base lookups (~4/s in the last sample), notification
+outbox accounting, periodic administrative snapshots and health/probe work.
+Measure Mongo primary/secondary and k3s/guest/virtualization overhead separately.
+Preserve one-second CPU visibility and distinguish warmed idle samples from
+builds, rollouts and JVM compilation. An assets sample had no business HTTP
+requests despite nonzero CPU; health checks and local recovery scans must not
+be reported as asset uploads. Do not rebuild unrelated services.
+
+Raw interval counters, monitoring comparison, and network samples are in ignored
+`build/reports/webhook-idle/`. Focused logs are `/tmp/myscoutee-idle-workers-tests.log`,
+`/tmp/myscoutee-empty-job-tests.log`, `/tmp/myscoutee-selected-idle-build.log`,
+`/tmp/myscoutee-selected-idle-images.log`, and `/tmp/myscoutee-empty-jobs-deploy.log`.
 
 ## Current finalization queue
 
@@ -474,3 +1045,22 @@ The original 96-name field-only inventory above is retained. The extended scan a
 | `payments.api.EventPaymentCancellations` | community | [EventCancellationService.java](../server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/service/EventCancellationService.java) |
 | `payments.api.ExchangeRateRefresh` | communication | [AdminNotificationService.java](../server/projects/profile/src/main/java/com/raxim/myscoutee/domain/notifications/service/AdminNotificationService.java) |
 | `payments.api.PaymentPrivacy` | identity | [DeletedAccountPurgeService.java](../server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java) |
+
+## Final follow-up checkpoint — 2026-10-09
+
+1. Exact historical image replay: 16.07 warm events/s versus current 17.25;
+   later application source does not reproduce the historical 20.60 gap.
+   Runtime/data causal shares remain unproven and are disclosed in the comparison.
+2. Frontend-local audit plus historical stability failures: 134/134 Angular
+   service tests; production image `d878ec931c44` CDP selection 757 ms and
+   3000 ms indicator window preserved.
+3. Both live Project items: all nine measurement fields updated and read back;
+   aggregate ledger and current account totals published in the roadmap.
+4. Historical daily rows preserved; combined heatmap extended through October 8.
+5. Additional UK request: 25/25 country tests; four regional HTTP eligibility
+   checks and Dublin negative control; Emma Parker native browser login/logout
+   pass. No seed location change needed.
+
+The six-service lab was restored after the serial monolith control, with the
+new locked frontend image and two Mongo replica-set members. No host autostart
+was enabled. Generated reports remain outside source control.

@@ -24,6 +24,12 @@ public final class EventChangesEndpoint {
         return read(request, EventChangesProtocol.MemberChange.class, EventChangesProtocol::valid, command ->
                 com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> receipt(() -> owner.enqueue(command.member()))));
     }
+    @PostMapping(value = EventChangesProtocol.ENCOUNTERS, produces = "application/json")
+    public ResponseEntity<?> encounters(HttpServletRequest request) throws java.io.IOException {
+        return read(request, EventChangesProtocol.EncounterWakeup.class, EventChangesProtocol::valid, command ->
+                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(true, command.scope().groupId(),
+                        () -> receipt(owner::publishPendingEncounters)));
+    }
     private EventChangesProtocol.Receipt receipt(Runnable action) { action.run(); return new EventChangesProtocol.Receipt(true); }
     private <T> ResponseEntity<?> read(HttpServletRequest request, Class<T> type, Predicate<T> valid, Function<T, Object> action)
             throws java.io.IOException {

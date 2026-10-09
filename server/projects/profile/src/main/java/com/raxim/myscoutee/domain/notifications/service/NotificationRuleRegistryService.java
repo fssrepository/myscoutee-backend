@@ -57,6 +57,53 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
     private final MongoTemplate mongoTemplate;
     private final OperationalTelemetry adminTelemetryService;
 
+    private final Map<com.raxim.myscoutee.common.config.mongo.MongoSessionMode, SchedulingSnapshot> schedulingSnapshots = new java.util.concurrent.ConcurrentHashMap<>();
+    private record SchedulingSnapshot(long revision, List<NotificationRuleConfig> rules) {}
+    private final java.util.concurrent.atomic.AtomicLong schedulingRevision = new java.util.concurrent.atomic.AtomicLong();
+    private boolean streamScheduling;
+    private boolean distinctSchedulingDatabases;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchScheduling(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases) {
+        streamScheduling = true;
+        distinctSchedulingDatabases = databases.hasDistinctDemoDatabase();
+        changes.watch("job-schedules", Set.of("notificationRuleConfigs"),
+                Set.of("baseGroupId", "ruleKey", "enabled", "triggerKind", "timing", "scheduleSlots", "runState.lastRunAtIso"), () -> {
+                    refreshSchedulingSnapshot();
+                    return null;
+                }, this::invalidateSchedulingSnapshot, this::invalidateSchedulingSnapshot);
+    }
+
+    private void invalidateSchedulingSnapshot() {
+        // A generation fence also rejects a load that started before this invalidation.
+        schedulingRevision.incrementAndGet();
+    }
+
+    private synchronized void refreshSchedulingSnapshot() {
+        long revision = schedulingRevision.get();
+        var snapshot = new SchedulingSnapshot(revision, List.copyOf(notificationRuleConfigsRepository.findAll()));
+        var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        schedulingSnapshots.put(mode, snapshot);
+        if (!distinctSchedulingDatabases) {
+            for (var alias : com.raxim.myscoutee.common.config.mongo.MongoSessionMode.values()) schedulingSnapshots.put(alias, snapshot);
+        }
+    }
+
+    private synchronized List<NotificationRuleConfig> schedulingSnapshot() {
+        var mode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        while (true) {
+            var snapshot = schedulingSnapshots.get(mode);
+            if (snapshot != null && snapshot.revision() == schedulingRevision.get()) return snapshot.rules();
+            refreshSchedulingSnapshot();
+        }
+    }
+
+    private NotificationRuleConfig scheduledCandidate(String key) {
+        return schedulingSnapshot().stream().filter(rule -> java.util.Objects.equals(rule.getBaseGroupId(), JobGroupContext.groupId())
+                && safeText(key).equals(rule.getRuleKey())).findFirst().orElse(null);
+    }
+
     private record IntervalSpec(int amount, String unit, int seconds, int minutes) {}
 
     public NotificationRuleRegistryService(
@@ -72,7 +119,11 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
 
     @Override public List<String> configuredGroupIds(Set<String> ruleKeys) {
         var groups = new java.util.LinkedHashSet<String>();
-        for (var rule : notificationRuleConfigsRepository.findByRuleKeyIn(ruleKeys)) groups.add(rule.getBaseGroupId());
+        if (streamScheduling) {
+            for (var rule : schedulingSnapshot()) if (ruleKeys.contains(rule.getRuleKey())) groups.add(rule.getBaseGroupId());
+        } else {
+            for (var rule : notificationRuleConfigsRepository.findByRuleKeyIn(ruleKeys)) groups.add(rule.getBaseGroupId());
+        }
         return new ArrayList<>(groups);
     }
 
@@ -89,6 +140,7 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
     }
 
     public boolean shouldRunScheduledRule(String ruleKey, Instant now) {
+        if (streamScheduling && !isScheduledRuleDue(scheduledCandidate(ruleKey), now)) return false;
         NotificationRuleConfig rule = findRule(ruleKey).orElse(null);
         return isScheduledRuleDue(rule, now);
     }
@@ -162,7 +214,10 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
     }
 
     public boolean hasEnabledScheduledEventRule() {
-        for (NotificationRuleConfig rule : notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId())) {
+        var rules = streamScheduling ? schedulingSnapshot().stream()
+                .filter(rule -> java.util.Objects.equals(rule.getBaseGroupId(), JobGroupContext.groupId())).toList()
+                : notificationRuleConfigsRepository.findByBaseGroupId(JobGroupContext.groupId());
+        for (NotificationRuleConfig rule : rules) {
             if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) {
                 continue;
             }
@@ -187,6 +242,8 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
             String actorUserId,
             Instant startedAt) {
         Instant effectiveStartedAt = startedAt == null ? Instant.now() : startedAt;
+        // Reject unchanged not-due schedules in memory. Positive admission still reads and claims current owner state.
+        if (streamScheduling && !isScheduledRuleDue(scheduledCandidate(ruleKey), effectiveStartedAt)) return null;
         NotificationRuleConfig candidate = findRule(ruleKey).orElse(null);
         if (!isScheduledRuleDue(candidate, effectiveStartedAt)) {
             return null;
@@ -246,7 +303,8 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
                 FindAndModifyOptions.options().returnNew(true),
                 NotificationRuleConfig.class);
         if (saved != null) {
-            adminTelemetryService.record(
+            // The telemetry consumer must not continuously feed its own input stream.
+            if (!"admin-telemetry".equals(ruleKey)) adminTelemetryService.record(
                     "jobs.run.started",
                     "jobs",
                     safeText(ruleKey),
@@ -333,7 +391,8 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
         }
         if (saved != null) {
             String normalizedStatus = normalizeTerminalStatus(status);
-            adminTelemetryService.record(
+            // Preserve failures and job history; omit only routine self-observation.
+            if (!"admin-telemetry".equals(ruleKey) || !"completed".equals(normalizedStatus)) adminTelemetryService.record(
                     "jobs.run." + normalizedStatus,
                     "jobs",
                     safeText(ruleKey),
@@ -387,9 +446,15 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
                         com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem.STATUS_PENDING,
                         com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem.STATUS_RUNNING)),
                 com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem.class);
-        mongoTemplate.updateFirst(Query.query(ruleCriteria(RULE_NOTIFICATION_OUTBOX)), new Update()
-                .set("runState.pendingCount", (int) Math.min(Integer.MAX_VALUE, pending))
-                .set("runState.pendingCountUnit", "admin.jobs.rule.notification.outbox")
+        int count = (int) Math.min(Integer.MAX_VALUE, pending);
+        String unit = "admin.jobs.rule.notification.outbox";
+        // Reconciliation still runs, but unchanged queues must not create writes/replication.
+        mongoTemplate.updateFirst(Query.query(new Criteria().andOperator(
+                ruleCriteria(RULE_NOTIFICATION_OUTBOX), new Criteria().orOperator(
+                        Criteria.where("runState.pendingCount").ne(count),
+                        Criteria.where("runState.pendingCountUnit").ne(unit)))), new Update()
+                .set("runState.pendingCount", count)
+                .set("runState.pendingCountUnit", unit)
                 .set("runState.pendingCountUpdatedAtIso", Instant.now().toString()), NotificationRuleConfig.class);
     }
 
@@ -493,6 +558,16 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
     }
 
     public synchronized List<NotificationRuleConfig> saveRules(List<NotificationRuleConfig> incomingRules, String actorUserId) {
+        try {
+            return saveRulesInCurrentGroup(incomingRules, actorUserId);
+        } finally {
+            // The admin response must not precede this owner's updated scheduling view,
+            // including a partially committed batch. Other instances receive the stream event.
+            if (streamScheduling) refreshSchedulingSnapshot();
+        }
+    }
+
+    private List<NotificationRuleConfig> saveRulesInCurrentGroup(List<NotificationRuleConfig> incomingRules, String actorUserId) {
         if (incomingRules == null || incomingRules.isEmpty()) {
             return rules();
         }

@@ -45,21 +45,21 @@ public class AdminMenuCounterService implements com.raxim.myscoutee.domain.admin
     }
 
     @Override public Counts counters(boolean refreshSnapshot) {
-        var counters = currentCounters();
+        var counters = currentCounters(refreshSnapshot);
         if (refreshSnapshot) refreshMonitoringQueueSnapshot(counters.queues());
         return new Counts(counters.jobs(), counters.metrics());
     }
 
-    private AdminAlertCounters currentCounters() {
-        long failedRules = failedJobs();
-        long recomputePending = countAffinityTasks("pending");
-        long recomputeRunning = countAffinityTasks("running");
-        long recomputeFailed = countAffinityTasks("failed");
-        long outboxPending = countOutbox("pending");
-        long outboxRunning = countOutbox("running");
-        long outboxFailed = countOutbox("failed");
-        long outboxSent = countOutbox("sent");
-        long failedMetrics = recomputeFailed + outboxFailed + telemetryFailureEvents();
+    private AdminAlertCounters currentCounters(boolean strict) {
+        long failedRules = failedJobs(strict);
+        long recomputePending = countAffinityTasks("pending", strict);
+        long recomputeRunning = countAffinityTasks("running", strict);
+        long recomputeFailed = countAffinityTasks("failed", strict);
+        long outboxPending = countOutbox("pending", strict);
+        long outboxRunning = countOutbox("running", strict);
+        long outboxFailed = countOutbox("failed", strict);
+        long outboxSent = countOutbox("sent", strict);
+        long failedMetrics = recomputeFailed + outboxFailed + telemetryFailureEvents(strict);
         return new AdminAlertCounters(
                 toInt(failedRules),
                 toInt(failedMetrics),
@@ -74,10 +74,11 @@ public class AdminMenuCounterService implements com.raxim.myscoutee.domain.admin
                         outboxSent));
     }
 
-    private long failedJobs() {
+    private long failedJobs(boolean strict) {
         try {
             return notificationCatalog.failedJobs(JobGroupContext.groupId());
-        } catch (Exception ignored) {
+        } catch (RuntimeException error) {
+            if (strict) throw error;
             return 0L;
         }
     }
@@ -86,25 +87,23 @@ public class AdminMenuCounterService implements com.raxim.myscoutee.domain.admin
         if (queues == null) {
             return;
         }
-        try {
-            AdminMonitoringSnapshot snapshot = monitoringRepository.ensureSnapshot(JobGroupContext.groupId());
-            Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
-            nodeCounters.put("queues.rules.failed", queues.failedRules());
-            nodeCounters.put("queues.recompute.pending", queues.recomputePending());
-            nodeCounters.put("queues.recompute.running", queues.recomputeRunning());
-            nodeCounters.put("queues.recompute.failed", queues.recomputeFailed());
-            nodeCounters.put("queues.outbox.pending", queues.outboxPending());
-            nodeCounters.put("queues.outbox.running", queues.outboxRunning());
-            nodeCounters.put("queues.outbox.failed", queues.outboxFailed());
-            nodeCounters.put("queues.outbox.sent", queues.outboxSent());
-            snapshot.setNodeCounters(nodeCounters);
-            snapshot.setGeneratedAtIso(Instant.now().toString());
-            monitoringRepository.save(snapshot);
-        } catch (Exception ignored) {
-        }
+        AdminMonitoringSnapshot snapshot = monitoringRepository.ensureSnapshot(JobGroupContext.groupId());
+        Map<String, Long> nodeCounters = safeMap(snapshot.getNodeCounters());
+        nodeCounters.put("queues.rules.failed", queues.failedRules());
+        nodeCounters.put("queues.recompute.pending", queues.recomputePending());
+        nodeCounters.put("queues.recompute.running", queues.recomputeRunning());
+        nodeCounters.put("queues.recompute.failed", queues.recomputeFailed());
+        nodeCounters.put("queues.outbox.pending", queues.outboxPending());
+        nodeCounters.put("queues.outbox.running", queues.outboxRunning());
+        nodeCounters.put("queues.outbox.failed", queues.outboxFailed());
+        nodeCounters.put("queues.outbox.sent", queues.outboxSent());
+        if (nodeCounters.equals(snapshot.getNodeCounters())) return;
+        snapshot.setNodeCounters(nodeCounters);
+        snapshot.setGeneratedAtIso(Instant.now().toString());
+        monitoringRepository.save(snapshot);
     }
 
-    private long telemetryFailureEvents() {
+    private long telemetryFailureEvents(boolean strict) {
         try {
             return monitoringRepository.findByMonitoringKey(JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId())
                     .map(AdminMonitoringSnapshot::getCounters)
@@ -114,23 +113,26 @@ public class AdminMenuCounterService implements com.raxim.myscoutee.domain.admin
                             .mapToLong(entry -> count(entry.getValue()))
                             .sum())
                     .orElse(0L);
-        } catch (Exception ignored) {
+        } catch (RuntimeException error) {
+            if (strict) throw error;
             return 0L;
         }
     }
 
-    private long countOutbox(String status) {
+    private long countOutbox(String status, boolean strict) {
         try {
             return notificationCatalog.countOutbox(JobGroupContext.groupId(), status);
-        } catch (Exception ignored) {
+        } catch (RuntimeException error) {
+            if (strict) throw error;
             return 0L;
         }
     }
 
-    private long countAffinityTasks(String status) {
+    private long countAffinityTasks(String status, boolean strict) {
         try {
             return recomputeQueue.count(JobGroupContext.groupId(), status);
-        } catch (Exception ignored) {
+        } catch (RuntimeException error) {
+            if (strict) throw error;
             return 0L;
         }
     }

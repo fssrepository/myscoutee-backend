@@ -34,7 +34,7 @@ supportServices:
   mcp:
     memoryMiB: 128
     port: 8080
-    healthCommand: [/myscoutee-mcp, healthcheck]
+    healthPath: /healthz
     environment:
       MYSCOUTEE_MCP_TRANSPORT: http
       MYSCOUTEE_MCP_LISTEN: 0.0.0.0:8080
@@ -44,7 +44,7 @@ supportServices:
     port: 8080
     storage: 1Gi
     args: [start-demo]
-    healthCommand: [/registry, healthcheck]
+    healthPath: /healthz
     environment:
       REGISTRY_DEMO_SEED: 'true'
       REGISTRY_LISTEN_ADDR: ':8080'
@@ -58,7 +58,7 @@ supportServices:
     port: 18082
     storage: 1Gi
     secret: payment-simulator
-    healthCommand: [/payment-simulator, healthcheck]
+    healthPath: /healthz
     environment:
       PAYMENT_SIMULATOR_LISTEN_ADDR: ':18082'
       PAYMENT_SIMULATOR_ALLOW_NON_LOOPBACK: 'true'

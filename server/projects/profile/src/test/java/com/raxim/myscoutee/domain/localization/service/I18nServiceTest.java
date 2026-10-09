@@ -94,7 +94,7 @@ class I18nServiceTest {
     }
 
     @Test
-    void returnsNoPayloadWhenTheEnglishClientAlreadyHasTheLatestVersion() {
+    void returnsPayloadEvenWhenEditorVersionHasNotChanged() {
         I18nMessageRepository messageRepository =
                 org.mockito.Mockito.mock(I18nMessageRepository.class);
         I18nBundleRepository bundleRepository =
@@ -112,7 +112,7 @@ class I18nServiceTest {
 
         assertThat(response.lang()).isEqualTo("en");
         assertThat(response.version()).isEqualTo("2026.07.29.en.46");
-        assertThat(response.data()).isNull();
+        assertThat(response.data()).isEmpty();
     }
 
     @Test
@@ -132,7 +132,7 @@ class I18nServiceTest {
         service.refreshCache();
 
         assertThat(service.getBundle("en", null, null).data()).containsEntry("key", "Before");
-        verify(messageRepository, times(2)).findAll();
+        verify(messageRepository, times(3)).findAll();
 
         version.set("v2");
         value.set("After");
@@ -141,7 +141,23 @@ class I18nServiceTest {
         I18nBundleResponseDto refreshed = service.getBundle("en", null, "v1");
         assertThat(refreshed.version()).isEqualTo("v2");
         assertThat(refreshed.data()).containsEntry("key", "After");
-        verify(messageRepository, times(4)).findAll();
+        verify(messageRepository, times(5)).findAll();
+    }
+
+    @Test
+    void messageEditsAndDeletesRefreshWithoutChangingTheBundleVersion() {
+        var messages = org.mockito.Mockito.mock(I18nMessageRepository.class);
+        var bundles = org.mockito.Mockito.mock(I18nBundleRepository.class);
+        when(bundles.findAll()).thenReturn(List.of(bundle("en", "v1")));
+        when(messages.findAll()).thenReturn(List.of(message("en", "key", "Before")));
+        var service = new I18nService(messages, bundles);
+        assertThat(service.getBundle("en", null, "v1").data()).containsEntry("key", "Before");
+        when(messages.findAll()).thenReturn(List.of(message("en", "key", "After")));
+        service.refreshCache();
+        assertThat(service.getBundle("en", null, "v1").data()).containsEntry("key", "After");
+        when(messages.findAll()).thenReturn(List.of());
+        service.refreshCache();
+        assertThat(service.getBundle("en", null, "v1").data()).doesNotContainKey("key");
     }
 
     private static I18nBundle bundle(String lang, String version) {

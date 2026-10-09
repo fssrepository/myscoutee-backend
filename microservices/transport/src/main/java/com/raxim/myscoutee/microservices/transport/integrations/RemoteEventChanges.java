@@ -31,4 +31,11 @@ public final class RemoteEventChanges extends RemoteReadTransport implements Eve
         var result = exchange(EventChangesProtocol.MEMBER, bytes, new TypeReference<EventChangesProtocol.Receipt>() {},
                 "event-changes.member", EventChangesProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.completed()));
     }
+    @Override public void publishPendingEncounters() {
+        var command = new EventChangesProtocol.EncounterWakeup(EventChangesProtocol.Scope.current());
+        if (!EventChangesProtocol.valid(command)) throw new IllegalArgumentException("Encounter wakeup requires a job scope");
+        exchange(EventChangesProtocol.ENCOUNTERS, mapper.writeValueAsBytes(command),
+                new TypeReference<EventChangesProtocol.Receipt>() {}, "event-changes.encounters",
+                EventChangesProtocol.MAX_RESPONSE_BYTES, value -> Boolean.TRUE.equals(value.completed()));
+    }
 }

@@ -122,6 +122,14 @@ public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain
         if (saved == null) throw error(HttpStatus.CONFLICT);
         notifyMembers(saved, actor, "voted", actor, true); return dto(actor, saved);
     }
+    public Instant nextClosureWakeup() {
+        var next = announcements.nextClosure();
+        if (next.isEmpty() || next.get().due() == null) return null;
+        Instant due = Instant.parse(next.get().due());
+        Instant retry = Instant.now().plusSeconds(60);
+        return due.isAfter(retry) ? due : retry;
+    }
+
     public int closeDue(Instant now) {
         if (!BaseGroups.COMMUNITY_BASE_ID.equals(JobGroupContext.groupId())) return 0;
         int count = 0;

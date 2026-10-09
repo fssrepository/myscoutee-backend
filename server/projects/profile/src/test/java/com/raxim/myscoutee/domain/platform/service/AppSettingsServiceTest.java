@@ -43,6 +43,10 @@ class AppSettingsServiceTest {
 
         new ApplicationContextRunner()
                 .withBean(AppSettingsRepository.class, () -> repository)
+                .withBean(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class,
+                        () -> mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class))
+                .withBean(com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner.class,
+                        () -> new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo"))
                 .withBean(AppSettingsService.class)
                 .run(context -> assertThat(context)
                         .hasSingleBean(AppSettingsService.class));
@@ -86,6 +90,19 @@ class AppSettingsServiceTest {
                 .containsExactly("real-admin@example.test");
         assertThat(real.get().getAdminEmails())
                 .containsExactly("real-admin@example.test");
+    }
+
+    @Test
+    void sharedPhysicalDatabasePublishesAdminSavesToBothModeAliases() {
+        var state = new AtomicReference<>(settings("shared", List.of("old@example.test")));
+        var service = new AppSettingsService(routedRepository(state, state), FIXED_CLOCK);
+        service.watchCache(mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class),
+                new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("shared", "shared"));
+        service.refreshCache();
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        service.updateAdminEmails(List.of("new@example.test"));
+        MongoSessionModeContext.set(MongoSessionMode.REAL);
+        assertThat(service.adminEmails()).containsExactly("new@example.test");
     }
 
     @Test

@@ -39,6 +39,19 @@
           "expectedName": "MSC120 frontend-local selection"
         }
       ]
+    },
+    "MSC121-UK-ENTRY": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "MSC121 United Kingdom entry",
+          "sessionKind": "anonymous",
+          "expectedName": "MSC121 UK native HTTP demo login"
+        }
+      ]
     }
   }
 }

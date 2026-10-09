@@ -64,11 +64,17 @@ build_frontend_image() {
 package_frontend_image() {
   # Repackage an already built canonical bundle; no Angular compilation.
   test -f "${backend_root}/frontend/prod/index.html"
-  docker build --file "${backend_root}/server/docker/images/nginx/prod/Dockerfile" \
+  docker build --network=none --pull=false --file "${backend_root}/server/docker/images/nginx/prod/Dockerfile" \
     --build-context "frontend-prod=${backend_root}/frontend/prod" \
     --build-arg "NGINX_BASE_IMAGE=${NGINX_BASE_IMAGE:-myscoutee-nginx:1.3.0-base}" \
-    --label com.myscoutee.task=MSC-121 --tag myscoutee-service-frontend:msc121 \
+    --label com.myscoutee.task=MSC-121 --tag myscoutee-frontend-runtime-base:msc121 \
     "${backend_root}/server/docker"
+  record_image myscoutee-frontend-runtime-base:msc121
+  docker build --network=none --pull=false --file "${shell_root}/runtime-status/Dockerfile" \
+    --build-arg FRONTEND_BASE_IMAGE=myscoutee-frontend-runtime-base:msc121 \
+    --build-context "runtime-common=${backend_root}/server/docker/images/nginx/runtime-status" \
+    --label com.myscoutee.task=MSC-121 --tag myscoutee-service-frontend:msc121 \
+    "${shell_root}/runtime-status"
   record_image myscoutee-service-frontend:msc121
 }
 

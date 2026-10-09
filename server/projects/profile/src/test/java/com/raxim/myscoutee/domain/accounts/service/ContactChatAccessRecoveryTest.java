@@ -110,6 +110,29 @@ class ContactChatAccessRecoveryTest {
         }
     }
 
+    @Test
+    void deadlineUsesEachCommandsLeaseAndDoesNotHideOtherDueWork() {
+        try (var mongod = Mongod.instance().start(Version.Main.V6_0)) {
+            var address = mongod.current().getServerAddress();
+            try (var client = MongoClients.create("mongodb://" + address.getHost() + ":" + address.getPort())) {
+                var mongo = new MongoTemplate(client, "contact-deadlines");
+                var operations = new ContactChatAccessOperations(mongo);
+                var collection = mongo.getCollection("contactAccessOperations");
+                var future = java.time.Instant.now().plusSeconds(60).truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
+                collection.insertMany(List.of(
+                        new Document("_id", "leased").append("state", "pending")
+                                .append("nextAttemptAt", new java.util.Date(0)).append("leaseUntil", java.util.Date.from(future)),
+                        new Document("_id", "ready").append("state", "pending").append("nextAttemptAt", new java.util.Date(1))));
+                assertThat(operations.due()).extracting(row -> row.getString("_id")).containsExactly("ready");
+                assertThat(operations.nextAttemptAt()).isEqualTo(java.time.Instant.ofEpochMilli(1));
+                collection.deleteOne(new Document("_id", "ready"));
+                assertThat(operations.nextAttemptAt()).isEqualTo(future);
+                collection.updateOne(new Document("_id", "leased"), new Document("$set", new Document("state", "complete")));
+                assertThat(operations.nextAttemptAt()).isNull();
+            }
+        }
+    }
+
     private NavigatorContactDto contact(String id) {
         return new NavigatorContactDto(id, id, id, "", "", "", "", "", "2026-10-09T00:00:00Z", "2026-10-09T00:01:00Z", List.of());
     }

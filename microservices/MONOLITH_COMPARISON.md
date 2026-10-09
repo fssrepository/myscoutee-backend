@@ -176,6 +176,60 @@ Reproduce serially with `tools/check-current-monolith.sh --source-ref 5a23e829f`
 and `tools/check-current-monolith.sh --performance-only`; neither command starts
 the KVM, and each stops its disposable E2E stack on exit.
 
+## Historical 20.60 requests/s image replay
+
+The exact retained historical image (`myscoutee-api:1.3.0-e2e`,
+`sha256:df63342d0ce0ba050e7df33f9b0e83dc0f0ee84bce060fcbca7403f88e897052`)
+was also replayed unchanged on 2026-10-09. The disposable monolith stack was
+stopped on exit; the KVM was off throughout. No test browser was opened during
+measurement.
+
+| Same historical image | Requests/s | p95 | Passed / failed / skipped |
+| --- | ---: | ---: | ---: |
+| Original October 7 events | 20.60 | 313.1 ms | 1917 / 0 / 0 |
+| October 9 cold events | 15.27 | 528.5 ms | 1422 / 0 / 0 |
+| October 9 warm events | 16.07 | 484.9 ms | 1485 / 0 / 0 |
+| October 9 warm mixed sweep | 25.00 | 227.4 ms | 837 / 0 / 0 |
+
+Current code in the adjacent controlled warm run reached 17.25 events/s and
+26.62 sweep requests/s. Reverting the application image therefore does not
+restore 20.60; these measurements do not implicate a later application commit.
+The historical/current Compose and E2E Dockerfile comparison contains no
+changes. Runner changes add opt-in native sessions (disabled for this monolith
+control), an unused event-scenario admin identity default and an optional
+header callback. Scenario concurrency, ramp, duration and assertions match.
+
+The observed workloads nevertheless differ: original average response bytes
+were 69,613 per event step, versus 50,666 in the unchanged-image replay.
+Invitations changed from about 117,708 to 1,770 bytes per request. The same
+source/seed is not an identical historical database/time/cache snapshot.
+Original host load started at 6.67; the replay warm run started at 10.59 on the
+same 12 logical CPUs. JVM resident memory started around 1.218 GiB originally
+and 773 MiB in the replay. These are measured confounders, not proof that any
+one accounts for a particular percentage. Even tiny feedback responses became
+slower, so transfer size alone is not an explanation.
+
+The specific invitation methods `queryInvitationsPage`,
+`queryDirectFilteredRecords` and `queryInvitationRecords` are unchanged from
+the recorded comparator source `6fdab9f25`. The existing read path fetches
+active invitations and builds viewer DTO projections in memory; that behavior
+already existed. This inspection does not show a new move of write-side
+materialization into these read methods. A smaller response alone cannot
+establish such a change.
+
+**Conclusion:** no reproduced source regression warrants a speculative product
+patch. Warmup alone also does not recover the old number. The exact causal
+split between historical host scheduling, cache/heap state and time-sensitive
+data is **not proven** by the retained evidence. The original 20.60 remains a
+historical sample, not a reproducible current acceptance floor. Determining that
+split would require a preserved historical runtime/database snapshot or new
+controlled experiments; a commit bisect cannot reconstruct those conditions.
+
+Evidence: `~/.local/state/myscoutee-domain-segregation/e2e/current-20261009T032331Z`
+contains image identity, cold/warm summaries, per-step metrics, resource samples
+and the stack-stop receipt. Reproduce with
+`MYSCOUTEE_E2E_IMAGE=myscoutee-api:1.3.0-e2e tools/check-current-monolith.sh --performance-only`.
+
 ## Environment and evidence
 
 - Comparator: the previously measured refactored monolith (`performance-candidate` events and `performance-candidate-warm` sweep), documented in [BACKEND_CROSS_DOMAIN_E2E.md](../guides/plans/BACKEND_CROSS_DOMAIN_E2E.md).

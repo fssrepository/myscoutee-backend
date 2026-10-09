@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
@@ -49,9 +48,26 @@ public class PromotionalEmailDeliveryProcessor {
         this.emailProviderGateway = emailProviderGateway;
     }
 
-    @Scheduled(fixedDelayString = "${email.promotions.delivery-delay-ms:60000}")
     public void processScheduledPromotionalEmails() {
         groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("promotional-email-delivery", this::processScheduledPromotionalEmailsInGroup));
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchDeliveries(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("promotional-email-delivery", java.util.Set.of("emailOutbox", "notificationRuleConfigs"),
+                java.util.Set.of("status", "scheduledAt", "enabled", "timing", "scheduleSlots"), () -> {
+                    if (!emailProperties.isEnabled()) return null;
+                    var query = Query.query(Criteria.where("status").is(EmailOutboxStatus.PENDING).and("scheduledAt").ne(null))
+                            .with(Sort.by("scheduledAt"));
+                    var first = mongoTemplate.findOne(query, EmailOutboxItem.class);
+                    if (first == null) return null;
+                    groupRules.runScheduledGroups("promotional-email-delivery", this::processScheduledPromotionalEmailsInGroup);
+                    first = mongoTemplate.findOne(query, EmailOutboxItem.class);
+                    if (first == null) return null;
+                    Instant due = Instant.parse(first.getScheduledAt());
+                    Instant retry = Instant.now().plusSeconds(60);
+                    return due.isAfter(retry) ? due : retry;
+                });
     }
 
     private void processScheduledPromotionalEmailsInGroup() {

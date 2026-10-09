@@ -46,6 +46,7 @@ class NotificationOutboxWorkerServiceTest {
         ChatWebSocketSessionRegistry sessionRegistry =
                 org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
         MongoTemplate mongoTemplate = org.mockito.Mockito.mock(MongoTemplate.class);
+        when(mongoTemplate.exists(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(true);
         FirebasePushDelivery gateway =
                 org.mockito.Mockito.mock(FirebasePushDelivery.class);
         NotificationRuleRegistryService registry =
@@ -133,6 +134,9 @@ class NotificationOutboxWorkerServiceTest {
                 org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class));
         service.setNotificationRuleRegistryServiceProvider(registryProvider);
 
+        MongoTemplate mongo = (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate");
+        when(mongo.exists(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(true);
+
         service.processDueNotifications();
 
         verify(registry, never()).beginScheduledRun(
@@ -199,6 +203,7 @@ class NotificationOutboxWorkerServiceTest {
         item.setEntityId("chat-1");
         when(sessionRegistry.isUserConnected("chat-1", "connected-viewer")).thenReturn(true);
         when(mongoTemplate.find(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(List.of(item));
+        when(mongoTemplate.exists(any(Query.class), eq(NotificationOutboxItem.class))).thenReturn(true);
         when(mongoTemplate.updateFirst(
                 any(Query.class),
                 any(Update.class),

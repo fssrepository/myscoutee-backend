@@ -15,4 +15,11 @@ public interface CommunityAnnouncementsRepository extends MongoRepository<Commun
         "{'$sort':{'_id':1}}"
     })
     List<CommunityAnnouncement> pendingClosure(String now, Pageable page);
+    @org.springframework.data.mongodb.repository.Aggregation(pipeline = {
+        "{'$match':{'status':'published','voting':true,'closureNotifiedAtIso':null}}",
+        "{'$project':{'_id':0,'due':{'$cond':[{'$ne':[{'$ifNull':['$closedAtIso',null]},null]},'1970-01-01T00:00:00Z','$deadlineIso']}}}",
+        "{'$sort':{'due':1}}", "{'$limit':1}"
+    })
+    java.util.Optional<ClosureDeadline> nextClosure();
+    record ClosureDeadline(String due) {}
 }

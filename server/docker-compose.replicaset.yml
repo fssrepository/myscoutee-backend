@@ -1,17 +1,24 @@
-# Optional Mongo replica-set override for features that need change streams.
-# Usage with e2e:
-#   docker compose -f docker-compose.e2e.yml -f docker-compose.replicaset.yml up --build --wait
+# Shared replica-set defaults, automatically inherited by normal deployments.
+# Retained as an explicit override/customization surface.
 
 services:
   mongodb:
-    command: ["--bind_ip_all", "--replSet", "${MONGO_REPLICA_SET_NAME:-rs0}"]
+    entrypoint: ["bash", "/docker-entrypoint-initdb.d/replica-entrypoint"]
+    command: ["mongod", "--bind_ip_all", "--replSet", "${MONGO_REPLICA_SET_NAME:-rs0}"]
     environment:
       MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME:-rs0}
       MONGO_REPLICA_SET_HOST: ${MONGO_REPLICA_SET_HOST:-mongodb:27017}
+
+    healthcheck:
+      test: ["CMD", "bash", "/docker-entrypoint-initdb.d/replica-health"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 180s
 
   profilemanagement:
     environment:
       MONGODB_REPLICA_SET: ${MONGO_REPLICA_SET_NAME:-rs0}
       AFFINITY_RECOMPUTE_ENABLED: ${AFFINITY_RECOMPUTE_ENABLED:-true}
       AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:-true}
-      AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:-true}
+      AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:-false}

@@ -12,12 +12,19 @@ public class ContentModerationWorker {
     private final ContentModerationService moderation;
     private final NotificationJobs rules;
     private final ScheduledMongoSessionRunner databases;
+    private java.util.function.BooleanSupplier workPresent = () -> true;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void watchWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        workPresent = changes.watchPresence("content-moderation-presence",
+                java.util.Set.of("contentModerationItems", "contentModerationState"), moderation::hasScheduledWork);
+    }
     public ContentModerationWorker(ContentModerationService moderation, NotificationJobs rules, ScheduledMongoSessionRunner databases) {
         this.moderation = moderation; this.rules = rules; this.databases = databases;
     }
     @Scheduled(fixedDelayString="${moderation.worker-check-delay-ms:60000}")
     public void tick() { databases.runAcrossConfiguredDatabases(this::run); }
     private void run() {
+        if (!workPresent.getAsBoolean()) return;
         var registry = rules;
         if (registry != null) registry.forEachGroup(RULE, this::runInGroup);
     }

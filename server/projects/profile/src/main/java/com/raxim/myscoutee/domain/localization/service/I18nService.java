@@ -13,7 +13,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
@@ -47,12 +46,25 @@ public class I18nService implements com.raxim.myscoutee.domain.localization.api.
         }
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchCache(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases) {
+        if (!databases.hasDistinctDemoDatabase()) {
+            cachedBundles.put(MongoSessionMode.DEMO, cachedBundles.get(MongoSessionMode.REAL));
+            modeLocks.put(MongoSessionMode.DEMO, modeLocks.get(MongoSessionMode.REAL));
+        }
+        changes.watch("I18nService", java.util.Set.of("i18n_bundles", "i18n_messages"), java.util.Set.of(), () -> {
+            MongoSessionMode mode = MongoSessionModeContext.currentMode();
+            if (!refreshCache(mode)) return java.time.Instant.now().plusSeconds(5);
+            return null;
+        });
+    }
+
     @PostConstruct
     public void preloadCache() {
         refreshCache();
     }
 
-    @Scheduled(fixedDelayString = "${i18n.cache-refresh-ms:60000}")
     public void refreshCache() {
         for (MongoSessionMode mode : MongoSessionMode.values()) {
             refreshCache(mode);
@@ -69,10 +81,9 @@ public class I18nService implements com.raxim.myscoutee.domain.localization.api.
 
         String latestVersion = bundle.version();
 
-        if (latestVersion.equals(safeText(currentVersion, ""))) {
-            return new I18nBundleResponseDto(selectedLang, latestVersion, null);
-        }
-
+        // Bundle versions are editor metadata, not content validators: a message can be
+        // edited or deleted independently. Return the cached payload even for an equal
+        // version so existing clients cannot retain an obsolete translation indefinitely.
         return new I18nBundleResponseDto(selectedLang, latestVersion, bundle.messages());
     }
 
@@ -105,17 +116,19 @@ public class I18nService implements com.raxim.myscoutee.domain.localization.api.
         return cachedBundles.get(mode).get();
     }
 
-    private void refreshCache(MongoSessionMode mode) {
+    private boolean refreshCache(MongoSessionMode mode) {
         synchronized (modeLocks.get(mode)) {
             try {
                 CachedBundles current = cachedBundles.get(mode).get();
                 CachedBundles refreshed = inMode(mode, () -> loadBundles(current));
                 cachedBundles.get(mode).set(refreshed);
+                return true;
             } catch (RuntimeException exception) {
                 LOGGER.warn(
                         "I18n bundle cache refresh failed for {} mode; keeping the previous snapshot.",
                         mode,
                         exception);
+                return false;
             }
         }
     }
@@ -129,10 +142,6 @@ public class I18nService implements com.raxim.myscoutee.domain.localization.api.
             }
         }
         Map<String, String> immutableVersions = Map.copyOf(versions);
-        if (current.loaded() && current.versions().equals(immutableVersions)) {
-            return current;
-        }
-
         Map<String, Map<String, String>> messagesByLanguage = new HashMap<>();
         for (I18nMessage message : i18nMessageRepository.findAll()) {
             String lang = normalizeLang(message.getLang());

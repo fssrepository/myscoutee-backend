@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.bson.Document;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -98,9 +97,25 @@ public class AffiliateRevenueService {
                 AffiliateRevenueRepository.number(summary, "eventBookings"), euroService == null ? null : euroService.summary(owner, true));
     }
 
-    @Scheduled(fixedDelay = 30_000L)
     public void finishInterruptedWrites() {
-        sessions.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("affiliate-revenue", () -> {
+        sessions.runAcrossConfiguredDatabases(this::finishInCurrentDatabase);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPendingRevenue(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("affiliate-revenue", Set.of("payments"), Set.of("affiliateRevenuePending"), () -> {
+            finishInCurrentDatabase();
+            return hasPendingRevenue() ? java.time.Instant.now().plusSeconds(30) : null;
+        });
+    }
+
+    private boolean hasPendingRevenue() {
+        return mongo.exists(Query.query(Criteria.where("affiliateRevenuePending").is(true)), Payment.class);
+    }
+
+    private void finishInCurrentDatabase() {
+        if (!hasPendingRevenue()) return;
+        groupRules.runScheduledGroups("affiliate-revenue", () -> {
             for (Payment payment : paymentJobs.find(Query.query(Criteria.where("affiliateRevenuePending").is(true)).limit(100), Payment.class, Payment::getUserId)) {
                 try { record(payment); }
                 catch (RuntimeException error) {
@@ -108,6 +123,6 @@ public class AffiliateRevenueService {
                             .warn("Affiliate counter write remains pending: {}", error.getClass().getSimpleName());
                 }
             }
-        }));
+        });
     }
 }

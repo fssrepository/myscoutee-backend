@@ -74,7 +74,7 @@ affinity:
   recompute:
     enabled: ${AFFINITY_RECOMPUTE_ENABLED:true}
     change-stream-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:false}
-    change-stream-fallback-poll-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:true}
+    change-stream-fallback-poll-enabled: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:false}
     change-stream-wakeup-coalesce: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_WAKEUP_COALESCE:250ms}
     change-stream-reconnect-delay: ${AFFINITY_RECOMPUTE_CHANGE_STREAM_RECONNECT_DELAY:5s}
 

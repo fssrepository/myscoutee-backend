@@ -148,6 +148,21 @@ class ScheduledMessageTaskServiceTest {
     }
 
     @Test
+    void remoteCancellationRemovesRetainedTimerEvenWithoutAnAdmittedRule() {
+        var task = new ScheduledMessageTask();
+        task.setTaskKey("remote-task"); task.setBaseGroupId("workspace"); task.setStatus("scheduled");
+        task.setDueAtIso(java.time.Instant.now().plusSeconds(60).toString());
+        service.acceptTaskMetadata(task);
+        Map<?, ?> timers = (Map<?, ?>) ReflectionTestUtils.getField(service, "scheduledWorkers");
+        assertThat(timers).hasSize(1);
+        when(scheduledMessageTasksRepository.findByTaskKey("remote-task")).thenReturn(Optional.empty());
+        service.runDueTasks();
+        assertThat(timers).isEmpty();
+        assertThat((Map<?, ?>) ReflectionTestUtils.getField(service, "scheduledTaskState")).isEmpty();
+        org.mockito.Mockito.verifyNoInteractions(scheduledMessageAuditService);
+    }
+
+    @Test
     void activitySignalReschedulesTheExistingInactivityTaskInItsWorkspace() {
         var scope=org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.JobAudience.class);
         ReflectionTestUtils.setField(service,"jobGroupScope",scope);

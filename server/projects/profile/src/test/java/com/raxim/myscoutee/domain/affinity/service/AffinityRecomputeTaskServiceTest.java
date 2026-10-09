@@ -30,6 +30,35 @@ import static org.mockito.Mockito.mock;
 @org.junit.jupiter.api.Tag("standard")
 class AffinityRecomputeTaskServiceTest {
     @Test
+    void initializesIndexesInBothDatabasesAndRestoresCallerMode() {
+        MongoTemplate mongo = mock(MongoTemplate.class);
+        var indexes = mock(org.springframework.data.mongodb.core.index.IndexOperations.class);
+        var seen = new java.util.EnumMap<com.raxim.myscoutee.common.config.mongo.MongoSessionMode, java.util.Set<String>>(
+                com.raxim.myscoutee.common.config.mongo.MongoSessionMode.class);
+        when(mongo.indexOps(AffinityRecomputeTask.class)).thenReturn(indexes);
+        when(indexes.createIndex(any())).thenAnswer(call -> {
+            var definition = (org.springframework.data.mongodb.core.index.IndexDefinition) call.getArgument(0);
+            String name = definition.getIndexOptions().getString("name");
+            seen.computeIfAbsent(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode(),
+                    ignored -> new java.util.HashSet<>()).add(name);
+            return name;
+        });
+        var service = new AffinityRecomputeTaskService(mock(AffinityRecomputeTasksRepository.class),
+                new AffinityRecomputeProperties(), mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "databases",
+                new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo"));
+        var previous = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        service.ensureIndexes();
+        assertThat(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode()).isEqualTo(previous);
+        assertThat(seen).hasSize(2);
+        for (var names : seen.values()) {
+            assertThat(names).containsExactlyInAnyOrder("affinity_recompute_task_key",
+                    "affinity_recompute_task_status_available", "affinity_recompute_task_target_status",
+                    "affinity_recompute_group_status_available");
+        }
+    }
+
+    @Test
     void enqueueCollapsesDifferentReasonsForSameTargetTask() {
         AffinityRecomputeTasksRepository repository = mock(AffinityRecomputeTasksRepository.class);
         AffinityRecomputeProperties properties = new AffinityRecomputeProperties();

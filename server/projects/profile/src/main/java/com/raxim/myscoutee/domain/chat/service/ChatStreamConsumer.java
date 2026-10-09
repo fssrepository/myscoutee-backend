@@ -44,7 +44,7 @@ public class ChatStreamConsumer {
             StringRedisTemplate stringRedisTemplate,
             ObjectMapper objectMapper,
             ChatWebSocketSessionRegistry sessionRegistry,
-            @Value("${chat.stream.block-ms:100}") long blockMs) {
+            @Value("${chat.stream.block-ms:10000}") long blockMs) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.sessionRegistry = sessionRegistry;

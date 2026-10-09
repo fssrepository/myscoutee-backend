@@ -116,6 +116,13 @@ class MessageTranslationsHttpTest {
     @EnableAutoConfiguration(excludeName={"org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration","org.springframework.boot.data.mongodb.autoconfigure.DataMongoAutoConfiguration","org.springframework.boot.data.mongodb.autoconfigure.DataMongoRepositoriesAutoConfiguration","org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
     @Import({JsonConfig.class,MessageTranslationsServerConfiguration.class,LocalizationServerConfiguration.class,TranslationService.class,ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes() {
+            return mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        }
+        @Bean com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases() {
+            return new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo");
+        }
+
         @Bean(name="messageSource") DBMessageSource messages(I18nMessageRepository repository){return new DBMessageSource(repository);}
         @Bean I18nMessageRepository repository(){
             var repository=mock(I18nMessageRepository.class);when(repository.findByLang(anyString())).thenAnswer(call->{

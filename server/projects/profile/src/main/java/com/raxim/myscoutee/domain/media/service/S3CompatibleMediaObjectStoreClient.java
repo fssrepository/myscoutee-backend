@@ -27,11 +27,16 @@ import software.amazon.awssdk.services.s3.model.S3Exception;
 public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClient {
     private final MediaStorageProperties properties;
     private final S3Client s3Client;
-    private volatile boolean bucketEnsured = false;
+    private final java.util.Set<String> ensuredBuckets = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
+    @org.springframework.beans.factory.annotation.Autowired
     public S3CompatibleMediaObjectStoreClient(MediaStorageProperties properties) {
+        this(properties, createClient(properties));
+    }
+
+    S3CompatibleMediaObjectStoreClient(MediaStorageProperties properties, S3Client s3Client) {
         this.properties = properties;
-        this.s3Client = createClient(properties);
+        this.s3Client = s3Client;
     }
 
     @Override
@@ -49,7 +54,17 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
                 .key(key)
                 .contentType(contentType)
                 .build();
-        s3Client.putObject(request, RequestBody.fromBytes(bytes));
+        try {
+            s3Client.putObject(request, RequestBody.fromBytes(bytes));
+        } catch (S3Exception exception) {
+            if (exception.awsErrorDetails() == null
+                    || !"NoSuchBucket".equals(exception.awsErrorDetails().errorCode())) throw exception;
+            // The bucket can be removed after startup. Reuse the existing ensure path
+            // once, without adding a HEAD request to every successful upload.
+            ensuredBuckets.remove(bucket);
+            ensureBucketExists(bucket);
+            s3Client.putObject(request, RequestBody.fromBytes(bytes));
+        }
     }
 
     @Override
@@ -77,7 +92,7 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
                 .build());
     }
 
-    private S3Client createClient(MediaStorageProperties storageProperties) {
+    private static S3Client createClient(MediaStorageProperties storageProperties) {
         if (storageProperties == null || !storageProperties.isEnabled() || !StringUtils.hasText(safeText(storageProperties.getBucket()))) {
             return null;
         }
@@ -102,7 +117,7 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
     }
 
     private synchronized void ensureBucketExists(String bucket) {
-        if (!isEnabled() || bucketEnsured || !StringUtils.hasText(safeText(bucket))) {
+        if (!isEnabled() || ensuredBuckets.contains(bucket) || !StringUtils.hasText(safeText(bucket))) {
             return;
         }
         try {
@@ -113,10 +128,10 @@ public class S3CompatibleMediaObjectStoreClient implements MediaObjectStoreClien
             }
             s3Client.createBucket(CreateBucketRequest.builder().bucket(bucket).build());
         }
-        bucketEnsured = true;
+        ensuredBuckets.add(bucket);
     }
 
-    private String safeText(String value) {
+    private static String safeText(String value) {
         return value == null ? "" : value.trim();
     }
 }
