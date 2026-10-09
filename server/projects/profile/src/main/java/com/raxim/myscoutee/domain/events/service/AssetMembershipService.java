@@ -112,5 +112,5 @@ public class AssetMembershipService implements AssetMemberships {
     private String safeText(String value) {
         return value == null ? "" : value.trim();
     }
-    @Override public void delete(MemberDirectory.Member member) { activityMembersRepository.delete((ActivityMember) member); }
+    @Override public void delete(MemberDirectory.Member member) { activityMembersRepository.deleteById(java.util.Objects.requireNonNull(member).getId()); }
 }

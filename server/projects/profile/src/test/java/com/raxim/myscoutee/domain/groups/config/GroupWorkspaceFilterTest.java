@@ -44,14 +44,16 @@ class GroupWorkspaceFilterTest {
         filter.doFilter(request, new MockHttpServletResponse(), (req, res) ->
             assertThat(principal().getUserId()).isEqualTo("group-profile"));
         verify(profiles).current(account);
-        verify(profiles, never()).activate(any(), any());
+        verify(profiles, never()).activate(any(String.class), any());
+        verify(profiles, never()).activate(any(com.raxim.myscoutee.domain.accounts.document.Users.class), any());
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
     }
     @Test void profileReloadWithoutParameterOnlyReadsSavedSelection() throws Exception {
         filter.doFilter(request("GET", "/auth/me/profile-ext"), new MockHttpServletResponse(), (req, res) ->
             assertThat(principal().getUserId()).isEqualTo("group-profile"));
         verify(profiles).current(account);
-        verify(profiles, never()).activate(any(), any());
+        verify(profiles, never()).activate(any(String.class), any());
+        verify(profiles, never()).activate(any(com.raxim.myscoutee.domain.accounts.document.Users.class), any());
     }
     @Test void profileLoadWithParameterSelectsAndReturnsThatProfile() throws Exception {
         var request = request("GET", "/auth/me/profile-ext");
@@ -60,7 +62,8 @@ class GroupWorkspaceFilterTest {
         filter.doFilter(request, new MockHttpServletResponse(), (req, res) ->
             assertThat(principal().getUserId()).isEqualTo("group-profile"));
         verify(profiles).select("account", "saved-group");
-        verify(profiles, never()).activate(any(), any());
+        verify(profiles, never()).activate(any(String.class), any());
+        verify(profiles, never()).activate(any(com.raxim.myscoutee.domain.accounts.document.Users.class), any());
         verify(profiles, never()).current(any());
     }
     @Test void explicitEmptyParameterReturnsToBaseProfile() throws Exception {

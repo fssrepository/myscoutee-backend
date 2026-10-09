@@ -45,7 +45,7 @@ class NavigatorContactsServiceTest {
     private FriendshipFacts friendshipFacts;
 
     @Mock private com.raxim.myscoutee.domain.chat.repository.ContactChatAccessRepository chatAccess;
-    @Mock private com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService notifications;
+    @Mock private ContactChatAccessWorkflow workflow;
     @Mock private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private NavigatorContactsService service;
 
@@ -55,28 +55,33 @@ class NavigatorContactsServiceTest {
                 navigatorContactsProfilesRepository,
                 homeUserProfileService,
                 userExperienceProfilesService,
-                usersRepository, accessControlService, friendshipFacts, new com.raxim.myscoutee.domain.chat.service.ContactPermissionService(chatAccess), notifications, mongo);
+                usersRepository, accessControlService, friendshipFacts, new com.raxim.myscoutee.domain.chat.service.ContactPermissionService(chatAccess), workflow, mongo);
     }
 
     @Test
-    void requestWritesPendingCounterAndNotifiesOnlyRecipientWithoutCopyingPrivateMethods() {
+    void requestAcceptsRecipientScopedWorkflowWithoutCopyingPrivateMethods() {
         prepareChatActors("a", "b");
-        var profile = contactProfile("a", "b");
-        when(navigatorContactsProfilesRepository.findByUserId("a")).thenReturn(Optional.of(profile));
-        when(chatAccess.save(any())).thenAnswer(call -> call.getArgument(0));
+        when(navigatorContactsProfilesRepository.findByUserId("a")).thenReturn(Optional.of(contactProfile("a", "b")));
+        stubWorkflow(0L);
         var result = service.changeChatAccess("b", new com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand("request", null));
         assertThat(result.status()).isEqualTo("pending");
         assertThat(result.requestedBy()).isEqualTo("a");
         assertThat(result.contact().methods()).isEmpty();
-        var query = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Query.class);
-        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
-        verify(mongo).updateFirst(query.capture(), update.capture(), org.mockito.ArgumentMatchers.eq(Users.class));
-        assertThat(query.getValue().getQueryObject().getString("userId")).isEqualTo("b");
-        assertThat(update.getValue().getUpdateObject().get("$inc", org.bson.Document.class).getInteger("contactRequestsPending")).isEqualTo(1);
-        var intent = ArgumentCaptor.forClass(com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent.class);
-        verify(notifications).enqueue(intent.capture());
-        assertThat(intent.getValue().recipientUserIds()).containsExactly("b");
-        assertThat(intent.getValue().createdUser()).isEqualTo("a");
+        var contact = ArgumentCaptor.forClass(NavigatorContactDto.class);
+        verify(workflow).accept(org.mockito.ArgumentMatchers.eq("a"), org.mockito.ArgumentMatchers.eq("b"),
+                org.mockito.ArgumentMatchers.isNull(), any(), contact.capture());
+        assertThat(contact.getValue().userId()).isEqualTo("b");
+        assertThat(contact.getValue().methods()).isEmpty();
+        verify(workflow).finishPending("1:ab");
+        verify(chatAccess, never()).save(any());
+    }
+
+    private void stubWorkflow(Long version) {
+        when(workflow.accept(any(), any(), any(), any(), any())).thenAnswer(call -> {
+            var change = (com.raxim.myscoutee.domain.chat.api.ContactPermissions.Change) call.getArgument(3);
+            return new com.raxim.myscoutee.domain.chat.dto.ContactPermissionDto(change.id(), change.leftUserId(), change.rightUserId(),
+                    change.requestedBy(), change.status(), change.requestedAtIso(), change.decidedAtIso(), version);
+        });
     }
 
     @Test
@@ -86,7 +91,7 @@ class NavigatorContactsServiceTest {
         when(chatAccess.findById("1:ab")).thenReturn(Optional.of(pendingRequest()));
         service.changeChatAccess("b", new com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand("request", null));
         verify(chatAccess, never()).save(any());
-        verify(notifications, never()).enqueue(any());
+        verify(workflow, never()).accept(any(), any(), any(), any(), any());
         org.mockito.Mockito.verifyNoInteractions(mongo);
     }
 
@@ -102,29 +107,23 @@ class NavigatorContactsServiceTest {
                 new com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand("approve", 9L)))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class).hasMessageContaining("409");
         verify(chatAccess, never()).save(any());
-        verify(notifications, never()).enqueue(any());
+        verify(workflow, never()).accept(any(), any(), any(), any(), any());
     }
 
     @Test
-    void approvalSavesPublicContactAndRemovesPendingBadgeForRecipient() {
+    void approvalAcceptsOnlyRecipientWorkflowWithPublicContactSnapshot() {
         prepareChatActors("b", "a");
         when(chatAccess.findById("1:ab")).thenReturn(Optional.of(pendingRequest()));
-        when(chatAccess.save(any())).thenAnswer(call -> call.getArgument(0));
-        when(navigatorContactsProfilesRepository.save(any())).thenAnswer(call -> call.getArgument(0));
+        stubWorkflow(1L);
         var approved = service.changeChatAccess("a",
                 new com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand("approve", 0L));
         assertThat(approved.status()).isEqualTo("approved");
-        var profile = ArgumentCaptor.forClass(NavigatorContactsProfile.class);
-        verify(navigatorContactsProfilesRepository).save(profile.capture());
-        assertThat(profile.getValue().getUserId()).isEqualTo("b");
-        assertThat(profile.getValue().getContacts()).extracting(NavigatorContactsProfile.NavigatorContactRecord::getUserId).containsExactly("a");
-        assertThat(profile.getValue().getContacts().get(0).getMethods()).isEmpty();
-        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Update.class);
-        verify(mongo).updateFirst(any(), update.capture(), org.mockito.ArgumentMatchers.eq(Users.class));
-        assertThat(update.getValue().getUpdateObject().get("$inc", org.bson.Document.class).getInteger("contactRequestsPending")).isEqualTo(-1);
-        var intent = ArgumentCaptor.forClass(com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent.class);
-        verify(notifications).enqueue(intent.capture());
-        assertThat(intent.getValue().recipientUserIds()).containsExactly("a");
+        assertThat(approved.version()).isEqualTo(1L);
+        var contact = ArgumentCaptor.forClass(NavigatorContactDto.class);
+        verify(workflow).accept(org.mockito.ArgumentMatchers.eq("b"), org.mockito.ArgumentMatchers.eq("a"),
+                org.mockito.ArgumentMatchers.isNull(), any(), contact.capture());
+        assertThat(contact.getValue().userId()).isEqualTo("a");
+        assertThat(contact.getValue().methods()).isEmpty();
     }
 
     @Test
@@ -136,7 +135,7 @@ class NavigatorContactsServiceTest {
                 new com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand("request", null)))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class).hasMessageContaining("404");
         verify(chatAccess, never()).save(any());
-        verify(notifications, never()).enqueue(any());
+        verify(workflow, never()).accept(any(), any(), any(), any(), any());
     }
 
     private void prepareChatActors(String actor, String peer) {
@@ -249,7 +248,6 @@ class NavigatorContactsServiceTest {
                 new Users.UserEventFeedbackCountersRecord(1, 2, 3, 4),
                 5,
                 7));
-        when(usersRepository.findByUserId("owner")).thenReturn(Optional.of(user));
 
         List<NavigatorContactDto> response = service.saveContacts(new NavigatorContactsSaveRequestDto(
                 "owner",
@@ -285,11 +283,14 @@ class NavigatorContactsServiceTest {
         assertThat(contactsCaptor.getValue().getUserId()).isEqualTo("owner");
         assertThat(contactsCaptor.getValue().getContacts()).hasSize(1);
 
-        ArgumentCaptor<Users> userCaptor = ArgumentCaptor.forClass(Users.class);
-        verify(usersRepository).save(userCaptor.capture());
-        assertThat(userCaptor.getValue().getActivities().contacts()).isEqualTo(1);
-        assertThat(userCaptor.getValue().getActivities().events()).isEqualTo(8);
-        assertThat(userCaptor.getValue().getActivities().feedback()).isEqualTo(3);
+        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.aggregation.AggregationUpdate.class);
+        verify(mongo).updateFirst(any(), update.capture(), org.mockito.ArgumentMatchers.eq(Users.class));
+        assertThat(update.getValue().toPipeline(org.springframework.data.mongodb.core.aggregation.Aggregation.DEFAULT_CONTEXT))
+                .containsExactly(new org.bson.Document("$set", new org.bson.Document("activities",
+                        new org.bson.Document("$mergeObjects", List.of(
+                                new org.bson.Document("$ifNull", List.of("$activities", new org.bson.Document())),
+                                new org.bson.Document("contacts", 1))))));
+        verify(usersRepository, never()).save(any());
     }
 
     @Test
@@ -306,18 +307,20 @@ class NavigatorContactsServiceTest {
         Users user = new Users();
         user.setUserId("owner");
         user.setActivities(null);
-        when(usersRepository.findByUserId("owner")).thenReturn(Optional.of(user));
 
         List<NavigatorContactDto> response = service.deleteContact(
                 "contact-1",
                 new NavigatorContactDeleteRequestDto("owner"));
 
         assertThat(response).extracting(NavigatorContactDto::id).containsExactly("contact-2");
-        ArgumentCaptor<Users> userCaptor = ArgumentCaptor.forClass(Users.class);
-        verify(usersRepository).save(userCaptor.capture());
-        assertThat(userCaptor.getValue().getActivities().contacts()).isEqualTo(1);
-        assertThat(userCaptor.getValue().getActivities().event().all()).isZero();
-        assertThat(userCaptor.getValue().getActivities().asset().tickets()).isZero();
+        var update = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.aggregation.AggregationUpdate.class);
+        verify(mongo).updateFirst(any(), update.capture(), org.mockito.ArgumentMatchers.eq(Users.class));
+        assertThat(update.getValue().toPipeline(org.springframework.data.mongodb.core.aggregation.Aggregation.DEFAULT_CONTEXT))
+                .containsExactly(new org.bson.Document("$set", new org.bson.Document("activities",
+                        new org.bson.Document("$mergeObjects", List.of(
+                                new org.bson.Document("$ifNull", List.of("$activities", new org.bson.Document())),
+                                new org.bson.Document("contacts", 1))))));
+        verify(usersRepository, never()).save(any());
     }
 
     @Test

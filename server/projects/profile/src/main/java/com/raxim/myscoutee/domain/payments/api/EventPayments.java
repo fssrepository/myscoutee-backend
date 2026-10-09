@@ -27,7 +27,7 @@ public interface EventPayments {
             String bookingStartAtIso,
             String bookingEndAtIso,
             PricingCancellationPolicyDto cancellationPolicy);
-    PaymentView completeEventCancellation(com.raxim.myscoutee.domain.payments.api.PaymentView snapshot, String reason);
+    void completeEventCancellation(String paymentId, String reason);
     void cancelEventBooking(
             String userId,
             String sourceId,

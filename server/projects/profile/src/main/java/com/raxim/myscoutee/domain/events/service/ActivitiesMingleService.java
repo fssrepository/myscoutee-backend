@@ -30,7 +30,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound.TableAssignment;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleActionRequestDto;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleParticipantDto;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleStateDto;
@@ -40,7 +40,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
@@ -59,7 +59,7 @@ public class ActivitiesMingleService {
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final ActivityMingleRoundsRepository activityMingleRoundsRepository;
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
     private final EdgeDirectory userAffinityEdgesRepository;
     private final ActivitiesMembersService activitiesMembersService;
     private final AccessPermissions accessControlService;
@@ -71,7 +71,7 @@ public class ActivitiesMingleService {
             ActivityEventsRepository activityEventsRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
             ActivityMingleRoundsRepository activityMingleRoundsRepository,
-            ProfileDirectory usersRepository,
+            ProfileSummaries usersRepository,
             EdgeDirectory userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
             AccessPermissions accessControlService,
@@ -359,7 +359,7 @@ public class ActivitiesMingleService {
         Set<String> visibleUserIds = visibleTables.stream()
                 .flatMap(table -> table.memberUserIds().stream())
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        Map<String, WorkspaceProfile> usersById = usersRepository.findByUserIdIn(visibleUserIds).stream()
+        Map<String, ProfileSummary> usersById = usersRepository.findByUserIdIn(visibleUserIds).stream()
                 .filter(Objects::nonNull)
                 .filter(user -> StringUtils.hasText(normalizeId(user.getUserId())))
                 .collect(java.util.stream.Collectors.toMap(
@@ -394,7 +394,7 @@ public class ActivitiesMingleService {
                 count(session.getRevision()));
     }
 
-    private MingleParticipantDto participant(String userId, WorkspaceProfile user) {
+    private MingleParticipantDto participant(String userId, ProfileSummary user) {
         String normalizedUserId = normalizeId(userId);
         String name = user == null ? normalizedUserId : firstNonBlank(user.getName(), normalizedUserId);
         String initials = user == null ? initials(name) : firstNonBlank(user.getInitials(), initials(name));
@@ -518,7 +518,7 @@ public class ActivitiesMingleService {
 
     private Map<String, String> userGenders(Set<String> eligibleUserIds) {
         Map<String, String> genders = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(eligibleUserIds)) {
+        for (ProfileSummary user : usersRepository.findByUserIdIn(eligibleUserIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
             String gender = safeText(user == null ? null : user.getGender()).toLowerCase();
             if (eligibleUserIds.contains(userId) && StringUtils.hasText(gender)) {

@@ -6,7 +6,7 @@ import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
@@ -63,7 +63,7 @@ import com.raxim.myscoutee.domain.community.dto.CaseConversation;
 
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.events.api.EventResourceDirectory.Resource;
@@ -103,7 +103,7 @@ import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.events.api.EventResourceDirectory;
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMapper;
@@ -116,8 +116,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountDevices accountDevices;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ChatCounters chatCounters;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
 
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.RatingDirectory ratings;
     @org.springframework.beans.factory.annotation.Autowired
@@ -159,10 +159,10 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
     private final MongoTemplate mongoTemplate;
-    private final ProfileDirectory profileDirectory;
+    private final ProfileSummaries profileDirectory;
     private final MemberDirectory memberDirectory;
     private final EventResourceDirectory eventResources;
-    private final ProfilePresentation profilePresentation;
+    private final ProfileReadState profilePresentation;
     private final ActivityCounters activityCounters;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
@@ -178,10 +178,10 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             ChatsRepository chatsRepository,
             ChatMessagesRepository chatMessagesRepository,
             MongoTemplate mongoTemplate,
-            ProfileDirectory profileDirectory,
+            ProfileSummaries profileDirectory,
             MemberDirectory memberDirectory,
             EventResourceDirectory eventResources,
-            ProfilePresentation profilePresentation,
+            ProfileReadState profilePresentation,
             ActivityCounters activityCounters,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
@@ -238,12 +238,12 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return toChatDto(chat, chatMemberUsers(List.of(chat)));
     }
 
-    public String ensureMainEventChat(Event event, Collection<String> participantUserIds) {
+    public String ensureMainEventChat(com.raxim.myscoutee.domain.events.api.EventChatContext event, Collection<String> participantUserIds) {
         return ensureMainEventChatDocuments(event, participantUserIds).chatId();
     }
 
     public PublishedMainEventChatResult ensurePublishedMainEventChat(
-            Event event,
+            com.raxim.myscoutee.domain.events.api.EventChatContext event,
             Collection<String> participantUserIds) {
         MainEventChatDocumentsResult result = ensureMainEventChatDocuments(event, participantUserIds);
         Set<String> createdOwnerUserIds = result.createdDocuments().stream()
@@ -255,7 +255,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     }
 
     private MainEventChatDocumentsResult ensureMainEventChatDocuments(
-            Event event,
+            com.raxim.myscoutee.domain.events.api.EventChatContext event,
             Collection<String> participantUserIds) {
         String eventId = normalizeId(event == null ? null : event.getSourceId());
         List<String> memberUserIds = participantUserIds == null
@@ -458,7 +458,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     public ChatDto ensureContactChat(String requestedUserId, String targetUserId) {
         String actorId = accountUserId(requireResolvedUserId(requestedUserId));
         String targetId = normalizeId(targetUserId);
-        Map<String, WorkspaceProfile> users = requireContactTargets(actorId, List.of(targetId), true);
+        Map<String, ProfileSummary> users = requireContactTargets(actorId, List.of(targetId), true);
         requireContactChatConsent(actorId, targetId);
         List<String> participantIds = new ArrayList<>(List.of(actorId, targetId));
         participantIds.sort(String::compareTo);
@@ -466,7 +466,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         // Only initialize missing owner copies: reopening must never replace messages or unread state.
         for (String ownerId : participantIds) {
             String otherId = ownerId.equals(actorId) ? targetId : actorId;
-            WorkspaceProfile other = users.get(otherId);
+            ProfileSummary other = users.get(otherId);
             mongoTemplate.upsert(Query.query(Criteria.where("_id").is(buildMongoId(ownerId, chatId))), new Update()
                     .setOnInsert("chatId", chatId).setOnInsert("ownerUserId", ownerId)
                     .setOnInsert("channelType", "contact").setOnInsert("memberIds", participantIds)
@@ -523,11 +523,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return toChatDto(result, chatMemberUsers(List.of(result)));
     }
 
-    private Map<String, WorkspaceProfile> requireContactTargets(String actorId, List<String> targetIds) {
+    private Map<String, ProfileSummary> requireContactTargets(String actorId, List<String> targetIds) {
         return requireContactTargets(actorId, targetIds, false);
     }
 
-    private Map<String, WorkspaceProfile> requireContactTargets(String actorId, List<String> targetIds, boolean allowApprovedPair) {
+    private Map<String, ProfileSummary> requireContactTargets(String actorId, List<String> targetIds, boolean allowApprovedPair) {
         if (targetIds.isEmpty() || targetIds.size() > 100 || targetIds.contains(actorId)
                 || targetIds.stream().anyMatch(id -> !StringUtils.hasText(id)))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another contact.");
@@ -540,12 +540,12 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (!allowed.containsAll(targetIds))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
         Set<String> participantIds = new LinkedHashSet<>(targetIds); participantIds.add(actorId);
-        Map<String, WorkspaceProfile> users = new LinkedHashMap<>();
-        for (WorkspaceProfile user : profileDirectory.findByUserIdIn(participantIds)) {
+        Map<String, ProfileSummary> users = new LinkedHashMap<>();
+        for (ProfileSummary user : profileDirectory.findByUserIdIn(participantIds)) {
             if (!StringUtils.hasText(user.getDeletedAtIso()) && !"deleted".equalsIgnoreCase(user.getProfileStatus()))
                 users.put(user.getUserId(), user);
         }
-        WorkspaceProfile actor = users.get(actorId);
+        ProfileSummary actor = users.get(actorId);
         if (targetIds.stream().anyMatch(id -> !WorkspaceContext.sameWorkspace(actor, users.get(id))))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact unavailable.");
         return users;
@@ -595,7 +595,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             }
             chatId = "c-service-event-" + eventId + "-" + userId;
         }
-        WorkspaceProfile targetUser = StringUtils.hasText(targetUserId) ? findUser(targetUserId) : null;
+        ProfileSummary targetUser = StringUtils.hasText(targetUserId) ? findUser(targetUserId) : null;
         if (targetUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Service chat recipient not found.");
         }
@@ -655,7 +655,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
 
     private ChatDto ensureAnnouncementFeedbackChat(ChatServiceEnsureRequestDto request, String userId) {
         var a = announcements.find(normalizeId(request.announcementId())).orElse(null);
-        WorkspaceProfile actor = findUser(userId);
+        ProfileSummary actor = findUser(userId);
         if (a == null || actor == null || !"published".equals(a.status()) || !a.communityId().equals(actor.getWorkspaceGroupId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement unavailable.");
         var group = groupDirectory.findById(a.communityId()).orElse(null);
@@ -674,7 +674,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
 
     private ChatDto ensureCampaignChat(ChatServiceEnsureRequestDto request, String userId) {
         var campaign = campaignCatalog.find(normalizeId(request.campaignId()));
-        WorkspaceProfile actor = findUser(userId);
+        ProfileSummary actor = findUser(userId);
         if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
                 || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campaign unavailable.");
@@ -699,7 +699,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return toChatDto(viewer, chatMemberUsers(List.of(viewer)));
     }
 
-    private boolean caseChatAccess(CaseConversation serviceCase, WorkspaceProfile actor, String caseOfferId) {
+    private boolean caseChatAccess(CaseConversation serviceCase, ProfileSummary actor, String caseOfferId) {
         return serviceCase != null && actor != null
                 && BaseGroups.COMMUNITY_BASE_ID.equals(actor.getWorkspaceGroupId())
                 && BaseGroups.COMMUNITY_BASE_ID.equals(serviceCase.baseGroupId())
@@ -713,7 +713,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         var profiles = profileDirectory.findByWorkspaceGroupIdAndAccountUserIdIn(
                 BaseGroups.COMMUNITY_BASE_ID, serviceCase.activeParticipantAccountIds());
         var byAccount = profiles.stream().collect(java.util.stream.Collectors.toMap(
-                u -> StringUtils.hasText(u.getAccountUserId()) ? u.getAccountUserId() : u.getUserId(), WorkspaceProfile::getUserId, (a,b) -> a));
+                u -> StringUtils.hasText(u.getAccountUserId()) ? u.getAccountUserId() : u.getUserId(), ProfileSummary::getUserId, (a,b) -> a));
         java.util.function.Function<List<String>, List<String>> memberProfiles = ids -> ids.stream().map(byAccount::get).filter(Objects::nonNull).toList();
         var main = syncResourceChat("c-case-" + serviceCase.id(), "case", serviceCase.id(), serviceCase.title(), memberProfiles.apply(serviceCase.chatParticipantAccountIds()));
         for (var offer : serviceCase.offers()) {
@@ -867,7 +867,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             long rangeStartMs,
             long rangeEndMs,
             String supportCaseFilterValue) {
-        WorkspaceProfile actor = findUser(userId);
+        ProfileSummary actor = findUser(userId);
         if (!isAdminUser(actor)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required.");
         }
@@ -956,7 +956,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (!accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, userId, normalizedChatId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage this support chat.");
         }
-        WorkspaceProfile actor = findUser(userId);
+        ProfileSummary actor = findUser(userId);
         String action = normalizeSupportCaseAction(actionValue);
         if (!StringUtils.hasText(action)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
@@ -989,10 +989,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (!"event".equals(kind) && !"asset".equals(kind)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported share kind.");
         }
-        Map<String, WorkspaceProfile> userCache = new LinkedHashMap<>();
-        return chatMessagesRepository.findActiveSharesBySender(snapshot.chatId(), userId, kind).stream()
-                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
-                .toList();
+        return chatMessageMapper.toDtos(
+                chatMessagesRepository.findActiveSharesBySender(snapshot.chatId(), userId, kind), userId);
     }
 
     public ChatMessagesPageResponseDto queryMessagesPage(
@@ -1054,10 +1052,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (readUpdate != null && readUpdate.changed() && !readUpdate.readMessageIds().isEmpty()) {
             publishChatEvent(toReadEvent(snapshot.chatId(), readUpdate));
         }
-        Map<String, WorkspaceProfile> userCache = new LinkedHashMap<>();
-        List<ChatMessageDto> items = messages.stream()
-                .map(message -> chatMessageMapper.toDto(message, userId, userCache))
-                .toList();
+        List<ChatMessageDto> items = chatMessageMapper.toDtos(messages, userId);
         int nextIndex = startIndex + items.size();
         return new ChatMessagesPageResponseDto(
                 items,
@@ -1092,8 +1087,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                     .map(this::normalizeId)
                     .filter(StringUtils::hasText)
                     .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-            Map<String, WorkspaceProfile> usersById = new LinkedHashMap<>();
-            for (WorkspaceProfile user : profileDirectory.findByUserIdIn(pageMemberIds)) {
+            Map<String, ProfileSummary> usersById = new LinkedHashMap<>();
+            for (ProfileSummary user : profileDirectory.findByUserIdIn(pageMemberIds)) {
                 String memberUserId = normalizeId(user == null ? null : user.getUserId());
                 if (StringUtils.hasText(memberUserId)) {
                     usersById.put(memberUserId, user);
@@ -1252,7 +1247,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         }
 
         ChatDocumentsSnapshot accessSnapshot = requireChatAccessForSend(normalizedChatId, userId);
-        WorkspaceProfile sender = findUser(userId);
+        ProfileSummary sender = findUser(userId);
         ChatMessage message = buildMessage(sender, userId, normalizedText, clientId, normalizeReply(replyTo), normalizedAttachments);
         return persistChatMessage(accessSnapshot, userId, message);
     }
@@ -1277,11 +1272,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 || !StringUtils.hasText(normalizedText)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
         }
-        WorkspaceProfile targetUser = findUser(normalizedTargetUserId);
+        ProfileSummary targetUser = findUser(normalizedTargetUserId);
         if (targetUser == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support target was not found.");
         }
-        WorkspaceProfile adminUser = findUser(normalizedAdminUserId);
+        ProfileSummary adminUser = findUser(normalizedAdminUserId);
         String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
         var targetGroup = StringUtils.hasText(workspaceGroupId) ? groupDirectory.findById(workspaceGroupId).orElse(null) : null;
         boolean appModeration = isAdminUser(adminUser);
@@ -1519,7 +1514,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     public void sendTypingSignal(String chatId, String requestedUserId, Boolean typing) {
         String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
-        WorkspaceProfile user = findUser(userId);
+        ProfileSummary user = findUser(userId);
         publishChatEvent(ChatStreamEvent.typing(
                 snapshot.chatId(),
                 userId,
@@ -1738,7 +1733,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                         .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         Set<String> readMessageIds = new LinkedHashSet<>();
         String readAtIso = Instant.now().toString();
-        WorkspaceProfile viewer = null;
+        ProfileSummary viewer = null;
         ChatReadAvatarRecord reader = null;
         List<ChatMessage> messages = preloadedMessages != null
                 ? preloadedMessages
@@ -1825,7 +1820,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                     0,
                     false);
         }
-        WorkspaceProfile viewer = findUser(viewerUserId);
+        ProfileSummary viewer = findUser(viewerUserId);
         ChatReadAvatarRecord reader = buildReadAvatarRecord(viewer, viewerUserId);
         Query unreadMessages = new Query(unreadMessageCriteria(snapshot.chatId(), viewerUserId));
         Update readUpdate = new Update()
@@ -1882,7 +1877,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to change messages in this chat.");
         }
         ChatDocumentsSnapshot snapshot = requireChat(normalizedChatId, userId);
-        WorkspaceProfile user = findUser(userId);
+        ProfileSummary user = findUser(userId);
         ChatMessage message = chatMessagesRepository
                 .findByChatIdAndMessageId(snapshot.chatId(), normalizedMessageId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Message not found."));
@@ -2040,7 +2035,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
 
     @FunctionalInterface
     private interface ChatMessageMutator {
-        void apply(ChatMessage message, String userId, WorkspaceProfile user);
+        void apply(ChatMessage message, String userId, ProfileSummary user);
     }
 
     private record ChatCounterChange(Chat chat, int delta) {
@@ -2078,13 +2073,13 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return chatMapper.toDto(chat);
     }
 
-    private ChatDto toChatDto(Chat chat, Map<String, WorkspaceProfile> usersById) {
+    private ChatDto toChatDto(Chat chat, Map<String, ProfileSummary> usersById) {
         return chatMapper.toDto(chat, usersById);
     }
 
     private List<ChatDto> chatDtosWithMetrics(List<Chat> records) {
         List<Chat> safeRecords = records == null ? List.of() : records;
-        Map<String, WorkspaceProfile> usersById = chatMemberUsers(safeRecords);
+        Map<String, ProfileSummary> usersById = chatMemberUsers(safeRecords);
         List<Chat> metricRecords = safeRecords.stream()
                 .filter(this::metricChatRecord)
                 .toList();
@@ -2207,7 +2202,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 normalizeCount(group.capacityMax()));
     }
 
-    private Map<String, WorkspaceProfile> chatMemberUsers(Collection<Chat> records) {
+    private Map<String, ProfileSummary> chatMemberUsers(Collection<Chat> records) {
         Set<String> memberIds = new LinkedHashSet<>();
         for (Chat record : records == null ? List.<Chat>of() : records) {
             for (String memberId : safeMemberIds(record == null ? null : record.getMemberIds())) {
@@ -2220,8 +2215,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (memberIds.isEmpty()) {
             return Map.of();
         }
-        Map<String, WorkspaceProfile> usersById = new LinkedHashMap<>();
-        for (WorkspaceProfile user : profileDirectory.findByUserIdIn(memberIds)) {
+        Map<String, ProfileSummary> usersById = new LinkedHashMap<>();
+        for (ProfileSummary user : profileDirectory.findByUserIdIn(memberIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
             if (StringUtils.hasText(userId)) {
                 usersById.put(userId, user);
@@ -2279,9 +2274,9 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        Map<String, WorkspaceProfile> activityMemberUsersById = new LinkedHashMap<>();
+        Map<String, ProfileSummary> activityMemberUsersById = new LinkedHashMap<>();
         if (!acceptedMemberIds.isEmpty()) {
-            for (WorkspaceProfile user : profileDirectory.findByUserIdIn(acceptedMemberIds)) {
+            for (ProfileSummary user : profileDirectory.findByUserIdIn(acceptedMemberIds)) {
                 String memberUserId = normalizeId(user == null ? null : user.getUserId());
                 if (StringUtils.hasText(memberUserId)) {
                     activityMemberUsersById.put(memberUserId, user);
@@ -2634,7 +2629,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     }
 
     private ChatMessage buildMessage(
-            WorkspaceProfile sender,
+            ProfileSummary sender,
             String senderUserId,
             String text,
             String clientId,
@@ -2786,7 +2781,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (normalizedUserId.equals(normalizeId(chat.getOwnerUserId()))) {
             return true;
         }
-        WorkspaceProfile admin = isSupportCaseChat(chat) ? findUser(normalizedUserId) : null;
+        ProfileSummary admin = isSupportCaseChat(chat) ? findUser(normalizedUserId) : null;
         if (isSupportCaseChat(chat) && isAdminUser(admin)) {
             return Objects.equals(admin.getWorkspaceGroupId(), chat.getSupportBaseGroupId());
         }
@@ -2952,8 +2947,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         if (pollDocuments.isEmpty() || voterUserIds.isEmpty()) {
             return;
         }
-        Map<String, WorkspaceProfile> usersById = new LinkedHashMap<>();
-        for (WorkspaceProfile user : profileDirectory.findByUserIdIn(voterUserIds)) {
+        Map<String, ProfileSummary> usersById = new LinkedHashMap<>();
+        for (ProfileSummary user : profileDirectory.findByUserIdIn(voterUserIds)) {
             String userId = user == null ? "" : normalizeId(user.getUserId());
             if (StringUtils.hasText(userId)) {
                 usersById.put(userId, user);
@@ -2980,7 +2975,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                     if (!StringUtils.hasText(voterUserId)) {
                         continue;
                     }
-                    WorkspaceProfile voter = usersById.get(voterUserId);
+                    ProfileSummary voter = usersById.get(voterUserId);
                     boolean deleted = voter == null
                             || "D".equalsIgnoreCase(safeText(voter.getStatus()))
                             || "deleted".equalsIgnoreCase(safeText(voter.getProfileStatus()));
@@ -3006,6 +3001,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             copy.setOwnerUserId(attachment.getOwnerUserId());
             copy.setStatus(normalizeAttachmentStatus(attachment.getStatus()));
             copy.setUnavailableReason(attachment.getUnavailableReason());
+            copy.setLifecycleRevision(attachment.getLifecycleRevision());
             copy.setSubtitle(attachment.getSubtitle());
             copy.setDescription(attachment.getDescription());
             copy.setUrl(attachment.getUrl());
@@ -3032,7 +3028,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return copied;
     }
 
-    private ChatAvatarRecord buildSenderAvatarRecord(WorkspaceProfile sender, String senderUserId) {
+    private ChatAvatarRecord buildSenderAvatarRecord(ProfileSummary sender, String senderUserId) {
         ChatAvatarRecord avatar = new ChatAvatarRecord();
         avatar.setId(senderUserId);
         avatar.setInitials(resolveUserInitials(sender, senderUserId));
@@ -3051,7 +3047,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return copy;
     }
 
-    private ChatReadAvatarRecord buildReadAvatarRecord(WorkspaceProfile user, String userId) {
+    private ChatReadAvatarRecord buildReadAvatarRecord(ProfileSummary user, String userId) {
         ChatReadAvatarRecord record = new ChatReadAvatarRecord();
         record.setId(userId);
         record.setInitials(resolveUserInitials(user, userId));
@@ -3070,7 +3066,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return copy;
     }
 
-    private WorkspaceProfile findUser(String userId) {
+    private ProfileSummary findUser(String userId) {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
@@ -3078,7 +3074,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     }
 
     private String accountUserId(String profileId) {
-        WorkspaceProfile profile = findUser(profileId);
+        ProfileSummary profile = findUser(profileId);
         return profile != null && StringUtils.hasText(profile.getAccountUserId())
                 ? profile.getAccountUserId() : profileId;
     }
@@ -3108,14 +3104,14 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return "";
     }
 
-    private String resolveUserName(WorkspaceProfile user, String fallbackUserId) {
+    private String resolveUserName(ProfileSummary user, String fallbackUserId) {
         if (user != null && StringUtils.hasText(user.getName())) {
             return user.getName().trim();
         }
         return StringUtils.hasText(fallbackUserId) ? fallbackUserId.trim() : "User";
     }
 
-    private String resolveUserInitials(WorkspaceProfile user, String fallbackUserId) {
+    private String resolveUserInitials(ProfileSummary user, String fallbackUserId) {
         if (user != null && StringUtils.hasText(user.getInitials())) {
             return user.getInitials().trim();
         }
@@ -3125,11 +3121,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         return buildInitials(fallbackUserId);
     }
 
-    private String resolveUserGender(WorkspaceProfile user) {
+    private String resolveUserGender(ProfileSummary user) {
         return normalizeGender(user == null ? null : user.getGender());
     }
 
-    private String resolveUserImageUrl(WorkspaceProfile user) {
+    private String resolveUserImageUrl(ProfileSummary user) {
         if (user == null || user.getImages() == null) {
             return "";
         }
@@ -3395,7 +3391,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
                 || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
     }
 
-    private boolean isAdminUser(WorkspaceProfile user) {
+    private boolean isAdminUser(ProfileSummary user) {
         return adminMenuCounterService.isAdminUser(user);
     }
 
@@ -3461,7 +3457,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         };
     }
 
-    private SupportCaseState nextSupportCaseState(String action, String actorUserId, WorkspaceProfile actor) {
+    private SupportCaseState nextSupportCaseState(String action, String actorUserId, ProfileSummary actor) {
         String nowIso = Instant.now().toString();
         return switch (action) {
             case "pick" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_PICKED, actorUserId, actor, nowIso);
@@ -3472,7 +3468,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         };
     }
 
-    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, WorkspaceProfile actor, String nowIso) {
+    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, ProfileSummary actor, String nowIso) {
         return new SupportCaseState(
                 status,
                 normalizeId(actorUserId),

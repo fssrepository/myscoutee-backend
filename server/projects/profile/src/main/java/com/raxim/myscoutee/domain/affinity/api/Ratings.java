@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.ActivityRatePageRespons
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.RateMenuItemDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncRequestDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncResponseDto;
-public interface Ratings {
+public interface Ratings extends RatingPageReads, MeetingProjections {
     List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId);
     List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId, String campaignId);
     ActivityRatePageResponseDto queryActivityRatePage(

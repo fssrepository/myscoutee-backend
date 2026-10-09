@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -27,7 +29,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.service.AccountNotificationService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
-import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway.FirebaseBatchSendResult;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.FirebaseBatchSendResult;
 
 class NotificationDeliveryDecisionTest {
     private final ConfigProperties config = new ConfigProperties();
@@ -35,7 +37,7 @@ class NotificationDeliveryDecisionTest {
     private final UsersRepository users = mock(UsersRepository.class);
     private final ChatWebSocketSessionRegistry sessions = mock(ChatWebSocketSessionRegistry.class);
     private final MongoTemplate mongo = mock(MongoTemplate.class);
-    private final FirebaseMessagingGateway gateway = mock(FirebaseMessagingGateway.class);
+    private final FirebasePushDelivery gateway = mock(FirebasePushDelivery.class);
 
     @Test
     @org.junit.jupiter.api.Tag("standard")

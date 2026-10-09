@@ -14,6 +14,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "event_feedback_state_qmau_window", def = "{'removed': 1, 'submittedAtIso': 1, 'viewerUserId': 1, 'eventId': 1}")
 })
 public class EventFeedbackState {
+    @org.springframework.data.annotation.Version private Long version;
+    private String counterChangeId;
+    public String getCounterChangeId() { return counterChangeId; }
+    private com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change counterChange;
+    public Long getVersion() { return version; }
+    public void setVersion(Long value) { version = value; }
+    public com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change getCounterChange() { return counterChange; }
+    public void setCounterChange(com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change value) { counterChange = value; counterChangeId = value == null ? null : value.id(); }
     @Id
     private String id;
 

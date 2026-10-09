@@ -4,7 +4,6 @@ import java.util.*;
 import com.raxim.myscoutee.domain.events.api.EventSchedule;
 import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
 public interface ScheduledMessages {
-    void touchUserActivity(String userId);
     List<? extends Task> scheduleEventStageReminders(EventSchedule event, String actorUserId);
     List<? extends Task> suspendEventStageReminders(String eventId, String actorUserId);
     void scheduleCaseFeedback(CaseFeedbackPreparation.Request closed);
@@ -20,6 +19,8 @@ public interface ScheduledMessages {
             Collection<String> audienceUserIds,
             Collection<String> reasons,
             String actorUserId);
+    Task scheduleEventLifecycleChangedOnce(String deliveryId, String eventId, String eventTitle,
+            Collection<String> audienceUserIds, Collection<String> reasons, String actorUserId);
     Task scheduleEventLifecycleChanged(
             String eventId,
             String eventTitle,

@@ -67,10 +67,12 @@ class AffiliateServiceTest {
         assertThat(registration.referrerUserId()).isEqualTo("owner");
         assertThat(registration.userId()).isEqualTo("member");
         service.recordRegistration(registration);
+        service.recordRegistration(registration);
         var update = ArgumentCaptor.forClass(Update.class);
         var query = ArgumentCaptor.forClass(Query.class);
-        verify(mongo).upsert(query.capture(), update.capture(), eq(AffiliateRegistration.class), eq("affiliateRegistrations"));
-        assertThat(query.getValue().getQueryObject().getString("_id")).isEqualTo("member");
-        assertThat(update.getValue().getUpdateObject().keySet()).containsExactly("$setOnInsert");
+        verify(mongo, times(2)).upsert(query.capture(), update.capture(), eq(AffiliateRegistration.class), eq("affiliateRegistrations"));
+        assertThat(query.getAllValues()).allSatisfy(value -> assertThat(value.getQueryObject().getString("_id")).isEqualTo("member"));
+        assertThat(update.getAllValues()).allSatisfy(value -> assertThat(value.getUpdateObject().keySet()).containsExactly("$setOnInsert"));
+        assertThat(update.getAllValues().get(0).getUpdateObject()).isEqualTo(update.getAllValues().get(1).getUpdateObject());
     }
 }

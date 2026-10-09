@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.payments.api.PaymentView;
+import com.raxim.myscoutee.domain.payments.api.CancellationPayment;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
@@ -54,7 +54,7 @@ public class EventCancellationService {
         if (eligible.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "No changed-terms cancellation is available for this booking.");
         }
-        for (PaymentView payment : eligible) refunds.getObject().requestChangedTermsRefund(payment.getId(), userId);
+        for (CancellationPayment payment : eligible) refunds.getObject().requestChangedTermsRefund(payment.getId(), userId);
     }
 
     /** Invoked only after the membership service has authorized an organizer removal. */
@@ -74,13 +74,13 @@ public class EventCancellationService {
             for (ActivityEvent event : mongo.find(Query.query(Criteria.where("paidTermsRefundsPending").is(true)).addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId")).limit(10), ActivityEvent.class)) {
                 if (processed.add(event.getSourceId())) guarded(() -> grantChangedTerms(event));
             }
-            for (PaymentView payment : paymentCancellations.pendingRequestedCancellations()) {
+            for (CancellationPayment payment : paymentCancellations.pendingRequestedCancellations()) {
                 guardedInMode(payment.getCancellationSessionMode(), () -> {
                     String eventId = EventPayments.FULFILLMENT_KIND_CLIENT.equals(payment.getFulfillmentKind())
                             && StringUtils.hasText(payment.getContextEventId()) ? payment.getContextEventId() : payment.getSourceId();
                     String reason = StringUtils.hasText(payment.getCancellationReason())
                             ? payment.getCancellationReason() : "event-terms-changed";
-                    payments.completeEventCancellation(payment, reason);
+                    payments.completeEventCancellation(payment.getId(), reason);
                     if ("event-member-removed".equals(reason)) {
                         members.getObject().applyAction(new com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto(
                                 new com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberOwnerRefDto("event", eventId),
@@ -102,8 +102,8 @@ public class EventCancellationService {
         // Keep provider work bounded. Completed operations disappear from the next batch.
         var batch = paymentCancellations.pendingForCancelledEvent(sourceId);
         boolean failed = false;
-        for (PaymentView payment : batch) {
-            try { payments.completeEventCancellation(payment, "event-cancelled"); }
+        for (CancellationPayment payment : batch) {
+            try { payments.completeEventCancellation(payment.getId(), "event-cancelled"); }
             catch (RuntimeException error) { failed = true; logFailure(error); }
         }
         LinkedHashSet<String> audience = new LinkedHashSet<>();

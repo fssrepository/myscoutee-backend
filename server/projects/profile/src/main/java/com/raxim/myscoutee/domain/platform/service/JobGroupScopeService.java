@@ -17,8 +17,8 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.ConfigurationCatalog configurations;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetJobScopes assetOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventJobScopes eventOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
 
     public String forWorkspace(String workspaceId) {
@@ -72,11 +72,6 @@ public class JobGroupScopeService implements com.raxim.myscoutee.domain.platform
 
     private java.util.Map<String, String> workspaces() {
         return JobGroupContext.memo("workspaceBaseIds", groupDirectory::workspaceBaseIds);
-    }
-
-    public boolean matchesWorkspace(String workspaceId) {
-        return !JobGroupContext.isActive()
-                || java.util.Objects.equals(workspaces().get(workspaceId), JobGroupContext.groupId());
     }
 
     @Override public WorkspaceScope workspaceScope() {

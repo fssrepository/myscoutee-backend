@@ -66,12 +66,17 @@ class UserActivityCountersServiceTest {
 
     @BeforeEach
     void setUp() {
+        var eligibility = new com.raxim.myscoutee.domain.events.service.EventFeedbackEligibilityService(activityEventsRepository, eventFeedbackStatesRepository, mongoTemplate);
+        @SuppressWarnings("unchecked") var counterProvider = (org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters>) org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
+        org.mockito.Mockito.lenient().when(counterProvider.getObject()).thenAnswer(call -> service);
+        var work = new com.raxim.myscoutee.domain.events.service.FeedbackCounterWork(eventFeedbackStatesRepository, mongoTemplate, counterProvider, null);
+        org.springframework.test.util.ReflectionTestUtils.setField(eligibility, "counterWork", work);
         service = new UserActivityCountersService(
                 usersRepository,
                 new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
-                new com.raxim.myscoutee.domain.events.service.EventFeedbackEligibilityService(activityEventsRepository, eventFeedbackStatesRepository, mongoTemplate),
+                eligibility,
                 new com.raxim.myscoutee.domain.events.service.EventWatchDirectoryService(eventWatchSubscriptionsRepository),
                 eventParticipationTicketService,
                 mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class));
@@ -368,9 +373,8 @@ class UserActivityCountersServiceTest {
         when(eventFeedbackStatesRepository.findByEventIdInOrderByEventIdAscUpdatedDateDesc(any()))
                 .thenReturn(List.of())
                 .thenReturn(List.of(alreadyTracked));
-        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(viewer));
-
-        stubFeedbackTotalCollection();
+        when(mongoTemplate.updateFirst(any(Query.class), any(org.springframework.data.mongodb.core.aggregation.AggregationUpdate.class), eq(Users.class)))
+                .thenReturn(com.mongodb.client.result.UpdateResult.acknowledged(1, 1L, null));
         int firstUpdatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-eligible"), now);
         int secondUpdatedUsers = service.syncFeedbackEligibilityForSourceIds(List.of("event-eligible"), now);
 
@@ -386,15 +390,13 @@ class UserActivityCountersServiceTest {
                     assertThat(state.getEligible()).isTrue();
                     assertThat(state.getCounterTracked()).isTrue();
                 });
-        ArgumentCaptor<Update> updateCaptor = ArgumentCaptor.forClass(Update.class);
-        verify(mongoTemplate, times(1)).updateFirst(any(Query.class), updateCaptor.capture(), eq(Users.class));
-        Document fields = updateCaptor.getValue().getUpdateObject().get("$set", Document.class);
-        assertThat(fields.getInteger("activities.feedback")).isEqualTo(5);
-        assertThat(fields.getInteger("activities.eventFeedback.ownEvents")).isEqualTo(4);
-        assertThat(fields.getInteger("activities.eventFeedback.pending")).isEqualTo(1);
-        assertThat(fields.getInteger("activities.eventFeedback.feedbacked")).isEqualTo(2);
-        assertThat(fields.getInteger("activities.eventFeedback.removed")).isEqualTo(1);
-        assertAtomicFeedbackTotal("viewer");
+        var updateCaptor = ArgumentCaptor.forClass(org.springframework.data.mongodb.core.aggregation.AggregationUpdate.class);
+        var queryCaptor = ArgumentCaptor.forClass(Query.class);
+        verify(mongoTemplate, times(1)).updateFirst(queryCaptor.capture(), updateCaptor.capture(), eq(Users.class));
+        var savedState = stateCaptor.getValue().iterator().next();
+        assertThat(savedState.getCounterChange().deltas().get("viewer").pending()).isEqualTo(1);
+        assertThat(queryCaptor.getValue().getQueryObject().toJson()).contains(savedState.getCounterChange().id());
+        assertThat(updateCaptor.getValue().getUpdateObject().toJson()).contains("activities.feedback", "feedbackCounterReceipts", "$add");
     }
 
     @Test

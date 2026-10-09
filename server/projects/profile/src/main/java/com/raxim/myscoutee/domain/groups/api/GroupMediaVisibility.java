@@ -1,8 +1,7 @@
 package com.raxim.myscoutee.domain.groups.api;
 
-import java.util.List;
+import com.raxim.myscoutee.domain.groups.dto.GroupMediaVisibilityDto;
 
 public interface GroupMediaVisibility {
-    Group group(String id);
-    record Group(String lifecycleStatus) {}
+    GroupMediaVisibilityDto group(String id);
 }

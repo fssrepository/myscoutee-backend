@@ -6,8 +6,19 @@ import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceStateDt
 public interface AccessPermissions extends ConsentAuthorization {
     boolean can(String policyKey, String actorUserId, String subjectUserId, String resourceId);
     String resolveChatActorUserId(String chatId, String profileId);
-    boolean canSubmitEventResourceAssignment(Authentication authentication, ActivitySubEventResourceStateDto request);
-    boolean canCurrentActorAssignEventResources(ActivitySubEventResourceStateDto request);
+    default boolean canSubmitEventResourceAssignment(Authentication authentication, ActivitySubEventResourceStateDto request) {
+        String eventId = normalized(request == null ? null : request.authorizationEventId());
+        String subEventId = normalized(request == null ? null : request.subEventId());
+        String ownerId = normalized(request == null ? null : request.assetOwnerUserId());
+        if (eventId == null || subEventId == null || ownerId == null) return false;
+        String actorId = resolveActorUserId(authentication);
+        return actorId != null && can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, actorId, ownerId, eventId);
+    }
+    default boolean canCurrentActorAssignEventResources(ActivitySubEventResourceStateDto request) {
+        return canCurrentActorAssignEventResourceScope(request == null ? null : request.authorizationEventId(),
+                request == null ? null : request.subEventId(), request == null ? null : request.assetOwnerUserId());
+    }
+    boolean canCurrentActorAssignEventResourceScope(String eventId, String subEventId, String assetOwnerUserId);
     boolean canAssignEventResourcesForSubject(String eventId, String userId);
     boolean canReceiveEventAssetManagerRole(String eventId, String userId);
     boolean canCurrentActorCreateAsset(String ownerUserId, String assetId);
@@ -54,7 +65,10 @@ public interface AccessPermissions extends ConsentAuthorization {
     boolean canDisqualifyEventMember(String eventId, String actorUserId, String targetUserId);
     boolean canReinstateEventMember(String eventId, String actorUserId, String targetUserId);
     boolean canInviteEventMembers(String eventId, String actorUserId);
-    boolean canCurrentActorManageEventResourceAssignment(ActivitySubEventResourceStateDto request);
+    default boolean canCurrentActorManageEventResourceAssignment(ActivitySubEventResourceStateDto request) {
+        return canCurrentActorManageEventResourceScope(request == null ? null : request.authorizationEventId());
+    }
+    boolean canCurrentActorManageEventResourceScope(String eventId);
     boolean canCleanupEventResourceAssignments(String eventId, String actorUserId);
     boolean hasAcceptedParticipation(String ownerType, String ownerId, String userId);
     boolean hasMemberStatus(String ownerType, String ownerId, String userId, String status);
@@ -66,7 +80,18 @@ public interface AccessPermissions extends ConsentAuthorization {
     boolean canTakeOverAsset(String assetId, String actorUserId);
     boolean canAccessChat(String chatId, String actorUserId);
     boolean canManageSupportChat(String chatId, String actorUserId);
-    String resolveActorUserId(Authentication authentication);
+    default String resolveActorUserId(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) return null;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor actor)
+            return normalized(actor.getUserId());
+        if (principal instanceof String value) return normalized(value);
+        return normalized(authentication.getName());
+    }
+    private static String normalized(String value) {
+        String text = value == null ? "" : value.trim();
+        return org.springframework.util.StringUtils.hasText(text) ? text : null;
+    }
     boolean hasExplicitGrant(
             String subjectUserId,
             String permission,

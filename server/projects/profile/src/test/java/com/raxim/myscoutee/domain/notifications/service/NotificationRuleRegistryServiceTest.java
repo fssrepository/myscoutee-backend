@@ -27,6 +27,34 @@ import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 @org.junit.jupiter.api.Tag("standard")
 class NotificationRuleRegistryServiceTest {
     @Test
+    void scheduledClaimAloneRejectsMissingDisabledAndNotDueRulesWithoutWriting() {
+        var repository = mock(NotificationRuleConfigsRepository.class);
+        var mongo = mock(MongoTemplate.class);
+        var telemetry = mock(AdminTelemetryService.class);
+        var service = new NotificationRuleRegistryService(repository,
+                mock(AdminNotificationSocketSessionRegistry.class), mongo, telemetry);
+        var now = Instant.parse("2026-10-09T00:00:30Z");
+        String key = "rule";
+        when(repository.findByBaseGroupIdAndRuleKey(null, key)).thenReturn(Optional.empty());
+        assertThat(service.beginScheduledRun(key, "scheduled", key, now)).isNull();
+        var rule = new NotificationRuleConfig();
+        rule.setRuleKey(key);
+        rule.setEnabled(false);
+        when(repository.findByBaseGroupIdAndRuleKey(null, key)).thenReturn(Optional.of(rule));
+        assertThat(service.beginScheduledRun(key, "scheduled", key, now)).isNull();
+        rule.setEnabled(true);
+        rule.setTriggerKind("scheduled_process");
+        var timing = new NotificationRuleConfig.Timing();
+        timing.setMode("interval"); timing.setIntervalAmount(1); timing.setIntervalUnit("minutes");
+        timing.setTimezone("UTC");
+        rule.setTiming(timing);
+        var state = new NotificationRuleConfig.RunState();
+        state.setLastRunAtIso("2026-10-09T00:00:00Z"); rule.setRunState(state);
+        assertThat(service.beginScheduledRun(key, "scheduled", key, now)).isNull();
+        verifyNoInteractions(mongo, telemetry);
+    }
+
+    @Test
     void dueQueuedWorkHonorsSuspensionAndClaimsTheEnabledRuleAtomically() {
         var repository = mock(NotificationRuleConfigsRepository.class);
         var mongo = mock(MongoTemplate.class);

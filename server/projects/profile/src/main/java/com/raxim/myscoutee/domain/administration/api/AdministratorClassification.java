@@ -1,5 +1,12 @@
 package com.raxim.myscoutee.domain.administration.api;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-
-public interface AdministratorClassification { boolean isAdminUser(WorkspaceProfile user); }
+/** Stateless profile classification. It does not establish an authenticated administrator identity. */
+public interface AdministratorClassification {
+    default boolean isAdminUser(AdministratorCandidate user) {
+        if (user == null) return false;
+        return "admin".equalsIgnoreCase(text(user.getHostTier()))
+                || "admin workspace".equalsIgnoreCase(text(user.getStatusText()))
+                || java.util.List.of("admin-demo-ava", "admin-demo-noel").contains(text(user.getUserId()));
+    }
+    private static String text(String value) { return value == null ? "" : value.trim(); }
+}

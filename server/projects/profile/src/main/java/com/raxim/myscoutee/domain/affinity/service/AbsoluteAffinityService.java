@@ -21,9 +21,9 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetScoringFacts;
 import com.raxim.myscoutee.domain.accounts.api.Experiences.Profile;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ScoringProfile;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileDetailGroupDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileDetailRowDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
@@ -51,11 +51,16 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
     }
 
     public double resolveUserAffinity(UserDto user) {
-        return resolveUserAffinity(user, activeConfig(WorkspaceContext.currentGroupId()), loadExperienceProfile(user == null ? null : user.id()));
+        return calculateUserAffinity(com.raxim.myscoutee.domain.affinity.dto.UserAffinityInputDto.from(user), WorkspaceContext.currentGroupId());
+    }
+
+    @Override
+    public double calculateUserAffinity(com.raxim.myscoutee.domain.affinity.dto.UserAffinityInputDto user, String workspaceGroupId) {
+        return resolveUserAffinity(user, activeConfig(workspaceGroupId), loadExperienceProfile(user == null ? null : user.id()));
     }
 
     private double resolveUserAffinity(
-            UserDto user,
+            com.raxim.myscoutee.domain.affinity.dto.UserAffinityInputDto user,
             AffinityConfig config,
             Profile experienceProfile) {
         if (user == null) {
@@ -92,12 +97,12 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return Math.max(0d, score);
     }
 
-    public double resolveUserAffinity(WorkspaceProfile user) {
+    public double resolveUserAffinity(ScoringProfile user) {
         return resolveUserAffinity(user, activeConfig(user == null ? null : user.getWorkspaceGroupId()), loadExperienceProfile(user == null ? null : user.getId()));
     }
 
     private double resolveUserAffinity(
-            WorkspaceProfile user,
+            ScoringProfile user,
             AffinityConfig config,
             Profile experienceProfile) {
         if (user == null) {
@@ -134,7 +139,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return Math.max(0d, score);
     }
 
-    public double resolveEventAffinity(Event event, Collection<? extends WorkspaceProfile> participants) {
+    public double resolveEventAffinity(Event event, Collection<? extends ScoringProfile> participants) {
         if (event == null) {
             return 0d;
         }
@@ -160,7 +165,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
                     });
         }
 
-        List<Double> participantAffinities = (participants == null ? List.<WorkspaceProfile>of() : participants).stream()
+        List<Double> participantAffinities = (participants == null ? List.<ScoringProfile>of() : participants).stream()
                 .filter(Objects::nonNull)
                 .map(participant -> resolveUserAffinity(
                         participant,
@@ -177,7 +182,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return Math.max(0d, score);
     }
 
-    public double resolveEventBoost(Event event, Collection<? extends WorkspaceProfile> participants) {
+    public double resolveEventBoost(Event event, Collection<? extends ScoringProfile> participants) {
         if (event == null) {
             return 0d;
         }
@@ -198,7 +203,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return Math.max(0d, score);
     }
 
-    public double resolveAssetAffinity(Asset asset, WorkspaceProfile owner) {
+    public double resolveAssetAffinity(AssetScoringFacts asset, com.raxim.myscoutee.domain.accounts.api.AssetAffinityProfile owner) {
         if (asset == null) {
             return 0d;
         }
@@ -213,7 +218,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         addToken(tokens, "asset:visibility", asset.getVisibility());
         addTextTokens(tokens, "asset:details", asset.getDetails());
         addTokens(tokens, "asset:route", asset.getRoutes());
-        for (com.raxim.myscoutee.domain.assets.api.AssetOwnership.Policy policy : asset.getPolicies() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetOwnership.Policy>of() : asset.getPolicies()) {
+        for (AssetScoringFacts.Policy policy : asset.getPolicies() == null ? List.<AssetScoringFacts.Policy>of() : asset.getPolicies()) {
             if (policy == null) {
                 continue;
             }
@@ -228,7 +233,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return Math.max(0d, score);
     }
 
-    public double resolveAssetBoost(Asset asset, WorkspaceProfile owner) {
+    public double resolveAssetBoost(AssetScoringFacts asset, com.raxim.myscoutee.domain.accounts.api.AssetAffinityProfile owner) {
         if (asset == null) {
             return 0d;
         }
@@ -236,7 +241,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         AffinityConfig.AssetBoostMultipliers multipliers = config.getBoost().getAsset();
         int acceptedRequests = 0;
         int activeRequestCount = 0;
-        for (com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request request : asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request>of() : asset.getRequests()) {
+        for (AssetScoringFacts.Request request : asset.getRequests() == null ? List.<AssetScoringFacts.Request>of() : asset.getRequests()) {
             if (request == null || "d".equals(normalizeKey(request.status())) || "deleted".equals(normalizeKey(request.status()))) {
                 continue;
             }
@@ -302,15 +307,15 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         }
     }
 
-    private void addStoredProfileDetailTokens(LinkedHashSet<String> tokens, Collection<? extends WorkspaceProfile.ProfileDetailGroupRecord> groups) {
+    private void addStoredProfileDetailTokens(LinkedHashSet<String> tokens, Collection<? extends ScoringProfile.ProfileDetailGroupRecord> groups) {
         if (groups == null) {
             return;
         }
-        for (WorkspaceProfile.ProfileDetailGroupRecord group : groups) {
+        for (ScoringProfile.ProfileDetailGroupRecord group : groups) {
             if (group == null) {
                 continue;
             }
-            for (WorkspaceProfile.ProfileDetailRowRecord row : group.rows() == null ? List.<WorkspaceProfile.ProfileDetailRowRecord>of() : group.rows()) {
+            for (ScoringProfile.ProfileDetailRowRecord row : group.rows() == null ? List.<ScoringProfile.ProfileDetailRowRecord>of() : group.rows()) {
                 if (row == null) {
                     continue;
                 }
@@ -356,7 +361,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         addImpressionSectionTokens(tokens, "member", impressions.member());
     }
 
-    private void addStoredImpressionTokens(LinkedHashSet<String> tokens, WorkspaceProfile.UserImpressionsRecord impressions) {
+    private void addStoredImpressionTokens(LinkedHashSet<String> tokens, ScoringProfile.UserImpressionsRecord impressions) {
         if (impressions == null) {
             return;
         }
@@ -379,14 +384,14 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         }
     }
 
-    private void addStoredImpressionSectionTokens(LinkedHashSet<String> tokens, String role, WorkspaceProfile.UserImpressionsSectionRecord section) {
+    private void addStoredImpressionSectionTokens(LinkedHashSet<String> tokens, String role, ScoringProfile.UserImpressionsSectionRecord section) {
         if (section == null) {
             return;
         }
         addTokens(tokens, "impression:" + role + ":vibe", section.vibeBadges());
         addTokens(tokens, "impression:" + role + ":personality", section.personalityBadges());
         addTokens(tokens, "impression:" + role + ":category", section.categoryBadges());
-        for (WorkspaceProfile.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<WorkspaceProfile.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
+        for (ScoringProfile.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<ScoringProfile.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
             if (trait == null) {
                 continue;
             }
@@ -404,7 +409,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
     }
 
     private double storedImpressionScore(
-            WorkspaceProfile.UserImpressionsRecord impressions,
+            ScoringProfile.UserImpressionsRecord impressions,
             AffinityConfig.AbsoluteUserAffinityMultipliers multipliers) {
         if (impressions == null) {
             return 0d;
@@ -438,7 +443,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
     }
 
     private double storedImpressionSectionScore(
-            WorkspaceProfile.UserImpressionsSectionRecord section,
+            ScoringProfile.UserImpressionsSectionRecord section,
             AffinityConfig.AbsoluteUserAffinityMultipliers multipliers) {
         if (section == null) {
             return 0d;
@@ -451,7 +456,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
                 * multiplier(multipliers.getImpressionTotalEvents(), 37d)
                 + Math.max(0, normalizeCount(section.repeatCount(), 0))
                 * multiplier(multipliers.getImpressionRepeatCount(), 53d);
-        for (WorkspaceProfile.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<WorkspaceProfile.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
+        for (ScoringProfile.UserPersonalityTraitRecord trait : section.personalityTraits() == null ? List.<ScoringProfile.UserPersonalityTraitRecord>of() : section.personalityTraits()) {
             if (trait != null) {
                 score += Math.max(0, normalizeCount(trait.percent(), 0))
                         * multiplier(multipliers.getImpressionTraitPercent(), 7d)
@@ -462,7 +467,7 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return score;
     }
 
-    private double averageHostConfidence(Collection<? extends WorkspaceProfile> participants) {
+    private double averageHostConfidence(Collection<? extends ScoringProfile> participants) {
         if (participants == null || participants.isEmpty()) {
             return 0d;
         }
@@ -474,10 +479,8 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
                 .orElse(0d);
     }
 
-    private double hostConfidence(WorkspaceProfile user) {
-        WorkspaceProfile.UserImpressionsSectionRecord host = user == null || user.getImpressions() == null
-                ? null
-                : user.getImpressions().host();
+    private double hostConfidence(com.raxim.myscoutee.domain.accounts.api.AssetAffinityProfile user) {
+        var host = user == null ? null : user.getHostConfidenceFacts();
         if (host == null) {
             return 0d;
         }
@@ -485,9 +488,9 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
                 + Math.max(0, normalizeCount(host.peopleMet(), 0)) * 10d
                 + Math.max(0, normalizeCount(host.totalEvents(), 0)) * 15d
                 + Math.max(0, normalizeCount(host.repeatCount(), 0)) * 20d;
-        for (WorkspaceProfile.UserPersonalityTraitRecord trait : host.personalityTraits() == null ? List.<WorkspaceProfile.UserPersonalityTraitRecord>of() : host.personalityTraits()) {
-            if (trait != null) {
-                score += Math.max(0, normalizeCount(trait.evidenceCount(), 0)) * 5d;
+        for (Integer evidenceCount : host.traitEvidenceCounts() == null ? List.<Integer>of() : host.traitEvidenceCounts()) {
+            if (evidenceCount != null) {
+                score += Math.max(0, normalizeCount(evidenceCount, 0)) * 5d;
             }
         }
         return Math.max(0d, score);
@@ -644,12 +647,12 @@ public class AbsoluteAffinityService implements com.raxim.myscoutee.domain.affin
         return profilesByUserId;
     }
 
-    private Set<String> participantUserIds(Collection<? extends WorkspaceProfile> participants) {
+    private Set<String> participantUserIds(Collection<? extends ScoringProfile> participants) {
         if (participants == null || participants.isEmpty()) {
             return Set.of();
         }
         LinkedHashSet<String> userIds = new LinkedHashSet<>();
-        for (WorkspaceProfile participant : participants) {
+        for (ScoringProfile participant : participants) {
             String userId = normalizeKey(participant == null ? null : participant.getId());
             if (StringUtils.hasText(userId)) {
                 userIds.add(userId);

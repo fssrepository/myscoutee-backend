@@ -32,9 +32,9 @@ import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventCountersDto;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 
 import com.raxim.myscoutee.domain.events.api.EventWatchDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -74,9 +74,9 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
 
     private final UsersRepository usersRepository;
-    private final EventOwnership activityEventsRepository;
+    private final EventOwnershipReads activityEventsRepository;
     private final MemberDirectory activityMembersRepository;
-    private final AssetOwnership assetsRepository;
+    private final AssetOwnershipReads assetsRepository;
     private final com.raxim.myscoutee.domain.events.api.FeedbackEligibility feedbackEligibility;
     private final EventWatchDirectory eventWatchSubscriptionsRepository;
     private final ParticipationTickets eventParticipationTicketService;
@@ -84,9 +84,9 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
 
     public UserActivityCountersService(
             UsersRepository usersRepository,
-            EventOwnership activityEventsRepository,
+            EventOwnershipReads activityEventsRepository,
             MemberDirectory activityMembersRepository,
-            AssetOwnership assetsRepository,
+            AssetOwnershipReads assetsRepository,
             com.raxim.myscoutee.domain.events.api.FeedbackEligibility feedbackEligibility,
             EventWatchDirectory eventWatchSubscriptionsRepository,
             ParticipationTickets eventParticipationTicketService,
@@ -101,15 +101,6 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         this.eventParticipationTicketService = eventParticipationTicketService;
         this.mongoTemplate = mongoTemplate;
         this.organizerFollowingService = organizerFollowingService;
-    }
-
-    public void refreshEventCountersForDocuments(Collection<? extends Event> events) {
-        refreshEventCountersForSourceIds(events == null
-                ? List.of()
-                : events.stream()
-                        .map(event -> normalizeId(event == null ? null : event.getSourceId()))
-                        .filter(StringUtils::hasText)
-                        .toList());
     }
 
     public void refreshEventCountersForSourceIds(Collection<String> sourceIds) {
@@ -244,8 +235,8 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         });
     }
 
-    public void applyFeedbackStateTransition(
-            Event event,
+    public void applyFeedbackTransition(
+            com.raxim.myscoutee.domain.accounts.dto.FeedbackOwnersDto event,
             String userId,
             boolean wasSubmitted,
             boolean wasRemoved,
@@ -274,9 +265,37 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         applyFeedbackBucketDeltas(deltasByUserId);
     }
 
+    /** Counter fields and receipt are updated atomically in the account-owned document. */
+    public int applyFeedbackReceipt(com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.Change change) {
+        if (change == null || change.id() == null || !change.id().matches("[a-f0-9]{32}") || change.deltas() == null)
+            throw new IllegalArgumentException("Invalid feedback counter receipt");
+        int updated = 0;
+        for (var entry : change.deltas().entrySet()) {
+            String marker = "feedbackCounterReceipts." + change.id();
+            var delta = entry.getValue();
+            var values = new org.bson.Document();
+            String[] fields = {"ownEvents", "pending", "feedbacked", "removed"};
+            int[] amounts = {delta.ownEvents(), delta.pending(), delta.feedbacked(), delta.removed()};
+            for (int i = 0; i < fields.length; i++) values.put(fields[i], new org.bson.Document("$max", List.of(0,
+                    new org.bson.Document("$add", List.of(new org.bson.Document("$ifNull", List.of("$activities.eventFeedback." + fields[i], 0)), amounts[i])))));
+            var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
+                    .set("activities").toValue((org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
+                            new org.bson.Document("$mergeObjects", List.of(new org.bson.Document("$ifNull", List.of("$activities", new org.bson.Document())),
+                                    new org.bson.Document("eventFeedback", values))))
+                    .set("activities.feedback").toValue((org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
+                            new org.bson.Document("$add", List.of("$activities.eventFeedback.pending", "$activities.eventFeedback.ownEvents",
+                                    new org.bson.Document("$ifNull", List.of("$activities.serviceFeedbackPending", 0)))))
+                    .set(marker).toValue(true);
+            var result = mongoTemplate.updateFirst(Query.query(Criteria.where("userId").is(entry.getKey()).and(marker).ne(true)), update, Users.class);
+            updated += (int) result.getModifiedCount();
+        }
+        return updated;
+    }
+
     public int syncFeedbackEligibilityForSourceIds(Collection<String> sourceIds, Instant requestedNow) {
         var projection = feedbackEligibility.project(sourceIds, requestedNow);
-        int updated = applyFeedbackBucketDeltas(projection.deltas());
+        int updated = 0;
+        for (var change : projection.changes()) updated += applyFeedbackReceipt(change);
         feedbackEligibility.complete(projection);
         return updated;
     }
@@ -699,11 +718,11 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
 
 
 
-    private Set<String> feedbackAdminUserIds(Event event) {
+    private Set<String> feedbackAdminUserIds(com.raxim.myscoutee.domain.accounts.dto.FeedbackOwnersDto event) {
         Set<String> userIds = new LinkedHashSet<>();
-        addUserId(userIds, event == null ? null : event.getOwnerUserId());
-        addUserId(userIds, event == null ? null : event.getCreatorUserId());
-        safeStrings(event == null ? List.of() : event.getAdmins()).forEach(userIds::add);
+        addUserId(userIds, event == null ? null : event.ownerUserId());
+        addUserId(userIds, event == null ? null : event.creatorUserId());
+        safeStrings(event == null ? List.of() : event.admins()).forEach(userIds::add);
         return userIds;
     }
 
@@ -1029,8 +1048,8 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     private record FeedbackEligibilityKey(String userId, String eventId) {
     }
 
-    @Override public boolean hasSupportCaseCounters(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
-        Users user = (Users) profile;
+    @Override public boolean hasSupportCaseCounters(String userId) {
+        Users user = userId == null ? null : usersRepository.findByUserId(userId).orElse(null);
         var activities = user == null ? null : user.getActivities();
         var chat = activities == null ? null : activities.chat();
         return chat != null && chat.supportCases() != null;

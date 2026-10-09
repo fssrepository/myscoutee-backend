@@ -2,6 +2,7 @@ package com.raxim.myscoutee.domain.media.api;
 
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.util.StringUtils;
 
 /** Only server-owned public namespaces are anonymously readable. */
 public final class MediaAccessPaths {
@@ -42,4 +43,56 @@ public final class MediaAccessPaths {
     public static boolean isPublicKey(String key) {
         return validKey(key) && PUBLIC_PREFIXES.stream().anyMatch(key::startsWith);
     }
+    public static String managedImageSetGroupKey(String mediaUrlOrKey) {
+        return managedImageSetGroupKeyFromObjectKey(extractPublicObjectKey(mediaUrlOrKey));
+    }
+
+    public static String managedImageSetGroupKeyFromObjectKey(String key) {
+        String normalized = (key == null ? "" : key.trim());
+        if (!validKey(normalized) || !(normalized.startsWith("images/")
+                || normalized.startsWith("private/images/")
+                || normalized.startsWith("public/demo/images/")
+                || normalized.startsWith("public/branding/images/"))) {
+            return "";
+        }
+        int slashIndex = normalized.lastIndexOf('/');
+        if (slashIndex <= 0 || slashIndex >= normalized.length() - 1) {
+            return "";
+        }
+        String objectName = normalized.substring(slashIndex + 1);
+        if ("original".equals(objectName)) {
+            return normalized.substring(0, slashIndex);
+        }
+        for (MediaImageVariant variant : MediaImageVariant.values()) {
+            if (variant.objectName().equals(objectName)) {
+                return normalized.substring(0, slashIndex);
+            }
+        }
+        return "";
+    }
+
+    public static String extractPublicObjectKey(String value) {
+        String normalized = (value == null ? "" : value.trim());
+        if (!StringUtils.hasText(normalized)) {
+            return "";
+        }
+        if (!normalized.contains("/media/public") && !normalized.contains("/media/private")) {
+            return normalized.contains("/") ? "" : normalized;
+        }
+        int keyIndex = normalized.indexOf("key=");
+        if (keyIndex < 0) {
+            return "";
+        }
+        String encoded = normalized.substring(keyIndex + 4);
+        int separatorIndex = encoded.indexOf('&');
+        if (separatorIndex >= 0) {
+            encoded = encoded.substring(0, separatorIndex);
+        }
+        try {
+            return java.net.URLDecoder.decode(encoded, java.nio.charset.StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException ex) {
+            return "";
+        }
+    }
+
 }

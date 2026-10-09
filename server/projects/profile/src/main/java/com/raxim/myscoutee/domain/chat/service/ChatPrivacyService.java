@@ -10,13 +10,13 @@ import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.*;
 import com.raxim.myscoutee.domain.chat.repository.*;
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 @Service
 public class ChatPrivacyService implements ChatPrivacy {
     private final ChatsRepository chatsRepository;
     private final ChatMessagesRepository chatMessagesRepository;
-    private final MediaStorage mediaStorageService;
-    public ChatPrivacyService(ChatsRepository chats, ChatMessagesRepository messages, MediaStorage media) {
+    private final MediaCleanup mediaStorageService;
+    public ChatPrivacyService(ChatsRepository chats, ChatMessagesRepository messages, MediaCleanup media) {
         chatsRepository = chats; chatMessagesRepository = messages; mediaStorageService = media;
     }
     public void purgeUserChatActivity(String userId) {

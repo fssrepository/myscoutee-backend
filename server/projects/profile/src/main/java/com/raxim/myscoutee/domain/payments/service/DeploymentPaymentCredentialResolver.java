@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.api.SecretEncryption;
+import com.raxim.myscoutee.domain.platform.api.PaymentCredentialSecrets;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -17,17 +17,14 @@ import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationC
 
 @Service
 public class DeploymentPaymentCredentialResolver {
-    private static final String PAYMENT_CREDENTIAL_PURPOSE_PREFIX =
-            "payment-credential/";
-
     private final DeploymentSettings repository;
-    private final SecretEncryption crypto;
+    private final PaymentCredentialSecrets crypto;
     private final PaymentSimulatorRegistrationClient simulatorClient;
 
     @Autowired
     public DeploymentPaymentCredentialResolver(
             DeploymentSettings repository,
-            SecretEncryption crypto,
+            PaymentCredentialSecrets crypto,
             PaymentSimulatorRegistrationClient simulatorClient) {
         this.repository = Objects.requireNonNull(repository);
         this.crypto = Objects.requireNonNull(crypto);
@@ -36,7 +33,7 @@ public class DeploymentPaymentCredentialResolver {
 
     DeploymentPaymentCredentialResolver(
             DeploymentSettings repository,
-            SecretEncryption crypto) {
+            PaymentCredentialSecrets crypto) {
         this.repository = Objects.requireNonNull(repository);
         this.crypto = Objects.requireNonNull(crypto);
         this.simulatorClient = null;
@@ -62,8 +59,8 @@ public class DeploymentPaymentCredentialResolver {
         if (payment != null
                 && normalizedProvider.equals(normalize(payment.getProviderId()))
                 && payment.getCredentialEnvelope() != null) {
-            return crypto.decrypt(
-                    com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose(normalizedProvider),
+            return crypto.decryptPaymentCredential(
+                    normalizedProvider,
                     payment.getCredentialEnvelope());
         }
         return StringUtils.hasText(environmentFallback)

@@ -70,45 +70,14 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
         this.adminTelemetryService = adminTelemetryService;
     }
 
-    /** Iterate seeded instances only; each instance owns its run claim and state. */
-    public void forEachGroup(String ruleKey, Runnable action) {
-        forEachGroup(Set.of(ruleKey), action);
-    }
-
-    public void forEachGroup(Set<String> ruleKeys, Runnable action) {
+    @Override public List<String> configuredGroupIds(Set<String> ruleKeys) {
         var groups = new java.util.LinkedHashSet<String>();
-        for (var rule : notificationRuleConfigsRepository.findByRuleKeyIn(ruleKeys)) {
-            groups.add(rule.getBaseGroupId());
-        }
-        RuntimeException failure = null;
-        for (String groupId : groups) {
-            try { JobGroupContext.run(groupId, action); }
-            catch (RuntimeException error) {
-                if (failure == null) failure = error;
-                else failure.addSuppressed(error);
-            }
-        }
-        if (failure != null) throw failure;
+        for (var rule : notificationRuleConfigsRepository.findByRuleKeyIn(ruleKeys)) groups.add(rule.getBaseGroupId());
+        return new ArrayList<>(groups);
     }
 
     private Criteria ruleCriteria(String ruleKey) {
         return Criteria.where("baseGroupId").is(JobGroupContext.groupId()).and("ruleKey").is(ruleKey);
-    }
-
-    /** Existing scheduled processors share catalog/claim/history behavior, with one execution per seeded group. */
-    public void runScheduledGroups(String ruleKey, Runnable process) {
-        forEachGroup(ruleKey, () -> {
-            Instant started = Instant.now();
-            if (!shouldRunScheduledRule(ruleKey, started)
-                    || beginScheduledRun(ruleKey, "Scheduled processing started.", ruleKey, started) == null) return;
-            try {
-                process.run();
-                recordRun(ruleKey, 0, "completed", "Scheduled processing completed.", ruleKey, started);
-            } catch (RuntimeException error) {
-                recordRun(ruleKey, 0, "failed", error.getMessage(), ruleKey, started);
-                throw error;
-            }
-        });
     }
 
     public List<NotificationRuleConfig> rules() {
@@ -329,6 +298,7 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
                 .set("runState.lastRunUser", firstNonBlank(actorUserId, SYSTEM_USER))
                 .set("updatedDate", finishedAtIso)
                 .set("updatedUser", firstNonBlank(actorUserId, SYSTEM_USER));
+        if ("completed".equals(firstNonBlank(status, "completed"))) update.set("runState.pendingClaimedCount", 0);
         update.push("runHistory")
                 .atPosition(0)
                 .slice(RUN_HISTORY_LIMIT)
@@ -345,13 +315,22 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
         if (startedAtOverride != null) {
             criteria = new Criteria().andOperator(
                     criteria,
-                    Criteria.where("runState.startedAtIso").is(startedAtOverride.toString()));
+                    Criteria.where("runState.startedAtIso").is(startedAtOverride.toString()),
+                    Criteria.where("runState.currentStatus").is("running"));
         }
         NotificationRuleConfig saved = mongoTemplate.findAndModify(
                 Query.query(criteria),
                 update,
                 FindAndModifyOptions.options().returnNew(true),
                 NotificationRuleConfig.class);
+        if (saved == null && startedAtOverride != null) {
+            var current = findRule(ruleKey).orElse(null);
+            var state = current == null ? null : current.getRunState();
+            if (state != null && startedAtIso.equals(state.getStartedAtIso())
+                    && firstNonBlank(status, "completed").equals(state.getCurrentStatus())) {
+                return current; // Lost acknowledgment: the terminal receipt already exists.
+            }
+        }
         if (saved != null) {
             String normalizedStatus = normalizeTerminalStatus(status);
             adminTelemetryService.record(
@@ -398,6 +377,22 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
         return saved;
     }
 
+    /** Write-side projection of this owner's durable queue, including expired leases.
+     * An interrupted insert/terminal update cannot permanently lose a delta.
+     * The existing outbox worker also refreshes this metric before its due gate.
+     */
+    public void refreshOutboxPendingCount() {
+        long pending = mongoTemplate.count(Query.query(Criteria.where("baseGroupId").is(JobGroupContext.groupId())
+                .and("status").in(
+                        com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem.STATUS_PENDING,
+                        com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem.STATUS_RUNNING)),
+                com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem.class);
+        mongoTemplate.updateFirst(Query.query(ruleCriteria(RULE_NOTIFICATION_OUTBOX)), new Update()
+                .set("runState.pendingCount", (int) Math.min(Integer.MAX_VALUE, pending))
+                .set("runState.pendingCountUnit", "admin.jobs.rule.notification.outbox")
+                .set("runState.pendingCountUpdatedAtIso", Instant.now().toString()), NotificationRuleConfig.class);
+    }
+
     public synchronized NotificationRuleConfig adjustPendingCount(String ruleKey, int delta, String unit) {
         String normalizedRuleKey = safeText(ruleKey);
         if (!StringUtils.hasText(normalizedRuleKey) || delta == 0) {
@@ -431,32 +426,57 @@ public class NotificationRuleRegistryService implements com.raxim.myscoutee.doma
     }
 
     public synchronized int claimPendingCount(String ruleKey) {
-        String normalizedRuleKey = safeText(ruleKey);
-        if (!StringUtils.hasText(normalizedRuleKey)) {
-            return 0;
-        }
-        String nowIso = Instant.now().toString();
-        NotificationRuleConfig previous = mongoTemplate.findAndModify(
-                Query.query(ruleCriteria(normalizedRuleKey)),
-                new Update()
-                        .set("runState.pendingCount", 0)
-                        .set("runState.pendingCountUpdatedAtIso", nowIso),
-                FindAndModifyOptions.options().returnNew(false),
-                NotificationRuleConfig.class);
-        NotificationRuleConfig current = findRule(normalizedRuleKey).orElse(null);
-        if (current != null) {
-            socketSessionRegistry.broadcastRuleRuntime(current);
-        }
-        Integer pendingCount = previous == null || previous.getRunState() == null
-                ? null
-                : previous.getRunState().getPendingCount();
-        return Math.max(0, pendingCount == null ? 0 : pendingCount);
+        return claimPendingCount(ruleKey, currentRunStart(ruleKey));
+    }
+
+    public synchronized int claimPendingCount(String ruleKey, Instant startedAt) {
+        if (startedAt == null) return 0;
+        String stamp = startedAt.toString();
+        var sameClaim = new Document("$eq", List.of("$runState.pendingClaimStartedAtIso", stamp));
+        var oldClaim = new Document("$ifNull", List.of("$runState.pendingClaimedCount", 0));
+        var pending = new Document("$ifNull", List.of("$runState.pendingCount", 0));
+        // An expired worker's unacknowledged claim travels into the next run.
+        // A completed run clears its claim in the same update as its receipt.
+        var update = AggregationUpdate.update()
+                .set("runState.pendingClaimedCount").toValue((AggregationExpression) context ->
+                        new Document("$cond", List.of(sameClaim, oldClaim, new Document("$add", List.of(pending, oldClaim)))))
+                .set("runState.pendingCount").toValue((AggregationExpression) context ->
+                        new Document("$cond", List.of(sameClaim, pending, 0)))
+                .set("runState.pendingClaimStartedAtIso").toValue(stamp)
+                .set("runState.pendingCountUpdatedAtIso").toValue(Instant.now().toString());
+        var saved = mongoTemplate.findAndModify(Query.query(new Criteria().andOperator(ruleCriteria(safeText(ruleKey)),
+                        Criteria.where("runState.startedAtIso").is(stamp), Criteria.where("runState.currentStatus").is("running"))),
+                update, FindAndModifyOptions.options().returnNew(true), NotificationRuleConfig.class);
+        if (saved == null || saved.getRunState() == null) return 0;
+        socketSessionRegistry.broadcastRuleRuntime(saved);
+        Integer count = saved.getRunState().getPendingClaimedCount();
+        return Math.max(0, count == null ? 0 : count);
     }
 
     public synchronized void restoreClaimedPendingCount(String ruleKey, int claimedCount, String unit) {
-        if (claimedCount > 0) {
-            adjustPendingCount(ruleKey, claimedCount, unit);
-        }
+        restoreClaimedPendingCount(ruleKey, claimedCount, unit, currentRunStart(ruleKey));
+    }
+
+    public synchronized void restoreClaimedPendingCount(String ruleKey, int claimedCount, String unit, Instant startedAt) {
+        if (startedAt == null) return;
+        // Use the durable receipt, including when the claim reply was lost and
+        // the caller's local count is still zero. Repeating restore adds zero.
+        var update = AggregationUpdate.update()
+                .set("runState.pendingCount").toValue((AggregationExpression) context -> new Document("$add", List.of(
+                        new Document("$ifNull", List.of("$runState.pendingCount", 0)),
+                        new Document("$ifNull", List.of("$runState.pendingClaimedCount", 0)))))
+                .set("runState.pendingClaimedCount").toValue(0)
+                .set("runState.pendingCountUnit").toValue(firstNonBlank(unit, "records"))
+                .set("runState.pendingCountUpdatedAtIso").toValue(Instant.now().toString());
+        mongoTemplate.updateFirst(Query.query(new Criteria().andOperator(ruleCriteria(safeText(ruleKey)),
+                        Criteria.where("runState.startedAtIso").is(startedAt.toString()),
+                        Criteria.where("runState.pendingClaimStartedAtIso").is(startedAt.toString()),
+                        Criteria.where("runState.currentStatus").is("running"))), update, NotificationRuleConfig.class);
+    }
+
+    private Instant currentRunStart(String ruleKey) {
+        var rule = findRule(ruleKey).orElse(null);
+        return rule == null || rule.getRunState() == null ? null : parseInstant(rule.getRunState().getStartedAtIso());
     }
 
     public void broadcastRunProgress(

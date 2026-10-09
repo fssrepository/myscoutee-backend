@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.community.service;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.document.ServiceOffering;
 import com.raxim.myscoutee.domain.community.document.ServiceProviderCalendar;
@@ -32,9 +32,9 @@ public class CaseAppointmentsService {
     private final ServiceProviderCalendarsRepository calendars;
     private final SlotRecurrence recurrence;
     private final ServiceSlotPricing pricing;
-    private final ServiceCasesRepository caseRecords; private final ServiceOfferingsRepository serviceRecords; private final ProfileDirectory users;
+    private final ServiceCasesRepository caseRecords; private final ServiceOfferingsRepository serviceRecords; private final ProfileSummaries users;
     public CaseAppointmentsService(CommunityCasesService cases,ServiceOfferingsService services,ServiceProviderCalendarsRepository calendars,
-            SlotRecurrence recurrence,ServiceSlotPricing pricing,ServiceCasesRepository caseRecords,ServiceOfferingsRepository serviceRecords,ProfileDirectory users) {
+            SlotRecurrence recurrence,ServiceSlotPricing pricing,ServiceCasesRepository caseRecords,ServiceOfferingsRepository serviceRecords,ProfileSummaries users) {
         this.cases=cases;this.services=services;this.calendars=calendars;this.recurrence=recurrence;this.pricing=pricing;this.caseRecords=caseRecords;this.serviceRecords=serviceRecords;this.users=users;
     }
     private record Context(ServiceCase caseRecord, ServiceOffering service, ServiceProviderCalendar calendar) {}
@@ -75,7 +75,7 @@ public class CaseAppointmentsService {
                 .sorted(Comparator.comparing(Appointment::startAtIso)).toList()).orElse(List.of());
         var caseMap=new HashMap<String,ServiceCase>();caseRecords.findAllById(rows.stream().map(Appointment::caseId).distinct().toList()).forEach(c->caseMap.put(c.id(),c));
         var serviceMap=new HashMap<String,ServiceOffering>();serviceRecords.findAllById(rows.stream().map(Appointment::serviceId).distinct().toList()).forEach(s->serviceMap.put(s.id(),s));
-        var people=new HashMap<String,WorkspaceProfile>();users.findByUserIdIn(rows.stream().map(Appointment::customerAccountId).distinct().toList()).forEach(u->people.put(u.getUserId(),u));
+        var people=new HashMap<String,ProfileSummary>();users.findByUserIdIn(rows.stream().map(Appointment::customerAccountId).distinct().toList()).forEach(u->people.put(u.getUserId(),u));
         var entries = new ArrayList<CalendarEntry>();
         rows.stream().filter(a->caseMap.containsKey(a.caseId())&&caseMap.get(a.caseId()).activeParticipantAccountIds().contains(actor)).forEach(a->entries.add(new CalendarEntry(a,caseMap.get(a.caseId()).title(),
                 serviceMap.containsKey(a.serviceId())?serviceMap.get(a.serviceId()).title():"",people.containsKey(a.customerAccountId())?people.get(a.customerAccountId()).getName():"",a.caseId(),null)));

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.groups.mapper;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfile;
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 
@@ -18,7 +18,7 @@ public final class CommunityGroupMapper {
         if ("pending".equals(status)) return "pending";
         return "accepted".equals(status) ? "participation" : "explore";
     }
-    public static Group toDto(CommunityGroup group, WorkspaceProfile owner, WorkspaceProfile viewer,
+    public static Group toDto(CommunityGroup group, DiscoveryProfile owner, DiscoveryProfile viewer,
             List<CommunityMember> members, long activity) {
         CommunityMember own = members.stream().filter(m -> viewer.getUserId().equals(m.getUserId()) && (List.of("accepted", "pending").contains(m.getStatus()) || restorableMembership(m))).findFirst().orElse(null);
         boolean admin = own != null && "accepted".equals(own.getStatus()) && "Admin".equals(own.getRole());
@@ -55,17 +55,17 @@ public final class CommunityGroupMapper {
         if ("accepted".equals(own.getStatus()) && "Admin".equals(own.getRole())) return group.pendingMemberCount();
         return "pending".equals(own.getStatus()) && "invite".equals(own.getRequestKind()) ? 1 : 0;
     }
-    public static ActivityMemberEntryDto member(CommunityMember m, WorkspaceProfile user, String actor) {
+    public static ActivityMemberEntryDto member(CommunityMember m, DiscoveryProfile user, String actor) {
         return new ActivityMemberEntryDto(m.getId(), m.getUserId(), user.getName(), user.getInitials(),
                 user.getGender(), user.getCity(), "", m.getRole(), m.getStatus(), m.getPendingSource(),
                 m.getRequestKind(), m.getInvitedByUserId(), actor.equals(m.getInvitedByUserId()),
                 m.getMetAtIso(), m.getActionAtIso(), m.getMetWhere(), avatar(user), null, List.of(),
                 m.getUpdatedDate(), null, null, null, null, m.getManagerGrantedByUserId(), m.getOrganizerOnly(), m.getVotingEligible());
     }
-    private static String avatar(WorkspaceProfile user) {
+    private static String avatar(DiscoveryProfile user) {
         return user.getImages() == null || user.getImages().isEmpty() ? null : user.getImages().getFirst();
     }
-    private static Double distance(WorkspaceProfile owner, WorkspaceProfile viewer) {
+    private static Double distance(DiscoveryProfile owner, DiscoveryProfile viewer) {
         var a = owner.getLocationCoordinates(); var b = viewer.getLocationCoordinates();
         if (a == null || b == null || a.latitude() == null || a.longitude() == null
                 || b.latitude() == null || b.longitude() == null) return null;

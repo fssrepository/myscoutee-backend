@@ -23,11 +23,11 @@ import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
 public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affinity.api.GraphScience {
@@ -40,13 +40,13 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
     private final MemberDirectory activityMembersRepository;
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
 
     public AdminGraphScienceService(
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
             MemberDirectory activityMembersRepository,
-            ProfileDirectory usersRepository) {
+            ProfileSummaries usersRepository) {
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityMembersRepository = activityMembersRepository;
@@ -79,7 +79,7 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
     }
 
     private GraphScienceResult calculate(String groupId) {
-        List<? extends WorkspaceProfile> users = usersRepository.findAll().stream().filter(user -> Objects.equals(groupId, user.getWorkspaceGroupId())).toList();
+        List<? extends ProfileSummary> users = usersRepository.findByWorkspaceGroupId(groupId);
         Map<String, String> userNamesById = userNamesById(users);
         Map<String, String> userGendersById = userGendersById(users);
         Map<String, GraphEdge> edgesByKey = new LinkedHashMap<>();
@@ -542,13 +542,13 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
         return "stats.graph.insight.healthy";
     }
 
-    private Map<String, String> userNamesById(List<? extends WorkspaceProfile> users) {
+    private Map<String, String> userNamesById(List<? extends ProfileSummary> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (WorkspaceProfile user : users) {
+        for (ProfileSummary user : users) {
             if (user == null) {
                 continue;
             }
-            String userId = normalizeId(user.getId());
+            String userId = normalizeId(user.getUserId());
             if (StringUtils.hasText(userId)) {
                 result.put(userId, firstNonBlank(user.getName(), userId));
             }
@@ -556,13 +556,13 @@ public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affi
         return result;
     }
 
-    private Map<String, String> userGendersById(List<? extends WorkspaceProfile> users) {
+    private Map<String, String> userGendersById(List<? extends ProfileSummary> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (WorkspaceProfile user : users) {
+        for (ProfileSummary user : users) {
             if (user == null) {
                 continue;
             }
-            String userId = normalizeId(user.getId());
+            String userId = normalizeId(user.getUserId());
             String gender = normalizeGender(user.getGender());
             if (StringUtils.hasText(userId) && StringUtils.hasText(gender)) {
                 result.put(userId, gender);

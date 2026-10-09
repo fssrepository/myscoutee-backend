@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
@@ -22,12 +22,12 @@ public class ChatPushNotificationService {
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
     private final NotificationDelivery notificationOutboxService;
     private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
 
     public ChatPushNotificationService(
-            ProfileDirectory usersRepository,
+            ProfileSummaries usersRepository,
             NotificationDelivery notificationOutboxService,
             ChatWebSocketSessionRegistry chatWebSocketSessionRegistry) {
         this.usersRepository = usersRepository;
@@ -141,7 +141,7 @@ public class ChatPushNotificationService {
     }
 
     private String resolveSenderAvatarUrl(String senderUserId) {
-        WorkspaceProfile sender = usersRepository.findByUserId(safeText(senderUserId)).orElse(null);
+        ProfileSummary sender = usersRepository.findByUserId(safeText(senderUserId)).orElse(null);
         if (sender != null && sender.getImages() != null) {
             for (String imageUrl : sender.getImages()) {
                 String normalizedImageUrl = safeText(imageUrl);

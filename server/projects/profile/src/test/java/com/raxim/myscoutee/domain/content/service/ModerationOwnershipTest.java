@@ -20,14 +20,19 @@ import com.raxim.myscoutee.domain.assets.service.AssetModerationProjectionServic
 @Tag("standard")
 class ModerationOwnershipTest {
     @Test void profileBlockRetryRetainsOriginalStatusAndUnblockRestoresIt() {
-        var users = mock(UsersRepository.class); var service = new ProfileModerationService(users);
-        var user = new Users(); user.setProfileStatus("inactive");
-        assertThat(service.block(user)).isTrue(); assertThat(user.getProfileStatus()).isEqualTo("blocked");
+        var users = mock(UsersRepository.class); var service = new ProfileModerationService(users,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(users, mock(MongoTemplate.class),
+                        mock(com.raxim.myscoutee.domain.affinity.api.UserAffinityChanges.class), null));
+        var user = new Users(); user.setUserId("profile"); user.setProfileStatus("inactive");
+        when(users.findByUserId("profile")).thenReturn(Optional.of(user));
+        assertThat(service.block("profile")).isTrue(); assertThat(user.getProfileStatus()).isEqualTo("blocked");
         assertThat(user.getPreviousProfileStatus()).isEqualTo("inactive");
-        assertThat(service.block(user)).isFalse(); assertThat(user.getPreviousProfileStatus()).isEqualTo("inactive");
+        assertThat(service.block("profile")).isFalse(); assertThat(user.getPreviousProfileStatus()).isEqualTo("inactive");
         verify(users).save(user);
-        service.unblock(user);
+        service.unblock("profile");
         assertThat(user.getProfileStatus()).isEqualTo("inactive"); assertThat(user.getPreviousProfileStatus()).isNull();
+        service.unblock("profile"); // A lost unblock reply must not turn the restored inactive profile public.
+        assertThat(user.getProfileStatus()).isEqualTo("inactive");
         verify(users, times(2)).save(user);
     }
     @ParameterizedTest @CsvSource({"events,A,blocked,B", "assets,A,blocked,B", "events,B,accepted,A", "assets,B,accepted,A", "events,T,blocked,T", "assets,D,blocked,D"})

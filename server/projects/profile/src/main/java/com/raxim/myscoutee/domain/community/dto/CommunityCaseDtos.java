@@ -4,7 +4,6 @@ import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 import java.util.List;
 import com.raxim.myscoutee.common.dto.SharedDtos.PolicyItemDto;
 import java.util.Map;
-import com.raxim.myscoutee.domain.community.document.ServiceCase;
 
 public final class CommunityCaseDtos {
     private CommunityCaseDtos() {}

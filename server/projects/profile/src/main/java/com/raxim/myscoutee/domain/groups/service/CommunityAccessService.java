@@ -4,8 +4,7 @@ import com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 import com.raxim.myscoutee.domain.events.api.CommunityMemberships;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
@@ -19,18 +18,18 @@ import org.springframework.web.server.ResponseStatusException;
 /** Case participants are accounts; workspace membership is checked only for private-community authority. */
 @Service
 public class CommunityAccessService implements com.raxim.myscoutee.domain.groups.api.CommunityAuthority {
-    private final ProfilePresentation profiles;
+    private final SelectedProfile profiles;
     private final AccountWorkspaces workspaceProfiles;
     private final CommunityGroupsRepository groups;
     private final CommunityMemberships members;
-    public CommunityAccessService(ProfilePresentation profiles, AccountWorkspaces workspaceProfiles,
+    public CommunityAccessService(SelectedProfile profiles, AccountWorkspaces workspaceProfiles,
             CommunityGroupsRepository groups, CommunityMemberships members) {
         this.profiles = profiles; this.workspaceProfiles = workspaceProfiles; this.groups = groups; this.members = members;
     }
     public String actor(String requestedId) {
-        WorkspaceProfile profile = profiles.resolveCurrentUser(requestedId);
+        var profile = profiles.resolveSelectedIdentity(requestedId);
         if (profile == null) throw error(HttpStatus.UNAUTHORIZED);
-        String accountId = profile.getAccountUserId() == null ? profile.getUserId() : profile.getAccountUserId();
+        String accountId = profile.accountUserId() == null ? profile.userId() : profile.accountUserId();
         requireBaseMember(accountId);
         return accountId;
     }

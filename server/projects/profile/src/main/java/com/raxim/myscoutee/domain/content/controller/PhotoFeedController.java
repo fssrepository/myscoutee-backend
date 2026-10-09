@@ -3,21 +3,22 @@ package com.raxim.myscoutee.domain.content.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfile;
 import com.raxim.myscoutee.domain.content.dto.PhotoFeedDtos.*;
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.content.service.PhotoFeedService;
 
 @RestController
 @RequestMapping("/activities/feed")
 public class PhotoFeedController {
-    private final ProfilePresentation profiles;
+    private final SelectedProfile profiles;
     private final PhotoFeedService feed;
-    public PhotoFeedController(ProfilePresentation profiles, PhotoFeedService feed) { this.profiles = profiles; this.feed = feed; }
-    private WorkspaceProfile actor(String id) {
-        var user = profiles.resolveCurrentUser(id);
+    private final com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles discovery;
+    public PhotoFeedController(SelectedProfile profiles, PhotoFeedService feed, com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles discovery) { this.profiles = profiles; this.feed = feed; this.discovery = discovery; }
+    private DiscoveryProfile actor(String id) {
+        var user = profiles.resolveSelectedIdentity(id);
         if (user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        return user;
+        return discovery.findByUserId(user.userId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
     }
     @GetMapping
     public Page page(@RequestParam String userId, @RequestParam(defaultValue = "10") int pageSize,

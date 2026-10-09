@@ -18,6 +18,13 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
 public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset {
+    @org.springframework.data.annotation.Version private Long version;
+    private java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> lifecycleWork = new java.util.ArrayList<>();
+    public Long getVersion() { return version; }
+    public void setVersion(Long value) { version = value; }
+    public java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> getLifecycleWork() { return lifecycleWork == null ? java.util.List.of() : lifecycleWork; }
+    public void setLifecycleWork(java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> value) { lifecycleWork = new java.util.ArrayList<>(value); }
+
     @org.springframework.data.mongodb.core.index.Indexed
     private String workspaceGroupId;
     public String getWorkspaceGroupId() { return workspaceGroupId; }

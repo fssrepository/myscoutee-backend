@@ -5,15 +5,29 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileIdentities;
+import com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
-public class ProfileDirectoryService implements ProfileDirectory {
+public class ProfileDirectoryService implements ProfileDirectory, com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles, com.raxim.myscoutee.domain.accounts.api.ScoringProfiles, com.raxim.myscoutee.domain.accounts.api.AssetProfiles, ProfileIdentities, com.raxim.myscoutee.domain.accounts.api.EmailProfiles, com.raxim.myscoutee.domain.accounts.api.ProfileSummaries, com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads {
     private final UsersRepository users;
     public ProfileDirectoryService(UsersRepository users) { this.users = users; }
+    @Override public Optional<ProfileIdentityDto> findIdentityByUserId(String userId) {
+        return users.findByUserId(userId).map(this::identityDto);
+    }
+    @Override public Optional<ProfileIdentityDto> findFirstIdentityByUserId(String userId) {
+        return Optional.ofNullable(findFirstByUserId(userId)).map(this::identityDto);
+    }
+    private ProfileIdentityDto identityDto(Users profile) {
+        return new ProfileIdentityDto(profile.getUserId(), profile.getAccountUserId(), profile.getWorkspaceGroupId());
+    }
     @Override public List<Users> findByWorkspaceGroupIdAndAccountUserIdIn(String groupId, Collection<String> accounts) { return users.findByWorkspaceGroupIdAndAccountUserIdIn(groupId, accounts); }
     @Override public Optional<Users> findByWorkspaceGroupIdAndAccountUserId(String group, String account) { return users.findByWorkspaceGroupIdAndAccountUserId(group, account); }
+    @Override public List<Users> findByWorkspaceGroupId(String groupId) {
+        return users.findAll().stream().filter(user -> java.util.Objects.equals(groupId, user.getWorkspaceGroupId())).toList();
+    }
     @Override public List<Users> findAll() { return users.findAll(); }
     @Override public Optional<Users> findByUserId(String userId) { return users.findByUserId(userId); }
     @Override public List<Users> findByEmailIn(Collection<String> emails) { return users.findByEmailIn(emails); }
@@ -45,5 +59,26 @@ public class ProfileDirectoryService implements ProfileDirectory {
     public PaymentMembers paymentMembers(String workspace, String actor, int page, int size) {
         var values = users.findPaymentMembers(workspace, actor, org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("name").ascending().and(org.springframework.data.domain.Sort.by("userId").ascending())));
         return new PaymentMembers(values.getContent(), values.getTotalElements());
+    }
+    @Override public com.raxim.myscoutee.domain.accounts.dto.PaymentMemberSummariesDto paymentMemberSummaries(
+            String workspace, String actor, int page, int size) {
+        var result = paymentMembers(workspace, actor, page, size);
+        return new com.raxim.myscoutee.domain.accounts.dto.PaymentMemberSummariesDto(
+                result.items().stream().map(com.raxim.myscoutee.domain.accounts.dto.ProfileSummaryDto::from).toList(), result.total());
+    }
+    @Override public Optional<com.raxim.myscoutee.domain.accounts.dto.AccountPaymentSummaryDto> paymentSummary(String userId) {
+        return findByUserId(userId).map(user -> new com.raxim.myscoutee.domain.accounts.dto.AccountPaymentSummaryDto(
+                user.getPaymentSpentTotals(), user.getPaymentIncomeTotals(), user.getPaymentRefundsPending()));
+    }
+    @Override public Optional<com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserPaymentTotalsDto> paymentTotals(String userId) {
+        return findByUserId(userId).map(user -> new com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserPaymentTotalsDto(
+                new java.util.LinkedHashMap<>(user.getPaymentSpentTotals()),
+                new java.util.LinkedHashMap<>(user.getPaymentIncomeTotals()),
+                new java.util.LinkedHashMap<>(user.getPaymentAllTotals())));
+    }
+    @Override public List<com.raxim.myscoutee.domain.accounts.dto.PaymentParticipantDto> paymentParticipants(Collection<String> userIds) {
+        return findNotDeletedByUserIdIn(userIds).stream().map(user ->
+                new com.raxim.myscoutee.domain.accounts.dto.PaymentParticipantDto(
+                        user.getUserId(), user.getWorkspaceGroupId(), user.getName())).toList();
     }
 }

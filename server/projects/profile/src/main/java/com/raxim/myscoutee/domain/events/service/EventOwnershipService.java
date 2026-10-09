@@ -7,11 +7,13 @@ import org.springframework.data.mongodb.core.query.*;
 import org.springframework.util.StringUtils;
 import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.dto.EventVersionDto;
+import com.raxim.myscoutee.domain.events.dto.EventJobScopeDto;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 
 @Service
-public class EventOwnershipService implements EventOwnership {
+public class EventOwnershipService implements EventOwnership, com.raxim.myscoutee.domain.events.api.OrganizerEventReads {
     @org.springframework.beans.factory.annotation.Autowired private MongoTemplate mongo;
     @Override public java.util.Optional<ActivityEvent> findByOwnerUserIdAndSourceId(String owner, String source) { return events.findByOwnerUserIdAndSourceId(owner,source); }
     @Override public boolean ownedExists(String owner,String source) { return mongo.exists(Query.query(Criteria.where("ownerUserId").is(owner).and("sourceId").is(source)),ActivityEvent.class); }
@@ -23,15 +25,24 @@ public class EventOwnershipService implements EventOwnership {
     @Override public java.util.List<ActivityEvent> findByCreatorUserId(String id) { return events.findByCreatorUserId(id); }
     @Override public java.util.List<ActivityEvent> findAll() { return events.findAll(); }
     @Override public boolean updateAffinity(EventOwnership.Event event, double nextAffinity, double nextBoost) {
-        if (event == null) {
+        if (event == null) return false;
+        boolean updated = updateAffinityVersion(new EventVersionDto(event.getId(), event.getUpdatedDate()), nextAffinity, nextBoost);
+        if (updated) {
+            ((ActivityEvent) event).setAffinity(nextAffinity);
+            ((ActivityEvent) event).setBoost(nextBoost);
+        }
+        return updated;
+    }
+    @Override public boolean updateAffinityVersion(EventVersionDto version, double nextAffinity, double nextBoost) {
+        if (version == null) {
             return false;
         }
-        String id = normalizeId(event.getId());
+        String id = normalizeId(version.id());
         if (!StringUtils.hasText(id)) {
             return false;
         }
         Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(event.getUpdatedDate());
+        String updatedDate = normalizeId(version.updatedDate());
         if (StringUtils.hasText(updatedDate)) {
             criteria = criteria.and("updatedDate").is(updatedDate);
         }
@@ -41,12 +52,7 @@ public class EventOwnershipService implements EventOwnership {
                         .set("affinity", nextAffinity)
                         .set("boost", nextBoost),
                 ActivityEvent.class);
-        if (result.getMatchedCount() <= 0) {
-            return false;
-        }
-        ((ActivityEvent) event).setAffinity(nextAffinity);
-        ((ActivityEvent) event).setBoost(nextBoost);
-        return true;
+        return result.getMatchedCount() > 0;
     }
     private String normalizeId(String value) { return value == null ? "" : value.trim(); }
     @Override public java.util.Optional<ActivityEvent> findById(String id) { return events.findById(id); }
@@ -66,9 +72,6 @@ public class EventOwnershipService implements EventOwnership {
                 .include("subEvents");
         return mongo.find(eventQuery, ActivityEvent.class);
     }
-    public com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentSubEvent(SubEvent value) {
-        return com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper.toDto((com.raxim.myscoutee.domain.events.document.SubEventItem) value);
-    }
     public List<ActivityEvent> findDirectOwnerEvents(String userId) { return events.findDirectOwnerEvents(userId); }
     public List<ActivityEvent> findAdminVisibleEvents(String userId) { return events.findAdminVisibleEvents(userId); }
     public List<ActivityEvent> findAcceptedMembershipEvents(String userId) { return events.findAcceptedMembershipEvents(userId); }
@@ -79,16 +82,19 @@ public class EventOwnershipService implements EventOwnership {
     public List<ActivityEvent> findHomeGameMemberProjections() { return events.findHomeGameMemberProjections(); }
     public List<ActivityEvent> activeOriginalEventsByCreators(java.util.Collection<String> creators) { return mongo.find(Query.query(Criteria.where("creatorUserId").in(creators).and("status").is("A").and("generated").ne(true)), ActivityEvent.class); }
     public List<ActivityEvent> storedEventsBySources(java.util.Collection<String> sources) { return mongo.find(Query.query(Criteria.where("sourceId").in(sources)), ActivityEvent.class); }
-    public boolean updateStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus) {
-        if (event == null) {
+    public boolean updateStatusIfSnapshotCurrent(EventOwnership.Event event, String nextStatus, String previousStatus) {
+        return event != null && updateStatusVersionIfCurrent(new EventVersionDto(event.getId(), event.getUpdatedDate()), nextStatus, previousStatus);
+    }
+    @Override public boolean updateStatusVersionIfCurrent(EventVersionDto version, String nextStatus, String previousStatus) {
+        if (version == null) {
             return false;
         }
-        String id = normalizeId(event.getId());
+        String id = normalizeId(version.id());
         if (!StringUtils.hasText(id)) {
             return false;
         }
         Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(event.getUpdatedDate());
+        String updatedDate = normalizeId(version.updatedDate());
         if (StringUtils.hasText(updatedDate)) {
             criteria = criteria.and("updatedDate").is(updatedDate);
         }
@@ -101,8 +107,8 @@ public class EventOwnershipService implements EventOwnership {
         UpdateResult result = mongo.updateFirst(new Query(criteria), update, ActivityEvent.class);
         return result.getMatchedCount() > 0;
     }
-    public JobScope findJobScope(String sourceId) {
+    public EventJobScopeDto findJobScope(String sourceId) {
         var row = mongo.findOne(Query.query(Criteria.where("sourceId").is(sourceId)), org.bson.Document.class, "events");
-        return row == null ? null : new JobScope(row.getString("workspaceGroupId"), row.getString("ownerUserId"), row.getString("creatorUserId"));
+        return row == null ? null : new EventJobScopeDto(row.getString("workspaceGroupId"), row.getString("ownerUserId"), row.getString("creatorUserId"));
     }
 }

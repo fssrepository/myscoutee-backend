@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
-import com.raxim.myscoutee.domain.payments.service.PaymentProviderChangedException;
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
 
 @Service
 public class DeploymentPaymentProviderResolver {

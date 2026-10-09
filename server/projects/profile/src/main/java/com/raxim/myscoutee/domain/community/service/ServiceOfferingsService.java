@@ -2,8 +2,8 @@ package com.raxim.myscoutee.domain.community.service;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfile;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles;
 import com.raxim.myscoutee.domain.affinity.api.AccountRatings;
 import com.raxim.myscoutee.domain.community.document.ServiceOffering;
 import com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository;
@@ -29,10 +29,10 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
     public static final List<String> FREQUENCIES = List.of("One-time", "Daily", "Weekly", "Bi-weekly", "Monthly", "Yearly");
     private final ServiceOfferingsRepository services;
     private final CommunityAuthority access;
-    private final ProfileDirectory users;
+    private final DiscoveryProfiles users;
     private final AccountRatings rates;
     private final CommunityMemberships members;
-    public ServiceOfferingsService(ServiceOfferingsRepository services, CommunityAuthority access, ProfileDirectory users, AccountRatings rates, CommunityMemberships members) {
+    public ServiceOfferingsService(ServiceOfferingsRepository services, CommunityAuthority access, DiscoveryProfiles users, AccountRatings rates, CommunityMemberships members) {
         this.services=services;this.access=access;this.users=users;this.rates=rates;this.members=members;
     }
     public String actor(String userId) {return access.actor(userId);}
@@ -42,7 +42,7 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
         if (!BaseGroups.COMMUNITY_BASE_ID.equals(s.baseGroupId()) || !s.ownerAccountId().equals(actor) && !"published".equals(s.status())) throw error(HttpStatus.NOT_FOUND);
         return s;
     }
-    private WorkspaceProfile profile(String account) {return users.findByUserId(profileId(account)).orElseThrow(()->error(HttpStatus.NOT_FOUND));}
+    private DiscoveryProfile profile(String account) {return users.findByUserId(profileId(account)).orElseThrow(()->error(HttpStatus.NOT_FOUND));}
     public Item detail(String actor,String id) {var s=visible(actor,id);return dto(actor,s,profile(s.ownerAccountId()),profile(actor),ratingByOwner(actor));}
     public Page<Item> page(String actor,String scope,String status,String category,String search,Double distance,int pageSize,String cursor) {
         return page(actor,scope,status,category,search,distance,pageSize,cursor,null);
@@ -62,7 +62,7 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
         var ownerIds=records.stream().map(ServiceOffering::ownerAccountId).distinct().toList();
         var owners=users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID,ownerIds).stream()
             .filter(u->!Set.of("inactive","blocked","deleted").contains(Objects.toString(u.getProfileStatus(),"")))
-            .collect(Collectors.toMap(WorkspaceProfile::getAccountUserId,u->u));
+            .collect(Collectors.toMap(DiscoveryProfile::getAccountUserId,u->u));
         var viewer=profile(actor);var ratings=ratingByOwner(actor);
         var rows=records.stream().filter(s->owners.containsKey(s.ownerAccountId())).map(s->dto(actor,s,owners.get(s.ownerAccountId()),viewer,ratings))
             .filter(s->distance==null||s.distanceKm()!=null&&s.distanceKm()<=distance)
@@ -76,9 +76,9 @@ public class ServiceOfferingsService implements com.raxim.myscoutee.domain.commu
     private Map<String,Double> ratingByOwner(String actor) {
         return rates.scoresGiven(profileId(actor));
     }
-    private Item dto(String actor,ServiceOffering s,WorkspaceProfile owner,WorkspaceProfile viewer,Map<String,Double> ratings) {
+    private Item dto(String actor,ServiceOffering s,DiscoveryProfile owner,DiscoveryProfile viewer,Map<String,Double> ratings) {
         if(!s.ownerAccountId().equals(actor)&&Set.of("inactive","blocked","deleted").contains(Objects.toString(owner.getProfileStatus(),"")))throw error(HttpStatus.NOT_FOUND);
-        return new Item(s,owner.getUserId(),owner.getName(),owner.getImages()==null||owner.getImages().isEmpty()?null:owner.getImages().getFirst(),
+        return new Item(com.raxim.myscoutee.domain.community.dto.ServiceOfferingDto.from(s),owner.getUserId(),owner.getName(),owner.getImages()==null||owner.getImages().isEmpty()?null:owner.getImages().getFirst(),
             ProfileDistances.distance(owner,viewer),ratings.getOrDefault(owner.getUserId(),0d),s.ownerAccountId().equals(actor));
     }
     public Item save(String actor,Save r) {

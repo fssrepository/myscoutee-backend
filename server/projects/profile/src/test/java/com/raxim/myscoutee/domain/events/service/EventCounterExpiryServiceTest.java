@@ -57,9 +57,11 @@ class EventCounterExpiryServiceTest {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().when(notificationRuleRegistryService.beginRun(
+                any(String.class), any(String.class), any(String.class), any(Instant.class)))
+                .thenReturn(new NotificationRuleConfig());
         service = new EventCounterExpiryService(
                 activityMembersRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mongoTemplate,
                 notificationRuleRegistryService,
                 adminTelemetryService,
@@ -247,7 +249,7 @@ class EventCounterExpiryServiceTest {
 
         assertThat(processed).isZero();
         verify(notificationRuleRegistryService).claimPendingCount(
-                NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+                eq(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY), any(Instant.class));
         verify(mongoTemplate, atLeastOnce()).find(any(Query.class), eq(ActivityEvent.class));
     }
 

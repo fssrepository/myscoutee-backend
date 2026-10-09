@@ -93,6 +93,35 @@ class DeploymentConfigurationCryptoTest {
                 .contains("different or unsupported master key");
     }
 
+    @Test
+    void scopedPortsReadExistingEnvelopesWithoutCrossingPurposeBoundaries() throws Exception {
+        var crypto = crypto(tempDir.resolve("purpose-key"),
+                "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
+        var email = crypto.encrypt("operator-email-provider", "email-test-secret");
+        var unsubscribe = crypto.encrypt("email-unsubscribe-v1", "unsubscribe-test-secret");
+        var payment = crypto.encrypt(
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
+                "payment-test-secret");
+        var providerPurpose = com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose.PROVIDER;
+        var unsubscribePurpose = com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose.UNSUBSCRIBE;
+
+        assertThat(crypto.decryptEmailSecret(providerPurpose, email)).isEqualTo("email-test-secret");
+        assertThat(crypto.decryptEmailSecret(unsubscribePurpose, unsubscribe)).isEqualTo("unsubscribe-test-secret");
+        assertThat(crypto.decryptPaymentCredential(" STRIPE ", payment)).isEqualTo("payment-test-secret");
+        assertThat(crypto.decrypt("operator-email-provider",
+                crypto.encryptEmailSecret(providerPurpose, "new-email-secret"))).isEqualTo("new-email-secret");
+        assertThat(crypto.decryptEmailSecret(providerPurpose, null)).isNull();
+        assertThat(crypto.decryptPaymentCredential("stripe", null)).isNull();
+        assertThatThrownBy(() -> crypto.decryptEmailSecret(providerPurpose, payment))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> crypto.decryptEmailSecret(providerPurpose, unsubscribe))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> crypto.decryptPaymentCredential("stripe", email))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> crypto.decryptPaymentCredential("other-provider", payment))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
     private DeploymentConfigurationCrypto crypto(
             Path path,
             String key) throws Exception {

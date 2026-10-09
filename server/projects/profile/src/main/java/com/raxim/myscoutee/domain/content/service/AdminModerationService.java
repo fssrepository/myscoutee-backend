@@ -24,14 +24,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.chat.api.ChatDirectory.Chat;
 import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminFeedbackDto;
@@ -44,12 +44,13 @@ import com.raxim.myscoutee.domain.chat.api.ChatReview;
 import com.raxim.myscoutee.domain.chat.api.ChatDirectory;
 import com.raxim.myscoutee.domain.content.repository.UserFeedbackSubmissionsRepository;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class AdminModerationService implements com.raxim.myscoutee.domain.content.api.AdministrativeAccess {
+public class AdminModerationService implements com.raxim.myscoutee.domain.content.api.AdministrativeAccess,
+        com.raxim.myscoutee.domain.content.api.AdministrativeActors {
     private static final List<AdminUserDto> DEMO_ADMINS = List.of(
             new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "admin1@myscoutee.local",
                     "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()),
@@ -58,10 +59,10 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileModeration profileModeration;
-    private final RuntimeConfiguration configProperties;
+    private final AuthenticationMode configProperties;
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
     private final ChatDirectory chatsRepository;
     private final ChatReview chatMessagesRepository;
     private final SupportMessages chatService;
@@ -73,10 +74,10 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     public AdminModerationService(
             com.raxim.myscoutee.domain.groups.api.GroupDirectory groups,
-            RuntimeConfiguration configProperties,
+            AuthenticationMode configProperties,
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
-            ProfileDirectory usersRepository,
+            ProfileSummaries usersRepository,
             ChatDirectory chatsRepository,
             ChatReview chatMessagesRepository,
             SupportMessages chatService,
@@ -114,8 +115,8 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     private void ensureStoredSupportCaseCounters(String adminUserId) {
-        WorkspaceProfile admin = usersRepository.findByUserId(normalize(adminUserId)).orElse(null);
-        if (!userActivityCountersService.hasSupportCaseCounters(admin)) {
+        ProfileSummary admin = usersRepository.findByUserId(normalize(adminUserId)).orElse(null);
+        if (!userActivityCountersService.hasSupportCaseCounters(admin == null ? null : admin.getUserId())) {
             userActivityCountersService.refreshSupportCaseCountersForAdmins();
         }
     }
@@ -131,12 +132,12 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private AdminDashboardDto dashboardFor(AdminUserDto admin, String reportsStatus, String feedbackStatus) {
         List<UserReportSubmission> allReports = reportsRepository.findAllByOrderByCreatedDateDesc();
         List<UserFeedbackSubmission> allFeedback = feedbackRepository.findAllByOrderByCreatedDateDesc();
-        Map<String, WorkspaceProfile> scopedUsers = usersById(allReports, allFeedback);
-        String groupId = usersRepository.findByUserId(admin.id()).map(WorkspaceProfile::getWorkspaceGroupId).orElse(null);
+        Map<String, ProfileSummary> scopedUsers = usersById(allReports, allFeedback);
+        String groupId = usersRepository.findByUserId(admin.id()).map(ProfileSummary::getWorkspaceGroupId).orElse(null);
         var blocked = usersRepository.findByProfileStatus("blocked");
         blocked.forEach(user -> scopedUsers.put(user.getUserId(), user));
         var types = new java.util.HashMap<String, String>();
-        groups.findAllById(scopedUsers.values().stream().map(WorkspaceProfile::getWorkspaceGroupId)
+        groups.findAllById(scopedUsers.values().stream().map(ProfileSummary::getWorkspaceGroupId)
                 .filter(StringUtils::hasText).distinct().toList()).forEach(group -> types.put(group.id(), group.effectiveType()));
         java.util.function.Predicate<String> inScope = id -> java.util.Objects.equals(groupId,
                 reportBaseGroup(scopedUsers.get(id), types));
@@ -144,7 +145,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         allFeedback = allFeedback.stream().filter(item -> inScope.test(item.getUserId())).toList();
         List<UserReportSubmission> reports = filterReportsByStatus(allReports, reportsStatus);
         List<UserFeedbackSubmission> feedback = filterFeedbackByStatus(allFeedback, feedbackStatus);
-        Map<String, WorkspaceProfile> usersById = scopedUsers;
+        Map<String, ProfileSummary> usersById = scopedUsers;
         Map<String, List<UserReportSubmission>> byTarget = new LinkedHashMap<>();
         for (UserReportSubmission report : reports) {
             String targetUserId = normalize(report.getTargetUserId());
@@ -165,7 +166,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
                 .toList();
         List<AdminReportedUserDto> blockedUsers = blocked.stream()
                 .filter(user -> java.util.Objects.equals(groupId, reportBaseGroup(user, types)))
-                .map(user -> toBlockedUser(user, allByTarget.getOrDefault(normalize(user.getId()), List.of()), usersById, admin.id()))
+                .map(user -> toBlockedUser(user, allByTarget.getOrDefault(normalize(user.getUserId()), List.of()), usersById, admin.id()))
                 .toList();
         return new AdminDashboardDto(
                 admin,
@@ -195,27 +196,26 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         String targetUserId = normalize(userId);
         ensureReportedUser(targetUserId);
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
-        WorkspaceProfile user = usersRepository.findByUserId(targetUserId)
+        ProfileSummary user = usersRepository.findByUserId(targetUserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reported user not found."));
         requireScope(admin.id(), targetUserId);
-        if (profileModeration.block(user)) {
-            affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
+        String message = normalize(request == null ? null : request.message());
+        var notice = new com.raxim.myscoutee.domain.accounts.api.ProfileModeration.SupportNotice(
+                admin.id(), admin.name(), admin.initials(), StringUtils.hasText(message) ? message
+                : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.");
+        if (profileModeration.block(user.getUserId(), notice)) {
             adminTelemetryService.record("admin.user.blocked", "moderation", targetUserId, admin.id());
         }
-        String message = normalize(request == null ? null : request.message());
-        appendSupportMessage(targetUserId, admin, StringUtils.hasText(message) ? message
-                : "Your account has been blocked after moderation review. You can reply here to contact MyScoutee support and ask for a review.", "blocked");
         return dashboard(admin.id());
     }
 
     public AdminDashboardDto unblock(String userId, AdminActionRequestDto request) {
         String targetUserId = normalize(userId);
         AdminUserDto admin = resolveAdmin(request == null ? null : request.adminUserId());
-        WorkspaceProfile user = usersRepository.findByUserId(targetUserId)
+        ProfileSummary user = usersRepository.findByUserId(targetUserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Blocked user not found."));
         requireScope(admin.id(), targetUserId);
-        profileModeration.unblock(user);
-        affinityRecomputeTaskService.enqueueAdminStatusChanged(targetUserId);
+        profileModeration.unblock(user.getUserId());
         adminTelemetryService.record("admin.user.unblocked", "moderation", targetUserId, admin.id());
         return dashboard(admin.id());
     }
@@ -291,7 +291,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin demo access is restricted to demo data.");
         }
         String normalized = normalize(adminUserId);
-        WorkspaceProfile requested = usersRepository.findByUserId(normalized).orElse(null);
+        ProfileSummary requested = usersRepository.findByUserId(normalized).orElse(null);
         String accountId = requested != null && requested.getAccountUserId() != null ? requested.getAccountUserId() : normalized;
         AdminUserDto admin = DEMO_ADMINS.stream()
                 .filter(candidate -> candidate.id().equals(accountId))
@@ -302,7 +302,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     private AdminUserDto resolveBaseAdminProfile(AdminUserDto account, String requestedId) {
         if (!StringUtils.hasText(requestedId) || account.id().equals(requestedId)) return account;
-        WorkspaceProfile profile = usersRepository.findByUserId(requestedId).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        ProfileSummary profile = usersRepository.findByUserId(requestedId).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
         if (!account.id().equals(profile.getAccountUserId())
             || !com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(profile.getWorkspaceGroupId())
             || !"Admin".equalsIgnoreCase(profile.getHostTier())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -317,12 +317,12 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     public String baseGroupId(String adminUserId) {
         var actor = resolveAdmin(adminUserId);
-        return usersRepository.findByUserId(actor.id()).map(WorkspaceProfile::getWorkspaceGroupId).orElse(null);
+        return usersRepository.findByUserId(actor.id()).map(ProfileSummary::getWorkspaceGroupId).orElse(null);
     }
 
     /** Base-profile telemetry excludes independent workspaces; those have their own statistics. */
     public Map<String, List<AdminTelemetryEvent>> baseProfileEvents(List<AdminTelemetryEvent> batch) {
-        var actors = new java.util.HashMap<String, WorkspaceProfile>();
+        var actors = new java.util.HashMap<String, ProfileSummary>();
         usersRepository.findByUserIdIn(batch.stream().filter(java.util.Objects::nonNull)
                 .map(AdminTelemetryEvent::actorUserId).filter(StringUtils::hasText).distinct().toList())
                 .forEach(user -> actors.put(user.getUserId(), user));
@@ -345,19 +345,19 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         return scoped;
     }
 
-    private String reportBaseGroup(WorkspaceProfile user, Map<String, String> types) {
+    private String reportBaseGroup(ProfileSummary user, Map<String, String> types) {
         String workspace = user == null ? null : user.getWorkspaceGroupId();
         return com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(workspace) ? workspace
                 : com.raxim.myscoutee.domain.groups.api.BaseGroups.baseIdForType(types.get(workspace));
     }
 
     private void requireScope(String adminId, String userId) {
-        WorkspaceProfile user = usersRepository.findByUserId(normalize(userId)).orElse(null);
+        ProfileSummary user = usersRepository.findByUserId(normalize(userId)).orElse(null);
         Map<String, String> types = new java.util.HashMap<>();
         if (user != null && StringUtils.hasText(user.getWorkspaceGroupId())) {
             groups.findById(user.getWorkspaceGroupId()).ifPresent(group -> types.put(group.id(), group.effectiveType()));
         }
-        String selected = usersRepository.findByUserId(adminId).map(WorkspaceProfile::getWorkspaceGroupId).orElse(null);
+        String selected = usersRepository.findByUserId(adminId).map(ProfileSummary::getWorkspaceGroupId).orElse(null);
         if (!java.util.Objects.equals(selected, reportBaseGroup(user, types)))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case not found in this workspace.");
     }
@@ -365,7 +365,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private AdminUserDto resolveFirebaseAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication == null ? null : authentication.getPrincipal();
-        String email = principal instanceof AccountIdentity firebasePrincipal
+        String email = principal instanceof AuthenticatedActor firebasePrincipal
                 ? normalize(firebasePrincipal.getEmail())
                 : normalize(authentication == null ? null : authentication.getName());
         if (!appSettingsService.isAdminEmail(email)) {
@@ -382,7 +382,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     private AdminUserDto withStoredAdminProfile(AdminUserDto admin) {
-        WorkspaceProfile user = usersRepository.findByUserId(admin.id()).orElse(null);
+        ProfileSummary user = usersRepository.findByUserId(admin.id()).orElse(null);
         if (user == null) {
             return admin;
         }
@@ -543,22 +543,22 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         return "Your feedback has been reviewed by MyScoutee. Thank you for helping improve the app.";
     }
 
-    private Map<String, WorkspaceProfile> usersById(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
+    private Map<String, ProfileSummary> usersById(List<UserReportSubmission> reports, List<UserFeedbackSubmission> feedback) {
         List<String> ids = new ArrayList<>();
         reports.forEach(report -> {
             ids.add(normalize(report.getUserId()));
             ids.add(normalize(report.getTargetUserId()));
         });
         feedback.forEach(item -> ids.add(normalize(item.getUserId())));
-        Map<String, WorkspaceProfile> users = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(ids.stream().filter(StringUtils::hasText).distinct().toList())) {
-            users.put(user.getId(), user);
+        Map<String, ProfileSummary> users = new LinkedHashMap<>();
+        for (ProfileSummary user : usersRepository.findByUserIdIn(ids.stream().filter(StringUtils::hasText).distinct().toList())) {
+            users.put(user.getUserId(), user);
         }
         return users;
     }
 
-    private AdminReportedUserDto toReportedUser(String userId, List<UserReportSubmission> reports, Map<String, WorkspaceProfile> usersById, String adminUserId) {
-        WorkspaceProfile user = usersById.get(userId);
+    private AdminReportedUserDto toReportedUser(String userId, List<UserReportSubmission> reports, Map<String, ProfileSummary> usersById, String adminUserId) {
+        ProfileSummary user = usersById.get(userId);
         Chat supportChat = supportChat(adminUserId, userId);
         return new AdminReportedUserDto(
                 userId,
@@ -576,10 +576,10 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
                 reports.stream().map(report -> toReport(report, usersById)).toList());
     }
 
-    private AdminReportedUserDto toBlockedUser(WorkspaceProfile user, List<UserReportSubmission> reports, Map<String, WorkspaceProfile> usersById, String adminUserId) {
-        Chat supportChat = supportChat(adminUserId, user.getId());
+    private AdminReportedUserDto toBlockedUser(ProfileSummary user, List<UserReportSubmission> reports, Map<String, ProfileSummary> usersById, String adminUserId) {
+        Chat supportChat = supportChat(adminUserId, user.getUserId());
         return new AdminReportedUserDto(
-                text(user.getId(), ""),
+                text(user.getUserId(), ""),
                 text(user.getName(), "Blocked user"),
                 text(user.getInitials(), "??"),
                 text(user.getGender(), "woman"),
@@ -606,8 +606,8 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
                 .orElse(null);
     }
 
-    private AdminReportDto toReport(UserReportSubmission report, Map<String, WorkspaceProfile> usersById) {
-        WorkspaceProfile reporter = usersById.get(normalize(report.getUserId()));
+    private AdminReportDto toReport(UserReportSubmission report, Map<String, ProfileSummary> usersById) {
+        ProfileSummary reporter = usersById.get(normalize(report.getUserId()));
         var chat = chatMessagesRepository.reported(report.getChatId(), report.getMessageId(), report.getUserId(), report.getTargetUserId());
         return new AdminReportDto(report.getId(), report.getUserId(), text(reporter == null ? null : reporter.getName(), "Reporter"),
                 firstImage(reporter), report.getTargetUserId(), report.getHandle(), report.getReason(), report.getDetails(), report.getEventId(), report.getEventTitle(),
@@ -622,14 +622,14 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
                 report.getResolvedByAdminUserId());
     }
 
-    private AdminFeedbackDto toFeedback(UserFeedbackSubmission item, Map<String, WorkspaceProfile> usersById) {
-        WorkspaceProfile user = usersById.get(normalize(item.getUserId()));
+    private AdminFeedbackDto toFeedback(UserFeedbackSubmission item, Map<String, ProfileSummary> usersById) {
+        ProfileSummary user = usersById.get(normalize(item.getUserId()));
         return new AdminFeedbackDto(item.getId(), item.getUserId(), text(user == null ? null : user.getName(), "User"),
                 firstImage(user), item.getCategory(), item.getSubject(), item.getDetails(), item.getCreatedDate(),
                 item.getResolvedAtIso(), item.getResolvedByAdminUserId());
     }
 
-    private String firstImage(WorkspaceProfile user) {
+    private String firstImage(ProfileSummary user) {
         if (user == null || user.getImages() == null) {
             return null;
         }

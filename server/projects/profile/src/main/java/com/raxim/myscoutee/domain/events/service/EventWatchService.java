@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.accounts.api.Friendships;
+import com.raxim.myscoutee.domain.accounts.api.FriendshipReads;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -48,16 +48,16 @@ public class EventWatchService {
 
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final ProfilePresentation homeUserProfileService;
-    private final Friendships friendshipFacts;
+    private final SelectedProfile homeUserProfileService;
+    private final FriendshipReads friendshipFacts;
     private final ActivityCounters userActivityCountersService;
     private final NotificationDelivery notificationOutboxService;
 
     public EventWatchService(
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventsRepository activityEventsRepository,
-            ProfilePresentation homeUserProfileService,
-            Friendships friendshipFacts,
+            SelectedProfile homeUserProfileService,
+            FriendshipReads friendshipFacts,
             ActivityCounters userActivityCountersService,
             NotificationDelivery notificationOutboxService) {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
@@ -210,8 +210,7 @@ public class EventWatchService {
     }
 
     private String resolveUserId(String requestedUserId) {
-        var user = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String userId = normalizeId(user == null ? null : user.getId());
+        String userId = normalizeId(homeUserProfileService.resolveSelectedUserId(requestedUserId));
         if (!StringUtils.hasText(userId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Active user is required.");
         }

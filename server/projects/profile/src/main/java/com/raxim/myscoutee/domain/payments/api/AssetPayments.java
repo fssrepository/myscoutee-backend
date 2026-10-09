@@ -3,6 +3,11 @@ import com.raxim.myscoutee.domain.payments.dto.AssetPaymentReplacement;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 public interface AssetPayments {
+    /** The payment owner may have committed; callers must not infer rejection or compensate blindly. */
+    final class OutcomeUnknown extends RuntimeException {
+        public OutcomeUnknown(Throwable cause) { super("Asset payment outcome requires reconciliation", cause); }
+    }
+
     AssetPaymentReplacement validateAssetPaymentReplacement(
             String predecessorPaymentSessionId,
             String successorPaymentSessionId,

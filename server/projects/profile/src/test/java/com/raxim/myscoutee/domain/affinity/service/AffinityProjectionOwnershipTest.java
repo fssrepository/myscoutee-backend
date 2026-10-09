@@ -65,7 +65,7 @@ class AffinityProjectionOwnershipTest {
     }
     @Test void scopedRecomputationBatchesOnlyTheAlreadySelectedOwners() {
         var rates = mock(UserRatesRepository.class);
-        var service = new AffinityMaintenanceService(null, null, null, null, rates, null, null, null, null);
+        var service = new AffinityMaintenanceService(null, null, null, null, null, null, rates, null, null, null, null);
         var ids = java.util.stream.IntStream.range(0, 1001).mapToObj(i -> "owner-" + i).toList();
         JobGroupContext.call("group-a", () -> {
             ReflectionTestUtils.invokeMethod(service, "refreshAllRateAffinities", ids); return null;

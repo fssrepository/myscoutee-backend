@@ -8,7 +8,6 @@ import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetExplorePageDto;
-import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetUpsertRequestDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberEntryDto;
 public interface Assets {
@@ -39,7 +38,6 @@ public interface Assets {
     Map<String, AssetDetailDto> queryReferencedAssetDetails(
             String viewerUserId,
             Collection<String> assetIds);
-    AssetTicketsPageDto queryTicketPage(String userId, Integer page, Integer pageSize, String order);
     AssetExplorePageDto queryVisibleAssetsPage(
             String userId,
             String type,

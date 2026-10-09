@@ -19,8 +19,14 @@ public final class JobGroupContext {
     public static String key() { return groupId() == null ? "default" : groupId(); }
 
     public static <T> T call(String groupId, Supplier<T> action) {
+        return call(true, groupId, action);
+    }
+
+    /** Transport preserves inactive scope separately from an active Dating job. */
+    public static <T> T call(boolean active, String groupId, Supplier<T> action) {
         Scope previous = CURRENT.get();
-        CURRENT.set(new Scope(groupId == null || groupId.isBlank() ? null : groupId.trim(), new java.util.HashMap<>()));
+        if (active) CURRENT.set(new Scope(groupId == null || groupId.isBlank() ? null : groupId.trim(), new java.util.HashMap<>()));
+        else CURRENT.remove();
         try { return action.get(); }
         finally {
             if (previous == null) CURRENT.remove();

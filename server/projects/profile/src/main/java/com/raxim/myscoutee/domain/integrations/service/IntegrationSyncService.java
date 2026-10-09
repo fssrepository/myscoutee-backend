@@ -3,7 +3,8 @@ package com.raxim.myscoutee.domain.integrations.service;
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.events.api.EventOperations;
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.ImageUploads;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -49,8 +50,8 @@ import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @Service
 public class IntegrationSyncService {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
 
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
@@ -63,19 +64,21 @@ public class IntegrationSyncService {
     private final MongoTemplate mongoTemplate;
     private final Assets assetsService;
     private final EventOperations eventsService;
-    private final MediaStorage mediaStorageService;
+    private final ImageUploads mediaStorageService;
+    private final MediaCleanup mediaCleanup;
 
     public IntegrationSyncService(
             IntegrationExternalIdsRepository externalIdsRepository,
             MongoTemplate mongoTemplate,
             Assets assetsService,
             EventOperations eventsService,
-            MediaStorage mediaStorageService, Campaigns campaignsService) {
+            ImageUploads mediaStorageService, MediaCleanup mediaCleanup, Campaigns campaignsService) {
         this.externalIdsRepository = externalIdsRepository;
         this.mongoTemplate = mongoTemplate;
         this.assetsService = assetsService;
         this.eventsService = eventsService;
         this.mediaStorageService = mediaStorageService;
+        this.mediaCleanup = mediaCleanup;
         this.campaignsService = campaignsService;
     }
 
@@ -136,13 +139,12 @@ public class IntegrationSyncService {
                                 item,
                                 uploadedImage == null ? null : uploadedImage.imageUrl())));
                 if (saved == null || !StringUtils.hasText(saved.id())) {
-                    discardImage(uploadedImage);
                     results.add(rejected(itemId, "not_allowed_or_invalid"));
                     continue;
                 }
                 results.add(success(itemId, saved.id(), "created"));
             } catch (RuntimeException exception) {
-                discardImage(uploadedImage);
+                if (!knownRejection(exception)) throw exception;
                 results.add(rejected(itemId, "create_failed"));
             }
         }
@@ -204,13 +206,12 @@ public class IntegrationSyncService {
                         item,
                         uploadedImage == null ? null : uploadedImage.imageUrl()));
                 if (saved == null || !StringUtils.hasText(saved.id())) {
-                    discardImage(uploadedImage);
                     results.add(rejected(itemId, "not_allowed_or_invalid"));
                     continue;
                 }
                 results.add(success(itemId, saved.id(), "created"));
             } catch (RuntimeException exception) {
-                discardImage(uploadedImage);
+                if (!knownRejection(exception)) throw exception;
                 results.add(rejected(itemId, "create_failed"));
             }
         }
@@ -255,11 +256,13 @@ public class IntegrationSyncService {
                         image == null ? List.of() : List.of(image.imageUrl()), List.of(), null), mapping.getInternalId());
                 results.add(success(itemId, saved.id(), "created"));
             } catch (org.springframework.dao.DuplicateKeyException exception) {
-                discardImage(image);
-                results.add(resourceExists(actor.getUserId(), RESOURCE_CAMPAIGN, mapping.getInternalId())
-                        ? success(itemId, mapping.getInternalId(), "existing") : rejected(itemId, "create_failed"));
+                if (resourceExists(actor.getUserId(), RESOURCE_CAMPAIGN, mapping.getInternalId())) {
+                    results.add(success(itemId, mapping.getInternalId(), "existing"));
+                } else {
+                    throw exception; // No definitive rejection receipt; keep the upload for the retry.
+                }
             } catch (RuntimeException exception) {
-                discardImage(image);
+                if (!knownRejection(exception)) throw exception;
                 results.add(rejected(itemId, "not_allowed_or_invalid"));
             }
         }
@@ -311,7 +314,7 @@ public class IntegrationSyncService {
         if (image == null) {
             return null;
         }
-        return mediaStorageService.storeImageSet(
+        return mediaStorageService.storeImportedImageSet(
                 ownerUserId,
                 resourceType + "-" + internalId,
                 image);
@@ -330,11 +333,13 @@ public class IntegrationSyncService {
         return eventOwnership.ownedExists(ownerUserId, internalId);
     }
 
-    private void discardImage(StoredImageSet uploadedImage) {
-        if (uploadedImage != null) {
-            mediaStorageService.deletePublicObject(uploadedImage.imageUrl());
-        }
+    private static boolean knownRejection(RuntimeException exception) {
+        return exception instanceof ResponseStatusException rejected && rejected.getStatusCode().is4xxClientError();
     }
+
+    // Imported images have content-derived keys shared by explicit retries.
+    // A rejected competing attempt must not delete a successful attempt's media.
+    // Owner deletion/purge remains the cleanup authority for referenced media.
 
     private <T> List<T> requireBatch(List<T> items) {
         if (items == null || items.isEmpty()) {

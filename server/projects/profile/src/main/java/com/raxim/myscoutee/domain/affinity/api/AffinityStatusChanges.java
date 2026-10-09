@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.api;
 
-public interface AffinityStatusChanges {
+public interface AffinityStatusChanges extends UserAffinityChanges {
     Task enqueueUserChanged(String userId);
     Task enqueueEventChanged(String eventSourceId, String actorUserId);
     Task enqueueEventMembersChanged(String eventSourceId, String actorUserId);

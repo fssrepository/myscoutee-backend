@@ -614,6 +614,32 @@ class AssetsServiceTest {
     }
 
     @Test
+    void ticketReadsKeepAuthenticatedAccountOwnershipForDelegatedStringIdentity() {
+        var tickets = mock(EventParticipationTicketService.class);
+        var access = mock(AccessControlService.class);
+        var profiles = mock(UsersRepository.class);
+        when(access.requiresAuthenticatedActor()).thenReturn(true);
+        when(access.resolveActorUserId(any())).thenCallRealMethod();
+        var selected = user("selected-profile", "Member", "ME");
+        selected.setAccountUserId("account-owner");
+        when(profiles.findByUserId("selected-profile")).thenReturn(Optional.of(selected));
+        var service = ticketValidationService(profiles, mock(FriendshipFacts.class),
+                mock(ActivityMembersRepository.class), tickets, mock(NotificationOutboxService.class), access);
+        var previous = SecurityContextHolder.getContext();
+        var delegated = SecurityContextHolder.createEmptyContext();
+        delegated.setAuthentication(new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                "selected-profile", null, List.of()));
+        try {
+            SecurityContextHolder.setContext(delegated);
+            assertThat(service.queryTicketPage("untrusted-other-user", 0, 18, "upcoming").items()).isEmpty();
+            verify(tickets).queryTicketSnapshotRecordsForUser("account-owner");
+            verify(profiles, never()).findByUserId("untrusted-other-user");
+        } finally {
+            SecurityContextHolder.setContext(previous);
+        }
+    }
+
+    @Test
     void ticketSyncReportsRemovedRowsAgainstTheKnownSmartListWindow() {
         EventParticipationTicketService ticketService = mock(EventParticipationTicketService.class);
         AccessControlService accessControlService = mock(AccessControlService.class);
@@ -789,7 +815,7 @@ class AssetsServiceTest {
         assertThat(response.ticket()).isNull();
         verify(auditService).recordReplay(
                 eq(ticket),
-                eq(event),
+                eq(event.getSourceId()),
                 eq("scanner-user"),
                 any(Instant.class));
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
@@ -1945,6 +1971,7 @@ class AssetsServiceTest {
         Users target = user("u2", "Member Two", "MT");
         Users actor = user("u3", "Manager Three", "M3");
         ActivityMember targetManager = member("asset-1", "u2", "Manager", "accepted");
+        targetManager.setId("target-manager");
         ActivityMember actorManager = member("asset-1", "u3", "Manager", "accepted");
         targetManager.setManagerGrantedByUserId("u3");
         actorManager.setManagerGrantedByUserId("u1");
@@ -1984,7 +2011,7 @@ class AssetsServiceTest {
 
         assertThat(card).isNotNull();
         assertThat(card.requests().getFirst().note()).isEqualTo("Borrow request approved by the owner.");
-        verify(activityMembersRepository).delete(targetManager);
+        verify(activityMembersRepository).deleteById("target-manager");
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u3");
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
         verify(notificationOutboxService).enqueue(notification.capture());
@@ -2117,6 +2144,7 @@ class AssetsServiceTest {
         Users member = user("u2", "Member Two", "MT");
         Users manager = user("u3", "Manager Three", "M3");
         ActivityMember ownerManager = member("asset-1", "u1", "Manager", "accepted");
+        ownerManager.setId("owner-manager");
         ActivityMember managerMember = member("asset-1", "u3", "Manager", "accepted");
 
         when(assetsRepository.findByOwnerUserIdAndAssetId("u1", "asset-1")).thenReturn(Optional.of(asset));
@@ -2156,15 +2184,15 @@ class AssetsServiceTest {
         assertThat(card.ownerReleasedAtIso()).isNotBlank();
         assertThat(card.requests()).extracting(AssetMemberRequestDto::userId).doesNotContain("u1");
         assertThat(card.menuActions()).doesNotContain("edit", "delete", "takeOver");
-        verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
-        verify(activityMembersRepository).delete(ownerManager);
+        verify(mongoTemplate, org.mockito.Mockito.times(2)).updateFirst(any(), any(), eq(Asset.class));
+        verify(activityMembersRepository).deleteById("owner-manager");
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
-        verify(chatAttachmentLifecycleService).markAssetUnavailable("asset-1", "owner-left");
+        verify(chatAttachmentLifecycleService).project(new com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle.Projection("asset", "asset-1", 0, false, "owner-left"));
         verify(userActivityCountersService).refreshAssetCountersForUser("u1");
         verify(userActivityCountersService, never()).refreshAssetCountersForUser("u2");
         verify(userActivityCountersService).refreshAssetCountersForUser("u3");
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
+        verify(notificationOutboxService).enqueueOnce(anyString(), notification.capture());
         assertThat(notification.getValue().type()).isEqualTo("asset-owner-left");
         assertThat(notification.getValue().recipientScope()).isEqualTo("asset-active-managers");
         assertThat(notification.getValue().recipientUserIds()).containsExactly("u3");
@@ -2223,7 +2251,7 @@ class AssetsServiceTest {
 
         assertThat(card).isNotNull();
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
+        verify(notificationOutboxService).enqueueOnce(anyString(), notification.capture());
         assertThat(notification.getValue().recipientScope()).isEqualTo("asset-members");
         assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
         assertThat(notification.getValue().body()).contains("accepted Asset Member");
@@ -2342,7 +2370,7 @@ class AssetsServiceTest {
         assertThat(card.ownerUserId()).isEqualTo("u2");
         assertThat(card.ownerReleasedAtIso()).isEmpty();
         assertThat(card.menuActions()).contains("edit", "delete");
-        verify(mongoTemplate).updateFirst(any(), any(), eq(Asset.class));
+        verify(mongoTemplate, org.mockito.Mockito.times(2)).updateFirst(any(), any(), eq(Asset.class));
         verify(activitiesResourcesService, never()).refreshResourceMetricsForScope(any(), any(), any());
     }
 
@@ -2410,7 +2438,7 @@ class AssetsServiceTest {
 
         assertThat(card).isNotNull();
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
+        verify(notificationOutboxService).enqueueOnce(anyString(), notification.capture());
         assertThat(notification.getValue().type()).isEqualTo("asset-takeover");
         assertThat(notification.getValue().recipientScope()).isEqualTo("asset-members");
         assertThat(notification.getValue().recipientUserIds()).containsExactly("u3");
@@ -2484,7 +2512,7 @@ class AssetsServiceTest {
 
         assertThat(card).isNotNull();
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
+        verify(notificationOutboxService).enqueueOnce(anyString(), notification.capture());
         assertThat(notification.getValue().recipientUserIds()).containsExactly("u3");
         assertThat(notification.getValue().recipientUserIds()).doesNotContain("u2", "u4");
     }
@@ -2535,7 +2563,7 @@ class AssetsServiceTest {
 
         verify(affinityRecomputeTaskService).enqueueAssetChanged("asset-1", "u1");
         ArgumentCaptor<NotificationIntent> notification = ArgumentCaptor.forClass(NotificationIntent.class);
-        verify(notificationOutboxService).enqueue(notification.capture());
+        verify(notificationOutboxService).enqueueOnce(anyString(), notification.capture());
         assertThat(notification.getValue().type()).isEqualTo("asset-unavailable");
         assertThat(notification.getValue().recipientUserIds()).containsExactly("u2");
     }

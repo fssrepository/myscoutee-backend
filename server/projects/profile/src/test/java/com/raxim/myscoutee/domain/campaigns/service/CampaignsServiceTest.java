@@ -89,13 +89,14 @@ class CampaignsServiceTest {
         verify(rates, never()).findByOwnerUserId(anyString());
     }
     @Test void actorResolutionKeepsWorkMembershipAndAccountChecks() {
-        var profiles = mock(com.raxim.myscoutee.domain.accounts.api.CurrentProfile.class);
+        var profiles = mock(com.raxim.myscoutee.domain.accounts.api.SelectedProfile.class);
         var groups = mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class);
         var workspaces = mock(com.raxim.myscoutee.domain.groups.api.WorkspaceMembership.class);
         var isolated = new CampaignsService(mock(com.raxim.myscoutee.domain.affinity.api.CampaignRatings.class),
                 mock(com.raxim.myscoutee.domain.chat.api.CampaignConversations.class), repository,
-                mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class), groups, workspaces, profiles);
-        when(profiles.resolveCurrentUser("owner")).thenReturn(owner);
+                mock(com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles.class), groups, workspaces, profiles);
+        when(profiles.resolveSelectedIdentity("owner")).thenAnswer(call -> new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
+                owner.getUserId(), owner.getAccountUserId(), owner.getWorkspaceGroupId()));
         when(groups.type("work")).thenReturn(Optional.of(new com.raxim.myscoutee.domain.groups.api.GroupDirectory.GroupType("work", "community")));
         assertThatThrownBy(() -> isolated.actor("owner")).isInstanceOfSatisfying(ResponseStatusException.class,
                 error -> assertThat(error.getStatusCode().value()).isEqualTo(403));

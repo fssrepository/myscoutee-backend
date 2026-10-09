@@ -4,12 +4,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.content.document.IdeaPost;
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 @org.springframework.stereotype.Service
 public class ContentPrivacyService implements com.raxim.myscoutee.domain.content.api.ContentPrivacy {
     private final MongoTemplate mongoTemplate;
-    private final MediaStorage media;
-    public ContentPrivacyService(MongoTemplate mongo, MediaStorage media) { mongoTemplate = mongo; this.media = media; }
+    private final MediaCleanup media;
+    public ContentPrivacyService(MongoTemplate mongo, MediaCleanup media) { mongoTemplate = mongo; this.media = media; }
     public void purgeIdeaPosts(String userId) {
         List<IdeaPost> posts = mongoTemplate.find(
                 Query.query(new Criteria().orOperator(

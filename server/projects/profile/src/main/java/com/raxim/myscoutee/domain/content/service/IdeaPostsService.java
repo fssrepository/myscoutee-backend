@@ -1,7 +1,8 @@
 package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 import java.util.Map;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
@@ -34,10 +35,10 @@ import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.content.document.IdeaPost;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminActionRequestDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminCountsDto;
@@ -72,25 +73,25 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
             .preserveRelativeLinks(true);
 
     private final AdminModerationService admins;
-    private final RuntimeConfiguration configProperties;
+    private final AuthenticationMode configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
     private final OperationalTelemetry adminTelemetryService;
     private final AdministratorSettings appSettingsService;
     private final LandingArticlesRepository landingArticlesRepository;
     private final IdeaPostMapper ideaPostMapper;
-    private final MediaStorage mediaStorageService;
+    private final MediaCleanup mediaStorageService;
 
     public IdeaPostsService(
             AdminModerationService admins,
-            RuntimeConfiguration configProperties,
+            AuthenticationMode configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
             OperationalTelemetry adminTelemetryService,
             AdministratorSettings appSettingsService,
             LandingArticlesRepository landingArticlesRepository,
             IdeaPostMapper ideaPostMapper,
-            MediaStorage mediaStorageService) {
+            MediaCleanup mediaStorageService) {
         this.admins = admins;
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
@@ -390,7 +391,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     private Set<String> managedImageGroups(List<String> imageUrls) {
         Set<String> groups = new LinkedHashSet<>();
         for (String imageUrl : imageUrls == null ? List.<String>of() : imageUrls) {
-            String group = mediaStorageService.managedImageSetGroupKey(imageUrl);
+            String group = MediaAccessPaths.managedImageSetGroupKey(imageUrl);
             if (StringUtils.hasText(group)) {
                 groups.add(group);
             }
@@ -402,7 +403,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
             Map<String, String> removedImagesByGroup,
             Set<String> retainedGroups,
             String imageUrl) {
-        String group = mediaStorageService.managedImageSetGroupKey(imageUrl);
+        String group = MediaAccessPaths.managedImageSetGroupKey(imageUrl);
         if (StringUtils.hasText(group) && !retainedGroups.contains(group)) {
             removedImagesByGroup.putIfAbsent(group, imageUrl);
         }
@@ -421,7 +422,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
                 element.remove();
                 continue;
             }
-            String group = mediaStorageService.managedImageSetGroupKey(reference);
+            String group = MediaAccessPaths.managedImageSetGroupKey(reference);
             if (StringUtils.hasText(group) && removedGroups.contains(group)) {
                 element.remove();
             }
@@ -662,7 +663,7 @@ public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.
     private String resolveFirebaseEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof AccountIdentity firebasePrincipal) {
+        if (principal instanceof AuthenticatedActor firebasePrincipal) {
             return normalize(firebasePrincipal.getEmail());
         }
         return normalize(authentication == null ? null : authentication.getName());

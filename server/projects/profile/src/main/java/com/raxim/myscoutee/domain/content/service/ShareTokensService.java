@@ -16,8 +16,8 @@ import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.content.document.ShareToken;
 import com.raxim.myscoutee.domain.content.dto.ShareTokenDtos.ShareTokenCreateRequestDto;
 import com.raxim.myscoutee.domain.content.dto.ShareTokenDtos.ShareTokenResolvedItemDto;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.content.repository.ShareTokensRepository;
 
 @Service
@@ -29,13 +29,13 @@ public class ShareTokensService {
     private static final String KIND_ADMIN_HELP = "adminHelp";
 
     private final ShareTokensRepository shareTokensRepository;
-    private final EventOwnership activityEventsRepository;
-    private final AssetOwnership assetsRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final AssetOwnershipReads assetsRepository;
 
     public ShareTokensService(
             ShareTokensRepository shareTokensRepository,
-            EventOwnership activityEventsRepository,
-            AssetOwnership assetsRepository) {
+            EventOwnershipReads activityEventsRepository,
+            AssetOwnershipReads assetsRepository) {
         this.shareTokensRepository = shareTokensRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.assetsRepository = assetsRepository;

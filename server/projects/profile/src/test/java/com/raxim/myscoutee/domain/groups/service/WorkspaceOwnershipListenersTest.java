@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.ProfileIdentities;
+import com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto;
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.assets.service.AssetWorkspaceDocumentListener;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
@@ -17,11 +17,11 @@ import com.raxim.myscoutee.domain.events.service.EventWorkspaceDocumentListener;
 @Tag("standard")
 class WorkspaceOwnershipListenersTest {
     @Test void eachOwnerStampsItsOwnDocumentUsingTheStoredProfileAndClearsUnownedScope() {
-        var profiles = mock(ProfileDirectory.class);
-        @SuppressWarnings("unchecked") var provider = (ObjectProvider<ProfileDirectory>) mock(ObjectProvider.class);
+        var profiles = mock(ProfileIdentities.class);
+        @SuppressWarnings("unchecked") var provider = (ObjectProvider<ProfileIdentities>) mock(ObjectProvider.class);
         when(provider.getObject()).thenReturn(profiles);
-        var owner = new Users(); owner.setWorkspaceGroupId("workspace");
-        doReturn(Optional.of(owner)).when(profiles).findByUserId("owner");
+        var owner = new ProfileIdentityDto("owner", "account", "workspace");
+        doReturn(Optional.of(owner)).when(profiles).findIdentityByUserId("owner");
         var event = new ActivityEvent(); event.setCreatorUserId("owner"); event.setWorkspaceGroupId("untrusted");
         var asset = new Asset(); asset.setOwnerUserId("owner"); asset.setWorkspaceGroupId("untrusted");
         var eventListener = new EventWorkspaceDocumentListener(provider);
@@ -30,8 +30,8 @@ class WorkspaceOwnershipListenersTest {
         assetListener.onBeforeConvert(new BeforeConvertEvent<>(asset, "assets"));
         assertThat(event.getWorkspaceGroupId()).isEqualTo("workspace");
         assertThat(asset.getWorkspaceGroupId()).isEqualTo("workspace");
-        verify(profiles, times(2)).findByUserId("owner");
-        doReturn(Optional.empty()).when(profiles).findByUserId("owner");
+        verify(profiles, times(2)).findIdentityByUserId("owner");
+        doReturn(Optional.empty()).when(profiles).findIdentityByUserId("owner");
         eventListener.onBeforeConvert(new BeforeConvertEvent<>(event, "events"));
         assetListener.onBeforeConvert(new BeforeConvertEvent<>(asset, "assets"));
         assertThat(event.getWorkspaceGroupId()).isNull(); assertThat(asset.getWorkspaceGroupId()).isNull();

@@ -10,14 +10,13 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 @Service
 public class AccountInactivityService implements AccountInactivity {
     private final UsersRepository usersRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
-    private final AffinityStatusChanges affinity;
-    public AccountInactivityService(UsersRepository usersRepository, UserSessionActionsRepository userSessionActionsRepository, AffinityStatusChanges affinity) {
-        this.usersRepository = usersRepository; this.userSessionActionsRepository = userSessionActionsRepository; this.affinity = affinity;
+    private final ProfileStatusWork statusWork;
+    public AccountInactivityService(UsersRepository usersRepository, UserSessionActionsRepository userSessionActionsRepository, ProfileStatusWork statusWork) {
+        this.usersRepository = usersRepository; this.userSessionActionsRepository = userSessionActionsRepository; this.statusWork = statusWork;
     }
     @Override public Outcome inactivate(String userId, int inactiveDays, Instant now) {
         Users user = StringUtils.hasText(userId) ? usersRepository.findByUserId(userId).orElse(null) : null;
@@ -31,8 +30,7 @@ public class AccountInactivityService implements AccountInactivity {
             return new Outcome("skipped", 0, "Profile already inactive.", user, null);
         user.setStatus("I");
         user.setProfileStatus("inactive");
-        usersRepository.save(user);
-        affinity.enqueueAdminStatusChanged(userId);
+        statusWork.save(user);
         return new Outcome("completed", 1, "Profile set to inactive.", user, null);
     }
     private Instant latestActivityAt(Users user) {

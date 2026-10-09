@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutBasketItemD
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutPricingSummaryRowDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 /** Read-only local payment snapshot. Mutations stay with payment operations. */
-public interface PaymentView {
+public interface PaymentView extends PaymentFulfillment, CancellationPayment, RevenuePayment {
     com.raxim.myscoutee.domain.payments.dto.ExchangeRateDtos.Snapshot getEuro();
     String getAffiliateOwnerUserId();
     boolean isAffiliateAttributionResolved();

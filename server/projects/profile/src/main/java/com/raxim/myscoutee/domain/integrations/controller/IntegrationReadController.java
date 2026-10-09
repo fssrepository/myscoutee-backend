@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.controller;
 
-import com.raxim.myscoutee.domain.affinity.api.Ratings;
+import com.raxim.myscoutee.domain.affinity.api.RatingPageReads;
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.api.ChatQueries;
@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.community.api.Cases;
 import com.raxim.myscoutee.domain.community.api.ScheduledCases;
 import com.raxim.myscoutee.domain.community.api.ServiceOfferings;
 import com.raxim.myscoutee.domain.events.api.EventOperations;
-import com.raxim.myscoutee.domain.groups.api.Groups;
+import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
 
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
+import com.raxim.myscoutee.domain.notifications.api.NotificationReads;
 
 /** Read/Full-pack reads. Actor identity never comes from query parameters or model arguments. */
 @RestController
@@ -25,17 +25,17 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 public class IntegrationReadController {
     private final IntegrationCapabilitiesService access;
     private final EventOperations events;
-    private final Groups groups;
+    private final IntegrationGroups groups;
     private final ChatQueries chats;
-    private final NotificationInbox notifications;
-    private final Ratings ratings;
+    private final NotificationReads notifications;
+    private final RatingPageReads ratings;
     private final Assets assets;
     private final Campaigns campaigns;
     private final ServiceOfferings services;
     private final Cases cases;
     private final Announcements announcements;
     private final ScheduledCases tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, EventOperations events, Groups groups, ChatQueries chats, NotificationInbox notifications, Ratings ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
+    public IntegrationReadController(IntegrationCapabilitiesService access, EventOperations events, IntegrationGroups groups, ChatQueries chats, NotificationReads notifications, RatingPageReads ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

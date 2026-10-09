@@ -2,9 +2,8 @@ package com.raxim.myscoutee.domain.media.api;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public interface MediaStorage {
+public interface MediaStorage extends MediaCleanup, ImageUploads {
     String storeImage(String ownerId, String entityId, MultipartFile image);
-    StoredImageSet storeImageSet(String ownerId, String entityId, MultipartFile image);
     String storeAudio(String ownerId, String entityId, MultipartFile audio);
     String storeDocument(String ownerId, String entityId, MultipartFile file);
     String importImage(String ownerId, String entityId, String imageUrl);
@@ -22,8 +21,6 @@ public interface MediaStorage {
             String contentTypeValue,
             byte[] bytes);
     StoredMediaObject loadPublicObject(String key);
-    void deletePublicObject(String mediaUrlOrKey);
-    void deletePublicObjectOrThrow(String mediaUrlOrKey);
     boolean isEnabled();
     String managedImageSetGroupKey(String mediaUrlOrKey);
     record StoredMediaObject(

@@ -109,6 +109,16 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
     private String status;
     private String profileStatus;
     private String previousProfileStatus;
+    public record ProfileSupportWork(@org.springframework.data.mongodb.core.mapping.Field("id") String id, String adminUserId, String adminName, String adminInitials, String text) {}
+    private List<ProfileSupportWork> profileSupportWork = new ArrayList<>();
+    public List<ProfileSupportWork> getProfileSupportWork() { return profileSupportWork == null ? List.of() : profileSupportWork; }
+    public void setProfileSupportWork(List<ProfileSupportWork> value) { profileSupportWork = new ArrayList<>(value); }
+    private Map<String, Boolean> feedbackCounterReceipts = new LinkedHashMap<>();
+    public Map<String, Boolean> getFeedbackCounterReceipts() { return feedbackCounterReceipts; }
+    public void setFeedbackCounterReceipts(Map<String, Boolean> value) { feedbackCounterReceipts = value; }
+    private String profileStatusWork;
+    public String getProfileStatusWork() { return profileStatusWork; }
+    public void setProfileStatusWork(String value) { profileStatusWork = value; }
     private String deletedAtIso;
     private Boolean accountPurgePendingCounterTracked;
     /*
@@ -137,6 +147,13 @@ public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceP
     }
     private Integer paymentRefundsPending;
     private Integer contactRequestsPending;
+    private Map<String, Long> contactPermissionCounterVersions = new LinkedHashMap<>();
+    private Map<String, Long> contactPermissionContactVersions = new LinkedHashMap<>();
+
+    public Map<String, Long> getContactPermissionCounterVersions() { return contactPermissionCounterVersions; }
+    public void setContactPermissionCounterVersions(Map<String, Long> value) { contactPermissionCounterVersions = value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value); }
+    public Map<String, Long> getContactPermissionContactVersions() { return contactPermissionContactVersions; }
+    public void setContactPermissionContactVersions(Map<String, Long> value) { contactPermissionContactVersions = value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value); }
 
     public String getMongoId() {
         return mongoId;

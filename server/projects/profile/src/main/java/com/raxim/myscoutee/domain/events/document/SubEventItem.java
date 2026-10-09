@@ -49,6 +49,10 @@ public record SubEventItem(
         Integer stageResultRevision,
         List<SubEventGroupItemDto> groups) implements com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent {
 
+    @Override public com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentation() {
+        return com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper.toDto(this);
+    }
+
     public SubEventItem(
             String id,
             String name,

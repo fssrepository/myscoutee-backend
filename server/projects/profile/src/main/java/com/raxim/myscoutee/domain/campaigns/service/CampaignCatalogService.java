@@ -10,10 +10,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog;
+import com.raxim.myscoutee.domain.campaigns.dto.CampaignMediaVisibilityDto;
 import com.raxim.myscoutee.domain.campaigns.document.Campaign;
 
 @Service
-public class CampaignCatalogService implements CampaignCatalog {
+public class CampaignCatalogService implements CampaignCatalog, com.raxim.myscoutee.domain.campaigns.api.CampaignMediaVisibility {
     private final MongoTemplate mongo;
     public CampaignCatalogService(MongoTemplate mongo) { this.mongo = mongo; }
     @Override public Campaign find(String id) { return mongo.findById(id, Campaign.class); }
@@ -24,10 +25,10 @@ public class CampaignCatalogService implements CampaignCatalog {
     @Override public boolean ownedExists(String ownerUserId, String id) {
         return mongo.exists(Query.query(Criteria.where("ownerUserId").is(ownerUserId).and("_id").is(id)), Campaign.class);
     }
-    @Override public MediaReference mediaReference(List<String> urls) {
+    @Override public CampaignMediaVisibilityDto mediaReference(List<String> urls) {
         Query query = Query.query(new Criteria().orOperator(Criteria.where("imageUrls").in(urls), Criteria.where("attachments.url").in(urls)));
         query.fields().include("workspaceGroupId").include("status");
         Document record = mongo.findOne(query, Document.class, "campaigns");
-        return record == null ? null : new MediaReference(record.getString("workspaceGroupId"), record.getString("status"));
+        return record == null ? null : new CampaignMediaVisibilityDto(record.getString("workspaceGroupId"), record.getString("status"));
     }
 }

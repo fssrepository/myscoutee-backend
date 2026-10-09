@@ -4,11 +4,11 @@ import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.CurrentProfile;
 
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.EventAffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
 import com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle;
@@ -58,7 +58,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.accounts.api.Friendships;
+import com.raxim.myscoutee.domain.accounts.api.FriendshipReads;
 import org.springframework.util.StringUtils;
 
 import tools.jackson.core.type.TypeReference;
@@ -73,7 +73,7 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.EventWatchSubscription;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfile;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto;
@@ -131,7 +131,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventGroupsReposi
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
@@ -148,6 +148,25 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 
 @Service
 public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents, com.raxim.myscoutee.domain.events.api.EventOperations {
+    @org.springframework.beans.factory.annotation.Autowired private EventLifecycleWork lifecycleWork;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.chat.api.ChatDirectory lifecycleChats;
+    private record LifecyclePlan(boolean available, String attachmentReason, String notificationReason, List<String> audience) {}
+
+    private LifecyclePlan lifecyclePlan(String sourceId, String actor, boolean available, String attachmentReason,
+            String notificationReason, boolean acceptedOnly, ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        var audience = new LinkedHashSet<String>();
+        if (notificationReason != null && snapshot != null) {
+            audience.addAll(snapshot.acceptedMemberUserIds());
+            if (!acceptedOnly) {
+                audience.addAll(snapshot.pendingMemberUserIds()); audience.addAll(snapshot.invitedMemberUserIds());
+                audience.addAll(snapshot.pendingRequestMemberUserIds());
+            }
+        }
+        if (notificationReason != null && !acceptedOnly) audience.addAll(activeSubEventResourceAudienceUserIds(sourceId));
+        audience.removeIf(id -> id == null || id.isBlank() || id.equals(actor));
+        return new LifecyclePlan(available, attachmentReason, notificationReason, List.copyOf(audience));
+    }
+
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.FollowingEvents followingEvents;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
@@ -192,10 +211,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
-    private final ProfileDirectory usersRepository;
-    private final Friendships friendshipFacts;
+    private final DiscoveryProfiles usersRepository;
+    private final FriendshipReads friendshipFacts;
     private final EdgeDirectory userAffinityEdgesRepository;
-    private final ProfilePresentation homeUserProfileService;
+    private final CurrentProfile homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
@@ -203,7 +222,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     private final CheckoutBaskets eventCheckoutBasketService;
     private final CheckoutPricing eventCheckoutPricingService;
     private final ScheduledMessages scheduledMessageTaskService;
-    private final AffinityScores absoluteAffinityService;
+    private final EventAffinityScores absoluteAffinityService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final MongoTemplate mongoTemplate;
@@ -231,10 +250,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityMembersRepository activityMembersRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
-            ProfileDirectory usersRepository,
-            Friendships friendshipFacts,
+            DiscoveryProfiles usersRepository,
+            FriendshipReads friendshipFacts,
             EdgeDirectory userAffinityEdgesRepository,
-            ProfilePresentation homeUserProfileService,
+            CurrentProfile homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
@@ -242,7 +261,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             CheckoutBaskets eventCheckoutBasketService,
             CheckoutPricing eventCheckoutPricingService,
             ScheduledMessages scheduledMessageTaskService,
-            AffinityScores absoluteAffinityService,
+            EventAffinityScores absoluteAffinityService,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             MongoTemplate mongoTemplate,
@@ -2263,7 +2282,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
         boolean followedOnly = request != null && Boolean.TRUE.equals(request.followedOnly());
         Set<String> followedIds = followedOnly
-                ? Set.copyOf(followingEvents.organizerIds(homeUserProfileService.resolveCurrentUser(viewer.userId())))
+                ? Set.copyOf(followingEvents.organizerIds(viewer.userId()))
                 : Set.of();
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
             List<EventProjection> sorted = computeExploreRecords(viewer, followedOnly).stream()
@@ -2365,11 +2384,10 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             }
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
-        }, true);
+        }, true, organizerLifecycleRequest ? lifecyclePlan(sourceId, request.userId(), false, "trashed", "deleted", false, beforeSnapshot) : null);
         if (organizerLifecycleRequest) {
-            scheduleEventLifecycleChangedNotification(sourceId, updated, "deleted", request == null ? null : request.userId());
             syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-            markEventAttachmentsUnavailable(updated, "trashed");
+            updated.forEach(lifecycleWork::deliver);
         }
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         return withCounterDelta(
@@ -2463,6 +2481,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             activitiesMembersService.retireCancelledEventParticipation(sourceId, userId);
         }
         boolean changed = preferred != null && !ActivityEvent.STATUS_ACTIVE.equals(safeText(preferred.getStatus()));
+        boolean firstActorChat = changed && beforeSnapshot != null && beforeSnapshot.acceptedMemberUserIds().contains(userId)
+                && lifecycleChats.findByOwnerUserIdAndChatId(userId, sourceId).isEmpty();
         String nowIso = Instant.now().toString();
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_ACTIVE);
@@ -2475,7 +2495,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             }
             current.setSubEvents(ensureTournamentStartReviewStage(current.getSubEvents(), nowIso));
             current.refreshTournamentCurrentStage();
-        });
+        }, false, changed ? lifecyclePlan(sourceId, userId, true, null, "modified", firstActorChat, beforeSnapshot) : null);
         List<ActivityEvent> publishedDocuments = ensurePublishedEventDocuments(updated, request == null ? null : request.userId());
         if (contentModeration != null && preferred != null && !Boolean.TRUE.equals(preferred.getGenerated())) {
             contentModeration.register("event", sourceId, preferred.getCreatorUserId(), preferred.getTitle(), preferred.getImageUrl());
@@ -2487,14 +2507,6 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             chatService.updateEventChatOwnerStatus(sourceId, ActivityEvent.STATUS_ACTIVE);
             if (eventChatAdded) {
                 notifyPublishedPendingInvitees(publishedDocuments, beforeSnapshot, userId);
-                scheduleAcceptedEventLifecycleChangedNotification(
-                        sourceId,
-                        publishedDocuments,
-                        beforeSnapshot,
-                        "modified",
-                        userId);
-            } else {
-                scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
             }
             schedulePublicWatchlistEventChangedNotification(
                     sourceId,
@@ -2502,7 +2514,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                     List.of("modified"),
                     userId);
             syncStageReminderTasksForSavedEvents(publishedDocuments, userId);
-            markEventAttachmentsAvailable(publishedDocuments);
+            publishedDocuments.forEach(lifecycleWork::deliver);
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
             runInitialAutoInviteBatch(publishedDocuments);
         }
@@ -2536,12 +2548,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         boolean changed = preferred != null && !ActivityEvent.STATUS_DRAFT.equals(safeText(preferred.getStatus()));
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_DRAFT);
-        });
+        }, false, changed ? lifecyclePlan(sourceId, userId, false, "unpublished", "under-review", false, beforeSnapshot) : null);
         if (changed) {
             chatService.updateEventChatOwnerStatus(sourceId, ActivityEvent.STATUS_DRAFT);
-            scheduleEventLifecycleChangedNotification(sourceId, updated, "under-review", userId);
             syncStageReminderTasksForSavedEvents(updated, userId);
-            markEventAttachmentsUnavailable(updated, "unpublished");
+            updated.forEach(lifecycleWork::deliver);
         }
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
@@ -2613,9 +2624,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             current.setStatus(restoredStatus);
             current.setStatusBeforeSuppression(null);
             current.setTrashedAtIso(null);
-        });
+        }, false, lifecyclePlan(sourceId, viewer.userId(), true, null, null, false, null));
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsAvailable(updated);
+        updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         ActivitiesMembersService.OwnerMembersSnapshot snapshot =
@@ -2673,15 +2684,16 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             next.setUpdatedUser(viewer.userId());
             next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
             next.normalizeLifecycleState();
+            if (preferred != null && Objects.equals(preferred.getId(), next.getId()))
+                lifecycleWork.prepare(next, viewer.userId(), true, null, null, List.of());
             updated.add(next);
         }
         if (updated.isEmpty()) {
             return;
         }
         updated = activityEventsRepository.saveAll(updated);
-        affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsAvailable(updated);
+        updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
@@ -3399,6 +3411,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
                     null,
                     session == null ? null : session.id()));
             return result;
+        } catch (com.raxim.myscoutee.domain.payments.api.CheckoutOutcomeUnknown unknown) {
+            // The owner may have committed. Leave its existing state for reconciliation/redelivery.
+            throw unknown;
         } catch (RuntimeException exception) {
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     request.userId(),
@@ -3412,7 +3427,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
     }
 
-    public EventParticipationActionResultDto finalizeAuthorizedPayment(com.raxim.myscoutee.domain.payments.api.PaymentView payment) {
+    public EventParticipationActionResultDto finalizeAuthorizedPayment(com.raxim.myscoutee.domain.payments.api.PaymentFulfillment payment) {
         if (payment == null || !StringUtils.hasText(payment.getCheckoutSessionId())) {
             return null;
         }
@@ -3542,13 +3557,13 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private void enqueueCheckoutBasketUpdatedNotification(
             ActivityEvent event,
-            WorkspaceProfile member,
+            DiscoveryProfile member,
             String pendingReason) {
         if (notificationOutboxService == null || event == null || member == null) {
             return;
         }
         String eventId = normalizeId(event.getSourceId());
-        String memberUserId = normalizeId(member.getId());
+        String memberUserId = normalizeId(member.getUserId());
         if (!StringUtils.hasText(eventId) || !StringUtils.hasText(memberUserId)) {
             return;
         }
@@ -5007,7 +5022,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
 
-        WorkspaceProfile creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
+        DiscoveryProfile creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
         String ownerUserId = normalizeId(request.creatorUserId());
         if (!StringUtils.hasText(ownerUserId)) {
             ownerUserId = actorUserId;
@@ -5448,57 +5463,6 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
     }
 
-    private void scheduleEventLifecycleChangedNotification(
-            String sourceId,
-            List<ActivityEvent> updatedRecords,
-            String reason,
-            String actorUserId) {
-        String normalizedSourceId = normalizeId(sourceId);
-        if (!StringUtils.hasText(normalizedSourceId)) {
-            return;
-        }
-        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
-        scheduleEventDefinitionChangedNotification(
-                normalizedSourceId,
-                event,
-                new EventDefinitionChangeSummary(true, Set.of(), List.of(safeText(reason))),
-                activeSubEventResourceAudienceUserIds(normalizedSourceId),
-                Set.of(),
-                actorUserId,
-                true);
-    }
-
-    private void scheduleAcceptedEventLifecycleChangedNotification(
-            String sourceId,
-            List<ActivityEvent> updatedRecords,
-            ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot,
-            String reason,
-            String actorUserId) {
-        String normalizedSourceId = normalizeId(sourceId);
-        if (!StringUtils.hasText(normalizedSourceId) || membershipSnapshot == null) {
-            return;
-        }
-        LinkedHashSet<String> audienceUserIds = new LinkedHashSet<>(
-                normalizeIds(membershipSnapshot.acceptedMemberUserIds()));
-        audienceUserIds.remove(normalizeId(actorUserId));
-        if (audienceUserIds.isEmpty()) {
-            return;
-        }
-        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
-        scheduledMessageTaskService.scheduleEventLifecycleChanged(
-                normalizedSourceId,
-                event == null ? null : event.getTitle(),
-                audienceUserIds,
-                List.of(safeText(reason)),
-                actorUserId);
-    }
-
     private void schedulePublicWatchlistEventChangedNotification(
             String sourceId,
             List<ActivityEvent> updatedRecords,
@@ -5601,8 +5565,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {
-        WorkspaceProfile user = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String userId = user == null ? null : normalizeId(user.getId());
+        DiscoveryProfile user = homeUserProfileService.resolveCurrentUser(requestedUserId);
+        String userId = user == null ? null : normalizeId(user.getUserId());
         if (!StringUtils.hasText(userId) || user == null) {
             return null;
         }
@@ -5807,7 +5771,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return Map.of();
         }
         Map<String, String> avatarUrlsByUserId = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(creatorUserIds)) {
+        for (DiscoveryProfile user : usersRepository.findByUserIdIn(creatorUserIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
             String avatarUrl = firstUserImageUrl(user);
             if (StringUtils.hasText(userId) && StringUtils.hasText(avatarUrl)) {
@@ -5817,7 +5781,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return avatarUrlsByUserId;
     }
 
-    private String firstUserImageUrl(WorkspaceProfile user) {
+    private String firstUserImageUrl(DiscoveryProfile user) {
         if (user == null || user.getImages() == null) {
             return "";
         }
@@ -6668,6 +6632,11 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             EventActionRequestDto request,
             Consumer<ActivityEvent> updater,
             boolean createScopedRecord) {
+        return updateItemState(request, updater, createScopedRecord, null);
+    }
+
+    private List<ActivityEvent> updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater,
+            boolean createScopedRecord, LifecyclePlan lifecycle) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
@@ -6679,6 +6648,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             return List.of();
         }
 
+        ActivityEvent primary = lifecycle == null ? null : findPreferredEventRecord(sourceId);
         List<ActivityEvent> updated = new ArrayList<>();
         for (ActivityEvent document : documents) {
             ActivityEvent next = cloneDocument(document);
@@ -6687,10 +6657,13 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
             next.setUpdatedUser(viewer.userId());
             next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
             next.normalizeLifecycleState();
+            if (primary != null && Objects.equals(primary.getId(), next.getId()))
+                lifecycleWork.prepare(next, viewer.userId(), lifecycle.available(), lifecycle.attachmentReason(),
+                        lifecycle.notificationReason(), lifecycle.audience());
             updated.add(next);
         }
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
-        affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
+        if (lifecycle == null) affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         return saved;
     }
 
@@ -6736,30 +6709,6 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
     }
 
-    private void markEventAttachmentsUnavailable(List<ActivityEvent> documents, String reason) {
-        if (chatAttachmentLifecycleService == null || documents == null || documents.isEmpty()) {
-            return;
-        }
-        documents.stream()
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .forEach(sourceId -> chatAttachmentLifecycleService.markEventUnavailable(sourceId, reason));
-    }
-
-    private void markEventAttachmentsAvailable(List<ActivityEvent> documents) {
-        if (chatAttachmentLifecycleService == null || documents == null || documents.isEmpty()) {
-            return;
-        }
-        documents.stream()
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .forEach(chatAttachmentLifecycleService::markEventAvailable);
-    }
-
     private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String sourceId) {
         return resolveActionDocuments(ownerUserId, sourceId, false);
     }
@@ -6794,6 +6743,8 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         }
         ActivityEvent scoped = cloneDocument(preferred);
         scoped.setId(resolveExistingId(ownerUserId, sourceId, null));
+        scoped.setVersion(null);
+        scoped.setLifecycleWork(List.of());
         scoped.setSyncKey(resolveExistingSyncKey(ownerUserId, sourceId, null));
         scoped.setOwnerUserId(ownerUserId);
         scoped.setAdmins(resolveAdminUserIds(scoped.getSourceId(), scoped.getCreatorUserId()));
@@ -6871,7 +6822,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private ActivityEvent buildSyncedRecord(
             EventDetailDto request,
-            WorkspaceProfile creator,
+            DiscoveryProfile creator,
             String actorUserId,
             String sourceId,
             ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
@@ -7102,8 +7053,9 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         document.setMode(nextMode);
         document.setMingleConfiguration(nextMingleConfiguration);
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
-        document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
-        document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
+        var scores = absoluteAffinityService.calculate(document, affinityParticipantIds(creator, acceptedMemberUserIds));
+        document.setAffinity(scores.affinity());
+        document.setBoost(scores.boost());
         document.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
@@ -7137,32 +7089,12 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return firstNonBlank(event.getEndAtIso(), event.getStartAtIso());
     }
 
-    private double resolveAffinity(ActivityEvent event, WorkspaceProfile creator, List<String> acceptedMemberUserIds) {
-        return absoluteAffinityService.resolveEventAffinity(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
-    }
-
-    private double resolveBoost(ActivityEvent event, WorkspaceProfile creator, List<String> acceptedMemberUserIds) {
-        return absoluteAffinityService.resolveEventBoost(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
-    }
-
-    private List<WorkspaceProfile> resolveAffinityParticipants(WorkspaceProfile creator, List<String> acceptedMemberUserIds) {
-        LinkedHashMap<String, WorkspaceProfile> participantsByUserId = new LinkedHashMap<>();
-        String creatorUserId = normalizeId(creator == null ? null : creator.getId());
-        if (StringUtils.hasText(creatorUserId)) {
-            participantsByUserId.put(creatorUserId, creator);
-        }
-        List<String> missingUserIds = normalizeIds(acceptedMemberUserIds).stream()
-                .filter(userId -> !participantsByUserId.containsKey(userId))
-                .toList();
-        if (!missingUserIds.isEmpty()) {
-            for (WorkspaceProfile user : usersRepository.findByUserIdIn(missingUserIds)) {
-                String userId = normalizeId(user == null ? null : user.getId());
-                if (StringUtils.hasText(userId)) {
-                    participantsByUserId.put(userId, user);
-                }
-            }
-        }
-        return new ArrayList<>(participantsByUserId.values());
+    private List<String> affinityParticipantIds(DiscoveryProfile creator, List<String> acceptedMemberUserIds) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        String creatorUserId = normalizeId(creator == null ? null : creator.getUserId());
+        if (StringUtils.hasText(creatorUserId)) ids.add(creatorUserId);
+        ids.addAll(normalizeIds(acceptedMemberUserIds));
+        return List.copyOf(ids);
     }
 
     private List<String> persistedAcceptedMemberUserIds(ActivityEvent existing) {
@@ -8364,7 +8296,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return new GeoJsonPoint(value.getX(), value.getY());
     }
 
-    private LocationCoordinatesDto toLocationCoordinatesDto(WorkspaceProfile.Coordinates value) {
+    private LocationCoordinatesDto toLocationCoordinatesDto(com.raxim.myscoutee.domain.accounts.api.ScoringProfile.Coordinates value) {
         if (value == null || value.latitude() == null || value.longitude() == null) {
             return null;
         }
@@ -8530,14 +8462,14 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return Math.max(min, Math.min(max, normalized));
     }
 
-    private String resolveCreatorName(String requestedName, WorkspaceProfile creator) {
+    private String resolveCreatorName(String requestedName, DiscoveryProfile creator) {
         if (StringUtils.hasText(requestedName)) {
             return requestedName.trim();
         }
         return creator == null ? "" : safeText(creator.getName());
     }
 
-    private String resolveCreatorInitials(String requestedInitials, WorkspaceProfile creator, String requestedName) {
+    private String resolveCreatorInitials(String requestedInitials, DiscoveryProfile creator, String requestedName) {
         if (StringUtils.hasText(requestedInitials)) {
             return requestedInitials.trim();
         }
@@ -8552,14 +8484,14 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
         return ("" + words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
     }
 
-    private String resolveCreatorGender(String requestedGender, WorkspaceProfile creator) {
+    private String resolveCreatorGender(String requestedGender, DiscoveryProfile creator) {
         if (StringUtils.hasText(requestedGender)) {
             return requestedGender.trim();
         }
         return creator == null ? "man" : safeText(creator.getGender());
     }
 
-    private String resolveCreatorCity(String requestedCity, WorkspaceProfile creator) {
+    private String resolveCreatorCity(String requestedCity, DiscoveryProfile creator) {
         if (StringUtils.hasText(requestedCity)) {
             return requestedCity.trim();
         }
@@ -8651,7 +8583,7 @@ public class ActivitiesEventsService implements com.raxim.myscoutee.domain.event
 
     private record ViewerContext(
             String userId,
-            WorkspaceProfile user,
+            DiscoveryProfile user,
             LocationCoordinatesDto locationCoordinates,
             int affinity) {
     }

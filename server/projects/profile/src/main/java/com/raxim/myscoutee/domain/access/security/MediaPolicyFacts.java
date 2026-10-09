@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.access.security;
 
-import com.raxim.myscoutee.domain.accounts.api.Friendships;
+import com.raxim.myscoutee.domain.accounts.api.FriendshipReads;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
 @Component
 public class MediaPolicyFacts {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
+    private com.raxim.myscoutee.domain.campaigns.api.CampaignMediaVisibility campaignCatalog;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
     private com.raxim.myscoutee.domain.administration.api.AdministratorClassification adminCounters;
@@ -24,7 +24,7 @@ public class MediaPolicyFacts {
     private final com.raxim.myscoutee.domain.events.api.EventMediaVisibility events;
     private final com.raxim.myscoutee.domain.content.api.ContentMediaVisibility content;
     private final com.raxim.myscoutee.domain.chat.api.ChatMediaVisibility chat;
-    private final Friendships friendships;
+    private final FriendshipReads friendships;
     private final ChatPolicyFacts chats;
 
     public MediaPolicyFacts(
@@ -35,7 +35,7 @@ public class MediaPolicyFacts {
             com.raxim.myscoutee.domain.events.api.EventMediaVisibility events,
             com.raxim.myscoutee.domain.content.api.ContentMediaVisibility content,
             com.raxim.myscoutee.domain.chat.api.ChatMediaVisibility chat,
-            Friendships friendships, ChatPolicyFacts chats) {
+            FriendshipReads friendships, ChatPolicyFacts chats) {
         this.accounts = accounts;
         this.groups = groups;
         this.community = community;

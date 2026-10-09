@@ -1,8 +1,9 @@
 package com.raxim.myscoutee.domain.events.api;
 import java.util.*;
+import com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto;
 public interface EventPrivacy {
-    List<? extends EventOwnership.Event> findOwnedEventsForPurge(String userId);
-    void purgeOwnedEvents(List<? extends EventOwnership.Event> events, Collection<String> sources);
+    List<EventPurgeTargetDto> findOwnedEventsForPurge(String userId);
+    void purgeOwnedEvents(Collection<String> documentIds, Collection<String> sources);
     void purgeActivityMemberships(String userId);
     void purgeManagedEventAdminReferences(String userId);
     void purgeActivityResources(String userId, Collection<String> eventIds, Collection<String> assetIds);

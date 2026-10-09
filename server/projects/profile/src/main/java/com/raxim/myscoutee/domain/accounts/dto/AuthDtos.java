@@ -610,6 +610,8 @@ public final class AuthDtos {
     public record UserNotificationDeviceDto(String deviceId, boolean notificationsEnabled) {
     }
 
+    public record UserFollowingDto(List<String> organizerIds, Integer eventCount, String nextExpiryAtIso) {}
+
     public record UserRealtimeLongPollResponseDto(
             String userId,
             String profileStatus,
@@ -621,7 +623,7 @@ public final class AuthDtos {
             List<UserNotificationDeviceDto> notificationDevices,
             String cursor,
             String serverTsIso,
-            com.raxim.myscoutee.domain.accounts.document.Users.FollowingRecord following,
+            UserFollowingDto following,
             com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.Snapshot contentModeration,
             com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord feedCounters,
             boolean paymentCardsAvailable,

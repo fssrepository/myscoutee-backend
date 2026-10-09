@@ -1,3 +1,3 @@
 package com.raxim.myscoutee.domain.accounts.api;
 
-public interface CurrentProfile { WorkspaceProfile resolveCurrentUser(String requestedUserId); }
+public interface CurrentProfile { DiscoveryProfile resolveCurrentUser(String requestedUserId); }

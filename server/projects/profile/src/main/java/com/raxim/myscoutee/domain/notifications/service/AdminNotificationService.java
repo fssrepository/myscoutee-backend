@@ -38,7 +38,7 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotification
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationTemplateOptionDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationTimingDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto;
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.events.api.RandomGroupAssignment;
 
@@ -63,7 +63,7 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
     private final NotificationRuleRegistryService notificationRuleRegistryService;
     private final EmailProcessCatalog emailCatalog;
     private final RandomGroupAssignment eventScheduler;
-    private final AdministrativeAccess adminModerationService;
+    private final AdministrativeActors adminModerationService;
     private final OperationalTelemetry adminTelemetryService;
     private final AtomicInteger expectedRandomRunMillis = new AtomicInteger((int) DEFAULT_EXPECTED_RANDOM_RUN_MILLIS);
     private final ExecutorService runExecutor = Executors.newFixedThreadPool(2, runnable -> {
@@ -81,7 +81,7 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
             NotificationRuleRegistryService notificationRuleRegistryService,
             EmailProcessCatalog emailCatalog,
             RandomGroupAssignment eventScheduler,
-            AdministrativeAccess adminModerationService,
+            AdministrativeActors adminModerationService,
             OperationalTelemetry adminTelemetryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.emailCatalog = emailCatalog;
@@ -277,8 +277,10 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
             String adminUserId,
             NotificationRuleConfig startedRule,
             RandomRunProgress progress) {
-        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(ruleKey);
+        Instant acquiredAt = Instant.parse(startedAtIso(startedRule));
+        int claimedPendingCount = 0;
         try {
+            claimedPendingCount = notificationRuleRegistryService.claimPendingCount(ruleKey, acquiredAt);
             if (progress != null) {
                 progress.setAdminUserId(adminUserId);
                 progress.adoptRule(notificationRuleRegistryService.findRule(ruleKey).orElse(startedRule));
@@ -300,12 +302,12 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
                     "completed",
                     detail,
                     adminUserId,
-                    progress == null ? null : progress.startedAt());
+                    acquiredAt);
         } catch (Exception exception) {
             notificationRuleRegistryService.restoreClaimedPendingCount(
                     ruleKey,
                     claimedPendingCount,
-                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
+                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS, acquiredAt);
             if (progress != null) {
                 progress.close();
             }
@@ -315,7 +317,7 @@ public class AdminNotificationService implements com.raxim.myscoutee.domain.noti
                     "failed",
                     safeText(exception.getMessage()),
                     adminUserId,
-                    progress == null ? null : progress.startedAt());
+                    acquiredAt);
         } finally {
             if (progress != null) {
                 progress.close();

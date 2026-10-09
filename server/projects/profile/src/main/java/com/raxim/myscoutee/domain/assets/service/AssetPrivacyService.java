@@ -6,22 +6,26 @@ import org.springframework.data.mongodb.core.query.*;
 import com.raxim.myscoutee.domain.assets.api.*;
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 @Service
 public class AssetPrivacyService implements AssetPrivacy {
     private final AssetsRepository assetsRepository;
     private final MongoTemplate mongoTemplate;
-    private final MediaStorage media;
-    public AssetPrivacyService(AssetsRepository assets, MongoTemplate mongo, MediaStorage media) {
+    private final MediaCleanup media;
+    public AssetPrivacyService(AssetsRepository assets, MongoTemplate mongo, MediaCleanup media) {
         assetsRepository = assets; mongoTemplate = mongo; this.media = media;
     }
-    @Override public void purgeOwnedMedia(List<? extends AssetOwnership.Asset> assets) {
-        for (AssetOwnership.Asset asset : assets == null ? List.<AssetOwnership.Asset>of() : assets) {
+    @Override public void purgeOwnedMedia(Collection<String> assetIds) {
+        for (Asset asset : ownedAssets(assetIds)) {
             if (asset != null) media.deletePublicObjectOrThrow(asset.getImageUrl());
         }
     }
-    @Override public void deleteOwnedRecords(List<? extends AssetOwnership.Asset> assets) {
-        if (assets != null && !assets.isEmpty()) assetsRepository.deleteAll(assets.stream().map(value -> (Asset) value).toList());
+    @Override public void deleteOwnedRecords(Collection<String> assetIds) {
+        List<Asset> assets = ownedAssets(assetIds);
+        if (!assets.isEmpty()) assetsRepository.deleteAll(assets);
+    }
+    private List<Asset> ownedAssets(Collection<String> assetIds) {
+        return assetIds == null || assetIds.isEmpty() ? List.of() : assetsRepository.findByAssetIdIn(assetIds);
     }
     @Override public void purgeRemainingAssetRequests(String userId) {
         List<Asset> assetsWithRequests = mongoTemplate.find(

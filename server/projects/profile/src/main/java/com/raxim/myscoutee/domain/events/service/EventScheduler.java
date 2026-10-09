@@ -58,7 +58,7 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration;
 import com.raxim.myscoutee.domain.events.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
@@ -67,7 +67,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMainEventRuntimeRepo
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
@@ -106,7 +106,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private final com.raxim.myscoutee.domain.affinity.api.RatingDirectory userRatesRepository;
     private final CampaignGraphs affinityEdgeService;
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
     private final EdgeDirectory userAffinityEdgesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository;
@@ -143,7 +143,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             com.raxim.myscoutee.domain.affinity.api.RatingDirectory userRatesRepository,
             CampaignGraphs affinityEdgeService,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups,
-            ProfileDirectory usersRepository,
+            ProfileSummaries usersRepository,
             EdgeDirectory userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository,
@@ -274,11 +274,10 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 now) == null) {
             return;
         }
-        int claimedPendingCount = ruleConfigured
-                ? notificationRuleRegistryService.claimPendingCount(
-                        NotificationJobs.RULE_EVENT_AUTO_INVITER)
-                : 0;
+        int claimedPendingCount = 0;
         try {
+            if (ruleConfigured) claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationJobs.RULE_EVENT_AUTO_INVITER, now);
             int waitlistChangedCount = activitiesMembersService.sweepEventWaitlists();
             if (waitlistChangedCount > 0) {
                 LOGGER.info("Adjusted {} event wait-list invitation(s).", waitlistChangedCount);
@@ -304,7 +303,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 notificationRuleRegistryService.restoreClaimedPendingCount(
                         NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         claimedPendingCount,
-                        "admin.jobs.table.affected");
+                        "admin.jobs.table.affected", now);
                 notificationRuleRegistryService.recordRun(
                         NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         0,
@@ -326,9 +325,10 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 startedAt) == null) {
             return;
         }
-        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                NotificationJobs.RULE_EVENT_RANDOM_GROUPS);
+        int claimedPendingCount = 0;
         try {
+            claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS, startedAt);
             List<GeneratedEventPlan> plans = generateRandomPlans();
             notificationRuleRegistryService.recordRun(
                     NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
@@ -341,7 +341,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             notificationRuleRegistryService.restoreClaimedPendingCount(
                     NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     claimedPendingCount,
-                    NotificationJobs.PENDING_COUNT_UNIT_USERS);
+                    NotificationJobs.PENDING_COUNT_UNIT_USERS, startedAt);
             notificationRuleRegistryService.recordRun(
                     NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     0,
@@ -376,11 +376,10 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 startedAt) == null) {
             return;
         }
-        int claimedPendingCount = ruleConfigured
-                ? notificationRuleRegistryService.claimPendingCount(
-                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW)
-                : 0;
+        int claimedPendingCount = 0;
         try {
+            if (ruleConfigured) claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW, startedAt);
             int startReviewCount = moveTournamentFirstStagesToStartReview(startedAt);
             if (startReviewCount > 0) {
                 LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
@@ -415,7 +414,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 notificationRuleRegistryService.restoreClaimedPendingCount(
                         NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         claimedPendingCount,
-                        "admin.jobs.table.affected");
+                        "admin.jobs.table.affected", startedAt);
                 notificationRuleRegistryService.recordRun(
                         NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         0,
@@ -1079,8 +1078,8 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             return Set.of();
         }
         Set<String> publicUserIds = new LinkedHashSet<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
-            String userId = normalizeId(user == null ? null : user.getId());
+        for (ProfileSummary user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
+            String userId = normalizeId(user == null ? null : user.getUserId());
             if (StringUtils.hasText(userId)
                     && PUBLIC_PROFILE_STATUS.equalsIgnoreCase(safeText(user.getProfileStatus()))) {
                 publicUserIds.add(userId);
@@ -1168,8 +1167,8 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         }
         Set<String> graphUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
         campaignGraphs.values().forEach(value -> graphUserIds.addAll(value.getNodes().keySet()));
-        Map<String, WorkspaceProfile> graphUsers = usersRepository.findByUserIdIn(graphUserIds).stream()
-                .collect(Collectors.toMap(WorkspaceProfile::getUserId, user -> user, (first, second) -> first));
+        Map<String, ProfileSummary> graphUsers = usersRepository.findByUserIdIn(graphUserIds).stream()
+                .collect(Collectors.toMap(ProfileSummary::getUserId, user -> user, (first, second) -> first));
 
         // THREAD SAFETY: Synchronized list for parallel addition
         List<InviteBatchPlan> plans = Collections.synchronizedList(new ArrayList<>());
@@ -1212,7 +1211,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
             Set<String> candidateUserIds = new LinkedHashSet<>(eventGraph.getNodes().keySet());
             candidateUserIds.removeAll(lockedUserIds);
             candidateUserIds.removeIf(id -> {
-                WorkspaceProfile user = graphUsers.get(id);
+                ProfileSummary user = graphUsers.get(id);
                 return user == null || !Objects.equals(event.getWorkspaceGroupId(), user.getWorkspaceGroupId())
                         || Set.of("inactive", "blocked", "deleted").contains(safeText(user.getProfileStatus()));
             });
@@ -1776,12 +1775,12 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
         }
 
         Map<String, Node> nodesByUserId = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(discoveredUserIds)) {
+        for (ProfileSummary user : usersRepository.findByUserIdIn(discoveredUserIds)) {
             incrementObservedQueries(observedQueries);
-            if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
+            if (user == null || !StringUtils.hasText(normalizeId(user.getUserId()))) {
                 continue;
             }
-            nodesByUserId.put(normalizeId(user.getId()), new Node(normalizeId(user.getId()), safeText(user.getGender())));
+            nodesByUserId.put(normalizeId(user.getUserId()), new Node(normalizeId(user.getUserId()), safeText(user.getGender())));
         }
         for (String userId : discoveredUserIds) {
             nodesByUserId.putIfAbsent(userId, new Node(userId));

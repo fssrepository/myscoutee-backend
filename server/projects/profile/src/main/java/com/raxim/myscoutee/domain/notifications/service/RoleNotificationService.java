@@ -8,8 +8,9 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.OperatorNotificationSettings;
 import com.raxim.myscoutee.domain.notifications.api.RoleNotifications;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
@@ -18,12 +19,12 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Notific
 @Service
 public class RoleNotificationService implements RoleNotifications {
     private final AccountNotifications accounts;
-    private final RuntimeConfiguration config;
+    private final OperatorNotificationSettings config;
     private final AdministratorSettings settings;
-    private final NotificationOutboxService outbox;
+    private final NotificationDelivery outbox;
 
-    public RoleNotificationService(AccountNotifications accounts, RuntimeConfiguration config,
-            AdministratorSettings settings, NotificationOutboxService outbox) {
+    public RoleNotificationService(AccountNotifications accounts, OperatorNotificationSettings config,
+            AdministratorSettings settings, NotificationDelivery outbox) {
         this.accounts = accounts;
         this.config = config;
         this.settings = settings;
@@ -57,17 +58,21 @@ public class RoleNotificationService implements RoleNotifications {
         if (!StringUtils.hasText(eventId)) return;
         LinkedHashSet<String> emails = new LinkedHashSet<>();
         if (operators) {
-            config.getOperatorUsers().forEach(email -> emails.add(email.trim().toLowerCase(Locale.ROOT)));
-            if (StringUtils.hasText(config.getOperatorBootstrapEmail())) {
-                emails.add(config.getOperatorBootstrapEmail().trim().toLowerCase(Locale.ROOT));
+            var operatorSettings = config.operatorNotificationRecipients();
+            operatorSettings.users().forEach(email -> emails.add(email.trim().toLowerCase(Locale.ROOT)));
+            if (StringUtils.hasText(operatorSettings.bootstrapEmail())) {
+                emails.add(operatorSettings.bootstrapEmail().trim().toLowerCase(Locale.ROOT));
             }
         }
-        if (admins) settings.adminEmails().stream().filter(settings::isAdminEmail).forEach(emails::add);
+        if (admins) emails.addAll(settings.adminEmailsAmong(settings.adminEmails()));
         if (emails.isEmpty()) return;
         // One bounded recipient lookup, not a users collection scan or a query per recipient.
-        for (var recipient : accounts.roleRecipients(emails)) {
+        var recipients = accounts.roleRecipients(emails);
+        var adminRecipients = admins ? settings.adminEmailsAmong(recipients.stream()
+                .map(AccountNotifications.RoleRecipient::email).distinct().toList()) : java.util.Set.<String>of();
+        for (var recipient : recipients) {
             boolean operator = operators && recipient.operator();
-            if (!operator && (!admins || !settings.isAdminEmail(recipient.email()))) continue;
+            if (!operator && (!admins || recipient.email() == null || !adminRecipients.contains(recipient.email()))) continue;
             String target = operator ? operatorTarget : adminTarget;
             String path = operator ? "/operator" : "/admin";
             var payload = new java.util.LinkedHashMap<>(parameters);

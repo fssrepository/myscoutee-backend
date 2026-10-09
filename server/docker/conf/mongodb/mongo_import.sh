@@ -3,14 +3,14 @@ set -euo pipefail
 
 db_name="${MONGO_APP_DATABASE:-${MONGO_INITDB_DATABASE:-demo_db}}"
 seed_dir_name="${MONGO_SEED_DIRECTORY:-${db_name}}"
-seed_root="/docker-entrypoint-initdb.d"
+seed_root="${MONGO_SEED_ROOT:-/docker-entrypoint-initdb.d}"
 mongo_host="${MONGO_IMPORT_HOST:-127.0.0.1}"
 mongo_port="${MONGO_IMPORT_PORT:-27017}"
 mongo_username="${MONGO_IMPORT_USERNAME:-${MONGO_APP_USERNAME:-guest}}"
 mongo_password="${MONGO_IMPORT_PASSWORD:-${MONGO_APP_PASSWORD:-guest}}"
 replace_collections="${MONGO_IMPORT_REPLACE_COLLECTIONS:-false}"
 single_file="${MONGO_IMPORT_SINGLE_FILE:-}"
-allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates}"
+allowed_collections_by_db="${MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB:-demo_db:*;e2e_db:*;myscoutee_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,landingSlides,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,landingSlides,helpCenterRevisions,helpCenterGuideFields,adminUsers,appSettings,notificationRuleConfigs,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions,operatorRegistryEndpoints,paymentProviders,communityProviders,deploymentConfigurations,exchangeRates}"
 
 json_file_has_documents() {
   local jsonfile="$1"

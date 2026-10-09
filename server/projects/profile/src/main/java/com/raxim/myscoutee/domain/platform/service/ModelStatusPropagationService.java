@@ -24,9 +24,11 @@ import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.events.api.EventDerivedUpdates;
+import com.raxim.myscoutee.domain.events.dto.EventVersionDto;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
@@ -47,25 +49,31 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     private static final Set<String> SUPPRESSED_STATUSES = Set.of(STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE);
 
     private final ProfileDirectory usersRepository;
-    private final EventOwnership activityEventsRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final EventDerivedUpdates eventDerivedUpdates;
     private final MemberDirectory activityMembersRepository;
-    private final AssetOwnership assetsRepository;
+    private final AssetOwnershipReads assetsRepository;
+    private final com.raxim.myscoutee.domain.assets.api.AssetDerivedUpdates assetDerivedUpdates;
     private final MongoTemplate mongoTemplate;
     private final NotificationDelivery notificationOutboxService;
     private final AttachmentLifecycle chatAttachmentLifecycleService;
 
     public ModelStatusPropagationService(
             ProfileDirectory usersRepository,
-            EventOwnership activityEventsRepository,
+            EventOwnershipReads activityEventsRepository,
+            EventDerivedUpdates eventDerivedUpdates,
             MemberDirectory activityMembersRepository,
-            AssetOwnership assetsRepository,
+            AssetOwnershipReads assetsRepository,
+            com.raxim.myscoutee.domain.assets.api.AssetDerivedUpdates assetDerivedUpdates,
             MongoTemplate mongoTemplate,
             NotificationDelivery notificationOutboxService,
             AttachmentLifecycle chatAttachmentLifecycleService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.eventDerivedUpdates = eventDerivedUpdates;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
+        this.assetDerivedUpdates = assetDerivedUpdates;
         this.mongoTemplate = mongoTemplate;
         this.notificationOutboxService = notificationOutboxService;
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
@@ -266,7 +274,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         if (!StringUtils.hasText(previousStatus)) {
             previousStatus = STATUS_ACTIVE;
         }
-        boolean updated = assetsRepository.updateStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
+        boolean updated = assetDerivedUpdates.updateStatusVersionIfCurrent(new com.raxim.myscoutee.domain.assets.dto.AssetVersionDto(asset.getId(), asset.getUpdatedDate()), suppressionStatus, previousStatus);
         if (updated) {
             enqueueAssetStatusNotification(asset, suppressionStatus, previousStatus);
             markAssetAttachmentUnavailable(asset, suppressionStatus);
@@ -290,8 +298,8 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
         }
         String previousStatus = safeText(asset.getStatusBeforeSuppression());
         String restoredStatus = StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE;
-        boolean updated = assetsRepository.updateStatusIfSnapshotCurrent(
-                asset,
+        boolean updated = assetDerivedUpdates.updateStatusVersionIfCurrent(
+                new com.raxim.myscoutee.domain.assets.dto.AssetVersionDto(asset.getId(), asset.getUpdatedDate()),
                 restoredStatus,
                 null);
         if (updated) {
@@ -450,7 +458,7 @@ public class ModelStatusPropagationService implements com.raxim.myscoutee.domain
     }
 
     private boolean updateEventStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus) {
-        return activityEventsRepository.updateStatusIfSnapshotCurrent(event, nextStatus, previousStatus);
+        return eventDerivedUpdates.updateStatusVersionIfCurrent(new EventVersionDto(event.getId(), event.getUpdatedDate()), nextStatus, previousStatus);
     }
 
 

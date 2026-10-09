@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
@@ -31,7 +31,7 @@ public class ScheduledNotificationDeliveryService {
         this.notificationOutboxService = notificationOutboxService;
     }
 
-    public boolean send(WorkspaceProfile user, Template template, Map<String, String> variables, String ruleKey) {
+    public boolean send(EmailProfile user, Template template, Map<String, String> variables, String ruleKey) {
         if (user == null || template == null || !StringUtils.hasText(safeText(user.getUserId()))) {
             return false;
         }

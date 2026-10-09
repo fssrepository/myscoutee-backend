@@ -18,7 +18,7 @@ import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.localization.dto.I18nBundleResponseDto;
 import com.raxim.myscoutee.domain.localization.service.I18nService;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.common.config.PlatformParametersService;
 import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
 import com.raxim.myscoutee.domain.email.service.OperatorEmailConfigurationService;
 import static org.junit.jupiter.api.Assertions.*;

@@ -14,16 +14,17 @@ import com.raxim.myscoutee.domain.accounts.api.FeedbackCounterChanges.FeedbackBu
 public class EventFeedbackEligibilityService implements FeedbackEligibility {
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
     private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
+    @org.springframework.beans.factory.annotation.Autowired private FeedbackCounterWork counterWork;
     private final ActivityEventsRepository activityEventsRepository;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final MongoTemplate mongoTemplate;
     public EventFeedbackEligibilityService(ActivityEventsRepository events, EventFeedbackStatesRepository states, MongoTemplate mongo) { activityEventsRepository = events; eventFeedbackStatesRepository = states; mongoTemplate = mongo; }
     private record FeedbackEligibilityKey(String userId, String eventId) {}
-    public void complete(Projection projection) { updateFeedbackProjectionMarker(projection.projectedSources(), true); updateFeedbackProjectionMarker(projection.waitingSources(), false); }
+    public void complete(Projection projection) { projection.changes().forEach(counterWork::acknowledge); updateFeedbackProjectionMarker(projection.projectedSources(), true); updateFeedbackProjectionMarker(projection.waitingSources(), false); }
     public Projection project(Collection<String> sourceIds, Instant requestedNow) {
         List<String> normalizedSourceIds = normalizeIds(sourceIds);
         if (normalizedSourceIds.isEmpty()) {
-            return new Projection(Map.of(), List.of(), List.of());
+            return new Projection(Map.of(), List.of(), List.of(), List.of());
         }
 
         Instant now = requestedNow == null ? Instant.now() : requestedNow;
@@ -46,13 +47,13 @@ public class EventFeedbackEligibilityService implements FeedbackEligibility {
         Map<FeedbackEligibilityKey, EventFeedbackState> existingStates = new LinkedHashMap<>();
         for (EventFeedbackState state : eventFeedbackStatesRepository
                 .findByEventIdInOrderByEventIdAscUpdatedDateDesc(normalizedSourceIds)) {
+            state = counterWork.finish(state);
             FeedbackEligibilityKey key = feedbackEligibilityKey(state);
             if (key != null) {
                 existingStates.putIfAbsent(key, state);
             }
         }
 
-        Map<String, FeedbackBucketDelta> deltasByUserId = new LinkedHashMap<>();
         List<EventFeedbackState> changedStates = new java.util.ArrayList<>();
         Set<FeedbackEligibilityKey> allKeys = new LinkedHashSet<>(existingStates.keySet());
         allKeys.addAll(desiredEligibility.keySet());
@@ -69,8 +70,8 @@ public class EventFeedbackEligibilityService implements FeedbackEligibility {
 
             if (state == null && desired) {
                 state = newFeedbackEligibilityState(key, nowIso);
+                counterWork.prepare(state, Map.of(key.userId(), FeedbackBucketDelta.forBucket("pending", 1)));
                 changedStates.add(state);
-                addFeedbackDelta(deltasByUserId, key.userId(), "pending", 1);
                 continue;
             }
             if (state == null) {
@@ -78,14 +79,14 @@ public class EventFeedbackEligibilityService implements FeedbackEligibility {
             }
 
             if (desired && !currentEligible) {
-                addFeedbackDelta(deltasByUserId, key.userId(), feedbackBucket(state), 1);
+                counterWork.prepare(state, Map.of(key.userId(), FeedbackBucketDelta.forBucket(feedbackBucket(state), 1)));
                 state.setEligible(true);
                 state.setCounterTracked(true);
                 touchFeedbackEligibilityState(state, nowIso);
                 changedStates.add(state);
             } else if (!desired && currentEligible) {
                 if (counterTracked) {
-                    addFeedbackDelta(deltasByUserId, key.userId(), feedbackBucket(state), -1);
+                    counterWork.prepare(state, Map.of(key.userId(), FeedbackBucketDelta.forBucket(feedbackBucket(state), -1)));
                 }
                 state.setEligible(false);
                 state.setCounterTracked(false);
@@ -103,7 +104,9 @@ public class EventFeedbackEligibilityService implements FeedbackEligibility {
         if (!changedStates.isEmpty()) {
             eventFeedbackStatesRepository.saveAll(changedStates);
         }
-        return projectionPlan(normalizedSourceIds, eventsBySourceId, now, deltasByUserId);
+        var plan = projectionPlan(normalizedSourceIds, eventsBySourceId, now, Map.of());
+        return new Projection(Map.of(), plan.projectedSources(), plan.waitingSources(), changedStates.stream()
+                .map(EventFeedbackState::getCounterChange).filter(Objects::nonNull).toList());
     }
     private String feedbackBucket(boolean submitted, boolean removed) {
         if (removed) {
@@ -189,7 +192,7 @@ public class EventFeedbackEligibilityService implements FeedbackEligibility {
         }
         Set<String> projectedSourceIds = new LinkedHashSet<>(normalizeIds(sourceIds));
         projectedSourceIds.removeAll(waitingSourceIds);
-        return new Projection(deltas, List.copyOf(projectedSourceIds), List.copyOf(waitingSourceIds));
+        return new Projection(deltas, List.copyOf(projectedSourceIds), List.copyOf(waitingSourceIds), List.of());
     }
     private void updateFeedbackProjectionMarker(Collection<String> sourceIds, boolean projected) {
         List<String> normalizedSourceIds = normalizeIds(sourceIds);

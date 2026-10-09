@@ -18,14 +18,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.payments.document.Payment;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class PaymentRefundService implements com.raxim.myscoutee.domain.payments.api.PaymentRefunds {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
 
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
 
@@ -182,8 +181,9 @@ public class PaymentRefundService implements com.raxim.myscoutee.domain.payments
         String type = approved ? "payment-refund-approved" : "payment-refund-requested";
         Map<String, String> payload = new LinkedHashMap<>();
         payload.put("paymentId", paymentId);
-        var recipient=profiles.findFirstByUserId(recipientUserId);
-        if(recipient!=null&&recipient.getWorkspaceGroupId()!=null)payload.put("workspaceGroupId",recipient.getWorkspaceGroupId());
+        profiles.findFirstIdentityByUserId(recipientUserId)
+                .map(com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto::workspaceGroupId)
+                .ifPresent(groupId -> payload.put("workspaceGroupId", groupId));
         payload.put("sourceId", sourceId);
         payload.put("refundRequestStatus", approved ? "approved" : "pending");
         payload.put("refundAmount", Double.toString(payment.getRefundedAmount() == null ? 0D : payment.getRefundedAmount()));

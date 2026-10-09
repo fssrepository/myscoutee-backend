@@ -46,6 +46,17 @@ An in-memory form update is not persistence proof.
 
 ## UI performance
 
+- Frontend-local route delay emulates one service request. Start its necessary
+  hydration, repository work and projection concurrently with that delay; publish
+  only after both finish. Keep the established 1500 ms emulation and 3000 ms
+  indicator window unless explicitly requested otherwise.
+- One aggregate service operation owns one delay. Reuse the owner services'
+  undelayed internal operations for its constituent work instead of calling
+  multiple delayed public entry points. Keep permissions and persistence; do
+  not remove required work just because it introduces another call.
+- Diagnose service sequencing and main-thread work separately. Reuse the
+  existing loading indicator; changing its animation cannot repair serial I/O
+  or synchronous computation.
 - Keep first-load/lazy-load boundaries intentional.
 - Do not introduce eager imports to hide a stale-chunk/runtime problem.
 - Use the correct optimized build when measuring bundle/render performance.

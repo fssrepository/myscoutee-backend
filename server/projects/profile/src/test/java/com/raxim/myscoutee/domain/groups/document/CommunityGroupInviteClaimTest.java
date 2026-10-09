@@ -33,7 +33,7 @@ class CommunityGroupInviteClaimTest {
             "friends", "invitation", true, new GroupPolicy(true, false, List.of()),
             "now", "now", 0L, "accepted", 0L);
     private final CommunityGroupsService service = new CommunityGroupsService(groups, new com.raxim.myscoutee.domain.events.service.CommunityMembershipService(members), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),
-            mock(HomeUserProfileService.class), profiles, mock(ContentModerationService.class),
+            mock(HomeUserProfileService.class), mock(HomeUserProfileService.class), profiles, mock(ContentModerationService.class),
             mock(com.raxim.myscoutee.domain.content.api.CommunityReports.class), mock(AdminTelemetryService.class), mock(com.raxim.myscoutee.domain.groups.api.GroupCounters.class),
             mock(com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.class));
 
@@ -86,7 +86,7 @@ class CommunityGroupInviteClaimTest {
         assertThat(rows.get("recipient").getRole()).isEqualTo("Member");
         assertThat(rows.get("recipient").getRequestKind()).isNull();
         verify(profiles).admit(group, "recipient");
-        verify(profiles, atLeastOnce()).activate(argThat(user -> "recipient".equals(user.getUserId())), eq("group"));
+        verify(profiles, atLeastOnce()).activate(eq("recipient"), eq("group"));
     }
 
     @Test void eventLinkFromAnAcceptedMemberCreatesOneAcceptedMembershipAndReusesItsProfile() {
@@ -123,7 +123,7 @@ class CommunityGroupInviteClaimTest {
 
         assertThat(rows.get("recipient").getStatus()).isEqualTo("accepted");
         verify(profiles).admit(group, "recipient");
-        verify(profiles, atLeastOnce()).activate(argThat(user -> "recipient".equals(user.getUserId())), eq("group"));
+        verify(profiles, atLeastOnce()).activate(eq("recipient"), eq("group"));
     }
 
     @Test void unclaimedOrOtherAccountLinksCannotAdmitAnyone() {
@@ -150,7 +150,7 @@ class CommunityGroupInviteClaimTest {
         service.completeProfileLoad(account, response, null);
         verify(profiles, never()).activate(any(), any());
         service.completeProfileLoad(account, response, "");
-        verify(profiles).activate(account, "");
+        verify(profiles).activate(account.getUserId(), "");
     }
 
     @Test void failedProfileContextDoesNotCommitSelection() {
@@ -159,6 +159,22 @@ class CommunityGroupInviteClaimTest {
         var failing = spy(service);
         doThrow(new IllegalStateException("profile load failed")).when(failing).select(account, null);
         assertThatThrownBy(() -> failing.completeProfileLoad(account, response, "group"))
+                .isInstanceOf(IllegalStateException.class);
+        verify(profiles, never()).activate(any(), any());
+    }
+
+    @Test void accountIdBoundaryUsesTheSameSelectionAndCommitOrder() {
+        var account = users.findByUserId("recipient").orElseThrow();
+        var boundary = spy(service);
+        doReturn(new com.raxim.myscoutee.domain.groups.dto.CommunityGroupDtos.WorkspaceSelection(null, null, null))
+                .when(boundary).select(account, "current-group");
+        boundary.loadProfileWorkspace("recipient", "current-group", "");
+        var ordered = inOrder(boundary, profiles);
+        ordered.verify(boundary).select(account, "current-group");
+        ordered.verify(profiles).activate(account.getUserId(), "");
+        reset(profiles);
+        doThrow(new IllegalStateException("profile load failed")).when(boundary).select(account, "current-group");
+        assertThatThrownBy(() -> boundary.loadProfileWorkspace("recipient", "current-group", "next"))
                 .isInstanceOf(IllegalStateException.class);
         verify(profiles, never()).activate(any(), any());
     }

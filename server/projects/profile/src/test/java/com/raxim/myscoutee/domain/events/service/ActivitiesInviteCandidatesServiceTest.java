@@ -60,15 +60,21 @@ class ActivitiesInviteCandidatesServiceTest {
                 activityMembersRepository,
                 activitiesMembersService,
                 homeUserProfileService,
+                homeUserProfileService,
+                homeUserProfileService,
                 new com.raxim.myscoutee.domain.accounts.service.ContactDirectoryService(navigatorContactsProfilesRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "communityGroups", communityGroups);
+    }
+
+    private static com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto identity(Users user) {
+        return new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(user.getUserId(), user.getAccountUserId(), user.getWorkspaceGroupId());
     }
 
     @Test
     void paymentPickerUsesTheCurrentWorkspaceRosterWithoutMetOrContactGates() {
         Users active=user("work-alex","Alex");active.setWorkspaceGroupId("myscoutee-work");active.setAccountUserId("account-alex");
         Users other=user("work-maya","Maya");other.setWorkspaceGroupId("myscoutee-work");
-        when(homeUserProfileService.resolveCurrentUser("work-alex")).thenReturn(active);
+        when(homeUserProfileService.resolveSelectedIdentity("work-alex")).thenReturn(identity(active));
         when(usersRepository.findPaymentMembers(eq("myscoutee-work"),eq("work-alex"),any(Pageable.class))).thenReturn(new PageImpl<>(List.of(other)));
         var page=service.queryCandidates(new ActivityInviteCandidatesRequestDto("work-alex","work-alex","asset",null,null,"recent",0,16,List.of(),List.of(),"payment"));
         assertThat(page.items()).extracting(item->item.userId()).containsExactly("work-maya");
@@ -84,7 +90,8 @@ class ActivitiesInviteCandidatesServiceTest {
         when(userRatesRepository.findRelevantByUserIds(List.of("account")))
                 .thenReturn(List.of(singleMetRate("account", "account", 1), singleMetRate("account", "other", 1)));
         when(usersRepository.findByUserIdIn(Set.of("other"))).thenReturn(List.of(other));
-        when(homeUserProfileService.activityRateVisible(other)).thenReturn(true);
+        when(homeUserProfileService.queryRatingProfiles(Set.of(other.getUserId())))
+                .thenReturn(List.of(new com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto(other.getId(), other.getUserId(), other.getWorkspaceGroupId(), null, true)));
 
         var result = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "group-profile", "community", "community", "recent"));
@@ -97,7 +104,7 @@ class ActivitiesInviteCandidatesServiceTest {
     void assetCandidatesExcludeAlreadySavedContacts() {
         Users activeUser = user("active", "Active User");
         Users otherUser = user("other", "Other User");
-        when(homeUserProfileService.resolveCurrentUser("active")).thenReturn(activeUser);
+        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         when(activitiesMembersService.queryOwnerSnapshot("asset", "asset-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "asset",
@@ -117,8 +124,9 @@ class ActivitiesInviteCandidatesServiceTest {
                 singleMetRate("active", "saved-contact", 0.9d),
                 singleMetRate("active", "other", 0.8d)));
         when(usersRepository.findByUserIdIn(Set.of("other"))).thenReturn(List.of(otherUser));
-        when(homeUserProfileService.activityRateVisible(otherUser)).thenReturn(true);
-        when(homeUserProfileService.presentGameCard(otherUser)).thenReturn(null);
+        when(homeUserProfileService.queryRatingProfiles(Set.of(otherUser.getUserId())))
+                .thenReturn(List.of(new com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto(otherUser.getId(), otherUser.getUserId(), otherUser.getWorkspaceGroupId(), null, true)));
+
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",
@@ -136,7 +144,7 @@ class ActivitiesInviteCandidatesServiceTest {
         Users activeUser = user("active", "Active User");
         Users pendingUser = user("pending-child", "Pending Child");
         Users parentMember = user("parent-member", "Parent Member");
-        when(homeUserProfileService.resolveCurrentUser("active")).thenReturn(activeUser);
+        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         when(activitiesMembersService.queryOwnerSnapshot("asset", "asset-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "asset",
@@ -164,8 +172,8 @@ class ActivitiesInviteCandidatesServiceTest {
                 .thenReturn(new PageImpl<>(List.of(member)));
         when(usersRepository.findByUserIdIn(Set.of("pending-child", "parent-member")))
                 .thenReturn(List.of(pendingUser, parentMember));
-        when(homeUserProfileService.presentGameCard(pendingUser)).thenReturn(null);
-        when(homeUserProfileService.presentGameCard(parentMember)).thenReturn(null);
+
+
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",
@@ -186,7 +194,7 @@ class ActivitiesInviteCandidatesServiceTest {
     void assetCandidatesUseImmediateGroupParentAndScopedExistingMembers() {
         Users activeUser = user("active", "Active User");
         Users groupMember = user("group-member", "Group Member");
-        when(homeUserProfileService.resolveCurrentUser("active")).thenReturn(activeUser);
+        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         when(activitiesMembersService.queryOwnerSnapshot("asset", "asset-1"))
                 .thenReturn(new ActivitiesMembersService.OwnerMembersSnapshot(
                         "asset",
@@ -213,7 +221,7 @@ class ActivitiesInviteCandidatesServiceTest {
                 any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(member)));
         when(usersRepository.findByUserIdIn(Set.of("group-member"))).thenReturn(List.of(groupMember));
-        when(homeUserProfileService.presentGameCard(groupMember)).thenReturn(null);
+
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",
@@ -235,7 +243,7 @@ class ActivitiesInviteCandidatesServiceTest {
         Users activeUser = user("active", "Active User");
         Users pendingUser = user("pending-child", "Pending Child");
         Users parentMember = user("parent-member", "Parent Member");
-        when(homeUserProfileService.resolveCurrentUser("active")).thenReturn(activeUser);
+        when(homeUserProfileService.resolveSelectedIdentity("active")).thenReturn(identity(activeUser));
         ActivityMember pendingMember = new ActivityMember();
         pendingMember.setOwnerType("asset");
         pendingMember.setOwnerId("asset-1");
@@ -270,8 +278,8 @@ class ActivitiesInviteCandidatesServiceTest {
                 .thenReturn(new PageImpl<>(List.of(member)));
         when(usersRepository.findByUserIdIn(Set.of("pending-child", "parent-member")))
                 .thenReturn(List.of(pendingUser, parentMember));
-        when(homeUserProfileService.presentGameCard(pendingUser)).thenReturn(null);
-        when(homeUserProfileService.presentGameCard(parentMember)).thenReturn(null);
+
+
 
         ActivityInviteCandidatesPageDto response = service.queryCandidates(new ActivityInviteCandidatesRequestDto(
                 "active",

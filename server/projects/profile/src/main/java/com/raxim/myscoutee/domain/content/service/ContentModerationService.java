@@ -32,7 +32,7 @@ public class ContentModerationService implements com.raxim.myscoutee.domain.cont
     private com.raxim.myscoutee.domain.groups.api.GroupModerationProjection groupModeration;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventModeration eventModeration;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetModerationProjection assetModeration;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
     private final ContentModerationRepository repository;
     private final MongoTemplate mongo;
     private final SupportMessages chats;
@@ -87,8 +87,8 @@ public class ContentModerationService implements com.raxim.myscoutee.domain.cont
             if (existing.deleted()) throw new ResponseStatusException(HttpStatus.GONE);
             applyResource(existing); return existing;
         }
-        var owner = "group".equals(category) ? null : profiles.findByUserId(ownerId).orElse(null);
-        String groupId = owner == null ? null : owner.getWorkspaceGroupId();
+        var owner = "group".equals(category) ? null : profiles.findIdentityByUserId(ownerId).orElse(null);
+        String groupId = owner == null ? null : owner.workspaceGroupId();
         if ("group".equals(category)) {
             var group = groupDirectory.findById(sourceId).orElse(null);
             if (group != null) groupId = group.baseId();

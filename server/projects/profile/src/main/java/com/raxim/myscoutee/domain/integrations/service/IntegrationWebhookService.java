@@ -68,8 +68,8 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.EventChanges, com.raxim.myscoutee.domain.integrations.api.AssetChanges, com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnership assetOwnership;
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountJobScopes accountJobScopes;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -195,7 +195,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         return new IntegrationWatchResponseDto(true, saved.getCallbackUrl(), List.copyOf(saved.getEventTypes()));
     }
 
-    public void enqueue(Event event) {
+    public void enqueue(com.raxim.myscoutee.domain.events.api.EventChangeView event) {
         if (event == null || !Boolean.TRUE.equals(event.getIsAdmin())) {
             return;
         }
@@ -217,7 +217,7 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         enqueue(ownerUserId, EVENT_CHANGED, "event", externalId, resource);
     }
 
-    public void enqueue(Asset asset) {
+    public void enqueue(com.raxim.myscoutee.domain.assets.api.AssetChangeView asset) {
         if (asset == null) {
             return;
         }

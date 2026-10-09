@@ -5,22 +5,23 @@ import org.springframework.util.StringUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import com.raxim.myscoutee.domain.events.api.EventPrivacy;
+import com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto;
 import com.raxim.myscoutee.domain.events.document.*;
 import com.raxim.myscoutee.domain.events.repository.*;
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 @Service
 public class EventPrivacyService implements EventPrivacy {
     private static final String OWNER_TYPE_EVENT = "event", OWNER_TYPE_ASSET = "asset";
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final MongoTemplate mongoTemplate;
-    private final MediaStorage mediaStorageService;
-    public EventPrivacyService(ActivityEventsRepository events, ActivityMembersRepository members, MongoTemplate mongo, MediaStorage media) { activityEventsRepository = events; activityMembersRepository = members; mongoTemplate = mongo; mediaStorageService = media; }
-    public List<ActivityEvent> findOwnedEventsForPurge(String userId) {
+    private final MediaCleanup mediaStorageService;
+    public EventPrivacyService(ActivityEventsRepository events, ActivityMembersRepository members, MongoTemplate mongo, MediaCleanup media) { activityEventsRepository = events; activityMembersRepository = members; mongoTemplate = mongo; mediaStorageService = media; }
+    public List<EventPurgeTargetDto> findOwnedEventsForPurge(String userId) {
         Map<String, ActivityEvent> eventsByKey = new LinkedHashMap<>();
         addEvents(eventsByKey, activityEventsRepository.findByOwnerUserId(userId));
         addEvents(eventsByKey, activityEventsRepository.findByCreatorUserId(userId));
-        return new ArrayList<>(eventsByKey.values());
+        return eventsByKey.values().stream().map(event -> new EventPurgeTargetDto(event.getId(), event.getSourceId())).toList();
     }
     private void addEvents(Map<String, ActivityEvent> eventsByKey, List<ActivityEvent> events) {
         for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
@@ -36,8 +37,9 @@ public class EventPrivacyService implements EventPrivacy {
             }
         }
     }
-    public void purgeOwnedEvents(List<? extends com.raxim.myscoutee.domain.events.api.EventOwnership.Event> ownedEvents, Collection<String> sourceIds) {
-        List<ActivityEvent> events = ownedEvents == null ? List.of() : ownedEvents.stream().map(value -> (ActivityEvent) value).toList();
+    public void purgeOwnedEvents(Collection<String> documentIds, Collection<String> sourceIds) {
+        List<ActivityEvent> events = documentIds == null || documentIds.isEmpty() ? List.of()
+                : activityEventsRepository.findAllById(documentIds);
         for (ActivityEvent event : events) {
             if (event != null) {
                 deletePurgeMedia(event.getImageUrl());

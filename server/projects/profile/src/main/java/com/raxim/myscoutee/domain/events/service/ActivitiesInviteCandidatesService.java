@@ -1,6 +1,10 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.ProfileCards;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
+import com.raxim.myscoutee.domain.accounts.api.RatingProfiles;
+import com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto;
+import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.groups.api.Groups;
 
 import java.time.Instant;
@@ -22,38 +26,44 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 
 import com.raxim.myscoutee.domain.affinity.api.RatingView;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.ActivityInviteDtos.ActivityInviteCandidatesRequestDto;
 import com.raxim.myscoutee.domain.events.dto.ActivityInviteDtos.ActivityInviteCandidatesPageDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberEntryDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.accounts.api.ContactDirectory;
 import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
 public class ActivitiesInviteCandidatesService {
     @org.springframework.beans.factory.annotation.Autowired
     private Groups communityGroups;
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
     private final RatingDirectory userRatesRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivitiesMembersService activitiesMembersService;
-    private final ProfilePresentation homeUserProfileService;
+    private final ProfileCards profileCards;
+    private final SelectedProfile selectedProfile;
+    private final RatingProfiles ratingProfiles;
     private final ContactDirectory navigatorContactsProfilesRepository;
 
     public ActivitiesInviteCandidatesService(
-            ProfileDirectory usersRepository,
+            ProfileSummaries usersRepository,
             RatingDirectory userRatesRepository,
             ActivityMembersRepository activityMembersRepository,
             ActivitiesMembersService activitiesMembersService,
-            ProfilePresentation homeUserProfileService,
+            ProfileCards profileCards,
+            SelectedProfile selectedProfile,
+            RatingProfiles ratingProfiles,
             ContactDirectory navigatorContactsProfilesRepository) {
         this.usersRepository = usersRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.activitiesMembersService = activitiesMembersService;
-        this.homeUserProfileService = homeUserProfileService;
+        this.profileCards = profileCards;
+        this.selectedProfile = selectedProfile;
+        this.ratingProfiles = ratingProfiles;
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
     }
 
@@ -65,30 +75,32 @@ public class ActivitiesInviteCandidatesService {
         }
 
         String ownerType = normalizeOwnerType(request.ownerType());
-        com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile activeUser = "community".equals(ownerType)
-                ? communityGroups.actor(request.activeUserId())
-                : homeUserProfileService.resolveCurrentUser(request.activeUserId());
+        var communityActor = "community".equals(ownerType) ? communityGroups.actor(request.activeUserId()) : null;
+        ProfileIdentityDto activeUser = "community".equals(ownerType)
+                ? identity(communityActor) : selectedProfile.resolveSelectedIdentity(request.activeUserId());
         String ownerId = normalizeId(request.ownerId());
         if (!"payment".equals(request.purpose()) && "asset".equals(ownerType) && activeUser != null
                 && StringUtils.hasText(ownerId)
-                && StringUtils.hasText(activeUser.getAccountUserId())
-                && ownerId.equals(normalizeId(activeUser.getAccountUserId()))) {
+                && StringUtils.hasText(activeUser.accountUserId())
+                && ownerId.equals(normalizeId(activeUser.accountUserId()))) {
             // Contacts uses the authenticated account as its picker owner.
             // Event and actual Asset member pickers retain their profile scope.
-            activeUser = communityGroups.actor(request.activeUserId());
+            communityActor = communityGroups.actor(request.activeUserId());
+            activeUser = identity(communityActor);
         }
-        String activeUserId = normalizeId(activeUser == null ? null : activeUser.getId());
+        String activeUserId = normalizeId(activeUser == null ? null : activeUser.userId());
         if (!StringUtils.hasText(activeUserId) || !StringUtils.hasText(ownerId) || !StringUtils.hasText(ownerType)) {
             return emptyPage(page, pageSize);
         }
 
         if("payment".equals(request.purpose())) {
             if(!"asset".equals(ownerType)||!ownerId.equals(activeUserId))return emptyPage(page,pageSize);
-            var records=usersRepository.paymentMembers(activeUser.getWorkspaceGroupId(),activeUserId,page,pageSize);
+            var records=usersRepository.paymentMemberSummaries(activeUser.workspaceGroupId(),activeUserId,page,pageSize);
             var signal=new CandidateSignal("","",0d);
-            return new ActivityInviteCandidatesPageDto(records.items().stream().map(u->toEntry(u.getUserId(),u,signal)).toList(),(int)Math.min(Integer.MAX_VALUE,records.total()),page,pageSize);
+            var cards = cards(records.items().stream().map(ProfileSummary::getUserId).toList());
+            return new ActivityInviteCandidatesPageDto(records.items().stream().map(u->toEntry(u.getUserId(),u,signal,cards.get(u.getUserId()))).toList(),(int)Math.min(Integer.MAX_VALUE,records.total()),page,pageSize);
         }
-        if ("community".equals(ownerType)) communityGroups.requireAdmin(activeUser, ownerId);
+        if ("community".equals(ownerType)) communityGroups.requireAdmin(communityActor, ownerId);
         ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(ownerType, ownerId);
         String parentOwnerId = normalizeId(request.parentOwnerId());
         String parentOwnerType = normalizeOwnerType(request.parentOwnerType());
@@ -166,11 +178,16 @@ public class ActivitiesInviteCandidatesService {
             return emptyPage(page, pageSize);
         }
 
-        Map<String, WorkspaceProfile> usersById = usersRepository.findByUserIdIn(candidateUserIds).stream()
-                .filter(user -> user != null && StringUtils.hasText(normalizeId(user.getId())))
-                .filter(homeUserProfileService::activityRateVisible)
-                .collect(LinkedHashMap::new, (map, user) -> map.put(normalizeId(user.getId()), user), Map::putAll);
+        Set<String> visibleIds = ratingProfiles.queryRatingProfiles(candidateUserIds).stream()
+                .filter(profile -> profile != null && profile.activityRateVisible())
+                .map(com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto::userId)
+                .collect(java.util.stream.Collectors.toSet());
+        Map<String, ProfileSummary> usersById = usersRepository.findByUserIdIn(candidateUserIds).stream()
+                .filter(user -> user != null && StringUtils.hasText(normalizeId(user.getUserId())))
+                .filter(user -> visibleIds.contains(user.getUserId()))
+                .collect(LinkedHashMap::new, (map, user) -> map.put(normalizeId(user.getUserId()), user), Map::putAll);
 
+        var cards = cards(usersById.keySet());
         Comparator<Map.Entry<String, CandidateSignal>> comparator = "relevant".equals(safeText(request.sort()))
                 ? Comparator.<Map.Entry<String, CandidateSignal>>comparingDouble(entry -> safeDouble(entry.getValue().userRateAffinity())).reversed()
                         .thenComparing(entry -> toSortableDate(entry.getValue().metAtIso()), Comparator.reverseOrder())
@@ -181,7 +198,7 @@ public class ActivitiesInviteCandidatesService {
                 .sorted(Comparator.comparing(
                         member -> toSortableDate(member == null ? null : member.getActionAtIso()),
                         Comparator.reverseOrder()))
-                .map(member -> toInviteEntryFromMember(member, usersById.get(normalizeId(member.getUserId()))))
+                .map(member -> toInviteEntryFromMember(member, usersById.get(normalizeId(member.getUserId())), cards.get(normalizeId(member.getUserId()))))
                 .filter(entry -> entry != null)
                 .forEach(candidates::add);
         Set<String> pendingUserIds = candidates.stream()
@@ -190,7 +207,7 @@ public class ActivitiesInviteCandidatesService {
         signalsByUserId.entrySet().stream()
                 .filter(entry -> !pendingUserIds.contains(entry.getKey()))
                 .sorted(comparator)
-                .map(entry -> toEntry(entry.getKey(), usersById.get(entry.getKey()), entry.getValue()))
+                .map(entry -> toEntry(entry.getKey(), usersById.get(entry.getKey()), entry.getValue(), cards.get(entry.getKey())))
                 .filter(entry -> entry != null)
                 .forEach(candidates::add);
         return toPage(candidates, page, pageSize);
@@ -243,20 +260,21 @@ public class ActivitiesInviteCandidatesService {
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         pageUserIds.addAll(pendingIdsOnPage);
-        Map<String, WorkspaceProfile> usersById = usersRepository.findByUserIdIn(pageUserIds).stream()
-                .filter(user -> user != null && StringUtils.hasText(normalizeId(user.getId())))
-                .collect(LinkedHashMap::new, (map, user) -> map.put(normalizeId(user.getId()), user), Map::putAll);
+        Map<String, ProfileSummary> usersById = usersRepository.findByUserIdIn(pageUserIds).stream()
+                .filter(user -> user != null && StringUtils.hasText(normalizeId(user.getUserId())))
+                .collect(LinkedHashMap::new, (map, user) -> map.put(normalizeId(user.getUserId()), user), Map::putAll);
+        var cards = cards(usersById.keySet());
         List<ActivityMemberEntryDto> items = new ArrayList<>();
         pendingIdsOnPage.stream()
                 .map(userId -> toInviteEntryFromMember(
                         pendingMembersByUserId.getOrDefault(userId, pendingInviteMember(userId)),
-                        usersById.get(userId)))
+                        usersById.get(userId), cards.get(userId)))
                 .filter(entry -> entry != null)
                 .forEach(items::add);
         if (remainingSlots > 0) {
             parentMembers.getContent().stream()
                     .limit(remainingSlots)
-                    .map(member -> toInviteEntryFromMember(member, usersById.get(normalizeId(member.getUserId()))))
+                    .map(member -> toInviteEntryFromMember(member, usersById.get(normalizeId(member.getUserId())), cards.get(normalizeId(member.getUserId()))))
                     .filter(entry -> entry != null)
                     .forEach(items::add);
         }
@@ -266,6 +284,19 @@ public class ActivitiesInviteCandidatesService {
                 (int) total,
                 page,
                 pageSize);
+    }
+
+    private static ProfileIdentityDto identity(ProfileSummary profile) {
+        return profile == null ? null : new ProfileIdentityDto(profile.getUserId(), profile.getAccountUserId(), profile.getWorkspaceGroupId());
+    }
+
+    private Map<String, UserDto> cards(java.util.Collection<String> ids) {
+        if (ids.isEmpty()) return Map.of();
+        Map<String, UserDto> cards = new LinkedHashMap<>();
+        for (var card : profileCards.presentGameCards(ids)) {
+            if (card != null) cards.put(card.id(), card);
+        }
+        return cards;
     }
 
     private ActivityMember pendingInviteMember(String userId) {
@@ -338,7 +369,7 @@ public class ActivitiesInviteCandidatesService {
         }
     }
 
-    private ActivityMemberEntryDto toInviteEntryFromMember(ActivityMember member, WorkspaceProfile user) {
+    private ActivityMemberEntryDto toInviteEntryFromMember(ActivityMember member, ProfileSummary user, UserDto card) {
         String userId = normalizeId(member == null ? null : member.getUserId());
         if (!StringUtils.hasText(userId) || user == null) {
             return null;
@@ -365,7 +396,7 @@ public class ActivitiesInviteCandidatesService {
                 actionAtIso,
                 firstNonBlank(member.getMetWhere(), "Parent member"),
                 resolveAvatarUrl(user),
-                homeUserProfileService.presentGameCard(user),
+                card,
                 List.of(),
                 actionAtIso,
                 null,
@@ -401,7 +432,7 @@ public class ActivitiesInviteCandidatesService {
         return Math.max(1, Math.min(100, pageSize == null ? 16 : pageSize));
     }
 
-    private ActivityMemberEntryDto toEntry(String candidateUserId, WorkspaceProfile user, CandidateSignal signal) {
+    private ActivityMemberEntryDto toEntry(String candidateUserId, ProfileSummary user, CandidateSignal signal, UserDto card) {
         if (user == null || signal == null) {
             return null;
         }
@@ -423,7 +454,7 @@ public class ActivitiesInviteCandidatesService {
                 signal.metAtIso(),
                 signal.metWhere(),
                 resolveAvatarUrl(user),
-                homeUserProfileService.presentGameCard(user),
+                card,
                 List.of(),
                 signal.metAtIso(),
                 null,
@@ -513,7 +544,7 @@ public class ActivitiesInviteCandidatesService {
         return "woman".equals(safeText(value)) ? "woman" : "man";
     }
 
-    private String resolveAvatarUrl(WorkspaceProfile user) {
+    private String resolveAvatarUrl(ProfileSummary user) {
         if (user == null || user.getImages() == null || user.getImages().isEmpty()) {
             return "";
         }

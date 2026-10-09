@@ -30,9 +30,7 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
@@ -54,7 +52,6 @@ public class EventCounterExpiryService {
     private static final String REQUEST_KIND_WAITLIST_INVITE = "waitlist-invite";
 
     private final ActivityMembersRepository activityMembersRepository;
-    private final ProfileDirectory usersRepository;
     private final MongoTemplate mongoTemplate;
     private final NotificationJobs notificationRuleRegistryService;
     private final OperationalTelemetry adminTelemetryService;
@@ -80,7 +77,6 @@ public class EventCounterExpiryService {
 
     public EventCounterExpiryService(
             ActivityMembersRepository activityMembersRepository,
-            ProfileDirectory usersRepository,
             MongoTemplate mongoTemplate,
             NotificationJobs notificationRuleRegistryService,
             OperationalTelemetry adminTelemetryService,
@@ -88,7 +84,6 @@ public class EventCounterExpiryService {
             EventFriendshipProjectionService eventFriendshipProjectionService,
             @Value("${events.counter-expiry.batch-size:200}") int batchSize) {
         this.activityMembersRepository = activityMembersRepository;
-        this.usersRepository = usersRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.adminTelemetryService = adminTelemetryService;
@@ -112,7 +107,7 @@ public class EventCounterExpiryService {
         }
         Instant startedAt = requestedStart == null ? Instant.now() : requestedStart;
         int claimedPendingCount = 0;
-        boolean runStarted = !scheduled;
+        boolean runStarted = false;
         try {
             if (scheduled) {
                 if (notificationRuleRegistryService.beginScheduledRun(
@@ -122,16 +117,14 @@ public class EventCounterExpiryService {
                         startedAt) == null) {
                     return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
                 }
-            } else {
-                notificationRuleRegistryService.beginRun(
-                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
-                        "Scanning expired event counters.",
-                        SYSTEM_USER,
-                        startedAt);
+            } else if (notificationRuleRegistryService.beginRun(
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
+                    "Scanning expired event counters.", SYSTEM_USER, startedAt) == null) {
+                return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
             }
             runStarted = true;
             claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY);
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY, startedAt);
             ExpiryRunResult result = processDueEvents(Instant.now());
             String detail = result.processedSources() == 0 && result.markedTicketRecords() == 0
                     ? "No expired event counters, ticket records, feedback counters, or friendships were due."
@@ -164,7 +157,7 @@ public class EventCounterExpiryService {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
                         NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         claimedPendingCount,
-                        "admin.jobs.table.affected");
+                        "admin.jobs.table.affected", startedAt);
             }
             LOGGER.warn("Event counter expiry pass failed.", exception);
             if (runStarted) {
@@ -333,18 +326,14 @@ public class EventCounterExpiryService {
                 preferredEventRecordsBySourceId(loadEventDocumentsBySourceIds(memberOwnerIds(userMembers)));
 
         List<com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates.Change> changedUsers = new ArrayList<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(normalizedUserIds)) {
-            String userId = normalizeId(user == null ? null : user.getUserId());
-            if (!StringUtils.hasText(userId)) {
-                continue;
-            }
+        for (String userId : normalizedUserIds) {
             EventCounterState counters = countersForUser(
                     userId,
                     directRecordsByUserId.get(userId),
                     membersByUserId.get(userId),
                     preferredEventsBySourceId,
                     nowIso);
-            changedUsers.add(new com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates.Change(user, counters.invitations(), counters.events(), counters.hosting()));
+            changedUsers.add(new com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates.Change(userId, counters.invitations(), counters.events(), counters.hosting()));
         }
         return eventCounterUpdates.replaceExpired(changedUsers);
     }

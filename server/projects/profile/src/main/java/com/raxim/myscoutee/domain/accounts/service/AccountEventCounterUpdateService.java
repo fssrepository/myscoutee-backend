@@ -11,8 +11,13 @@ public class AccountEventCounterUpdateService implements EventCounterUpdates {
     private record EventCounterState(int invitations, int events, int hosting) {}
     public int replaceExpired(Collection<Change> changes) {
         List<Users> changed = new ArrayList<>();
-        for (var change : changes) {
-            var user = (Users) change.profile();
+        var byUserId = new LinkedHashMap<String, Change>();
+        for (var change : changes) byUserId.put(change.userId(), change);
+        if (byUserId.isEmpty()) return 0;
+        for (var user : users.findByUserIdIn(byUserId.keySet())) {
+            if (user == null) continue;
+            var change = byUserId.get(user.getUserId());
+            if (change == null) continue;
             var next = withEventCounters(user.getActivities(), new EventCounterState(change.invitations(), change.events(), change.hosting()));
             if (!activitiesEqual(user.getActivities(), next)) { user.setActivities(next); changed.add(user); }
         }

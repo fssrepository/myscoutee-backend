@@ -34,18 +34,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.MessagingErrorCode;
-import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.WebpushConfig;
-import com.google.firebase.messaging.WebpushFcmOptions;
-import com.google.firebase.messaging.WebpushNotification;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.PushMessage;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.PushMulticast;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.WebPush;
 import com.mongodb.client.result.UpdateResult;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Device;
@@ -55,8 +52,8 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.chat.api.ChatPresence;
 import com.raxim.myscoutee.domain.platform.api.NotificationPolicy;
 import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
-import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway.FirebaseBatchSendResult;
-import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway.FirebaseTokenSendResult;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.FirebaseBatchSendResult;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.FirebaseTokenSendResult;
 import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
 import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
@@ -66,7 +63,7 @@ public class NotificationOutboxWorkerService {
     private static final String DELIVERY_STRATEGY_DIRECT = "direct";
     private static final String DELIVERY_STRATEGY_TOPIC = "topic";
 
-    private final RuntimeConfiguration configProperties;
+    private final AuthenticationMode configProperties;
     private final NotificationOutboxRepository notificationOutboxRepository;
     private final AccountNotifications accounts;
     private final ChatPresence chatWebSocketSessionRegistry;
@@ -75,7 +72,7 @@ public class NotificationOutboxWorkerService {
     private final NotificationPolicy platformParametersService;
     private final RedisStreamRetentionService redisStreamRetentionService;
     private final OperationalTelemetry adminTelemetryService;
-    private final FirebaseMessagingGateway firebaseMessagingGateway;
+    private final FirebasePushDelivery firebaseMessagingGateway;
     private final int batchSize;
     private final int firebaseChunkSize;
     private final int maxRetries;
@@ -89,7 +86,7 @@ public class NotificationOutboxWorkerService {
     private volatile Instant lastScheduledPollAt = Instant.EPOCH;
 
     public NotificationOutboxWorkerService(
-            RuntimeConfiguration configProperties,
+            AuthenticationMode configProperties,
             NotificationOutboxRepository notificationOutboxRepository,
             AccountNotifications accounts,
             ChatPresence chatWebSocketSessionRegistry,
@@ -97,7 +94,7 @@ public class NotificationOutboxWorkerService {
             ObjectProvider<StringRedisTemplate> stringRedisTemplateProvider,
             NotificationPolicy platformParametersService,
             OperationalTelemetry adminTelemetryService,
-            FirebaseMessagingGateway firebaseMessagingGateway,
+            FirebasePushDelivery firebaseMessagingGateway,
             @Value("${notifications.outbox.batch-size:50}") int batchSize,
             @Value("${notifications.outbox.firebase-chunk-size:500}") int firebaseChunkSize,
             @Value("${notifications.outbox.max-retries:5}") int maxRetries,
@@ -151,6 +148,7 @@ public class NotificationOutboxWorkerService {
     }
 
     private void processDueNotificationsForCurrentDatabaseInGroup() {
+        refreshPendingCount();
         Instant startedAt = Instant.now();
         NotificationRuleRegistryService registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
@@ -397,7 +395,7 @@ public class NotificationOutboxWorkerService {
         return notificationOutboxRepository.findById(item.getId());
     }
 
-    private DeliveryResult deliver(NotificationOutboxItem item) throws FirebaseMessagingException {
+    private DeliveryResult deliver(NotificationOutboxItem item) {
         if (Boolean.FALSE.equals(item.getFirebaseDeliveryRequested())) {
             return new DeliveryResult(0, 0, Set.of());
         }
@@ -444,14 +442,13 @@ public class NotificationOutboxWorkerService {
                 .toList();
     }
 
-    private DeliveryResult deliverDirect(NotificationOutboxItem item, List<TokenRegistration> registrations)
-            throws FirebaseMessagingException {
+    private DeliveryResult deliverDirect(NotificationOutboxItem item, List<TokenRegistration> registrations) {
         int success = 0;
         int failure = 0;
         LinkedHashSet<String> invalidTokens = new LinkedHashSet<>();
         for (int index = 0; index < registrations.size(); index += firebaseChunkSize) {
             List<TokenRegistration> chunk = registrations.subList(index, Math.min(index + firebaseChunkSize, registrations.size()));
-            List<Message> messages = chunk.stream()
+            List<PushMessage> messages = chunk.stream()
                     .map(registration -> buildTokenMessage(item, registration.token()))
                     .toList();
             FirebaseBatchSendResult response = firebaseMessagingGateway.sendAll(
@@ -464,8 +461,7 @@ public class NotificationOutboxWorkerService {
         return new DeliveryResult(success, failure, invalidTokens);
     }
 
-    private DeliveryResult deliverMulticast(NotificationOutboxItem item, List<TokenRegistration> registrations)
-            throws FirebaseMessagingException {
+    private DeliveryResult deliverMulticast(NotificationOutboxItem item, List<TokenRegistration> registrations) {
         int success = 0;
         int failure = 0;
         LinkedHashSet<String> invalidTokens = new LinkedHashSet<>();
@@ -493,31 +489,19 @@ public class NotificationOutboxWorkerService {
         }
     }
 
-    private MulticastMessage buildMessage(NotificationOutboxItem item, List<String> tokens) {
+    private PushMulticast buildMessage(NotificationOutboxItem item, List<String> tokens) {
         Map<String, String> payload = payloadFor(item);
-        return MulticastMessage.builder()
-                .addAllTokens(tokens)
-                .putAllData(payload)
-                .setWebpushConfig(webpushConfig(item, payload))
-                .build();
+        return new PushMulticast(tokens, payload, webpushConfig(item, payload));
     }
 
-    private Message buildTokenMessage(NotificationOutboxItem item, String token) {
+    private PushMessage buildTokenMessage(NotificationOutboxItem item, String token) {
         Map<String, String> payload = payloadFor(item);
-        return Message.builder()
-                .setToken(token)
-                .putAllData(payload)
-                .setWebpushConfig(webpushConfig(item, payload))
-                .build();
+        return new PushMessage(token, null, payload, webpushConfig(item, payload));
     }
 
-    private Message buildTopicMessage(NotificationOutboxItem item, String topicName) {
+    private PushMessage buildTopicMessage(NotificationOutboxItem item, String topicName) {
         Map<String, String> payload = payloadFor(item);
-        return Message.builder()
-                .setTopic(topicName)
-                .putAllData(payload)
-                .setWebpushConfig(webpushConfig(item, payload))
-                .build();
+        return new PushMessage(null, topicName, payload, webpushConfig(item, payload));
     }
 
     Map<String, String> payloadFor(NotificationOutboxItem item) {
@@ -543,21 +527,11 @@ public class NotificationOutboxWorkerService {
         return payload;
     }
 
-    private WebpushConfig webpushConfig(NotificationOutboxItem item, Map<String, String> payload) {
-        WebpushNotification.Builder notificationBuilder = WebpushNotification.builder()
-                .setTitle(firstNonBlank(item.getTitle(), payload.get("title")))
-                .setBody(firstNonBlank(item.getBody(), payload.get("body"), "You have a new notification."))
-                .setIcon(payload.get("icon"))
-                .setBadge(payload.get("badge"))
-                .setTag(payload.get("tag"))
-                .setTimestampMillis(Instant.now().toEpochMilli());
-
-        return WebpushConfig.builder()
-                .putHeader("Urgency", urgencyFor(item.getNotificationType()))
-                .putAllData(payload)
-                .setFcmOptions(WebpushFcmOptions.withLink(payload.get("url")))
-                .setNotification(notificationBuilder.build())
-                .build();
+    private WebPush webpushConfig(NotificationOutboxItem item, Map<String, String> payload) {
+        return new WebPush(firstNonBlank(item.getTitle(), payload.get("title")),
+                firstNonBlank(item.getBody(), payload.get("body"), "You have a new notification."),
+                payload.get("icon"), payload.get("badge"), payload.get("tag"), Instant.now().toEpochMilli(),
+                urgencyFor(item.getNotificationType()), payload.get("url"));
     }
 
     private ResolvedDeploymentBranding snapshottedBranding(
@@ -633,11 +607,11 @@ public class NotificationOutboxWorkerService {
         }
     }
 
-    private boolean isInvalidToken(MessagingErrorCode code) {
+    private boolean isInvalidToken(String code) {
         if (code == null) {
             return false;
         }
-        return MessagingErrorCode.UNREGISTERED.equals(code) || MessagingErrorCode.INVALID_ARGUMENT.equals(code);
+        return "UNREGISTERED".equals(code) || "INVALID_ARGUMENT".equals(code);
     }
 
     private void markSent(NotificationOutboxItem item, DeliveryResult result, String nowIso) {
@@ -657,7 +631,7 @@ public class NotificationOutboxWorkerService {
                 update,
                 NotificationOutboxItem.class);
         if (updateResult.getModifiedCount() > 0 && Boolean.TRUE.equals(item.getPendingCounterTracked())) {
-            adjustPendingCount(-1);
+            refreshPendingCount();
         }
     }
 
@@ -685,20 +659,18 @@ public class NotificationOutboxWorkerService {
                 update,
                 NotificationOutboxItem.class);
         if (exhausted && updateResult.getModifiedCount() > 0 && Boolean.TRUE.equals(item.getPendingCounterTracked())) {
-            adjustPendingCount(-1);
+            refreshPendingCount();
         }
         LOGGER.warn("Notification outbox item {} delivery failed.", item.getId(), exception);
     }
 
-    private void adjustPendingCount(int delta) {
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
-        if (registry == null || delta == 0) {
-            return;
+    private void refreshPendingCount() {
+        var registry = notificationRuleRegistry();
+        if (registry == null) return;
+        try { registry.refreshOutboxPendingCount(); }
+        catch (RuntimeException unavailable) {
+            LOGGER.warn("Notification queue metric remains pending ({})", unavailable.getClass().getSimpleName());
         }
-        registry.adjustPendingCount(
-                NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
-                delta,
-                "admin.jobs.rule.notification.outbox");
     }
 
     private NotificationRuleRegistryService notificationRuleRegistry() {

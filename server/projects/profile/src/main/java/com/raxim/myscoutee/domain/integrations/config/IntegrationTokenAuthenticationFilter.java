@@ -93,7 +93,9 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
         client = client.withAccess(mode);
         try {
             if (StringUtils.hasText(owner.getWorkspaceGroupId())) {
-                owner = profiles.select(owner.getAccountUserId(), owner.getWorkspaceGroupId());
+                var selected = profiles.select(owner.getAccountUserId(), owner.getWorkspaceGroupId());
+                owner = users.findByUserId(selected.getUserId())
+                        .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED));
                 if (!client.ownerUserId().equals(owner.getUserId())) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     return;

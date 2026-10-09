@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
+
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
 import com.raxim.myscoutee.domain.payments.dto.AssetPaymentReplacement;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
@@ -37,7 +39,7 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 import com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.dto.PaymentParticipantDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutPaymentAuditDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutRequestDto;
@@ -45,8 +47,8 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationRuleDto;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.domain.payments.service.PaymentGateway.AuthorizationResult;
@@ -56,7 +58,7 @@ import com.raxim.myscoutee.domain.payments.service.PaymentGateway.RefundStatus;
 
 @Service
 public class PaymentService implements com.raxim.myscoutee.domain.payments.api.AssetPayments, com.raxim.myscoutee.domain.payments.api.EventPayments {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads profiles;
 
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
 
@@ -86,8 +88,8 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
     private final SavedPaymentMethodsService savedPaymentMethodsService;
     private final MongoTemplate mongoTemplate;
-    private final EventOwnership activityEventsRepository;
-    private final AssetOwnership assetsRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final AssetOwnershipReads assetsRepository;
 
     @Value("${payment.enablePay:false}")
     private boolean enablePay;
@@ -101,8 +103,8 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
             DeploymentPaymentProviderResolver paymentProviderResolver,
             SavedPaymentMethodsService savedPaymentMethodsService,
             MongoTemplate mongoTemplate,
-            EventOwnership activityEventsRepository,
-            AssetOwnership assetsRepository) {
+            EventOwnershipReads activityEventsRepository,
+            AssetOwnershipReads assetsRepository) {
         this.processors = processorList.stream()
                 .collect(Collectors.toMap(PaymentProcessor::getType, p -> p));
         this.paymentsRepository = paymentsRepository;
@@ -502,8 +504,13 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
     }
 
     /** Complete one authorized cancellation; the original payment retains cumulative totals. */
-    public Payment completeEventCancellation(com.raxim.myscoutee.domain.payments.api.PaymentView snapshot, String reason) {
-        Payment payment = (Payment) snapshot;
+    @Override public void completeEventCancellation(String paymentId, String reason) {
+        Payment payment = paymentsRepository.findById(paymentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payment not found."));
+        completeEventCancellation(payment, reason);
+    }
+
+    public Payment completeEventCancellation(Payment payment, String reason) {
         Payment refunded = approvePolicyRefund(payment, nowIso(), safeAmount(payment.getAmount()),
                 payment.getCurrency(), reason, "Event booking cancelled; full remaining amount returned.");
         if (!BOOKING_STATUS_CANCELLED.equals(refunded.getBookingStatus())
@@ -1434,9 +1441,9 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         String payerId = normalizeId(request.payerUserId());
         if (!hasText(payerId) || payerId.equals(recipientId))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select another member.");
-        var participants = profiles.findNotDeletedByUserIdIn(java.util.Arrays.asList(payerId, recipientId));
-        WorkspaceProfile payer = participants.stream().filter(user -> payerId.equals(user.getUserId())).findFirst().orElse(null);
-        WorkspaceProfile recipient = participants.stream().filter(user -> recipientId.equals(user.getUserId())).findFirst().orElse(null);
+        var participants = profiles.paymentParticipants(java.util.Arrays.asList(payerId, recipientId));
+        PaymentParticipantDto payer = participants.stream().filter(user -> payerId.equals(user.userId())).findFirst().orElse(null);
+        PaymentParticipantDto recipient = participants.stream().filter(user -> recipientId.equals(user.userId())).findFirst().orElse(null);
         if (!WorkspaceContext.sameWorkspace(payer, recipient))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member unavailable.");
         String id = "cash:" + recipientId + ":" + request.requestId();
@@ -1446,7 +1453,7 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
             payment = new Payment();
             payment.setId(id); payment.setCheckoutSessionId(id); payment.setSourceId(id);
             payment.setUserId(payerId); payment.setRecipientUserId(recipientId);
-            payment.setReceiptPayerName(payer.getName()); payment.setReceiptRecipientName(recipient.getName());
+            payment.setReceiptPayerName(payer.name()); payment.setReceiptRecipientName(recipient.name());
             payment.setReceiptNote(note); payment.setProvider(method); payment.setStatus("approved");
             payment.setAmount(request.amount()); payment.setCurrency(request.currency());
             payment.setAuditKind(AUDIT_KIND_PAYMENT); payment.setFulfillmentKind("cash-receipt");
@@ -1469,7 +1476,7 @@ public class PaymentService implements com.raxim.myscoutee.domain.payments.api.A
         if (recipient.getWorkspaceGroupId()!=null) payload.put("workspaceGroupId",recipient.getWorkspaceGroupId());
         cashNotifications.enqueueOnce(notificationKind + ":" + id, new NotificationIntent(
                 notificationKind, "payment", id, "payment-participant", List.of(payerId),
-                "Receipt recorded", recipient.getName() + " recorded a payment receipt.", "/game?payments=1",
+                "Receipt recorded", recipient.name() + " recorded a payment receipt.", "/game?payments=1",
                 "/assets/logo/heart.webp", "/assets/logo/heart.webp", notificationKind + ":" + id, payload, recipientId));
         return savedPaymentMethodsService.mutationDto(payment, recipientId);
     }

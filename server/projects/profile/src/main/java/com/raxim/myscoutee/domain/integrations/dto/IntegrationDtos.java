@@ -61,7 +61,11 @@ public final class IntegrationDtos {
     public record AffiliateSummaryDto(String url, long registered, AffiliateRevenueDto revenue) {
         public AffiliateSummaryDto(String url, long registered) { this(url, registered, null); }
     }
-    public record IntegrationParticipantSummaryDto(long registered, long imported) { }
+    public record IntegrationParticipantSummaryDto(
+            @com.fasterxml.jackson.annotation.JsonProperty(required = true)
+            @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.FAIL) long registered,
+            @com.fasterxml.jackson.annotation.JsonProperty(required = true)
+            @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.FAIL) long imported) { }
 
     public record IntegrationTokenCreateRequestDto(
             String name,

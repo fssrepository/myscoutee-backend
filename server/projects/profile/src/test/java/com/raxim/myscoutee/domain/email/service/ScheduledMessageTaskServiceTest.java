@@ -81,7 +81,7 @@ class ScheduledMessageTaskServiceTest {
     @Mock
     private ObjectProvider<EmailProperties> emailPropertiesProvider;
     @Mock
-    private ObjectProvider<com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration> configPropertiesProvider;
+    private ObjectProvider<com.raxim.myscoutee.domain.platform.api.AuthenticationMode> configPropertiesProvider;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock
@@ -108,7 +108,8 @@ class ScheduledMessageTaskServiceTest {
                 mongoTemplate,
                 scheduledMessageTasksRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles),
-                new com.raxim.myscoutee.domain.accounts.service.AccountInactivityService(profiles, userSessionActionsRepository, affinityRecomputeTaskService),
+                new com.raxim.myscoutee.domain.accounts.service.AccountInactivityService(profiles, userSessionActionsRepository,
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(profiles, mongoTemplate, affinityRecomputeTaskService, null)),
                 scheduledMessageAuditService,
                 emailOutboxRepository,
                 emailTemplatesRepository,
@@ -144,6 +145,39 @@ class ScheduledMessageTaskServiceTest {
     @AfterEach
     void tearDown() {
         service.shutdown();
+    }
+
+    @Test
+    void activitySignalReschedulesTheExistingInactivityTaskInItsWorkspace() {
+        var scope=org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.JobAudience.class);
+        ReflectionTestUtils.setField(service,"jobGroupScope",scope);
+        when(scope.forUser("user-1")).thenReturn("workspace");
+        when(profiles.findByUserId("user-1")).thenReturn(Optional.of(recipient));
+        var existing=new ScheduledMessageTask();existing.setId("existing-id");existing.setSyncKey("existing-sync");
+        existing.setTaskKey("user-profile-inactive-30d:user-1");existing.setCreatedDate("2026-01-01T00:00:00Z");existing.setPendingCounterTracked(true);
+        when(scheduledMessageTasksRepository.findByTaskKey(existing.getTaskKey())).thenReturn(Optional.of(existing));
+        when(mongoTemplate.findAndModify(org.mockito.ArgumentMatchers.any(org.springframework.data.mongodb.core.query.Query.class),
+                org.mockito.ArgumentMatchers.any(org.springframework.data.mongodb.core.query.Update.class),
+                org.mockito.ArgumentMatchers.any(org.springframework.data.mongodb.core.FindAndModifyOptions.class),eq(ScheduledMessageTask.class))).thenReturn(existing);
+        var before=java.time.Instant.now().plus(30,java.time.temporal.ChronoUnit.DAYS);
+        com.raxim.myscoutee.domain.email.api.UserActivityScheduling port=service;
+        port.touchUserActivity(" user-1 ");port.touchUserActivity("user-1");
+        assertThat(existing.getId()).isEqualTo("existing-id");assertThat(existing.getSyncKey()).isEqualTo("existing-sync");
+        assertThat(existing.getCreatedDate()).isEqualTo("2026-01-01T00:00:00Z");assertThat(existing.getBaseGroupId()).isEqualTo("workspace");
+        assertThat(java.time.Instant.parse(existing.getDueAtIso())).isAfterOrEqualTo(before)
+                .isBeforeOrEqualTo(java.time.Instant.now().plus(30,java.time.temporal.ChronoUnit.DAYS));
+        var query=ArgumentCaptor.forClass(org.springframework.data.mongodb.core.query.Query.class);
+        verify(mongoTemplate,times(2)).findAndModify(query.capture(),org.mockito.ArgumentMatchers.any(org.springframework.data.mongodb.core.query.Update.class),
+                org.mockito.ArgumentMatchers.any(org.springframework.data.mongodb.core.FindAndModifyOptions.class),eq(ScheduledMessageTask.class));
+        assertThat(query.getAllValues()).allSatisfy(value->assertThat(value.getQueryObject().getString("taskKey")).isEqualTo("user-profile-inactive-30d:user-1"));
+    }
+
+    @Test
+    void missingAndDeletedProfilesDoNotScheduleInactivity() {
+        service.touchUserActivity(null);service.touchUserActivity(" ");
+        when(profiles.findByUserId("missing")).thenReturn(Optional.empty());service.touchUserActivity("missing");
+        recipient.setProfileStatus("deleted");when(profiles.findByUserId("user-1")).thenReturn(Optional.of(recipient));service.touchUserActivity("user-1");
+        org.mockito.Mockito.verifyNoInteractions(mongoTemplate,scheduledMessageTasksRepository);
     }
 
     @Test

@@ -18,7 +18,6 @@ import com.raxim.myscoutee.domain.affinity.api.RecomputeQueue;
 
 @Service
 public class AdminMenuCounterService implements com.raxim.myscoutee.domain.administration.api.AdministratorClassification, com.raxim.myscoutee.domain.administration.api.AdministrativeQueues {
-    private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
 
     private final NotificationCatalog notificationCatalog;
     private final RecomputeQueue recomputeQueue;
@@ -43,15 +42,6 @@ public class AdminMenuCounterService implements com.raxim.myscoutee.domain.admin
         this.recomputeQueue = recomputeQueue;
         this.monitoringRepository = monitoringRepository;
 
-    }
-
-    public boolean isAdminUser(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile user) {
-        if (user == null) {
-            return false;
-        }
-        return "admin".equalsIgnoreCase(safeText(user.getHostTier()))
-                || "admin workspace".equalsIgnoreCase(safeText(user.getStatusText()))
-                || DEMO_ADMIN_IDS.contains(safeText(user.getUserId()));
     }
 
     @Override public Counts counters(boolean refreshSnapshot) {

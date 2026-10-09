@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.common.config.PlatformParametersService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -6,10 +6,16 @@ import java.util.Map;
 
 public interface JobAudience {
     WorkspaceScope workspaceScope();
-    record WorkspaceScope(java.util.Set<String> ids, boolean included) {}
+    record WorkspaceScope(java.util.Set<String> ids, boolean included) {
+        public boolean matches(String workspaceId) {
+            return included == (workspaceId != null && ids.contains(workspaceId));
+        }
+    }
 
     String forUser(String userId);
     String forTarget(String type, String id);
-    boolean matchesWorkspace(String workspaceId);
+    default boolean matchesWorkspace(String workspaceId) {
+        return !JobGroupContext.isActive() || workspaceScope().matches(workspaceId);
+    }
     Map<String, List<String>> usersByGroup(Collection<String> userIds);
 }

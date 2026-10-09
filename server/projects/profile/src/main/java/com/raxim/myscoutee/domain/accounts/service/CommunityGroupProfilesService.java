@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.accounts.service;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.events.dto.CommunityMember;
-import com.raxim.myscoutee.domain.events.api.CommunityMemberships;
+import com.raxim.myscoutee.domain.events.api.CommunityMembershipReads;
 import com.raxim.myscoutee.domain.groups.api.GroupView;
 import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
@@ -20,8 +20,8 @@ public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain
     private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final UsersRepository users;
     private final GroupDirectory groups;
-    private final CommunityMemberships members;
-    public CommunityGroupProfilesService(UsersRepository users, GroupDirectory groups, CommunityMemberships members) {
+    private final CommunityMembershipReads members;
+    public CommunityGroupProfilesService(UsersRepository users, GroupDirectory groups, CommunityMembershipReads members) {
         this.users = users; this.groups = groups; this.members = members;
     }
     public Users admit(GroupView group, String accountId) {
@@ -53,8 +53,8 @@ public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain
         return users.findByWorkspaceGroupIdAndAccountUserId(groupId, accountId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT));
     }
-    @Override public Users activate(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile account, String groupId) {
-        return activate((Users) account, groupId);
+    @Override public Users activate(String accountId, String groupId) {
+        return activate(users.findByUserId(accountId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)), groupId);
     }
     public Users activate(Users account, String groupId) {
         String selectedId = groupId == null || groupId.isBlank() ? null : groupId;
@@ -68,12 +68,10 @@ public class CommunityGroupProfilesService implements com.raxim.myscoutee.domain
         return groupId == null || groupId.isBlank() ? account : select(account.getUserId(), groupId);
     }
     @Override public void clearActiveWorkspace(String accountId, String groupId) { users.clearActiveWorkspace(accountId, groupId); }
-    @Override public long attention(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
-        return CommunityGroupProfileMapper.attention((Users) profile);
-    }
-    public Map<String, Users> profilesByGroup(String accountId) {
-        var result = new HashMap<String, Users>();
-        users.findByAccountUserId(accountId).forEach(user -> result.put(user.getWorkspaceGroupId(), user));
+    @Override public Map<String, com.raxim.myscoutee.domain.accounts.dto.AccountWorkspaceDto> profilesByGroup(String accountId) {
+        var result = new HashMap<String, com.raxim.myscoutee.domain.accounts.dto.AccountWorkspaceDto>();
+        users.findByAccountUserId(accountId).forEach(user -> result.put(user.getWorkspaceGroupId(),
+                new com.raxim.myscoutee.domain.accounts.dto.AccountWorkspaceDto(user.getUserId(), CommunityGroupProfileMapper.attention(user))));
         return result;
     }
     public static String currentGroupId() { return com.raxim.myscoutee.domain.groups.api.WorkspaceContext.currentGroupId(); }

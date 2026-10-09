@@ -313,6 +313,10 @@ public class EventTicketSyncService {
     private ActivityEvent cloneRecord(ActivityEvent source) {
         ActivityEvent clone = new ActivityEvent();
         clone.setId(source.getId());
+        clone.setVersion(source.getVersion());
+        clone.setLifecycleWork(source.getLifecycleWork());
+        clone.setMembershipCounterWork(source.getMembershipCounterWork());
+        clone.setMembershipCounterUsers(source.getMembershipCounterUsers());
         clone.setSyncKey(source.getSyncKey());
         clone.setSourceId(source.getSourceId());
         clone.setOwnerUserId(source.getOwnerUserId());

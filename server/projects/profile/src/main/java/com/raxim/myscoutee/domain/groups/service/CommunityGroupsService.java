@@ -8,9 +8,10 @@ import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.groups.dto.GroupPolicy;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfile;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileCards;
 import com.raxim.myscoutee.domain.groups.api.GroupCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.content.api.CommunityReports;
@@ -47,8 +48,9 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
             "profile.details.sexualOrientation", "profile.gender", "profile.details.religion", "profile.details.values");
     private final CommunityGroupsRepository groups;
     private final CommunityMemberships memberships;
-    private final ProfileDirectory users;
-    private final ProfilePresentation profiles;
+    private final DiscoveryProfiles users;
+    private final SelectedProfile profiles;
+    private final ProfileCards cards;
     private final AccountWorkspaces groupProfiles;
     private final ContentRegistration moderation;
     private final CommunityReports reports;
@@ -56,19 +58,19 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
     private final GroupCounters counters;
     private final com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications;
     public CommunityGroupsService(CommunityGroupsRepository groups, CommunityMemberships memberships,
-            ProfileDirectory users, ProfilePresentation profiles, AccountWorkspaces groupProfiles,
+            DiscoveryProfiles users, SelectedProfile profiles, ProfileCards cards, AccountWorkspaces groupProfiles,
             ContentRegistration moderation, CommunityReports reports, OperationalTelemetry telemetry, GroupCounters counters,
             com.raxim.myscoutee.domain.notifications.api.NotificationDelivery notifications) {
-        this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.groupProfiles = groupProfiles;
+        this.groups = groups; this.memberships = memberships; this.users = users; this.profiles = profiles; this.cards = cards; this.groupProfiles = groupProfiles;
         this.moderation = moderation; this.reports = reports; this.telemetry = telemetry; this.counters = counters; this.notifications = notifications;
     }
-    public WorkspaceProfile actor(String requestedId) {
-        WorkspaceProfile actor = profiles.resolveCurrentUser(requestedId);
+    public DiscoveryProfile actor(String requestedId) {
+        var actor = profiles.resolveSelectedIdentity(requestedId);
         if (actor == null) throw error(HttpStatus.UNAUTHORIZED);
-        if (actor.getAccountUserId() != null) return users.findByUserId(actor.getAccountUserId()).orElseThrow(() -> error(HttpStatus.UNAUTHORIZED));
-        return actor;
+        return users.findByUserId(actor.accountUserId() == null ? actor.userId() : actor.accountUserId())
+                .orElseThrow(() -> error(HttpStatus.UNAUTHORIZED));
     }
-    public List<Workspace> workspaces(WorkspaceProfile actor) {
+    public List<Workspace> workspaces(DiscoveryProfile actor) {
         var memberships = this.memberships.forAccount(actor.getUserId()).stream()
                 .filter(m -> Set.of("accepted", "pending").contains(m.getStatus())).collect(Collectors.toMap(CommunityMember::getOwnerId, m -> m));
         for (String baseId : BaseGroups.BASE_IDS) if ("Admin".equalsIgnoreCase(actor.getHostTier()) && !memberships.containsKey(baseId)
@@ -82,9 +84,9 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         }
         var profiles = groupProfiles.profilesByGroup(actor.getUserId());
         return groups.findByIdIn(memberships.keySet()).stream().filter(g -> !g.deleted())
-                .map(g -> new Workspace(g.id(), profiles.containsKey(g.id()) ? profiles.get(g.id()).getUserId() : null, g.name(), memberships.get(g.id()).getRole(),
+                .map(g -> new Workspace(g.id(), profiles.containsKey(g.id()) ? profiles.get(g.id()).profileId() : null, g.name(), memberships.get(g.id()).getRole(),
                     ("accepted".equals(memberships.get(g.id()).getStatus())
-                        ? groupProfiles.attention(profiles.get(g.id())) : 0)
+                        ? attention(profiles.get(g.id())) : 0)
                         + CommunityGroupMapper.membersActivity(g, memberships.get(g.id()))
                         + (isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0), g.policy(),
                     isAdmin(memberships.get(g.id())) ? g.pendingModerationCount() : 0,
@@ -93,29 +95,48 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
                 .sorted(Comparator.comparing(Workspace::name).thenComparing(Workspace::groupId)).toList();
     }
     public ProfileExtByIdResponseDto completeProfileLoad(
-            WorkspaceProfile account, ProfileExtByIdResponseDto response,
+            DiscoveryProfile account, ProfileExtByIdResponseDto response,
             String requestedGroup) {
-        var context = select(account, WorkspaceContext.currentGroupId());
-        var result = new ProfileExtByIdResponseDto(
+        var context = completeProfileWorkspace(account, WorkspaceContext.currentGroupId(), requestedGroup);
+        return new ProfileExtByIdResponseDto(
                 response.profileExt(), response.filterCount(), response.filterPreferences(), response.counterOverrides(),
                 context.workspace(), context.accountProfile());
+    }
+    @Override public com.raxim.myscoutee.domain.groups.dto.ProfileWorkspaceDto loadProfileWorkspace(
+            String accountId, String currentGroupId, String requestedGroupId) {
+        var account = users.findByUserId(accountId).orElseThrow(() -> error(HttpStatus.UNAUTHORIZED));
+        if (account.getAccountUserId() != null) throw error(HttpStatus.UNAUTHORIZED);
+        return completeProfileWorkspace(account, currentGroupId, requestedGroupId);
+    }
+    private com.raxim.myscoutee.domain.groups.dto.ProfileWorkspaceDto completeProfileWorkspace(
+            DiscoveryProfile account, String currentGroupId, String requestedGroup) {
+        var context = select(account, currentGroupId);
+        var result = new com.raxim.myscoutee.domain.groups.dto.ProfileWorkspaceDto(context.workspace(), context.accountProfile());
         // A failed profile load must not replace the saved selection.
-        if (requestedGroup != null) groupProfiles.activate(account, requestedGroup);
+        if (requestedGroup != null) groupProfiles.activate(account.getUserId(), requestedGroup);
         return result;
     }
     /** Read-only profile resolution, also used by group moderation. */
-    public WorkspaceSelection select(WorkspaceProfile actor, String id) {
-        if (id == null || id.isBlank()) return new WorkspaceSelection(null, profiles.present(actor), null);
+    public WorkspaceSelection select(DiscoveryProfile actor, String id) {
+        if (id == null || id.isBlank()) return new WorkspaceSelection(null, presented(List.of(actor.getUserId())).get(actor.getUserId()), null);
         var selected = groupProfiles.select(actor.getUserId(), id);
         var descriptor = workspaces(actor).stream().filter(w -> w.groupId().equals(id)).findFirst().orElseThrow(() -> error(HttpStatus.FORBIDDEN));
-        return new WorkspaceSelection(descriptor, profiles.present(selected), profiles.present(actor));
+        var presented = presented(java.util.stream.Stream.of(selected.getUserId(), actor.getUserId()).distinct().toList());
+        return new WorkspaceSelection(descriptor, presented.get(selected.getUserId()), presented.get(actor.getUserId()));
     }
-    public Group detail(WorkspaceProfile actor, String id) {
+    private Map<String, com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto> presented(List<String> ids) {
+        return cards.presentProfiles(ids).stream().collect(Collectors.toMap(
+                com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto::id, java.util.function.Function.identity()));
+    }
+    private static long attention(com.raxim.myscoutee.domain.accounts.dto.AccountWorkspaceDto value) {
+        return value == null ? 0 : value.attention();
+    }
+    public Group detail(DiscoveryProfile actor, String id) {
         var group = visible(actor, id);
         return dto(actor, group, members(id));
     }
     private record GroupSnapshot(List<Group> items, long total, Map<String, Long> context) {}
-    private GroupSnapshot snapshot(WorkspaceProfile actor, String bucket, String category, String sort) {
+    private GroupSnapshot snapshot(DiscoveryProfile actor, String bucket, String category, String sort) {
         if (!Set.of("hosting", "participation", "pending", "invitations", "explore", "trash").contains(bucket)) throw error(HttpStatus.BAD_REQUEST);
         String order = sort == null || sort.isBlank() ? (bucket.equals("explore") ? "distance" : "updated") : sort;
         if (!Set.of("distance", "updated").contains(order)) throw error(HttpStatus.BAD_REQUEST);
@@ -129,13 +150,13 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         var membersByGroup = memberships.forGroups(groupIds).stream()
                 .collect(Collectors.groupingBy(CommunityMember::getOwnerId));
         var owners = users.findByUserIdIn(records.stream().map(CommunityGroup::ownerUserId).distinct().toList()).stream()
-                .collect(Collectors.toMap(WorkspaceProfile::getUserId, u -> u));
+                .collect(Collectors.toMap(DiscoveryProfile::getUserId, u -> u));
         var profileByGroup = groupProfiles.profilesByGroup(actor.getUserId());
         var rows = records.stream().filter(g -> !g.deleted() || bucket.equals("trash")).filter(g -> !bucket.equals("explore") || !g.awaitingOwner() && g.moderationVisible())
                 .filter(g -> category == null || category.isBlank() || category.equals(g.category()))
                 .filter(g -> owners.containsKey(g.ownerUserId()))
                 .map(g -> CommunityGroupMapper.toDto(g, owners.get(g.ownerUserId()), actor,
-                        membersByGroup.getOrDefault(g.id(), List.of()), groupProfiles.attention(profileByGroup.get(g.id()))))
+                        membersByGroup.getOrDefault(g.id(), List.of()), attention(profileByGroup.get(g.id()))))
                 .sorted(Comparator.comparingInt((Group g) -> BaseGroups.isBaseId(g.id()) ? 0 : 1)
                     .thenComparing(order.equals("distance")
                     ? Comparator.comparingDouble((Group g) -> g.distanceKm() == null ? Double.MAX_VALUE : g.distanceKm())
@@ -148,10 +169,10 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
                 "pending", workspaceCounters.stream().filter(w -> "pending".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum(),
                 "invitations", workspaceCounters.stream().filter(w -> "invitations".equals(CommunityGroupMapper.membershipBucket(w.role(), w.membershipStatus(), w.requestKind()))).mapToLong(Workspace::activity).sum()));
     }
-    public Page page(WorkspaceProfile actor, String bucket, String category, int pageSize, String cursor) {
+    public Page page(DiscoveryProfile actor, String bucket, String category, int pageSize, String cursor) {
         return page(actor, bucket, category, pageSize, cursor, null);
     }
-    public Page page(WorkspaceProfile actor, String bucket, String category, int pageSize, String cursor, String sort) {
+    public Page page(DiscoveryProfile actor, String bucket, String category, int pageSize, String cursor, String sort) {
         var snapshot = snapshot(actor, bucket, category, sort);
         int offset = 0;
         try { if (cursor != null && !cursor.isBlank()) offset = Integer.parseInt(cursor); }
@@ -160,7 +181,7 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         var result = snapshot.items().stream().skip(offset).limit(Math.max(1, Math.min(pageSize, 50))).toList();
         return new Page(result.stream().map(Summary::from).toList(), snapshot.total(), offset + result.size() < snapshot.total() ? "" + (offset + result.size()) : null, snapshot.context());
     }
-    public SyncResponse sync(WorkspaceProfile actor, SyncRequest request) {
+    public SyncResponse sync(DiscoveryProfile actor, SyncRequest request) {
         if (request.knownItems() == null || request.knownItems().size() > 500) throw error(HttpStatus.BAD_REQUEST);
         var snapshot = snapshot(actor, request.bucket(), request.category(), request.sort());
         var known = request.knownItems().stream().collect(Collectors.toMap(KnownGroup::id, KnownGroup::revision, (a,b) -> b));
@@ -173,7 +194,7 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         known.forEach((id, revision) -> { var g = byId.get(id); if (g != null && !g.revision().equals(revision)) upserts.put(id, g); });
         return new SyncResponse(upserts.values().stream().map(Summary::from).toList(), known.keySet().stream().filter(id -> !byId.containsKey(id)).toList(), snapshot.total());
     }
-    public synchronized Group save(WorkspaceProfile actor, Save request) {
+    public synchronized Group save(DiscoveryProfile actor, Save request) {
         if (request == null || request.name() == null || request.name().isBlank() || request.name().codePointCount(0, request.name().length()) > 20
                 || request.description() != null && request.description().length() > 4000
                 || !CATEGORIES.contains(request.category()) || !VISIBILITIES.contains(request.visibility())) throw error(HttpStatus.BAD_REQUEST);
@@ -206,14 +227,14 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         var owner = users.findByUserId(group.ownerUserId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         return dto(owner, group, members(id));
     }
-    public void report(WorkspaceProfile actor, Report request) {
+    public void report(DiscoveryProfile actor, Report request) {
         var group = visible(actor, request.groupId());
         String details = request.details() == null ? "" : request.details().trim();
         if (group.ownerUserId().equals(actor.getUserId())) throw error(HttpStatus.FORBIDDEN);
         if (details.length() < 12 || details.length() > 2000) throw error(HttpStatus.BAD_REQUEST);
         reports.submitGroupReport(actor.getUserId(), group.ownerUserId(), group.id(), group.name(), details);
     }
-    public synchronized Group join(WorkspaceProfile actor, String id) {
+    public synchronized Group join(DiscoveryProfile actor, String id) {
         var group = visible(actor, id);
         if (group.awaitingOwner() || !group.moderationVisible()) throw error(HttpStatus.FORBIDDEN);
         var old = membership(id, actor.getUserId());
@@ -239,14 +260,14 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         notifyMembers(group, "join-requested", actor.getUserId(), requested, members(id).stream().filter(this::isAdmin).map(CommunityMember::getUserId).toList(), false);
         return dto(actor, groups.findById(id).orElseThrow(), members(id));
     }
-    public void joinWorkspaceBase(WorkspaceProfile actor, String groupId) {
+    public void joinWorkspaceBase(DiscoveryProfile actor, String groupId) {
         var workspace = visible(actor, groupId);
         var member = membership(groupId, actor.getUserId());
         if (member == null || !"accepted".equals(member.getStatus())) throw error(HttpStatus.FORBIDDEN);
         if (workspace.baseId() != null && !workspace.baseId().equals(groupId))
             join(actor, workspace.baseId());
     }
-    public List<ActivityMemberEntryDto> roster(WorkspaceProfile actor, String id, boolean pendingOnly) {
+    public List<ActivityMemberEntryDto> roster(DiscoveryProfile actor, String id, boolean pendingOnly) {
         var group = visible(actor, id);
         var own = membership(id, actor.getUserId());
         boolean admin = isAdmin(own);
@@ -254,18 +275,18 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
                 .filter(m -> admin || "accepted".equals(m.getStatus()) || actor.getUserId().equals(m.getUserId()))
                 .filter(m -> admin || !group.hideMembers() || "Admin".equals(m.getRole()) || actor.getUserId().equals(m.getUserId())).toList();
         var people = users.findByUserIdIn(rows.stream().map(CommunityMember::getUserId).toList()).stream()
-                .collect(Collectors.toMap(WorkspaceProfile::getUserId, u -> u));
+                .collect(Collectors.toMap(DiscoveryProfile::getUserId, u -> u));
         return rows.stream().filter(m -> people.containsKey(m.getUserId()))
                 .map(m -> CommunityGroupMapper.member(m, people.get(m.getUserId()), actor.getUserId())).toList();
     }
-    public ActivityMembersSummaryDto summary(WorkspaceProfile actor, String id) {
+    public ActivityMembersSummaryDto summary(DiscoveryProfile actor, String id) {
         var group = detail(actor, id);
         var rows = roster(actor, id, false);
         return new ActivityMembersSummaryDto(OWNER_TYPE, id, group.acceptedMembers(), group.pendingMembers(), group.acceptedMembers(),
                 rows.stream().filter(m -> "accepted".equals(m.status())).map(ActivityMemberEntryDto::userId).toList(),
                 rows.stream().filter(m -> "pending".equals(m.status())).map(ActivityMemberEntryDto::userId).toList());
     }
-    public ActivityMembersSyncResponseDto sync(WorkspaceProfile actor, ActivityMembersSyncRequestDto request) {
+    public ActivityMembersSyncResponseDto sync(DiscoveryProfile actor, ActivityMembersSyncRequestDto request) {
         var rows = roster(actor, request.owner().ownerId(), false);
         var known = request.knownItems() == null ? List.<ActivityMemberSyncKnownItemDto>of() : request.knownItems();
         var revisions = known.stream().collect(Collectors.toMap(ActivityMemberSyncKnownItemDto::id, k -> Objects.toString(k.revision(), ""), (a,b) -> b));
@@ -273,10 +294,10 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         return new ActivityMembersSyncResponseDto(rows.stream().filter(m -> !Objects.equals(m.revision(), revisions.get(m.id()))).toList(),
                 known.stream().map(ActivityMemberSyncKnownItemDto::id).filter(id -> !ids.contains(id)).toList(), rows.size());
     }
-    public synchronized ActivityMembersInviteResponseDto invite(WorkspaceProfile actor, String id, List<String> userIds) {
+    public synchronized ActivityMembersInviteResponseDto invite(DiscoveryProfile actor, String id, List<String> userIds) {
         var group = visible(actor, id); requireAdmin(actor, id);
         if (userIds == null || userIds.size() > 200) throw error(HttpStatus.BAD_REQUEST);
-        var candidates = users.findByUserIdIn(userIds).stream().filter(u -> u.getWorkspaceGroupId() == null).map(WorkspaceProfile::getUserId).collect(Collectors.toSet());
+        var candidates = users.findByUserIdIn(userIds).stream().filter(u -> u.getWorkspaceGroupId() == null).map(DiscoveryProfile::getUserId).collect(Collectors.toSet());
         var existing = members(id).stream().filter(m -> Set.of("accepted", "pending").contains(m.getStatus()))
                 .map(CommunityMember::getUserId).collect(Collectors.toSet());
         var invited = userIds.stream().distinct().filter(candidates::contains).filter(uid -> !existing.contains(uid)).toList();
@@ -299,17 +320,17 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         var member = membership(invite.eventId(), actorUserId);
         if (member == null) throw error(HttpStatus.CONFLICT);
         if ("accepted".equals(member.getStatus())) {
-            groupProfiles.activate(recipient, invite.eventId());
+            groupProfiles.activate(recipient.getUserId(), invite.eventId());
             return;
         }
         var acceptingActor = "invite".equals(member.getRequestKind()) ? recipient : owner;
         action(acceptingActor, new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto(OWNER_TYPE, invite.eventId()),
                 acceptingActor.getUserId(), actorUserId, "accept", null));
-        groupProfiles.activate(recipient, invite.eventId());
+        groupProfiles.activate(recipient.getUserId(), invite.eventId());
     }
     /** A validated event sharing link also admits its recipient to the event workspace. */
-    public synchronized WorkspaceProfile claimEventInvite(String groupId, String inviterProfileId, String accountId) {
+    public synchronized DiscoveryProfile claimEventInvite(String groupId, String inviterProfileId, String accountId) {
         var inviter = users.findByUserId(inviterProfileId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         var recipient = users.findByUserId(accountId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         var group = groups.findById(groupId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
@@ -329,10 +350,10 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
             action(recipient, new ActivityMemberActionRequestDto(new ActivityMemberOwnerRefDto(OWNER_TYPE, groupId),
                     accountId, accountId, "accept", null));
         }
-        return groupProfiles.activate(recipient, groupId);
+        return groupProfiles.activate(recipient.getUserId(), groupId);
     }
 
-    public synchronized ActivityMemberActionResponseDto action(WorkspaceProfile actor, ActivityMemberActionRequestDto request) {
+    public synchronized ActivityMemberActionResponseDto action(DiscoveryProfile actor, ActivityMemberActionRequestDto request) {
         String id = request.owner().ownerId(); var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         var target = membership(id, request.targetUserId());
         if (target == null) throw error(HttpStatus.NOT_FOUND);
@@ -474,7 +495,7 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
                 kind, OWNER_TYPE, group.id(), "members", recipients, group.name(), group.name(), "/game?communityGroupId=" + java.net.URLEncoder.encode(group.id(), java.nio.charset.StandardCharsets.UTF_8),
                 group.imageUrl(), "/assets/logo/heart.webp", kind + ":" + group.id(), payload, actorId));
     }
-    private CommunityGroup visible(WorkspaceProfile actor, String id) {
+    private CommunityGroup visible(DiscoveryProfile actor, String id) {
         var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         if (group.deleted()) throw error(HttpStatus.NOT_FOUND);
         var own = membership(id, actor.getUserId());
@@ -483,13 +504,13 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
         if (!group.moderationVisible() && (own == null || !Set.of("pending", "accepted").contains(own.getStatus()))) throw error(HttpStatus.NOT_FOUND);
         return group;
     }
-    private Group dto(WorkspaceProfile actor, CommunityGroup group, List<CommunityMember> members) {
+    private Group dto(DiscoveryProfile actor, CommunityGroup group, List<CommunityMember> members) {
         var owner = users.findByUserId(group.ownerUserId()).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         var own = membership(group.id(), actor.getUserId());
         if (CommunityGroupMapper.restorableMembership(own) && members.stream().noneMatch(m -> actor.getUserId().equals(m.getUserId()))) {
             members = new ArrayList<>(members); members.add(own);
         }
-        return CommunityGroupMapper.toDto(group, owner, actor, members, groupProfiles.attention(groupProfiles.profilesByGroup(actor.getUserId()).get(group.id())));
+        return CommunityGroupMapper.toDto(group, owner, actor, members, attention(groupProfiles.profilesByGroup(actor.getUserId()).get(group.id())));
     }
     private List<CommunityMember> members(String id) {
         return memberships.forGroup(id).stream()
@@ -497,12 +518,12 @@ public class CommunityGroupsService implements com.raxim.myscoutee.domain.groups
     }
     private CommunityMember membership(String id, String userId) { return memberships.member(id, userId).orElse(null); }
     private boolean isAdmin(CommunityMember m) { return m != null && "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole()); }
-    public List<CommunityGroup> administeredGroups(WorkspaceProfile actor) {
+    public List<CommunityGroup> administeredGroups(DiscoveryProfile actor) {
         var ids = memberships.forAccount(actor.getUserId()).stream()
                 .filter(this::isAdmin).map(CommunityMember::getOwnerId).distinct().toList();
         return ids.isEmpty() ? List.of() : groups.findByIdIn(ids);
     }
-    public void requireAdmin(WorkspaceProfile actor, String id) {
+    public void requireAdmin(DiscoveryProfile actor, String id) {
         var group = groups.findById(id).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
         if (group.deleted() || group.awaitingOwner() || !isAdmin(membership(id, actor.getUserId()))) throw error(HttpStatus.FORBIDDEN);
     }

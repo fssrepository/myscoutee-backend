@@ -16,32 +16,58 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageAttachmen
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReactionRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageReplyRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageAttachmentDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReactionDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadAvatarDto;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.chat.service.ChatStreamEvent;
 
 @Component
 public class ChatMessageMapper {
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
 
-    public ChatMessageMapper(ProfileDirectory usersRepository) {
+    public ChatMessageMapper(ProfileSummaries usersRepository) {
         this.usersRepository = usersRepository;
+    }
+
+    /** Fill the existing per-page cache in batches before mapping; missing profiles are cached as absent. */
+    public List<ChatMessageDto> toDtos(List<ChatMessage> messages, String viewerUserId) {
+        Map<String, ProfileSummary> userCache = new java.util.LinkedHashMap<>();
+        for (ChatMessage message : messages) {
+            if (message == null) continue;
+            addProfileId(userCache, message.getSenderAvatar() == null ? null : message.getSenderAvatar().getId());
+            if (StringUtils.hasText(message.getDeletedAtIso())) continue;
+            for (var reader : safeReadBy(message.getReadBy())) addProfileId(userCache, reader == null ? null : reader.getId());
+            for (var reaction : safeReactions(message.getReactions())) addProfileId(userCache, reaction == null ? null : reaction.getUserId());
+        }
+        List<String> ids = new java.util.ArrayList<>(userCache.keySet());
+        for (int offset = 0; offset < ids.size(); offset += 1000) {
+            for (ProfileSummary user : usersRepository.findByUserIdIn(ids.subList(offset, Math.min(ids.size(), offset + 1000)))) {
+                if (user != null && userCache.containsKey(normalizeId(user.getUserId()))) {
+                    userCache.putIfAbsent(normalizeId(user.getUserId()), user);
+                }
+            }
+        }
+        return messages.stream().map(message -> toDto(message, viewerUserId, userCache)).toList();
+    }
+
+    private void addProfileId(Map<String, ProfileSummary> userCache, String userId) {
+        String normalized = normalizeId(userId);
+        if (StringUtils.hasText(normalized)) userCache.putIfAbsent(normalized, null);
     }
 
     public ChatMessageDto toDto(ChatMessage message, String viewerUserId) {
         return toDto(message, viewerUserId, null);
     }
 
-    public ChatMessageDto toDto(ChatMessage message, String viewerUserId, Map<String, WorkspaceProfile> userCache) {
+    public ChatMessageDto toDto(ChatMessage message, String viewerUserId, Map<String, ProfileSummary> userCache) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
-        WorkspaceProfile sender = findUser(senderId, userCache);
+        ProfileSummary sender = findUser(senderId, userCache);
         boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
         String senderName = deletedSender ? deletedUserName() : message == null ? "" : safeText(message.getSender());
         String senderInitials = deletedSender ? deletedUserInitials() : senderAvatar == null ? buildInitials(senderId) : safeText(senderAvatar.getInitials());
@@ -79,7 +105,7 @@ public class ChatMessageMapper {
     public ChatStreamEvent toStreamEvent(String chatId, ChatMessage message) {
         ChatAvatarRecord senderAvatar = message == null ? null : message.getSenderAvatar();
         String senderId = senderAvatar == null ? "" : safeText(senderAvatar.getId());
-        WorkspaceProfile sender = findUser(senderId);
+        ProfileSummary sender = findUser(senderId);
         boolean deletedSender = isDeletedOrPurgedUser(sender, senderId);
         String senderGender = deletedSender ? "deleted" : senderAvatar == null ? "man" : normalizeGender(senderAvatar.getGender());
         return ChatStreamEvent.message(
@@ -116,12 +142,12 @@ public class ChatMessageMapper {
         return toReadAvatarDto(record, findUser(userId));
     }
 
-    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, Map<String, WorkspaceProfile> userCache) {
+    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, Map<String, ProfileSummary> userCache) {
         String userId = record == null ? "" : safeText(record.getId());
         return toReadAvatarDto(record, findUser(userId, userCache));
     }
 
-    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, WorkspaceProfile user) {
+    public ChatReadAvatarDto toReadAvatarDto(ChatReadAvatarRecord record, ProfileSummary user) {
         String userId = record == null ? "" : safeText(record.getId());
         boolean deletedUser = isDeletedOrPurgedUser(user, userId);
         String gender = deletedUser ? "deleted" : record == null ? "man" : normalizeGender(record.getGender());
@@ -177,12 +203,12 @@ public class ChatMessageMapper {
         return toReactionDto(record, findUser(userId));
     }
 
-    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, Map<String, WorkspaceProfile> userCache) {
+    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, Map<String, ProfileSummary> userCache) {
         String userId = record == null ? "" : safeText(record.getUserId());
         return toReactionDto(record, findUser(userId, userCache));
     }
 
-    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, WorkspaceProfile user) {
+    private ChatMessageReactionDto toReactionDto(ChatMessageReactionRecord record, ProfileSummary user) {
         String userId = record == null ? "" : safeText(record.getUserId());
         boolean deletedUser = isDeletedOrPurgedUser(user, userId);
         return new ChatMessageReactionDto(
@@ -271,14 +297,14 @@ public class ChatMessageMapper {
         return true;
     }
 
-    private WorkspaceProfile findUser(String userId) {
+    private ProfileSummary findUser(String userId) {
         if (!StringUtils.hasText(userId)) {
             return null;
         }
         return usersRepository.findByUserId(userId).orElse(null);
     }
 
-    private WorkspaceProfile findUser(String userId, Map<String, WorkspaceProfile> userCache) {
+    private ProfileSummary findUser(String userId, Map<String, ProfileSummary> userCache) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId)) {
             return null;
@@ -289,12 +315,12 @@ public class ChatMessageMapper {
         if (userCache.containsKey(normalizedUserId)) {
             return userCache.get(normalizedUserId);
         }
-        WorkspaceProfile user = findUser(normalizedUserId);
+        ProfileSummary user = findUser(normalizedUserId);
         userCache.put(normalizedUserId, user);
         return user;
     }
 
-    private boolean isDeletedOrPurgedUser(WorkspaceProfile user, String userId) {
+    private boolean isDeletedOrPurgedUser(ProfileSummary user, String userId) {
         if (!StringUtils.hasText(safeText(userId))) {
             return false;
         }
@@ -311,7 +337,7 @@ public class ChatMessageMapper {
         return "DU";
     }
 
-    private String resolveUserImageUrl(WorkspaceProfile user) {
+    private String resolveUserImageUrl(ProfileSummary user) {
         if (user == null || user.getImages() == null) {
             return "";
         }

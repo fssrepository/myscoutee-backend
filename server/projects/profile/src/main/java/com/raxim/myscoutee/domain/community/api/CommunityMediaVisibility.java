@@ -1,10 +1,10 @@
 package com.raxim.myscoutee.domain.community.api;
 
 import java.util.List;
+import com.raxim.myscoutee.domain.community.dto.AnnouncementMediaVisibilityDto;
+import com.raxim.myscoutee.domain.community.dto.OfferingMediaVisibilityDto;
 
 public interface CommunityMediaVisibility {
-    Announcement announcement(List<String> urls);
-    Offering offering(List<String> urls);
-    record Announcement(String communityId, String status) {}
-    record Offering(String baseGroupId, String status) {}
+    AnnouncementMediaVisibilityDto announcement(List<String> urls);
+    OfferingMediaVisibilityDto offering(List<String> urls);
 }

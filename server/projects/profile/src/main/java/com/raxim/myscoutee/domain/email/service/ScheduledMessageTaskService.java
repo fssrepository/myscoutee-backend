@@ -41,7 +41,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
@@ -52,14 +52,14 @@ import com.raxim.myscoutee.domain.email.document.EmailTemplate;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
 import com.raxim.myscoutee.domain.email.document.ScheduledMessageTask;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
 import com.raxim.myscoutee.domain.events.api.EventSchedule.Stage;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.email.repository.ScheduledMessageTasksRepository;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfiles;
 import com.raxim.myscoutee.domain.email.service.EmailOutboxStatus;
 import com.raxim.myscoutee.domain.email.service.EmailProviderGateway;
 import com.raxim.myscoutee.domain.email.service.EmailTemplateRenderer;
@@ -72,7 +72,7 @@ import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploy
 import jakarta.annotation.PreDestroy;
 
 @Service
-public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.email.api.ScheduledMessages {
+public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.email.api.ScheduledMessages, com.raxim.myscoutee.domain.email.api.UserActivityScheduling {
     @org.springframework.beans.factory.annotation.Autowired
     private JobAudience jobGroupScope;
 
@@ -103,7 +103,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
 
     private final MongoTemplate mongoTemplate;
     private final ScheduledMessageTasksRepository scheduledMessageTasksRepository;
-    private final ProfileDirectory profiles;
+    private final EmailProfiles profiles;
     private final AccountInactivity accountInactivity;
     private final ScheduledMessageAuditService scheduledMessageAuditService;
     private final EmailOutboxRepository emailOutboxRepository;
@@ -114,7 +114,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     private final ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider;
     private final ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider;
     private final ObjectProvider<EmailProperties> emailPropertiesProvider;
-    private final ObjectProvider<RuntimeConfiguration> configPropertiesProvider;
+    private final ObjectProvider<AuthenticationMode> configPropertiesProvider;
 
     private ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider;
     private DeploymentBranding deploymentBrandingResolver;
@@ -135,7 +135,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     public ScheduledMessageTaskService(
             MongoTemplate mongoTemplate,
             ScheduledMessageTasksRepository scheduledMessageTasksRepository,
-            ProfileDirectory profiles,
+            EmailProfiles profiles,
             AccountInactivity accountInactivity,
             ScheduledMessageAuditService scheduledMessageAuditService,
             EmailOutboxRepository emailOutboxRepository,
@@ -146,7 +146,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider,
             ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider,
             ObjectProvider<EmailProperties> emailPropertiesProvider,
-            ObjectProvider<RuntimeConfiguration> configPropertiesProvider) {
+            ObjectProvider<AuthenticationMode> configPropertiesProvider) {
         this.mongoTemplate = mongoTemplate;
         this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
         this.profiles = profiles;
@@ -284,7 +284,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
-        WorkspaceProfile user = profiles.findByUserId(normalizedUserId).orElse(null);
+        EmailProfile user = profiles.findByUserId(normalizedUserId).orElse(null);
         if (user == null || isDeleted(user)) {
             return;
         }
@@ -476,6 +476,13 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                 "event-participants");
     }
 
+    public ScheduledMessageTask scheduleEventLifecycleChangedOnce(String deliveryId, String eventId, String eventTitle,
+            Collection<String> audienceUserIds, Collection<String> reasons, String actorUserId) {
+        if (deliveryId == null || !deliveryId.matches("[a-f0-9-]{36}")) throw new IllegalArgumentException("Invalid lifecycle delivery ID");
+        return scheduleEventDefinitionChangedTask(eventId, eventTitle, audienceUserIds, reasons, actorUserId,
+                eventLifecycleChangedTaskKey(eventId, deliveryId), "event-participants", true);
+    }
+
     private ScheduledMessageTask scheduleEventDefinitionChangedTask(
             String eventId,
             String eventTitle,
@@ -484,6 +491,13 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
             String actorUserId,
             String requestedTaskKey,
             String recipientScope) {
+        return scheduleEventDefinitionChangedTask(eventId, eventTitle, audienceUserIds, reasons, actorUserId,
+                requestedTaskKey, recipientScope, false);
+    }
+
+    private ScheduledMessageTask scheduleEventDefinitionChangedTask(String eventId, String eventTitle,
+            Collection<String> audienceUserIds, Collection<String> reasons, String actorUserId,
+            String requestedTaskKey, String recipientScope, boolean once) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return null;
@@ -495,7 +509,9 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         String nowIso = Instant.now().toString();
         String updatedBy = updatedBy(actorUserId);
         String taskKey = safeText(requestedTaskKey);
-        ScheduledMessageTask task = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
+        // Immutable occurrences must not mutate a loaded receipt before comparison.
+        ScheduledMessageTask task = once ? new ScheduledMessageTask()
+                : scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
         if (!StringUtils.hasText(task.getId())) {
             task.setId(new ObjectId().toHexString());
         }
@@ -521,7 +537,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                 recipientScope));
         task.setUpdatedDate(nowIso);
         task.setUpdatedUser(updatedBy);
-        ScheduledMessageTask saved = saveRunnableTask(task);
+        ScheduledMessageTask saved = saveRunnableTask(task, once);
         scheduleLocalWorker(saved);
         return saved;
     }
@@ -735,7 +751,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         String nowIso = Instant.now().toString();
         ResolvedDeploymentBranding branding = deploymentBranding();
 
-        for (WorkspaceProfile user : profiles.findByUserIdIn(userIds)) {
+        for (EmailProfile user : profiles.findByUserIdIn(userIds)) {
             if (user == null || isDeleted(user)) {
                 continue;
             }
@@ -819,7 +835,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         String nowIso = Instant.now().toString();
         ResolvedDeploymentBranding branding = deploymentBranding();
 
-        for (WorkspaceProfile user : profiles.findByUserIdIn(userIds)) {
+        for (EmailProfile user : profiles.findByUserIdIn(userIds)) {
             if (user == null || isDeleted(user)) {
                 continue;
             }
@@ -942,7 +958,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         }
     }
 
-    private boolean isDeleted(WorkspaceProfile user) {
+    private boolean isDeleted(EmailProfile user) {
         return user == null || "D".equals(safeText(user.getStatus())) || "deleted".equals(safeText(user.getProfileStatus()));
     }
 
@@ -1010,6 +1026,10 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     }
 
     private ScheduledMessageTask saveRunnableTask(ScheduledMessageTask task) {
+        return saveRunnableTask(task, false);
+    }
+
+    private ScheduledMessageTask saveRunnableTask(ScheduledMessageTask task, boolean once) {
         if (task == null || !StringUtils.hasText(safeText(task.getTaskKey()))) {
             return task;
         }
@@ -1017,6 +1037,15 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                 : jobGroupScope.forUser(task.getUserId());
         task.setBaseGroupId(groupId);
         Update update = runnableTaskUpdate(task);
+        if (once) {
+            Update insertOnly = new Update();
+            var operators = update.getUpdateObject();
+            for (String operator : List.of("$set", "$setOnInsert")) {
+                var fields = operators.get(operator, org.bson.Document.class);
+                if (fields != null) fields.forEach(insertOnly::setOnInsert);
+            }
+            update = insertOnly;
+        }
         ScheduledMessageTask previous;
         try {
             previous = mongoTemplate.findAndModify(
@@ -1034,6 +1063,15 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                     ScheduledMessageTask.class);
         }
         ScheduledMessageTask saved = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElse(task);
+        if (once && previous != null) {
+            if (!java.util.Objects.equals(previous.getEventId(), task.getEventId())
+                    || !java.util.Objects.equals(previous.getPayload(), task.getPayload())
+                    || !java.util.Objects.equals(previous.getCreatedUser(), task.getCreatedUser())
+                    || !java.util.Objects.equals(previous.getBaseGroupId(), task.getBaseGroupId()))
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.CONFLICT, "Lifecycle delivery ID already has different content.");
+            return saved;
+        }
         saved.setPendingCounterTracked(true);
         if (previous == null || !Boolean.TRUE.equals(previous.getPendingCounterTracked())) {
             JobGroupContext.run(groupId, () -> adjustPendingCount(1));
@@ -1179,7 +1217,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
                 .orElse(null);
     }
 
-    private Map<String, String> stageReminderVariables(ScheduledMessageTask task, WorkspaceProfile user) {
+    private Map<String, String> stageReminderVariables(ScheduledMessageTask task, EmailProfile user) {
         Map<String, String> payload = task == null ? Map.of() : task.getPayload();
         Map<String, String> variables = new LinkedHashMap<>();
         putPayload(variables, "user_name", user == null ? null : user.getName());
@@ -1193,7 +1231,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
         return variables;
     }
 
-    private Map<String, String> eventDefinitionChangedVariables(ScheduledMessageTask task, WorkspaceProfile user) {
+    private Map<String, String> eventDefinitionChangedVariables(ScheduledMessageTask task, EmailProfile user) {
         Map<String, String> payload = task == null ? Map.of() : task.getPayload();
         String changeReasons = payload == null ? null : payload.get("changeReasons");
         Map<String, String> variables = new LinkedHashMap<>();
@@ -1217,7 +1255,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
 
     private EmailOutboxItem buildTemplateOutboxItem(
             ScheduledMessageTask task,
-            WorkspaceProfile user,
+            EmailProfile user,
             EmailTemplate template,
             EmailTemplateRenderer renderer,
             Map<String, String> variables,
@@ -1253,7 +1291,7 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     }
 
     private boolean firebaseEnabled() {
-        RuntimeConfiguration configProperties = configPropertiesProvider.getIfAvailable();
+        AuthenticationMode configProperties = configPropertiesProvider.getIfAvailable();
         return configProperties != null && configProperties.isFirebaseEnabled();
     }
 
@@ -1327,7 +1365,11 @@ public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.e
     }
 
     private String eventLifecycleChangedTaskKey(String eventId) {
-        return "event-lifecycle-changed:" + normalizeId(eventId) + ":" + UUID.randomUUID();
+        return eventLifecycleChangedTaskKey(eventId, UUID.randomUUID().toString());
+    }
+
+    private String eventLifecycleChangedTaskKey(String eventId, String occurrenceId) {
+        return "event-lifecycle-changed:" + normalizeId(eventId) + ":" + occurrenceId;
     }
 
     private Set<String> eventDefinitionChangedAudienceUserIds(ScheduledMessageTask task) {

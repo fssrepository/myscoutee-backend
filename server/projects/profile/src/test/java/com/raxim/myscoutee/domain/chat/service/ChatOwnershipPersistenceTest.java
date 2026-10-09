@@ -46,8 +46,11 @@ class ChatOwnershipPersistenceTest {
                 assertThat(permissions.pairId("bob", "alice")).isEqualTo(id);
                 var pending = permissions.save(new ContactPermissions.Change(id, "alice", "bob", "alice", "pending", "2026-10-07T00:00:00Z", null, null));
                 var approval = new ContactPermissions.Change(id, "alice", "bob", "alice", "approved", pending.requestedAtIso(), "2026-10-07T01:00:00Z", pending.version());
-                permissions.save(approval);
-                assertThatThrownBy(() -> permissions.save(approval)).isInstanceOf(OptimisticLockingFailureException.class);
+                var savedApproval = permissions.save(approval);
+                assertThat(permissions.save(approval)).isEqualTo(savedApproval);
+                var competingDecision = new ContactPermissions.Change(id, "alice", "bob", "alice", "rejected", pending.requestedAtIso(), approval.decidedAtIso(), pending.version());
+                assertThatThrownBy(() -> permissions.save(competingDecision)).isInstanceOf(OptimisticLockingFailureException.class);
+                assertThat(mongo.getCollection("contactChatAccess").countDocuments()).isEqualTo(1);
                 assertThat(permissions.findForUser("bob")).singleElement().satisfies(value -> {
                     assertThat(value.status()).isEqualTo("approved");
                     assertThat(value.version()).isGreaterThan(pending.version());

@@ -124,8 +124,8 @@ class MediaFriendshipQualificationTest {
             MongoTemplate mongo = new MongoTemplate(client, "demo_db");
             var members = new MongoRepositoryFactory(mongo).getRepository(ActivityMembersRepository.class);
             var ratesRepository = new MongoRepositoryFactory(mongo).getRepository(UserRatesRepository.class);
-            var rates = new UserRatesService(ratesRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)),
-                    mock(HomeUserProfileService.class), mock(AffinityCalculationService.class),
+            var rates = new UserRatesService(ratesRepository, mock(com.raxim.myscoutee.domain.accounts.api.RatingProfiles.class),
+                    mock(HomeUserProfileService.class), mock(HomeUserProfileService.class), mock(HomeUserProfileService.class), mock(AffinityCalculationService.class),
                     mock(UserAffinityEdgeService.class), mongo, mock(AdminTelemetryService.class), null, null, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class));
             var projector = new EventFriendshipProjectionService(mongo, members, rates);
             // Never let the test clock expire an unrelated fixture/seed event.

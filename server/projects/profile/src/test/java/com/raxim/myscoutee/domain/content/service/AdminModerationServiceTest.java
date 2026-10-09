@@ -89,7 +89,12 @@ class AdminModerationServiceTest {
                 adminTelemetryService,
                 appSettingsService,
                 notificationOutboxService);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileModeration", new com.raxim.myscoutee.domain.accounts.service.ProfileModerationService(usersRepository));
+        var statusWork = new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(usersRepository,
+                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null);
+        org.springframework.test.util.ReflectionTestUtils.setField(statusWork, "supportMessages", chatService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileModeration",
+                new com.raxim.myscoutee.domain.accounts.service.ProfileModerationService(usersRepository, statusWork));
+        org.springframework.test.util.ReflectionTestUtils.setField(userActivityCountersService, "usersRepository", usersRepository);
         org.mockito.Mockito.lenient().doCallRealMethod().when(userActivityCountersService).hasSupportCaseCounters(org.mockito.ArgumentMatchers.any());
     }
 

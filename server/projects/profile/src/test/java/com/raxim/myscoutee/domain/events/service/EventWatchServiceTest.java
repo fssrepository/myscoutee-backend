@@ -35,7 +35,7 @@ class EventWatchServiceTest {
         watcher.setId("watcher");
         ActivityEvent event = visibleEvent();
         event.setVisibility("Invitation only");
-        when(fixture.homeUserProfileService.resolveCurrentUser("watcher")).thenReturn(watcher);
+        when(fixture.homeUserProfileService.resolveSelectedUserId("watcher")).thenReturn("watcher");
         when(fixture.activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
 
         assertThatThrownBy(() -> fixture.service.watch("watcher", "event-1"))

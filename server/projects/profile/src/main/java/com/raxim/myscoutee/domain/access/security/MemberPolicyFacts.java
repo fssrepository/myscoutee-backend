@@ -10,12 +10,12 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.EventMembershipFacts.Event;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts.Asset;
+import com.raxim.myscoutee.domain.events.api.EventMembershipFacts;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
+import com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts;
 import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 
 @Component
@@ -33,14 +33,14 @@ public class MemberPolicyFacts {
     private static final Set<String> MANAGER_ROLES = Set.of("Admin", "Manager");
 
     private final MemberDirectory activityMembersRepository;
-    private final EventOwnership activityEventsRepository;
-    private final AssetOwnership assetsRepository;
+    private final EventMembershipFacts activityEventsRepository;
+    private final AssetMembershipFacts assetsRepository;
     private final ProfileDirectory usersRepository;
 
     public MemberPolicyFacts(
             MemberDirectory activityMembersRepository,
-            EventOwnership activityEventsRepository,
-            AssetOwnership assetsRepository,
+            EventMembershipFacts activityEventsRepository,
+            AssetMembershipFacts assetsRepository,
             ProfileDirectory usersRepository) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -190,10 +190,10 @@ public class MemberPolicyFacts {
                 .filter(member -> !normalizeId(member.getUserId()).equals(releasedOwnerUserId))
                 .toList();
         Set<String> acceptedActiveUserIds = new LinkedHashSet<>();
-        (asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request>of() : asset.getRequests()).stream()
+        (asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts.Request>of() : asset.getRequests()).stream()
                 .filter(request -> request != null
                         && STATUS_ACCEPTED.equals(normalizeStatus(request.status())))
-                .map(com.raxim.myscoutee.domain.assets.api.AssetOwnership.Request::userId)
+                .map(com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts.Request::userId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .filter(userId -> !userId.equals(releasedOwnerUserId))

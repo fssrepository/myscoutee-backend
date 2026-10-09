@@ -17,8 +17,8 @@ import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.AffiliateSumm
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationParticipantSummaryDto;
 
 @Service
-public class AffiliateService implements com.raxim.myscoutee.domain.payments.api.Affiliates {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profiles;
+public class AffiliateService implements com.raxim.myscoutee.domain.payments.api.Affiliates, com.raxim.myscoutee.domain.payments.api.AffiliateRegistrations {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileIdentities profiles;
 
     private final MongoTemplate mongo;
     @org.springframework.beans.factory.annotation.Autowired

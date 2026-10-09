@@ -24,10 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.help.document.HelpCenterAuditEntry;
 import com.raxim.myscoutee.domain.help.document.HelpCenterGuideField;
 import com.raxim.myscoutee.domain.help.document.HelpCenterRevision;
@@ -67,7 +67,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
             .addProtocols("img", "src", "http", "https", "data", "blob")
             .preserveRelativeLinks(true);
 
-    private final RuntimeConfiguration configProperties;
+    private final AuthenticationMode configProperties;
     private final HelpCenterRevisionsRepository revisionsRepository;
     private final HelpCenterAuditRepository auditRepository;
     private final HelpCenterGuideFieldsRepository guideFieldsRepository;
@@ -77,7 +77,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private final ConsentAuthorization accessControlService;
 
     public HelpCenterService(
-            RuntimeConfiguration configProperties,
+            AuthenticationMode configProperties,
             HelpCenterRevisionsRepository revisionsRepository,
             HelpCenterAuditRepository auditRepository,
             HelpCenterGuideFieldsRepository guideFieldsRepository,
@@ -807,7 +807,7 @@ public class HelpCenterService implements com.raxim.myscoutee.domain.help.api.He
     private String resolveFirebaseEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof AccountIdentity firebasePrincipal) {
+        if (principal instanceof AuthenticatedActor firebasePrincipal) {
             return normalize(firebasePrincipal.getEmail());
         }
         return normalize(authentication == null ? null : authentication.getName());

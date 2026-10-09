@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.media.api.MediaStorage;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.api.JobAudience;
 import com.raxim.myscoutee.domain.platform.api.SchedulingPolicy;
@@ -35,7 +35,7 @@ import com.raxim.myscoutee.domain.accounts.document.AccountPurgeJob;
 import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.AccountPurgeJobsRepository;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
@@ -70,9 +70,9 @@ public class DeletedAccountPurgeService {
     private final com.raxim.myscoutee.domain.chat.api.ChatPrivacy chatPrivacy;
     private final com.raxim.myscoutee.domain.events.api.EventPrivacy eventPrivacy;
     @Autowired private com.raxim.myscoutee.domain.assets.api.AssetPrivacy assetPrivacy;
-    private final AssetOwnership assetsRepository;
+    private final AssetOwnershipReads assetsRepository;
     private final AccountPurgeJobsRepository accountPurgeJobsRepository;
-    private final MediaStorage mediaStorageService;
+    private final MediaCleanup mediaStorageService;
     private final MongoTemplate mongoTemplate;
     private final SchedulingPolicy platformParametersService;
     private NotificationJobs notificationRuleRegistryService;
@@ -83,9 +83,9 @@ public class DeletedAccountPurgeService {
             UsersRepository usersRepository,
             com.raxim.myscoutee.domain.chat.api.ChatPrivacy chatPrivacy,
             com.raxim.myscoutee.domain.events.api.EventPrivacy eventPrivacy,
-            AssetOwnership assetsRepository,
+            AssetOwnershipReads assetsRepository,
             AccountPurgeJobsRepository accountPurgeJobsRepository,
-            MediaStorage mediaStorageService,
+            MediaCleanup mediaStorageService,
             MongoTemplate mongoTemplate,
             SchedulingPolicy platformParametersService) {
         this.usersRepository = usersRepository;
@@ -232,10 +232,11 @@ public class DeletedAccountPurgeService {
             purgeUserMedia(user);
 
             markStage(job, "owned-events");
-            List<? extends com.raxim.myscoutee.domain.events.api.EventOwnership.Event> ownedEvents = eventPrivacy.findOwnedEventsForPurge(userId);
+            List<com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto> ownedEvents = eventPrivacy.findOwnedEventsForPurge(userId);
             job.setOwnedEventIds(mergeIds(job.getOwnedEventIds(), sourceIds(ownedEvents)));
             saveJob(job);
-            eventPrivacy.purgeOwnedEvents(ownedEvents, job.getOwnedEventIds());
+            eventPrivacy.purgeOwnedEvents(ownedEvents.stream()
+                    .map(com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto::id).toList(), job.getOwnedEventIds());
 
             markStage(job, "owned-assets");
             List<? extends Asset> ownedAssets = assetsRepository.findByOwnerUserId(userId);
@@ -424,10 +425,10 @@ public class DeletedAccountPurgeService {
 
 
 
-    private List<String> sourceIds(List<? extends com.raxim.myscoutee.domain.events.api.EventOwnership.Event> ownedEvents) {
-        return (ownedEvents == null ? List.<com.raxim.myscoutee.domain.events.api.EventOwnership.Event>of() : ownedEvents).stream()
+    private List<String> sourceIds(List<com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto> ownedEvents) {
+        return (ownedEvents == null ? List.<com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto>of() : ownedEvents).stream()
                 .filter(Objects::nonNull)
-                .map(com.raxim.myscoutee.domain.events.api.EventOwnership.Event::getSourceId)
+                .map(com.raxim.myscoutee.domain.events.dto.EventPurgeTargetDto::sourceId)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -447,7 +448,7 @@ public class DeletedAccountPurgeService {
     }
 
     private void purgeOwnedAssets(List<? extends Asset> ownedAssets, Collection<String> assetIds) {
-        List<? extends Asset> assets = ownedAssets == null ? List.of() : ownedAssets;
+        List<String> assets = assetIds(ownedAssets);
         assetPrivacy.purgeOwnedMedia(assets);
         eventPrivacy.purgeAssetMemberships(assetIds);
         if (!assets.isEmpty()) {
@@ -493,6 +494,7 @@ public class DeletedAccountPurgeService {
 
 
     private void purgeUserReferencedDocuments(String userId) {
+        deleteDocumentsByAnyField("contactAccessOperations", List.of("actor", "target"), userId);
         affinityPrivacy.purgeRatings(userId);
         affinityPrivacy.purgeEdges(userId);
         deleteDocumentsByAnyField("userFriendships", List.of("leftUserId", "rightUserId"), userId);

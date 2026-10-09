@@ -61,7 +61,9 @@ class ModelStatusPropagationServiceTest {
         ModelStatusPropagationService service = new ModelStatusPropagationService(
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 notificationOutboxService,
@@ -116,7 +118,9 @@ class ModelStatusPropagationServiceTest {
         ModelStatusPropagationService service = new ModelStatusPropagationService(
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
@@ -156,7 +160,9 @@ class ModelStatusPropagationServiceTest {
         ModelStatusPropagationService service = new ModelStatusPropagationService(
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
@@ -200,7 +206,9 @@ class ModelStatusPropagationServiceTest {
         ModelStatusPropagationService service = new ModelStatusPropagationService(
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),

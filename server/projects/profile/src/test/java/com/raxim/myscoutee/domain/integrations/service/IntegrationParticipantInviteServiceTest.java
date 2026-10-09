@@ -67,8 +67,9 @@ class IntegrationParticipantInviteServiceTest {
         try {
             when(profiles.resolveSelectedUserId("account")).thenReturn("account");
             when(users.findByUserId("account")).thenReturn(Optional.of(account));
+            when(users.findByUserId("group-recipient")).thenReturn(Optional.of(recipient));
             when(users.findByUserId("owner")).thenReturn(Optional.of(inviter));
-            var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setWorkspaceGroupId("group");
+            var event = new ActivityEvent(); event.setId("event-record"); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setWorkspaceGroupId("group");
             when(events.findBySourceId("event")).thenReturn(List.of(event));
             when(access.canInviteEventMembers("event", "owner")).thenReturn(true);
             when(groups.claimEventInvite("group", "owner", "account")).thenReturn(recipient);
@@ -77,9 +78,9 @@ class IntegrationParticipantInviteServiceTest {
             doAnswer(call -> {
                 assertThat(CommunityGroupProfilesService.currentGroupId()).isEqualTo("group");
                 return null;
-            }).when(members).claimIntegrationInvite(any(), eq(event), eq("group-recipient"));
+            }).when(members).claimIntegrationInvite(any(), eq("event-record"), eq("group-recipient"));
             assertThat(service.claim("account", token).workspaceGroupId()).isEqualTo("group");
-            verify(members).claimIntegrationInvite(argThat(invite -> "group-recipient".equals(invite.claimedUserId())), eq(event), eq("group-recipient"));
+            verify(members).claimIntegrationInvite(argThat(invite -> "group-recipient".equals(invite.claimedUserId())), eq("event-record"), eq("group-recipient"));
             assertThat(org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication()).isSameAs(original);
         } finally { org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
     }
@@ -123,7 +124,7 @@ class IntegrationParticipantInviteServiceTest {
         var result = service.claim("spoofed", token);
         assertThat(result.eventId()).isEqualTo("event");
         assertThat(result.invitationAvailable()).isTrue();
-        verify(members).claimIntegrationInvite(claimed, event, "actual-user");
+        verify(members).claimIntegrationInvite(claimed, "event-record", "actual-user");
     }
 
     @org.junit.jupiter.params.ParameterizedTest
@@ -222,7 +223,7 @@ class IntegrationParticipantInviteServiceTest {
     }
 
     private ActivityEvent event() {
-        var event = new ActivityEvent(); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setCreatorUserId("owner");
+        var event = new ActivityEvent(); event.setId("event-record"); event.setSourceId("event"); event.setOwnerUserId("owner"); event.setCreatorUserId("owner");
         when(events.findByOwnerUserIdAndSourceId("owner", "event")).thenReturn(Optional.of(event));
         when(access.canInviteEventMembers("event", "owner")).thenReturn(true);
         return event;

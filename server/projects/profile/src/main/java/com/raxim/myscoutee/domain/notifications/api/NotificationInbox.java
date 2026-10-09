@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.notifications.api;
 import java.util.List;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.*;
 
-public interface NotificationInbox {
+public interface NotificationInbox extends NotificationReads, EventInvitationNotifications {
     UserNotificationsPageResponseDto queryPage(
             String recipientUserId,
             String requestedBucket,

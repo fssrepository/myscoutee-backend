@@ -28,7 +28,7 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseService;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
-import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
+import com.raxim.myscoutee.common.security.media.MediaSessionAccessService;
 
 @Configuration
 @EnableWebSecurity
@@ -72,6 +72,8 @@ public class WebSecurityConfig {
     protected void registerProvider(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(firebaseProvider);
     }
+
+    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -163,6 +165,9 @@ public class WebSecurityConfig {
                                 .policy("geolocation=(), microphone=(), camera=()")))
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .csrf(csrf -> csrf.disable());
+        if (securityContributions != null) {
+            for (var contribution : securityContributions.orderedStream().toList()) contribution.configure(http);
+        }
         return http.build();
     }
 

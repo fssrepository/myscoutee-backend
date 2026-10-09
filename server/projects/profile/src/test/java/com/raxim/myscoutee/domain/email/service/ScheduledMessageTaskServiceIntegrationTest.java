@@ -272,6 +272,30 @@ class ScheduledMessageTaskServiceIntegrationTest {
                 ScheduledMessageTaskService.ACTION_EVENT_STAGE_REMINDER)).isEmpty();
     }
 
+    @Test
+    void lifecycleReceiptDoesNotRescheduleCompletedWorkAndRejectsChangedContent() {
+        // This case verifies persisted acceptance/replay, not the separately tested delivery worker.
+        mongoTemplate.updateFirst(org.springframework.data.mongodb.core.query.Query.query(
+                org.springframework.data.mongodb.core.query.Criteria.where("ruleKey").is("scheduled-messages")),
+                new org.springframework.data.mongodb.core.query.Update().set("enabled", false),
+                com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig.class);
+        String delivery = UUID.randomUUID().toString();
+        var task = scheduledMessageTaskService.scheduleEventLifecycleChangedOnce(delivery, "receipt-event", "Event",
+                List.of("recipient"), List.of("deleted"), "actor");
+        task.setStatus("completed"); task.setPendingCounterTracked(false);
+        scheduledMessageTasksRepository.save(task);
+        var repeated = scheduledMessageTaskService.scheduleEventLifecycleChangedOnce(delivery, "receipt-event", "Event",
+                List.of("recipient"), List.of("deleted"), "actor");
+        assertThat(repeated.getId()).isEqualTo(task.getId());
+        assertThat(repeated.getStatus()).isEqualTo("completed");
+        assertThat(repeated.getPendingCounterTracked()).isFalse();
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> scheduledMessageTaskService.scheduleEventLifecycleChangedOnce(
+                delivery, "receipt-event", "Changed title", List.of("recipient"), List.of("deleted"), "actor"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThat(scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElseThrow().getPayload())
+                .isEqualTo(task.getPayload());
+    }
+
     private Users activeUser(String userId) {
         Users user = new Users();
         user.setMongoId(new ObjectId().toHexString());
@@ -373,6 +397,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
             ScheduledMessageTaskService.class,
             com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService.class,
             com.raxim.myscoutee.domain.accounts.service.AccountInactivityService.class,
+            com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork.class,
             ScheduledMessageAuditService.class,
             com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.class,
             com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.class,
@@ -385,6 +410,15 @@ class ScheduledMessageTaskServiceIntegrationTest {
             JobGroupScopeService.class
     })
     static class Config {
+        @Bean
+        com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases() {
+            return new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner(
+                    "scheduled-message-task-test", "scheduled-message-task-test");
+        }
+        @Bean
+        com.raxim.myscoutee.domain.chat.api.SupportMessages supportMessages() {
+            return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.SupportMessages.class);
+        }
         @Bean
         com.raxim.myscoutee.domain.community.service.ServiceFeedbackService serviceFeedback() {
             return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.class);

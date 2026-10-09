@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +59,7 @@ class IdeaPostsServiceTest {
     @Mock
     private LandingArticlesRepository landingArticlesRepository;
     @Mock
-    private MediaStorageService mediaStorageService;
+    private MediaCleanup mediaStorageService;
 
     private IdeaPostsService service;
 
@@ -305,10 +305,6 @@ class IdeaPostsServiceTest {
                         + "<img src=\"" + retainedImageUrl + "\" alt=\"Retained\">");
         when(ideaPostsRepository.findById("article-a")).thenReturn(Optional.of(existing));
         when(ideaPostsRepository.save(existing)).thenReturn(existing);
-        when(mediaStorageService.managedImageSetGroupKey(imageUrl))
-                .thenReturn("images/admin/image/upload-1");
-        when(mediaStorageService.managedImageSetGroupKey(retainedImageUrl))
-                .thenReturn("images/admin/image/upload-2");
 
         var result = service.savePost(saveRequest(
                 "article-a",

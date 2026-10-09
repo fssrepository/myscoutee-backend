@@ -15,12 +15,12 @@ public interface AccountNotifications {
     void incrementUnreadCounter(String accountId, int delta);
     TokenCleanup removeInvalidPushTokens(Collection<String> accountIds, Set<String> invalidTokens);
 
-    record Device(String deviceId, String token, boolean enabled) {}
+    record Device(String deviceId, String token, @com.fasterxml.jackson.annotation.JsonProperty(required = true) @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.FAIL) boolean enabled) {}
     record Recipient(String userId, String accountUserId, String workspaceGroupId,
-            boolean hasDeliveryLocation, List<Device> devices) {
+            @com.fasterxml.jackson.annotation.JsonProperty(required = true) @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.FAIL) boolean hasDeliveryLocation, List<Device> devices) {
         public Recipient { devices = List.copyOf(devices); }
     }
     record Sender(String userId, String name, String avatarUrl) {}
-    record RoleRecipient(String userId, String email, boolean operator) {}
+    record RoleRecipient(String userId, String email, @com.fasterxml.jackson.annotation.JsonProperty(required = true) @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.FAIL) boolean operator) {}
     record TokenCleanup(int removedTokens, int changedUsers) {}
 }

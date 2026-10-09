@@ -16,11 +16,11 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.affinity.document.AffinityConfig;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
 import com.raxim.myscoutee.domain.accounts.api.Experiences.Profile;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ScoringProfile;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityConfigsRepository;
 import com.raxim.myscoutee.domain.accounts.api.Experiences;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ScoringProfiles;
 
 @Service
 public class AffinityCalculationService {
@@ -31,13 +31,13 @@ public class AffinityCalculationService {
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private final AffinityConfigsRepository affinityConfigsRepository;
-    private final ProfileDirectory usersRepository;
+    private final ScoringProfiles usersRepository;
     private final UserRatesRepository userRatesRepository;
     private final Experiences userExperienceProfilesRepository;
 
     public AffinityCalculationService(
             AffinityConfigsRepository affinityConfigsRepository,
-            ProfileDirectory usersRepository,
+            ScoringProfiles usersRepository,
             UserRatesRepository userRatesRepository,
             Experiences userExperienceProfilesRepository,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups) {
@@ -63,17 +63,17 @@ public class AffinityCalculationService {
 
         AffinityConfig config = activeConfig();
         Set<String> userIds = collectUserIds(rates);
-        Map<String, WorkspaceProfile> usersById = loadUsers(userIds);
+        Map<String, ScoringProfile> usersById = loadUsers(userIds);
         Map<String, Profile> experiencesByUserId = loadExperienceProfiles(userIds);
         List<UserRate> contextRates = aggregated ? rates : loadContextRates(userIds, rates);
         Map<String, String> baseByWorkspace = communityGroups.baseGroupIds(usersById.values().stream()
-                .map(WorkspaceProfile::getWorkspaceGroupId).filter(StringUtils::hasText).distinct().toList());
+                .map(ScoringProfile::getWorkspaceGroupId).filter(StringUtils::hasText).distinct().toList());
         Map<String, AffinityConfig> configs = new java.util.HashMap<>();
         configs.put("default", config);
         for (String baseId : new java.util.HashSet<>(baseByWorkspace.values()))
             configs.put(baseId, affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc(baseId).orElseGet(AffinityConfig::defaults));
         for (UserRate rate : rates) {
-            WorkspaceProfile owner = rate == null ? null : usersById.get(rate.getOwnerUserId());
+            ScoringProfile owner = rate == null ? null : usersById.get(rate.getOwnerUserId());
             String key = owner == null || owner.getWorkspaceGroupId() == null ? "default" : baseByWorkspace.getOrDefault(owner.getWorkspaceGroupId(), "default");
             applyAffinity(rate, usersById, experiencesByUserId, contextRates, configs.get(key));
         }
@@ -81,7 +81,7 @@ public class AffinityCalculationService {
 
     private void applyAffinity(
             UserRate rate,
-            Map<String, WorkspaceProfile> usersById,
+            Map<String, ScoringProfile> usersById,
             Map<String, Profile> experiencesByUserId,
             List<UserRate> contextRates,
             AffinityConfig config) {
@@ -93,9 +93,9 @@ public class AffinityCalculationService {
         String ownerUserId = normalize(rate.getOwnerUserId());
         String relatedUserId = normalize(rate.getRelatedUserId());
         String secondaryRelatedUserId = normalize(rate.getSecondaryRelatedUserId());
-        WorkspaceProfile owner = usersById.get(ownerUserId);
-        WorkspaceProfile related = usersById.get(relatedUserId);
-        WorkspaceProfile secondary = usersById.get(secondaryRelatedUserId);
+        ScoringProfile owner = usersById.get(ownerUserId);
+        ScoringProfile related = usersById.get(relatedUserId);
+        ScoringProfile secondary = usersById.get(secondaryRelatedUserId);
 
         double scoreGiven = normalizeScore(rate.getScoreGiven());
         double scoreReceived = normalizeScore(rate.getScoreReceived());
@@ -154,8 +154,8 @@ public class AffinityCalculationService {
 
     private void addCompatibilitySignals(
             List<Signal> signals,
-            WorkspaceProfile left,
-            WorkspaceProfile right,
+            ScoringProfile left,
+            ScoringProfile right,
             Map<String, Profile> experiencesByUserId,
             AffinityConfig config) {
         addProfileSignals(signals, left, right, experiencesByUserId, config);
@@ -164,8 +164,8 @@ public class AffinityCalculationService {
     }
 
     private Double compatibilityScore(
-            WorkspaceProfile left,
-            WorkspaceProfile right,
+            ScoringProfile left,
+            ScoringProfile right,
             Map<String, Profile> experiencesByUserId,
             AffinityConfig config) {
         List<Signal> signals = new ArrayList<>();
@@ -175,9 +175,9 @@ public class AffinityCalculationService {
 
     private void addOwnerContextSignal(
             List<Signal> signals,
-            WorkspaceProfile owner,
-            WorkspaceProfile related,
-            WorkspaceProfile secondary,
+            ScoringProfile owner,
+            ScoringProfile related,
+            ScoringProfile secondary,
             UserRate rate,
             Map<String, Profile> experiencesByUserId,
             List<UserRate> contextRates,
@@ -193,8 +193,8 @@ public class AffinityCalculationService {
     }
 
     private Double ownerParticipantContext(
-            WorkspaceProfile owner,
-            WorkspaceProfile participant,
+            ScoringProfile owner,
+            ScoringProfile participant,
             UserRate currentRate,
             Map<String, Profile> experiencesByUserId,
             List<UserRate> contextRates,
@@ -262,8 +262,8 @@ public class AffinityCalculationService {
 
     private void addProfileSignals(
             List<Signal> signals,
-            WorkspaceProfile left,
-            WorkspaceProfile right,
+            ScoringProfile left,
+            ScoringProfile right,
             Map<String, Profile> experiencesByUserId,
             AffinityConfig config) {
         if (left == null || right == null) {
@@ -279,8 +279,8 @@ public class AffinityCalculationService {
     }
 
     private Double profileSignal(
-            WorkspaceProfile left,
-            WorkspaceProfile right,
+            ScoringProfile left,
+            ScoringProfile right,
             Map<String, Profile> experiencesByUserId,
             AffinityConfig.FieldRule rule) {
         List<String> leftValues = profileValues(left, experiencesByUserId, rule);
@@ -296,7 +296,7 @@ public class AffinityCalculationService {
     }
 
     private List<String> profileValues(
-            WorkspaceProfile user,
+            ScoringProfile user,
             Map<String, Profile> experiencesByUserId,
             AffinityConfig.FieldRule rule) {
         if (user == null || rule == null) {
@@ -329,17 +329,17 @@ public class AffinityCalculationService {
         return StringUtils.hasText(normalized) ? List.of(normalized) : List.of();
     }
 
-    private List<String> profileDetailValues(WorkspaceProfile user, String labelKey) {
+    private List<String> profileDetailValues(ScoringProfile user, String labelKey) {
         String normalizedLabelKey = normalize(labelKey);
         if (user == null || user.getProfileDetails() == null || !StringUtils.hasText(normalizedLabelKey)) {
             return List.of();
         }
         Set<String> values = new LinkedHashSet<>();
-        for (WorkspaceProfile.ProfileDetailGroupRecord group : user.getProfileDetails()) {
+        for (ScoringProfile.ProfileDetailGroupRecord group : user.getProfileDetails()) {
             if (group == null || group.rows() == null) {
                 continue;
             }
-            for (WorkspaceProfile.ProfileDetailRowRecord row : group.rows()) {
+            for (ScoringProfile.ProfileDetailRowRecord row : group.rows()) {
                 if (row == null || !normalizedLabelKey.equals(normalize(row.labelKey()))) {
                     continue;
                 }
@@ -386,12 +386,12 @@ public class AffinityCalculationService {
         return "school".equals(normalize(entry == null ? null : entry.getType()));
     }
 
-    private void addDistanceSignal(List<Signal> signals, WorkspaceProfile left, WorkspaceProfile right, AffinityConfig config) {
+    private void addDistanceSignal(List<Signal> signals, ScoringProfile left, ScoringProfile right, AffinityConfig config) {
         Double score = distanceSignal(left, right, config.getDistance());
         addSignal(signals, score, multiplier(config.getDistance(), 5d));
     }
 
-    private Double distanceSignal(WorkspaceProfile left, WorkspaceProfile right, AffinityConfig.DistanceRule rule) {
+    private Double distanceSignal(ScoringProfile left, ScoringProfile right, AffinityConfig.DistanceRule rule) {
         if (left == null || right == null || left.getLocationCoordinates() == null || right.getLocationCoordinates() == null) {
             return null;
         }
@@ -426,7 +426,7 @@ public class AffinityCalculationService {
         return clamp01(1d - Math.ceil(ratio * 10d) / 10d);
     }
 
-    private void addImpressionSignals(List<Signal> signals, WorkspaceProfile left, WorkspaceProfile right, AffinityConfig config) {
+    private void addImpressionSignals(List<Signal> signals, ScoringProfile left, ScoringProfile right, AffinityConfig config) {
         if (left == null || right == null) {
             return;
         }
@@ -439,7 +439,7 @@ public class AffinityCalculationService {
         }
     }
 
-    private Double impressionSignal(WorkspaceProfile left, WorkspaceProfile right, AffinityConfig.FieldRule rule) {
+    private Double impressionSignal(ScoringProfile left, ScoringProfile right, AffinityConfig.FieldRule rule) {
         String strategy = normalize(rule.getStrategy());
         if ("trait-vector".equals(strategy)) {
             return traitVectorScore(left, right, rule.getField());
@@ -450,7 +450,7 @@ public class AffinityCalculationService {
         return null;
     }
 
-    private Double evidenceConfidence(UserRate rate, WorkspaceProfile owner, WorkspaceProfile related, WorkspaceProfile secondary) {
+    private Double evidenceConfidence(UserRate rate, ScoringProfile owner, ScoringProfile related, ScoringProfile secondary) {
         List<Double> confidences = new ArrayList<>();
         String mode = normalize(rate == null ? null : rate.getMode());
         if (MODE_PAIR.equals(mode)) {
@@ -473,7 +473,7 @@ public class AffinityCalculationService {
         }
     }
 
-    private Double userConfidence(WorkspaceProfile user) {
+    private Double userConfidence(ScoringProfile user) {
         if (user == null || user.getImpressions() == null) {
             return null;
         }
@@ -482,7 +482,7 @@ public class AffinityCalculationService {
                 sectionConfidence(user.getImpressions().host())));
     }
 
-    private Double sectionConfidence(WorkspaceProfile.UserImpressionsSectionRecord section) {
+    private Double sectionConfidence(ScoringProfile.UserImpressionsSectionRecord section) {
         if (section == null) {
             return null;
         }
@@ -518,12 +518,12 @@ public class AffinityCalculationService {
         return clamp01(count / (double) saturationCount);
     }
 
-    private Double traitEvidenceConfidence(List<? extends WorkspaceProfile.UserPersonalityTraitRecord> traits) {
+    private Double traitEvidenceConfidence(List<? extends ScoringProfile.UserPersonalityTraitRecord> traits) {
         if (traits == null || traits.isEmpty()) {
             return null;
         }
         List<Double> signals = new ArrayList<>();
-        for (WorkspaceProfile.UserPersonalityTraitRecord trait : traits) {
+        for (ScoringProfile.UserPersonalityTraitRecord trait : traits) {
             if (trait == null || trait.evidenceCount() == null) {
                 continue;
             }
@@ -532,7 +532,7 @@ public class AffinityCalculationService {
         return average(signals);
     }
 
-    private Double traitVectorScore(WorkspaceProfile left, WorkspaceProfile right, String field) {
+    private Double traitVectorScore(ScoringProfile left, ScoringProfile right, String field) {
         Map<String, Double> leftVector = traitVector(left, field);
         Map<String, Double> rightVector = traitVector(right, field);
         if (leftVector.isEmpty() || rightVector.isEmpty()) {
@@ -558,13 +558,13 @@ public class AffinityCalculationService {
         return clamp01(dot / (Math.sqrt(leftNorm) * Math.sqrt(rightNorm)));
     }
 
-    private Map<String, Double> traitVector(WorkspaceProfile user, String field) {
-        WorkspaceProfile.UserImpressionsSectionRecord section = impressionSection(user, field);
+    private Map<String, Double> traitVector(ScoringProfile user, String field) {
+        ScoringProfile.UserImpressionsSectionRecord section = impressionSection(user, field);
         if (section == null || section.personalityTraits() == null) {
             return Map.of();
         }
         Map<String, Double> vector = new LinkedHashMap<>();
-        for (WorkspaceProfile.UserPersonalityTraitRecord trait : section.personalityTraits()) {
+        for (ScoringProfile.UserPersonalityTraitRecord trait : section.personalityTraits()) {
             if (trait == null) {
                 continue;
             }
@@ -577,8 +577,8 @@ public class AffinityCalculationService {
         return vector;
     }
 
-    private List<String> impressionValues(WorkspaceProfile user, String field) {
-        WorkspaceProfile.UserImpressionsSectionRecord section = impressionSection(user, field);
+    private List<String> impressionValues(ScoringProfile user, String field) {
+        ScoringProfile.UserImpressionsSectionRecord section = impressionSection(user, field);
         if (section == null || !StringUtils.hasText(field)) {
             return List.of();
         }
@@ -590,7 +590,7 @@ public class AffinityCalculationService {
         };
     }
 
-    private WorkspaceProfile.UserImpressionsSectionRecord impressionSection(WorkspaceProfile user, String field) {
+    private ScoringProfile.UserImpressionsSectionRecord impressionSection(ScoringProfile user, String field) {
         if (user == null || user.getImpressions() == null || !StringUtils.hasText(field)) {
             return null;
         }
@@ -660,12 +660,12 @@ public class AffinityCalculationService {
         return contextRates;
     }
 
-    private Map<String, WorkspaceProfile> loadUsers(Set<String> userIds) {
+    private Map<String, ScoringProfile> loadUsers(Set<String> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return Map.of();
         }
-        Map<String, WorkspaceProfile> usersById = new HashMap<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(userIds)) {
+        Map<String, ScoringProfile> usersById = new HashMap<>();
+        for (ScoringProfile user : usersRepository.findByUserIdIn(userIds)) {
             String userId = normalize(user == null ? null : user.getId());
             if (StringUtils.hasText(userId)) {
                 usersById.put(userId, user);

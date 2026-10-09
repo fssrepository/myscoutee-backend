@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.api;
 public interface FeedbackCounterChanges {
+    record Change(String id, java.util.Map<String, FeedbackBucketDelta> deltas) {}
     public record FeedbackBucketDelta(int ownEvents, int pending, int feedbacked, int removed) {
         public static FeedbackBucketDelta forBucket(String bucket, int amount) {
             return switch (bucket) {

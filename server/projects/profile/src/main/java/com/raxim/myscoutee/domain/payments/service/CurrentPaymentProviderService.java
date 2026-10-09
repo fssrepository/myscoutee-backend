@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.payments.service;
 
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
+
 import java.util.Locale;
 import java.util.Objects;
 

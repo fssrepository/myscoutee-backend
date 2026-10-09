@@ -191,7 +191,8 @@ class ActivitiesEventsServiceTest {
                 eventCheckoutBasketService,
                 eventCheckoutPricingService,
                 scheduledMessageTaskService,
-                absoluteAffinityService,
+                new com.raxim.myscoutee.domain.affinity.service.EventAffinityService(absoluteAffinityService,
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 mongoTemplate,
@@ -210,6 +211,15 @@ class ActivitiesEventsServiceTest {
                 activityEventSubEventsMapper,
                 activitySubEventResourceMapper,
                 activitySubEventStageRuntimeMapper);
+        org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters> counterProvider = org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
+        lenient().when(counterProvider.getObject()).thenReturn(userActivityCountersService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "lifecycleWork",
+                new EventLifecycleWork(mongoTemplate, null, chatAttachmentLifecycleService,
+                        scheduledMessageTaskService, affinityRecomputeTaskService, counterProvider));
+        var lifecycleChats = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.ChatDirectory.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "lifecycleChats", lifecycleChats);
+        lenient().doReturn(java.util.Optional.of(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.ChatDirectory.Chat.class)))
+                .when(lifecycleChats).findByOwnerUserIdAndChatId(anyString(), anyString());
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongoTemplate));
         lenient().when(eventCheckoutPricingService.reprice(any())).thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
@@ -527,6 +537,10 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Map.of("event-1", membersSnapshot));
         when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
                 .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+        var lifecycleChats = (com.raxim.myscoutee.domain.chat.api.ChatDirectory)
+                org.springframework.test.util.ReflectionTestUtils.getField(service, "lifecycleChats");
+        org.mockito.Mockito.doReturn(java.util.Optional.empty()).when(lifecycleChats)
+                .findByOwnerUserIdAndChatId("host", "event-1");
 
         EventParticipationActionResultDto result = service.publish(new EventActionRequestDto(
                 "host",
@@ -624,7 +638,8 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChangedOnce(
+                anyString(),
                 eq("event-1"),
                 eq("event-1"),
                 audienceCaptor.capture(),
@@ -676,6 +691,10 @@ class ActivitiesEventsServiceTest {
                 any(ActivityEvent.class),
                 eq(List.of("host", "accepted-member"))))
                 .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+        var lifecycleChats = (com.raxim.myscoutee.domain.chat.api.ChatDirectory)
+                org.springframework.test.util.ReflectionTestUtils.getField(service, "lifecycleChats");
+        org.mockito.Mockito.doReturn(java.util.Optional.empty()).when(lifecycleChats)
+                .findByOwnerUserIdAndChatId("host", "event-1");
 
         service.publish(new EventActionRequestDto(
                 "host",
@@ -690,7 +709,8 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChangedOnce(
+                anyString(),
                 eq("event-1"),
                 eq("event-1"),
                 audienceCaptor.capture(),
@@ -857,7 +877,8 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChangedOnce(
+                anyString(),
                 eq("event-1"),
                 eq("event-1"),
                 audienceCaptor.capture(),

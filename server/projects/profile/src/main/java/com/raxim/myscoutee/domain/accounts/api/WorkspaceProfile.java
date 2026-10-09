@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.accounts.api;
 import java.util.List;
 
 /** Read-only local profile view; callers must not retain it as a persistence handle. */
-public interface WorkspaceProfile {
+public interface WorkspaceProfile extends DiscoveryProfile, EmailProfile, AssetProfile, ScoringProfile {
     com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess getIntegrationAccess();
     String getDeletedAtIso();
     boolean isOperator();
@@ -12,14 +12,18 @@ public interface WorkspaceProfile {
     String getPartitionKey();
     ActivityCounts getActivities();
     List<? extends Device> getDevices();
-    interface ActivityCounts { FeedbackCounts eventFeedback(); ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
+    interface ActivityCounts extends EmailProfile.ActivityCounts { FeedbackCounts eventFeedback(); ChatCounts chat(); Integer adminJobs(); Integer events(); Integer hosting(); Integer game(); }
     interface ChatCounts { Integer all(); SupportCounts supportCases(); }
     interface SupportCounts { Integer pending(); Integer warned(); Integer picked(); }
-    interface Device {
+    interface Device extends EmailProfile.Device {
         String getLastSeenAtIso();
         String getLastRegisteredAtIso();
         Boolean getNotificationsEnabled();
         String getFirebaseToken();
+        @Override default boolean hasPushToken() {
+            String token = getFirebaseToken();
+            return token != null && org.springframework.util.StringUtils.hasText(token.trim());
+        }
     }
     String getUserId();
     String getAccountUserId();
@@ -36,7 +40,6 @@ public interface WorkspaceProfile {
     List<String> getImages();
     List<String> getLanguages();
     Coordinates getLocationCoordinates();
-    interface Coordinates { Double latitude(); Double longitude(); }
     String getSyncKey();
     Integer getAge();
     String getHeight();
@@ -48,11 +51,6 @@ public interface WorkspaceProfile {
     Double getAffinity();
     List<? extends ProfileDetailGroupRecord> getProfileDetails();
     UserImpressionsRecord getImpressions();
-    interface ProfileDetailGroupRecord { String title(); List<? extends ProfileDetailRowRecord> rows(); }
-    interface ProfileDetailRowRecord { String labelKey(); String value(); String privacy(); List<String> options(); }
-    interface UserImpressionsRecord { UserImpressionsSectionRecord host(); UserImpressionsSectionRecord member(); }
-    interface UserImpressionsSectionRecord { Integer unreadCount(); Double averageRating(); Integer peopleMet(); Integer totalEvents(); Integer repeatCount(); Integer noShowCount(); List<String> vibeBadges(); List<String> personalityBadges(); List<? extends UserPersonalityTraitRecord> personalityTraits(); List<String> categoryBadges(); }
-    interface UserPersonalityTraitRecord { String id(); String label(); Integer percent(); Integer evidenceCount(); String lastRatedAtIso(); }
     java.util.Map<String, Double> getPaymentSpentTotals();
     java.util.Map<String, Double> getPaymentIncomeTotals();
     java.util.Map<String, Double> getPaymentAllTotals();

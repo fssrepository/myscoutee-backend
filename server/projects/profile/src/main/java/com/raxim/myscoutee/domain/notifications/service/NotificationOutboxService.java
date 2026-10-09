@@ -19,7 +19,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.data.mongodb.core.aggregation.AggregationUpdate;
-import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Device;
 import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
@@ -73,14 +73,14 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
     private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
     private DeploymentBranding deploymentBrandingResolver;
     private MongoTemplate mongoTemplate;
-    private RuntimeConfiguration configProperties;
+    private AuthenticationMode configProperties;
     private AccountNotifications accounts;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
     private ChatPresence chatWebSocketSessionRegistry;
 
     @Autowired
-    void configureDelivery(RuntimeConfiguration configProperties, AccountNotifications accounts,
+    void configureDelivery(AuthenticationMode configProperties, AccountNotifications accounts,
             ChatPresence chatWebSocketSessionRegistry) {
         this.configProperties = configProperties;
         this.accounts = accounts;
@@ -214,9 +214,7 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
             item.setPendingCounterTracked(true);
             saved = notificationOutboxRepository.save(item);
         }
-        if (newlyTracked) {
-            adjustPendingCount(1);
-        }
+        refreshPendingCount();
         publishWakeup(saved);
         materializeInbox(saved);
         return Optional.of(saved);
@@ -245,11 +243,11 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
             item.setPendingCounterTracked(true);
             try {
                 saved = notificationOutboxRepository.insert(item);
-                adjustPendingCount(1);
             } catch (org.springframework.dao.DuplicateKeyException concurrentInsert) {
                 saved = notificationOutboxRepository.findById(id).orElseThrow();
             }
         }
+        refreshPendingCount();
         publishWakeup(saved);
         materializeInbox(saved);
         return Optional.of(saved);
@@ -311,16 +309,13 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
 
     private record TrackedOutboxSave(NotificationOutboxItem item, boolean newlyTracked) {}
 
-    private void adjustPendingCount(int delta) {
-        if (notificationRuleRegistryServiceProvider == null || delta == 0) {
-            return;
-        }
-        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
-        if (registry != null) {
-            registry.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX,
-                    delta,
-                    "admin.jobs.rule.notification.outbox");
+    private void refreshPendingCount() {
+        var registry = notificationRuleRegistryServiceProvider == null ? null : notificationRuleRegistryServiceProvider.getIfAvailable();
+        if (registry == null) return;
+        try { registry.refreshOutboxPendingCount(); }
+        catch (RuntimeException unavailable) {
+            // The durable outbox is the work receipt. Its worker refreshes the metric later.
+            LOGGER.warn("Notification queue metric remains pending ({})", unavailable.getClass().getSimpleName());
         }
     }
 

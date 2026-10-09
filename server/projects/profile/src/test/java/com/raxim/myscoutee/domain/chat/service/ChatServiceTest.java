@@ -8,9 +8,11 @@ import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -347,11 +349,12 @@ class ChatServiceTest {
 
     @Test
     void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("viewer", "Viewer", "VU")));
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));
         when(chatMessagesRepository.findActiveSharesBySender("chat-1", "viewer", "event"))
                 .thenReturn(List.of(message("old-share", "viewer", "viewer", "2026-05-26T08:00:01Z")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "VU")));
+
         assertThat(service.querySharedMessages("chat-1", "viewer", "event"))
                 .extracting(item -> item.id()).containsExactly("old-share");
         verify(chatMessagesRepository, never()).findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class));
@@ -370,6 +373,7 @@ class ChatServiceTest {
 
     @Test
     void queryMessagesPageReusesUserLookupCacheForRepeatedParticipants() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU"), user("viewer", "Viewer User", "VU")));
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat senderChat = chat("chat-1", "sender", 0);
         List<ChatMessage> messages = List.of(
@@ -381,16 +385,16 @@ class ChatServiceTest {
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(3L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class))).thenReturn(messages);
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+
+
 
         var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
 
         assertThat(result.items()).hasSize(3);
         assertThat(result.total()).isEqualTo(3);
         assertThat(result.read()).isNull();
-        verify(usersRepository, times(1)).findByUserId("sender");
-        verify(usersRepository, times(1)).findByUserId("viewer");
+        verify(usersRepository).findByUserIdIn(argThat(ids -> ids.size() == 2 && ids.containsAll(List.of("sender", "viewer"))));
+        verify(usersRepository, never()).findByUserId(anyString());
         verify(chatMessagesRepository, never()).saveAll(anyList());
         verify(chatsRepository, never()).save(any(Chat.class));
     }
@@ -681,6 +685,7 @@ class ChatServiceTest {
 
     @Test
     void openingFirstMessagePageClearsTheWholePersistedUnreadCount() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU")));
         Chat viewerChat = chat("chat-1", "viewer", 4, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
@@ -690,7 +695,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(unreadMessage));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+
         Users viewer = user("viewer", "Viewer User", "VU");
         viewer.setImages(List.of("/images/profiles/viewer/small.webp"));
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
@@ -717,6 +722,7 @@ class ChatServiceTest {
 
     @Test
     void notificationTargetReadsOnlyItsMessageAndKeepsOtherNotificationsUnread() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU"), user("viewer", "Viewer User", "VU")));
         Chat viewerChat = chat("chat-1", "viewer", 2, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage target = message("target", "sender", "someone-else", "2026-05-26T08:00:02Z");
@@ -727,8 +733,8 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(2L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(target, previous));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+
+
         when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -744,6 +750,7 @@ class ChatServiceTest {
 
     @Test
     void openingOlderMessagePageAddsReaderWithAtomicMongoUpdate() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU"), user("viewer", "Viewer User", "VU")));
         Chat viewerChat = chat("chat-1", "viewer", 1, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
@@ -753,8 +760,8 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(16L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(unreadMessage));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+
+
         when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -772,6 +779,7 @@ class ChatServiceTest {
 
     @Test
     void reopeningDeletedMessageDoesNotRecreateReadReceipts() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU")));
         Chat viewerChat = chat("chat-1", "viewer", 0, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage deletedMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
@@ -784,7 +792,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(deletedMessage));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+
 
         var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
 
@@ -1379,7 +1387,7 @@ class ChatServiceTest {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
         return service;
     }
-    private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory profileDirectory() {
+    private com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService profileDirectory() {
         var owner = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository);
         org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
         return owner;

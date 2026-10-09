@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.assets.service;
 
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.AssetAffinityScores;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
@@ -10,7 +10,7 @@ import com.raxim.myscoutee.domain.events.api.ResourceAssignments;
 import com.raxim.myscoutee.domain.events.api.ParticipationTickets;
 import com.raxim.myscoutee.domain.events.api.TicketAudit;
 
-import com.raxim.myscoutee.domain.localization.api.Translations;
+import com.raxim.myscoutee.domain.localization.api.MessageTranslations;
 import com.raxim.myscoutee.domain.payments.api.CheckoutResults;
 import com.raxim.myscoutee.domain.payments.api.AssetPayments;
 
@@ -48,7 +48,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.accounts.api.Friendships;
+import com.raxim.myscoutee.domain.accounts.api.FriendshipReads;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
@@ -63,7 +63,7 @@ import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRec
 import com.raxim.myscoutee.domain.assets.document.AssetRequest;
 import com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket;
 import com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.AssetProfile;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDeleteRequestDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetBorrowWindowDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDetailDto;
@@ -93,13 +93,15 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.AssetProfiles;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Assets, com.raxim.myscoutee.domain.assets.api.AssetModerationDetails {
+public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Assets, com.raxim.myscoutee.domain.assets.api.TicketReads, com.raxim.myscoutee.domain.assets.api.AssetModerationDetails {
+    @org.springframework.beans.factory.annotation.Autowired private AssetLifecycleWork lifecycleWork;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AssetsService.class);
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_UNDER_REVIEW = "UR";
@@ -119,15 +121,16 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     private ContentRegistration contentModeration;
 
     @Autowired private com.raxim.myscoutee.domain.events.api.AssetMemberships assetMemberships;
-    @Autowired private com.raxim.myscoutee.domain.events.api.EventOwnership eventOwnership;
+    @Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
+    @Autowired private com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads accountPaymentReads;
     private final AssetsRepository assetsRepository;
-    private final ProfileDirectory usersRepository;
-    private final Friendships friendshipFacts;
+    private final AssetProfiles usersRepository;
+    private final FriendshipReads friendshipFacts;
     private final MemberDirectory activityMembersRepository;
     private final ParticipationTickets eventParticipationTicketService;
     private final AssetPayments paymentService;
     private final MongoTemplate mongoTemplate;
-    private final AffinityScores absoluteAffinityService;
+    private final AssetAffinityScores absoluteAffinityService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final NotificationDelivery notificationOutboxService;
@@ -136,18 +139,18 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     private final ActivityCounters userActivityCountersService;
     private ObjectProvider<ResourceAssignments> activitiesResourcesServiceProvider;
     private TicketAudit eventTicketAuditService;
-    private Translations translationService;
+    private MessageTranslations translationService;
     private CheckoutResults eventCheckoutBasketService;
 
     public AssetsService(
             AssetsRepository assetsRepository,
-            ProfileDirectory usersRepository,
-            Friendships friendshipFacts,
+            AssetProfiles usersRepository,
+            FriendshipReads friendshipFacts,
             MemberDirectory activityMembersRepository,
             ParticipationTickets eventParticipationTicketService,
             AssetPayments paymentService,
             MongoTemplate mongoTemplate,
-            AffinityScores absoluteAffinityService,
+            AssetAffinityScores absoluteAffinityService,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             NotificationDelivery notificationOutboxService,
@@ -182,7 +185,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     @Autowired(required = false)
-    void setTranslationService(Translations translationService) {
+    void setTranslationService(MessageTranslations translationService) {
         this.translationService = translationService;
     }
 
@@ -952,6 +955,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                     actorUserId,
                     eventId,
                     subEventId);
+        } catch (com.raxim.myscoutee.domain.payments.api.AssetPayments.OutcomeUnknown unknown) {
+            // A lost reply can follow a committed replacement/refund. Do not reverse the manager on that assumption.
+            throw unknown;
         } catch (RuntimeException exception) {
             activitiesResourcesService.transferScopedAssetManager(
                     eventId,
@@ -989,12 +995,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 MEMBER_STATUS_ACCEPTED,
                 0,
                 0,
-                usersRepository.findByUserId(actorUserId)
-                        .map(user -> new UserPaymentTotalsDto(
-                                new LinkedHashMap<>(user.getPaymentSpentTotals()),
-                                new LinkedHashMap<>(user.getPaymentIncomeTotals()),
-                                new LinkedHashMap<>(user.getPaymentAllTotals())))
-                        .orElse(null));
+                accountPaymentReads.paymentTotals(actorUserId).orElse(null));
     }
 
     private AssetMemberStatusChangeDto memberStatusChange(
@@ -1169,7 +1170,6 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 .ifPresent(trashed -> {
                     assetsRepository.save(trashed);
                     handleAssetTrashed(trashed, normalizedUserId);
-                    userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
                 });
     }
 
@@ -1203,6 +1203,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 .toList());
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(normalizedUserId);
+        List<String> successorCandidateUserIds = assetOwnerReleaseRecipientUserIds(next, normalizedUserId);
+        var counterUsers = new LinkedHashSet<>(successorCandidateUserIds); counterUsers.add(normalizedUserId);
+        lifecycleWork.prepare(next, normalizedUserId, false, "owner-left", assetOwnerReleasedNotification(next, normalizedUserId), counterUsers.toArray(String[]::new));
         if (!updateAssetOwnerReleaseIfSnapshotCurrent(current, next)) {
             return null;
         }
@@ -1213,7 +1216,6 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 .ifPresent(assetMemberships::delete);
         syncAssetRequestProjection(current, next);
 
-        List<String> successorCandidateUserIds = assetOwnerReleaseRecipientUserIds(next, normalizedUserId);
         if (successorCandidateUserIds.isEmpty() && activitiesResourcesServiceProvider != null) {
             ResourceAssignments activitiesResourcesService = activitiesResourcesServiceProvider.getIfAvailable();
             if (activitiesResourcesService != null) {
@@ -1221,14 +1223,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             }
         }
 
-        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
-        markAssetAttachmentUnavailable(normalizedAssetId, "owner-left");
-        enqueueAssetOwnerReleasedNotification(next, normalizedUserId);
+        lifecycleWork.deliver(next);
         adminTelemetryService.record("asset.owner.left", "assets", normalizedAssetId, normalizedUserId);
-        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
-        for (String recipientUserId : successorCandidateUserIds) {
-            userActivityCountersService.refreshAssetCountersForUser(recipientUserId);
-        }
         return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
@@ -1256,12 +1252,10 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         next.setUpdatedUser(normalizedUserId);
         next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
         next.setBoost(resolveAssetBoost(next, normalizedUserId));
+        lifecycleWork.prepare(next, normalizedUserId, true, null, assetRestoredNotification(next, normalizedUserId), normalizedUserId);
         assetsRepository.save(next);
-        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
+        lifecycleWork.deliver(next);
         adminTelemetryService.record("asset.restored", "assets", normalizedAssetId, normalizedUserId);
-        markAssetAttachmentAvailable(normalizedAssetId);
-        enqueueAssetRestoredNotification(next, normalizedUserId);
-        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
         return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
@@ -1297,14 +1291,11 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         next.setUpdatedUser(normalizedUserId);
         next.setAffinity(resolveAssetAffinity(next, normalizedUserId));
         next.setBoost(resolveAssetBoost(next, normalizedUserId));
+        lifecycleWork.prepare(next, normalizedUserId, true, null, assetTakeOverNotification(current, next, normalizedUserId), current.getOwnerUserId(), normalizedUserId);
         if (!updateAssetTakeOverIfSnapshotCurrent(current, next)) {
             return null;
         }
-        affinityRecomputeTaskService.enqueueAssetChanged(normalizedAssetId, normalizedUserId);
-        markAssetAttachmentAvailable(normalizedAssetId);
-        enqueueAssetTakeOverNotification(current, next, normalizedUserId);
-        userActivityCountersService.refreshAssetCountersForUser(normalizeId(current.getOwnerUserId()));
-        userActivityCountersService.refreshAssetCountersForUser(normalizedUserId);
+        lifecycleWork.deliver(next);
         return toAssetDto(next, resolveOwnersByUserId(List.of(next)), normalizedUserId);
     }
 
@@ -1399,7 +1390,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     private boolean updateAssetTakeOverIfSnapshotCurrent(Asset current, Asset next) {
-        Update update = new Update()
+        Update update = new Update().set("lifecycleWork", next.getLifecycleWork())
                 .set("ownerUserId", normalizeId(next.getOwnerUserId()))
                 .set("status", safeText(next.getStatus()))
                 .unset("statusBeforeSuppression")
@@ -1412,7 +1403,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     }
 
     private boolean updateAssetOwnerReleaseIfSnapshotCurrent(Asset current, Asset next) {
-        Update update = new Update()
+        Update update = new Update().set("lifecycleWork", next.getLifecycleWork())
                 .set("status", STATUS_UNDER_REVIEW)
                 .set("statusBeforeSuppression", safeText(next.getStatusBeforeSuppression()))
                 .set("ownerReleasedAtIso", safeText(next.getOwnerReleasedAtIso()))
@@ -1437,7 +1428,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return false;
         }
         Criteria criteria = Criteria.where("_id").is(normalizeId(current.getId()))
-                .and("updatedDate").is(StringUtils.hasText(safeText(current.getUpdatedDate())) ? safeText(current.getUpdatedDate()) : null);
+                .and("updatedDate").is(StringUtils.hasText(safeText(current.getUpdatedDate())) ? safeText(current.getUpdatedDate()) : null)
+                .and("version").is(current.getVersion());
+        update.inc("version", 1L);
         UpdateResult result = mongoTemplate.updateFirst(Query.query(criteria), update, Asset.class);
         return result != null && result.getMatchedCount() > 0;
     }
@@ -1806,7 +1799,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (member == null || !StringUtils.hasText(normalizeId(member.userId()))) {
             return null;
         }
-        WorkspaceProfile user = usersRepository.findByUserId(normalizeId(member.userId())).orElse(null);
+        AssetProfile user = usersRepository.findByUserId(normalizeId(member.userId())).orElse(null);
         String status = "pending".equals(normalizeMemberStatus(member.status())) ? "pending" : "accepted";
         return new AssetRequestRecord(
                 existing != null && StringUtils.hasText(existing.id()) ? existing.id().trim() : UUID.randomUUID().toString(),
@@ -2455,6 +2448,8 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         clone.setPricing(clonePricing(source.getPricing()));
         clone.setRequests(new ArrayList<>(deduplicateRequests(source.getRequests())));
         clone.setVisibility(source.getVisibility());
+        clone.setVersion(source.getVersion());
+        clone.setLifecycleWork(source.getLifecycleWork());
         clone.setStatus(source.getStatus());
         clone.setModerationStatus(source.getModerationStatus());
         clone.setModerationPreviousStatus(source.getModerationPreviousStatus());
@@ -2551,7 +2546,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (!StringUtils.hasText(holderUserId) || !StringUtils.hasText(eventId)) {
             return null;
         }
-        WorkspaceProfile holder = usersRepository.findByUserId(holderUserId).orElse(null);
+        AssetProfile holder = usersRepository.findByUserId(holderUserId).orElse(null);
         String holderRole = resolveTicketHolderRole(eventId, holderUserId, event);
         return toCanonicalTicketScanPayload(ticket, event, holder, holderRole);
     }
@@ -2559,7 +2554,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
     private AssetTicketScanPayloadDto toCanonicalTicketScanPayload(
             Ticket ticket,
             Event event,
-            WorkspaceProfile holder,
+            AssetProfile holder,
             String holderRole) {
         String holderUserId = normalizeId(ticket == null ? null : ticket.getHolderUserId());
         String eventId = normalizeId(event == null ? null : event.getSourceId());
@@ -2641,13 +2636,13 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return Map.of();
         }
 
-        Map<String, WorkspaceProfile> usersById = usersRepository.findByUserIdIn(ownerUserIds).stream()
+        Map<String, AssetProfile> usersById = usersRepository.findByUserIdIn(ownerUserIds).stream()
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getUserId()), user), Map::putAll);
 
         Map<String, AssetOwnerSummary> ownersByUserId = new LinkedHashMap<>();
         for (String ownerUserId : ownerUserIds) {
-            WorkspaceProfile owner = usersById.get(ownerUserId);
+            AssetProfile owner = usersById.get(ownerUserId);
             ownersByUserId.put(ownerUserId, owner == null
                     ? new AssetOwnerSummary(null, null)
                     : new AssetOwnerSummary(safeText(owner.getName()), firstUserImageUrl(owner)));
@@ -2893,7 +2888,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 .orElse(0d);
     }
 
-    private double resolveStoredUserAffinity(WorkspaceProfile user) {
+    private double resolveStoredUserAffinity(AssetProfile user) {
         return user == null || user.getAffinity() == null || !Double.isFinite(user.getAffinity())
                 ? 0d
                 : Math.max(0d, user.getAffinity());
@@ -3123,7 +3118,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
             return null;
         }
-        WorkspaceProfile user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
+        AssetProfile user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
         String status = "pending".equals(safeText(member.getStatus())) ? "pending" : "accepted";
         String note = "pending".equals(status)
                 ? "Awaiting owner confirmation."
@@ -3780,6 +3775,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         next.setTrashedAtIso(nowIso);
         next.setUpdatedDate(nowIso);
         next.setUpdatedUser(actorUserId);
+        lifecycleWork.prepare(next, actorUserId, false, "trashed", assetUnavailableNotification(next, actorUserId), next.getOwnerUserId());
         return next;
     }
 
@@ -3789,29 +3785,15 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         if (!StringUtils.hasText(assetId)) {
             return;
         }
-        affinityRecomputeTaskService.enqueueAssetChanged(assetId, normalizedActorUserId);
+        lifecycleWork.deliver(trashed);
         adminTelemetryService.record("asset.trashed", "assets", assetId, normalizedActorUserId);
-        markAssetAttachmentUnavailable(assetId, "trashed");
-        enqueueAssetUnavailableNotification(trashed, normalizedActorUserId);
     }
 
-    private void markAssetAttachmentUnavailable(String assetId, String reason) {
-        if (chatAttachmentLifecycleService != null) {
-            chatAttachmentLifecycleService.markAssetUnavailable(assetId, reason);
-        }
-    }
-
-    private void markAssetAttachmentAvailable(String assetId) {
-        if (chatAttachmentLifecycleService != null) {
-            chatAttachmentLifecycleService.markAssetAvailable(assetId);
-        }
-    }
-
-    private void enqueueAssetUnavailableNotification(Asset asset, String actorUserId) {
+    private NotificationIntent assetUnavailableNotification(Asset asset, String actorUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         if (!StringUtils.hasText(assetId)) {
-            return;
+            return null;
         }
         LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
         recipients.addAll(activeResponsibleAssetUserIds(asset));
@@ -3819,9 +3801,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             recipients.remove(normalizedActorUserId);
         }
         if (recipients.isEmpty()) {
-            return;
+            return null;
         }
-        notificationOutboxService.enqueue(new NotificationIntent(
+        return new NotificationIntent(
                 "asset-unavailable",
                 "asset",
                 assetId,
@@ -3838,7 +3820,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                         "assetTitle", assetTitle(asset),
                         "assetStatus", STATUS_TRASHED,
                         "previousStatus", STATUS_ACTIVE),
-                normalizedActorUserId));
+                normalizedActorUserId);
     }
 
     private void enqueueTicketCheckedInNotification(
@@ -3889,7 +3871,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return;
         }
         try {
-            eventTicketAuditService.recordReplay(ticket, event, actorUserId, attemptedAt);
+            eventTicketAuditService.recordReplay(ticket, event == null ? null : event.getSourceId(), actorUserId, attemptedAt);
         } catch (RuntimeException exception) {
             LOGGER.warn(
                     "Ticket replay audit failed; the already-used scanner response remains authoritative. eventId={}, ticketId={}, actorUserId={}",
@@ -3952,11 +3934,11 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         }
     }
 
-    private void enqueueAssetRestoredNotification(Asset asset, String actorUserId) {
+    private NotificationIntent assetRestoredNotification(Asset asset, String actorUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         if (!StringUtils.hasText(assetId)) {
-            return;
+            return null;
         }
         LinkedHashSet<String> recipients = new LinkedHashSet<>(assetRequesterUserIds(asset));
         recipients.addAll(activeResponsibleAssetUserIds(asset));
@@ -3964,9 +3946,9 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             recipients.remove(normalizedActorUserId);
         }
         if (recipients.isEmpty()) {
-            return;
+            return null;
         }
-        notificationOutboxService.enqueue(new NotificationIntent(
+        return new NotificationIntent(
                 "asset-restored",
                 "asset",
                 assetId,
@@ -3983,17 +3965,17 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                         "assetTitle", assetTitle(asset),
                         "assetStatus", STATUS_ACTIVE,
                         "previousStatus", STATUS_TRASHED),
-                normalizedActorUserId));
+                normalizedActorUserId);
     }
 
-    private void enqueueAssetTakeOverNotification(Asset previous, Asset next, String actorUserId) {
+    private NotificationIntent assetTakeOverNotification(Asset previous, Asset next, String actorUserId) {
         if (next == null) {
-            return;
+            return null;
         }
         String assetId = normalizeId(next.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         if (!StringUtils.hasText(assetId) || !StringUtils.hasText(normalizedActorUserId)) {
-            return;
+            return null;
         }
         Asset handoverState = previous == null ? next : previous;
         String previousOwnerUserId = normalizeId(previous == null ? null : previous.getOwnerUserId());
@@ -4001,16 +3983,16 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                 .filter(userId -> !normalizedActorUserId.equals(userId))
                 .toList();
         if (recipients.isEmpty()) {
-            return;
+            return null;
         }
         String actorName = usersRepository.findByUserId(normalizedActorUserId)
-                .map(WorkspaceProfile::getName)
+                .map(AssetProfile::getName)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .orElse("A member");
         String title = "Asset responsibility changed";
         String body = actorName + " took over responsibility for " + assetTitle(next) + ".";
-        notificationOutboxService.enqueue(new NotificationIntent(
+        return new NotificationIntent(
                 "asset-takeover",
                 "asset",
                 assetId,
@@ -4028,24 +4010,24 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                         "previousOwnerUserId", safeText(previous == null ? null : previous.getOwnerUserId()),
                         "ownerUserId", safeText(next.getOwnerUserId()),
                         "actorUserId", normalizedActorUserId),
-                normalizedActorUserId));
+                normalizedActorUserId);
     }
 
-    private void enqueueAssetOwnerReleasedNotification(Asset asset, String actorUserId) {
+    private NotificationIntent assetOwnerReleasedNotification(Asset asset, String actorUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
         String normalizedActorUserId = normalizeId(actorUserId);
         List<String> recipients = assetOwnerReleaseRecipientUserIds(asset, normalizedActorUserId);
         if (!StringUtils.hasText(assetId) || recipients.isEmpty()) {
-            return;
+            return null;
         }
         String actorName = usersRepository.findByUserId(normalizedActorUserId)
-                .map(WorkspaceProfile::getName)
+                .map(AssetProfile::getName)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .orElse("The Asset owner");
         boolean managerCandidatesExist = activeResponsibleAssetUserIds(asset).stream()
                 .anyMatch(userId -> !normalizedActorUserId.equals(userId));
-        notificationOutboxService.enqueue(new NotificationIntent(
+        return new NotificationIntent(
                 "asset-owner-left",
                 "asset",
                 assetId,
@@ -4065,7 +4047,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
                         "assetTitle", assetTitle(asset),
                         "previousOwnerUserId", normalizedActorUserId,
                         "assetStatus", STATUS_UNDER_REVIEW),
-                normalizedActorUserId));
+                normalizedActorUserId);
     }
 
     private List<String> assetOwnerReleaseRecipientUserIds(Asset asset, String actorUserId) {
@@ -4098,7 +4080,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return;
         }
         String targetName = usersRepository.findByUserId(normalizedTargetUserId)
-                .map(WorkspaceProfile::getName)
+                .map(AssetProfile::getName)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .orElse("A member");
@@ -4142,7 +4124,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return;
         }
         String targetName = usersRepository.findByUserId(normalizedTargetUserId)
-                .map(WorkspaceProfile::getName)
+                .map(AssetProfile::getName)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .orElse("A member");
@@ -4634,7 +4616,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return;
         }
         String successorName = usersRepository.findByUserId(normalizedSuccessorUserId)
-                .map(WorkspaceProfile::getName)
+                .map(AssetProfile::getName)
                 .map(this::safeText)
                 .filter(StringUtils::hasText)
                 .orElse("A member");
@@ -4831,7 +4813,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
         return StringUtils.hasText(normalizedFirst) ? normalizedFirst : safeText(second);
     }
 
-    private String firstUserImageUrl(WorkspaceProfile user) {
+    private String firstUserImageUrl(AssetProfile user) {
         if (user == null || user.getImages() == null) {
             return "";
         }
@@ -4868,7 +4850,7 @@ public class AssetsService implements com.raxim.myscoutee.domain.assets.api.Asse
             return owner == null ? null : owner.name();
         }
         return usersRepository.findByUserId(normalizedOwnerUserId)
-                .map(WorkspaceProfile::getName)
+                .map(AssetProfile::getName)
                 .map(this::safeText)
                 .orElse(null);
     }

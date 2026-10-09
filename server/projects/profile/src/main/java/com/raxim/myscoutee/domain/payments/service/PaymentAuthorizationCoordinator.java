@@ -47,19 +47,24 @@ public class PaymentAuthorizationCoordinator {
             return transition;
         }
 
+        EventParticipationActionResultDto fulfillment;
         try {
-            EventParticipationActionResultDto fulfillment = activitiesEventsService.finalizeAuthorizedPayment(payment);
-            boolean accepted = fulfillment != null
-                    && "accepted".equalsIgnoreCase(fulfillment.membershipStatus());
-            if (accepted) {
-                paymentService.markGatewayFulfillment(payment.getId(), true, null);
-                return transition;
-            }
-            compensateUnfulfilledAuthorization(
-                    payment,
-                    "The event place could not be fulfilled after payment authorization.");
+            fulfillment = activitiesEventsService.finalizeAuthorizedPayment(payment);
+        } catch (EventCheckout.OutcomeUnknown unknown) {
+            // Keep the persisted fulfillment pending for gateway redelivery.
+            // A remote timeout can follow a committed membership.
+            throw unknown;
         } catch (RuntimeException failure) {
             compensateUnfulfilledAuthorization(payment, failure.getClass().getSimpleName());
+            return transition;
+        }
+        if (fulfillment != null && "accepted".equalsIgnoreCase(fulfillment.membershipStatus())) {
+            // Receipt persistence is outside the rejection handler. If it fails,
+            // redelivery observes the accepted membership; it must not refund it.
+            paymentService.markGatewayFulfillment(payment.getId(), true, null);
+        } else {
+            compensateUnfulfilledAuthorization(payment,
+                    "The event place could not be fulfilled after payment authorization.");
         }
         return transition;
     }

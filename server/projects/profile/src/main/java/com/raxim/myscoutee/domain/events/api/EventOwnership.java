@@ -3,18 +3,8 @@ package com.raxim.myscoutee.domain.events.api;
 import java.util.List;
 import com.raxim.myscoutee.common.dto.SharedDtos.*;
 
-public interface EventOwnership {
-    java.util.Optional<? extends Event> findByOwnerUserIdAndSourceId(String owner, String source);
-    boolean ownedExists(String owner, String source);
-    List<? extends Event> findStoredFamilyBySourceId(String source);
-
-    java.util.Optional<? extends Event> findById(String id);
-    boolean updateAffinity(Event value, double affinity, double boost);
-    java.util.List<? extends Event> findBySourceIdIn(java.util.Collection<String> ids);
-    java.util.List<? extends Event> findByCreatorUserId(String id);
-    java.util.List<? extends Event> findAll();
-    List<? extends Event> findBySourceId(String sourceId);
-    interface Event {
+public interface EventOwnership extends EventJobScopes, EventMembershipFacts, EventHomeReads, EventOwnershipReads, EventDerivedUpdates {
+    interface Event extends EventChatContext, EventChangeView, EventMembershipFacts.Event, EventHomeReads.Event, OrganizerEventReads.Event {
         List<String> getAcceptedMemberUserIds(); List<String> getInvitedMemberUserIds(); List<String> getPendingRequestMemberUserIds(); String getStatusBeforeSuppression(); Boolean getTicketing();
     public static final String STATUS_ACTIVE = "A";
     public static final String STATUS_DRAFT = "DR";
@@ -67,21 +57,9 @@ public interface EventOwnership {
         String getUpdatedUser();
         String getStatus(); String getCreatorUserId(); String getWorkspaceGroupId(); String getUpdatedDate(); List<String> getAdmins();
     }
-    interface SubEvent extends EventSchedule.Stage { com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto pricing(); String location(); String endAt(); List<com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto> groups(); }
-    Event findByIdOrSourceId(String id);
-    List<? extends Event> chatNavigationEvents(java.util.Collection<String> eventIds);
-    com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentSubEvent(SubEvent value);
-    List<? extends Event> findDirectOwnerEvents(String userId);
-    List<? extends Event> findAdminVisibleEvents(String userId);
-    List<? extends Event> findAcceptedMembershipEvents(String userId);
-    List<? extends Event> findActiveInvitationEvents(String userId);
-    List<? extends Event> findPendingRequestEvents(String userId);
-    List<? extends Event> findByOwnerUserId(String userId);
-    List<? extends Event> findByAdminsContaining(String userId);
-    List<? extends Event> findHomeGameMemberProjections();
-    List<? extends Event> activeOriginalEventsByCreators(java.util.Collection<String> creators);
-    List<? extends Event> storedEventsBySources(java.util.Collection<String> sources);
+    interface SubEvent extends EventSchedule.Stage { com.raxim.myscoutee.common.dto.SharedDtos.SubEventItemDto presentation(); com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto pricing(); String location(); String endAt(); List<com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto> groups(); }
+    @Override List<? extends Event> findBySourceId(String sourceId);
+    @Override List<? extends Event> findHomeGameMemberProjections();
+    boolean updateAffinity(Event value, double affinity, double boost);
     boolean updateStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus);
-    record JobScope(String workspaceGroupId, String ownerUserId, String creatorUserId) {}
-    JobScope findJobScope(String sourceId);
 }

@@ -4,7 +4,7 @@ import com.raxim.myscoutee.domain.email.api.EmailSendResult;
 
 import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
 
-import com.raxim.myscoutee.domain.platform.api.SecretEncryption;
+import com.raxim.myscoutee.domain.platform.api.EmailSecrets;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,7 +22,7 @@ import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
 @Service
 public class OperatorEmailConfigurationService implements com.raxim.myscoutee.domain.email.api.EmailSending {
-    private static final String PURPOSE = "operator-email-provider";
+    private static final EmailSecrets.Purpose PURPOSE = EmailSecrets.Purpose.PROVIDER;
     @Document("operatorEmailConfigurations")
     public record Configuration(@Id String id, long revision, boolean enabled, String providerId,
             String fromEmail, String fromName, EncryptedSecret credential, String updatedAtIso) {}
@@ -33,10 +33,10 @@ public class OperatorEmailConfigurationService implements com.raxim.myscoutee.do
             @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY) String credential,
             boolean clearCredential) {}
     private final MongoTemplate mongo;
-    private final SecretEncryption crypto;
+    private final EmailSecrets crypto;
     private final List<EmailProvider> providers;
     private final EmailProviderGateway gateway;
-    public OperatorEmailConfigurationService(MongoTemplate mongo, SecretEncryption crypto, List<EmailProvider> providers, EmailProviderGateway gateway) {
+    public OperatorEmailConfigurationService(MongoTemplate mongo, EmailSecrets crypto, List<EmailProvider> providers, EmailProviderGateway gateway) {
         this.mongo = mongo; this.crypto = crypto; this.providers = providers; this.gateway = gateway;
     }
     private Configuration configuration() {
@@ -57,7 +57,7 @@ public class OperatorEmailConfigurationService implements com.raxim.myscoutee.do
         String secret = text(request.credential());
         if (secret.length() > 4096 || secret.contains("\n") || secret.contains("\r")) throw invalid();
         EncryptedSecret credential = request.clearCredential() || !id.equals(before.providerId()) ? null : before.credential();
-        if (!secret.isEmpty()) credential = crypto.encrypt(PURPOSE, secret);
+        if (!secret.isEmpty()) credential = crypto.encryptEmailSecret(PURPOSE, secret);
         if (request.enabled() && (id.isEmpty() || from.isEmpty() || credential == null)) throw invalid();
         var update = new Update().inc("revision", 1).set("enabled", request.enabled()).set("providerId", id)
                 .set("fromEmail", from).set("fromName", name).set("credential", credential).set("updatedAtIso", Instant.now().toString());
@@ -75,7 +75,7 @@ public class OperatorEmailConfigurationService implements com.raxim.myscoutee.do
         var provider = providers.stream().filter(p -> p.providerKey().equals(state.providerId()) && p.configurationDescriptor() != null).findFirst().orElse(null);
         if (provider == null) return new EmailSendResult(false, null, "Email provider is unavailable.");
         return gateway.sendConfigured(state.providerId(), new EmailSendRequest(content.toEmail(), content.toName(), content.subject(), content.htmlBody(), content.textBody(),
-                state.fromEmail(), state.fromName(), state.fromEmail(), content.category(), content.metadata()), crypto.decrypt(PURPOSE, state.credential()));
+                state.fromEmail(), state.fromName(), state.fromEmail(), content.category(), content.metadata()), crypto.decryptEmailSecret(PURPOSE, state.credential()));
     }
     private static String text(String value) { return value == null ? "" : value.trim(); }
     private static ResponseStatusException invalid() { return new ResponseStatusException(HttpStatus.BAD_REQUEST, "operator.email.invalid"); }

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
 import com.raxim.myscoutee.domain.events.api.MingleEncounters;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationExternalIdsRepository;
 
@@ -18,11 +18,11 @@ import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
 
 @Service
 public class IntegrationEventQueryService {
-    private final EventOwnership events;
+    private final EventOwnershipReads events;
     private final MingleEncounters encounters;
     private final IntegrationExternalIdsRepository externalIds;
 
-    public IntegrationEventQueryService(EventOwnership events, MingleEncounters encounters, IntegrationExternalIdsRepository externalIds) {
+    public IntegrationEventQueryService(EventOwnershipReads events, MingleEncounters encounters, IntegrationExternalIdsRepository externalIds) {
         this.events = events; this.encounters = encounters; this.externalIds = externalIds;
     }
 

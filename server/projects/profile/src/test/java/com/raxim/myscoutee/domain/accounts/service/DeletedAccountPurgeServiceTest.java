@@ -97,7 +97,9 @@ class DeletedAccountPurgeServiceTest {
         when(usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(eq("deleted"), anyString()))
                 .thenReturn(List.of(user));
         when(activityEventsRepository.findByCreatorUserId("u1")).thenReturn(List.of(event));
+        when(activityEventsRepository.findAllById(List.of("event-doc-1"))).thenReturn(List.of(event));
         when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of(asset));
+        when(assetsRepository.findByAssetIdIn(List.of("asset-1"))).thenReturn(List.of(asset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("event"), any()))
                 .thenReturn(List.of(eventMember));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("asset"), any()))

@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.chat.api;
 
 import java.util.List;
+import com.raxim.myscoutee.domain.chat.dto.ChatMessageMediaVisibilityDto;
 
 public interface ChatMediaVisibility {
-    List<Message> messages(List<String> urls);
-    record Message(String chatId, String deletedAtIso) {}
+    List<ChatMessageMediaVisibilityDto> messages(List<String> urls);
 }

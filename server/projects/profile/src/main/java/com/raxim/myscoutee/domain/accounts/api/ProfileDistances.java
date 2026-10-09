@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.accounts.api;
 
 public final class ProfileDistances {
     private ProfileDistances() {}
-    public static Double distance(WorkspaceProfile owner, WorkspaceProfile viewer) {
+    public static Double distance(DiscoveryProfile owner, DiscoveryProfile viewer) {
         var a = owner.getLocationCoordinates(); var b = viewer.getLocationCoordinates();
         if (a == null || b == null || a.latitude() == null || a.longitude() == null || b.latitude() == null || b.longitude() == null) return null;
         double h = Math.pow(Math.sin(Math.toRadians(b.latitude() - a.latitude()) / 2), 2)

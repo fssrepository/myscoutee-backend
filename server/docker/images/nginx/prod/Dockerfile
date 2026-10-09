@@ -1,9 +1,13 @@
 ARG NGINX_BASE_IMAGE=myscoutee-nginx:1.3.0-base
 FROM ${NGINX_BASE_IMAGE}
 
+RUN apk add --no-cache jq
+
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/conf/http/spring.conf /etc/nginx/myscoutee-templates/spring.conf
 COPY conf/nginx/conf/http/routing.conf /etc/nginx/conf.d/routing.conf
+COPY conf/nginx/conf/http/runtime-status.conf /etc/nginx/conf.d/runtime-status.conf
+COPY --chmod=0755 images/nginx/runtime-status.sh /scripts/runtime-status.sh
 COPY conf/nginx/conf/http/update-status.prod.conf /etc/nginx/conf.d/update-status.prod.conf
 RUN printf '\ninclude /etc/nginx/conf.d/update-status.prod.conf;\n' >> /etc/nginx/conf.d/routing.conf
 COPY conf/nginx/conf/http/http-transport-policy.prod.conf /etc/nginx/conf.d/http-transport-policy.conf

@@ -141,8 +141,8 @@ class WebSecurityConfigBootstrapTest {
                 com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService.class,
                 () -> mock(com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService.class));
         applicationContext.registerBean(
-                com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class,
-                () -> mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class,
+                () -> mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         applicationContext.registerBean(
                 OperatorBootstrapAuthenticationService.class,
                 () -> bootstrapService);

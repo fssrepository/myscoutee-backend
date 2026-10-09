@@ -68,7 +68,9 @@ cp "${TEST_ROOT}/keys/custom.crt" \
 cp "${TEST_ROOT}/keys/custom.key" \
   "${TEST_ROOT}/letsencrypt/live/transport.test/privkey.pem"
 printf 'console.log("transport-policy");\n' > "${TEST_ROOT}/html/app-TRANSPORT.js"
-printf 'transport-policy\n' > "${TEST_ROOT}/html/index.html"
+printf '<!doctype html><html><head>\n' > "${TEST_ROOT}/html/index.html"
+sed -n '/<script id="myscoutee-runtime-status"/p' "${REPO_ROOT}/frontend/src/index.html" >> "${TEST_ROOT}/html/index.html"
+printf '</head><body>transport-policy</body></html>\n' >> "${TEST_ROOT}/html/index.html"
 printf 'console.log("service-worker");\n' > "${TEST_ROOT}/html/app-sw.js"
 printf '%s\n' '{"version":"1.0.0","buildId":"transport-policy"}' \
   > "${TEST_ROOT}/html/app-version.json"
@@ -91,6 +93,7 @@ docker_args() {
     -v "${NGINX_ROOT}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
     -v "${SPRING_TEMPLATE}:/etc/nginx/myscoutee-templates/spring.conf:ro" \
     -v "${ENTRYPOINT}:/scripts/nginx-production-entrypoint.sh:ro" \
+    -v "${NGINX_ROOT}/images/nginx/runtime-status.sh:/scripts/runtime-status.sh:ro" \
     -v "${config_dir}:/etc/nginx/conf.d" \
     -v "${TEST_ROOT}/stream:/etc/nginx/stream_conf.d:ro" \
     -v "${TEST_ROOT}/html:/usr/share/nginx/html:ro" \
@@ -108,6 +111,7 @@ prepare_config_dir() {
   mkdir -p "${config_dir}"
   cp "${NGINX_ROOT}/conf/nginx/conf/http/routing.conf" \
     "${config_dir}/routing.conf"
+  cp "${NGINX_ROOT}/conf/nginx/conf/http/runtime-status.conf" "${config_dir}/runtime-status.conf"
   if [[ "${http_policy}" == "${PROD_HTTP_POLICY}" ]]; then
     cp "${NGINX_ROOT}/conf/nginx/conf/http/update-status.prod.conf" "${config_dir}/update-status.prod.conf"
     printf '\ninclude /etc/nginx/conf.d/update-status.prod.conf;\n' >> "${config_dir}/routing.conf"
@@ -186,6 +190,23 @@ prod_https_port="${STARTED_HTTPS_PORT}"
 prod_config_dir="${STARTED_CONFIG_DIR}"
 wait_for_health "${prod_http_port}"
 
+runtime_status_headers="${TEST_ROOT}/runtime-status.headers"
+runtime_status_code="$(curl -skS -D "${runtime_status_headers}" -o "${TEST_ROOT}/runtime-status.json" \
+  -w '%{http_code}' "https://127.0.0.1:${prod_https_port}/api/runtime-status")"
+[[ "${runtime_status_code}" == 200 ]] || fail "runtime status is not served by nginx while the backend is absent"
+assert_header "${runtime_status_headers}" '^Cache-Control: no-store'
+assert_header "${runtime_status_headers}" '^Content-Type: application/json'
+assert_header "${runtime_status_headers}" '^X-Content-Type-Options: nosniff'
+python3 - "${TEST_ROOT}/runtime-status.json" <<'PY'
+import json, sys, time
+status = json.load(open(sys.argv[1]))
+assert set(status) == {'ready', 'checkedAt'}
+assert status['ready'] is False
+assert abs(time.time() - status['checkedAt']) < 10
+PY
+[[ "$(curl -skS -o /dev/null -w '%{http_code}' -X POST "https://127.0.0.1:${prod_https_port}/api/runtime-status")" == 403 ]] \
+  || fail "runtime status accepted a write method"
+
 [[ "$(curl -sS "http://127.0.0.1:${prod_http_port}/nginx-health")" == "UP" ]] \
   || fail "production health endpoint is not available over HTTP"
 [[ "$(curl -sS "http://127.0.0.1:${prod_http_port}/.well-known/acme-challenge/test-token")" == "acme-token" ]] \
@@ -216,11 +237,20 @@ assert_header "${prod_asset_headers}" '^Strict-Transport-Security: max-age=31536
 assert_header "${prod_asset_headers}" '^Cache-Control: public, max-age=31536000, immutable'
 
 prod_root_headers="${TEST_ROOT}/prod-root.headers"
-curl -skS -o /dev/null -D "${prod_root_headers}" \
+curl -skS -o "${TEST_ROOT}/index-response.html" -D "${prod_root_headers}" \
   -H 'Host: transport.test' \
   "https://127.0.0.1:${prod_https_port}/"
 assert_header "${prod_root_headers}" '^Strict-Transport-Security: max-age=31536000'
 assert_header "${prod_root_headers}" '^Cache-Control: no-cache, no-store, must-revalidate'
+python3 - "${TEST_ROOT}/index-response.html" <<'PY'
+import json, re, sys, time
+html = open(sys.argv[1]).read()
+snapshot = re.search(r'<script id="myscoutee-runtime-status"[^>]*>(.*?)</script>', html, re.S)
+assert snapshot is not None, 'initial availability missing from HTML head'
+assert '<!--#' not in snapshot[1], 'nginx did not process the canonical SSI directive'
+status = json.loads(snapshot[1])
+assert status['ready'] is False and abs(time.time() - status['checkedAt']) < 10
+PY
 
 prod_deep_link_headers="${TEST_ROOT}/prod-deep-link.headers"
 curl -skS -o /dev/null -D "${prod_deep_link_headers}" \

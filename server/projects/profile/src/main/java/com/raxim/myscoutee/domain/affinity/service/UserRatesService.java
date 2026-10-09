@@ -4,7 +4,9 @@ import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.RatingSession;
+import com.raxim.myscoutee.domain.accounts.api.ProfileCards;
+import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
 import com.raxim.myscoutee.domain.accounts.api.FollowingEvents;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
@@ -37,7 +39,7 @@ import org.springframework.util.StringUtils;
 import jakarta.annotation.PostConstruct;
 
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.dto.RatingSessionDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.ActivityRatePageResponseDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.RateMenuItemDto;
@@ -46,7 +48,8 @@ import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.RatingSnapshotDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncRequestDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncResponseDto;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.RatingProfiles;
+import com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
@@ -61,8 +64,10 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
     @Autowired
     private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
     private final UserRatesRepository userRatesRepository;
-    private final ProfileDirectory usersRepository;
-    private final ProfilePresentation homeUserProfileService;
+    private final RatingProfiles ratingProfiles;
+    private final RatingSession ratingSession;
+    private final ProfileCards profileCards;
+    private final ProfileReadState profileReadState;
     private final AffinityCalculationService affinityCalculationService;
     private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
@@ -70,13 +75,15 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
     private final NotificationDelivery notificationOutboxService;
     private final FollowingEvents organizerFollowingService;
-    @Autowired private com.raxim.myscoutee.domain.accounts.api.Friendships friendships;
+    @Autowired private com.raxim.myscoutee.domain.accounts.api.FriendshipProjections friendships;
 
     @Autowired
     public UserRatesService(
             UserRatesRepository userRatesRepository,
-            ProfileDirectory usersRepository,
-            ProfilePresentation homeUserProfileService,
+            RatingProfiles ratingProfiles,
+            RatingSession ratingSession,
+            ProfileCards profileCards,
+            ProfileReadState profileReadState,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
@@ -85,8 +92,10 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
             NotificationDelivery notificationOutboxService,
             FollowingEvents organizerFollowingService) {
         this.userRatesRepository = userRatesRepository;
-        this.usersRepository = usersRepository;
-        this.homeUserProfileService = homeUserProfileService;
+        this.ratingProfiles = ratingProfiles;
+        this.ratingSession = ratingSession;
+        this.profileCards = profileCards;
+        this.profileReadState = profileReadState;
         this.affinityCalculationService = affinityCalculationService;
         this.userAffinityEdgeService = userAffinityEdgeService;
         this.mongoTemplate = mongoTemplate;
@@ -98,8 +107,10 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
 
     UserRatesService(
             UserRatesRepository userRatesRepository,
-            ProfileDirectory usersRepository,
-            ProfilePresentation homeUserProfileService,
+            RatingProfiles ratingProfiles,
+            RatingSession ratingSession,
+            ProfileCards profileCards,
+            ProfileReadState profileReadState,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
@@ -107,8 +118,10 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
             FollowingEvents organizerFollowingService) {
         this(
                 userRatesRepository,
-                usersRepository,
-                homeUserProfileService,
+                ratingProfiles,
+                ratingSession,
+                profileCards,
+                profileReadState,
                 affinityCalculationService,
                 userAffinityEdgeService,
                 mongoTemplate,
@@ -130,8 +143,8 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
     }
 
     public List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId, String campaignId) {
-        WorkspaceProfile currentUser = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        RatingSessionDto currentUser = ratingSession.resolveRatingSession(requestedUserId);
+        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.identity().userId());
         if (!StringUtils.hasText(ownerUserId)) {
             return List.of();
         }
@@ -170,13 +183,13 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
             Integer limitValue,
             String rangeStartIso,
             String rangeEndIso, String campaignId) {
-        WorkspaceProfile currentUser = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        RatingSessionDto currentUser = ratingSession.resolveRatingSession(requestedUserId);
+        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.identity().userId());
         String mode = normalizeMode(modeValue);
         String direction = normalizeDisplayDirection(directionValue);
-        int gameCounter = currentUser == null || currentUser.getActivities() == null
+        int gameCounter = currentUser == null
                 ? 0
-                : Math.max(0, Objects.requireNonNullElse(currentUser.getActivities().game(), 0));
+                : Math.max(0, Objects.requireNonNullElse(currentUser.gameCount(), 0));
         if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(mode) || !StringUtils.hasText(direction)) {
             return new ActivityRatePageResponseDto(List.of(), 0, null, List.of(), gameCounter);
         }
@@ -211,7 +224,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         String nextCursor = endIndex < items.size() && !pageItems.isEmpty()
                 ? serializeCursor(pageItems.get(pageItems.size() - 1))
                 : null;
-        List<UserDto> users = homeUserProfileService.queryUsersByIds(resolveDisplayUserIds(pageItems));
+        List<UserDto> users = profileCards.queryUsersByIds(resolveDisplayUserIds(pageItems));
 
         return new ActivityRatePageResponseDto(pageItems, items.size(), nextCursor, users, gameCounter);
     }
@@ -230,9 +243,11 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         for (var rate : request.rates()) if (rate != null) {
             addIfText(participantIds, rate.ownerUserId()); addIfText(participantIds, rate.fromUserId()); addIfText(participantIds, rate.toUserId());
         }
-        Set<String> workspaceParticipants = usersRepository.findByUserIdIn(participantIds).stream()
-                .filter(user -> WorkspaceContext.allows(user.getWorkspaceGroupId()))
-                .map(WorkspaceProfile::getUserId).collect(java.util.stream.Collectors.toSet());
+        Map<String, RatingProfileDto> participantProfiles = ratingProfiles.queryRatingProfiles(participantIds).stream()
+                .filter(Objects::nonNull).collect(java.util.stream.Collectors.toMap(RatingProfileDto::userId, user -> user, (left, right) -> right));
+        Set<String> workspaceParticipants = participantProfiles.values().stream()
+                .filter(user -> WorkspaceContext.allows(user.workspaceGroupId()))
+                .map(RatingProfileDto::userId).collect(java.util.stream.Collectors.toSet());
         Set<String> campaignIds = request.rates().stream().filter(Objects::nonNull).map(UserRateRecordDto::campaignId)
                 .filter(StringUtils::hasText).collect(java.util.stream.Collectors.toSet());
         var campaigns = campaignCatalog.findByIds(campaignIds);
@@ -251,7 +266,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
                 if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
                 continue;
             }
-            NormalizedRate normalizedResult = normalizeRecord(rate, affectedHomeProjectionOwnerIds);
+            NormalizedRate normalizedResult = normalizeRecord(rate, affectedHomeProjectionOwnerIds, participantProfiles);
             if (normalizedResult == null || normalizedResult.rate() == null) {
                 String failedId = rate == null ? "" : normalizeId(rate.id());
                 if (StringUtils.hasText(failedId)) {
@@ -303,7 +318,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         if (persistedRates == null || persistedRates.isEmpty()) {
             return;
         }
-        Map<String, com.raxim.myscoutee.domain.accounts.api.Friendships.Meeting> writesByPair = new LinkedHashMap<>();
+        Map<String, com.raxim.myscoutee.domain.accounts.api.FriendshipProjections.Meeting> writesByPair = new LinkedHashMap<>();
         Set<String> affectedUsers = new LinkedHashSet<>();
         for (UserRate rate : persistedRates) {
             if (rate == null
@@ -322,7 +337,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
             }
             String left = ownerUserId.compareTo(relatedUserId) <= 0 ? ownerUserId : relatedUserId;
             String right = ownerUserId.compareTo(relatedUserId) <= 0 ? relatedUserId : ownerUserId;
-            writesByPair.put(left.length() + ":" + left + right, new com.raxim.myscoutee.domain.accounts.api.Friendships.Meeting(left, right,
+            writesByPair.put(left.length() + ":" + left + right, new com.raxim.myscoutee.domain.accounts.api.FriendshipProjections.Meeting(left, right,
                     parseIsoMillis(firstNonBlank(rate.getUpdatedDate(), rate.getCreatedDate()), Instant.now().toEpochMilli()),
                     safeText(rate.getMetEventId()), safeText(rate.getEventName())));
             affectedUsers.add(left);
@@ -341,17 +356,22 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         if (notificationOutboxService == null || persistedRates == null || persistedRates.isEmpty()) {
             return;
         }
-        for (UserRate rate : persistedRates) {
-            if (rate == null) {
-                continue;
-            }
+        var changedRates = persistedRates.stream().filter(Objects::nonNull).filter(rate -> {
             double currentScore = normalizeScore(rate.getScoreGiven());
-            double previousScore = previousScoresByNaturalKey == null
-                    ? currentScore
+            double previousScore = previousScoresByNaturalKey == null ? currentScore
                     : previousScoresByNaturalKey.getOrDefault(naturalKey(rate), currentScore);
-            if (currentScore <= 0 || currentScore == previousScore) {
-                continue;
-            }
+            return currentScore > 0 && currentScore != previousScore;
+        }).toList();
+        if (changedRates.isEmpty()) return;
+        var candidateRecipients = new LinkedHashSet<String>();
+        for (var rate : changedRates) {
+            addIfText(candidateRecipients, rate.getRelatedUserId());
+            if ("pair".equals(normalizeMode(rate.getMode()))) addIfText(candidateRecipients, rate.getSecondaryRelatedUserId());
+        }
+        var existingRecipients = candidateRecipients.isEmpty() ? Set.<String>of()
+                : ratingProfiles.queryRatingProfiles(candidateRecipients).stream().filter(Objects::nonNull)
+                        .map(RatingProfileDto::userId).collect(java.util.stream.Collectors.toSet());
+        for (UserRate rate : changedRates) {
             String actorUserId = normalizeId(rate.getOwnerUserId());
             LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>();
             addIfText(recipientUserIds, rate.getRelatedUserId());
@@ -359,7 +379,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
                 addIfText(recipientUserIds, rate.getSecondaryRelatedUserId());
             }
             recipientUserIds.remove(actorUserId);
-            recipientUserIds.removeIf(userId -> usersRepository.findByUserId(userId).isEmpty());
+            recipientUserIds.retainAll(existingRecipients);
             if (recipientUserIds.isEmpty()) {
                 continue;
             }
@@ -475,7 +495,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
                 accountProjections.touchRatingActivity(userId, activityMs);
             }
         }
-        homeUserProfileService.evictUserReadCaches(affectedUserIds);
+        profileReadState.evictUserReadCaches(affectedUserIds);
     }
 
     private Map<String, List<UserRate>> ratesByOwnerUserId(List<UserRate> rates) {
@@ -614,10 +634,10 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         indexOps.dropIndex(indexName);
     }
 
-    private List<RateMenuItemDto> queryNormalizedRateItems(WorkspaceProfile currentUser, String ownerUserId) {
+    private List<RateMenuItemDto> queryNormalizedRateItems(RatingSessionDto currentUser, String ownerUserId) {
         return queryNormalizedRateItems(currentUser, ownerUserId, null);
     }
-    private List<RateMenuItemDto> queryNormalizedRateItems(WorkspaceProfile currentUser, String ownerUserId, String campaignId) {
+    private List<RateMenuItemDto> queryNormalizedRateItems(RatingSessionDto currentUser, String ownerUserId, String campaignId) {
         List<UserRate> records = userRatesRepository.findRelevantInCampaign(ownerUserId,
                 StringUtils.hasText(campaignId) ? campaignId : null);
         if (StringUtils.hasText(campaignId)) {
@@ -637,7 +657,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
                     item.scoreGiven(), item.scoreReceived(), item.eventName(), item.happenedAt(), item.distanceMetersExact(),
                     item.met(), item.ratingSnapshot(), null));
         }
-        String workspaceId = currentUser.getWorkspaceGroupId();
+        String workspaceId = currentUser.identity().workspaceGroupId();
         var group = StringUtils.hasText(workspaceId) ? groupDirectory.findById(workspaceId).orElse(null) : null;
         String defaultDomain = group == null ? "dating" : "work".equals(group.effectiveType()) ? "work"
                 : "community".equals(group.effectiveType()) ? "service-interest" : "dating";
@@ -709,9 +729,9 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
             return items;
         }
 
-        Map<String, WorkspaceProfile> usersById = usersRepository.findByUserIdIn(checkedUserIds).stream()
+        Map<String, RatingProfileDto> usersById = ratingProfiles.queryRatingProfiles(checkedUserIds).stream()
                 .filter(Objects::nonNull)
-                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.id()), user), Map::putAll);
         return items.stream()
                 .filter(item -> activityRateItemUsersAreVisible(item, ownerUserId, usersById))
                 .toList();
@@ -720,7 +740,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
     private boolean activityRateItemUsersAreVisible(
             RateMenuItemDto item,
             String ownerUserId,
-            Map<String, WorkspaceProfile> usersById) {
+            Map<String, RatingProfileDto> usersById) {
         if (item == null) {
             return false;
         }
@@ -731,8 +751,8 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         addUserId(displayedUserIds, item.bridgeUserId());
         displayedUserIds.remove(normalizedOwnerUserId);
         for (String userId : displayedUserIds) {
-            WorkspaceProfile user = usersById.get(normalizeId(userId));
-            if (!homeUserProfileService.activityRateVisible(user)) {
+            RatingProfileDto user = usersById.get(normalizeId(userId));
+            if (user == null || !user.activityRateVisible()) {
                 return false;
             }
         }
@@ -774,7 +794,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         return new ArrayList<>(deduped.values());
     }
 
-    private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
+    private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds, Map<String, RatingProfileDto> participantProfiles) {
         if (rate == null || !validRatingSnapshot(rate.ratingSnapshot(), resolveScoreGiven(rate))
                 || (StringUtils.hasText(rate.campaignId()) && rate.ratingSnapshot() != null && !"campaign".equals(rate.ratingSnapshot().profileType()))) {
             return null;
@@ -830,7 +850,7 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         document.setUpdatedDate(normalizeDate(rate.updatedAtIso(), nowIso));
         document.setUpdatedUser(updatedUserId);
         document.setOwnerUserId(ownerUserId);
-        document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
+        document.setOwnerLocation(resolveLocationSnapshot(participantProfiles.get(ownerUserId)));
 
         UserRate normalized = normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
         if (normalized != null && metCounterpartyScore != null) {
@@ -965,15 +985,15 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         return document;
     }
 
-    private RateMenuItemDto toRateMenuItem(UserRate record, WorkspaceProfile currentUser) {
+    private RateMenuItemDto toRateMenuItem(UserRate record, RatingSessionDto currentUser) {
         if (record == null || currentUser == null) {
             return null;
         }
         return toActivityRateMenuItem(record, currentUser);
     }
 
-    private RateMenuItemDto toActivityRateMenuItem(UserRate record, WorkspaceProfile currentUser) {
-        String currentUserId = normalizeOptionalId(currentUser == null ? null : currentUser.getId());
+    private RateMenuItemDto toActivityRateMenuItem(UserRate record, RatingSessionDto currentUser) {
+        String currentUserId = normalizeOptionalId(currentUser == null ? null : currentUser.identity().userId());
         String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
         if (currentUserId == null || recordOwnerUserId == null) {
             return null;
@@ -1288,9 +1308,9 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
     }
 
     private String resolveUpdatedUser(UserRateRecordDto rate, String ownerUserId, String fromUserId, String toUserId) {
-        WorkspaceProfile currentUser = homeUserProfileService.resolveCurrentUser(ownerUserId);
-        if (currentUser != null && StringUtils.hasText(normalizeId(currentUser.getId()))) {
-            return normalizeId(currentUser.getId());
+        RatingSessionDto currentUser = ratingSession.resolveRatingSession(ownerUserId);
+        if (currentUser != null && StringUtils.hasText(normalizeId(currentUser.identity().userId()))) {
+            return normalizeId(currentUser.identity().userId());
         }
         String persistedDirection = normalizeDisplayDirection(rate.displayDirection());
         if ("received".equals(persistedDirection)) {
@@ -1590,23 +1610,19 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         return normalizeOptionalId(toUserId);
     }
 
-    private UserRate.LocationSnapshot resolveLocationSnapshot(String userId) {
-        if (!StringUtils.hasText(userId)) {
+    private UserRate.LocationSnapshot resolveLocationSnapshot(RatingProfileDto user) {
+        if (user == null || user.locationCoordinates() == null) {
             return null;
         }
-        WorkspaceProfile user = usersRepository.findByUserId(userId).orElse(null);
-        if (user == null || user.getLocationCoordinates() == null) {
-            return null;
-        }
-        Double latitude = user.getLocationCoordinates().latitude();
-        Double longitude = user.getLocationCoordinates().longitude();
+        Double latitude = user.locationCoordinates().latitude();
+        Double longitude = user.locationCoordinates().longitude();
         if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
             return null;
         }
         return new UserRate.LocationSnapshot(latitude, longitude);
     }
 
-    private RateDistance resolveActivityDistance(WorkspaceProfile currentUser, UserRate record) {
+    private RateDistance resolveActivityDistance(RatingSessionDto currentUser, UserRate record) {
         if (record != null && record.getDistanceMetersExact() != null) {
             return new RateDistance(Math.max(0, record.getDistanceMetersExact()));
         }
@@ -1617,12 +1633,12 @@ public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api
         return distanceBetween(origin, record == null ? null : record.getOwnerLocation());
     }
 
-    private UserRate.LocationSnapshot resolveCurrentUserLocation(WorkspaceProfile currentUser) {
-        if (currentUser == null || currentUser.getLocationCoordinates() == null) {
+    private UserRate.LocationSnapshot resolveCurrentUserLocation(RatingSessionDto currentUser) {
+        if (currentUser == null || currentUser.locationCoordinates() == null) {
             return null;
         }
-        Double latitude = currentUser.getLocationCoordinates().latitude();
-        Double longitude = currentUser.getLocationCoordinates().longitude();
+        Double latitude = currentUser.locationCoordinates().latitude();
+        Double longitude = currentUser.locationCoordinates().longitude();
         if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
             return null;
         }

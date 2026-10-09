@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -44,8 +46,8 @@ class NotificationOutboxWorkerServiceTest {
         ChatWebSocketSessionRegistry sessionRegistry =
                 org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
         MongoTemplate mongoTemplate = org.mockito.Mockito.mock(MongoTemplate.class);
-        FirebaseMessagingGateway gateway =
-                org.mockito.Mockito.mock(FirebaseMessagingGateway.class);
+        FirebasePushDelivery gateway =
+                org.mockito.Mockito.mock(FirebasePushDelivery.class);
         NotificationRuleRegistryService registry =
                 org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
@@ -212,7 +214,7 @@ class NotificationOutboxWorkerServiceTest {
                 null,
                 null,
                 org.mockito.Mockito.mock(AdminTelemetryService.class),
-                org.mockito.Mockito.mock(FirebaseMessagingGateway.class),
+                org.mockito.Mockito.mock(FirebasePushDelivery.class),
                 50,
                 500,
                 5,
@@ -265,7 +267,7 @@ class NotificationOutboxWorkerServiceTest {
                 null,
                 null,
                 org.mockito.Mockito.mock(AdminTelemetryService.class),
-                org.mockito.Mockito.mock(FirebaseMessagingGateway.class),
+                org.mockito.Mockito.mock(FirebasePushDelivery.class),
                 50,
                 500,
                 5,

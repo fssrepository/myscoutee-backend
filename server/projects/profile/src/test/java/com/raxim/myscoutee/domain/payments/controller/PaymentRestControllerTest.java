@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.payments.controller;
 
+import com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -24,7 +26,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
-import com.raxim.myscoutee.domain.payments.service.PaymentProviderChangedException;
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
 
 @org.junit.jupiter.api.Tag("standard")

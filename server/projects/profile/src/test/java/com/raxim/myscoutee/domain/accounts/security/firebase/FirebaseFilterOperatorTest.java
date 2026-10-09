@@ -33,7 +33,7 @@ class FirebaseFilterOperatorTest {
         authentication.setDetails(new com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient("owner", "key", "client"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         var filter = new FirebaseFilter(mock(FirebaseService.class), new ConfigProperties(), mock(FirebaseTokenVerifier.class),
-                sessions, mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                sessions, mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         var request = new MockHttpServletRequest("POST", "/integrations/v1/connect");
         var response = new MockHttpServletResponse();var chain = mock(FilterChain.class);
         filter.doFilter(request, response, chain);
@@ -49,7 +49,7 @@ class FirebaseFilterOperatorTest {
             var principal = new FirebasePrincipal("owner", null, role);
             SecurityContextHolder.getContext().setAuthentication(new FirebaseAuthenticationToken(principal, null, principal.getAuthorities()));
             var filter = new FirebaseFilter(mock(FirebaseService.class), new ConfigProperties(), mock(FirebaseTokenVerifier.class),
-                    sessions, mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                    sessions, mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
             var response = new MockHttpServletResponse();var chain = mock(FilterChain.class);
             filter.doFilter(new MockHttpServletRequest("POST", "/integrations/v1/connect"), response, chain);
             assertThat(response.getStatus()).isEqualTo(401);
@@ -73,7 +73,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 sessionService,
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         FilterChain chain = mock(FilterChain.class);
 
@@ -99,7 +99,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 sessionService,
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/health");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -133,7 +133,7 @@ class FirebaseFilterOperatorTest {
                     new ConfigProperties(),
                     mock(FirebaseTokenVerifier.class),
                     sessionService,
-                    mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                    mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
             MockHttpServletRequest request = new MockHttpServletRequest("GET", path);
             MockHttpServletResponse response = new MockHttpServletResponse();
             FilterChain chain = mock(FilterChain.class);
@@ -169,7 +169,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 sessionService,
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/health");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -200,7 +200,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 sessionService,
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("GET", "/api/media/public/help/e2e-small.webp");
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -238,7 +238,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 mock(UserLoginSessionService.class),
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         request.addHeader("X-Demo-User-Id", "operator-demo-dev");
 
@@ -273,7 +273,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 mock(UserLoginSessionService.class),
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request = demoOperatorRequest();
         request.addHeader("X-Demo-User-Id", "operator-demo-dev");
         FilterChain chain = mock(FilterChain.class);
@@ -318,7 +318,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 mock(FirebaseTokenVerifier.class),
                 mock(UserLoginSessionService.class),
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest("POST", "/api/game-cards/query");
         request.addHeader(
@@ -354,7 +354,7 @@ class FirebaseFilterOperatorTest {
                 properties,
                 verifier,
                 mock(UserLoginSessionService.class),
-                mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         MockHttpServletRequest request =
                 new MockHttpServletRequest(
                         "POST",

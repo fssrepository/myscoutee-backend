@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphMetaDto;
 import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
@@ -50,18 +48,8 @@ public class AdminAffinityGraphLayoutWorkerService {
     }
 
     private void rebuildDueLayoutForCurrentDatabaseInGroup() {
-        Optional<? extends Configuration> configuredRule = notificationRuleRegistryService.findRule(
-                NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT);
-        if (configuredRule.isEmpty()) {
-            return;
-        }
-
         Instant startedAt = Instant.now();
-        if (!notificationRuleRegistryService.shouldRunScheduledRule(
-                NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT,
-                startedAt)) {
-            return;
-        }
+        // The owner rejects missing, disabled, not-due and already claimed rules.
         if (notificationRuleRegistryService.beginScheduledRun(
                     NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT,
                     "Scheduled affinity graph layout rebuild started.",

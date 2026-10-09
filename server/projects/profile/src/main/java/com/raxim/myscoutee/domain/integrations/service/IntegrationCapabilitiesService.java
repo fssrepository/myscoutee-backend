@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.groups.api.Groups;
+import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,12 +24,12 @@ import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 /** Describes the authenticated integration, without probing any write endpoint. */
 @Service
 public class IntegrationCapabilitiesService {
-    private final Groups groups;
+    private final IntegrationGroups groups;
     private final GroupDirectory groupRepository;
     private final AccessPermissions access;
     private final IntegrationRoleAccessService roles;
 
-    public IntegrationCapabilitiesService(Groups groups,
+    public IntegrationCapabilitiesService(IntegrationGroups groups,
             GroupDirectory groupRepository, AccessPermissions access, IntegrationRoleAccessService roles) {
         this.groups = groups;
         this.groupRepository = groupRepository;

@@ -43,7 +43,7 @@ class AdminAffinityGraphLayoutWorkerServiceTest {
         worker.rebuildDueLayout();
 
         verify(adminAffinityGraphService, never()).rebuildMaterializedLayout();
-        verify(notificationRuleRegistryService, never()).beginScheduledRun(
+        verify(notificationRuleRegistryService).beginScheduledRun(
                 any(String.class),
                 any(String.class),
                 any(String.class),
@@ -84,6 +84,8 @@ class AdminAffinityGraphLayoutWorkerServiceTest {
         worker.rebuildDueLayout();
 
         verify(adminAffinityGraphService).rebuildMaterializedLayout();
+        verify(notificationRuleRegistryService, never()).findRule(any(String.class));
+        verify(notificationRuleRegistryService, never()).shouldRunScheduledRule(any(String.class), any(Instant.class));
         verify(notificationRuleRegistryService).recordRun(
                 eq(NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT),
                 eq(313),

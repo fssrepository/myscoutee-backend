@@ -250,7 +250,9 @@ public final class SharedDtos {
             Integer stageResultRevision,
             List<SubEventGroupItemDto> groups,
             String runtimeKind,
-            String eventId) {
+            String eventId) implements com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent {
+
+        @Override public SubEventItemDto presentation() { return this; }
 
         public SubEventItemDto(
                 String id,

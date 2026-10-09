@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.events.api.MingleEncounters;
 import com.raxim.myscoutee.domain.events.api.MingleEncounters.Session;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
 
 /** The completed session is the durable source; publication is marked only after outbox insertion. */
 @Service
@@ -21,11 +21,11 @@ public class IntegrationEncounterPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(IntegrationEncounterPublisher.class);
     private final MingleEncounters encounters;
-    private final EventOwnership events;
+    private final EventOwnershipReads events;
     private final IntegrationEventQueryService queries;
     private final IntegrationWebhookService webhooks;
 
-    public IntegrationEncounterPublisher(MingleEncounters encounters, EventOwnership events,
+    public IntegrationEncounterPublisher(MingleEncounters encounters, EventOwnershipReads events,
             IntegrationEventQueryService queries, IntegrationWebhookService webhooks) {
         this.encounters = encounters; this.events = events; this.queries = queries; this.webhooks = webhooks;
     }

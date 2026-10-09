@@ -13,6 +13,43 @@ import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 
 @org.junit.jupiter.api.Tag("standard")
 class JobGroupScopeServiceTest {
+    @Test void narrowResourceScopeReadsKeepCanonicalWorkspaceOwnerAndCreatorResolution() {
+        var mongo = mock(MongoTemplate.class);
+        var asset = new org.bson.Document("workspaceGroupId", CommunityGroup.COMMUNITY_BASE_ID)
+                .append("ownerUserId", "owner").append("creatorUserId", "creator").append("privateField", "excluded");
+        var event = new org.bson.Document("ownerUserId", "owner").append("creatorUserId", "creator");
+        when(mongo.findOne(any(Query.class), eq(org.bson.Document.class), eq("assets"))).thenReturn(asset);
+        when(mongo.findOne(any(Query.class), eq(org.bson.Document.class), eq("events"))).thenReturn(event);
+        var assets = new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(
+                mock(com.raxim.myscoutee.domain.assets.repository.AssetsRepository.class));
+        var events = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(
+                mock(com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(assets, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(events, "mongo", mongo);
+        assertThat(assets.findJobScope("asset-id")).isEqualTo(new com.raxim.myscoutee.domain.assets.dto.AssetJobScopeDto(
+                CommunityGroup.COMMUNITY_BASE_ID, "owner", "creator"));
+        assertThat(events.findJobScope("event-id")).isEqualTo(new com.raxim.myscoutee.domain.events.dto.EventJobScopeDto(null, "owner", "creator"));
+        verify(mongo).findOne(argThat(q -> "asset-id".equals(q.getQueryObject().getString("assetId"))), eq(org.bson.Document.class), eq("assets"));
+        verify(mongo).findOne(argThat(q -> "event-id".equals(q.getQueryObject().getString("sourceId"))), eq(org.bson.Document.class), eq("events"));
+        var profiles = mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class);
+        var owner = mock(com.raxim.myscoutee.domain.accounts.document.Users.class);
+        when(owner.getWorkspaceGroupId()).thenReturn(CommunityGroup.WORK_BASE_ID);
+        org.mockito.Mockito.doReturn(owner).when(profiles).findFirstByUserId("owner");
+        org.mockito.Mockito.doReturn(owner).when(profiles).findFirstByUserId("creator");
+        var service = new JobGroupScopeService();
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", assets);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", events);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profiles", profiles);
+        assertThat(service.forTarget("asset", "asset-id")).isEqualTo(CommunityGroup.COMMUNITY_BASE_ID);
+        assertThat(service.forTarget("event", "event-id")).isEqualTo(CommunityGroup.WORK_BASE_ID);
+        event.remove("ownerUserId");
+        assertThat(service.forTarget("event", "event-id")).isEqualTo(CommunityGroup.WORK_BASE_ID);
+        verify(profiles).findFirstByUserId("creator");
+        when(mongo.findOne(any(Query.class), eq(org.bson.Document.class), eq("assets"))).thenReturn(null);
+        JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID,
+                () -> assertThat(service.forTarget("asset", "missing")).isEqualTo(CommunityGroup.COMMUNITY_BASE_ID));
+    }
+
     @Test void communityNeverFallsIntoDatingAndWorkspaceMapIsReadOncePerJob() {
         var mongo = mock(MongoTemplate.class);
         var community = new org.bson.Document("_id", "private-homes").append("groupType", "community");

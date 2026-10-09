@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.affinity.api.Ratings;
+import com.raxim.myscoutee.domain.affinity.api.MeetingProjections;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
@@ -34,10 +34,10 @@ public class EventFriendshipProjectionService {
 
     private final MongoTemplate mongo;
     private final ActivityMembersRepository members;
-    private final Ratings userRatesService;
+    private final MeetingProjections userRatesService;
 
     public EventFriendshipProjectionService(MongoTemplate mongo, ActivityMembersRepository members,
-            Ratings userRatesService) {
+            MeetingProjections userRatesService) {
         this.mongo = mongo;
         this.members = members;
         this.userRatesService = userRatesService;

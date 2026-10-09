@@ -32,12 +32,12 @@ import com.raxim.myscoutee.domain.email.document.EmailCampaignRule;
 import com.raxim.myscoutee.domain.email.document.EmailOutboxItem;
 import com.raxim.myscoutee.domain.email.document.EmailTemplate;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
 import com.raxim.myscoutee.domain.email.repository.EmailCampaignRulesRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfiles;
 import com.raxim.myscoutee.domain.events.api.MemberAudience;
 import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
 import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
@@ -63,7 +63,7 @@ public class PromotionalEmailPlannerService {
     private final EmailTemplatesRepository emailTemplatesRepository;
     private final EmailCampaignRulesRepository emailCampaignRulesRepository;
     private final EmailOutboxRepository emailOutboxRepository;
-    private final ProfileDirectory profiles;
+    private final EmailProfiles profiles;
     private final NotificationCatalog notificationTemplatesRepository;
     private final MemberAudience activitiesMembersService;
     private final ScheduledNotificationDeliveryService scheduledNotificationDeliveryService;
@@ -80,7 +80,7 @@ public class PromotionalEmailPlannerService {
             EmailTemplatesRepository emailTemplatesRepository,
             EmailCampaignRulesRepository emailCampaignRulesRepository,
             EmailOutboxRepository emailOutboxRepository,
-            ProfileDirectory profiles,
+            EmailProfiles profiles,
             NotificationCatalog notificationTemplatesRepository,
             MemberAudience activitiesMembersService,
             ScheduledNotificationDeliveryService scheduledNotificationDeliveryService,
@@ -248,7 +248,7 @@ public class PromotionalEmailPlannerService {
         int notificationCount = 0;
         int emailQueuedCount = 0;
         int failedCount = 0;
-        for (WorkspaceProfile user : resolveAudience(rule)) {
+        for (EmailProfile user : resolveAudience(rule)) {
             if (!jobGroupScope.matchesWorkspace(user.getWorkspaceGroupId())) continue;
             if (Thread.currentThread().isInterrupted()) {
                 throw new IllegalStateException("Scheduled email campaign was cancelled.");
@@ -346,7 +346,7 @@ public class PromotionalEmailPlannerService {
                 .orElse(null);
     }
 
-    private List<? extends WorkspaceProfile> resolveAudience(EmailCampaignRule rule) {
+    private List<? extends EmailProfile> resolveAudience(EmailCampaignRule rule) {
         String eventId = safeText(rule == null ? null : rule.getEventId());
         if (!StringUtils.hasText(eventId)) {
             return profiles.findAll();
@@ -514,7 +514,7 @@ public class PromotionalEmailPlannerService {
     private void recordDelivery(
             String runId,
             EmailCampaignRule rule,
-            WorkspaceProfile user,
+            EmailProfile user,
             String channel,
             String status,
             String detail) {
@@ -544,7 +544,7 @@ public class PromotionalEmailPlannerService {
     }
 
     private EmailOutboxItem buildOutboxItem(
-            WorkspaceProfile user,
+            EmailProfile user,
             EmailCampaignRule rule,
             EmailTemplate template,
             Map<String, String> variables,

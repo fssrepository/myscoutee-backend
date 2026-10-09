@@ -3,8 +3,8 @@ import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.chat.api.CaseConversations;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
@@ -38,12 +38,12 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
     private final ServiceCasesRepository cases;
     private final CommunityAuthority access;
     private final GroupDirectory groups;
-    private final ProfileDirectory users;
+    private final ProfileSummaries users;
     private final NotificationDelivery notifications;
     private final CaseConversations chats;
     private final ServiceOfferingsRepository offerings;
     public CommunityCasesService(ServiceCasesRepository cases, CommunityAuthority access, GroupDirectory groups,
-            ProfileDirectory users, NotificationDelivery notifications, CaseConversations chats, ServiceOfferingsRepository offerings) {
+            ProfileSummaries users, NotificationDelivery notifications, CaseConversations chats, ServiceOfferingsRepository offerings) {
         this.cases = cases; this.access = access; this.groups = groups; this.users = users; this.notifications = notifications; this.chats = chats; this.offerings = offerings;
     }
     @org.springframework.beans.factory.annotation.Autowired
@@ -80,7 +80,7 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         var groupIds = rows.stream().map(ServiceCase::communityId).filter(Objects::nonNull).distinct().toList();
         var groupsById = groups.findByIdIn(groupIds).stream().collect(Collectors.toMap(GroupView::id, g -> g));
         var people = users.findByUserIdIn(rows.stream().flatMap(c -> displayAccounts(c).stream()).collect(Collectors.toSet()))
-                .stream().collect(Collectors.toMap(WorkspaceProfile::getUserId, u -> u));
+                .stream().collect(Collectors.toMap(ProfileSummary::getUserId, u -> u));
         Map<String, Long> context = new java.util.HashMap<>();
         context.put("total", 0L);
         for (var bucket : cases.bucketCounts(BaseGroups.COMMUNITY_BASE_ID, actor, managed)) {
@@ -248,7 +248,7 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         chats.synchronizeCase(com.raxim.myscoutee.domain.community.mapper.CaseConversationMapper.toConversation(c));
         var recipientAccounts = c.notifiedParticipantAccountIds().stream().filter(id -> !id.equals(actor)).toList();
         var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(BaseGroups.COMMUNITY_BASE_ID, recipientAccounts)
-                .stream().map(WorkspaceProfile::getUserId).toList();
+                .stream().map(ProfileSummary::getUserId).toList();
         if (recipients.isEmpty()) return;
         String kind = "case-" + action;
         var payload = new LinkedHashMap<String, String>();
@@ -300,7 +300,7 @@ public class CommunityCasesService implements com.raxim.myscoutee.domain.communi
         c.recommendations().forEach(r -> { ids.add(r.providerAccountId()); ids.add(r.accountId()); }); return ids;
     }
     private CaseItem dto(String actor, ServiceCase c) {
-        var people = users.findByUserIdIn(displayAccounts(c)).stream().collect(Collectors.toMap(WorkspaceProfile::getUserId, u -> u));
+        var people = users.findByUserIdIn(displayAccounts(c)).stream().collect(Collectors.toMap(ProfileSummary::getUserId, u -> u));
         return CommunityCaseMapper.toDto(c, actor, canManage(c, actor), c.communityId() == null ? null : groups.findById(c.communityId()).orElse(null), people);
     }
     private ServiceCase persist(ServiceCase c) {

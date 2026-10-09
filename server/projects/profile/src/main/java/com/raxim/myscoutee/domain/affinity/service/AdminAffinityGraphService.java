@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
@@ -25,7 +25,7 @@ import com.raxim.myscoutee.domain.affinity.document.AdminAffinityGraphForest;
 import com.raxim.myscoutee.domain.affinity.document.AdminAffinityGraphLayout;
 import com.raxim.myscoutee.domain.affinity.document.AdminAffinityGraphNode;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphEdgeDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphForestDto;
@@ -39,7 +39,7 @@ import com.raxim.myscoutee.domain.affinity.repository.AdminAffinityGraphForestsR
 import com.raxim.myscoutee.domain.affinity.repository.AdminAffinityGraphLayoutsRepository;
 import com.raxim.myscoutee.domain.affinity.repository.AdminAffinityGraphNodesRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
 public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.affinity.api.AffinityGraph {
@@ -52,8 +52,8 @@ public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.aff
     private static final int FOREST_OVERVIEW_BASE_BUDGET = 16;
     private static final double WORLD_RADIUS = 620d;
 
-    private final AdministrativeAccess adminModerationService;
-    private final ProfileDirectory usersRepository;
+    private final AdministrativeActors adminModerationService;
+    private final ProfileSummaries usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final AdminAffinityGraphLayoutsRepository layoutsRepository;
     private final AdminAffinityGraphNodesRepository graphNodesRepository;
@@ -61,8 +61,8 @@ public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.aff
     private final AdminAffinityGraphForestsRepository graphForestsRepository;
 
     public AdminAffinityGraphService(
-            AdministrativeAccess adminModerationService,
-            ProfileDirectory usersRepository,
+            AdministrativeActors adminModerationService,
+            ProfileSummaries usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             AdminAffinityGraphLayoutsRepository layoutsRepository,
             AdminAffinityGraphNodesRepository graphNodesRepository,
@@ -451,8 +451,7 @@ public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.aff
 
     private GraphSnapshot loadSnapshot(String generatedAtIso, String layoutVersion, String groupId) {
         Map<String, AdminAffinityGraphNodeDto> nodesById = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findAll()) {
-            if (!java.util.Objects.equals(groupId, user.getWorkspaceGroupId())) continue;
+        for (ProfileSummary user : usersRepository.findByWorkspaceGroupId(groupId)) {
             AdminAffinityGraphNodeDto node = toNode(user);
             if (node != null) {
                 nodesById.put(node.id(), node);
@@ -701,7 +700,7 @@ public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.aff
         return new TileBounds(minX, maxX, minZ, maxZ);
     }
 
-    private AdminAffinityGraphNodeDto toNode(WorkspaceProfile user) {
+    private AdminAffinityGraphNodeDto toNode(ProfileSummary user) {
         if (user == null) {
             return null;
         }
@@ -894,7 +893,7 @@ public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.aff
         return new GraphEdge(key, source, target, weight, dto);
     }
 
-    private boolean isExcludedUser(String id, WorkspaceProfile user) {
+    private boolean isExcludedUser(String id, ProfileSummary user) {
         if (user == null) {
             return true;
         }

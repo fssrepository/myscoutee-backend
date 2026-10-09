@@ -49,6 +49,13 @@ import com.raxim.myscoutee.domain.events.document.SubEventItem;
         @CompoundIndex(name = "event_qmau_host_window", def = "{'status': 1, 'generated': 1, 'createdDate': 1, 'creatorUserId': 1}")
 })
 public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.EventOwnership.Event, com.raxim.myscoutee.domain.events.api.EventSchedule {
+    @org.springframework.data.annotation.Version private Long version;
+    private java.util.List<com.raxim.myscoutee.domain.events.dto.EventLifecycleWorkDto> lifecycleWork = new java.util.ArrayList<>();
+    public Long getVersion() { return version; }
+    public void setVersion(Long value) { version = value; }
+    public java.util.List<com.raxim.myscoutee.domain.events.dto.EventLifecycleWorkDto> getLifecycleWork() { return lifecycleWork == null ? java.util.List.of() : lifecycleWork; }
+    public void setLifecycleWork(java.util.List<com.raxim.myscoutee.domain.events.dto.EventLifecycleWorkDto> value) { lifecycleWork = new java.util.ArrayList<>(value); }
+
     private String campaignId;
     public String getCampaignId() { return campaignId; }
     public void setCampaignId(String value) { campaignId = value; }
@@ -180,6 +187,12 @@ public class ActivityEvent implements com.raxim.myscoutee.domain.events.api.Even
     private Double affinity;
     private String createdDate;
     private String createdUser;
+    private String membershipCounterWork;
+    private java.util.List<String> membershipCounterUsers = java.util.List.of();
+    public String getMembershipCounterWork() { return membershipCounterWork; }
+    public void setMembershipCounterWork(String value) { membershipCounterWork = value; }
+    public java.util.List<String> getMembershipCounterUsers() { return membershipCounterUsers == null ? java.util.List.of() : membershipCounterUsers; }
+    public void setMembershipCounterUsers(java.util.List<String> value) { membershipCounterUsers = value == null ? java.util.List.of() : java.util.List.copyOf(value); }
     private String updatedDate;
     private String updatedUser;
 

@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.content.api;
 
 import java.util.List;
+import com.raxim.myscoutee.domain.content.dto.FeedPostMediaVisibilityDto;
 
 public interface ContentMediaVisibility {
-    FeedPost feedPost(List<String> urls);
-    record FeedPost(String moderationStatus) {}
+    FeedPostMediaVisibilityDto feedPost(List<String> urls);
 }

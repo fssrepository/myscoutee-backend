@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
 import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.events.api.EventOperations;
 import com.raxim.myscoutee.domain.events.api.PartnerInvitationAdmission;
-import com.raxim.myscoutee.domain.groups.api.Groups;
+import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
 import com.raxim.myscoutee.domain.payments.api.Affiliates;
 
 import java.net.URI;
@@ -29,7 +29,7 @@ import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationParticipantInvite;
 import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
@@ -39,13 +39,13 @@ public class IntegrationParticipantInviteService {
     private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.MingleEncounters encounters;
     private final MongoTemplate mongo;
-    private final EventOwnership events;
+    private final EventOwnershipReads events;
     private final AccessPermissions access;
     private final PartnerInvitationAdmission members;
     private final IntegrationPublicEndpointResolver endpoint;
     private final SelectedProfile profiles;
     @org.springframework.beans.factory.annotation.Autowired
-    private Groups groups;
+    private IntegrationGroups groups;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory users;
     @org.springframework.beans.factory.annotation.Autowired
@@ -55,7 +55,7 @@ public class IntegrationParticipantInviteService {
     private EventOperations eventActions;
     private final SecureRandom random = new SecureRandom();
 
-    public IntegrationParticipantInviteService(MongoTemplate mongo, EventOwnership events, AccessPermissions access,
+    public IntegrationParticipantInviteService(MongoTemplate mongo, EventOwnershipReads events, AccessPermissions access,
             PartnerInvitationAdmission members, IntegrationPublicEndpointResolver endpoint, SelectedProfile profiles) {
         this.mongo = mongo; this.events = events; this.access = access; this.members = members; this.endpoint = endpoint; this.profiles = profiles;
     }
@@ -134,7 +134,8 @@ public class IntegrationParticipantInviteService {
             groups.joinWorkspaceBase(groups.actor(accountId), event.getWorkspaceGroupId());
             try {
                 org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
-                        profileAuthentication.forProfile(original, recipient));
+                        profileAuthentication.forProfile(original, users.findByUserId(recipient.getUserId())
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED))));
                 return claimBoundInvite(recipient.getUserId(), invite, event, false, true);
             } finally {
                 org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(original);
@@ -183,7 +184,7 @@ public class IntegrationParticipantInviteService {
         }
         if (invitationAvailable) {
             if (!invite.reusable() || access.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {
-                members.claimIntegrationInvite(claimed, event, actor);
+                members.claimIntegrationInvite(claimed, event.getId(), actor);
             } else {
                 // A public share grants no inviter/admin privileges. Use the recipient's normal admission command.
                 var result = eventActions.requestJoin(new com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto(

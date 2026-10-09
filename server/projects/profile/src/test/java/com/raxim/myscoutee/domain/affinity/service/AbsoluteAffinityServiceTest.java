@@ -14,6 +14,22 @@ class AbsoluteAffinityServiceTest {
     private final AbsoluteAffinityService service = new AbsoluteAffinityService(null, null, null);
 
     @Test
+    void proposedProfileProjectionPreservesTheExistingStoredProfileCalculation() {
+        Users stored = user("u1", "Budapest", "runner", 80);
+        var proposed = new com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto(
+                "u1", "Ignored display name", 30, null, "Budapest", "175 cm", "active",
+                List.of("English", "Hungarian"), "Gemini", null, "woman", null,
+                "local host", "runner", 80, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null);
+        com.raxim.myscoutee.domain.affinity.api.UserAffinityScores port = service;
+        assertThat(port.resolveUserAffinity(proposed)).isEqualTo(service.resolveUserAffinity(stored));
+        assertThat(port.calculateUserAffinity(
+                com.raxim.myscoutee.domain.affinity.dto.UserAffinityInputDto.from(proposed), null))
+                .isEqualTo(service.resolveUserAffinity(stored));
+        assertThat(port.resolveUserAffinity(null)).isZero();
+    }
+
+    @Test
     void userAffinityChangesWhenProfileImpressionsChange() {
         Users user = user("u1", "Budapest", "runner", 80);
 

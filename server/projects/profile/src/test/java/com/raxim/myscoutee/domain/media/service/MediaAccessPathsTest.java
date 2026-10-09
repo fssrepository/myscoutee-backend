@@ -8,6 +8,21 @@ import org.junit.jupiter.api.Test;
 @org.junit.jupiter.api.Tag("standard")
 class MediaAccessPathsTest {
     @Test
+    void managedImageCleanupRecognizesEveryCurrentUploadNamespace() {
+        for (String prefix : new String[]{"images/", "private/images/", "public/demo/images/", "public/branding/images/"}) {
+            String group = prefix + "owner/entity/upload";
+            assertThat(MediaAccessPaths.managedImageSetGroupKeyFromObjectKey(group + "/original")).isEqualTo(group);
+            for (var variant : com.raxim.myscoutee.domain.media.api.MediaImageVariant.values()) {
+                assertThat(MediaAccessPaths.managedImageSetGroupKeyFromObjectKey(group + "/" + variant.objectName())).isEqualTo(group);
+            }
+        }
+        for (String key : new String[]{"private/images/../original", "private/audio/owner/original",
+                "public/other/images/owner/original", "private/images//original"}) {
+            assertThat(MediaAccessPaths.managedImageSetGroupKeyFromObjectKey(key)).isEmpty();
+        }
+    }
+
+    @Test
     void bundledHelpImagesArePublicWhileUploadedMediaRemainsProtected() {
         assertThat(MediaAccessPaths.isPublicKey("seeded-help/c00cddb3611da2aff481b1c9.svg")).isTrue();
         assertThat(MediaAccessPaths.isPublicKey("images/demo-profiles/user/small.webp")).isTrue();
@@ -25,5 +40,17 @@ class MediaAccessPathsTest {
         }) {
             assertThat(MediaAccessPaths.isPublicKey(key)).as(key).isFalse();
         }
+    }
+    @Test
+    void legacyManagedImageGroupingUsesTheCanonicalVariantNames() {
+        for (var variant : com.raxim.myscoutee.domain.media.api.MediaImageVariant.values()) {
+            String reference = "/api/media/public?key=images%2Fowner%2Fupload%2F" + variant.objectName();
+            assertThat(MediaAccessPaths.managedImageSetGroupKey(reference)).isEqualTo("images/owner/upload");
+        }
+        assertThat(MediaAccessPaths.managedImageSetGroupKey("/api/media/public?key=images%2Fowner%2Fupload%2Foriginal&unused=true"))
+                .isEqualTo("images/owner/upload");
+        assertThat(MediaAccessPaths.managedImageSetGroupKey("https://outside.invalid/image.webp")).isEmpty();
+        assertThat(MediaAccessPaths.managedImageSetGroupKey("/api/media/public?key=%broken")).isEmpty();
+        assertThat(MediaAccessPaths.managedImageSetGroupKey(null)).isEmpty();
     }
 }

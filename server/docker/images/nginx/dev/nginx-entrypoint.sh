@@ -75,6 +75,7 @@ if command -v inotifywait >/dev/null 2>&1; then
     done &
 fi
 
+/scripts/runtime-status.sh &
 if [[ -z "$WAIT_FOR" ]]; then
     nginx -g 'daemon off;';
 else

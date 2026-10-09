@@ -6,12 +6,12 @@ import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
-import com.raxim.myscoutee.domain.affinity.api.AffinityScores;
-import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
-import com.raxim.myscoutee.domain.assets.api.Assets;
+import com.raxim.myscoutee.domain.affinity.api.UserAffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.UserAffinityChanges;
+import com.raxim.myscoutee.domain.assets.api.TicketReads;
 import com.raxim.myscoutee.domain.content.api.ContentRegistration;
-import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
-import com.raxim.myscoutee.domain.payments.api.Affiliates;
+import com.raxim.myscoutee.domain.email.api.UserActivityScheduling;
+import com.raxim.myscoutee.domain.payments.api.AffiliateRegistrations;
 import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
 import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
@@ -49,7 +49,8 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentity
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.access.api.RegionSecurity;
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
-import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.EventHomeReads.Event;
+import static com.raxim.myscoutee.domain.events.api.EventOwnership.Event.STATUS_ACTIVE;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
 import com.raxim.myscoutee.domain.events.api.FeedbackDirectory.Answer;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
@@ -93,9 +94,8 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponse
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventHomeReads;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
-import com.raxim.myscoutee.domain.assets.api.AssetOwnership;
 import com.raxim.myscoutee.domain.events.api.FeedbackDirectory;
 import com.raxim.myscoutee.domain.content.api.UserFeedback;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
@@ -110,7 +110,10 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
-public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation {
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
+        com.raxim.myscoutee.domain.accounts.api.ProfileReadState,
+        com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards,
+        com.raxim.myscoutee.domain.accounts.api.LocationEligibility {
     @org.springframework.beans.factory.annotation.Autowired
     private JobAudience jobGroupScope;
 
@@ -226,27 +229,27 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
+    @org.springframework.beans.factory.annotation.Autowired private ProfileStatusWork profileStatusWork;
     private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
     private final RatingDirectory userRatesRepository;
     private final com.raxim.myscoutee.domain.chat.api.ChatReview chatReview;
-    private final EventOwnership activityEventsRepository;
+    private final EventHomeReads activityEventsRepository;
     private final MemberDirectory activityMembersRepository;
-    private final AssetOwnership assetsRepository;
     private final FeedbackDirectory eventFeedbackAnswersRepository;
     private final UserFeedback userFeedbackSubmissionsRepository;
     private final UserReports userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
-    private final ScheduledMessages scheduledMessageTaskService;
+    private final UserActivityScheduling scheduledMessageTaskService;
     private final CountryDirectory countryPartitionService;
     private final RegionSecurity regionSecurityProperties;
-    private final AffinityScores absoluteAffinityService;
-    private final AffinityStatusChanges affinityRecomputeTaskService;
+    private final UserAffinityScores absoluteAffinityService;
+    private final UserAffinityChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final AdministratorClassification adminMenuCounterService;
     private final AccessPermissions accessControlService;
-    private final Assets assetsService;
-    private final Affiliates affiliateService;
+    private final TicketReads assetsService;
+    private final AffiliateRegistrations affiliateService;
     private NotificationJobs notificationRuleRegistryService;
     private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
 
@@ -269,23 +272,22 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             UserFriendshipsRepository userFriendshipsRepository,
             RatingDirectory userRatesRepository,
             com.raxim.myscoutee.domain.chat.api.ChatReview chatReview,
-            EventOwnership activityEventsRepository,
+            EventHomeReads activityEventsRepository,
             MemberDirectory activityMembersRepository,
-            AssetOwnership assetsRepository,
             FeedbackDirectory eventFeedbackAnswersRepository,
             UserFeedback userFeedbackSubmissionsRepository,
             UserReports userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
-            ScheduledMessages scheduledMessageTaskService,
+            UserActivityScheduling scheduledMessageTaskService,
             CountryDirectory countryPartitionService,
             RegionSecurity regionSecurityProperties,
-            AffinityScores absoluteAffinityService,
-            AffinityStatusChanges affinityRecomputeTaskService,
+            UserAffinityScores absoluteAffinityService,
+            UserAffinityChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             AdministratorClassification adminMenuCounterService,
             AccessPermissions accessControlService,
-            Assets assetsService,
-            Affiliates affiliateService,
+            TicketReads assetsService,
+            AffiliateRegistrations affiliateService,
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
@@ -297,7 +299,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.chatReview = chatReview;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
-        this.assetsRepository = assetsRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
@@ -590,6 +591,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 0,
                 OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE,
                 "upcoming");
+        var following = OrganizerFollowingService.state(user);
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
                 safeText(user.getProfileStatus()),
@@ -605,7 +607,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                         .toList(),
                 buildRealtimeCursor(user, counters),
                 Instant.now().toString(),
-                OrganizerFollowingService.state(user),
+                new com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFollowingDto(
+                        following.organizerIds(), following.eventCount(), following.nextExpiryAtIso()),
                 contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
                 user.getFeedCounters() == null ? com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord.empty() : user.getFeedCounters(),
                 savedPaymentMethods != null && savedPaymentMethods.cardsAvailable(),
@@ -880,12 +883,11 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         user.setAccountPurgePendingCounterTracked(true);
-        usersRepository.save(user);
+        profileStatusWork.save(user);
         if (newlyTrackedForPurge) {
             adjustAccountPurgePendingCount(user.getUserId(), 1);
         }
         evictUserReadCaches(resolvedUserId);
-        affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
         adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
         return new UserSubmitActionResponseDto(true, null);
@@ -1270,6 +1272,33 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 .toList();
     }
 
+    @Override public com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto resolveFeedbackSession(String requestedUserId) {
+        return com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(resolveCurrentUser(requestedUserId));
+    }
+
+    @Override public com.raxim.myscoutee.domain.accounts.dto.RatingSessionDto resolveRatingSession(String requestedUserId) {
+        var user = resolveCurrentUser(requestedUserId);
+        if (user == null) return null;
+        var location = user.getLocationCoordinates();
+        return new com.raxim.myscoutee.domain.accounts.dto.RatingSessionDto(
+                new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
+                        normalizeId(user.getUserId()), user.getAccountUserId(), user.getWorkspaceGroupId()),
+                location == null ? null : new LocationCoordinatesDto(location.latitude(), location.longitude()),
+                user.getActivities() == null ? null : user.getActivities().game());
+    }
+
+    @Override public List<UserDto> presentProfiles(Collection<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) return List.of();
+        return usersRepository.findByUserIdIn(userIds).stream().filter(Objects::nonNull)
+                .map(this::toUserDto).toList();
+    }
+
+    @Override public List<UserDto> presentGameCards(Collection<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) return List.of();
+        return usersRepository.findByUserIdIn(userIds).stream().filter(Objects::nonNull)
+                .map(this::toGameCardUserDto).toList();
+    }
+
     public List<UserDto> queryUsersByIds(Collection<String> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             return List.of();
@@ -1444,6 +1473,19 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return null;
         }
 
+        if (authentication != null
+                && authentication.getPrincipal() instanceof com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor actor) {
+            if (!authentication.isAuthenticated()) return null;
+            var identity = actor.getProfileIdentity();
+            if (identity == null || !java.util.Objects.equals(actor.getUserId(), identity.userId())) return null;
+            Users user = findUser(normalizeId(actor.getUserId()));
+            // The signed selection is a constraint, not permission to switch to a
+            // requested profile or to keep a profile after its ownership changes.
+            return user != null
+                    && java.util.Objects.equals(identity.accountUserId(), user.getAccountUserId())
+                    && java.util.Objects.equals(identity.workspaceGroupId(), user.getWorkspaceGroupId()) ? user : null;
+        }
+
         String normalizedRequestedUserId = normalizeId(requestedUserId);
         if (StringUtils.hasText(normalizedRequestedUserId)) {
             return findUser(normalizedRequestedUserId);
@@ -1455,6 +1497,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     public String resolveSelectedUserId(String requestedUserId) {
         Users currentUser = resolveCurrentUser(requestedUserId);
         return currentUser == null ? null : normalizeId(currentUser.getId());
+    }
+
+    @Override public com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto resolveSelectedIdentity(String requestedUserId) {
+        Users currentUser = resolveCurrentUser(requestedUserId);
+        return currentUser == null ? null : new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
+                normalizeId(currentUser.getId()), currentUser.getAccountUserId(), currentUser.getWorkspaceGroupId());
     }
 
     private Users findUser(String userId) {
@@ -1810,6 +1858,18 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     @Override public boolean activityRateVisible(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
         return isActivityRateVisibleUser((Users) profile);
+    }
+
+    @Override
+    public List<com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto> queryRatingProfiles(java.util.Collection<String> userIds) {
+        return usersRepository.findByUserIdIn(userIds).stream().map(user -> {
+            if (user == null) return (com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto) null;
+            var coordinates = user.getLocationCoordinates();
+            return new com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto(user.getId(), user.getUserId(),
+                    user.getWorkspaceGroupId(), coordinates == null ? null
+                            : new LocationCoordinatesDto(coordinates.latitude(), coordinates.longitude()),
+                    activityRateVisible(user));
+        }).toList();
     }
     public boolean isActivityRateVisibleUser(Users user) {
         return isUsableUserDocument(user)
@@ -2600,7 +2660,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private boolean isReportableEventOrganizer(Event eventRecord, String userId) {
         String normalizedUserId = normalizeId(userId);
         if (eventRecord == null
-                || !Event.STATUS_ACTIVE.equals(eventRecord.getStatus())
+                || !STATUS_ACTIVE.equals(eventRecord.getStatus())
                 || !StringUtils.hasText(normalizedUserId)) {
             return false;
         }

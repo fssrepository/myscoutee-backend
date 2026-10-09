@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.firebase.auth.FirebaseToken;
 
-public class FirebaseCredential {
+public class FirebaseCredential implements com.raxim.myscoutee.domain.accounts.api.FirebaseCredentialMarker {
     private static final String FIREBASE = "firebase";
     private static final String IDENTITES = "identities";
     private static final String GOOGLE_COM = "google.com";

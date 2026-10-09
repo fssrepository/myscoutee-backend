@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.localization.api.Translations;
+import com.raxim.myscoutee.domain.localization.api.MessageTranslations;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingSlotOverrideDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.SubEventDefinitionDto;
-import com.raxim.myscoutee.domain.events.api.EventOwnership;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
 import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 
 /**
@@ -49,14 +49,14 @@ import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.payments.api.ServiceSlotPricing, com.raxim.myscoutee.domain.payments.api.CheckoutPricing {
     public static final String INVALID_PROMO_CODE_MESSAGE_KEY = "event.checkout.promo.invalid";
 
-    private final EventOwnership activityEventsRepository;
-    private final Translations translationService;
+    private final EventOwnershipReads activityEventsRepository;
+    private final MessageTranslations translationService;
     private final MemberDirectory activityMembersRepository;
 
     public EventCheckoutPricingService(
-            EventOwnership activityEventsRepository,
+            EventOwnershipReads activityEventsRepository,
             MemberDirectory activityMembersRepository,
-            Translations translationService) {
+            MessageTranslations translationService) {
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.translationService = translationService;

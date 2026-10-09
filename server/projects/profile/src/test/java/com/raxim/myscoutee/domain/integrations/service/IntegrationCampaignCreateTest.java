@@ -31,7 +31,7 @@ class IntegrationCampaignCreateTest {
     private final MongoTemplate mongo = mock(MongoTemplate.class);
     private final CampaignsService campaigns = mock(CampaignsService.class);
     private final IntegrationSyncService service = campaignAware(new IntegrationSyncService(mappings, mongo,
-            mock(AssetsService.class), mock(ActivitiesEventsService.class), mock(MediaStorageService.class), campaigns), mongo);
+            mock(AssetsService.class), mock(ActivitiesEventsService.class), mock(MediaStorageService.class), mock(com.raxim.myscoutee.domain.media.api.MediaCleanup.class), campaigns), mongo);
     private final String externalId = UUID.randomUUID().toString();
     private final IntegrationCampaignSyncItemDto item = new IntegrationCampaignSyncItemDto(externalId,
             "Build a useful tool", "Looking for collaborators", "business", "technology");

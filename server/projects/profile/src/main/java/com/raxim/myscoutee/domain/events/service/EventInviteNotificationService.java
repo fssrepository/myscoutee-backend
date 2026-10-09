@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
-import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
+import com.raxim.myscoutee.domain.notifications.api.EventInvitationNotifications;
 
 @Service
 public class EventInviteNotificationService {
@@ -22,11 +22,11 @@ public class EventInviteNotificationService {
     private static final String DEFAULT_CLICK_URL = "/game";
 
     private final NotificationDelivery notificationOutboxService;
-    private final NotificationInbox userNotificationService;
+    private final EventInvitationNotifications userNotificationService;
 
     public EventInviteNotificationService(
             NotificationDelivery notificationOutboxService,
-            NotificationInbox userNotificationService) {
+            EventInvitationNotifications userNotificationService) {
         this.notificationOutboxService = notificationOutboxService;
         this.userNotificationService = userNotificationService;
     }

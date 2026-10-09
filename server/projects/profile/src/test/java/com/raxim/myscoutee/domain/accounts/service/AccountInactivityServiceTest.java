@@ -19,7 +19,7 @@ class AccountInactivityServiceTest {
     private final UsersRepository users = mock(UsersRepository.class);
     private final UserSessionActionsRepository sessions = mock(UserSessionActionsRepository.class);
     private final AffinityStatusChanges affinity = mock(AffinityStatusChanges.class);
-    private final AccountInactivityService service = new AccountInactivityService(users, sessions, affinity);
+    private final AccountInactivityService service = new AccountInactivityService(users, sessions, new ProfileStatusWork(users, mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinity, null));
     private final Instant now = Instant.parse("2026-10-07T00:00:00Z");
 
     @Test void recentSessionActivityReschedulesWithoutSavingOrRecomputing() {
@@ -37,11 +37,13 @@ class AccountInactivityServiceTest {
 
     @Test void expiredProfileIsSavedBeforeAffinityIsEnqueued() {
         var user = profile();
+        when(users.save(user)).thenReturn(user);
         var result = service.inactivate("user", 30, now);
         assertThat(result.status()).isEqualTo("completed");
         assertThat(result.count()).isEqualTo(1);
         assertThat(user.getStatus()).isEqualTo("I");
         assertThat(user.getProfileStatus()).isEqualTo("inactive");
+        assertThat(user.getProfileStatusWork()).isNotBlank();
         var order = inOrder(users, affinity);
         order.verify(users).save(user);
         order.verify(affinity).enqueueAdminStatusChanged("user");

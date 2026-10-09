@@ -40,10 +40,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.MessagingErrorCode;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.MulticastMessage;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.PushMessage;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.PushMulticast;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
@@ -55,7 +53,7 @@ import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -113,7 +111,7 @@ class BackendNotificationDeliveryE2ETest {
     @Autowired
     private ConfigProperties configProperties;
     @Autowired
-    private RecordingFirebaseMessagingGateway firebaseGateway;
+    private RecordingFirebasePushDelivery firebaseGateway;
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
@@ -577,33 +575,31 @@ class BackendNotificationDeliveryE2ETest {
 
         @Bean
         @Primary
-        RecordingFirebaseMessagingGateway recordingFirebaseMessagingGateway() {
-            return new RecordingFirebaseMessagingGateway();
+        RecordingFirebasePushDelivery recordingFirebasePushDelivery() {
+            return new RecordingFirebasePushDelivery();
         }
     }
 
-    static class RecordingFirebaseMessagingGateway implements FirebaseMessagingGateway {
+    static class RecordingFirebasePushDelivery implements FirebasePushDelivery {
         private final CopyOnWriteArrayList<List<String>> multicastCalls = new CopyOnWriteArrayList<>();
         private final CopyOnWriteArrayList<List<String>> directCalls = new CopyOnWriteArrayList<>();
         private final CopyOnWriteArrayList<String> invalidTokens = new CopyOnWriteArrayList<>();
         private final AtomicInteger topicCalls = new AtomicInteger();
 
         @Override
-        public void send(Message message) throws FirebaseMessagingException {
+        public void send(PushMessage message) {
             topicCalls.incrementAndGet();
         }
 
         @Override
-        public FirebaseMessagingGateway.FirebaseBatchSendResult sendAll(List<Message> messages, List<String> tokens)
-                throws FirebaseMessagingException {
+        public FirebasePushDelivery.FirebaseBatchSendResult sendAll(List<PushMessage> messages, List<String> tokens) {
             List<String> copiedTokens = List.copyOf(tokens == null ? List.of() : tokens);
             directCalls.add(copiedTokens);
             return batchResult(copiedTokens);
         }
 
         @Override
-        public FirebaseMessagingGateway.FirebaseBatchSendResult sendMulticast(MulticastMessage message, List<String> tokens)
-                throws FirebaseMessagingException {
+        public FirebasePushDelivery.FirebaseBatchSendResult sendMulticast(PushMulticast message, List<String> tokens) {
             List<String> copiedTokens = List.copyOf(tokens == null ? List.of() : tokens);
             multicastCalls.add(copiedTokens);
             return batchResult(copiedTokens);
@@ -641,20 +637,20 @@ class BackendNotificationDeliveryE2ETest {
             return topicCalls.get();
         }
 
-        private FirebaseMessagingGateway.FirebaseBatchSendResult batchResult(List<String> tokens) {
+        private FirebasePushDelivery.FirebaseBatchSendResult batchResult(List<String> tokens) {
             int success = 0;
             int failure = 0;
-            List<FirebaseMessagingGateway.FirebaseTokenSendResult> responses = new ArrayList<>();
+            List<FirebasePushDelivery.FirebaseTokenSendResult> responses = new ArrayList<>();
             for (String token : tokens == null ? List.<String>of() : tokens) {
                 if (invalidTokens.contains(token)) {
                     failure += 1;
-                    responses.add(new FirebaseMessagingGateway.FirebaseTokenSendResult(false, MessagingErrorCode.INVALID_ARGUMENT));
+                    responses.add(new FirebasePushDelivery.FirebaseTokenSendResult(false, "INVALID_ARGUMENT"));
                 } else {
                     success += 1;
-                    responses.add(FirebaseMessagingGateway.FirebaseTokenSendResult.success());
+                    responses.add(FirebasePushDelivery.FirebaseTokenSendResult.success());
                 }
             }
-            return new FirebaseMessagingGateway.FirebaseBatchSendResult(success, failure, responses);
+            return new FirebasePushDelivery.FirebaseBatchSendResult(success, failure, responses);
         }
     }
 }

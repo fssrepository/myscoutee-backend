@@ -274,6 +274,46 @@ class AffinityCalculationServiceTest {
         org.mockito.Mockito.verify(affinityConfigsRepository, org.mockito.Mockito.never()).findFirstByKeyAndActiveTrueOrderByVersionDesc("myscoutee-work");
     }
 
+    @Test
+    void storedScoringDtoKeepsNativeCalculationAndExcludesPrivateAccountState() {
+        var left = user("u1", List.of("hu", "en"), "athletic");
+        var right = user("u2", List.of("en"), "athletic");
+        left.setEmail("private-account@example.invalid");
+        left.setPaymentSpentTotals(Map.of("EUR", 999d));
+        left.setProfileDetails(List.of(new Users.ProfileDetailGroupRecord("Preferences",
+                List.of(new Users.ProfileDetailRowRecord("interest", "music", "Public", List.of("music"))))));
+        left.setImpressions(new Users.UserImpressionsRecord(
+                new Users.UserImpressionsSectionRecord(1, 8.5d, 10, 3, 2, 0, List.of("calm"), List.of(),
+                        List.of(new Users.UserPersonalityTraitRecord("kind", "Kind", 80, 4, "2026-10-08T00:00:00Z")), List.of()), null));
+        var nativeService = service(AffinityConfig.defaults(), List.of(), Map.of("u1", left, "u2", right));
+        var nativeRate = singleRate("native", "u1", "u2", 7);
+        nativeService.applyAffinity(List.of(nativeRate));
+        var mapper = new com.raxim.myscoutee.common.config.JsonConfig().objectMapper();
+        var views = new java.util.LinkedHashMap<String, com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto>();
+        for (var user : List.of(left, right)) {
+            var value = com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user);
+            String json = mapper.writeValueAsString(value);
+            assertThat(json).doesNotContain("private-account", "paymentSpentTotals", "firebaseToken", "integrationAccess");
+            var wire = mapper.readValue(json, com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.class);
+            assertThat(wire).isEqualTo(value);
+            views.put(wire.userId(), wire);
+        }
+        var wireProfiles = new com.raxim.myscoutee.domain.accounts.api.ScoringProfiles() {
+            public Optional<com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto> findByUserId(String id) { return Optional.ofNullable(views.get(id)); }
+            public List<com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto> findByUserIdIn(Collection<String> ids) {
+                return ids.stream().map(views::get).filter(java.util.Objects::nonNull).toList();
+            }
+        };
+        var wireService = new AffinityCalculationService(affinityConfigsRepository, wireProfiles, userRatesRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(communityGroups));
+        var wireRate = singleRate("wire", "u1", "u2", 7);
+        wireService.applyAffinity(List.of(wireRate));
+        assertThat(wireRate.getAffinityScore()).isEqualTo(nativeRate.getAffinityScore());
+        assertThat(wireRate.getEvidenceConfidence()).isEqualTo(nativeRate.getEvidenceConfidence());
+        assertThat(wireRate.getMutuallyRated()).isEqualTo(nativeRate.getMutuallyRated());
+    }
+
     private AffinityCalculationService service(
             AffinityConfig config,
             List<UserRate> existingRates,

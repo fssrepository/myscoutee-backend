@@ -75,6 +75,12 @@ class UserRatesServiceTest {
     @Mock
     private MongoCollection<Document> friendshipCollection;
 
+    private com.raxim.myscoutee.domain.accounts.api.RatingProfiles ratingProfiles() {
+        org.springframework.test.util.ReflectionTestUtils.setField(homeUserProfileService, "usersRepository", usersRepository);
+        lenient().doCallRealMethod().when(homeUserProfileService).queryRatingProfiles(anyCollection());
+        return homeUserProfileService;
+    }
+
     @Test
     void syncEnqueuesSingleRatingForRelatedUserAfterPersistence() {
         Users owner = user("u1", "Owner", List.of("music"));
@@ -303,8 +309,8 @@ class UserRatesServiceTest {
         UserRate record = singleRate("meeting", "u1", "u2", given);
         record.setMet(met);
         record.setScoreReceived(received);
-        UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
+        UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, ratingProfiles(),
+                homeUserProfileService, homeUserProfileService, homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
                 userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
@@ -318,8 +324,8 @@ class UserRatesServiceTest {
         record.setScoreReceived(8);
         // Qualification comes from the ratings, not a potentially stale derived flag.
         record.setMutuallyRated(false);
-        UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
+        UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, ratingProfiles(),
+                homeUserProfileService, homeUserProfileService, homeUserProfileService, org.mockito.Mockito.mock(AffinityCalculationService.class),
                 userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
         when(userRatesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(record));
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
@@ -342,8 +348,8 @@ class UserRatesServiceTest {
         when(userExperienceProfilesRepository.findByUserIdIn(anyCollection())).thenReturn(List.of());
         AffinityCalculationService affinity = new AffinityCalculationService(affinityConfigsRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), userRatesRepository, new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
-        UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
+        UserRatesService service = campaignAware(new UserRatesService(userRatesRepository, ratingProfiles(),
+                homeUserProfileService, homeUserProfileService, homeUserProfileService, affinity, userAffinityEdgeService, mongoTemplate, adminTelemetryService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService.class)), mongoTemplate);
         when(mongoTemplate.getCollection("userFriendships")).thenReturn(friendshipCollection);
         service.projectRecordedMeetings(java.util.Set.of("u1", "u2"));
         UserRate saved = singleSavedRate();
@@ -828,8 +834,8 @@ class UserRatesServiceTest {
                 new com.raxim.myscoutee.domain.accounts.service.ExperienceDirectoryService(userExperienceProfilesRepository), new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
         return campaignAware(new UserRatesService(
                 userRatesRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                homeUserProfileService,
+                ratingProfiles(),
+                homeUserProfileService, homeUserProfileService, homeUserProfileService,
                 affinityCalculationService,
                 userAffinityEdgeService,
                 mongoTemplate,
@@ -847,8 +853,8 @@ class UserRatesServiceTest {
         stubUsers(usersById);
         return campaignAware(new UserRatesService(
                 userRatesRepository,
-                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
-                homeUserProfileService,
+                ratingProfiles(),
+                homeUserProfileService, homeUserProfileService, homeUserProfileService,
                 new AffinityCalculationService(
                         affinityConfigsRepository,
                         new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
@@ -860,6 +866,7 @@ class UserRatesServiceTest {
     }
 
     private void stubUsers(Map<String, Users> usersById) {
+        lenient().when(homeUserProfileService.resolveRatingSession(org.mockito.ArgumentMatchers.nullable(String.class))).thenCallRealMethod();
         when(homeUserProfileService.resolveCurrentUser(anyString())).thenAnswer(invocation ->
                 usersById.get(invocation.getArgument(0)));
         lenient().when(usersRepository.findByUserId(anyString())).thenAnswer(invocation ->

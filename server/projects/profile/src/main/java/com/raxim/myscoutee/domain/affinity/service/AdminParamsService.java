@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.administration.api.AdminAudience;
 
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
             new SectionDefinition("notifications", "Notifications"),
             new SectionDefinition("jobs", "Jobs"));
 
-    private final AdministrativeAccess admins;
+    private final AdministrativeActors admins;
     private final AffinityConfigsRepository affinityConfigsRepository;
     private final ObjectMapper objectMapper;
     private final NotificationDelivery notificationOutboxService;
@@ -58,7 +58,7 @@ public class AdminParamsService implements com.raxim.myscoutee.domain.affinity.a
     private final OperationalTelemetry adminTelemetryService;
 
     public AdminParamsService(
-            AdministrativeAccess admins,
+            AdministrativeActors admins,
             AffinityConfigsRepository affinityConfigsRepository,
             ObjectMapper objectMapper,
             NotificationDelivery notificationOutboxService,

@@ -14,10 +14,13 @@ public class AccountAffinityProjectionService implements AccountAffinityProjecti
     private final UsersRepository users;
     @org.springframework.beans.factory.annotation.Autowired private JobAudience audience;
     public AccountAffinityProjectionService(MongoTemplate mongo, UsersRepository users) { this.mongo = mongo; this.users = users; }
-    @Override public boolean updateAffinity(WorkspaceProfile profile, double affinity) {
-        if (profile == null || profile.getId() == null || profile.getId().trim().isEmpty()) return false;
-        var result = mongo.updateFirst(Query.query(Criteria.where("userId").is(profile.getId().trim())), new Update().set("affinity", affinity), Users.class);
-        if (result.getMatchedCount() <= 0) return false;
+    @Override public boolean updateAffinity(String userId, double affinity) {
+        if (userId == null || userId.trim().isEmpty()) return false;
+        var result = mongo.updateFirst(Query.query(Criteria.where("userId").is(userId.trim())), new Update().set("affinity", affinity), Users.class);
+        return result.getMatchedCount() > 0;
+    }
+    public boolean updateAffinity(WorkspaceProfile profile, double affinity) {
+        if (profile == null || !updateAffinity(profile.getId(), affinity)) return false;
         ((Users) profile).setAffinity(affinity);
         return true;
     }

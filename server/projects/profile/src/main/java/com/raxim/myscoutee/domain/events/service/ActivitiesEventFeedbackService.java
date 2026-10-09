@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.api.ProfilePresentation;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
@@ -30,7 +30,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
 import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackAnswerDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackCardDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackQueryDto;
@@ -52,7 +52,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
-import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper.EventFeedbackStatRecord;
@@ -66,12 +66,14 @@ public class ActivitiesEventFeedbackService {
     private static final DateTimeFormatter EVENT_FEEDBACK_LABEL_FORMATTER =
             DateTimeFormatter.ofPattern("EEE, MMM d HH:mm", Locale.US).withZone(ZoneOffset.UTC);
 
-    private final ProfilePresentation homeUserProfileService;
+    private final SelectedProfile homeUserProfileService;
+    private final com.raxim.myscoutee.domain.accounts.api.FeedbackSession feedbackSession;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMingleRoundsRepository mingleRoundsRepository;
+    @org.springframework.beans.factory.annotation.Autowired private FeedbackCounterWork counterWork;
     private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
     private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
-    private final ProfileDirectory usersRepository;
+    private final ProfileSummaries usersRepository;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final AccessPermissions accessControlService;
@@ -80,12 +82,13 @@ public class ActivitiesEventFeedbackService {
     private final NotificationDelivery notificationOutboxService;
 
     public ActivitiesEventFeedbackService(
-            ProfilePresentation homeUserProfileService,
+            SelectedProfile homeUserProfileService,
+            com.raxim.myscoutee.domain.accounts.api.FeedbackSession feedbackSession,
             ActivityEventsRepository activityEventsRepository,
             ActivityMingleRoundsRepository mingleRoundsRepository,
             EventFeedbackStatesRepository eventFeedbackStatesRepository,
             EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
-            ProfileDirectory usersRepository,
+            ProfileSummaries usersRepository,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             AccessPermissions accessControlService,
@@ -93,6 +96,7 @@ public class ActivitiesEventFeedbackService {
             EventFeedbackStatMapper eventFeedbackStatMapper,
             NotificationDelivery notificationOutboxService) {
         this.homeUserProfileService = homeUserProfileService;
+        this.feedbackSession = feedbackSession;
         this.activityEventsRepository = activityEventsRepository;
         this.mingleRoundsRepository = mingleRoundsRepository;
         this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
@@ -123,7 +127,8 @@ public class ActivitiesEventFeedbackService {
     }
 
     public EventFeedbackPageResultDto loadPage(EventFeedbackPageQueryDto request) {
-        WorkspaceProfile activeUser = homeUserProfileService.resolveCurrentUser(request == null ? null : request.userId());
+        var session = feedbackSession.resolveFeedbackSession(request == null ? null : request.userId());
+        ProfileSummary activeUser = session == null ? null : session.profile();
         String userId = normalizeId(activeUser == null ? null : activeUser.getUserId());
         String filter = normalizeFeedbackFilter(request == null ? null : request.filter());
         if (!StringUtils.hasText(userId) || activeUser == null) {
@@ -135,7 +140,7 @@ public class ActivitiesEventFeedbackService {
         List<ActivityEvent> organizerEvents = queryOrganizerFeedbackEvents(userId).stream()
             .filter(event -> request == null || !StringUtils.hasText(request.campaignId()) || request.campaignId().equals(event.getCampaignId())).toList();
         Map<String, Set<String>> minglePeers = completedMinglePeers(userId, feedbackEvents);
-        Map<String, WorkspaceProfile> usersById = buildFeedbackUsersById(activeUser, feedbackEvents, organizerEvents, minglePeers);
+        Map<String, ProfileSummary> usersById = buildFeedbackUsersById(activeUser, feedbackEvents, organizerEvents, minglePeers);
         EventFeedbackPageStateSnapshotDto state = pageStateSnapshot(queryStateDtos(userId));
         List<EventFeedbackReceivedEventDto> receivedEvents = queryReceivedEventsByOwnedEventIds(userId, eventSourceIds(organizerEvents));
         Map<String, List<EventFeedbackReceivedEntryDto>> receivedByEventId = receivedEntriesByEventId(receivedEvents);
@@ -155,11 +160,12 @@ public class ActivitiesEventFeedbackService {
                 List.copyOf(organizerItems),
                 List.copyOf(receivedEvents),
                 state,
-                counts(activeUser));
+                counts(session == null ? null : session.feedback()));
     }
 
     public EventFeedbackStatDto loadStatById(EventFeedbackStatQueryDto request) {
-        WorkspaceProfile activeUser = homeUserProfileService.resolveCurrentUser(request == null ? null : request.userId());
+        var session = feedbackSession.resolveFeedbackSession(request == null ? null : request.userId());
+        ProfileSummary activeUser = session == null ? null : session.profile();
         String userId = normalizeId(activeUser == null ? null : activeUser.getUserId());
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || activeUser == null || !StringUtils.hasText(eventId)) {
@@ -173,7 +179,8 @@ public class ActivitiesEventFeedbackService {
     }
 
     public EventFeedbackDetailDto loadDetail(EventFeedbackQueryDto request) {
-        WorkspaceProfile activeUser = homeUserProfileService.resolveCurrentUser(request == null ? null : request.userId());
+        var session = feedbackSession.resolveFeedbackSession(request == null ? null : request.userId());
+        ProfileSummary activeUser = session == null ? null : session.profile();
         String userId = normalizeId(activeUser == null ? null : activeUser.getUserId());
         String eventId = normalizeId(request == null ? null : request.eventId());
         if (!StringUtils.hasText(userId) || activeUser == null || !StringUtils.hasText(eventId)) {
@@ -182,13 +189,13 @@ public class ActivitiesEventFeedbackService {
         return loadDetailForUser(activeUser, userId, eventId);
     }
 
-    private EventFeedbackDetailDto loadDetailForUser(WorkspaceProfile activeUser, String userId, String eventId) {
+    private EventFeedbackDetailDto loadDetailForUser(ProfileSummary activeUser, String userId, String eventId) {
         ActivityEvent record = findFeedbackEventForDetail(userId, eventId);
         if (record == null) {
             return emptyDetailResult(eventId);
         }
         Map<String, Set<String>> minglePeers = completedMinglePeers(userId, List.of(record));
-        Map<String, WorkspaceProfile> usersById = buildFeedbackUsersById(activeUser, List.of(record), List.of(), minglePeers);
+        Map<String, ProfileSummary> usersById = buildFeedbackUsersById(activeUser, List.of(record), List.of(), minglePeers);
         EventFeedbackState state = eventFeedbackStatesRepository
                 .findByViewerUserIdAndEventId(userId, eventId)
                 .orElse(null);
@@ -223,7 +230,8 @@ public class ActivitiesEventFeedbackService {
         if (!accessControlService.canCurrentActorSubmitEventFeedback(userId, eventId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to submit feedback for this event.");
         }
-        WorkspaceProfile activeUser = homeUserProfileService.resolveCurrentUser(userId);
+        var session = feedbackSession.resolveFeedbackSession(userId);
+        ProfileSummary activeUser = session == null ? null : session.profile();
         ActivityEvent feedbackEvent = findFeedbackEventForDetail(userId, eventId);
         if (activeUser == null || feedbackEvent == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The feedback event is not available for this user.");
@@ -254,7 +262,7 @@ public class ActivitiesEventFeedbackService {
         EventFeedbackState previousState = eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId).orElse(null);
         boolean wasSubmitted = StringUtils.hasText(previousState == null ? null : previousState.getSubmittedAtIso());
         boolean wasRemoved = Boolean.TRUE.equals(previousState == null ? null : previousState.getRemoved());
-        EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
+        EventFeedbackState state = counterWork.finish(previousState == null ? createState(userId, eventId, nowIso) : previousState);
         state.setRemoved(false);
         state.setSubmittedAtIso(nowIso);
         state.setRemovedAtIso(null);
@@ -296,7 +304,9 @@ public class ActivitiesEventFeedbackService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "At least one feedback answer is required.");
         }
         eventFeedbackAnswersRepository.saveAll(answers);
-        eventFeedbackStatesRepository.save(state);
+        counterWork.prepareTransition(state, com.raxim.myscoutee.domain.accounts.dto.FeedbackOwnersDto.from(feedbackEvent),
+                wasSubmitted, wasRemoved, true, false);
+        counterWork.finish(eventFeedbackStatesRepository.save(state));
         LinkedHashSet<String> notificationTargetUserIds = new LinkedHashSet<>(changedTargetUserIds);
         notificationTargetUserIds.retainAll(allowedTargetUserIds);
         notificationTargetUserIds.remove(userId);
@@ -310,13 +320,6 @@ public class ActivitiesEventFeedbackService {
             affinityRecomputeTaskService.enqueueUserChanged(targetUserId);
         }
         adminTelemetryService.record("event.feedback.submitted", "events", eventId, userId);
-        userActivityCountersService.applyFeedbackStateTransition(
-                feedbackEvent,
-                userId,
-                wasSubmitted,
-                wasRemoved,
-                true,
-                false);
         return loadDetailForUser(activeUser, userId, eventId);
     }
 
@@ -398,19 +401,14 @@ public class ActivitiesEventFeedbackService {
         if (feedbackEvent == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The feedback event is not available for this user.");
         }
-        EventFeedbackState state = findOrCreateState(userId, eventId, nowIso);
+        EventFeedbackState state = counterWork.finish(previousState == null ? createState(userId, eventId, nowIso) : previousState);
         state.setRemoved(removed);
         state.setRemovedAtIso(removed ? nowIso : null);
         state.setUpdatedDate(nowIso);
         state.setUpdatedUser(userId);
-        eventFeedbackStatesRepository.save(state);
-        userActivityCountersService.applyFeedbackStateTransition(
-                feedbackEvent,
-                userId,
-                wasSubmitted,
-                wasRemoved,
-                StringUtils.hasText(state.getSubmittedAtIso()),
-                removed);
+        counterWork.prepareTransition(state, com.raxim.myscoutee.domain.accounts.dto.FeedbackOwnersDto.from(feedbackEvent),
+                wasSubmitted, wasRemoved, StringUtils.hasText(state.getSubmittedAtIso()), removed);
+        counterWork.finish(eventFeedbackStatesRepository.save(state));
     }
 
     private List<EventFeedbackStateDto> queryStateDtos(String userId) {
@@ -671,8 +669,8 @@ public class ActivitiesEventFeedbackService {
         return peers;
     }
 
-    private Map<String, WorkspaceProfile> buildFeedbackUsersById(
-            WorkspaceProfile activeUser,
+    private Map<String, ProfileSummary> buildFeedbackUsersById(
+            ProfileSummary activeUser,
             Collection<ActivityEvent> feedbackEvents,
             Collection<ActivityEvent> organizerEvents,
             Map<String, Set<String>> minglePeers) {
@@ -684,9 +682,9 @@ public class ActivitiesEventFeedbackService {
         collectEventUserIds(userIds, feedbackEvents);
         collectEventUserIds(userIds, organizerEvents);
         minglePeers.values().forEach(userIds::addAll);
-        Map<String, WorkspaceProfile> usersById = new LinkedHashMap<>();
+        Map<String, ProfileSummary> usersById = new LinkedHashMap<>();
         if (!userIds.isEmpty()) {
-            for (WorkspaceProfile user : usersRepository.findByUserIdIn(userIds)) {
+            for (ProfileSummary user : usersRepository.findByUserIdIn(userIds)) {
                 String userId = normalizeId(user == null ? null : user.getUserId());
                 if (StringUtils.hasText(userId)) {
                     usersById.put(userId, user);
@@ -724,8 +722,8 @@ public class ActivitiesEventFeedbackService {
 
     private Map<String, List<EventFeedbackCardDto>> feedbackCardsByEventId(
             Collection<ActivityEvent> records,
-            Map<String, WorkspaceProfile> usersById,
-            WorkspaceProfile activeUser,
+            Map<String, ProfileSummary> usersById,
+            ProfileSummary activeUser,
             Map<String, Set<String>> minglePeers) {
         Map<String, List<EventFeedbackCardDto>> cardsByEventId = new LinkedHashMap<>();
         for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
@@ -738,15 +736,15 @@ public class ActivitiesEventFeedbackService {
 
     private List<EventFeedbackCardDto> buildFeedbackCards(
             ActivityEvent record,
-            Map<String, WorkspaceProfile> usersById,
-            WorkspaceProfile activeUser,
+            Map<String, ProfileSummary> usersById,
+            ProfileSummary activeUser,
             Map<String, Set<String>> minglePeers) {
         String eventId = normalizeId(record == null ? null : record.getSourceId());
         if (!StringUtils.hasText(eventId) || !isFeedbackUnlocked(record)) {
             return List.of();
         }
         String activeUserId = normalizeId(activeUser == null ? null : activeUser.getUserId());
-        WorkspaceProfile host = feedbackHostUser(record, usersById, activeUser);
+        ProfileSummary host = feedbackHostUser(record, usersById, activeUser);
         String hostId = normalizeId(host == null ? null : host.getUserId());
         if (!StringUtils.hasText(hostId) || host == null) {
             return List.of();
@@ -777,7 +775,7 @@ public class ActivitiesEventFeedbackService {
                 "",
                 List.of()));
 
-        for (WorkspaceProfile attendee : feedbackAttendeesForEvent(record, usersById, activeUserId, hostId, minglePeers)) {
+        for (ProfileSummary attendee : feedbackAttendeesForEvent(record, usersById, activeUserId, hostId, minglePeers)) {
             String attendeeUserId = normalizeId(attendee.getUserId());
             if (!StringUtils.hasText(attendeeUserId)) {
                 continue;
@@ -809,7 +807,7 @@ public class ActivitiesEventFeedbackService {
         return cards;
     }
 
-    private WorkspaceProfile feedbackHostUser(ActivityEvent record, Map<String, WorkspaceProfile> usersById, WorkspaceProfile activeUser) {
+    private ProfileSummary feedbackHostUser(ActivityEvent record, Map<String, ProfileSummary> usersById, ProfileSummary activeUser) {
         String creatorUserId = normalizeId(record == null ? null : record.getCreatorUserId());
         if (StringUtils.hasText(creatorUserId) && usersById.containsKey(creatorUserId)) {
             return usersById.get(creatorUserId);
@@ -821,9 +819,9 @@ public class ActivitiesEventFeedbackService {
         return activeUser;
     }
 
-    private List<WorkspaceProfile> feedbackAttendeesForEvent(
+    private List<ProfileSummary> feedbackAttendeesForEvent(
             ActivityEvent record,
-            Map<String, WorkspaceProfile> usersById,
+            Map<String, ProfileSummary> usersById,
             String activeUserId,
             String hostId,
             Map<String, Set<String>> minglePeers) {
@@ -841,9 +839,9 @@ public class ActivitiesEventFeedbackService {
         }
         attendeeIds.remove(activeUserId);
         attendeeIds.remove(hostId);
-        List<WorkspaceProfile> attendees = new ArrayList<>();
+        List<ProfileSummary> attendees = new ArrayList<>();
         for (String attendeeId : attendeeIds) {
-            WorkspaceProfile attendee = usersById.get(attendeeId);
+            ProfileSummary attendee = usersById.get(attendeeId);
             if (attendee != null) {
                 attendees.add(attendee);
             }
@@ -1012,9 +1010,7 @@ public class ActivitiesEventFeedbackService {
         return ascending ? Long.compare(left, right) : Long.compare(right, left);
     }
 
-    private EventFeedbackPageCountsDto counts(WorkspaceProfile activeUser) {
-        WorkspaceProfile.ActivityCounts activities = activeUser == null ? null : activeUser.getActivities();
-        WorkspaceProfile.FeedbackCounts feedback = activities == null ? null : activities.eventFeedback();
+    private EventFeedbackPageCountsDto counts(com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserEventFeedbackCountersDto feedback) {
         return new EventFeedbackPageCountsDto(
                 positiveCount(feedback == null ? null : feedback.ownEvents()),
                 positiveCount(feedback == null ? null : feedback.pending()),
@@ -1248,12 +1244,12 @@ public class ActivitiesEventFeedbackService {
         return new ArrayList<>(normalized);
     }
 
-    private String feedbackUserName(WorkspaceProfile user, String fallbackUserId) {
+    private String feedbackUserName(ProfileSummary user, String fallbackUserId) {
         String name = safeText(user == null ? null : user.getName());
         return StringUtils.hasText(name) ? name : safeText(fallbackUserId);
     }
 
-    private String firstImageUrl(WorkspaceProfile user) {
+    private String firstImageUrl(ProfileSummary user) {
         if (user == null || user.getImages() == null) {
             return "";
         }
@@ -1267,8 +1263,8 @@ public class ActivitiesEventFeedbackService {
     }
 
     private EventFeedbackState findOrCreateState(String userId, String eventId, String nowIso) {
-        return eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId)
-                .orElseGet(() -> createState(userId, eventId, nowIso));
+        return counterWork.finish(eventFeedbackStatesRepository.findByViewerUserIdAndEventId(userId, eventId)
+                .orElseGet(() -> createState(userId, eventId, nowIso)));
     }
 
     private EventFeedbackState createState(String userId, String eventId, String nowIso) {
@@ -1447,7 +1443,7 @@ public class ActivitiesEventFeedbackService {
             return Map.of();
         }
         Map<String, ViewerIdentity> identitiesByUserId = new LinkedHashMap<>();
-        for (WorkspaceProfile user : usersRepository.findByUserIdIn(viewerUserIds)) {
+        for (ProfileSummary user : usersRepository.findByUserIdIn(viewerUserIds)) {
             if (user == null || !StringUtils.hasText(normalizeId(user.getUserId()))) {
                 continue;
             }
@@ -1534,14 +1530,14 @@ public class ActivitiesEventFeedbackService {
         return "woman".equals(safeText(value)) ? "woman" : "man";
     }
 
-    private String resolveUserImageUrl(WorkspaceProfile user) {
+    private String resolveUserImageUrl(ProfileSummary user) {
         if (user == null || user.getImages() == null || user.getImages().isEmpty()) {
             return "";
         }
         return safeText(user.getImages().get(0));
     }
 
-    private String resolveUserInitials(WorkspaceProfile user, String fallbackUserId) {
+    private String resolveUserInitials(ProfileSummary user, String fallbackUserId) {
         if (user != null && StringUtils.hasText(safeText(user.getInitials()))) {
             return safeText(user.getInitials());
         }

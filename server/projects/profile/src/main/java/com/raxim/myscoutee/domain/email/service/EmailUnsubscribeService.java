@@ -20,21 +20,21 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
-import com.raxim.myscoutee.domain.platform.api.SecretEncryption;
+import com.raxim.myscoutee.domain.platform.api.EmailSecrets;
 import tools.jackson.databind.ObjectMapper;
 
 /** Recipient-level suppression survives profile deletion and needs no login. */
 @Service
 public class EmailUnsubscribeService {
-    private static final String PURPOSE = "email-unsubscribe-v1";
+    private static final EmailSecrets.Purpose PURPOSE = EmailSecrets.Purpose.UNSUBSCRIBE;
     private static final String COLLECTION = "emailUnsubscriptions";
     private final MongoTemplate mongo;
-    private final SecretEncryption crypto;
+    private final EmailSecrets crypto;
     private final ObjectMapper mapper;
     private final EmailProperties properties;
     public record Ticket(String recipientHash, String mode) {}
 
-    public EmailUnsubscribeService(MongoTemplate mongo, SecretEncryption crypto,
+    public EmailUnsubscribeService(MongoTemplate mongo, EmailSecrets crypto,
             ObjectMapper mapper, EmailProperties properties) {
         this.mongo = mongo; this.crypto = crypto; this.mapper = mapper; this.properties = properties;
     }
@@ -45,7 +45,7 @@ public class EmailUnsubscribeService {
 
     public String link(String email) {
         Ticket ticket = new Ticket(recipientHash(email), MongoSessionModeContext.currentMode().name());
-        EncryptedSecret encrypted = crypto.encrypt(PURPOSE, mapper.writeValueAsString(ticket));
+        EncryptedSecret encrypted = crypto.encryptEmailSecret(PURPOSE, mapper.writeValueAsString(ticket));
         String token = Base64.getUrlEncoder().withoutPadding().encodeToString(mapper.writeValueAsBytes(encrypted));
         return publicBaseUrl() + "/api/public/email/unsubscribe#token=" + token;
     }
@@ -77,7 +77,7 @@ public class EmailUnsubscribeService {
         try {
             if (token == null || token.length() > 2048 || !token.matches("[A-Za-z0-9_-]{20,2048}")) throw new IllegalArgumentException();
             var envelope = mapper.readValue(Base64.getUrlDecoder().decode(token), EncryptedSecret.class);
-            Ticket ticket = mapper.readValue(crypto.decrypt(PURPOSE, envelope), Ticket.class);
+            Ticket ticket = mapper.readValue(crypto.decryptEmailSecret(PURPOSE, envelope), Ticket.class);
             if (ticket.recipientHash() == null || !ticket.recipientHash().matches("[0-9a-f]{64}")) throw new IllegalArgumentException();
             MongoSessionMode.valueOf(ticket.mode());
             return ticket;

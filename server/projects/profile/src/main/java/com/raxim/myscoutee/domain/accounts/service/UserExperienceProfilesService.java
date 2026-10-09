@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
+import com.raxim.myscoutee.domain.affinity.api.UserAffinityChanges;
 
 import static com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import static com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.UserExperiencesResponseDto;
@@ -22,12 +22,12 @@ import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepo
 public class UserExperienceProfilesService {
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
     private final HomeUserProfileService homeUserProfileService;
-    private final AffinityStatusChanges affinityRecomputeTaskService;
+    private final UserAffinityChanges affinityRecomputeTaskService;
 
     public UserExperienceProfilesService(
             UserExperienceProfilesRepository userExperienceProfilesRepository,
             HomeUserProfileService homeUserProfileService,
-            AffinityStatusChanges affinityRecomputeTaskService) {
+            UserAffinityChanges affinityRecomputeTaskService) {
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;

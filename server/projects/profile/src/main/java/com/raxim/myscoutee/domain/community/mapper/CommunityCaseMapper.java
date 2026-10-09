@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.community.mapper;
 
-import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.community.document.CommunityScheduledTask;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.groups.api.GroupView;
@@ -11,7 +11,7 @@ import com.raxim.myscoutee.domain.community.dto.CommunityCaseDtos.*;
 
 public final class CommunityCaseMapper {
     private CommunityCaseMapper() {}
-    public static CaseItem toDto(ServiceCase c, String accountId, boolean canManage, GroupView group, Map<String, ? extends WorkspaceProfile> users) {
+    public static CaseItem toDto(ServiceCase c, String accountId, boolean canManage, GroupView group, Map<String, ? extends ProfileSummary> users) {
         var members = c.participantAccountIds().stream().map(users::get).filter(java.util.Objects::nonNull)
                 .map(u -> new Member(u.getUserId(), u.getName(), u.getImages() == null || u.getImages().isEmpty() ? null : u.getImages().getFirst(),
                         "woman".equalsIgnoreCase(u.getGender()) ? "woman" : "man", c.membershipStatus(u.getUserId()))).toList();

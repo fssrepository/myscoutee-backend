@@ -576,6 +576,12 @@ public class NotificationRuleConfig implements com.raxim.myscoutee.domain.notifi
         private String lastRunDetail;
         private Integer lastRunCount;
         private String lastRunUser;
+        private String pendingClaimStartedAtIso;
+        private Integer pendingClaimedCount;
+        public String getPendingClaimStartedAtIso() { return pendingClaimStartedAtIso; }
+        public void setPendingClaimStartedAtIso(String value) { pendingClaimStartedAtIso = value; }
+        public Integer getPendingClaimedCount() { return pendingClaimedCount; }
+        public void setPendingClaimedCount(Integer value) { pendingClaimedCount = value; }
         private Integer pendingCount = 0;
         private String pendingCountUnit;
         private String pendingCountUpdatedAtIso;

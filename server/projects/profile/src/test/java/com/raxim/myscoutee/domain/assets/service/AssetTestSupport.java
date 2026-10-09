@@ -16,7 +16,14 @@ public final class AssetTestSupport {
         return service;
     }
     public static AssetsService wire(AssetsService service) {
+        ReflectionTestUtils.setField(service, "accountPaymentReads", ReflectionTestUtils.getField(service, "usersRepository"));
         var mongo = (MongoTemplate) ReflectionTestUtils.getField(service, "mongoTemplate");
+        var attachments = (com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle) ReflectionTestUtils.getField(service, "chatAttachmentLifecycleService");
+        if (attachments == null) attachments = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle.class);
+        var notifications = (com.raxim.myscoutee.domain.notifications.api.NotificationDelivery) ReflectionTestUtils.getField(service, "notificationOutboxService");
+        var affinity = (com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges) ReflectionTestUtils.getField(service, "affinityRecomputeTaskService");
+        var counters = (com.raxim.myscoutee.domain.accounts.api.ActivityCounters) ReflectionTestUtils.getField(service, "userActivityCountersService");
+        ReflectionTestUtils.setField(service, "lifecycleWork", new AssetLifecycleWork(mongo, null, attachments, notifications, affinity, counters));
         var members = ReflectionTestUtils.getField(service, "activityMembersRepository");
         if (members != null) {
             var repository = (ActivityMembersRepository) ReflectionTestUtils.getField(members, "members");
