@@ -1,0 +1,234 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Integration image upload",
+    "version": "1.0.0",
+    "description": "Integration-only capability invokes the existing media owner image-set operation and ImageMagick/MinIO code. Canonical 10 MiB file limit (14 MiB encoded envelope), asset/event/campaign entity prefixes only. REAL/DEMO determines native namespace; these entity types never use the operator-branding branch. One upload at a time per client/owner before large body allocation; 60-second bounded image-processing window, other adapters keep their 30-second maximum. No automatic transport retry. The native import operation derives stable object keys from namespace, owner, entity, content type and file bytes. An explicit identical import retry overwrites only those same objects. An uncertain resource-save outcome must retain its image; retry the original external ID and content. Partial import variants are retained for that retry, not deleted underneath a concurrent successful upload."
+  },
+  "paths": {
+    "/_internal/v1/media/integration-images": {
+      "post": {
+        "operationId": "storeIntegrationImageSet",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Upload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Busy before decoding, or storage outcome unknown; never automatically retried",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Integration image-upload service capability only."
+      }
+    },
+    "schemas": {
+      "Upload": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ownerId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "entityId": {
+            "type": "string",
+            "pattern": "^(asset-|event-|campaign-)",
+            "maxLength": 512
+          },
+          "originalFilename": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024
+          },
+          "contentType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 256
+          },
+          "bytes": {
+            "type": "string",
+            "contentEncoding": "base64",
+            "maxLength": 13981016
+          }
+        },
+        "required": [
+          "ownerId",
+          "entityId",
+          "bytes"
+        ]
+      },
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "imageSet": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ImageSet"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "ImageSet": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "originalUrl": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "smallUrl": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "mediumUrl": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "largeUrl": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "imageUrl",
+          "originalUrl",
+          "smallUrl",
+          "mediumUrl",
+          "largeUrl"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  }
+}

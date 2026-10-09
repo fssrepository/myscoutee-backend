@@ -9,6 +9,7 @@ matching rows.
 | Any Angular/UI/shared-core change | `reviews/frontend.md` | `patterns/frontend-vertical-slice.md` |
 | Popup/dialog/drawer/page surface with a list, SmartList, or live collection | `reviews/frontend.md` | `patterns/smart-list-live-surface.md` |
 | Java controller/service/repository/model change | `reviews/java-backend.md` | `patterns/java-domain-slice.md` |
+| Backend domain, dependency, Spring configuration, worker, transport or deployment change | `reviews/microservices-compatibility.md` | canonical composition in `microservices/assemblies.json` |
 | Mongo JSON, frontend seed, IndexedDB, demo fixture | `reviews/data-and-seeds.md` | `patterns/environment-isolation.md`, `habits/efficiency-scan.md` |
 | Environment, Compose, profile, routing-mode change | `reviews/demo-e2e-production.md` | `patterns/environment-isolation.md` |
 | Counter, badge, list bucket, aggregate, projection | `reviews/derived-state.md`, `reviews/performance.md` | `patterns/write-time-derived-state.md` |

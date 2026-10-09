@@ -1,0 +1,544 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee internal community membership reads",
+    "version": "1.0.0",
+    "description": "Canonical detached CommunityMember reads used by account workspace selection. Dedicated credential with REAL/DEMO, no writes and no delegated actor authority. Responses up to 2 MiB; optional identifiers preserve null versus empty."
+  },
+  "paths": {
+    "/_internal/v1/events/community-memberships/group": {
+      "get": {
+        "operationId": "readCommunityMembershipGroup",
+        "security": [
+          {
+            "communityMembershipRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical detached membership DTO; maximum 2 MiB.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityMembers"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "GROUP_VISIBILITY_UNAVAILABLE: owner failed; persistence details are not exposed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/community-memberships/member": {
+      "get": {
+        "operationId": "readCommunityMembershipMember",
+        "security": [
+          {
+            "communityMembershipRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "groupId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          },
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical detached membership DTO; maximum 2 MiB.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityMember"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "GROUP_VISIBILITY_UNAVAILABLE: owner failed; persistence details are not exposed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: the canonical directory has no group for this ID in the selected session mode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_SESSION_MODE",
+              "INVALID_REQUEST",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "COMMUNITY_MEMBERSHIPS_UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "CommunityMember": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "ownerType",
+          "ownerId",
+          "userId",
+          "role",
+          "status",
+          "requestKind",
+          "pendingSource",
+          "invitedByUserId",
+          "metWhere",
+          "metAtIso",
+          "actionAtIso",
+          "updatedDate",
+          "createdDate",
+          "communityAction",
+          "communityActor",
+          "organizerOnly",
+          "managerGrantedByUserId",
+          "votingEligible",
+          "communityUpdates"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestKind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pendingSource": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "invitedByUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "metWhere": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "metAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actionAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updatedDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "communityAction": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "communityActor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "organizerOnly": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "managerGrantedByUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "votingEligible": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "communityUpdates": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "CommunityMembers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "ownerType",
+            "ownerId",
+            "userId",
+            "role",
+            "status",
+            "requestKind",
+            "pendingSource",
+            "invitedByUserId",
+            "metWhere",
+            "metAtIso",
+            "actionAtIso",
+            "updatedDate",
+            "createdDate",
+            "communityAction",
+            "communityActor",
+            "organizerOnly",
+            "managerGrantedByUserId",
+            "votingEligible",
+            "communityUpdates"
+          ],
+          "properties": {
+            "id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ownerType": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "ownerId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "userId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "role": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "requestKind": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "pendingSource": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "invitedByUserId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "metWhere": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "metAtIso": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "actionAtIso": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "updatedDate": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "createdDate": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "communityAction": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "communityActor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "organizerOnly": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "managerGrantedByUserId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "votingEligible": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "communityUpdates": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "communityMembershipRead": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

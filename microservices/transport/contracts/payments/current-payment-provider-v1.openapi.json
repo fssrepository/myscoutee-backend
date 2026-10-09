@@ -1,0 +1,168 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee current payment provider precondition",
+    "version": "1.0.0",
+    "description": "Uses CurrentPaymentProviderService.requireCashOnly in the payments owner with REAL/DEMO context. Returns a resolved typed decision; a declined precondition is reconstructed as the same API-level PaymentProviderChangedException by the consumer. The single shared canonical HTTP handler preserves public 409 code, message and currentProvider. No credentials, deployment settings or payment mutations are transmitted. Unknown/unavailable results never permit cash-only behavior. 16 KiB response; existing bounded no-retry transport."
+  },
+  "paths": {
+    "/_internal/v1/payments/current-provider/cash-only": {
+      "get": {
+        "operationId": "checkCashOnlyPrecondition",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owner checked the cash-only precondition; a false result restores the native conflict at the caller",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Owner configuration unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated service capability for this contract; never expose to browsers."
+      }
+    },
+    "schemas": {
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resolved",
+          "cashOnly"
+        ],
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "cashOnly": {
+            "type": "boolean"
+          },
+          "currentProvider": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 512
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "cashOnly": {
+                  "const": false
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "currentProvider"
+              ],
+              "properties": {
+                "currentProvider": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "currentProvider": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_SESSION_MODE",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "CURRENT_PAYMENT_PROVIDER_UNAVAILABLE"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

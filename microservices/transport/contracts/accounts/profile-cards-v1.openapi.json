@@ -1,0 +1,1207 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee profile cards",
+    "version": "1.0.0",
+    "description": "Existing account-owned queryUsersByIds game-card presentation. Native normalization, deduplication, usability checks, ordering and field mapping are retained. Only explicitly listed service consumers; REAL/DEMO is mandatory. Bounded 4096-ID / 1 MiB requests and 8 MiB replies; no truncation or retries. Full profile presentation uses the same owner and UserDto with impressions; supplied IDs are fetched once and rendered through native toUserDto. This additional endpoint has not yet been tested."
+  },
+  "paths": {
+    "/_internal/v1/accounts/profile-cards": {
+      "post": {
+        "operationId": "queryUsersByIds",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdsQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account-owned rating facts with canonical activity visibility",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 1 MiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Account owner unavailable; not an empty profile list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/accounts/profile-cards/present": {
+      "post": {
+        "operationId": "presentGameCards",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdsQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account-owned rating facts with canonical activity visibility",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 1 MiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Account owner unavailable; not an empty profile list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/accounts/profile-cards/profiles": {
+      "post": {
+        "operationId": "present_full_profiles",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IdsQuery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account-owned rating facts with canonical activity visibility",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing/wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 1 MiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Account owner unavailable; not an empty profile list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "IdsQuery": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ids"
+        ],
+        "properties": {
+          "ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "maxItems": 4096,
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 512
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_SESSION_MODE",
+              "INVALID_REQUEST",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "QUERY_TOO_LARGE",
+              "INVALID_CONTENT_TYPE",
+              "PROFILE_CARDS_UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "UserDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "age": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "birthday": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "city": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "height": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "physique": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "languages": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "horoscope": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "initials": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "gender": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "statusText": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hostTier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "traitLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "completion": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "profileFormVersion": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "headline": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "about": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "affinity": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "locationCoordinates": {
+            "$ref": "#/components/schemas/LocationCoordinatesDto"
+          },
+          "partitionKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "images": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "profileDetails": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProfileDetailGroupDto"
+            }
+          },
+          "impressions": {
+            "$ref": "#/components/schemas/UserImpressionsDto"
+          },
+          "profileStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "previousProfileStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "deletedAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "admin": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "operator": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "activities": {
+            "$ref": "#/components/schemas/UserActivitiesDto"
+          },
+          "notificationPreferences": {
+            "$ref": "#/components/schemas/UserNotificationPreferencesDto"
+          }
+        }
+      },
+      "LocationCoordinatesDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "latitude": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "longitude": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      },
+      "ProfileDetailGroupDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rows": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProfileDetailRowDto"
+            }
+          }
+        }
+      },
+      "ProfileDetailRowDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "labelKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "privacy": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "options": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "UserImpressionsDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "host": {
+            "$ref": "#/components/schemas/UserImpressionsSectionDto"
+          },
+          "member": {
+            "$ref": "#/components/schemas/UserImpressionsSectionDto"
+          }
+        }
+      },
+      "UserImpressionsSectionDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "unreadCount": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "averageRating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "peopleMet": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "totalEvents": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "repeatCount": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "noShowCount": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "vibeBadges": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "personalityBadges": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "personalityTraits": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/UserPersonalityTraitDto"
+            }
+          },
+          "categoryBadges": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      },
+      "UserPersonalityTraitDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "percent": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "evidenceCount": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "lastRatedAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserActivitiesDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "game": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "chats": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "invitations": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "events": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "hosting": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cars": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodation": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "supplies": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tickets": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "contacts": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "feedback": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "chat": {
+            "$ref": "#/components/schemas/UserChatCountersDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/UserEventCountersDto"
+          },
+          "asset": {
+            "$ref": "#/components/schemas/UserAssetCountersDto"
+          },
+          "eventFeedback": {
+            "$ref": "#/components/schemas/UserEventFeedbackCountersDto"
+          },
+          "adminJobs": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "adminMetrics": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "paymentRefundsPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "contactRequestsPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "notifications": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserChatCountersDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "all": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "event": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "subEvent": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "group": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "service": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "appSupport": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "supportCases": {
+            "$ref": "#/components/schemas/UserSupportCaseCountersDto"
+          },
+          "groupSupport": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "contacts": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "campaign": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cases": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserSupportCaseCountersDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "pending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "warned": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "picked": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "solved": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "blocked": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "all": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserEventCountersDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "all": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "active": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "invitations": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "hosting": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "drafts": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "trash": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "watchlist": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserAssetCountersDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "cars": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodation": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "supplies": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tickets": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "carsPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodationPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "suppliesPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserEventFeedbackCountersDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ownEvents": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "feedbacked": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "removed": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "UserNotificationPreferencesDto": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "muted": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+# Populate image identities and assemblies through workloads.py from the
+# versioned images.lock.json and assemblies.json. Secrets stay in private state.
+images: {}
+services: {}
+imagePullPolicy: IfNotPresent
+frontend:
+  replicas: 1
+  nodePort: 30080
+metricsNodePort: 30081
+mongodb:
+  replicaSet: false
+  cpuLimit: '2'
+  memoryMiB: 768
+  storage: 4Gi
+redis:
+  memoryMiB: 128
+minio:
+  memoryMiB: 384
+  storage: 1Gi
+clusterDns: ""
+runtime: {}
+credentials: {}
+transportCredentialsByService: {}
+actorDelegation:
+  clients: {}
+shared:
+  metricsUpstreamRoutes: ""
+  mongoInitScript: ""
+  responsePolicy: ""
+  runtimeStatusLocation: ""
+publicBaseUrl: http://localhost:18080
+stunNodePort: 30478
+supportServices:
+  mcp:
+    memoryMiB: 128
+    port: 8080
+    healthCommand: [/myscoutee-mcp, healthcheck]
+    environment:
+      MYSCOUTEE_MCP_TRANSPORT: http
+      MYSCOUTEE_MCP_LISTEN: 0.0.0.0:8080
+      MYSCOUTEE_API_BASE_URL: http://frontend:8080/api
+  registry:
+    memoryMiB: 128
+    port: 8080
+    storage: 1Gi
+    args: [start-demo]
+    healthCommand: [/registry, healthcheck]
+    environment:
+      REGISTRY_DEMO_SEED: 'true'
+      REGISTRY_LISTEN_ADDR: ':8080'
+      REGISTRY_SCOPE: demo:myscoutee
+      REGISTRY_DATABASE_PATH: /data/registry-demo.db
+      REGISTRY_SIGNING_KEY_PATH: /data/registry-demo-signing-key.pem
+      REGISTRY_GENERATE_SIGNING_KEY: 'true'
+      REGISTRY_HEALTHCHECK_URL: http://127.0.0.1:8080/healthz
+  payment-simulator:
+    memoryMiB: 128
+    port: 18082
+    storage: 1Gi
+    secret: payment-simulator
+    healthCommand: [/payment-simulator, healthcheck]
+    environment:
+      PAYMENT_SIMULATOR_LISTEN_ADDR: ':18082'
+      PAYMENT_SIMULATOR_ALLOW_NON_LOOPBACK: 'true'
+      PAYMENT_SIMULATOR_DATABASE_PATH: /data/payment-simulator.db
+      PAYMENT_SIMULATOR_WEBHOOK_URL: http://payments:8080/payment/webhooks/stripe
+      PAYMENT_SIMULATOR_BARION_CALLBACK_URL: http://payments:8080/payment/webhooks/barion
+      PAYMENT_SIMULATOR_REQUIRE_IDEMPOTENCY: 'true'
+  stun:
+    memoryMiB: 64
+    port: 3478
+    command: [/usr/bin/turnserver]
+    healthCommand: [turnutils_stunclient, -p, '3478', '127.0.0.1']
+    args: [-n, --stun-only, --no-auth, --no-tls, --relay-threads=1, --listening-ip=0.0.0.0, --listening-port=3478, --realm=myscoutee, --log-file=stdout, --simple-log, --pidfile=/tmp/turnserver.pid]
+    environment: {}

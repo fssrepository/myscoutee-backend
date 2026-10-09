@@ -1,0 +1,403 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee internal configuration catalog",
+    "version": "1.0.0",
+    "description": "Delegates explicit active-key and ID reads to the canonical affinity configuration owner. Preserves active version selection, latest-version fallback and native defaults. Settings DTO exposes only the existing API key, notification and job parameters, never document metadata or affinity weights. Service capability and explicit REAL/DEMO mode required. Failures are not converted to defaults or null. Maximum response 16 KiB."
+  },
+  "paths": {
+    "/_internal/v1/affinity/configuration/active": {
+      "get": {
+        "operationId": "activeConfiguration",
+        "security": [
+          {
+            "chatDirectoryRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical configuration settings",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Configuration owner unavailable; no client defaults",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: the canonical directory has no group for this ID in the selected session mode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/affinity/configuration/entry": {
+      "get": {
+        "operationId": "findConfiguration",
+        "security": [
+          {
+            "chatDirectoryRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical configuration settings",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Settings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Configuration owner unavailable; no client defaults",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: the canonical directory has no group for this ID in the selected session mode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "chatDirectoryRead": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated internal group-media read credential of at least 256 random bits. Never distribute to browsers or put in URLs."
+      }
+    },
+    "schemas": {
+      "Settings": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notifications": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "firebaseWindowStartHour": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "firebaseWindowEndHour": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "maxWorkers": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "maxRetries": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "initialBackoffSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "collapseWindowSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "multicastThreshold": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "topicThreshold": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "jobs": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "userChangedDebounceSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "eventChangedDebounceSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "eventMembersChangedDebounceSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "assetChangedDebounceSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "assetRequestsChangedDebounceSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "configChangedDebounceSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "workerPollDelayMs": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "batchSize": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "leaseDurationSeconds": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "eventSchedulerPollDelayMs": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "autoInviterCadenceMs": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "notificationOutboxPollDelayMs": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "accountPurgeWindowDays": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_SESSION_MODE",
+              "INVALID_REQUEST",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "CONFIGURATION_UNAVAILABLE"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

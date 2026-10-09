@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "mongoCpuLimit": 3,
+  "mongoReplicaSet": true,
+  "namespace": "myscoutee-msc121",
+  "frontendReplicas": 1,
+  "frontendNodePort": 30080,
+  "localPort": 18080,
+  "dependencies": {
+    "frontend": "myscoutee-service-frontend:msc121",
+    "mongodb": "mongo:8.0.4",
+    "redis": "redis:8.6.1-alpine",
+    "minio": "myscoutee-service-minio:msc121",
+    "stun": "coturn/coturn:4.18.0-r0-alpine",
+    "mcp": "myscoutee-service-mcp:msc121",
+    "registry": "myscoutee-service-registry:msc121",
+    "payment-simulator": "myscoutee-service-payment-simulator:msc121"
+  },
+  "stunNodePort": 30478,
+  "metricsNodePort": 30081
+}

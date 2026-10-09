@@ -67,6 +67,14 @@ Ask these at the relevant decision, not ritualistically at task end:
 
 ## Standard routing
 
+Preserve both monolith and independent domain packaging for new backend work.
+Canonical business source stays in `server/projects/profile`; `microservices/`
+owns deployment composition and transport. Cross-domain calls use the owner's
+API/DTO contract, never its service, repository or document implementation.
+Developer-host lab VMs must never start on host boot; setup, explicit startup
+and owned cleanup belong in versioned scripts. Load the microservices card below
+for the detailed checks; a successful build does not prove a working split.
+
 Load every matching row, but no unrelated row:
 
 | Trigger | Load |
@@ -77,6 +85,7 @@ Load every matching row, but no unrelated row:
 | Popup/dialog/drawer/page surface containing a list or SmartList | [SmartList live-surface pattern](patterns/smart-list-live-surface.md) |
 | New frontend service/adapter/store slice | [frontend pattern](patterns/frontend-vertical-slice.md) |
 | Java controller/service/repository/model | [Java review](reviews/java-backend.md) |
+| Backend domain, dependency, configuration, worker, transport or deployment change | [Microservices compatibility](reviews/microservices-compatibility.md) |
 | New Java endpoint/domain slice | [Java pattern](patterns/java-domain-slice.md) |
 | Seed, fixture, Mongo JSON, IndexedDB | [data review](reviews/data-and-seeds.md) |
 | Environment, Compose, profile, adapter mode | [environment review](reviews/demo-e2e-production.md) |

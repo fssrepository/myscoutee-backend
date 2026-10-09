@@ -1,0 +1,128 @@
+{{- range $name, $service := .Values.services }}
+{{- $transportValues := dict }}
+{{- range $environment, $credential := index $.Values.transportCredentialsByService $name }}
+{{- $_ := set $transportValues $environment (index $.Values.credentials $credential) }}
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: {{ $service.replicas }}
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: myscoutee-msc121
+        app.kubernetes.io/name: {{ $name }}
+      annotations:
+        myscoutee/transport-scope-version: '2'
+        checksum/runtime: {{ toJson $.Values.runtime | sha256sum }}
+        checksum/mongodb: {{ toJson $.Values.mongodb | sha256sum }}
+        checksum/transport-credentials: {{ toJson $transportValues | sha256sum }}
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        {{- if has "registry" $service.domains }}
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        {{- end }}
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: {{ $name }}
+        image: {{ index $.Values.images $name "reference" | quote }}
+        imagePullPolicy: {{ $.Values.imagePullPolicy }}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: '2'
+            memory: {{ $service.memoryMiB }}Mi
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          runAsGroup: 10001
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: management
+          containerPort: 8081
+        envFrom:
+        - configMapRef:
+            name: runtime
+        - secretRef:
+            name: runtime
+        - secretRef:
+            name: transport-{{ $name }}
+        {{- if has "accounts" $service.domains }}
+        - secretRef:
+            name: actor-delegation-issuer
+        {{- end }}
+        volumeMounts:
+        {{- if has "registry" $service.domains }}
+        - name: registry-client
+          mountPath: /var/lib/myscoutee/registry-demo
+        {{- end }}
+        - name: tmp
+          mountPath: /tmp
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          failureThreshold: 36
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          periodSeconds: 5
+      volumes:
+      {{- if has "registry" $service.domains }}
+      - name: registry-client
+        persistentVolumeClaim:
+          claimName: registry-client
+      {{- end }}
+      - name: tmp
+        emptyDir:
+          sizeLimit: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/part-of: myscoutee-msc121
+    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    app.kubernetes.io/name: {{ $name }}
+  type: ClusterIP
+  ports:
+  - name: service
+    port: 8080
+    targetPort: 8080
+  - name: management
+    port: 8081
+    targetPort: 8081
+{{- end }}

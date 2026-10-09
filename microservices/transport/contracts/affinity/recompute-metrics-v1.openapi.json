@@ -1,0 +1,220 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee recompute-metrics",
+    "version": "1.0.0",
+    "description": "Canonical recomputation counters; no user identifiers or configuration secrets. Uses service-scoped capability authentication, preserves REAL/DEMO context, prohibits automatic retries and returns Cache-Control: no-store."
+  },
+  "paths": {
+    "/_internal/v1/affinity/recompute/metrics": {
+      "get": {
+        "operationId": "recompute_metrics",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Owner unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated service capability for this contract; never expose to browsers."
+      }
+    },
+    "schemas": {
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "scheduledPasses": {
+                "type": "integer"
+              },
+              "wakeupPasses": {
+                "type": "integer"
+              },
+              "emptyPasses": {
+                "type": "integer"
+              },
+              "busySkips": {
+                "type": "integer"
+              },
+              "taskReadCount": {
+                "type": "integer"
+              },
+              "avgTaskReadMs": {
+                "type": "integer"
+              },
+              "tasksDue": {
+                "type": "integer"
+              },
+              "tasksLeased": {
+                "type": "integer"
+              },
+              "dueToRunningSamples": {
+                "type": "integer"
+              },
+              "avgDueToRunningMs": {
+                "type": "integer"
+              },
+              "enqueueToRunningSamples": {
+                "type": "integer"
+              },
+              "avgEnqueueToRunningMs": {
+                "type": "integer"
+              },
+              "recomputeRuntimeSamples": {
+                "type": "integer"
+              },
+              "avgRecomputeRuntimeMs": {
+                "type": "integer"
+              },
+              "changeStreamEvents": {
+                "type": "integer"
+              },
+              "changeStreamIgnoredEvents": {
+                "type": "integer"
+              },
+              "changeStreamImmediateWakeups": {
+                "type": "integer"
+              },
+              "changeStreamTimerWakeups": {
+                "type": "integer"
+              },
+              "changeStreamFutureTimers": {
+                "type": "integer"
+              },
+              "changeStreamErrors": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "scheduledPasses",
+              "wakeupPasses",
+              "emptyPasses",
+              "busySkips",
+              "taskReadCount",
+              "avgTaskReadMs",
+              "tasksDue",
+              "tasksLeased",
+              "dueToRunningSamples",
+              "avgDueToRunningMs",
+              "enqueueToRunningSamples",
+              "avgEnqueueToRunningMs",
+              "recomputeRuntimeSamples",
+              "avgRecomputeRuntimeMs",
+              "changeStreamEvents",
+              "changeStreamIgnoredEvents",
+              "changeStreamImmediateWakeups",
+              "changeStreamTimerWakeups",
+              "changeStreamFutureTimers",
+              "changeStreamErrors"
+            ]
+          }
+        },
+        "required": [
+          "resolved",
+          "value"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_REQUEST",
+              "INVALID_SESSION_MODE",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "QUERY_TOO_LARGE",
+              "INVALID_CONTENT_TYPE",
+              "OWNER_REJECTED",
+              "RECOMPUTE_METRICS_UNAVAILABLE"
+            ]
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  }
+}

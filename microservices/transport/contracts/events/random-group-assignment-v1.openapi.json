@@ -1,0 +1,263 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee random-group-assignment",
+    "version": "1.0.0",
+    "description": "One native manual group-assignment invocation. Each NDJSON frame is a Progress, Result or Failure; terminal Result plus clean EOF is required for success. The caller executes progress callbacks in its original context. Partial/lost replies are unknown, never retried. Existing notification worker owns pending-count and history coordination. REAL/DEMO and explicit job scope preserved. Notifications-only capability, one concurrent manual execution per owner instance. 16 KiB requests; configured 10-minute request window, maximum 15 minutes. Distributed restart/acknowledgment ownership remains milestone 16."
+  },
+  "paths": {
+    "/_internal/v1/events/random-group-assignment/run": {
+      "post": {
+        "operationId": "random_group_assignment_run",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Command"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bounded newline-delimited progress and terminal frames",
+            "content": {
+              "application/x-ndjson": {
+                "schema": {
+                  "$ref": "#/components/schemas/Frame"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Notifications-only random-group-assignment command capability."
+      }
+    },
+    "schemas": {
+      "Command": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "groupId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "active"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_REQUEST",
+              "INVALID_SESSION_MODE",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "QUERY_TOO_LARGE",
+              "INVALID_CONTENT_TYPE",
+              "BUSY"
+            ]
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "Progress": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "progressPercent": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "plans": {
+            "type": "null"
+          },
+          "affectedUsers": {
+            "type": "null"
+          },
+          "kind": {
+            "const": "progress"
+          }
+        },
+        "required": [
+          "kind",
+          "progressPercent"
+        ]
+      },
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "progressPercent": {
+            "type": "null"
+          },
+          "detail": {
+            "type": "null"
+          },
+          "plans": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "affectedUsers": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "kind": {
+            "const": "result"
+          }
+        },
+        "required": [
+          "kind",
+          "plans",
+          "affectedUsers"
+        ]
+      },
+      "Failure": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "progressPercent": {
+            "type": "null"
+          },
+          "detail": {
+            "const": "ASSIGNMENT_OUTCOME_UNKNOWN"
+          },
+          "plans": {
+            "type": "null"
+          },
+          "affectedUsers": {
+            "type": "null"
+          },
+          "kind": {
+            "const": "error"
+          }
+        },
+        "required": [
+          "kind",
+          "detail"
+        ]
+      },
+      "Frame": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Progress"
+          },
+          {
+            "$ref": "#/components/schemas/Result"
+          },
+          {
+            "$ref": "#/components/schemas/Failure"
+          }
+        ]
+      }
+    }
+  }
+}
