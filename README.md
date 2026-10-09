@@ -19,6 +19,23 @@ and the MCP repository's
 Its goal is a **completed, mutually welcomed real-world meeting**—not simply a
 match or a message.
 
+## Microservices playground
+
+[MSC-121](https://github.com/fssrepository/myscoutee-roadmap/issues/159) is closed
+for developer-playground delivery. The final verified lab is Helm **123**, with
+six backends, Mongo StatefulSet **2/2**, shared change streams/cache invalidation,
+Kubernetes status/SSE and a bounded blocking Redis telemetry reader. Infrastructure
+and operations are versioned in [microservices](microservices/README.md).
+[Delivery and test evidence](microservices/PROGRESS.md) ·
+[CPU attribution](microservices/IDLE_CPU_PROFILE_2026-10-09.md) ·
+[Polling/freshness audit](microservices/DATABASE_POLLING_AUDIT.md).
+
+The latest reader passed **28 focused tests** and live durable-cursor checks.
+Broad feature QA and production qualification remain separate. This closeout
+does not merge the development branch or publish a new installer.
+[Task usage and restorable Project](guides/project-history/README.md) are refreshed
+through the October-9 implementation cutoff; MSC-122 extraction remains Todo.
+
 ## Downloads
 
 ### Installer
@@ -42,6 +59,7 @@ The later application updates do not replace the full installer release.
 | User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 | Integration API Guide | 1.0.1 | 1.0.1 + MSC-119 source extensions | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
 | MCP User Guide | 1.0.0 | MCP / client 1.6.0 · MSC-119 | [PDF](guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf) |
+| Microservices Guide | 0.1.0 | MSC-121; KVM/Helm, replica set, operations and monolith comparison | [HTML source](guides/manuals/myscoutee-microservices-guide-en.html) · [PDF](guides/manuals/MyScoutee_Microservices_Guide_v0.1.0_EN.pdf) |
 
 Document versions are independent of software versions. The MCP guide documents
 MSC-119 source behavior, including its pending live-host QA.

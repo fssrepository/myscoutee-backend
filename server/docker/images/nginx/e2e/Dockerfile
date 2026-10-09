@@ -17,10 +17,18 @@ COPY --from=frontend-source angular.json tsconfig*.json ./
 COPY --from=frontend-source src/ ./src/
 RUN npm run build:e2e
 
+FROM golang:1.26-bookworm AS runtime-status-builder
+WORKDIR /src
+COPY --from=nginx-runtime . ./
+RUN --network=none GOMAXPROCS=2 CGO_ENABLED=0 GOTOOLCHAIN=local GOPROXY=off go test -p=1 ./... && \
+    GOMAXPROCS=2 CGO_ENABLED=0 GOTOOLCHAIN=local GOPROXY=off go build -p=1 -trimpath -ldflags='-s -w' -o /runtime-status-receiver .
+
 FROM ${NGINX_BASE_IMAGE}
+COPY --from=runtime-status-builder /runtime-status-receiver /scripts/runtime-status-receiver
 
 RUN apk add --no-cache openssl
 
+COPY --from=nginx-config conf/http/runtime-status.conf /etc/nginx/conf.d/runtime-status.conf
 COPY --from=nginx-config nginx.conf /etc/nginx/nginx.conf
 COPY --from=nginx-config conf/http/spring.conf /etc/nginx/conf.d/spring.conf
 RUN sed -i 's/server_name localhost;/server_name 127.0.0.1;/g' /etc/nginx/conf.d/spring.conf

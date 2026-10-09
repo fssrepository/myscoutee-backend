@@ -138,6 +138,28 @@ class DeploymentFirebaseRuntimeTest {
                 .hasMessageContaining("incomplete or unverified");
     }
 
+    @Test
+    void remoteConfigurationSignalRefreshesActivationAndDeactivation() {
+        var config = new DeploymentConfiguration();
+        var firebase = runtimeReadyFirebase(encryptedSecret("authentication"), encryptedSecret("messaging"));
+        config.setFirebase(firebase);
+        var repository = mock(DeploymentConfigurationRepository.class);
+        when(repository.findById(DeploymentConfiguration.SINGLETON_ID)).thenReturn(Optional.of(config));
+        var properties = new ConfigProperties();
+        var runtime = new DeploymentFirebaseRuntime(repository, mock(DeploymentConfigurationCrypto.class), properties);
+        var changes = mock(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService.class);
+        runtime.watchConfiguration(changes);
+        var callback = org.mockito.ArgumentCaptor.forClass(java.util.function.Supplier.class);
+        verify(changes).watch(org.mockito.ArgumentMatchers.eq("firebase-runtime"), org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.any(), callback.capture());
+        callback.getValue().get();
+        assertThat(properties.isFirebaseEnabled()).isTrue();
+        firebase.setActive(false);
+        callback.getValue().get();
+        assertThat(properties.isFirebaseEnabled()).isFalse();
+        runtime.close();
+    }
+
     private DeploymentConfiguration.Firebase runtimeReadyFirebase(
             EncryptedSecret authentication,
             EncryptedSecret messaging) {

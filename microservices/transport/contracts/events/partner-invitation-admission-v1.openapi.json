@@ -1,0 +1,288 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee partner-invitation-admission",
+    "version": "1.0.0",
+    "description": "Typed calls to existing PartnerInvitationAdmission operations from integrations only. Native permissions and business behavior retained. Profile inputs are owner-reloaded by ID; no detached persistence documents. REAL/DEMO and job scope, 2 MiB requests / 8 MiB responses, bounded timeout and no automatic retries. Distributed lost-reply recovery remains milestone 16."
+  },
+  "paths": {
+    "/_internal/v1/events/partner-invitation-admission/claim": {
+      "post": {
+        "operationId": "partner_invitation_admission_claim",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_PartnerInvitationAdmissionProtocol_Claim"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_PartnerInvitationAdmissionProtocol_Receipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated partner-invitation-admission capability for integrations."
+      }
+    },
+    "schemas": {
+      "microservices_transport_events_PartnerInvitationAdmissionProtocol_Claim": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_PartnerInvitationAdmissionProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "invite": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_integrations_dto_ParticipantInvitationDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eventRecordId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "actorUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_PartnerInvitationAdmissionProtocol_Scope": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "groupId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "active"
+        ]
+      },
+      "domain_integrations_dto_ParticipantInvitationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "reusable": {
+            "type": "boolean"
+          },
+          "ownerType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "claimedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ownerUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "eventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "reusable"
+        ]
+      },
+      "microservices_transport_events_PartnerInvitationAdmissionProtocol_Receipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "completed": {
+            "const": true
+          }
+        },
+        "required": [
+          "completed"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  }
+}

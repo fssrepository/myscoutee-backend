@@ -1,0 +1,149 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee internal affinity recompute queue count",
+    "version": "1.0.0",
+    "description": "Canonical RecomputeQueue count scoped by base group and status. Dedicated read capability, mandatory REAL/DEMO, no user authority. HTTPS except explicit isolated-lab opt-in."
+  },
+  "paths": {
+    "/_internal/v1/affinity/recompute-queue/count": {
+      "get": {
+        "operationId": "countRecomputeQueue",
+        "security": [
+          {
+            "recomputeQueueRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "baseGroupId",
+            "in": "query",
+            "required": false,
+            "description": "Omission preserves canonical null; empty string remains distinct.",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Omission preserves canonical null; empty string remains distinct.",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical read result; maximum 4 KiB.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Count"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "RECOMPUTE_QUEUE_UNAVAILABLE: owner failed; persistence details are not exposed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "recomputeQueueRead": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated internal group-media read credential of at least 256 random bits. Never distribute to browsers or put in URLs."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_SESSION_MODE",
+              "INVALID_REQUEST",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "RECOMPUTE_QUEUE_UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "Count": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807
+      }
+    }
+  }
+}

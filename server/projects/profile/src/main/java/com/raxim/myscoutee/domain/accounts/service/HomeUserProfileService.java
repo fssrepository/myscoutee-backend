@@ -35,7 +35,6 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -258,11 +257,33 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.roleNotifications = value;
     }
     private NotificationCatalog notificationCatalog;
-    private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
-    private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
-    private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
+    private final Map<UserReadCacheKey, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
+    private final Map<AffinityReadCacheKey, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
+    private final Map<UserReadCacheKey, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
     private final Object gameStackSnapshotCacheLock = new Object();
-    private volatile CacheEntry<GameStackSnapshot> gameStackSnapshotCache;
+    private final Map<ReadCacheScope, CacheEntry<GameStackSnapshot>> gameStackSnapshotCache = new ConcurrentHashMap<>();
+    private final java.util.concurrent.atomic.AtomicLong readCacheRevision = new java.util.concurrent.atomic.AtomicLong();
+
+    private record ReadCacheScope(com.raxim.myscoutee.common.config.mongo.MongoSessionMode mode, boolean active, String groupId) {}
+    private record UserReadCacheKey(ReadCacheScope scope, String userId) {}
+    private record AffinityReadCacheKey(ReadCacheScope scope, List<String> userIds) {}
+    private ReadCacheScope readCacheScope() {
+        return new ReadCacheScope(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode(),
+                com.raxim.myscoutee.domain.platform.api.JobGroupContext.isActive(),
+                com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId());
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchProfileCache(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("profile-read-cache", Set.of("users"), Set.of(), () -> { clearUserReadCaches(); return null; }, this::clearUserReadCaches, this::clearUserReadCaches);
+    }
+
+    private void clearUserReadCaches() {
+        readCacheRevision.incrementAndGet();
+        userImpressionsCacheByUserId.clear();
+        affinityWeightsCacheByUserIdsKey.clear();
+        gameStackSnapshotCache.clear();
+    }
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
@@ -1236,7 +1257,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return resolveGameStackSnapshot().socialGraph();
     }
 
-    @Cacheable(value = "demo_users", key = "'all'")
     public List<DemoUserListItemDto> queryDemoUserListItems() {
         return queryDemoUserListItems(null, "member");
     }
@@ -1622,11 +1642,12 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return Map.of();
         }
 
-        String cacheKey = String.join("\n", normalizedUserIds);
+        var cacheKey = new AffinityReadCacheKey(readCacheScope(), List.copyOf(normalizedUserIds));
+        long revision = readCacheRevision.get();
         long nowMs = System.currentTimeMillis();
         CacheEntry<Map<String, Double>> cached = affinityWeightsCacheByUserIdsKey.get(cacheKey);
         if (cached != null) {
-            if (cached.expiresAtMs() > nowMs) {
+            if (cached.expiresAtMs() > nowMs && cached.revision() == readCacheRevision.get()) {
                 return cached.value();
             }
             affinityWeightsCacheByUserIdsKey.remove(cacheKey, cached);
@@ -1650,7 +1671,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             }
         }
         Map<String, Double> resolved = Map.copyOf(weightsByPairKey);
-        affinityWeightsCacheByUserIdsKey.put(cacheKey, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS));
+        affinityWeightsCacheByUserIdsKey.put(cacheKey, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS, revision));
         return resolved;
     }
 
@@ -2009,14 +2030,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private GameStackSnapshot resolveGameStackSnapshot() {
         long nowMs = System.currentTimeMillis();
-        CacheEntry<GameStackSnapshot> cached = gameStackSnapshotCache;
-        if (cached != null && cached.expiresAtMs() > nowMs) {
+        long revision = readCacheRevision.get();
+        var scope = readCacheScope();
+        CacheEntry<GameStackSnapshot> cached = gameStackSnapshotCache.get(scope);
+        if (cached != null && cached.expiresAtMs() > nowMs && cached.revision() == readCacheRevision.get()) {
             return cached.value();
         }
 
         synchronized (gameStackSnapshotCacheLock) {
-            cached = gameStackSnapshotCache;
-            if (cached != null && cached.expiresAtMs() > nowMs) {
+            cached = gameStackSnapshotCache.get(scope);
+            if (cached != null && cached.expiresAtMs() > nowMs && cached.revision() == readCacheRevision.get()) {
                 return cached.value();
             }
 
@@ -2032,7 +2055,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                     Map.copyOf(queryLatestHomeActivityMsByUserId(
                             visibleGameUsers,
                             homeGameMemberProjections)));
-            gameStackSnapshotCache = new CacheEntry<>(snapshot, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS);
+            gameStackSnapshotCache.put(scope, new CacheEntry<>(snapshot, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS, revision));
             return snapshot;
         }
     }
@@ -2530,9 +2553,10 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
-        userImpressionsCacheByUserId.remove(normalizedUserId);
+        readCacheRevision.incrementAndGet();
+        userImpressionsCacheByUserId.keySet().removeIf(key -> normalizedUserId.equals(key.userId()));
         affinityWeightsCacheByUserIdsKey.clear();
-        gameStackSnapshotCache = null;
+        gameStackSnapshotCache.clear();
     }
 
     private Users syncComputedUserPartition(Users user) {
@@ -3290,25 +3314,27 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return null;
         }
         long nowMs = System.currentTimeMillis();
-        CacheEntry<UserImpressionsDto> cached = userImpressionsCacheByUserId.get(userId);
+        long revision = readCacheRevision.get();
+        var cacheKey = new UserReadCacheKey(readCacheScope(), userId);
+        CacheEntry<UserImpressionsDto> cached = userImpressionsCacheByUserId.get(cacheKey);
         if (cached != null) {
-            if (cached.expiresAtMs() > nowMs) {
+            if (cached.expiresAtMs() > nowMs && cached.revision() == readCacheRevision.get()) {
                 return cached.value();
             }
-            userImpressionsCacheByUserId.remove(userId, cached);
+            userImpressionsCacheByUserId.remove(cacheKey, cached);
         }
 
-        Object lock = userReadCacheLocksByUserId.computeIfAbsent(userId, key -> new Object());
+        Object lock = userReadCacheLocksByUserId.computeIfAbsent(cacheKey, key -> new Object());
         synchronized (lock) {
-            cached = userImpressionsCacheByUserId.get(userId);
+            cached = userImpressionsCacheByUserId.get(cacheKey);
             if (cached != null) {
-                if (cached.expiresAtMs() > nowMs) {
+                if (cached.expiresAtMs() > nowMs && cached.revision() == readCacheRevision.get()) {
                     return cached.value();
                 }
-                userImpressionsCacheByUserId.remove(userId, cached);
+                userImpressionsCacheByUserId.remove(cacheKey, cached);
             }
             UserImpressionsDto resolved = resolveMergedUserImpressionsUncached(user);
-            userImpressionsCacheByUserId.put(userId, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS));
+            userImpressionsCacheByUserId.put(cacheKey, new CacheEntry<>(resolved, nowMs + USER_READ_SNAPSHOT_CACHE_TTL_MS, revision));
             return resolved;
         }
     }
@@ -3321,7 +3347,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return new UserImpressionsDto(host, member);
     }
 
-    private record CacheEntry<T>(T value, long expiresAtMs) {
+    private record CacheEntry<T>(T value, long expiresAtMs, long revision) {
     }
 
     private UserImpressionsSectionDto resolveMergedImpressionsSection(

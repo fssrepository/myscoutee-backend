@@ -5,7 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -49,9 +48,22 @@ public class EventMembershipCounterWork {
                 new org.springframework.data.mongodb.core.index.Index().on("membershipCounterWork",
                         org.springframework.data.domain.Sort.Direction.ASC).sparse()));
     }
-    @Scheduled(fixedDelayString = "${events.membership-counter-recovery-delay-ms:10000}", initialDelayString = "${events.membership-counter-recovery-delay-ms:10000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPendingWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            @org.springframework.beans.factory.annotation.Value("${events.membership-counter-recovery-delay-ms:10000}") long retryMs) {
+        changes.watch("EventMembershipCounterWork", java.util.Set.of("events"), java.util.Set.of("membershipCounterWork"), () -> {
+            recoverInCurrentDatabase();
+            return mongo.exists(Query.query(Criteria.where("membershipCounterWork").exists(true).ne(null)), ActivityEvent.class)
+                    ? java.time.Instant.now().plusMillis(Math.max(1, retryMs)) : null;
+        });
+    }
+
     public void recover() {
-        databases.runAcrossConfiguredDatabases(() -> mongo.find(Query.query(Criteria.where("membershipCounterWork")
-                .exists(true).ne(null)).limit(20), ActivityEvent.class).forEach(this::deliver));
+        databases.runAcrossConfiguredDatabases(this::recoverInCurrentDatabase);
+    }
+
+    private void recoverInCurrentDatabase() {
+        mongo.find(Query.query(Criteria.where("membershipCounterWork")
+                .exists(true).ne(null)).limit(20), ActivityEvent.class).forEach(this::deliver);
     }
 }

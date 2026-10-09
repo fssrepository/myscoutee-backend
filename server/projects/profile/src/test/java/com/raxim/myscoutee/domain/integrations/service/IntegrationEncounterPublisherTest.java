@@ -9,6 +9,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
+import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -35,12 +39,18 @@ class IntegrationEncounterPublisherTest {
     @Mock IntegrationEventQueryService queries;
     @Mock IntegrationWebhookService webhooks;
     IntegrationEncounterPublisher publisher;
+    NotificationJobs jobs;
 
     @org.junit.jupiter.api.BeforeEach
     void wireScope() {
         publisher = new IntegrationEncounterPublisher(
             new com.raxim.myscoutee.domain.events.service.MingleEncounterService(null, null, mongo, jobGroupScope),
             new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events), queries, webhooks);
+        jobs = mock(NotificationJobs.class, CALLS_REAL_METHODS);
+        when(jobs.configuredGroupIds(any())).thenReturn(java.util.Arrays.asList((String) null));
+        lenient().when(jobs.beginScheduledRun(any(), any(), any(), any())).thenReturn(mock(NotificationJobs.Configuration.class));
+        ReflectionTestUtils.setField(publisher, "groupRules", jobs);
+        ReflectionTestUtils.setField(publisher, "groupDatabases", new ScheduledMongoSessionRunner("same", "same"));
     }
 
     @Test
@@ -55,10 +65,10 @@ class IntegrationEncounterPublisherTest {
         doThrow(new IllegalStateException("outbox temporarily unavailable"))
                 .doNothing().when(webhooks).enqueueEncounters(eq("owner"), any());
 
-        org.springframework.test.util.ReflectionTestUtils.invokeMethod(publisher, "publishPendingInGroup");
+        publisher.publishPending();
         verify(mongo, never()).updateFirst(any(Query.class), any(Update.class), eq(ActivityMingleSession.class));
 
-        org.springframework.test.util.ReflectionTestUtils.invokeMethod(publisher, "publishPendingInGroup");
+        publisher.publishPending();
         var query = ArgumentCaptor.forClass(Query.class);
         var update = ArgumentCaptor.forClass(Update.class);
         verify(mongo).updateFirst(query.capture(), update.capture(), eq(ActivityMingleSession.class));
@@ -73,10 +83,28 @@ class IntegrationEncounterPublisherTest {
         when(jobGroupScope.findEventOwned(any(Query.class), eq(ActivityMingleSession.class), eq("eventId"))).thenReturn(List.of(session()));
         when(events.findBySourceIdIn(List.of("event"))).thenReturn(List.of());
 
-        org.springframework.test.util.ReflectionTestUtils.invokeMethod(publisher, "publishPendingInGroup");
+        publisher.publishPending();
 
         verify(webhooks, never()).enqueueEncounters(any(), any());
         verify(mongo).updateFirst(any(Query.class), any(Update.class), eq(ActivityMingleSession.class));
+    }
+
+    @Test
+    void emptyPublicationQueueDoesNotClaimOrRecordAJob() {
+        publisher.publishPending();
+        verify(jobs, never()).beginScheduledRun(any(), any(), any(), any());
+        verify(jobs, never()).recordRun(any(), anyInt(), any(), any(), any(), any());
+        verifyNoInteractions(events, queries, webhooks);
+    }
+
+    @Test
+    void rejectedScheduleDoesNotPublishOrAcknowledgePreparedWork() {
+        when(jobGroupScope.findEventOwned(any(Query.class), eq(ActivityMingleSession.class), eq("eventId")))
+                .thenReturn(List.of(session()));
+        when(jobs.beginScheduledRun(any(), any(), any(), any())).thenReturn(null);
+        publisher.publishPending();
+        verifyNoInteractions(events, queries, webhooks);
+        verify(mongo, never()).updateFirst(any(Query.class), any(Update.class), eq(ActivityMingleSession.class));
     }
 
     private ActivityMingleSession session() {

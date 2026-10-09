@@ -63,6 +63,13 @@ public class DeploymentFirebaseRuntime implements com.raxim.myscoutee.domain.pla
         this.configProperties = Objects.requireNonNull(configProperties);
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchConfiguration(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("firebase-runtime", java.util.Set.of("deploymentConfigurations"), java.util.Set.of("firebase"), () -> {
+            refreshAfterConfigurationChange(); return null;
+        });
+    }
+
     @PostConstruct
     public void initializeAvailability() {
         refreshAfterConfigurationChange();

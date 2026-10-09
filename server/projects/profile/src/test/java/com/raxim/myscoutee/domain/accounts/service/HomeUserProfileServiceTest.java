@@ -186,6 +186,62 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void gameStackCacheSeparatesModesAndRejectsAnInvalidatedLoad() {
+        var calls = new java.util.concurrent.atomic.AtomicInteger();
+        when(usersRepository.findByProfileStatusIn(any())).thenAnswer(invocation -> {
+            if (calls.incrementAndGet() == 1) org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "clearUserReadCaches");
+            return List.of();
+        });
+        Runnable read = () -> org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "resolveGameStackSnapshot");
+        try {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL);
+            read.run(); read.run(); read.run(); assertThat(calls.get()).isEqualTo(2);
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+            read.run(); read.run(); assertThat(calls.get()).isEqualTo(3);
+        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear(); }
+    }
+
+    @Test
+    void impressionsCacheSeparatesModesAndRejectsAnInvalidatedLoad() {
+        var calls = new java.util.concurrent.atomic.AtomicInteger();
+        var user = new Users(); user.setId("same-id"); user.setUserId("same-id");
+        when(eventFeedbackAnswersRepository.findByTargetUserIdOrderBySubmittedAtIsoDesc("same-id")).thenAnswer(invocation -> {
+            if (calls.incrementAndGet() == 1) org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "clearUserReadCaches");
+            return List.of();
+        });
+        Runnable read = () -> org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "resolveMergedUserImpressions", user);
+        try {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL);
+            read.run(); read.run(); read.run(); assertThat(calls.get()).isEqualTo(2);
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+            read.run(); read.run(); assertThat(calls.get()).isEqualTo(3);
+        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear(); }
+    }
+
+    @Test
+    void affinityReadCacheSeparatesDatabaseAndWorkspaceAndRejectsAnInvalidatedLoad() {
+        var calls = new java.util.concurrent.atomic.AtomicInteger();
+        when(userAffinityEdgesRepository.findRelevantByUserIds(any())).thenAnswer(invocation -> {
+            if (calls.incrementAndGet() == 1) {
+                org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "clearUserReadCaches");
+            }
+            return List.of();
+        });
+        Runnable read = () -> org.springframework.test.util.ReflectionTestUtils.invokeMethod(service,
+                "queryAffinityEdgeWeights", List.of("a", "b"));
+        try {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL);
+            read.run(); read.run(); read.run();
+            assertThat(calls.get()).isEqualTo(2); // the invalidated first load was not reused
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+            read.run(); read.run();
+            assertThat(calls.get()).isEqualTo(3);
+            com.raxim.myscoutee.domain.platform.api.JobGroupContext.run("other-workspace", read);
+            assertThat(calls.get()).isEqualTo(4);
+        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear(); }
+    }
+
+    @Test
     void delegatedSelectionLoadsTheCanonicalProfileAndIgnoresCallerSelectedId() {
         var selected = new Users(); selected.setUserId("selected"); selected.setName("Selected");
         selected.setAccountUserId("account"); selected.setWorkspaceGroupId("workspace");

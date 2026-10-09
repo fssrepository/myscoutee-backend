@@ -76,6 +76,9 @@ services:
       start_period: 20s
 
   mongodb:
+    extends:
+      file: docker-compose.production-replicaset.yml
+      service: mongodb
     image: ${MONGO_IMAGE:-mongo:8.0.4}
     container_name: mongodb
     hostname: mongodb
@@ -96,7 +99,7 @@ services:
     networks:
       - myscoutee
     healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet --username \"$${MONGO_APP_USERNAME:-guest}\" --password \"$${MONGO_APP_PASSWORD:-guest}\" --authenticationDatabase \"$${MONGO_APP_DATABASE:-myscoutee_db}\" \"$${MONGO_APP_DATABASE:-myscoutee_db}\" --eval 'db.runCommand({ ping: 1 }).ok' | grep -q 1"]
+      test: ["CMD", "bash", "/docker-entrypoint-initdb.d/replica-health"]
       interval: 10s
       timeout: 10s
       retries: 30
@@ -152,6 +155,9 @@ services:
       start_period: 20s
 
   profilemanagement:
+    extends:
+      file: docker-compose.production-replicaset.yml
+      service: profilemanagement
     image: ${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:1.3.0-prod}
     pull_policy: never
     container_name: myscoutee
@@ -185,8 +191,6 @@ services:
       ASSET_SOURCE_REFRESH_ENABLED: "${ASSET_SOURCE_REFRESH_ENABLED:-false}"
       ASSET_SOURCE_REFRESH_ALLOWED_HOSTS: "${ASSET_SOURCE_REFRESH_ALLOWED_HOSTS:-}"
       AFFINITY_RECOMPUTE_ENABLED: "${AFFINITY_RECOMPUTE_ENABLED:-true}"
-      AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED: "${AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED:-false}"
-      AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: "${AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED:-true}"
       REGISTRY_ENABLED: "${REGISTRY_ENABLED:-false}"
       REGISTRY_OUTBOUND_ALLOWED: "${REGISTRY_OUTBOUND_ALLOWED:-false}"
       REGISTRY_OPERATOR_REGISTRATION_CONFIRMED: "${REGISTRY_OPERATOR_REGISTRATION_CONFIRMED:-false}"

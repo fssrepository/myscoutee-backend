@@ -1,0 +1,4797 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee event-operations",
+    "version": "1.0.0",
+    "description": "Typed calls to existing EventOperations operations from integrations only. Native permissions and business behavior retained. Profile inputs are owner-reloaded by ID; no detached persistence documents. REAL/DEMO and job scope, 2 MiB requests / 8 MiB responses, bounded timeout and no automatic retries. Distributed lost-reply recovery remains milestone 16."
+  },
+  "paths": {
+    "/_internal/v1/events/event-operations/queryitemsbyuserpage_1": {
+      "post": {
+        "operationId": "event_operations_queryitemsbyuserpage_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryItemsByUserPage1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryItemsByUserPage1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/queryinvitationspage_1": {
+      "post": {
+        "operationId": "event_operations_queryinvitationspage_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryInvitationsPage1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryInvitationsPage1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/queryattendingpage_1": {
+      "post": {
+        "operationId": "event_operations_queryattendingpage_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryAttendingPage1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryAttendingPage1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/queryhostingpage_1": {
+      "post": {
+        "operationId": "event_operations_queryhostingpage_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryHostingPage1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryHostingPage1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/querytrashpage_1": {
+      "post": {
+        "operationId": "event_operations_querytrashpage_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryTrashPage1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_QueryTrashPage1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/loadeventdetailbyid_1": {
+      "post": {
+        "operationId": "event_operations_loadeventdetailbyid_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_LoadEventDetailById1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_LoadEventDetailById1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/requestjoin_1": {
+      "post": {
+        "operationId": "event_operations_requestjoin_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_RequestJoin1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_RequestJoin1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/event-operations/sync_1": {
+      "post": {
+        "operationId": "event_operations_sync_1",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "X-MyScoutee-Actor-Delegation",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Operation/body/mode-bound RSA proof. Native selected actor, workspace, permissions and validation are retained."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Sync1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Sync1Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Native owner rejection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated event-operations capability for integrations."
+      }
+    },
+    "schemas": {
+      "microservices_transport_events_EventOperationsProtocol_QueryItemsByUserPage1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLimit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_Scope": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "active": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "groupId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "active"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryItemsByUserPage1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventsExplorePageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "domain_events_dto_EventsDtos_EventsExplorePageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "records": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "total": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sortKeys": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_EventDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "adminIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subtitle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timeframe": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "inviter": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "activity": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "creatorUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorInitials": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorAvatarUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorCity": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "organizerUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "distanceKm": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "capacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityTotal": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "full": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "eventType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "mode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currentStage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_TournamentCurrentStageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ticketing": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "pricing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingConfigDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "policiesEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "policies": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PolicyItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "slotsEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "slotTemplates": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_EventSlotTemplateDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "nextSlot": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_EventSlotOccurrenceDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upcomingSlots": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_EventSlotOccurrenceDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "subEventsEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "subEventDefinitions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_SubEventDefinitionDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "subEvents": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_SubEventItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "acceptedMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pendingMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "acceptedMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "pendingMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "invitedMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "pendingRequestMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "pendingReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "currentUserMembershipStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "approvalRequired": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "checkoutResultState": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "boost": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "watched": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "sourceLink": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "moderationStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "paymentDeadlineHours": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "paymentDeadlineEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "cancelled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "cancellationRefundsPending": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "canCancelForFullRefund": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "campaignId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_TournamentCurrentStageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stageNumber": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "totalStages": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingConfigDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "basePrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "taxMode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "chargeType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantityRulesEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "quantityRules": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PricingQuantityRuleDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "minPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "rounding": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "demandRulesEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "demandRules": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PricingDemandRuleDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "timeRulesEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "timeRules": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PricingTimeRuleDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "cancellationPolicy": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingCancellationPolicyDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slotPricingEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "slotOverrides": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PricingSlotOverrideDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "audience": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingAudienceSettingsDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingQuantityRuleDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "minQuantity": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingActionDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingActionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingDemandRuleDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "operator": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "capacityFilledPercent": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingActionDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "appliesTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingTimeRuleDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trigger": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "offsetValue": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "specificDateStart": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "specificDateEnd": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingActionDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "appliesTo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingCancellationPolicyDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "rules": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PricingCancellationRuleDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingCancellationRuleDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "offsetUnit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "offsetValue": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "refundKind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "refundValue": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingSlotOverrideDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingAudienceSettingsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "memberPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "vipPrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "inviteOnlyDiscountPercent": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "promoCodes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PricingPromoCodeDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "soldOutLabel": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PricingPromoCodeDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingActionDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_PolicyItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "required": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_EventSlotTemplateDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "overrideDate": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "closed": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "subEventDefinitions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_SubEventDefinitionDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_SubEventDefinitionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timing": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "offsetMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "durationMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "location": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tournamentGroupCapacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tournamentGroupCapacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tournamentLeaderboardType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tournamentAdvancePerGroup": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "optional": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "pricing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingConfigDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "icon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_EventSlotOccurrenceDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "parentEventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotTemplateId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timeframe": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "capacityTotal": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "acceptedMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pendingMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_SubEventItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdByUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tournamentGroupCapacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tournamentGroupCapacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tournamentLeaderboardType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tournamentAdvancePerGroup": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "optional": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "pricing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingConfigDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "membersAccepted": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "membersPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "carsPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodationPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "suppliesPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "carsAccepted": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodationAccepted": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "suppliesAccepted": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "carsCapacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "carsCapacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodationCapacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodationCapacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "suppliesCapacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "suppliesCapacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "slotStartOffsetMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "slotDurationMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "groupsCount": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "groupsPending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "stageStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stageStatusReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stageStatusUpdatedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stageFinalizedAt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stageFinalizedByUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stageResultRevision": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "groups": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_SubEventGroupItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "runtimeKind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "eventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_SubEventGroupItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "capacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryInvitationsPage1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLimit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryInvitationsPage1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventsExplorePageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryAttendingPage1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLimit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryAttendingPage1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventsExplorePageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryHostingPage1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLimit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryHostingPage1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventsExplorePageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryTrashPage1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "requestedLimit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_QueryTrashPage1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventsExplorePageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_LoadEventDetailById1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requestedUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "eventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_LoadEventDetailById1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventDetailDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "domain_events_dto_EventsDtos_EventDetailDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "syncKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "userId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "statusBeforeSuppression": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "adminIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subtitle": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timeframe": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "inviter": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unread": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "activity": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "trashedAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorInitials": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorGender": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "creatorCity": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "blindMode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "startAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "distanceKm": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceLink": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "locationCoordinates": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_LocationCoordinatesDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capacityMin": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityMax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityTotal": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityTotalActual": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "full": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "autoInviter": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "frequency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ticketing": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "approvalRequired": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "pricing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_PricingConfigDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "policiesEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "policies": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_PolicyItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "slotsEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "slotTemplates": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_EventSlotTemplateDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "parentEventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotTemplateId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "generated": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "eventType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nextSlot": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_EventSlotOccurrenceDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upcomingSlots": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_EventSlotOccurrenceDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "acceptedMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pendingMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "acceptedMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "pendingMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "invitedMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "pendingRequestMemberUserIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "pendingReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "topics": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "subEventsEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "subEventDefinitions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_SubEventDefinitionDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "subEvents": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/common_dto_SharedDtos_SubEventItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "mode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "mingleConfiguration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_MingleConfigurationDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currentStage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/common_dto_SharedDtos_TournamentCurrentStageDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rating": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "boost": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "affinity": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "paymentSessionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "imageUrls": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "imageDetails": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_media_dto_MediaDtos_ImageDetailsDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "paymentDeadlineHours": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "paymentDeadlineEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "campaignId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_LocationCoordinatesDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "latitude": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "longitude": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "common_dto_SharedDtos_MingleConfigurationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "groupSize": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "plannedRounds": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "roundDurationMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "breakDurationMinutes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "requireGenderBalance": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_media_dto_MediaDtos_ImageDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "location": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "caption": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "event": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_media_dto_MediaDtos_ImageEventReference"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_media_dto_MediaDtos_ImageEventReference": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "organizerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "organizerName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "microservices_transport_events_EventOperationsProtocol_RequestJoin1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventActionRequestDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "domain_events_dto_EventsDtos_EventActionRequestDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotSourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "optionalSubEventIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "assetSelections": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventCheckoutAssetSelectionDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "acceptedPolicyIds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "paymentSessionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bookingConfirmed": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "pendingReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "checkoutState": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "basketItems": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventCheckoutBasketItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "pricingSummaryRows": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventCheckoutPricingSummaryRowDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "lineItems": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventCheckoutLineItemDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "totalAmount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "removeMembershipOnly": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "checkoutResultState": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "checkoutSessionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "appliedPromoCodes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_EventCheckoutAssetSelectionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "subEventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resourceType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_EventCheckoutBasketItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotSourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotTemplateId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "selectedDateKey": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "subEventId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resourceType": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quantity": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "resultState": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pricingSummaryRows": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventCheckoutPricingSummaryRowDto"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "checkoutSessionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "createdAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "updatedAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expiresAtIso": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_EventCheckoutPricingSummaryRowDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "multiplier": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_EventCheckoutLineItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "currency": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "microservices_transport_events_EventOperationsProtocol_RequestJoin1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventParticipationActionResultDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "domain_events_dto_EventsDtos_EventParticipationActionResultDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "slotSourceId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "membershipStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pendingReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "acceptedMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pendingMembers": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "capacityTotal": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "full": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "paymentSessionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "changed": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "counterDelta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserActivityCounterDeltaDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paymentStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "paymentUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_UserActivityCounterDeltaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "game": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "chats": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "invitations": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "events": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "hosting": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cars": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodation": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "supplies": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tickets": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "contacts": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "feedback": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "chat": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserChatCounterDeltaDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "event": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserEventCounterDeltaDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "asset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserAssetCounterDeltaDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "eventFeedback": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_UserEventFeedbackCounterDeltaDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "adminJobs": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "adminMetrics": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "notifications": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_UserChatCounterDeltaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "all": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "event": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "subEvent": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "group": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "service": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "appSupport": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_UserEventCounterDeltaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "all": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "active": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "invitations": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "hosting": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "drafts": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "trash": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "watchlist": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_UserAssetCounterDeltaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cars": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "accommodation": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "supplies": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "tickets": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "domain_events_dto_EventsDtos_UserEventFeedbackCounterDeltaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ownEvents": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pending": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "feedbacked": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "removed": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "microservices_transport_events_EventOperationsProtocol_Sync1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/microservices_transport_events_EventOperationsProtocol_Scope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventDetailDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      },
+      "microservices_transport_events_EventOperationsProtocol_Sync1Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/domain_events_dto_EventsDtos_EventDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  }
+}

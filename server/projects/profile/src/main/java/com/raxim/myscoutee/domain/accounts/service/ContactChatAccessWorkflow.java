@@ -7,7 +7,6 @@ import org.bson.Document;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -52,17 +51,30 @@ public class ContactChatAccessWorkflow {
         return process(operations.accept(actor, target, workspace, change, contact));
     }
 
-    @Scheduled(fixedDelayString = "${users.contact-access-recovery-delay-ms:10000}", initialDelayString = "${users.contact-access-recovery-delay-ms:10000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchAcceptedCommands(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("contact-access", java.util.Set.of("contactAccessOperations"),
+                java.util.Set.of("state", "nextAttemptAt", "leaseUntil"), () -> {
+                    recoverAcceptedCommandsInCurrentDatabase();
+                    var next = operations.nextAttemptAt();
+                    if (next == null) return null;
+                    var retry = java.time.Instant.now().plusSeconds(5);
+                    return next.isAfter(retry) ? next : retry;
+                });
+    }
+
     public void recoverAcceptedCommands() {
-        databases.runAcrossConfiguredDatabases(() -> {
-            for (var operation : operations.due()) {
+        databases.runAcrossConfiguredDatabases(this::recoverAcceptedCommandsInCurrentDatabase);
+    }
+
+    private void recoverAcceptedCommandsInCurrentDatabase() {
+        for (var operation : operations.due()) {
                 try { process(operation); }
                 catch (RuntimeException failure) {
                     // Retry state is already retained; never print the actor or payload.
                     LOG.warn("Accepted contact access operation remains incomplete ({})", failure.getClass().getSimpleName());
                 }
             }
-        });
     }
 
     private ContactPermissions.Permission process(Document candidate) {

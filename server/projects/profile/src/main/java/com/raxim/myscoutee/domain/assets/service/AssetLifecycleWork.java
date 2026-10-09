@@ -3,7 +3,6 @@ package com.raxim.myscoutee.domain.assets.service;
 import java.util.*;
 import com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
@@ -58,15 +57,26 @@ public class AssetLifecycleWork {
             });
         }
     }
-    @Scheduled(fixedDelayString = "${assets.lifecycle-recovery-delay-ms:10000}", initialDelayString = "${assets.lifecycle-recovery-delay-ms:10000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPendingWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            @org.springframework.beans.factory.annotation.Value("${assets.lifecycle-recovery-delay-ms:10000}") long retryMs) {
+        changes.watch("AssetLifecycleWork", java.util.Set.of("assets"), java.util.Set.of("lifecycleWork"), () -> {
+            recoverInCurrentDatabase();
+            return mongo.exists(Query.query(Criteria.where("lifecycleWork.0").exists(true)), Asset.class)
+                    ? java.time.Instant.now().plusMillis(Math.max(1, retryMs)) : null;
+        });
+    }
+
     public void recover() {
-        databases.runAcrossConfiguredDatabases(() -> {
-            for (var asset : mongo.find(Query.query(Criteria.where("lifecycleWork.0").exists(true)).limit(20), Asset.class)) {
+        databases.runAcrossConfiguredDatabases(this::recoverInCurrentDatabase);
+    }
+
+    private void recoverInCurrentDatabase() {
+        for (var asset : mongo.find(Query.query(Criteria.where("lifecycleWork.0").exists(true)).limit(20), Asset.class)) {
                 try { deliver(asset); }
                 catch (RuntimeException pending) {
                     org.slf4j.LoggerFactory.getLogger(AssetLifecycleWork.class).warn("Asset lifecycle delivery remains pending ({})", pending.getClass().getSimpleName());
                 }
             }
-        });
     }
 }

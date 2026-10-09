@@ -1,0 +1,257 @@
+#!/usr/bin/env node
+// Reuse the backend checkout's existing frontend Ajv; no new tool installation.
+import fs from 'node:fs';
+import path from 'node:path';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const backend = path.resolve(process.env.MYSCOUTEE_BACKEND_SOURCE || path.join(root, '..'));
+const require = createRequire(path.join(backend, 'frontend/package.json'));
+const Ajv2020 = require('ajv/dist/2020');
+const addFormats = require('ajv-formats');
+const schemasOnly = process.argv.includes('--schemas-only');
+if (process.argv.slice(2).some(value => value !== '--schemas-only')) throw new Error('Usage: verify-transport-contracts.mjs [--schemas-only]');
+for (const [contract, subdirectory, requiredStatuses] of [
+  ['localization/localization-v1', '', [200, 400, 401, 503]],
+  ['groups/groups-media-v1', 'groups-media', [200, 400, 401, 403, 404, 503]],
+  ['community/community-media-v1', 'community-media', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['accounts/profile-identities-v1', 'profile-identities', [200, 400, 401, 403, 404, 503]],
+  ['assets/assets-media-v1', 'assets-media', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['events/events-media-v1', 'events-media', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['content/content-media-v1', 'content-media', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['chat/chat-media-v1', 'chat-media', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/chat-directory-v1', 'chat-directory', [200, 400, 401, 403, 404, 503]],
+  ['notifications/notification-catalog-v1', 'notification-catalog', [200, 400, 401, 403, 404, 503]],
+  ['affinity/recompute-queue-v1', 'recompute-queue', [200, 400, 401, 403, 503]],
+  ['community/case-participants-v1', 'case-participants', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['campaigns/campaigns-media-v1', 'campaigns-media', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['events/member-directory-v1', 'member-directory', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['events/event-membership-facts-v1', 'event-membership-facts', [200, 400, 401, 403, 503]],
+  ['assets/asset-membership-facts-v1', 'asset-membership-facts', [200, 400, 401, 403, 404, 503]],
+  ['groups/group-directory-v1', 'group-directory', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['events/event-home-reads-v1', 'home-reads', [200, 400, 401, 403, 503]],
+  ['events/feedback-directory-v1', 'feedback-directory', [200, 400, 401, 403, 503]],
+  ['content/user-feedback-v1', 'user-feedback', [200, 400, 401, 403, 409, 413, 415, 503]],
+  ['content/user-reports-v1', 'user-reports', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/assets-job-scopes-v1', 'assets-job-scopes', [200, 400, 401, 403, 404, 503]],
+  ['events/events-job-scopes-v1', 'events-job-scopes', [200, 400, 401, 403, 404, 503]],
+  ['payments/affiliate-registrations-v1', 'affiliate-registrations', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/job-audience-v1', 'job-audience', [200, 400, 401, 403, 413, 415, 503]],
+  ['groups/group-administration-v1', 'group-administration', [200, 400, 401, 403, 503]],
+  ['notifications/role-notifications-v1', 'role-notifications', [200, 400, 401, 403, 413, 415, 503]],
+  ['notifications/notification-delivery-v1', 'notification-delivery', [200, 400, 401, 403, 413, 415, 503]],
+  ['groups/profile-workspace-v1', 'profile-workspace', [200, 400, 401, 403, 404, 409, 413, 415, 503]],
+  ['email/email-links-v1', 'email-links', [200, 400, 401, 403, 503]],
+  ['localization/message-translations-v1', 'message-translations', [200, 400, 401, 403, 404, 503]],
+  ['platform/administrator-settings-v1', 'administrator-settings', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/contact-permissions-v1', 'contact-permissions', [200, 400, 401, 403, 404, 409, 413, 415, 503]],
+  ['affinity/recompute-metrics-v1', 'recompute-metrics', [200, 400, 401, 403, 503]],
+  ['platform/deployment-branding-v1', 'deployment-branding', [200, 400, 401, 403, 503]],
+  ['platform/authentication-mode-v1', 'authentication-mode', [200, 400, 401, 403, 503]],
+  ['platform/operator-notification-settings-v1', 'operator-notification-settings', [200, 400, 401, 403, 503]],
+  ['email/email-rendering-v1', 'email-rendering', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/exchange-rate-configuration-v1', 'exchange-rate-configuration', [200, 400, 401, 403, 413, 415, 503]],
+  ['administration/admin-audience-v1', 'admin-audience', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-job-scopes-v1', 'account-job-scopes', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/country-directory-v1', 'country-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/payment-providers-v1', 'payment-providers', [200, 400, 401, 403, 413, 415, 503]],
+  ['content/content-statistics-v1', 'content-statistics', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/current-payment-provider-v1', 'current-payment-provider', [200, 400, 401, 403, 503]],
+  ['events/event-watch-directory-v1', 'event-watch-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/organizer-event-reads-v1', 'organizer-event-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/contact-directory-v1', 'contact-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-payment-reads-v1', 'account-payment-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/profile-summaries-v1', 'profile-summaries', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/rating-session-v1', 'rating-session', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/feedback-session-v1', 'feedback-session', [200, 400, 401, 403, 413, 415, 503]],
+  ['access/access-permissions-v1', 'access-permissions', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/location-eligibility-v1', 'location-eligibility', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/profile-cards-v1', 'profile-cards', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/asset-ownership-reads-v1', 'asset-ownership-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/asset-derived-updates-v1', 'asset-derived-updates', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-ownership-reads-v1', 'event-ownership-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-derived-updates-v1', 'event-derived-updates', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/model-status-changes-v1', 'model-status-changes', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/email-secrets-v1', 'email-secrets', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/payment-credential-secrets-v1', 'payment-credential-secrets', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/deployment-settings-v1', 'deployment-settings', [200, 400, 401, 403, 413, 415, 503]],
+  ['community/announcement-directory-v1', 'announcement-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['community/case-feedback-preparation-v1', 'case-feedback-preparation', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/member-attention-v1', 'member-attention', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/member-audience-v1', 'member-audience', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-resource-directory-v1', 'event-resource-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/rating-measurement-v1', 'rating-measurement', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/asset-measurement-v1', 'asset-measurement', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/chat-measurement-v1', 'chat-measurement', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-measurement-v1', 'event-measurement', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/random-group-assignment-v1', 'random-group-assignment', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/exchange-rate-refresh-v1', 'exchange-rate-refresh', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/payment-totals-v1', 'payment-totals', [200, 400, 401, 403, 413, 415, 503]],
+  ['integrations/participant-statistics-v1', 'participant-statistics', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-checkout-v1', 'event-checkout', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/attachment-lifecycle-v1', 'attachment-lifecycle', [200, 400, 401, 403, 413, 415, 503]],
+  ['content/content-registration-v1', 'content-registration', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/asset-memberships-v1', 'asset-memberships', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/participation-tickets-v1', 'participation-tickets', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/ticket-audit-v1', 'ticket-audit', [200, 400, 401, 403, 413, 415, 503]],
+  ['integrations/asset-changes-v1', 'asset-changes', [200, 400, 401, 403, 413, 415, 503]],
+  ['integrations/event-changes-v1', 'event-changes', [200, 400, 401, 403, 413, 415, 503]],
+  ['integrations/role-attention-events-v1', 'role-attention-events', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/checkout-memberships-v1', 'checkout-memberships', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/resource-assignments-v1', 'resource-assignments', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/checkout-baskets-v1', 'checkout-baskets', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/event-payments-v1', 'event-payments', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/event-payment-cancellations-v1', 'event-payment-cancellations', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/checkout-pricing-v1', 'checkout-pricing', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/service-slot-pricing-v1', 'service-slot-pricing', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/payment-refunds-v1', 'payment-refunds', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/campaign-conversations-v1', 'campaign-conversations', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/case-conversations-v1', 'case-conversations', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/event-conversations-v1', 'event-conversations', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/support-messages-v1', 'support-messages', [200, 400, 401, 403, 413, 415, 503]],
+  ['email/scheduled-messages-v1', 'scheduled-messages', [200, 400, 401, 403, 413, 415, 503]],
+  ['notifications/notification-reads-v1', 'notification-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['notifications/event-invitation-notifications-v1', 'event-invitation-notifications', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-consents-v1', 'account-consents', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/account-ratings-v1', 'account-ratings', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/campaign-ratings-v1', 'campaign-ratings', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/campaign-graphs-v1', 'campaign-graphs', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/meeting-projections-v1', 'meeting-projections', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/rating-page-reads-v1', 'rating-page-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/asset-moderation-details-v1', 'asset-moderation-details', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/asset-moderation-projection-v1', 'asset-moderation-projection', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/assets-v1', 'assets', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/payment-methods-v1', 'payment-methods', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/payment-simulator-configuration-v1', 'payment-simulator-configuration', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/payment-revenue-v1', 'payment-revenue', [200, 400, 401, 403, 413, 415, 503]],
+  ['email/email-sending-v1', 'email-sending', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/feedback-eligibility-v1', 'feedback-eligibility', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/affiliates-v1', 'affiliates', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/graph-science-v1', 'graph-science', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/affinity-parameters-v1', 'affinity-parameters', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/affinity-graph-v1', 'affinity-graph', [200, 400, 401, 403, 413, 415, 503]],
+  ['help/help-administration-v1', 'help-administration', [200, 400, 401, 403, 413, 415, 503]],
+  ['content/idea-administration-v1', 'idea-administration', [200, 400, 401, 403, 413, 415, 503]],
+  ['notifications/notification-administration-v1', 'notification-administration', [200, 400, 401, 403, 413, 415, 503]],
+  ['content/administrative-access-v1', 'administrative-access', [200, 400, 401, 403, 413, 415, 503]],
+  ['campaigns/campaigns-v1', 'campaigns', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/chat-queries-v1', 'chat-queries', [200, 400, 401, 403, 413, 415, 503]],
+  ['community/announcements-v1', 'announcements', [200, 400, 401, 403, 413, 415, 503]],
+  ['community/cases-v1', 'cases', [200, 400, 401, 403, 413, 415, 503]],
+  ['community/scheduled-cases-v1', 'scheduled-cases', [200, 400, 401, 403, 413, 415, 503]],
+  ['community/service-offerings-v1', 'service-offerings', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-operations-v1', 'event-operations', [200, 400, 401, 403, 413, 415, 503]],
+  ['groups/integration-groups-v1', 'integration-groups', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/partner-invitation-admission-v1', 'partner-invitation-admission', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/mingle-encounters-v1', 'mingle-encounters', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/event-affinity-scores-v1', 'event-affinity-scores', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/discovery-profiles-v1', 'discovery-profiles', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-workspaces-v1', 'account-workspaces', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/asset-payments-v1', 'asset-payments', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/checkout-results-v1', 'checkout-results', [200, 400, 401, 403, 413, 415, 503]],
+  ['platform/firebase-push-delivery-v1', 'firebase-push-delivery', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/event-privacy-v1', 'event-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['assets/asset-privacy-v1', 'asset-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['notifications/notification-privacy-v1', 'notification-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['payments/payment-privacy-v1', 'payment-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['help/help-privacy-v1', 'help-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['media/media-cleanup-v1', 'media-cleanup', [200, 400, 401, 403, 413, 415, 503]],
+  ['media/image-uploads-v1', 'image-uploads', [200, 400, 401, 403, 413, 415, 503]],
+  ['email/email-privacy-v1', 'email-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['content/content-privacy-v1', 'content-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/chat-privacy-v1', 'chat-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/affinity-privacy-v1', 'affinity-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['administration/operational-telemetry-v1', 'operational-telemetry', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/following-events-v1', 'following-events', [200, 400, 401, 403, 404, 409, 413, 415, 503]],
+  ['accounts/friendship-reads-v1', 'friendship-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/friendship-projections-v1', 'friendship-projections', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/meeting-evidence-v1', 'meeting-evidence', [200, 400, 401, 403, 413, 415, 503]],
+  ['notifications/notification-jobs-v1', 'notification-jobs', [200, 400, 401, 403, 413, 415, 503]],
+  ['campaigns/campaign-catalog-v1', 'campaign-catalog', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-devices-v1', 'account-devices', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-media-sessions-v1', 'account-media-sessions', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/profile-moderation-v1', 'profile-moderation', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['accounts/activity-counters-v1', 'activity-counters', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-notifications-v1', 'account-notifications', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/chat-counters-v1', 'chat-counters', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-inactivity-v1', 'account-inactivity', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/selected-profile-v1', 'selected-profile', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/profile-read-state-v1', 'profile-read-state', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/email-profiles-v1', 'email-profiles', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/event-counter-updates-v1', 'event-counter-updates', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/account-affinity-projections-v1', 'account-affinity-projections', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/scoring-profiles-v1', 'scoring-profiles', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/asset-profiles-v1', 'asset-profiles', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/asset-affinity-scores-v1', 'asset-affinity-scores', [200, 400, 401, 403, 413, 415, 503]],
+  ['content/administrative-actors-v1', 'administrative-actors', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['accounts/actor-delegation-v1', 'actor-delegation', [200, 400, 401, 403, 413, 415]],
+  ['affinity/configuration-catalog-v1', 'configuration-catalog', [200, 400, 401, 403, 404, 503]],
+  ['assets/ticket-reads-v1', 'ticket-reads', [200, 400, 401, 403, 413, 415, 503]],
+  ['email/user-activity-v1', 'user-activity', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/user-affinity-v1', 'user-affinity', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/experiences-v1', 'experiences', [200, 400, 401, 403, 404, 413, 415, 503]],
+  ['accounts/rating-profiles-v1', 'rating-profiles', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/user-affinity-changes-v1', 'user-affinity-changes', [200, 400, 401, 403, 413, 415, 503]],
+  ['chat/chat-review-v1', 'chat-review', [200, 400, 401, 403, 404, 503]],
+  ['affinity/rating-directory-v1', 'rating-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['affinity/edge-directory-v1', 'edge-directory', [200, 400, 401, 403, 413, 415, 503]],
+  ['events/community-memberships-v1', 'community-memberships', [200, 400, 401, 403, 404, 503]],
+]) {
+  const spec = JSON.parse(fs.readFileSync(path.join(root, `transport/contracts/${contract}.openapi.json`), 'utf8'));
+  const validator = new Ajv2020();
+  addFormats(validator);
+  const rewriteReferences = value => JSON.parse(JSON.stringify(value, (key, item) =>
+    key === '$ref' && typeof item === 'string' && item.startsWith('#/components/schemas/')
+      ? item.replace('#/components/schemas/', '#/$defs/') : item));
+  const definitions = rewriteReferences(spec.components.schemas);
+  const compile = schema => validator.compile({ $defs: definitions, ...rewriteReferences(schema) });
+  const responseValidators = new Map();
+  for (const [route, operations] of Object.entries(spec.paths)) {
+    for (const [method, operation] of Object.entries(operations)) {
+      for (const media of Object.values(operation.requestBody?.content || {})) compile(media.schema);
+      for (const [status, response] of Object.entries(operation.responses || {})) {
+        for (const [mediaType, media] of Object.entries(response.content || {})) {
+          responseValidators.set(`${route} ${method} ${status} ${mediaType}`, compile(media.schema));
+        }
+      }
+    }
+  }
+  if (schemasOnly) {
+    console.log(`Compiled request/response schemas for ${contract}; HTTP behavior not verified.`);
+    continue;
+  }
+  const directory = path.join(root, 'build/bootstrap-tests/wire-evidence', subdirectory);
+  const files = fs.existsSync(directory) ? fs.readdirSync(directory).filter(name => /^response-[0-9]+\.json$/.test(name)) : [];
+  if (!files.length) throw new Error(`Run :bootstrap-tests:test first; no real HTTP evidence exists for ${contract}.`);
+  const statuses = new Set();
+  for (const file of files) {
+    const result = JSON.parse(fs.readFileSync(path.join(directory, file), 'utf8'));
+    const response = spec.paths[result.path][result.method || 'get'].responses[String(result.status)];
+    const stream = response.content['application/x-ndjson'];
+    const validate = responseValidators.get(`${result.path} ${result.method || 'get'} ${result.status} ${stream ? 'application/x-ndjson' : 'application/json'}`);
+    const bodies = stream ? result.frames : [result.body];
+    if (!Array.isArray(bodies) || !bodies.length) throw new Error(`${contract}/${file}: missing response frames`);
+    for (const body of bodies) {
+      if (!validate(body)) throw new Error(`${contract}/${file}: ${JSON.stringify(validate.errors)}`);
+    }
+    if (stream) {
+      const terminal = bodies.at(-1);
+      const measurement = spec['x-stream-protocol'] === 'measurement-evidence-v1';
+      if (measurement) {
+        if (result.complete !== true || terminal?.kind !== 'complete' || terminal.count !== bodies.length - 1
+            || bodies.slice(0, -1).some(frame => frame.kind !== 'evidence')) {
+          throw new Error(`${contract}/${file}: incomplete or malformed measurement stream`);
+        }
+      } else if (result.complete !== true || !['result', 'error'].includes(terminal?.kind)
+          || bodies.slice(0, -1).some(frame => frame.kind !== 'progress')) {
+        throw new Error(`${contract}/${file}: incomplete or malformed job stream`);
+      }
+    }
+    statuses.add(result.status);
+  }
+  for (const status of requiredStatuses) {
+    if (!statuses.has(status)) throw new Error(`${contract}: missing HTTP status evidence: ${status}`);
+  }
+  console.log(`Validated ${files.length} real HTTP responses against ${contract}.openapi.json; statuses: ${[...statuses].sort().join(', ')}.`);
+}

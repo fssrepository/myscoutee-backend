@@ -1,0 +1,383 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee internal event media visibility reads",
+    "version": "1.0.0",
+    "description": "Typed canonical event media-policy projections. Read-only service credential supplies facts, not delegated user authority. Explicit REAL/DEMO context and bounded queries; HTTPS except isolated-lab opt-in."
+  },
+  "paths": {
+    "/_internal/v1/events/media-visibility": {
+      "post": {
+        "operationId": "getEventMediaVisibility",
+        "security": [
+          {
+            "eventsMediaRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Canonical media-policy projection. Maximum response 2 MiB.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventMediaVisibilityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "EVENT_VISIBILITY_UNAVAILABLE: owner failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: no matching reference in the selected mode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "QUERY_TOO_LARGE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "INVALID_CONTENT_TYPE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "Maximum 1 MiB of JSON, including chunked requests.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MediaUrlsQueryDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_internal/v1/events/media-membership": {
+      "get": {
+        "operationId": "getAcceptedCommunityMediaMembership",
+        "security": [
+          {
+            "eventsMediaRead": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          },
+          {
+            "name": "communityId",
+            "in": "query",
+            "required": false,
+            "description": "Omission preserves canonical null; an empty string remains distinct.",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          },
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": false,
+            "description": "Omission preserves canonical null; an empty string remains distinct.",
+            "schema": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accepted community member role; maximum response 4 KiB.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityMediaMembershipDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "INVALID_SESSION_MODE or INVALID_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UNAUTHORIZED: absent, duplicate or wrong read credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "FORBIDDEN: credential does not authorize another path or method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "EVENT_VISIBILITY_UNAVAILABLE: owner failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: no matching reference in the selected mode.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "eventsMediaRead": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated events-media read credential of at least 256 random bits; never expose to browsers."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_REQUEST",
+              "INVALID_SESSION_MODE",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "EVENT_VISIBILITY_UNAVAILABLE",
+              "QUERY_TOO_LARGE",
+              "INVALID_CONTENT_TYPE"
+            ]
+          }
+        }
+      },
+      "MediaUrlsQueryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "urls"
+        ],
+        "properties": {
+          "urls": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24576
+            }
+          }
+        }
+      },
+      "EventMediaVisibilityDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "creatorUserId",
+          "organizerUserId",
+          "moderationStatus",
+          "visibility",
+          "status",
+          "admins",
+          "acceptedMemberUserIds",
+          "invitedMemberUserIds",
+          "pendingRequestMemberUserIds"
+        ],
+        "properties": {
+          "creatorUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "organizerUserId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "moderationStatus": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "visibility": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "admins": {
+            "type": "array",
+            "items": {},
+            "description": "Canonical list retained; media policy checks membership of string user IDs."
+          },
+          "acceptedMemberUserIds": {
+            "type": "array",
+            "items": {},
+            "description": "Canonical list retained; media policy checks membership of string user IDs."
+          },
+          "invitedMemberUserIds": {
+            "type": "array",
+            "items": {},
+            "description": "Canonical list retained; media policy checks membership of string user IDs."
+          },
+          "pendingRequestMemberUserIds": {
+            "type": "array",
+            "items": {},
+            "description": "Canonical list retained; media policy checks membership of string user IDs."
+          }
+        }
+      },
+      "CommunityMediaMembershipDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

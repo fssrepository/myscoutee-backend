@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "targetUrl": "http://localhost:18080/entry?redirect=%2Fgame",
+    "entryUrl": "http://localhost:18080/entry?redirect=%2Fgame",
+    "storageScope": "http",
+    "geolocation": {
+      "latitude": 51.5074,
+      "longitude": -0.1278,
+      "accuracy": 10
+    },
+    "bootstrapEntryConsent": false,
+    "screenWidth": 1280,
+    "screenHeight": 900
+  },
+  "checkpoints": {
+    "MSC121-QUALIFICATION": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "MSC121 delegated browser qualification",
+          "sessionKind": "anonymous",
+          "expectedName": "MSC121 native HTTP application"
+        }
+      ]
+    },
+    "MSC120-LOCAL-SELECTION": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "MSC120 local DEMO selection",
+          "sessionKind": "anonymous",
+          "expectedName": "MSC120 frontend-local selection"
+        }
+      ]
+    },
+    "MSC121-UK-ENTRY": {
+      "preserveOtherSessions": true,
+      "layout": {
+        "columns": 1
+      },
+      "sessions": [
+        {
+          "actor": "MSC121 United Kingdom entry",
+          "sessionKind": "anonymous",
+          "expectedName": "MSC121 UK native HTTP demo login"
+        }
+      ]
+    }
+  }
+}

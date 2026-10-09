@@ -9,6 +9,21 @@ import com.raxim.myscoutee.domain.payments.api.EventPaymentCancellations;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 @Service
 public class EventPaymentCancellationService implements EventPaymentCancellations {
+ @org.springframework.beans.factory.annotation.Autowired
+ void watchCancellationRequests(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+         com.raxim.myscoutee.domain.notifications.api.NotificationJobs rules,
+         org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.events.api.CheckoutMemberships> memberships) {
+  changes.watch("payment-cancellations", Set.of("payments"), Set.of("auditKind", "refundRequestedTargetAmount"), () -> {
+   if (!hasPendingRequests()) return null;
+   rules.forEachGroup("event-cancellation", () -> {
+    if (!pendingRequestedCancellations().isEmpty()) memberships.getObject().finishPendingCancellations();
+   });
+   return hasPendingRequests() ? java.time.Instant.now().plusSeconds(5) : null;
+  });
+ }
+ private boolean hasPendingRequests() {
+  return mongo.exists(Query.query(Criteria.where("auditKind").is("payment").and("refundRequestedTargetAmount").gt(0)), Payment.class);
+ }
  private final MongoTemplate mongo;
  private final PaymentJobQueries jobs;
  public EventPaymentCancellationService(MongoTemplate mongo, PaymentJobQueries jobs) { this.mongo = mongo; this.jobs = jobs; }

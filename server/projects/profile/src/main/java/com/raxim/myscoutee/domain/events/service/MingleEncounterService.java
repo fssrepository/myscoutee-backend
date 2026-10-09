@@ -9,6 +9,21 @@ import com.raxim.myscoutee.domain.events.document.*;
 import com.raxim.myscoutee.domain.events.repository.*;
 @Service
 public class MingleEncounterService implements MingleEncounters {
+ @org.springframework.beans.factory.annotation.Autowired
+ void watchPublication(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+         com.raxim.myscoutee.domain.notifications.api.NotificationJobs jobs,
+         org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.integrations.api.EventChanges> publisher) {
+  changes.watch("mingle-publication", Set.of("activityMingleSessions"), Set.of("status", "encountersPublished"), () -> {
+   if (!hasPendingPublication()) return null;
+   jobs.forEachGroup("integration-encounters", () -> {
+    if (!pendingPublication().isEmpty()) publisher.getObject().publishPendingEncounters();
+   });
+   return hasPendingPublication() ? java.time.Instant.now().plusSeconds(5) : null;
+  });
+ }
+ private boolean hasPendingPublication() {
+  return mongo.exists(Query.query(Criteria.where("status").is("COMPLETED").and("encountersPublished").is(false)), ActivityMingleSession.class);
+ }
  private final ActivityMingleSessionsRepository sessions;
  private final ActivityMingleRoundsRepository rounds;
  private final MongoTemplate mongo;

@@ -2,7 +2,6 @@ package com.raxim.myscoutee.domain.events.service;
 
 import java.util.*;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
@@ -70,15 +69,26 @@ public class FeedbackCounterWork {
         mongo.updateFirst(Query.query(Criteria.where("counterChangeId").is(change.id())),
                 new Update().unset("counterChange").unset("counterChangeId").inc("version", 1L), EventFeedbackState.class);
     }
-    @Scheduled(fixedDelayString = "${events.feedback-counter-recovery-delay-ms:10000}", initialDelayString = "${events.feedback-counter-recovery-delay-ms:10000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPendingWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            @org.springframework.beans.factory.annotation.Value("${events.feedback-counter-recovery-delay-ms:10000}") long retryMs) {
+        changes.watch("FeedbackCounterWork", java.util.Set.of("eventFeedbackStates"), java.util.Set.of("counterChangeId"), () -> {
+            recoverInCurrentDatabase();
+            return mongo.exists(Query.query(Criteria.where("counterChangeId").exists(true)), EventFeedbackState.class)
+                    ? java.time.Instant.now().plusMillis(Math.max(1, retryMs)) : null;
+        });
+    }
+
     public void recover() {
-        databases.runAcrossConfiguredDatabases(() -> {
-            for (var state : mongo.find(Query.query(Criteria.where("counterChangeId").exists(true)).limit(20), EventFeedbackState.class)) {
+        databases.runAcrossConfiguredDatabases(this::recoverInCurrentDatabase);
+    }
+
+    private void recoverInCurrentDatabase() {
+        for (var state : mongo.find(Query.query(Criteria.where("counterChangeId").exists(true)).limit(20), EventFeedbackState.class)) {
                 try { finish(state); }
                 catch (RuntimeException pending) {
                     org.slf4j.LoggerFactory.getLogger(FeedbackCounterWork.class).warn("Feedback counter command remains pending ({})", pending.getClass().getSimpleName());
                 }
             }
-        });
     }
 }

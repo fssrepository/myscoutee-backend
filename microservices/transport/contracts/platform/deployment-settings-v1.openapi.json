@@ -1,0 +1,306 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MyScoutee deployment-settings",
+    "version": "1.0.0",
+    "description": "Existing deployment settings consumer view only: integration public base URL and payment configuration, including the encrypted provider envelope. No Firebase configuration or operator secrets. Dedicated read capability; no-store; 1 MiB bounds; no retries."
+  },
+  "paths": {
+    "/_internal/v1/platform/deployment-settings/find": {
+      "post": {
+        "operationId": "deployment_settings_find",
+        "security": [
+          {
+            "serviceCapability": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-MyScoutee-Session-Mode",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "REAL",
+                "DEMO"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Query"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Canonical owner result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or session mode",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or wrong service capability",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds byte limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON content type required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Canonical owner unavailable; operation outcome is not assumed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serviceCapability": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Dedicated server-only deployment-settings credential; never expose to browsers."
+      }
+    },
+    "schemas": {
+      "Envelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "algorithm": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 64
+          },
+          "keyId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 256
+          },
+          "nonce": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 128
+          },
+          "ciphertext": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 300000
+          }
+        },
+        "required": []
+      },
+      "Query": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "Integration": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "publicBaseUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": []
+      },
+      "Payment": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "providerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "publicBaseUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "merchantAccount": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "exchangeRateUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "credentialMask": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "credentialEnvelope": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Envelope"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "Configuration": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "integration": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Integration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "payment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Payment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": []
+      },
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resolved": {
+            "const": true
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Configuration"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "resolved"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_REQUEST",
+              "INVALID_SESSION_MODE",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "QUERY_TOO_LARGE",
+              "INVALID_CONTENT_TYPE",
+              "DEPLOYMENT_SETTINGS_UNAVAILABLE"
+            ]
+          }
+        },
+        "required": [
+          "code"
+        ]
+      }
+    }
+  }
+}

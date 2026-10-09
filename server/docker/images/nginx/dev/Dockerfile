@@ -1,5 +1,12 @@
 ARG NGINX_BASE_IMAGE=myscoutee-nginx:1.3.0-base
+FROM golang:1.26-bookworm AS runtime-status-builder
+WORKDIR /src
+COPY images/nginx/runtime-status/ ./
+RUN --network=none GOMAXPROCS=2 CGO_ENABLED=0 GOTOOLCHAIN=local GOPROXY=off go test -p=1 ./... && \
+    GOMAXPROCS=2 CGO_ENABLED=0 GOTOOLCHAIN=local GOPROXY=off go build -p=1 -trimpath -ldflags='-s -w' -o /runtime-status-receiver .
+
 FROM ${NGINX_BASE_IMAGE}
+COPY --from=runtime-status-builder /runtime-status-receiver /scripts/runtime-status-receiver
 
 ARG TZ=Europe/Brussels
 ENV TZ=${TZ}

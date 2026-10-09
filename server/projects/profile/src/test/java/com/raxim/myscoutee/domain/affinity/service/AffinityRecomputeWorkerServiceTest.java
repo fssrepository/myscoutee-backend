@@ -25,6 +25,20 @@ import static org.mockito.Mockito.mock;
 @org.junit.jupiter.api.Tag("standard")
 class AffinityRecomputeWorkerServiceTest {
     @Test
+    void streamModeDoesNotPollEitherRealOrDemoDatabase() {
+        var tasks = mock(AffinityRecomputeTaskService.class);
+        var mongo = mock(MongoTemplate.class);
+        var properties = new AffinityRecomputeProperties();
+        properties.setChangeStreamEnabled(true);
+        properties.setChangeStreamFallbackPollEnabled(false);
+        var worker = new AffinityRecomputeWorkerService(tasks, mock(AffinityMaintenanceService.class),
+                mock(ModelStatusPropagationService.class), properties, mongo, new AffinityRecomputeMetricsService());
+        worker.setScheduledMongoSessionRunner(new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner("real", "demo"));
+        worker.runDueTasks();
+        org.mockito.Mockito.verifyNoInteractions(tasks, mongo);
+    }
+
+    @Test
     void scheduledTickWithoutASeededRegistryDoesNotRunAnImplicitJob() {
         AffinityRecomputeTaskService taskService = mock(AffinityRecomputeTaskService.class);
         AffinityMaintenanceService affinityMaintenanceService = mock(AffinityMaintenanceService.class);

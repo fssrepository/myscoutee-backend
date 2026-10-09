@@ -13,6 +13,10 @@ public interface ActivityMingleSessionsRepository extends MongoRepository<Activi
 
     List<ActivityMingleSession> findByStatusInOrderByUpdatedAtIsoDesc(Collection<String> statuses);
 
+    Optional<ActivityMingleSession> findFirstByStatusInAndPhaseEndsAtIsoIsNotNullOrderByPhaseEndsAtIsoAsc(Collection<String> statuses);
+
+    boolean existsByStatusInAndPhaseEndsAtIsoLessThanEqual(Collection<String> statuses, String phaseEndsAtIso);
+
     List<ActivityMingleSession> findTop50ByStatusInAndPhaseEndsAtIsoLessThanEqualOrderByPhaseEndsAtIsoAsc(
             Collection<String> statuses,
             String phaseEndsAtIso);

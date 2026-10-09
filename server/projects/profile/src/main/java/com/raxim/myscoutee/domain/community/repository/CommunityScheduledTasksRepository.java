@@ -17,6 +17,8 @@ public interface CommunityScheduledTasksRepository extends MongoRepository<Commu
     @Aggregation(pipeline = {"{'$match':" + VISIBLE + "}", "{'$group':{'_id':{'$cond':['$deleted','trash',{'$cond':['$enabled','active','paused']}]},'count':{'$sum':1}}}",
             "{'$project':{'_id':0,'status':'$_id','count':1}}"})
     List<TaskBucket> counters(String baseId, String actor, Collection<String> managed, Collection<String> joined);
+    @Query("{'baseGroupId':?0,'enabled':true,'deleted':{'$ne':true},'nextDueAtIso':{'$ne':null}}")
+    List<CommunityScheduledTask> nextScheduled(String baseId, Pageable page);
     @Query("{'baseGroupId':?0,'enabled':true,'deleted':{'$ne':true},'nextDueAtIso':{'$lte':?1}}")
     List<CommunityScheduledTask> due(String baseId, String leadWindowEnd, Pageable page);
 }

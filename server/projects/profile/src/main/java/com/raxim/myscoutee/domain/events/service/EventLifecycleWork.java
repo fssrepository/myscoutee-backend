@@ -2,7 +2,6 @@ package com.raxim.myscoutee.domain.events.service;
 
 import java.util.*;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
@@ -59,15 +58,26 @@ public class EventLifecycleWork {
             });
         }
     }
-    @Scheduled(fixedDelayString = "${events.lifecycle-recovery-delay-ms:10000}", initialDelayString = "${events.lifecycle-recovery-delay-ms:10000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPendingWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            @org.springframework.beans.factory.annotation.Value("${events.lifecycle-recovery-delay-ms:10000}") long retryMs) {
+        changes.watch("EventLifecycleWork", java.util.Set.of("events"), java.util.Set.of("lifecycleWork"), () -> {
+            recoverInCurrentDatabase();
+            return mongo.exists(Query.query(Criteria.where("lifecycleWork.0").exists(true)), ActivityEvent.class)
+                    ? java.time.Instant.now().plusMillis(Math.max(1, retryMs)) : null;
+        });
+    }
+
     public void recover() {
-        databases.runAcrossConfiguredDatabases(() -> {
-            for (var event : mongo.find(Query.query(Criteria.where("lifecycleWork.0").exists(true)).limit(20), ActivityEvent.class)) {
+        databases.runAcrossConfiguredDatabases(this::recoverInCurrentDatabase);
+    }
+
+    private void recoverInCurrentDatabase() {
+        for (var event : mongo.find(Query.query(Criteria.where("lifecycleWork.0").exists(true)).limit(20), ActivityEvent.class)) {
                 try { deliver(event); }
                 catch (RuntimeException pending) {
                     org.slf4j.LoggerFactory.getLogger(EventLifecycleWork.class).warn("Event lifecycle delivery remains pending ({})", pending.getClass().getSimpleName());
                 }
             }
-        });
     }
 }

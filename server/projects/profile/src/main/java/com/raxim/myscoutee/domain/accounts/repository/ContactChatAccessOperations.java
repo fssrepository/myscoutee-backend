@@ -63,9 +63,21 @@ public class ContactChatAccessOperations {
     }
     public List<Document> due() {
         return mongo.getCollection(COLLECTION).find(new Document("state", "pending")
-                .append("nextAttemptAt", new Document("$lte", new Date())))
+                .append("nextAttemptAt", new Document("$lte", new Date())).append("$or", List.of(
+                        new Document("leaseUntil", null), new Document("leaseUntil", new Document("$lte", new Date())))))
                 .sort(new Document("nextAttemptAt", 1)).limit(20).into(new java.util.ArrayList<>());
     }
+    public Instant nextAttemptAt() {
+        // A future lease blocks only its own command, not another due command.
+        var next = mongo.getCollection(COLLECTION).aggregate(List.of(
+                new Document("$match", new Document("state", "pending")),
+                new Document("$project", new Document("due", new Document("$max", List.of(
+                        new Document("$ifNull", List.of("$nextAttemptAt", new Date(0))),
+                        new Document("$ifNull", List.of("$leaseUntil", new Date(0))))))),
+                new Document("$sort", new Document("due", 1)), new Document("$limit", 1))).first();
+        return next == null ? null : next.getDate("due").toInstant();
+    }
+
     public Document claim(String id) {
         var query = new Document("_id", id).append("state", "pending").append("$or", List.of(
                 new Document("leaseUntil", null), new Document("leaseUntil", new Document("$lte", new Date()))));

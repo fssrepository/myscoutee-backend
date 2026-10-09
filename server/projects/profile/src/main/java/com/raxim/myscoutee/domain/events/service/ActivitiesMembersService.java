@@ -961,6 +961,10 @@ public class ActivitiesMembersService implements com.raxim.myscoutee.domain.even
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.beans.factory.ObjectProvider<EventCancellationService> cancellationService;
 
+    @Override public void finishPendingCancellations() {
+        cancellationService.getObject().finishPendingCancellationsInGroup();
+    }
+
     private void replaceResolved(
             ActivityMembersReplaceRequestDto request,
             String ownerType,

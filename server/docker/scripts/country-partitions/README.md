@@ -64,3 +64,18 @@ Vella and Marseille remain ineligible. Berlin, Budapest and London retain
 their partitions. The landing response lists Spain once and a Spanish
 Accept-Language header returns `en`. All 19 local country tests pass, and the
 existing frontend watcher compiled the change successfully.
+
+## United Kingdom verification — 2026-10-09
+
+The existing `GB` / `country:gb` geometry is identical across production, DEMO
+and E2E catalogs and generated into the local adapter. With the live HTTP
+security gate enabled, London (England), Edinburgh (Scotland), Cardiff (Wales)
+and Belfast (Northern Ireland) all resolve to this partition. Dublin remains
+outside it. All 25 local country tests pass, including the same five controls.
+
+The delegated CDP test selected existing London demo member Emma Parker
+(ninth entry), received native login `200 / ACCEPTED`, entered `/game` and
+logged out. No country geometry or user coordinate was modified. This is one
+real demo entry plus regional boundary checks, not a Firebase login test.
+The versioned launcher configuration and `microservices/tools/check-uk-entry.mjs`
+reproduce the check; see `guides/plans/MSC120_121_TASK_REVIEW.md`.

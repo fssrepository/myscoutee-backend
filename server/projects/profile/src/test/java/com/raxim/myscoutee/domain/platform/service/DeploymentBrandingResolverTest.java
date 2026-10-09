@@ -109,4 +109,20 @@ class DeploymentBrandingResolverTest {
         assertThat(first.productName()).isEqualTo("Community Hub");
         assertThat(second).isEqualTo(first);
     }
+    @Test
+    void failureFallbackNeverLeaksBrandingFromAnotherDatabase() {
+        var repository = org.mockito.Mockito.mock(DeploymentConfigurationRepository.class);
+        var config = new DeploymentConfiguration();
+        var branding = new DeploymentConfiguration.Branding(); branding.setProductName("Real brand"); config.setBranding(branding);
+        when(repository.findById(DeploymentConfiguration.SINGLETON_ID)).thenReturn(Optional.of(config))
+                .thenThrow(new IllegalStateException("offline"));
+        var resolver = new DeploymentBrandingResolver(repository);
+        try {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL);
+            assertThat(resolver.resolve().productName()).isEqualTo("Real brand");
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+            assertThat(resolver.resolve()).isEqualTo(com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback());
+        } finally { com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear(); }
+    }
+
 }

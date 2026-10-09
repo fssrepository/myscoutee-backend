@@ -8,9 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -40,8 +38,23 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
     private final AccessPolicyConditionRegistry conditionRegistry;
     private final MemberPolicyFacts memberPolicyFacts;
     private final ChatPolicyFacts chatPolicyFacts;
-    private final AtomicReference<Map<GrantKey, AccessGrantEffect>> accessGrantCache = new AtomicReference<>(Map.of());
-    private final AtomicReference<Map<String, AccessPolicy>> accessPolicyCache = new AtomicReference<>(Map.of());
+    private static final class AccessCache {
+        final java.util.concurrent.atomic.AtomicLong revision = new java.util.concurrent.atomic.AtomicLong();
+        volatile long loadedRevision = -1;
+        volatile Instant nextGrantExpiry;
+        volatile Map<GrantKey, AccessGrantEffect> grants = Map.of();
+        volatile Map<String, AccessPolicy> policies = Map.of();
+    }
+    private final Map<MongoSessionMode, AccessCache> caches = new java.util.EnumMap<>(MongoSessionMode.class);
+
+    private AccessCache currentCache() {
+        AccessCache cache = caches.get(MongoSessionModeContext.currentMode());
+        synchronized (cache) {
+            while (cache.loadedRevision != cache.revision.get()) refreshAccessControlCache();
+            if (cache.nextGrantExpiry != null && !cache.nextGrantExpiry.isAfter(Instant.now())) refreshAccessGrantCache();
+        }
+        return cache;
+    }
 
     public AccessControlService(
             AccessGrantsRepository accessGrantsRepository,
@@ -56,6 +69,7 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
         this.conditionRegistry = conditionRegistry;
         this.memberPolicyFacts = memberPolicyFacts;
         this.chatPolicyFacts = chatPolicyFacts;
+        for (MongoSessionMode mode : MongoSessionMode.values()) caches.put(mode, new AccessCache());
     }
 
     @PostConstruct
@@ -63,10 +77,25 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
         refreshAccessControlCache();
     }
 
-    @Scheduled(fixedDelayString = "${access-control.cache-refresh-ms:1800000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchAccessPolicy(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases) {
+        if (!databases.hasDistinctDemoDatabase()) caches.put(MongoSessionMode.DEMO, caches.get(MongoSessionMode.REAL));
+        Runnable invalidate = () -> caches.get(MongoSessionModeContext.currentMode()).revision.incrementAndGet();
+        changes.watch("access-policy", java.util.Set.of("accessPolicyDefinitions", "accessGrants"), java.util.Set.of(), () -> {
+            refreshAccessControlCache();
+            return caches.get(MongoSessionModeContext.currentMode()).nextGrantExpiry;
+        }, invalidate, invalidate);
+    }
+
     public void refreshAccessControlCache() {
-        refreshAccessPolicyCache();
-        refreshAccessGrantCache();
+        AccessCache cache = caches.get(MongoSessionModeContext.currentMode());
+        synchronized (cache) {
+            long revision = cache.revision.get();
+            refreshAccessPolicyCache();
+            refreshAccessGrantCache();
+            cache.loadedRevision = revision;
+        }
     }
 
     public void refreshAccessPolicyCache() {
@@ -77,17 +106,22 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
                 nextCache.put(policy.policyKey(), policy);
             }
         }
-        accessPolicyCache.set(Map.copyOf(nextCache));
+        caches.get(MongoSessionModeContext.currentMode()).policies = Map.copyOf(nextCache);
     }
 
     public void refreshAccessGrantCache() {
         Map<GrantKey, AccessGrantEffect> nextCache = new LinkedHashMap<>();
         Instant now = Instant.now();
+        Instant earliestExpiry = null;
         for (AccessGrant grant : accessGrantsRepository.findAll()) {
             GrantKey key = grantKey(grant);
             AccessGrantEffect effect = grantEffect(grant);
             if (key == null || effect == null || isExpired(grant == null ? null : grant.getExpiresAtIso(), now)) {
                 continue;
+            }
+            if (StringUtils.hasText(grant.getExpiresAtIso())) {
+                Instant expiry = Instant.parse(grant.getExpiresAtIso().trim());
+                if (earliestExpiry == null || expiry.isBefore(earliestExpiry)) earliestExpiry = expiry;
             }
             AccessGrantEffect current = nextCache.get(key);
             if (current == AccessGrantEffect.DENY) {
@@ -95,7 +129,9 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
             }
             nextCache.put(key, effect);
         }
-        accessGrantCache.set(Map.copyOf(nextCache));
+        AccessCache cache = caches.get(MongoSessionModeContext.currentMode());
+        cache.grants = Map.copyOf(nextCache);
+        cache.nextGrantExpiry = earliestExpiry;
     }
 
     private AccessPolicy compilePolicy(AccessPolicyDefinition definition) {
@@ -144,7 +180,7 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
             return false;
         }
 
-        AccessPolicy policy = accessPolicyCache.get().get(normalizedPolicyKey);
+        AccessPolicy policy = currentCache().policies.get(normalizedPolicyKey);
         String actorId = normalizeId(actorUserId);
         if (policy != null && "chat".equals(policy.resourceType())) {
             String chatActorId = resolveChatActorUserId(normalizedResourceId, actorId);
@@ -524,7 +560,7 @@ public class AccessControlService implements AccessPolicyData, com.raxim.myscout
             String resourceType,
             String resourceId,
             AccessGrantEffect expectedEffect) {
-        AccessGrantEffect effect = accessGrantCache.get().get(new GrantKey(
+        AccessGrantEffect effect = currentCache().grants.get(new GrantKey(
                 normalizeId(subjectUserId),
                 safeText(permission),
                 safeText(resourceType),

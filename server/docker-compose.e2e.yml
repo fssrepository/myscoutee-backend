@@ -18,6 +18,7 @@ networks:
     driver: bridge
 
 volumes:
+  runtime-status-credentials: {}
   mongodb-data:
   minio-data:
   operator-configuration:
@@ -67,6 +68,9 @@ services:
       start_period: 5s
 
   mongodb:
+    extends:
+      file: docker-compose.replicaset.yml
+      service: mongodb
     image: ${MONGODB_E2E_IMAGE:-myscoutee-mongodb:1.3.0-e2e}
     build:
       context: docker/images/mongodb/e2e
@@ -95,7 +99,7 @@ services:
     networks:
       - e2e
     healthcheck:
-      test: ["CMD-SHELL", "mongosh --quiet --username \"$${MONGO_APP_USERNAME}\" --password \"$${MONGO_APP_PASSWORD}\" --authenticationDatabase \"$${MONGO_APP_DATABASE}\" \"$${MONGO_APP_DATABASE}\" --eval 'db.runCommand({ ping: 1 }).ok' | grep -q 1"]
+      test: ["CMD", "bash", "/docker-entrypoint-initdb.d/replica-health"]
       interval: 2s
       timeout: 10s
       retries: 60
@@ -220,6 +224,9 @@ services:
     stop_grace_period: 15s
 
   profilemanagement:
+    extends:
+      file: docker-compose.replicaset.yml
+      service: profilemanagement
     image: ${MYSCOUTEE_E2E_IMAGE:-myscoutee-api:1.3.0-e2e}
     build:
       context: .
@@ -227,6 +234,9 @@ services:
     container_name: myscoutee
     hostname: profilemanagement
     environment:
+      MYSCOUTEE_RUNTIME_STATUS_ENABLED: "true"
+      MYSCOUTEE_RUNTIME_STATUS_URL: http://nginx:9081/internal/runtime-status
+      MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
       SPRING_PROFILES_ACTIVE: "prod"
       SPRING_DEVTOOLS_RESTART_ENABLED: "false"
       SPRING_DEVTOOLS_ADD_PROPERTIES: "false"
@@ -239,7 +249,7 @@ services:
       MONGODB_DEMO_DATABASE: ${MONGO_E2E_DATABASE:-e2e_db}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: "6379"
-      CHAT_STREAM_BLOCK_MS: "100"
+      CHAT_STREAM_BLOCK_MS: "10000"
       CHAT_CALL_STUN_PORT: "${CHAT_CALL_E2E_STUN_PORT:-13478}"
       FIREBASE_ENABLED: "false"
       AUTH_MAX_ACTIVE_SESSIONS: "${AUTH_MAX_ACTIVE_SESSIONS:--1}"
@@ -255,8 +265,6 @@ services:
       WEBSOCKET_ALLOWED_ORIGIN_PATTERNS: http://localhost,http://127.0.0.1,http://localhost:80,http://127.0.0.1:80,https://localhost,https://127.0.0.1,https://localhost:443,https://127.0.0.1:443
       ADMIN_STATS_ENABLED: "false"
       AFFINITY_RECOMPUTE_ENABLED: "true"
-      AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED: "false"
-      AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED: "true"
       EVENTS_SCHEDULER_CHECK_DELAY_MS: "5000"
       EVENTS_WAITLIST_INVITER_ENABLED: "true"
       EVENTS_WAITLIST_INVITER_CHECK_DELAY_MS: "5000"
@@ -303,6 +311,7 @@ services:
       JAVA_TOOL_OPTIONS: --enable-native-access=ALL-UNNAMED -XX:+ExitOnOutOfMemoryError -Xms512m -Xmx2g
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
+      - runtime-status-credentials:/run/myscoutee-runtime-status:ro
       - operator-configuration:/etc/myscoutee/configuration
       - registry-demo-client-data:/var/lib/myscoutee/registry-demo
     networks:
@@ -341,8 +350,13 @@ services:
       additional_contexts:
         frontend-source: ../frontend
         nginx-config: ./docker/conf/nginx
+        nginx-runtime: ./docker/images/nginx/runtime-status
     container_name: nginx
     hostname: nginx
+    environment:
+      MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
+    volumes:
+      - runtime-status-credentials:/run/myscoutee-runtime-status
     ports:
       - "${E2E_BIND_ADDRESS:-127.0.0.1}:${E2E_HTTP_PORT:-80}:80"
       - "${E2E_BIND_ADDRESS:-127.0.0.1}:443:443"

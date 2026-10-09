@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.raxim.myscoutee.domain.email.document.EmailCampaignRule;
 
 public interface EmailCampaignRulesRepository extends MongoRepository<EmailCampaignRule, String> {
+    boolean existsByEnabledTrue();
     List<EmailCampaignRule> findByBaseGroupId(String baseGroupId);
     Optional<EmailCampaignRule> findByBaseGroupIdAndRuleKey(String baseGroupId, String ruleKey);
     default Optional<EmailCampaignRule> findByRuleKey(String ruleKey) {

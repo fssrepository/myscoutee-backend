@@ -96,7 +96,7 @@ is_truthy() {
 COMPOSE_FILES=(-f docker-compose-prod.yml)
 REPLICA_SET_ENABLED="$(config_value MONGO_REPLICA_SET_ENABLED || true)"
 
-if is_truthy "${REPLICA_SET_ENABLED}"; then
+if is_truthy "${REPLICA_SET_ENABLED:-true}"; then
   if [[ ! -f "${SERVER_DIR}/docker-compose.replicaset.yml" ]]; then
     echo "Mongo replica set is enabled, but ${SERVER_DIR}/docker-compose.replicaset.yml is missing." >&2
     exit 1
@@ -117,20 +117,10 @@ ensure_replica_set() {
   delay="${delay:-2}"
   root_user="$(secret_value MONGO_INITDB_ROOT_USERNAME || true)"
   root_password="$(secret_value MONGO_INITDB_ROOT_PASSWORD || true)"
-  js='const name = process.env.MONGO_REPLICA_SET_NAME || "rs0";
-const host = process.env.MONGO_REPLICA_SET_HOST || "mongodb:27017";
-try {
-  const status = rs.status();
-  quit(status.ok === 1 ? 0 : 2);
-} catch (error) {
-  try {
-    const result = rs.initiate({ _id: name, members: [{ _id: 0, host }] });
-    quit(result.ok === 1 ? 0 : 3);
-  } catch (initError) {
-    print(initError.message);
-    quit(4);
-  }
-}'
+  # The shared final-daemon entrypoint owns initialization for all launch paths.
+  # This wrapper only verifies readiness; it never reconfigures replica identity.
+  js='const h=db.getSiblingDB("admin").runCommand({hello:1});quit(h.isWritablePrimary && h.setName===process.env.MONGO_REPLICA_SET_NAME ? 0 : 1);'
+
 
   for ((attempt = 1; attempt <= retries; attempt++)); do
     local command=(docker compose "${COMPOSE_FILES[@]}" exec -T mongodb mongosh --quiet)
@@ -187,7 +177,7 @@ run_compose "$@"
 
 case "${1:-}" in
   up|start|restart)
-    if is_truthy "${REPLICA_SET_ENABLED}"; then
+    if is_truthy "${REPLICA_SET_ENABLED:-true}"; then
       ensure_replica_set
     fi
     ;;

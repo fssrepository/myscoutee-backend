@@ -16,6 +16,7 @@ export function createHttpClient(options = {}) {
     const headers = {
       Accept: 'application/json, text/plain;q=0.9, */*;q=0.8',
       ...defaultHeaders,
+      ...(await options.headersForRequest?.(method, url, requestOptions) ?? {}),
       ...(requestOptions.headers ?? {})
     };
     const init = {

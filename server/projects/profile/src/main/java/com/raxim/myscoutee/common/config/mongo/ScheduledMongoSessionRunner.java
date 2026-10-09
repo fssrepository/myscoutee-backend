@@ -19,6 +19,8 @@ public class ScheduledMongoSessionRunner {
         this.distinctDemoDatabase = !normalize(realDatabase).equals(normalize(demoDatabase));
     }
 
+    public boolean hasDistinctDemoDatabase() { return distinctDemoDatabase; }
+
     public void runAcrossConfiguredDatabases(Runnable action) {
         if (action == null) {
             return;

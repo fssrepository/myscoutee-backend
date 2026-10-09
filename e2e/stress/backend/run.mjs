@@ -15,6 +15,7 @@ import {
   runCase
 } from '../../shared/collection-runner.mjs';
 import { createHttpClient } from '../../shared/http.mjs';
+import { nativeDemoSessions } from '../../shared/native-demo-sessions.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
@@ -33,6 +34,18 @@ applyScenarioOverrides(scenario, args);
 const serverCases = new Map((await discoverCollection(serverRoot)).map(testCase => [testCase.id, testCase]));
 const baseUrl = process.env.E2E_STRESS_BASE_URL ?? process.env.E2E_SERVER_BASE_URL ?? scenario.baseUrl ?? 'https://127.0.0.1';
 const mode = process.env.E2E_STRESS_MODE ?? scenario.mode ?? 'contract';
+const nativeSessions = process.env.E2E_NATIVE_DEMO_SESSIONS === 'true' ? nativeDemoSessions(baseUrl) : null;
+if (nativeSessions && shouldResetE2eDatabase(mode, scenario)) {
+  throw new Error('Native DEMO sessions require E2E_SKIP_E2E_RESET=true; production-style data must not be reset by this runner');
+}
+if (nativeSessions) {
+  try {
+    await nativeSessions.prepare(process.env.E2E_ADMIN_USER_ID ?? 'admin-demo-ava', process.env.E2E_DEMO_USER_ID);
+  } catch (error) {
+    await nativeSessions.close();
+    throw error;
+  }
+}
 
 if (shouldResetE2eDatabase(mode, scenario)) {
   await resetE2eDatabase(createContext({ baseUrl, mode, runId: 'e2e-reset', vu: 0 }));
@@ -60,6 +73,7 @@ try {
   runError = error;
 } finally {
   await resourceMonitor?.stop();
+  try { await nativeSessions?.close(); } catch (error) { runError ??= error; }
 }
 const endedAtIso = new Date().toISOString();
 
@@ -219,6 +233,7 @@ function createContext({ baseUrl, mode, runId, vu }) {
     mode,
     http: createHttpClient({
       baseUrl,
+      headersForRequest: nativeSessions?.headersForRequest,
       timeoutMs: Number(process.env.E2E_STRESS_HTTP_TIMEOUT_MS ?? process.env.E2E_HTTP_TIMEOUT_MS ?? 15000)
     }),
     defaultMaxMs: Number(process.env.E2E_STRESS_DEFAULT_MAX_MS ?? process.env.E2E_DEFAULT_MAX_MS ?? 5000),

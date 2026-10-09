@@ -1,6 +1,5 @@
 package com.raxim.myscoutee.domain.platform.service;
 
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +14,8 @@ public class DeploymentBrandingResolver implements com.raxim.myscoutee.domain.pl
     private static final Logger LOGGER =
             LoggerFactory.getLogger(DeploymentBrandingResolver.class);
     private final DeploymentConfigurationRepository repository;
-    private final AtomicReference<ResolvedDeploymentBranding> lastKnownGood =
-            new AtomicReference<>(com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback());
+    private final java.util.concurrent.ConcurrentMap<com.raxim.myscoutee.common.config.mongo.MongoSessionMode, ResolvedDeploymentBranding> lastKnownGood =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
     public DeploymentBrandingResolver(
             DeploymentConfigurationRepository repository) {
@@ -50,14 +49,15 @@ public class DeploymentBrandingResolver implements com.raxim.myscoutee.domain.pl
                                     : Math.max(
                                             0L,
                                             branding.getRevision()));
-            lastKnownGood.set(resolved);
+            lastKnownGood.put(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode(), resolved);
             return resolved;
         } catch (RuntimeException exception) {
             LOGGER.warn(
                     "Could not resolve deployment branding; using the "
                             + "last known good snapshot.",
                     exception);
-            return lastKnownGood.get();
+            return lastKnownGood.getOrDefault(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode(),
+                    com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback());
         }
     }
 

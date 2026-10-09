@@ -26,6 +26,13 @@ public class ContentModerationRepository {
                 : new Settings(false, false, 0, com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.GROUP_CATEGORIES), Map.of(), List.of()) : state;
     }
     public List<State> states() { return mongo.findAll(State.class); }
+    public boolean hasScheduledWork() {
+        // Pending effects must finish even when approval is disabled. Withheld
+        // items include future approvals and release-on-disable work.
+        return mongo.exists(Query.query(Criteria.where("pending.0").exists(true)), State.class)
+                || mongo.exists(Query.query(Criteria.where("status").in("under-review", "rejected", "blocked")
+                    .and("deleted").ne(true)), Item.class);
+    }
     public Item item(String id) { return mongo.findById(id, Item.class); }
     public void saveItem(Item item) {
         var query = Query.query(Criteria.where("_id").is(item.id()).andOperator(new Criteria().orOperator(

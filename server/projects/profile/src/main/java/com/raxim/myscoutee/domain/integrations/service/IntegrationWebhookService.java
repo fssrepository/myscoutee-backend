@@ -38,7 +38,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -68,6 +67,14 @@ import jakarta.annotation.PreDestroy;
 
 @Service
 public class IntegrationWebhookService implements com.raxim.myscoutee.domain.integrations.api.EventChanges, com.raxim.myscoutee.domain.integrations.api.AssetChanges, com.raxim.myscoutee.domain.integrations.api.RoleAttentionEvents {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.beans.factory.ObjectProvider<IntegrationEncounterPublisher> encounterPublisher;
+
+    @Override
+    public void publishPendingEncounters() {
+        encounterPublisher.getObject().publishPendingForCurrentGroup();
+    }
+
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountJobScopes accountJobScopes;
@@ -330,9 +337,35 @@ public class IntegrationWebhookService implements com.raxim.myscoutee.domain.int
         return change;
     }
 
-    @Scheduled(fixedDelayString = "${integration.webhook.delivery-interval-ms:1000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchDeliveryQueue(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("integration-webhooks", java.util.Set.of("integrationWebhookDeliveries"),
+                java.util.Set.of("status", "nextAttemptAtIso"), () -> {
+                    deliverPendingInCurrentDatabase();
+                    Query nextQuery = Query.query(Criteria.where("status").in(STATUS_PENDING, STATUS_RETRY, STATUS_SENDING))
+                            .with(Sort.by("nextAttemptAtIso")).limit(1);
+                    nextQuery.fields().include("nextAttemptAtIso");
+                    var next = mongoTemplate.findOne(nextQuery, IntegrationWebhookDelivery.class);
+                    if (next == null) return null;
+                    Instant retry = Instant.now().plusSeconds(1);
+                    Instant due = StringUtils.hasText(next.getNextAttemptAtIso()) ? Instant.parse(next.getNextAttemptAtIso()) : retry;
+                    return due.isAfter(retry) ? due : retry;
+                });
+    }
+
     public void deliverPending() {
-        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("integration-webhooks", this::deliverPendingInGroup));
+        groupDatabases.runAcrossConfiguredDatabases(this::deliverPendingInCurrentDatabase);
+    }
+
+    private void deliverPendingInCurrentDatabase() {
+        // One indexed read per database before any per-workspace remote calls or
+            // job history writes. Include expired leases so recovery still wakes up.
+            if (!mongoTemplate.exists(Query.query(Criteria.where("status")
+                    .in(STATUS_PENDING, STATUS_RETRY, STATUS_SENDING)
+                    .and("nextAttemptAtIso").lte(Instant.now().toString())), IntegrationWebhookDelivery.class)) {
+                return;
+            }
+            groupRules.runScheduledGroups("integration-webhooks", this::deliverPendingInGroup);
     }
 
     private void deliverPendingInGroup() {

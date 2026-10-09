@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.*;
 import org.bson.Document;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.*;
 import org.springframework.http.HttpStatus;
@@ -62,39 +61,61 @@ public class EventCancellationService {
         paymentCancellations.queueAdminRemovals(sourceId, userIds, actorUserId);
     }
 
-    @Scheduled(fixedDelay = 5_000L)
     public void finishPendingCancellations() {
-        sessions.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("event-cancellation", () -> {
+        sessions.runAcrossConfiguredDatabases(() -> groupRules.forEachGroup("event-cancellation", this::finishPendingCancellationsInGroup));
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchEventCancellations(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("event-cancellations", Set.of("events"),
+                Set.of("cancelledAtIso", "cancellationRefundsComplete", "paidTermsRefundsPending"), () -> {
+                    if (!hasPendingEvents()) return null;
+                    groupRules.forEachGroup("event-cancellation", this::finishPendingCancellationsInGroup);
+                    return hasPendingEvents() ? Instant.now().plusSeconds(5) : null;
+                });
+    }
+
+    private boolean hasPendingEvents() {
+        return mongo.exists(Query.query(new Criteria().orOperator(
+                Criteria.where("cancelledAtIso").ne(null).and("cancellationRefundsComplete").is(false),
+                Criteria.where("paidTermsRefundsPending").is(true))), ActivityEvent.class);
+    }
+
+    public void finishPendingCancellationsInGroup() {
             List<ActivityEvent> cancelled = mongo.find(Query.query(Criteria.where("cancelledAtIso").ne(null)
                     .and("cancellationRefundsComplete").is(false)).addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId")).limit(10), ActivityEvent.class);
-            Set<String> processed = new HashSet<>();
-            for (ActivityEvent event : cancelled) {
-                if (processed.add(event.getSourceId())) guardedInMode(event.getCancellationSessionMode(), () -> finishEventCancellation(event));
-            }
-            for (ActivityEvent event : mongo.find(Query.query(Criteria.where("paidTermsRefundsPending").is(true)).addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId")).limit(10), ActivityEvent.class)) {
-                if (processed.add(event.getSourceId())) guarded(() -> grantChangedTerms(event));
-            }
-            for (CancellationPayment payment : paymentCancellations.pendingRequestedCancellations()) {
-                guardedInMode(payment.getCancellationSessionMode(), () -> {
-                    String eventId = EventPayments.FULFILLMENT_KIND_CLIENT.equals(payment.getFulfillmentKind())
-                            && StringUtils.hasText(payment.getContextEventId()) ? payment.getContextEventId() : payment.getSourceId();
-                    String reason = StringUtils.hasText(payment.getCancellationReason())
-                            ? payment.getCancellationReason() : "event-terms-changed";
-                    payments.completeEventCancellation(payment.getId(), reason);
-                    if ("event-member-removed".equals(reason)) {
-                        members.getObject().applyAction(new com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto(
-                                new com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberOwnerRefDto("event", eventId),
-                                payment.getCancellationRequestedBy(), payment.getUserId(), "remove", reason));
-                    } else {
-                        members.getObject().suppressEventParticipationTree(eventId, payment.getUserId(), payment.getUserId());
-                    }
-                    refreshEligibleUsers(eventId);
-                    notifyUsers(eventId, "", List.of(payment.getUserId()), "event-booking-cancelled",
-                            "payment-" + payment.getId(), payment.getUserId());
-                    paymentCancellations.acknowledgeCancelledRequest(payment.getId());
-                });
-            }
-        }));
+            List<ActivityEvent> changedTerms = mongo.find(Query.query(Criteria.where("paidTermsRefundsPending").is(true)).addCriteria(jobGroupScope.workspaceCriteria("workspaceGroupId")).limit(10), ActivityEvent.class);
+            var requested = paymentCancellations.pendingRequestedCancellations();
+            if (cancelled.isEmpty() && changedTerms.isEmpty() && requested.isEmpty()) return;
+            groupRules.runScheduledGroup("event-cancellation", () -> {
+                Set<String> processed = new HashSet<>();
+                for (ActivityEvent event : cancelled) {
+                    if (processed.add(event.getSourceId())) guardedInMode(event.getCancellationSessionMode(), () -> finishEventCancellation(event));
+                }
+                for (ActivityEvent event : changedTerms) {
+                    if (processed.add(event.getSourceId())) guarded(() -> grantChangedTerms(event));
+                }
+                for (CancellationPayment payment : requested) {
+                    guardedInMode(payment.getCancellationSessionMode(), () -> {
+                        String eventId = EventPayments.FULFILLMENT_KIND_CLIENT.equals(payment.getFulfillmentKind())
+                                && StringUtils.hasText(payment.getContextEventId()) ? payment.getContextEventId() : payment.getSourceId();
+                        String reason = StringUtils.hasText(payment.getCancellationReason())
+                                ? payment.getCancellationReason() : "event-terms-changed";
+                        payments.completeEventCancellation(payment.getId(), reason);
+                        if ("event-member-removed".equals(reason)) {
+                            members.getObject().applyAction(new com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto(
+                                    new com.raxim.myscoutee.common.dto.SharedDtos.ActivityMemberOwnerRefDto("event", eventId),
+                                    payment.getCancellationRequestedBy(), payment.getUserId(), "remove", reason));
+                        } else {
+                            members.getObject().suppressEventParticipationTree(eventId, payment.getUserId(), payment.getUserId());
+                        }
+                        refreshEligibleUsers(eventId);
+                        notifyUsers(eventId, "", List.of(payment.getUserId()), "event-booking-cancelled",
+                                "payment-" + payment.getId(), payment.getUserId());
+                        paymentCancellations.acknowledgeCancelledRequest(payment.getId());
+                    });
+                }
+            });
     }
 
     private void finishEventCancellation(ActivityEvent event) {

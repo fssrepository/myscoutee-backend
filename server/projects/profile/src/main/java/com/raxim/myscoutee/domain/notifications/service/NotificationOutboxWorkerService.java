@@ -30,7 +30,6 @@ import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.connection.stream.StreamOffset;
 import org.springframework.data.redis.connection.stream.StreamReadOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -133,7 +132,56 @@ public class NotificationOutboxWorkerService {
         this.scheduledMongoSessionRunner = scheduledMongoSessionRunner;
     }
 
-    @Scheduled(fixedDelayString = "${notifications.outbox.worker-check-delay-ms:5000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchOutbox(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("notification-outbox", java.util.Set.of("notificationOutbox", "notificationRuleConfigs"),
+                java.util.Set.of("status", "nextRetryAt", "lockedUntil", "firebaseDeliveryRequested",
+                        "enabled", "timing", "scheduleSlots", "parameters"), () -> {
+                    processDueNotificationsForCurrentDatabase();
+                    return nextOutboxWakeup();
+                });
+    }
+
+    private Instant nextOutboxWakeup() {
+        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        if (registry == null) return null;
+        Instant[] earliest = {null};
+        registry.forEachGroup(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX, () -> {
+            var rule = registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).orElse(null);
+            if (rule == null || !Boolean.TRUE.equals(rule.getEnabled())) return;
+            Instant minimum = Instant.now().plusSeconds(5);
+            boolean insideWindow = isInsideDeliveryWindow();
+            for (boolean push : new boolean[] {false, true}) {
+                var match = new org.bson.Document("baseGroupId", JobGroupContext.groupId())
+                        .append("status", NotificationOutboxItem.STATUS_PENDING)
+                        .append("firebaseDeliveryRequested", push
+                                ? new org.bson.Document("$ne", false) : false);
+                if (push && !configProperties.isFirebaseEnabled()) {
+                    match.put("firebaseDeliveryRequested", true);
+                }
+                var epoch = java.util.Date.from(Instant.EPOCH);
+                var due = new org.bson.Document("$max", java.util.List.of(
+                        new org.bson.Document("$convert", new org.bson.Document("input", "$nextRetryAt").append("to", "date").append("onNull", epoch).append("onError", epoch)),
+                        new org.bson.Document("$convert", new org.bson.Document("input", "$lockedUntil").append("to", "date").append("onNull", epoch).append("onError", epoch))));
+                var next = mongoTemplate.getCollection(mongoTemplate.getCollectionName(NotificationOutboxItem.class)).aggregate(java.util.List.of(
+                        new org.bson.Document("$match", match), new org.bson.Document("$project", new org.bson.Document("due", due)),
+                        new org.bson.Document("$sort", new org.bson.Document("due", 1)), new org.bson.Document("$limit", 1))).first();
+                if (next == null) continue;
+                Instant at = next.getDate("due").toInstant();
+                if (at.isBefore(minimum)) at = minimum;
+                if (push && !insideWindow) {
+                    var now = java.time.ZonedDateTime.now(ZoneId.systemDefault());
+                    int start = effectiveDeliveryWindowStartHour();
+                    var opening = now.toLocalDate().atStartOfDay(now.getZone()).plusHours(start);
+                    if (!opening.isAfter(now)) opening = opening.plusDays(1);
+                    if (at.isBefore(opening.toInstant())) at = opening.toInstant();
+                }
+                if (earliest[0] == null || at.isBefore(earliest[0])) earliest[0] = at;
+            }
+        });
+        return earliest[0];
+    }
+
     public void processDueNotifications() {
         if (scheduledMongoSessionRunner == null) {
             processDueNotificationsForCurrentDatabase();
@@ -150,6 +198,9 @@ public class NotificationOutboxWorkerService {
     private void processDueNotificationsForCurrentDatabaseInGroup() {
         refreshPendingCount();
         Instant startedAt = Instant.now();
+        if (!mongoTemplate.exists(dueQuery(startedAt.toString()), NotificationOutboxItem.class)) {
+            return;
+        }
         NotificationRuleRegistryService registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
                 && registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX).isPresent();
@@ -269,7 +320,6 @@ public class NotificationOutboxWorkerService {
         }
     }
 
-    @Scheduled(fixedDelayString = "${notifications.outbox.wakeup-poll-delay-ms:5000}")
     @SuppressWarnings("unchecked")
     public void processRedisWakeups() {
         Runnable action = () -> {
@@ -355,13 +405,17 @@ public class NotificationOutboxWorkerService {
         return true;
     }
 
-    private List<NotificationOutboxItem> dueItems(String nowIso, int limit) {
+    private Query dueQuery(String nowIso) {
         Criteria statusCriteria = Criteria.where("status").is(NotificationOutboxItem.STATUS_PENDING);
         Criteria retryCriteria = new Criteria().orOperator(
                 Criteria.where("nextRetryAt").exists(false),
                 Criteria.where("nextRetryAt").is(null),
                 Criteria.where("nextRetryAt").lte(nowIso));
-        Query query = Query.query(new Criteria().andOperator(statusCriteria, retryCriteria, Criteria.where("baseGroupId").is(JobGroupContext.groupId())))
+        return Query.query(new Criteria().andOperator(statusCriteria, retryCriteria, Criteria.where("baseGroupId").is(JobGroupContext.groupId())));
+    }
+
+    private List<NotificationOutboxItem> dueItems(String nowIso, int limit) {
+        Query query = dueQuery(nowIso)
                 .with(Sort.by(Sort.Direction.ASC, "createdDate"))
                 .limit(Math.max(1, limit));
         if (!configProperties.isFirebaseEnabled()) {

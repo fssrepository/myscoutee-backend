@@ -1,7 +1,13 @@
 ARG NGINX_BASE_IMAGE=myscoutee-nginx:1.3.0-base
-FROM ${NGINX_BASE_IMAGE}
+FROM golang:1.26-bookworm AS runtime-status-builder
+WORKDIR /src
+COPY images/nginx/runtime-status/ ./
+RUN --network=none GOMAXPROCS=2 CGO_ENABLED=0 GOTOOLCHAIN=local GOPROXY=off go test -p=1 ./... && \
+    GOMAXPROCS=2 CGO_ENABLED=0 GOTOOLCHAIN=local GOPROXY=off go build -p=1 -trimpath -ldflags='-s -w' -o /runtime-status-receiver .
 
-RUN apk add --no-cache jq
+FROM ${NGINX_BASE_IMAGE}
+COPY --from=runtime-status-builder /runtime-status-receiver /scripts/runtime-status-receiver
+
 
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/conf/http/spring.conf /etc/nginx/myscoutee-templates/spring.conf

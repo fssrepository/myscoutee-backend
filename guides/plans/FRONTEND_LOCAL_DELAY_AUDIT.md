@@ -11,9 +11,9 @@ The local service starts hydration, IndexedDB access and response projection imm
 1. **Fixed: avatar/profile.** `LocalUsersService.loadProfileExtById` previously waited for readiness, then 1,500 ms, then workspace/profile processing and persistence. That entire read now runs concurrently with the existing delay. Session/workspace ownership and the existing inner-page avatar ring remain intact.
 2. **Fixed: game cards.** `LocalGameService.queryUserGameCardsByFilter` previously started filtering/ranking only after the delay. It now runs repository readiness and the existing computation concurrently. The base service no longer waits for local readiness before declaring the request loading; hydration belongs to the adapter request.
 3. **Already overlapping:** landing content, public guide/help, admin monitoring/stats/workspace, admin parameter/notification read helpers and affinity graph reads. Landing aggregates call undelayed child projections, so they do not add another 1,500 ms per child. Some admin help projection still follows the joined readiness/delay.
-4. **Other serial read candidates remain unchanged by this audit:** feed pages, event/explore/checkout/feedback reads, chat pages, resources, invite candidates, assets/availability, tickets, contacts, rates, experiences, idea pages, branding, notification pages/sync, payment artwork/history and operator reads. The service source places work after an awaited artificial delay; this is a sequencing finding, not a measured latency for each screen.
+4. **Completed follow-up — overlapping reads:** feed pages, event/explore/checkout/feedback reads, chat pages, resources, invite candidates, assets/availability, tickets, contacts, rates, experiences, idea pages, branding, notification pages/sync, payment artwork/history and operator reads. The original source placed work after an awaited artificial delay. The follow-up applies the established `Promise.all` request boundary to 63 reads plus the operator storage reads, keeping projection and hydration inside the same request. This is verified service sequencing; it is not a browser latency measurement for every screen.
 5. **Fixed aggregate reads:** moderation now owns one delay for the complete request, including group authorization and asset/event/group detail. The existing owners expose the same undelayed projections used by their normal public delayed calls. External invitation group checks, case-chat result reads and Mingle feedback validation reuse these projections instead of calling another delayed service entry point. No permission, projection or persistence work is omitted.
-6. **Shared preparation helpers:** campaigns, community cases/announcements, service offerings/feedback and appointments wait before repository hydration. These helpers also serve mutations; moving only the helper delay would still leave the caller work after the delay. Correct ownership is the complete outer request, not a globally shortened timer.
+6. **Completed shared preparation helpers:** campaigns, community cases/announcements, service offerings/feedback and appointments now place the existing delay at each complete outer request. Their actor/context helper retains hydration and authorization without another artificial wait. All 26 affected outer operations retain their original projection/command bodies.
 7. **Mutation caution:** several saves persist then wait, while others wait then mutate. An audit of their cancellation/session/atomicity boundaries is needed before changing their ordering. A mechanical replacement of every `await waitForRouteDelay` would change when writes become visible.
 8. **Not route emulation:** realtime long-poll progression, notification scheduling, expiry timers, payment registration/status polls and operator update progress pacing. Their clocks are not interchangeable with a request minimum duration.
 9. **Outside local adapters:** cached event-member presentation has an intentional initial members delay; the base community-member route also owns a delay. The HTTP currency selector calls the common helper, which resolves to zero for an HTTP-configured route. No HTTP, polling, indicator, SmartList or global timing configuration was changed.
@@ -22,7 +22,7 @@ The local service starts hydration, IndexedDB access and response projection imm
 
 CDP CPU sampling of a fresh local DEMO selection found approximately 2 seconds of synchronous work in the social-card cache. Distance calculation alone accounted for 1,174 ms in the sample. The cache eagerly built and sorted all users’ three social modes on the first request. It now reuses the same graph/cache and builds only the requested account, retaining graph-revision invalidation and detached result cards. Tests preserve all three modes and invalidation. No animation, timeout, ranking formula or visibility rule was changed.
 
-Remaining nested mutation candidates include asset/resource membership actions, event/campaign synchronization, event cancellation and external-invite acceptance. Admin notification run helpers already pass their existing `skipDemoDelay: true` option to internal calls. The static call graph alone is not grounds to remove required operations or cancellation boundaries.
+Completed nested mutation review: asset/resource membership commands reuse the resource owner write; event synchronization reuses the authorized campaign read; cancellation reuses the complete leave operation; external invitations reuse member writes, workspace joins and the existing `skipLocalRouteDelay` event option. Public commands retain their delay. The aggregate-only paths retain required permissions, counters, notifications and persistence. Admin notification run helpers already pass their existing `skipDemoDelay: true` option to internal calls. The static call graph alone is not grounds to remove required operations or cancellation boundaries.
 
 ## Verification
 
@@ -86,3 +86,36 @@ Whole `src/app` scan includes direct delay calls and wrappers. Methods may be re
 | [shared/core/local/source/services/users.service.ts](../../frontend/src/app/shared/core/local/source/services/users.service.ts) | `queryAvailableDemoUsers`, `queryUserById`, `loadProfileExtById`, `queryUserRealtimeLongPoll`, `saveUserFilterPreferences`, `saveUserProfile`, `saveUserProfileExt`, `submitUserFeedback`, `submitReportUser`, `logoutUser`, `deleteUser` |
 
 Inventory: 237 method locations across 47 files. Static source review only; no claim of full UI coverage.
+
+## Follow-up verification and stability repairs
+
+- Application TypeScript compilation passes after the owner-boundary edits.
+- Ten new timing/cancellation checks pass, plus both external-invitation tests.
+  The tests hold emulation or real work unresolved to prove that publication
+  waits for both, feed acknowledgement/projection occurs during emulation,
+  pre-aborted commands do not write, and aggregate owner reads do not add delays.
+- Initial plain Vitest local-service run: 114 passed, 10 failed. Repeating the
+  five affected suites with the pre-edit source reproduced all ten failures.
+- Stability follow-up repairs stale test fixtures rather than weakening product
+  rules: explicit invited provider and enabled booking slots; actual case owner;
+  required schedule start; both seeded expiring votes; explicit checkout actor
+  workspace. Case chat coverage now asserts rejection before acceptance and
+  an explicit chat invitation, then revocation on leaving, matching the current
+  canonical membership/chat policy.
+- Run through the repository's Angular test builder for constructor injection
+  metadata. The raw focused Vite setup lacks that metadata for `ActivityStore`;
+  product dependency injection was not changed to accommodate that harness.
+- Specialized realtime/worker/payment polling timers and mutation session gates
+  were reviewed separately and retain their established timing/authorization.
+  A source inventory entry is not itself a request to reorder a write gate.
+
+Final Angular suite: **21 files, 134 tests passed, zero failures** using
+`npx ng test --watch=false --include='src/app/shared/core/local/source/services/**/*.spec.ts'`. Browser
+coverage remains the explicitly listed flows; this audit does not claim every
+feature was manually exercised.
+
+Latest production-image CDP retest: `d878ec931c44`, backend replicas zero,
+anonymous managed local-selection checkpoint. DEMO selection → `/game`:
+756.6 ms. Avatar ring: 1,594.9 ms, configured animation duration `3000ms`.
+Report: `microservices/build/reports/browser/demo-selection-verified.json`.
+The managed test browser was closed before restoring all six HTTP services.

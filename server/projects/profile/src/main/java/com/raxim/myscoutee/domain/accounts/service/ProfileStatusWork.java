@@ -2,7 +2,6 @@ package com.raxim.myscoutee.domain.accounts.service;
 
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -40,10 +39,23 @@ public class ProfileStatusWork {
                 new org.springframework.data.mongodb.core.index.Index().on("profileStatusWork",
                         org.springframework.data.domain.Sort.Direction.ASC).sparse()));
     }
-    @Scheduled(fixedDelayString = "${users.profile-status-recovery-delay-ms:10000}", initialDelayString = "${users.profile-status-recovery-delay-ms:10000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPendingWork(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            @org.springframework.beans.factory.annotation.Value("${users.profile-status-recovery-delay-ms:10000}") long retryMs) {
+        changes.watch("ProfileStatusWork", java.util.Set.of("users"), java.util.Set.of("profileStatusWork"), () -> {
+            recoverInCurrentDatabase();
+            return mongo.exists(Query.query(Criteria.where("profileStatusWork").exists(true).ne(null)), Users.class)
+                    ? java.time.Instant.now().plusMillis(Math.max(1, retryMs)) : null;
+        });
+    }
+
     public void recover() {
-        databases.runAcrossConfiguredDatabases(() -> mongo.find(Query.query(Criteria.where("profileStatusWork")
-                .exists(true).ne(null)).limit(20), Users.class).forEach(this::deliver));
+        databases.runAcrossConfiguredDatabases(this::recoverInCurrentDatabase);
+    }
+
+    private void recoverInCurrentDatabase() {
+        mongo.find(Query.query(Criteria.where("profileStatusWork")
+                .exists(true).ne(null)).limit(20), Users.class).forEach(this::deliver);
     }
     private void deliver(Users user) {
         if (user == null || user.getProfileStatusWork() == null) return;

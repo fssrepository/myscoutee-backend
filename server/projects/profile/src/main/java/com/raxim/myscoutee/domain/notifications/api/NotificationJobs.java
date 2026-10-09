@@ -41,19 +41,22 @@ public interface NotificationJobs {
 
     /** Existing scheduled processors share catalog/claim/history behavior, with one execution per seeded group. */
     default void runScheduledGroups(String ruleKey, Runnable process) {
-        forEachGroup(ruleKey, () -> {
-            Instant started = Instant.now();
-            // The owner checks the schedule and atomically claims the run in this call.
-            // A separate due lookup repeats the same read (and HTTP round trip remotely).
-            if (beginScheduledRun(ruleKey, "Scheduled processing started.", ruleKey, started) == null) return;
-            try {
-                process.run();
-                recordRun(ruleKey, 0, "completed", "Scheduled processing completed.", ruleKey, started);
-            } catch (RuntimeException error) {
-                recordRun(ruleKey, 0, "failed", error.getMessage(), ruleKey, started);
-                throw error;
-            }
-        });
+        forEachGroup(ruleKey, () -> runScheduledGroup(ruleKey, process));
+    }
+
+    /** Reuse admission/history after an owner has found work in the current group. */
+    default void runScheduledGroup(String ruleKey, Runnable process) {
+        Instant started = Instant.now();
+        // The owner checks the schedule and atomically claims the run in this call.
+        // A separate due lookup repeats the same read (and HTTP round trip remotely).
+        if (beginScheduledRun(ruleKey, "Scheduled processing started.", ruleKey, started) == null) return;
+        try {
+            process.run();
+            recordRun(ruleKey, 0, "completed", "Scheduled processing completed.", ruleKey, started);
+        } catch (RuntimeException error) {
+            recordRun(ruleKey, 0, "failed", error.getMessage(), ruleKey, started);
+            throw error;
+        }
     }
 
 

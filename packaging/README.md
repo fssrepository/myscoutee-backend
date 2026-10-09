@@ -588,17 +588,44 @@ supported, and package installations leave the list empty. TOFU is also off by
 default so an endpoint cannot be trusted before the operator sees and confirms
 its identity.
 
-## Optional Mongo Change Streams
+## Default Mongo replica set and change streams
 
-Affinity recompute change-stream wakeups are disabled by default. The normal polling worker still runs if you do nothing.
+Normal dev, prod, E2E and packaged Compose entry points inherit the retained
+replica override with `extends`. No extra `-f` argument is required. The files
+`server/docker-compose.replicaset.yml` and the production replica override remain
+the configuration owners; explicit overlay invocation remains supported.
+Packaged installations default `MONGO_REPLICA_SET_ENABLED=true`. The legacy flag
+controls explicit overlay selection in the wrapper; setting it false does not
+turn the base file's inherited replica configuration into a standalone Mongo.
 
-To enable them on a VPS package install, edit `/etc/myscoutee/myscoutee.env` before `systemctl start myscoutee`:
+A single Mongo container is still a **single member**, now running replica set
+`rs0` (`MONGO_REPLICA_SET_NAME` can override it). This enables change streams;
+it does not add a second Mongo process or provide failover. The shared Mongo
+entrypoint preserves the official user/seed initializer and initializes the
+replica only after the final authenticated daemon starts. Its internal key is
+created once under `/data/db/.myscoutee-replica-key` and retained on restart.
+Existing standalone data is preserved; conflicting replica identity is rejected
+instead of silently reconfigured. Health requires an authenticated writable
+primary. No data JSON field or collection index is needed to enable a stream.
 
-```bash
-MONGO_REPLICA_SET_ENABLED=true
-```
+Affinity uses one task-collection stream per configured REAL/DEMO database.
+`AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED=true` and
+`AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED=false` are the normal
+Compose defaults. Startup and reconnect read pending tasks after opening the
+stream; future deadlines and remaining queued work use local wakeup timers.
+An empty queue does not cause periodic affinity task queries. The 30-second
+stream await timeout returns early on an event; the existing 250-ms application
+coalescing is separate. Explicit configuration overrides remain available.
+The existing task index initializer supplies both databases, including a DEMO
+database recreated after a wipe. DEMO data remains disposable.
 
-When that flag is true, systemd uses `/opt/myscoutee/server/docker-compose.replicaset.yml`, starts Mongo as a single-node replica set, initializes it as `rs0`, and passes `MONGODB_REPLICA_SET=rs0` to the backend. You can override the set name with `MONGO_REPLICA_SET_NAME`, but `rs0` is the expected default.
+Validation: `python3 packaging/tests/mongo-replica-default-test.py` resolves all
+five Compose entry points. Add `--runtime` for a sequential, isolated cached-image
+check of standalone-data conversion, actual stream delivery, restart/key
+persistence and fresh initialization. It publishes no ports, pulls no images,
+and cleans only its own labelled container and volume. The E2E image must be
+rebuilt to receive changed Mongo entrypoint files; Compose configuration checks
+alone do not prove that an old prebuilt E2E image contains them.
 
 `restore-production.sh` is intentionally guarded:
 

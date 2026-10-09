@@ -106,6 +106,14 @@ public class CommunityScheduledTasksService implements com.raxim.myscoutee.domai
         try { return dto(tasks.save(updated), actor); }
         catch (org.springframework.dao.OptimisticLockingFailureException failure) { throw error(HttpStatus.CONFLICT); }
     }
+    public Instant nextScheduledWakeup() {
+        var next = tasks.nextScheduled(BaseGroups.COMMUNITY_BASE_ID, PageRequest.of(0, 1, Sort.by("nextDueAtIso", "id")));
+        if (next.isEmpty()) return null;
+        Instant due = Instant.parse(next.getFirst().nextDueAtIso()).minus(LEAD_DAYS, ChronoUnit.DAYS);
+        Instant retry = Instant.now().plusSeconds(60);
+        return due.isAfter(retry) ? due : retry;
+    }
+
     /** Insert-first identity and advance-after-notification make a interrupted occurrence retryable. */
     public int createDue(Instant now) {
         if (!BaseGroups.COMMUNITY_BASE_ID.equals(JobGroupContext.groupId())) return 0;

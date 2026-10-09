@@ -4,7 +4,6 @@ package com.raxim.myscoutee.domain.integrations.service;
 import java.util.LinkedHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.events.api.MingleEncounters;
@@ -30,14 +29,20 @@ public class IntegrationEncounterPublisher {
         this.encounters = encounters; this.events = events; this.queries = queries; this.webhooks = webhooks;
     }
 
-    @Scheduled(fixedDelayString = "${integration.encounters.publish-interval-ms:5000}")
     public void publishPending() {
-        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("integration-encounters", this::publishPendingInGroup));
+        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.forEachGroup("integration-encounters", () -> {
+            publishPendingForCurrentGroup();
+        }));
     }
 
-    private void publishPendingInGroup() {
+    public void publishPendingForCurrentGroup() {
         var pending = encounters.pendingPublication();
-        if (pending.isEmpty()) return;
+        if (!pending.isEmpty()) {
+            groupRules.runScheduledGroup("integration-encounters", () -> publishPendingInGroup(pending));
+        }
+    }
+
+    private void publishPendingInGroup(java.util.List<? extends Session> pending) {
         var eventIds = pending.stream().map(Session::getEventId).distinct().toList();
         var canonical = new LinkedHashMap<String, Event>();
         for (Event event : events.findBySourceIdIn(eventIds)) {

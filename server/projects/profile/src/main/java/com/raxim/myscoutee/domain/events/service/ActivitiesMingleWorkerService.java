@@ -8,7 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
@@ -38,9 +37,27 @@ public class ActivitiesMingleWorkerService {
         this.mingleService = mingleService;
     }
 
-    @Scheduled(fixedDelayString = "${app.mingle.worker.fixed-delay-ms:5000}")
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchPhaseDeadlines(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes) {
+        changes.watch("mingle-phase", java.util.Set.of("activityMingleSessions"),
+                java.util.Set.of("status", "phaseEndsAtIso"), () -> {
+                    advanceDueSessionsInCurrentDatabase();
+                    var next = sessionsRepository.findFirstByStatusInAndPhaseEndsAtIsoIsNotNullOrderByPhaseEndsAtIsoAsc(TIMED_STATUSES);
+                    if (next.isEmpty()) return null;
+                    Instant retry = Instant.now().plusSeconds(5);
+                    Instant due = Instant.parse(next.get().getPhaseEndsAtIso());
+                    return due.isAfter(retry) ? due : retry;
+                });
+    }
+
     public void advanceDueSessions() {
-        groupDatabases.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("event-mingle-advance", this::advanceDueSessionsInGroup));
+        groupDatabases.runAcrossConfiguredDatabases(this::advanceDueSessionsInCurrentDatabase);
+    }
+
+    private void advanceDueSessionsInCurrentDatabase() {
+        if (sessionsRepository.existsByStatusInAndPhaseEndsAtIsoLessThanEqual(TIMED_STATUSES, Instant.now().toString())) {
+                groupRules.runScheduledGroups("event-mingle-advance", this::advanceDueSessionsInGroup);
+            }
     }
 
     private void advanceDueSessionsInGroup() {

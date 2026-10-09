@@ -133,6 +133,60 @@ class AffinityRecomputeChangeStreamServiceTest {
         } finally { service.stop(); }
     }
 
+    @Test
+    void startupAndReconnectRecoverPersistedWorkWithDatabaseAndGroupScope() throws Exception {
+        var mongo = mock(MongoTemplate.class);
+        var worker = mock(AffinityRecomputeWorkerService.class);
+        var properties = new AffinityRecomputeProperties();
+        properties.setChangeStreamWakeupCoalesce(Duration.ZERO);
+        var service = new AffinityRecomputeChangeStreamService(mongo, worker, properties, new AffinityRecomputeMetricsService());
+        var pending = task(AffinityRecomputeTaskService.STATUS_PENDING, Instant.now().minusSeconds(1));
+        pending.setBaseGroupId("reconnect-workspace");
+        org.mockito.Mockito.when(mongo.stream(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(AffinityRecomputeTask.class)))
+                .thenAnswer(ignored -> java.util.stream.Stream.of(pending));
+        var observed = new java.util.concurrent.LinkedBlockingQueue<String>();
+        doAnswer(ignored -> { observed.add(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode()
+                    + ":" + JobGroupContext.groupId()); return 0; }).when(worker).wakeDueTasks("change-stream");
+        var previous = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
+        try {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+            service.restorePendingWakeups();
+            assertThat(observed.poll(1, TimeUnit.SECONDS)).isEqualTo("DEMO:reconnect-workspace");
+            service.restorePendingWakeups();
+            assertThat(observed.poll(1, TimeUnit.SECONDS)).isEqualTo("DEMO:reconnect-workspace");
+            verify(mongo, org.mockito.Mockito.times(2)).stream(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(AffinityRecomputeTask.class));
+        } finally {
+            service.stop();
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(previous);
+        }
+    }
+
+    @Test
+    void failedAdmissionRetriesQueuedWorkButAnEmptyQueueDoesNotKeepPolling() throws Exception {
+        var mongo = mock(MongoTemplate.class);
+        var worker = mock(AffinityRecomputeWorkerService.class);
+        var properties = new AffinityRecomputeProperties();
+        properties.setChangeStreamWakeupCoalesce(Duration.ZERO);
+        properties.setChangeStreamReconnectDelay(Duration.ofMillis(20));
+        var service = new AffinityRecomputeChangeStreamService(mongo, worker, properties, new AffinityRecomputeMetricsService());
+        var pending = task(AffinityRecomputeTaskService.STATUS_PENDING, Instant.now().minusSeconds(1));
+        org.mockito.Mockito.when(mongo.findOne(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(AffinityRecomputeTask.class)))
+                .thenReturn(pending, (AffinityRecomputeTask) null);
+        var completed = new CountDownLatch(2);
+        doAnswer(ignored -> {
+            completed.countDown();
+            if (completed.getCount() == 1) throw new IllegalStateException("temporary admission failure");
+            return 1;
+        }).when(worker).wakeDueTasks(org.mockito.ArgumentMatchers.anyString());
+        try {
+            service.handleTaskChange(pending);
+            assertThat(completed.await(1, TimeUnit.SECONDS)).isTrue();
+            Thread.sleep(100);
+            verify(worker, org.mockito.Mockito.times(2)).wakeDueTasks(org.mockito.ArgumentMatchers.anyString());
+            verify(mongo, org.mockito.Mockito.times(2)).findOne(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(AffinityRecomputeTask.class));
+        } finally { service.stop(); }
+    }
+
     private AffinityRecomputeChangeStreamService service(
             AffinityRecomputeWorkerService worker,
             AffinityRecomputeMetricsService metrics,

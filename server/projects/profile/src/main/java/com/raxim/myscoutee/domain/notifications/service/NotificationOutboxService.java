@@ -215,7 +215,6 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
             saved = notificationOutboxRepository.save(item);
         }
         refreshPendingCount();
-        publishWakeup(saved);
         materializeInbox(saved);
         return Optional.of(saved);
     }
@@ -248,7 +247,6 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
             }
         }
         refreshPendingCount();
-        publishWakeup(saved);
         materializeInbox(saved);
         return Optional.of(saved);
     }
@@ -493,23 +491,6 @@ public class NotificationOutboxService implements com.raxim.myscoutee.domain.not
         return second == null ? Map.of() : second;
     }
 
-    private void publishWakeup(NotificationOutboxItem item) {
-        if (stringRedisTemplate == null || item == null || !StringUtils.hasText(safeText(item.getId()))) {
-            return;
-        }
-        try {
-            stringRedisTemplate.opsForStream().add(StreamRecords.mapBacked(Map.of(
-                    "outboxId", safeText(item.getId()),
-                    "collapseKey", safeText(item.getCollapseKey()),
-                    "type", safeText(item.getNotificationType()),
-                    "createdDate", firstNonBlank(item.getCreatedDate(), Instant.now().toString()))).withStreamKey(wakeupStreamKey()));
-            if (redisStreamRetentionService != null) {
-                redisStreamRetentionService.trimByAge(stringRedisTemplate, WAKEUP_STREAM_KEY, WAKEUP_STREAM_RETENTION);
-            }
-        } catch (RuntimeException exception) {
-            LOGGER.debug("Notification outbox Redis wakeup publish failed; scheduled polling remains active.", exception);
-        }
-    }
 
     private RecipientResolution accountRecipients(java.util.Collection<String> ids, Map<String, String> payload) {
         var recipients = compactIds(ids);

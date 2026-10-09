@@ -42,6 +42,7 @@ public class ContentModerationService implements com.raxim.myscoutee.domain.cont
     }
     private State state(String groupId) { return groupId == null ? repository.state() : repository.state(groupId); }
     public Snapshot snapshot() { return snapshot(repository.state()); }
+    public boolean hasScheduledWork() { return repository.hasScheduledWork(); }
     public Snapshot snapshot(String groupId) { return snapshot(state(groupId)); }
     public Item scopedItem(String id, String groupId) {
         Item item = repository.item(id);

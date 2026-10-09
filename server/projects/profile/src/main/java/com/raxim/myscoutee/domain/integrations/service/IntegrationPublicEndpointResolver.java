@@ -3,11 +3,9 @@ package com.raxim.myscoutee.domain.integrations.service;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 
 @Service
@@ -23,9 +21,6 @@ public class IntegrationPublicEndpointResolver {
         this.fallbackBaseUrl = requirePublicBaseUrl(fallbackBaseUrl);
     }
 
-    @Cacheable(
-            value = "deployment_integration",
-            key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name()")
     public String resolve() {
         String configured = repository
                 .findById(DeploymentSettings.SINGLETON_ID)

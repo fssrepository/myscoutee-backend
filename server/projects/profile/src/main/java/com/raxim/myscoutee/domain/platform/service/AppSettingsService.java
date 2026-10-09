@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,30 +53,45 @@ public class AppSettingsService implements com.raxim.myscoutee.domain.platform.a
         }
     }
 
+    @org.springframework.beans.factory.annotation.Autowired
+    void watchCache(com.raxim.myscoutee.common.config.mongo.MongoChangeStreamService changes,
+            com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases) {
+        if (!databases.hasDistinctDemoDatabase()) {
+            cachedSettings.put(MongoSessionMode.DEMO, cachedSettings.get(MongoSessionMode.REAL));
+            modeLocks.put(MongoSessionMode.DEMO, modeLocks.get(MongoSessionMode.REAL));
+        }
+        changes.watch("AppSettingsService", java.util.Set.of("appSettings"), java.util.Set.of(), () -> {
+            MongoSessionMode mode = MongoSessionModeContext.currentMode();
+            if (!refreshCache(mode)) return java.time.Instant.now().plusSeconds(5);
+            return null;
+        });
+    }
+
     @PostConstruct
     public void preloadCache() {
         refreshCache();
     }
 
-    @Scheduled(fixedDelayString = "${app-settings.cache-refresh-ms:5000}")
     public void refreshCache() {
         for (MongoSessionMode mode : MongoSessionMode.values()) {
             refreshCache(mode);
         }
     }
 
-    private void refreshCache(MongoSessionMode mode) {
+    private boolean refreshCache(MongoSessionMode mode) {
         synchronized (modeLocks.get(mode)) {
             try {
                 cachedSettings.get(mode).set(inMode(
                         mode,
                         () -> toCachedSettings(loadGlobalSettings())));
+                return true;
             } catch (RuntimeException exception) {
                 LOGGER.warn(
                         "App settings cache refresh failed for {} mode; keeping "
                                 + "previous admin access settings.",
                         mode,
                         exception);
+                return false;
             }
         }
     }

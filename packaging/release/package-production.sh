@@ -72,7 +72,9 @@ install -m 0755 "${REPO_ROOT}/packaging/debian/postinst" "${STAGING_DIR}/DEBIAN/
 install -m 0755 "${REPO_ROOT}/packaging/debian/prerm" "${STAGING_DIR}/DEBIAN/prerm"
 install -m 0755 "${REPO_ROOT}/packaging/debian/postrm" "${STAGING_DIR}/DEBIAN/postrm"
 
-install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
+sed 's/docker-compose.production-replicaset.yml/docker-compose.replicaset.yml/g' \
+  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" > "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
+chmod 0644 "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
 install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose.replicaset.yml"
 install -m 0644 "${SERVER_DIR}/projects/profile/secrets/README.md" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/README.md"
 install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json.example" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json.example"
