@@ -27,10 +27,10 @@ import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
 @RequestMapping("/activities/events/members")
 public class ActivitiesMembersController {
     private final ActivitiesMembersService activitiesMembersService;
-    private final com.raxim.myscoutee.domain.groups.service.CommunityGroupsService groups;
+    private final com.raxim.myscoutee.domain.groups.api.Groups groups;
     private boolean community(String type) { return "community".equals(type); }
 
-    public ActivitiesMembersController(ActivitiesMembersService activitiesMembersService, com.raxim.myscoutee.domain.groups.service.CommunityGroupsService groups) {
+    public ActivitiesMembersController(ActivitiesMembersService activitiesMembersService, com.raxim.myscoutee.domain.groups.api.Groups groups) {
         this.activitiesMembersService = activitiesMembersService;
         this.groups = groups;
     }

@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "integrationParticipantInvites")
 public record IntegrationParticipantInvite(@Id String id, String ownerUserId, String eventId,
         String participantId, String token, @Indexed(unique = true) String tokenHash,
-        String claimedUserId, String createdAtIso, String claimedAtIso, String ownerType, boolean reusable) {
+        String claimedUserId, String createdAtIso, String claimedAtIso, String ownerType, boolean reusable) implements com.raxim.myscoutee.domain.integrations.api.ParticipantInvitation {
     public IntegrationParticipantInvite(String id, String ownerUserId, String eventId, String participantId,
             String token, String tokenHash, String claimedUserId, String createdAtIso, String claimedAtIso, String ownerType) {
         this(id, ownerUserId, eventId, participantId, token, tokenHash, claimedUserId, createdAtIso, claimedAtIso, ownerType, false);

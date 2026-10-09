@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationService;
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapTransportSecurity;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.OperatorBootstrapLoginRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.OperatorBootstrapLoginResponseDto;
 
@@ -24,17 +24,17 @@ import jakarta.validation.Valid;
 @RequestMapping(OperatorBootstrapRequestSupport.LOGIN_PATH)
 public class OperatorBootstrapController {
     private final OperatorBootstrapAuthenticationService service;
-    private final ConfigProperties config;
-    private com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService loginSessions;
+    private final RuntimeConfiguration config;
+    private com.raxim.myscoutee.domain.accounts.api.BootstrapLoginAudit loginSessions;
 
     @org.springframework.beans.factory.annotation.Autowired
-    void setLoginSessions(com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService value) {
+    void setLoginSessions(com.raxim.myscoutee.domain.accounts.api.BootstrapLoginAudit value) {
         this.loginSessions = value;
     }
 
     public OperatorBootstrapController(
             OperatorBootstrapAuthenticationService service,
-            ConfigProperties config) {
+            RuntimeConfiguration config) {
         this.service = service;
         this.config = config;
     }

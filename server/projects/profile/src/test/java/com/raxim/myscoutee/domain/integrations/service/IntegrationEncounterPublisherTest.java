@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,14 +30,18 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 @org.junit.jupiter.api.Tag("standard")
 class IntegrationEncounterPublisherTest {
     @Mock MongoTemplate mongo;
-    @Mock JobGroupScopeService jobGroupScope;
+    @Mock EventJobQueries jobGroupScope;
     @Mock ActivityEventsRepository events;
     @Mock IntegrationEventQueryService queries;
     @Mock IntegrationWebhookService webhooks;
-    @InjectMocks IntegrationEncounterPublisher publisher;
+    IntegrationEncounterPublisher publisher;
 
     @org.junit.jupiter.api.BeforeEach
-    void wireScope() { org.springframework.test.util.ReflectionTestUtils.setField(publisher, "jobGroupScope", jobGroupScope); }
+    void wireScope() {
+        publisher = new IntegrationEncounterPublisher(
+            new com.raxim.myscoutee.domain.events.service.MingleEncounterService(null, null, mongo, jobGroupScope),
+            new com.raxim.myscoutee.domain.events.service.EventOwnershipService(events), queries, webhooks);
+    }
 
     @Test
     void retriesFailedPublicationBeforeMarkingTheSameCompletedRevision() {

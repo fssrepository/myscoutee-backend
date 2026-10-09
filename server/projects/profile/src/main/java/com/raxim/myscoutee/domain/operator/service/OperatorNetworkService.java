@@ -14,11 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.registry.config.RegistryDemoProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryDemoConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionResultDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementPageDto;
@@ -30,25 +30,25 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeade
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.domain.operator.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.domain.operator.repository.OperatorRegistrySettingsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient.RegistryHttpException;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkOperations;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimVerification;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimStatus;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocolException;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
+import com.raxim.myscoutee.domain.registry.api.RegistryNetwork;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimVerification;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocolException;
 
 @Service
 public class OperatorNetworkService {
     private final OperatorRegistrySettingsRepository settingsRepository;
     private final OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
-    private final UsersRepository usersRepository;
-    private final RegistryProperties realProperties;
-    private final RegistryDemoProperties demoProperties;
-    private final RegistryOperatorNetworkOperations operations;
+    private final ProfileDirectory usersRepository;
+    private final RegistryConfiguration realProperties;
+    private final RegistryDemoConfiguration demoProperties;
+    private final RegistryNetwork operations;
     private final OperatorNetworkMapper mapper;
     private final EnumMap<MongoSessionMode, Object> modeLocks =
             new EnumMap<>(MongoSessionMode.class);
@@ -56,10 +56,10 @@ public class OperatorNetworkService {
     public OperatorNetworkService(
             OperatorRegistrySettingsRepository settingsRepository,
             OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
-            UsersRepository usersRepository,
-            RegistryProperties realProperties,
-            RegistryDemoProperties demoProperties,
-            RegistryOperatorNetworkOperations operations,
+            ProfileDirectory usersRepository,
+            RegistryConfiguration realProperties,
+            RegistryDemoConfiguration demoProperties,
+            RegistryNetwork operations,
             OperatorNetworkMapper mapper) {
         this.settingsRepository = Objects.requireNonNull(settingsRepository);
         this.claimSubmissionRepository =
@@ -132,7 +132,7 @@ public class OperatorNetworkService {
         synchronized (modeLocks.get(mode)) {
             try {
                 RegisteredRuntime registered = requireRegisteredContext(mode);
-                RegistryProperties runtime = registered.properties();
+                RegistryConfiguration runtime = registered.properties();
                 String avatarUrl = operatorAvatar(actorUserId);
                 operations.apply(
                         runtime,
@@ -202,7 +202,7 @@ public class OperatorNetworkService {
         synchronized (modeLocks.get(mode)) {
             try {
                 RegisteredRuntime registered = requireRegisteredContext(mode);
-                RegistryProperties runtime = registered.properties();
+                RegistryConfiguration runtime = registered.properties();
                 ClaimStatus previousStatus = operations.claimStatus(runtime);
                 requireRegistryVerifiedClaimStatus(previousStatus);
                 operations.apply(
@@ -413,12 +413,12 @@ public class OperatorNetworkService {
             return "";
         }
         return usersRepository.findByUserId(userId)
-                .map(Users::getImages)
+                .map(WorkspaceProfile::getImages)
                 .map(OperatorNetworkService::firstAbsoluteHttpsImage)
                 .orElse("");
     }
 
-    private RegistryProperties requireRegisteredRuntime(MongoSessionMode mode) {
+    private RegistryConfiguration requireRegisteredRuntime(MongoSessionMode mode) {
         return requireRegisteredContext(mode).properties();
     }
 
@@ -438,7 +438,7 @@ public class OperatorNetworkService {
                     "Register this deployment before using the operator network.");
         }
         OperatorRegistrySettings.RegistrySelection selection = settings.getSelection();
-        RegistryProperties runtime = new RegistryProperties();
+        RegistryConfiguration runtime = new RegistryConfiguration();
         runtime.setEnabled(true);
         runtime.setOutboundAllowed(
                 mode == MongoSessionMode.DEMO || realProperties.isOutboundAllowed());
@@ -513,14 +513,14 @@ public class OperatorNetworkService {
     }
 
     private LeaderboardRow requireClaimedLeaderboardRow(
-            RegistryProperties runtime,
+            RegistryConfiguration runtime,
             String groupId) {
         return requireClaimMutationLeaderboardRows(runtime, groupId, null)
                 .current();
     }
 
     private ClaimMutationLeaderboardRows requireClaimMutationLeaderboardRows(
-            RegistryProperties runtime,
+            RegistryConfiguration runtime,
             String currentGroupId,
             String previousGroupId) {
         String normalizedCurrentGroupId = safeText(currentGroupId);
@@ -697,7 +697,7 @@ public class OperatorNetworkService {
     }
 
     private record RegisteredRuntime(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             String deploymentId,
             String registryScope) {
     }

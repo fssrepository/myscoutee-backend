@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.clearInvocations;
@@ -80,8 +81,8 @@ class AccessControlServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
-                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)));
+                new MemberPolicyFacts(new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository), new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository), new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
+                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class))));
         service.loadAccessControlCacheAtStartup();
     }
 
@@ -919,7 +920,7 @@ class AccessControlServiceTest {
         authenticateAs("u2");
         Asset released = asset("asset-1", "u1", "UR");
         released.setOwnerReleasedAtIso("2026-09-03T08:00:00Z");
-        released.setRequests(List.of(new Asset.AssetRequestRecord(
+        released.setRequests(List.of(new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
                 "request-1",
                 "u2",
                 "Member Two",

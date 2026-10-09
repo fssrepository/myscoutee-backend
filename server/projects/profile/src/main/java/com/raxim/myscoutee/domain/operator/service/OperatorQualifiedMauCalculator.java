@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.operator.repository.MongoQualifiedMauEvidenceRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauEvidenceRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauEvidenceRepository.QualifiedMauActionEvidence;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 /**
  * Implements qmau-v1 locally. No user identifier or action evidence is

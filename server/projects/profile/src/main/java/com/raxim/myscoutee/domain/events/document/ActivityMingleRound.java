@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "mingle_round_event_number", def = "{'eventId': 1, 'roundNumber': 1}", unique = true),
         @CompoundIndex(name = "mingle_round_event_status", def = "{'eventId': 1, 'status': 1}")
 })
-public class ActivityMingleRound {
+public class ActivityMingleRound implements com.raxim.myscoutee.domain.events.api.MingleEncounters.Round {
     @Id
     private String id;
     private String eventId;
@@ -50,7 +50,7 @@ public class ActivityMingleRound {
     public String getCreatedByUserId() { return createdByUserId; }
     public void setCreatedByUserId(String createdByUserId) { this.createdByUserId = createdByUserId; }
 
-    public record TableAssignment(Integer tableNumber, List<String> memberUserIds) {
+    public record TableAssignment(Integer tableNumber, List<String> memberUserIds) implements com.raxim.myscoutee.domain.events.api.MingleEncounters.Table {
         public TableAssignment {
             memberUserIds = memberUserIds == null ? List.of() : List.copyOf(memberUserIds);
         }

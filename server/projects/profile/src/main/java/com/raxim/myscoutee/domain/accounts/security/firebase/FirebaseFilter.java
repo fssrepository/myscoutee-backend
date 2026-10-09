@@ -8,14 +8,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
-import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
+import com.raxim.myscoutee.domain.media.api.MediaSessionAccess;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,17 +29,17 @@ public class FirebaseFilter extends OncePerRequestFilter {
     private static final String DEMO_USER_ID = "X-Demo-User-Id";
 
     private final FirebaseService firebaseService;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final UserLoginSessionService userLoginSessionService;
-    private final MediaSessionAccessService mediaSessionAccess;
+    private final MediaSessionAccess mediaSessionAccess;
 
     public FirebaseFilter(
             FirebaseService firebaseService,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             FirebaseTokenVerifier firebaseTokenVerifier,
             UserLoginSessionService userLoginSessionService,
-            MediaSessionAccessService mediaSessionAccess) {
+            MediaSessionAccess mediaSessionAccess) {
         this.firebaseService = firebaseService;
         this.configProperties = configProperties;
         this.firebaseTokenVerifier = firebaseTokenVerifier;
@@ -52,7 +52,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        if (MediaSessionAccessService.isPrivateRead(request)) {
+        if (MediaSessionAccess.isPrivateRead(request)) {
             Authentication media = mediaSessionAccess.authenticate(request);
             if (media == null || !("GET".equals(request.getMethod()) || "HEAD".equals(request.getMethod()))) {
                 response.setHeader("Cache-Control", "no-store");
@@ -79,7 +79,7 @@ public class FirebaseFilter extends OncePerRequestFilter {
             // API keys and OAuth grants were verified by the integration filter.
             // They have their own expiry/revocation and never carry a browser
             // session ID, even when their owner has an enrolled app session.
-            if (existing.getDetails() instanceof com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient
+            if (existing.getDetails() instanceof com.raxim.myscoutee.domain.integrations.api.IntegrationClientIdentity
                     && existing.getAuthorities().stream().anyMatch(a -> "INTEGRATION".equals(a.getAuthority()))
                     && request.getRequestURI().matches("/(?:api/)?integrations/v1/.*")) {
                 filterChain.doFilter(request, response);
@@ -88,7 +88,12 @@ public class FirebaseFilter extends OncePerRequestFilter {
             continueIfSessionActive(request, response, filterChain);
             return;
         }
-        if (DemoSessionRequestSupport.isDemoSessionRequest(request)) {
+        // Demo routing selects a database, not administrator authority. Protected
+        // admin routes must still verify Firebase credentials when it is enabled.
+        if (DemoSessionRequestSupport.isDemoSessionRequest(request)
+                && (!configProperties.isFirebaseEnabled()
+                    || DemoSessionRequestSupport.isAllowedDemoSessionRequest(request)
+                    || DemoSessionRequestSupport.isOperatorRequest(request))) {
             if (DemoSessionRequestSupport.isOperatorRequest(request)) {
                 authenticateDemoOperator(request);
             } else {

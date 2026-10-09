@@ -65,7 +65,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-admin-params-u02@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -88,7 +88,7 @@ class BackendAdminParamsRealtimeE2ETest {
     private static final String DB_SUFFIX = UUID.randomUUID().toString().replace("-", "");
     private static final String REAL_DB = "ms_admin_params_realtime_real_" + DB_SUFFIX;
     private static final String DEMO_DB = "ms_admin_params_realtime_demo_" + DB_SUFFIX;
-    private static final String ADMIN_ID = userId(1);
+    private static final String ADMIN_ID = "admin-demo-ava";
     private static final String SENDER_ID = userId(2);
     private static final String RECIPIENT_ID = userId(3);
     private static final String HIGH_THRESHOLD_CHAT_ID = "e2e-admin-params-direct-chat";
@@ -128,7 +128,7 @@ class BackendAdminParamsRealtimeE2ETest {
 
     @BeforeEach
     void seedBackend() {
-        withReal(() -> {
+        withDemo(() -> {
             clearE2eCollections();
             seedPlatformConfig();
             seedUsers();
@@ -155,7 +155,7 @@ class BackendAdminParamsRealtimeE2ETest {
         assertThat(configTask.getUpdatedUser()).isEqualTo(ADMIN_ID);
 
         NotificationOutboxItem adminNotice = findAdminParamNotice(2);
-        assertThat(adminNotice.getRecipientUserIds()).containsExactly(ADMIN_ID);
+        assertThat(adminNotice.getRecipientUserIds()).containsExactly("admin-demo-noel");
         assertThat(adminNotice.getPayload()).containsEntry("sectionKey", "notifications")
                 .containsEntry("version", "2")
                 .containsEntry("recomputeScope", "config");
@@ -219,7 +219,7 @@ class BackendAdminParamsRealtimeE2ETest {
                 Map.of("userId", RECIPIENT_ID, "cursor", unreadCursor));
         assertThat(afterRead.path("counters").path("chats").asInt()).isZero();
         assertThat(afterRead.path("counters").path("chat").path("all").asInt()).isZero();
-        assertThat(afterRead.path("counters").path("notifications").asInt()).isEqualTo(1);
+        assertThat(afterRead.path("counters").path("notifications").asInt()).isZero();
         assertThat(afterRead.path("cursor").asString()).isNotEqualTo(unreadCursor);
     }
 
@@ -230,6 +230,7 @@ class BackendAdminParamsRealtimeE2ETest {
         mongoTemplate.remove(new Query(), AffinityConfig.class);
         mongoTemplate.remove(new Query(), AffinityRecomputeTask.class);
         mongoTemplate.remove(new Query(), NotificationOutboxItem.class);
+        mongoTemplate.remove(new Query(), com.raxim.myscoutee.domain.notifications.document.UserNotification.class);
     }
 
     private void seedPlatformConfig() {
@@ -253,7 +254,7 @@ class BackendAdminParamsRealtimeE2ETest {
     private void seedUsers() {
         List<Users> users = new ArrayList<>();
         for (int index = 1; index <= 50; index += 1) {
-            String id = userId(index);
+            String id = index == 1 ? ADMIN_ID : userId(index);
             Users user = user(id, "Admin Params User " + String.format("%02d", index));
             if (ADMIN_ID.equals(id)) {
                 user.setEmail("e2e-admin-params-admin@example.test");
@@ -343,7 +344,7 @@ class BackendAdminParamsRealtimeE2ETest {
     }
 
     private AffinityConfig activeConfig() {
-        AffinityConfig config = fromReal(() -> mongoTemplate.findOne(
+        AffinityConfig config = fromDemo(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("active").is(true)),
                 AffinityConfig.class));
         assertThat(config).isNotNull();
@@ -352,16 +353,16 @@ class BackendAdminParamsRealtimeE2ETest {
 
     private AffinityRecomputeTask configRecomputeTask() {
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() ->
-                assertThat(fromReal(() -> mongoTemplate.findOne(
+                assertThat(fromDemo(() -> mongoTemplate.findOne(
                         Query.query(Criteria.where("taskKey").is("CONFIG:default")),
                         AffinityRecomputeTask.class))).isNotNull());
-        return fromReal(() -> mongoTemplate.findOne(
+        return fromDemo(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("taskKey").is("CONFIG:default")),
                 AffinityRecomputeTask.class));
     }
 
     private NotificationOutboxItem findAdminParamNotice(int version) {
-        NotificationOutboxItem item = fromReal(() -> mongoTemplate.findOne(
+        NotificationOutboxItem item = fromDemo(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("notificationType").is("admin-params-changed")
                         .and("payload.version").is(String.valueOf(version))),
                 NotificationOutboxItem.class));
@@ -370,7 +371,7 @@ class BackendAdminParamsRealtimeE2ETest {
     }
 
     private NotificationOutboxItem findChatNotification(String chatId) {
-        NotificationOutboxItem item = fromReal(() -> mongoTemplate.findOne(
+        NotificationOutboxItem item = fromDemo(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("entityId").is(chatId)
                         .and("notificationType").is("chat-message")),
                 NotificationOutboxItem.class));
@@ -379,7 +380,7 @@ class BackendAdminParamsRealtimeE2ETest {
     }
 
     private Chat findChat(String ownerUserId, String chatId) {
-        Chat chat = fromReal(() -> mongoTemplate.findOne(
+        Chat chat = fromDemo(() -> mongoTemplate.findOne(
                 Query.query(Criteria.where("ownerUserId").is(ownerUserId)
                         .and("id").is(chatId)),
                 Chat.class));
@@ -390,6 +391,7 @@ class BackendAdminParamsRealtimeE2ETest {
     private JsonNode getJson(String path) {
         HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("X-App-Session-Kind", "demo")
                 .GET()
                 .build());
         assertOk(path, response.statusCode(), response.body());
@@ -405,6 +407,7 @@ class BackendAdminParamsRealtimeE2ETest {
         String json = writeJson(body);
         HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("X-App-Session-Kind", "demo")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build());
@@ -447,20 +450,20 @@ class BackendAdminParamsRealtimeE2ETest {
         }
     }
 
-    private void withReal(Runnable action) {
+    private void withDemo(Runnable action) {
         MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
         try {
-            MongoSessionModeContext.set(MongoSessionMode.REAL);
+            MongoSessionModeContext.set(MongoSessionMode.DEMO);
             action.run();
         } finally {
             MongoSessionModeContext.set(previousMode);
         }
     }
 
-    private <T> T fromReal(Supplier<T> supplier) {
+    private <T> T fromDemo(Supplier<T> supplier) {
         MongoSessionMode previousMode = MongoSessionModeContext.currentMode();
         try {
-            MongoSessionModeContext.set(MongoSessionMode.REAL);
+            MongoSessionModeContext.set(MongoSessionMode.DEMO);
             return supplier.get();
         } finally {
             MongoSessionModeContext.set(previousMode);

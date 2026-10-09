@@ -13,10 +13,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 
@@ -27,6 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
     private static final String BEARER_PREFIX = "Bearer ";
     public static final String CLIENT_ID_HEADER = "X-MyScoutee-Client-Id";
 
@@ -34,12 +34,12 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.integrations.service.McpAuthorizationService> mcp;
 
-    private final UsersRepository users;
+    private final ProfileDirectory users;
     private final IntegrationRoleAccessService roles;
-    private final CommunityGroupProfilesService profiles;
+    private final AccountWorkspaces profiles;
 
     public IntegrationTokenAuthenticationFilter(IntegrationTokenService tokenService,
-            UsersRepository users, CommunityGroupProfilesService profiles, IntegrationRoleAccessService roles) {
+            ProfileDirectory users, AccountWorkspaces profiles, IntegrationRoleAccessService roles) {
         this.tokenService = tokenService;
         this.users = users;
         this.profiles = profiles;
@@ -93,7 +93,9 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
         client = client.withAccess(mode);
         try {
             if (StringUtils.hasText(owner.getWorkspaceGroupId())) {
-                owner = profiles.select(owner.getAccountUserId(), owner.getWorkspaceGroupId());
+                var selected = profiles.select(owner.getAccountUserId(), owner.getWorkspaceGroupId());
+                owner = users.findByUserId(selected.getUserId())
+                        .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED));
                 if (!client.ownerUserId().equals(owner.getUserId())) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     return;
@@ -109,7 +111,7 @@ public class IntegrationTokenAuthenticationFilter extends OncePerRequestFilter {
                     "Asset creation requires an integration key issued by the base profile.");
             return;
         }
-        var principal = new FirebasePrincipal(owner.getUserId(), null, "INTEGRATION", owner);
+        var principal = profileAuthentication.integrationPrincipal(owner);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 principal,
                 null,

@@ -57,15 +57,18 @@ class EventCounterExpiryServiceTest {
 
     @BeforeEach
     void setUp() {
+        org.mockito.Mockito.lenient().when(notificationRuleRegistryService.beginRun(
+                any(String.class), any(String.class), any(String.class), any(Instant.class)))
+                .thenReturn(new NotificationRuleConfig());
         service = new EventCounterExpiryService(
                 activityMembersRepository,
-                usersRepository,
                 mongoTemplate,
                 notificationRuleRegistryService,
                 adminTelemetryService,
                 userActivityCountersService,
                 eventFriendshipProjectionService,
                 20);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventCounterUpdates", new com.raxim.myscoutee.domain.accounts.service.AccountEventCounterUpdateService(usersRepository));
     }
 
     @Test
@@ -246,7 +249,7 @@ class EventCounterExpiryServiceTest {
 
         assertThat(processed).isZero();
         verify(notificationRuleRegistryService).claimPendingCount(
-                NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+                eq(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY), any(Instant.class));
         verify(mongoTemplate, atLeastOnce()).find(any(Query.class), eq(ActivityEvent.class));
     }
 
@@ -257,7 +260,7 @@ class EventCounterExpiryServiceTest {
         Users.UserActivitiesRecord second = activities(
                 new Users.UserEventCountersRecord(21, 1, 2, 3, 4, 5, 6));
 
-        assertThat(service.activitiesEqual(first, second)).isFalse();
+        assertThat(new com.raxim.myscoutee.domain.accounts.service.AccountEventCounterUpdateService(usersRepository).activitiesEqual(first, second)).isFalse();
     }
 
     private Users.UserActivitiesRecord activities(

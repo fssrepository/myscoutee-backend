@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 name = "event_ticket_event_used",
                 def = "{'eventId': 1, 'usedAtIso': 1}")
 })
-public class EventTicket {
+public class EventTicket implements com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket {
     public static final String STATUS_ACTIVE = "A";
     public static final String STATUS_DELETED = "D";
 

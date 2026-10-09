@@ -1,22 +1,24 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
-import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.content.service.ContentModerationService;
-import com.raxim.myscoutee.domain.email.service.ScheduledMessageTaskService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
-import com.raxim.myscoutee.domain.payments.service.PaymentService;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
+import com.raxim.myscoutee.domain.accounts.api.CurrentProfile;
+
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.affinity.api.EventAffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
+import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
+import com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
+import com.raxim.myscoutee.domain.content.api.ContentRegistration;
+import com.raxim.myscoutee.domain.email.api.ScheduledMessages;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
+import com.raxim.myscoutee.domain.payments.api.CheckoutPricing;
+import com.raxim.myscoutee.domain.payments.api.EventPayments;
 import java.util.Map;
-import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
 
 import java.text.Normalizer;
@@ -56,7 +58,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.api.FriendshipReads;
 import org.springframework.util.StringUtils;
 
 import tools.jackson.core.type.TypeReference;
@@ -70,8 +72,8 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventGroup;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.EventWatchSubscription;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfile;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDetailDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventInvitationContextDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto;
@@ -87,7 +89,7 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotsQueryDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSlotsResultDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChangeRequestDto;
-import com.raxim.myscoutee.domain.payments.document.Payment;
+import com.raxim.myscoutee.domain.payments.api.PaymentView;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventParticipationActionResultDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventListPageDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventDto;
@@ -128,10 +130,10 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsReposi
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventGroupsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
+import com.raxim.myscoutee.domain.accounts.api.DiscoveryProfiles;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper;
@@ -141,11 +143,33 @@ import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper.Sub
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.domain.events.mapper.SubEventItemMapper;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ActivitiesEventsService {
+public class ActivitiesEventsService implements com.raxim.myscoutee.domain.events.api.EventCheckout, com.raxim.myscoutee.domain.events.api.FeedEvents, com.raxim.myscoutee.domain.events.api.EventOperations {
+    @org.springframework.beans.factory.annotation.Autowired private EventLifecycleWork lifecycleWork;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.chat.api.ChatDirectory lifecycleChats;
+    private record LifecyclePlan(boolean available, String attachmentReason, String notificationReason, List<String> audience) {}
+
+    private LifecyclePlan lifecyclePlan(String sourceId, String actor, boolean available, String attachmentReason,
+            String notificationReason, boolean acceptedOnly, ActivitiesMembersService.OwnerMembersSnapshot snapshot) {
+        var audience = new LinkedHashSet<String>();
+        if (notificationReason != null && snapshot != null) {
+            audience.addAll(snapshot.acceptedMemberUserIds());
+            if (!acceptedOnly) {
+                audience.addAll(snapshot.pendingMemberUserIds()); audience.addAll(snapshot.invitedMemberUserIds());
+                audience.addAll(snapshot.pendingRequestMemberUserIds());
+            }
+        }
+        if (notificationReason != null && !acceptedOnly) audience.addAll(activeSubEventResourceAudienceUserIds(sourceId));
+        audience.removeIf(id -> id == null || id.isBlank() || id.equals(actor));
+        return new LifecyclePlan(available, attachmentReason, notificationReason, List.copyOf(audience));
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.FollowingEvents followingEvents;
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Logger LOGGER = LoggerFactory.getLogger(ActivitiesEventsService.class);
     private static final String OWNER_TYPE_EVENT = "event";
@@ -178,39 +202,39 @@ public class ActivitiesEventsService {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ContentModerationService contentModeration;
+    private ContentRegistration contentModeration;
 
-    private final CampaignsService campaigns;
+    private final Campaigns campaigns;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventGroupsRepository activitySubEventGroupsRepository;
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
-    private final UsersRepository usersRepository;
-    private final FriendshipFacts friendshipFacts;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
-    private final HomeUserProfileService homeUserProfileService;
+    private final DiscoveryProfiles usersRepository;
+    private final FriendshipReads friendshipFacts;
+    private final EdgeDirectory userAffinityEdgesRepository;
+    private final CurrentProfile homeUserProfileService;
     private final ActivitiesMembersService activitiesMembersService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
-    private final PaymentService paymentService;
-    private final EventCheckoutBasketService eventCheckoutBasketService;
-    private final EventCheckoutPricingService eventCheckoutPricingService;
-    private final ScheduledMessageTaskService scheduledMessageTaskService;
-    private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
+    private final EventPayments paymentService;
+    private final CheckoutBaskets eventCheckoutBasketService;
+    private final CheckoutPricing eventCheckoutPricingService;
+    private final ScheduledMessages scheduledMessageTaskService;
+    private final EventAffinityScores absoluteAffinityService;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
+    private final OperationalTelemetry adminTelemetryService;
     private final MongoTemplate mongoTemplate;
-    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final AttachmentLifecycle chatAttachmentLifecycleService;
+    private final NotificationDelivery notificationOutboxService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final ObjectProvider<EventScheduler> eventSchedulerProvider;
-    private final ChatService chatService;
+    private final EventConversations chatService;
     private final ActivitiesEventLeaderboardService activitiesEventLeaderboardService;
     private final EventSlotReadModelService eventSlotReadModelService;
-    private final AccessControlService accessControlService;
-    private final UserActivityCountersService userActivityCountersService;
+    private final AccessPermissions accessControlService;
+    private final ActivityCounters userActivityCountersService;
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventDetailMapper activityEventDetailMapper;
     private final ActivityEventMapper activityEventMapper;
@@ -219,37 +243,37 @@ public class ActivitiesEventsService {
     private final ActivitySubEventStageRuntimeMapper activitySubEventStageRuntimeMapper;
 
     public ActivitiesEventsService(
-            CampaignsService campaigns,
+            Campaigns campaigns,
             ActivityEventsRepository activityEventsRepository,
             ActivitySubEventGroupsRepository activitySubEventGroupsRepository,
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityMembersRepository activityMembersRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
-            UsersRepository usersRepository,
-            FriendshipFacts friendshipFacts,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
-            HomeUserProfileService homeUserProfileService,
+            DiscoveryProfiles usersRepository,
+            FriendshipReads friendshipFacts,
+            EdgeDirectory userAffinityEdgesRepository,
+            CurrentProfile homeUserProfileService,
             ActivitiesMembersService activitiesMembersService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
-            PaymentService paymentService,
-            EventCheckoutBasketService eventCheckoutBasketService,
-            EventCheckoutPricingService eventCheckoutPricingService,
-            ScheduledMessageTaskService scheduledMessageTaskService,
-            AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
+            EventPayments paymentService,
+            CheckoutBaskets eventCheckoutBasketService,
+            CheckoutPricing eventCheckoutPricingService,
+            ScheduledMessages scheduledMessageTaskService,
+            EventAffinityScores absoluteAffinityService,
+            AffinityStatusChanges affinityRecomputeTaskService,
+            OperationalTelemetry adminTelemetryService,
             MongoTemplate mongoTemplate,
-            ChatAttachmentLifecycleService chatAttachmentLifecycleService,
-            NotificationOutboxService notificationOutboxService,
+            AttachmentLifecycle chatAttachmentLifecycleService,
+            NotificationDelivery notificationOutboxService,
             EventInviteNotificationService eventInviteNotificationService,
             ObjectProvider<EventScheduler> eventSchedulerProvider,
-            ChatService chatService,
+            EventConversations chatService,
             ActivitiesEventLeaderboardService activitiesEventLeaderboardService,
             EventSlotReadModelService eventSlotReadModelService,
-            AccessControlService accessControlService,
-            UserActivityCountersService userActivityCountersService,
+            AccessPermissions accessControlService,
+            ActivityCounters userActivityCountersService,
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventDetailMapper activityEventDetailMapper,
             ActivityEventMapper activityEventMapper,
@@ -528,7 +552,7 @@ public class ActivitiesEventsService {
                     .filter(StringUtils::hasText)
                     .forEach(trackedSourceIds::add);
         }
-        EventCheckoutBasketService.CheckoutCardStates checkoutStates = checkoutCardStates(viewer == null ? null : viewer.userId(), scopedEvents);
+        CheckoutBaskets.CheckoutCardStates checkoutStates = checkoutCardStates(viewer == null ? null : viewer.userId(), scopedEvents);
         Map<String, String> checkoutResultStatesBySourceId = checkoutStates.resultStates();
         return new EventQueryContext(
                 scopedEvents,
@@ -642,7 +666,7 @@ public class ActivitiesEventsService {
         }
 
         Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
-        for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
+        for (EdgeView edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
             String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
             String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
             if (!StringUtils.hasText(leftUserId)
@@ -663,7 +687,7 @@ public class ActivitiesEventsService {
         return weightsByPairKey;
     }
 
-    private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
+    private double resolveAffinityEdgeWeight(EdgeView edge) {
         if (edge == null) {
             return 0d;
         }
@@ -2258,12 +2282,12 @@ public class ActivitiesEventsService {
 
         boolean followedOnly = request != null && Boolean.TRUE.equals(request.followedOnly());
         Set<String> followedIds = followedOnly
-                ? Set.copyOf(OrganizerFollowingService.state(homeUserProfileService.resolveCurrentUser(viewer.userId())).organizerIds())
+                ? Set.copyOf(followingEvents.organizerIds(viewer.userId()))
                 : Set.of();
         return withEventQueryContext(buildExplorePageQueryContext(viewer, "most-relevant".equals(order)), () -> {
             List<EventProjection> sorted = computeExploreRecords(viewer, followedOnly).stream()
                     .filter(record -> !followedOnly || followedIds.contains(record.getCreatorUserId()))
-                    .filter(record -> !followedOnly || OrganizerFollowingService.eligible(record, viewer.userId(),
+                    .filter(record -> !followedOnly || followingEvents.eligibleEvent(record, viewer.userId(),
                             friendshipFacts.friendIds(viewer.userId()), Instant.now()))
                     .filter(record -> !excludedSourceIds.contains(normalizeId(record.getSourceId())))
                     .filter(record -> !StringUtils.hasText(mode) || mode.equals(normalizeEventMode(record.getMode())))
@@ -2360,11 +2384,10 @@ public class ActivitiesEventsService {
             }
             current.setStatus(ActivityEvent.STATUS_TRASHED);
             current.setTrashedAtIso(Instant.now().toString());
-        }, true);
+        }, true, organizerLifecycleRequest ? lifecyclePlan(sourceId, request.userId(), false, "trashed", "deleted", false, beforeSnapshot) : null);
         if (organizerLifecycleRequest) {
-            scheduleEventLifecycleChangedNotification(sourceId, updated, "deleted", request == null ? null : request.userId());
             syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-            markEventAttachmentsUnavailable(updated, "trashed");
+            updated.forEach(lifecycleWork::deliver);
         }
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         return withCounterDelta(
@@ -2458,6 +2481,8 @@ public class ActivitiesEventsService {
             activitiesMembersService.retireCancelledEventParticipation(sourceId, userId);
         }
         boolean changed = preferred != null && !ActivityEvent.STATUS_ACTIVE.equals(safeText(preferred.getStatus()));
+        boolean firstActorChat = changed && beforeSnapshot != null && beforeSnapshot.acceptedMemberUserIds().contains(userId)
+                && lifecycleChats.findByOwnerUserIdAndChatId(userId, sourceId).isEmpty();
         String nowIso = Instant.now().toString();
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_ACTIVE);
@@ -2470,7 +2495,7 @@ public class ActivitiesEventsService {
             }
             current.setSubEvents(ensureTournamentStartReviewStage(current.getSubEvents(), nowIso));
             current.refreshTournamentCurrentStage();
-        });
+        }, false, changed ? lifecyclePlan(sourceId, userId, true, null, "modified", firstActorChat, beforeSnapshot) : null);
         List<ActivityEvent> publishedDocuments = ensurePublishedEventDocuments(updated, request == null ? null : request.userId());
         if (contentModeration != null && preferred != null && !Boolean.TRUE.equals(preferred.getGenerated())) {
             contentModeration.register("event", sourceId, preferred.getCreatorUserId(), preferred.getTitle(), preferred.getImageUrl());
@@ -2482,14 +2507,6 @@ public class ActivitiesEventsService {
             chatService.updateEventChatOwnerStatus(sourceId, ActivityEvent.STATUS_ACTIVE);
             if (eventChatAdded) {
                 notifyPublishedPendingInvitees(publishedDocuments, beforeSnapshot, userId);
-                scheduleAcceptedEventLifecycleChangedNotification(
-                        sourceId,
-                        publishedDocuments,
-                        beforeSnapshot,
-                        "modified",
-                        userId);
-            } else {
-                scheduleEventLifecycleChangedNotification(sourceId, publishedDocuments, "modified", userId);
             }
             schedulePublicWatchlistEventChangedNotification(
                     sourceId,
@@ -2497,7 +2514,7 @@ public class ActivitiesEventsService {
                     List.of("modified"),
                     userId);
             syncStageReminderTasksForSavedEvents(publishedDocuments, userId);
-            markEventAttachmentsAvailable(publishedDocuments);
+            publishedDocuments.forEach(lifecycleWork::deliver);
             enqueueTournamentStartReviewNotifications(publishedDocuments, userId);
             runInitialAutoInviteBatch(publishedDocuments);
         }
@@ -2531,12 +2548,11 @@ public class ActivitiesEventsService {
         boolean changed = preferred != null && !ActivityEvent.STATUS_DRAFT.equals(safeText(preferred.getStatus()));
         List<ActivityEvent> updated = updateItemState(request, current -> {
             current.setStatus(ActivityEvent.STATUS_DRAFT);
-        });
+        }, false, changed ? lifecyclePlan(sourceId, userId, false, "unpublished", "under-review", false, beforeSnapshot) : null);
         if (changed) {
             chatService.updateEventChatOwnerStatus(sourceId, ActivityEvent.STATUS_DRAFT);
-            scheduleEventLifecycleChangedNotification(sourceId, updated, "under-review", userId);
             syncStageReminderTasksForSavedEvents(updated, userId);
-            markEventAttachmentsUnavailable(updated, "unpublished");
+            updated.forEach(lifecycleWork::deliver);
         }
         eventParticipationTicketService.syncParticipationTicketsForEvent(sourceId);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
@@ -2608,9 +2624,9 @@ public class ActivitiesEventsService {
             current.setStatus(restoredStatus);
             current.setStatusBeforeSuppression(null);
             current.setTrashedAtIso(null);
-        });
+        }, false, lifecyclePlan(sourceId, viewer.userId(), true, null, null, false, null));
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsAvailable(updated);
+        updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
         ActivityEvent refreshed = findPreferredEventRecord(sourceId);
         ActivitiesMembersService.OwnerMembersSnapshot snapshot =
@@ -2668,15 +2684,16 @@ public class ActivitiesEventsService {
             next.setUpdatedUser(viewer.userId());
             next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
             next.normalizeLifecycleState();
+            if (preferred != null && Objects.equals(preferred.getId(), next.getId()))
+                lifecycleWork.prepare(next, viewer.userId(), true, null, null, List.of());
             updated.add(next);
         }
         if (updated.isEmpty()) {
             return;
         }
         updated = activityEventsRepository.saveAll(updated);
-        affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         syncStageReminderTasksForSavedEvents(updated, request == null ? null : request.userId());
-        markEventAttachmentsAvailable(updated);
+        updated.forEach(lifecycleWork::deliver);
         userActivityCountersService.refreshEventCountersForDocuments(updated);
     }
 
@@ -3394,6 +3411,9 @@ public class ActivitiesEventsService {
                     null,
                     session == null ? null : session.id()));
             return result;
+        } catch (com.raxim.myscoutee.domain.payments.api.CheckoutOutcomeUnknown unknown) {
+            // The owner may have committed. Leave its existing state for reconciliation/redelivery.
+            throw unknown;
         } catch (RuntimeException exception) {
             eventCheckoutBasketService.updateBasketState(new EventCheckoutStateChangeRequestDto(
                     request.userId(),
@@ -3407,7 +3427,7 @@ public class ActivitiesEventsService {
         }
     }
 
-    public EventParticipationActionResultDto finalizeAuthorizedPayment(Payment payment) {
+    public EventParticipationActionResultDto finalizeAuthorizedPayment(com.raxim.myscoutee.domain.payments.api.PaymentFulfillment payment) {
         if (payment == null || !StringUtils.hasText(payment.getCheckoutSessionId())) {
             return null;
         }
@@ -3537,13 +3557,13 @@ public class ActivitiesEventsService {
 
     private void enqueueCheckoutBasketUpdatedNotification(
             ActivityEvent event,
-            Users member,
+            DiscoveryProfile member,
             String pendingReason) {
         if (notificationOutboxService == null || event == null || member == null) {
             return;
         }
         String eventId = normalizeId(event.getSourceId());
-        String memberUserId = normalizeId(member.getId());
+        String memberUserId = normalizeId(member.getUserId());
         if (!StringUtils.hasText(eventId) || !StringUtils.hasText(memberUserId)) {
             return;
         }
@@ -5002,7 +5022,7 @@ public class ActivitiesEventsService {
         ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot =
                 activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, sourceId);
 
-        Users creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
+        DiscoveryProfile creator = actor != null ? actor.user() : usersRepository.findByUserId(actorUserId).orElse(null);
         String ownerUserId = normalizeId(request.creatorUserId());
         if (!StringUtils.hasText(ownerUserId)) {
             ownerUserId = actorUserId;
@@ -5443,57 +5463,6 @@ public class ActivitiesEventsService {
         }
     }
 
-    private void scheduleEventLifecycleChangedNotification(
-            String sourceId,
-            List<ActivityEvent> updatedRecords,
-            String reason,
-            String actorUserId) {
-        String normalizedSourceId = normalizeId(sourceId);
-        if (!StringUtils.hasText(normalizedSourceId)) {
-            return;
-        }
-        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
-        scheduleEventDefinitionChangedNotification(
-                normalizedSourceId,
-                event,
-                new EventDefinitionChangeSummary(true, Set.of(), List.of(safeText(reason))),
-                activeSubEventResourceAudienceUserIds(normalizedSourceId),
-                Set.of(),
-                actorUserId,
-                true);
-    }
-
-    private void scheduleAcceptedEventLifecycleChangedNotification(
-            String sourceId,
-            List<ActivityEvent> updatedRecords,
-            ActivitiesMembersService.OwnerMembersSnapshot membershipSnapshot,
-            String reason,
-            String actorUserId) {
-        String normalizedSourceId = normalizeId(sourceId);
-        if (!StringUtils.hasText(normalizedSourceId) || membershipSnapshot == null) {
-            return;
-        }
-        LinkedHashSet<String> audienceUserIds = new LinkedHashSet<>(
-                normalizeIds(membershipSnapshot.acceptedMemberUserIds()));
-        audienceUserIds.remove(normalizeId(actorUserId));
-        if (audienceUserIds.isEmpty()) {
-            return;
-        }
-        ActivityEvent event = computePreferredEventRecords(updatedRecords == null ? List.of() : updatedRecords)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> findPreferredEventRecord(normalizedSourceId));
-        scheduledMessageTaskService.scheduleEventLifecycleChanged(
-                normalizedSourceId,
-                event == null ? null : event.getTitle(),
-                audienceUserIds,
-                List.of(safeText(reason)),
-                actorUserId);
-    }
-
     private void schedulePublicWatchlistEventChangedNotification(
             String sourceId,
             List<ActivityEvent> updatedRecords,
@@ -5596,8 +5565,8 @@ public class ActivitiesEventsService {
     }
 
     private ViewerContext resolveViewer(String requestedUserId) {
-        Users user = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String userId = user == null ? null : normalizeId(user.getId());
+        DiscoveryProfile user = homeUserProfileService.resolveCurrentUser(requestedUserId);
+        String userId = user == null ? null : normalizeId(user.getUserId());
         if (!StringUtils.hasText(userId) || user == null) {
             return null;
         }
@@ -5764,10 +5733,10 @@ public class ActivitiesEventsService {
             return List.of();
         }
         EventQueryContext current = ACTIVE_CONTEXT.get();
-        EventCheckoutBasketService.CheckoutCardStates checkoutStates = current != null
+        CheckoutBaskets.CheckoutCardStates checkoutStates = current != null
                 && current.checkoutResultStatesBySourceId() != null
                 && !current.checkoutResultStatesBySourceId().isEmpty()
-                        ? new EventCheckoutBasketService.CheckoutCardStates(current.checkoutResultStatesBySourceId(),
+                        ? new CheckoutBaskets.CheckoutCardStates(current.checkoutResultStatesBySourceId(),
                                 current.checkoutPendingReasonsBySourceId())
                         : checkoutCardStates(viewer == null ? null : viewer.userId(), hydratedRecords);
         Map<String, String> checkoutResultStatesBySourceId = checkoutStates.resultStates();
@@ -5802,7 +5771,7 @@ public class ActivitiesEventsService {
             return Map.of();
         }
         Map<String, String> avatarUrlsByUserId = new LinkedHashMap<>();
-        for (Users user : usersRepository.findByUserIdIn(creatorUserIds)) {
+        for (DiscoveryProfile user : usersRepository.findByUserIdIn(creatorUserIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
             String avatarUrl = firstUserImageUrl(user);
             if (StringUtils.hasText(userId) && StringUtils.hasText(avatarUrl)) {
@@ -5812,7 +5781,7 @@ public class ActivitiesEventsService {
         return avatarUrlsByUserId;
     }
 
-    private String firstUserImageUrl(Users user) {
+    private String firstUserImageUrl(DiscoveryProfile user) {
         if (user == null || user.getImages() == null) {
             return "";
         }
@@ -5823,12 +5792,12 @@ public class ActivitiesEventsService {
                 .orElse("");
     }
 
-    private EventCheckoutBasketService.CheckoutCardStates checkoutCardStates(
+    private CheckoutBaskets.CheckoutCardStates checkoutCardStates(
             String userId,
             List<ActivityEvent> records) {
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedUserId) || records == null || records.isEmpty()) {
-            return new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of());
+            return new CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of());
         }
         List<String> sourceIds = records.stream()
                 .map(ActivityEvent::getSourceId)
@@ -6056,7 +6025,7 @@ public class ActivitiesEventsService {
 
     private List<ActivityEvent> queryCanonicalExploreRecords() {
         return mongoTemplate.find(new Query(Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE)
-                .and("generated").ne(true).and("workspaceGroupId").is(CommunityGroupProfilesService.currentGroupId())), ActivityEvent.class).stream()
+                .and("generated").ne(true).and("workspaceGroupId").is(WorkspaceContext.currentGroupId())), ActivityEvent.class).stream()
                 .filter(Objects::nonNull)
                 .filter(record -> StringUtils.hasText(normalizeId(record.getSourceId())))
                 .map(this::cloneDocument)
@@ -6068,7 +6037,7 @@ public class ActivitiesEventsService {
     private List<ActivityEvent> queryCanonicalExplorePageRecords() {
         Query query = new Query(Criteria.where("status").is(ActivityEvent.STATUS_ACTIVE)
                 .and("generated").ne(true)
-                .and("sourceId").exists(true).ne("").and("workspaceGroupId").is(CommunityGroupProfilesService.currentGroupId()));
+                .and("sourceId").exists(true).ne("").and("workspaceGroupId").is(WorkspaceContext.currentGroupId()));
         query.with(Sort.by(Sort.Direction.ASC, "startAtIso", "sourceId"));
         includeEventExplorePageFields(query);
         return mongoTemplate.find(query, ActivityEvent.class).stream()
@@ -6302,7 +6271,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean canViewerLoadEventDetail(ActivityEvent record, String viewerUserId) {
-        if (record == null || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
+        if (record == null || !WorkspaceContext.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
         if (isViewerAdmin(record, viewerUserId) || hasTrackedUserParticipation(record, viewerUserId)) {
@@ -6312,7 +6281,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isVisibleToUntrackedViewer(ActivityEvent record, String activeUserId) {
-        if (!StringUtils.hasText(activeUserId) || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !isCanonicalExploreRecord(record)) {
+        if (!StringUtils.hasText(activeUserId) || !WorkspaceContext.allows(record.getWorkspaceGroupId()) || !isCanonicalExploreRecord(record)) {
             return false;
         }
         String visibility = safeText(record.getVisibility());
@@ -6663,6 +6632,11 @@ public class ActivitiesEventsService {
             EventActionRequestDto request,
             Consumer<ActivityEvent> updater,
             boolean createScopedRecord) {
+        return updateItemState(request, updater, createScopedRecord, null);
+    }
+
+    private List<ActivityEvent> updateItemState(EventActionRequestDto request, Consumer<ActivityEvent> updater,
+            boolean createScopedRecord, LifecyclePlan lifecycle) {
         ViewerContext viewer = resolveViewer(request == null ? null : request.userId());
         String sourceId = request == null ? null : normalizeId(request.sourceId());
         if (viewer == null || !StringUtils.hasText(sourceId)) {
@@ -6674,6 +6648,7 @@ public class ActivitiesEventsService {
             return List.of();
         }
 
+        ActivityEvent primary = lifecycle == null ? null : findPreferredEventRecord(sourceId);
         List<ActivityEvent> updated = new ArrayList<>();
         for (ActivityEvent document : documents) {
             ActivityEvent next = cloneDocument(document);
@@ -6682,10 +6657,13 @@ public class ActivitiesEventsService {
             next.setUpdatedUser(viewer.userId());
             next.setAdmins(resolveAdminUserIds(next.getSourceId(), next.getCreatorUserId()));
             next.normalizeLifecycleState();
+            if (primary != null && Objects.equals(primary.getId(), next.getId()))
+                lifecycleWork.prepare(next, viewer.userId(), lifecycle.available(), lifecycle.attachmentReason(),
+                        lifecycle.notificationReason(), lifecycle.audience());
             updated.add(next);
         }
         List<ActivityEvent> saved = activityEventsRepository.saveAll(updated);
-        affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
+        if (lifecycle == null) affinityRecomputeTaskService.enqueueEventChanged(sourceId, viewer.userId());
         return saved;
     }
 
@@ -6731,30 +6709,6 @@ public class ActivitiesEventsService {
         }
     }
 
-    private void markEventAttachmentsUnavailable(List<ActivityEvent> documents, String reason) {
-        if (chatAttachmentLifecycleService == null || documents == null || documents.isEmpty()) {
-            return;
-        }
-        documents.stream()
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .forEach(sourceId -> chatAttachmentLifecycleService.markEventUnavailable(sourceId, reason));
-    }
-
-    private void markEventAttachmentsAvailable(List<ActivityEvent> documents) {
-        if (chatAttachmentLifecycleService == null || documents == null || documents.isEmpty()) {
-            return;
-        }
-        documents.stream()
-                .map(ActivityEvent::getSourceId)
-                .map(this::normalizeId)
-                .filter(StringUtils::hasText)
-                .distinct()
-                .forEach(chatAttachmentLifecycleService::markEventAvailable);
-    }
-
     private List<ActivityEvent> resolveActionDocuments(String ownerUserId, String sourceId) {
         return resolveActionDocuments(ownerUserId, sourceId, false);
     }
@@ -6789,6 +6743,8 @@ public class ActivitiesEventsService {
         }
         ActivityEvent scoped = cloneDocument(preferred);
         scoped.setId(resolveExistingId(ownerUserId, sourceId, null));
+        scoped.setVersion(null);
+        scoped.setLifecycleWork(List.of());
         scoped.setSyncKey(resolveExistingSyncKey(ownerUserId, sourceId, null));
         scoped.setOwnerUserId(ownerUserId);
         scoped.setAdmins(resolveAdminUserIds(scoped.getSourceId(), scoped.getCreatorUserId()));
@@ -6854,7 +6810,7 @@ public class ActivitiesEventsService {
                 throw new IllegalStateException(
                         "Published event " + entry.getKey() + " has no accepted member for its main chat.");
             }
-            ChatService.PublishedMainEventChatResult result =
+            EventConversations.PublishedMainEventChatResult result =
                     chatService.ensurePublishedMainEventChat(entry.getValue(), acceptedUserIds);
             if (result != null
                     && result.createdOwnerUserIds().contains(normalizedActorUserId)) {
@@ -6866,7 +6822,7 @@ public class ActivitiesEventsService {
 
     private ActivityEvent buildSyncedRecord(
             EventDetailDto request,
-            Users creator,
+            DiscoveryProfile creator,
             String actorUserId,
             String sourceId,
             ActivitiesMembersService.OwnerMembersSnapshot syncedMembersSnapshot) {
@@ -7013,7 +6969,7 @@ public class ActivitiesEventsService {
                 : resolveCapacityTotal(request, existing, acceptedMembers, syncedMembersSnapshot));
         document.setAutoInviter(request.autoInviter() != null ? request.autoInviter() : existing != null && Boolean.TRUE.equals(existing.getAutoInviter()));
         if (StringUtils.hasText(creator.getWorkspaceGroupId())) {
-            var group = mongoTemplate.findById(creator.getWorkspaceGroupId(), com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
+            var group = groupDirectory.findById(creator.getWorkspaceGroupId()).orElse(null);
             if (group != null && !group.priorityEnabled()) document.setAutoInviter(false);
         }
         document.setTicketing(publishedManageMode
@@ -7065,7 +7021,7 @@ public class ActivitiesEventsService {
         document.setFull(directRecordFull(document));
         String campaignId = normalizeId(request.campaignId());
         if (StringUtils.hasText(campaignId) && !campaignId.equals(existing == null ? null : existing.getCampaignId())) {
-            Users campaignActor = campaigns.actor(request.userId());
+            var campaignActor = campaigns.actor(request.userId());
             var campaign = campaigns.visible(campaignActor, campaignId);
             if (!campaign.ownerUserId().equals(campaignActor.getUserId()) || !"published".equals(campaign.status()))
                 throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN);
@@ -7097,8 +7053,9 @@ public class ActivitiesEventsService {
         document.setMode(nextMode);
         document.setMingleConfiguration(nextMingleConfiguration);
         document.setRating(existing == null ? 0d : safeDouble(existing.getRating()));
-        document.setAffinity(resolveAffinity(document, creator, acceptedMemberUserIds));
-        document.setBoost(resolveBoost(document, creator, acceptedMemberUserIds));
+        var scores = absoluteAffinityService.calculate(document, affinityParticipantIds(creator, acceptedMemberUserIds));
+        document.setAffinity(scores.affinity());
+        document.setBoost(scores.boost());
         document.setCreatedDate(existing == null ? nowIso : safeText(existing.getCreatedDate()));
         document.setCreatedUser(existing == null ? actorUserId : safeText(existing.getCreatedUser()));
         document.setUpdatedDate(nowIso);
@@ -7132,32 +7089,12 @@ public class ActivitiesEventsService {
         return firstNonBlank(event.getEndAtIso(), event.getStartAtIso());
     }
 
-    private double resolveAffinity(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
-        return absoluteAffinityService.resolveEventAffinity(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
-    }
-
-    private double resolveBoost(ActivityEvent event, Users creator, List<String> acceptedMemberUserIds) {
-        return absoluteAffinityService.resolveEventBoost(event, resolveAffinityParticipants(creator, acceptedMemberUserIds));
-    }
-
-    private List<Users> resolveAffinityParticipants(Users creator, List<String> acceptedMemberUserIds) {
-        LinkedHashMap<String, Users> participantsByUserId = new LinkedHashMap<>();
-        String creatorUserId = normalizeId(creator == null ? null : creator.getId());
-        if (StringUtils.hasText(creatorUserId)) {
-            participantsByUserId.put(creatorUserId, creator);
-        }
-        List<String> missingUserIds = normalizeIds(acceptedMemberUserIds).stream()
-                .filter(userId -> !participantsByUserId.containsKey(userId))
-                .toList();
-        if (!missingUserIds.isEmpty()) {
-            for (Users user : usersRepository.findByUserIdIn(missingUserIds)) {
-                String userId = normalizeId(user == null ? null : user.getId());
-                if (StringUtils.hasText(userId)) {
-                    participantsByUserId.put(userId, user);
-                }
-            }
-        }
-        return new ArrayList<>(participantsByUserId.values());
+    private List<String> affinityParticipantIds(DiscoveryProfile creator, List<String> acceptedMemberUserIds) {
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        String creatorUserId = normalizeId(creator == null ? null : creator.getUserId());
+        if (StringUtils.hasText(creatorUserId)) ids.add(creatorUserId);
+        ids.addAll(normalizeIds(acceptedMemberUserIds));
+        return List.copyOf(ids);
     }
 
     private List<String> persistedAcceptedMemberUserIds(ActivityEvent existing) {
@@ -7437,7 +7374,7 @@ public class ActivitiesEventsService {
     }
 
     private boolean isViewerAdmin(ActivityEvent record, String viewerUserId) {
-        if (record == null || !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
+        if (record == null || !WorkspaceContext.allows(record.getWorkspaceGroupId()) || !StringUtils.hasText(viewerUserId)) {
             return false;
         }
         if (viewerUserId.equals(normalizeId(record.getCreatorUserId()))) {
@@ -8359,7 +8296,7 @@ public class ActivitiesEventsService {
         return new GeoJsonPoint(value.getX(), value.getY());
     }
 
-    private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord value) {
+    private LocationCoordinatesDto toLocationCoordinatesDto(com.raxim.myscoutee.domain.accounts.api.ScoringProfile.Coordinates value) {
         if (value == null || value.latitude() == null || value.longitude() == null) {
             return null;
         }
@@ -8525,14 +8462,14 @@ public class ActivitiesEventsService {
         return Math.max(min, Math.min(max, normalized));
     }
 
-    private String resolveCreatorName(String requestedName, Users creator) {
+    private String resolveCreatorName(String requestedName, DiscoveryProfile creator) {
         if (StringUtils.hasText(requestedName)) {
             return requestedName.trim();
         }
         return creator == null ? "" : safeText(creator.getName());
     }
 
-    private String resolveCreatorInitials(String requestedInitials, Users creator, String requestedName) {
+    private String resolveCreatorInitials(String requestedInitials, DiscoveryProfile creator, String requestedName) {
         if (StringUtils.hasText(requestedInitials)) {
             return requestedInitials.trim();
         }
@@ -8547,14 +8484,14 @@ public class ActivitiesEventsService {
         return ("" + words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
     }
 
-    private String resolveCreatorGender(String requestedGender, Users creator) {
+    private String resolveCreatorGender(String requestedGender, DiscoveryProfile creator) {
         if (StringUtils.hasText(requestedGender)) {
             return requestedGender.trim();
         }
         return creator == null ? "man" : safeText(creator.getGender());
     }
 
-    private String resolveCreatorCity(String requestedCity, Users creator) {
+    private String resolveCreatorCity(String requestedCity, DiscoveryProfile creator) {
         if (StringUtils.hasText(requestedCity)) {
             return requestedCity.trim();
         }
@@ -8646,7 +8583,7 @@ public class ActivitiesEventsService {
 
     private record ViewerContext(
             String userId,
-            Users user,
+            DiscoveryProfile user,
             LocationCoordinatesDto locationCoordinates,
             int affinity) {
     }

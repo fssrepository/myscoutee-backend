@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.util.ArrayDeque;
@@ -25,7 +25,7 @@ import com.raxim.myscoutee.domain.affinity.document.AdminAffinityGraphForest;
 import com.raxim.myscoutee.domain.affinity.document.AdminAffinityGraphLayout;
 import com.raxim.myscoutee.domain.affinity.document.AdminAffinityGraphNode;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphEdgeDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphForestDto;
@@ -39,10 +39,10 @@ import com.raxim.myscoutee.domain.affinity.repository.AdminAffinityGraphForestsR
 import com.raxim.myscoutee.domain.affinity.repository.AdminAffinityGraphLayoutsRepository;
 import com.raxim.myscoutee.domain.affinity.repository.AdminAffinityGraphNodesRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
-public class AdminAffinityGraphService {
+public class AdminAffinityGraphService implements com.raxim.myscoutee.domain.affinity.api.AffinityGraph {
     private static final Set<String> ACTIVE_GRAPH_PROFILE_STATUSES = Set.of("public", "friends only", "host only");
     private static final int MAX_DEPTH = 3;
     private static final int MAX_ZOOM = 6;
@@ -52,8 +52,8 @@ public class AdminAffinityGraphService {
     private static final int FOREST_OVERVIEW_BASE_BUDGET = 16;
     private static final double WORLD_RADIUS = 620d;
 
-    private final AdminModerationService adminModerationService;
-    private final UsersRepository usersRepository;
+    private final AdministrativeActors adminModerationService;
+    private final ProfileSummaries usersRepository;
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final AdminAffinityGraphLayoutsRepository layoutsRepository;
     private final AdminAffinityGraphNodesRepository graphNodesRepository;
@@ -61,8 +61,8 @@ public class AdminAffinityGraphService {
     private final AdminAffinityGraphForestsRepository graphForestsRepository;
 
     public AdminAffinityGraphService(
-            AdminModerationService adminModerationService,
-            UsersRepository usersRepository,
+            AdministrativeActors adminModerationService,
+            ProfileSummaries usersRepository,
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             AdminAffinityGraphLayoutsRepository layoutsRepository,
             AdminAffinityGraphNodesRepository graphNodesRepository,
@@ -451,8 +451,7 @@ public class AdminAffinityGraphService {
 
     private GraphSnapshot loadSnapshot(String generatedAtIso, String layoutVersion, String groupId) {
         Map<String, AdminAffinityGraphNodeDto> nodesById = new LinkedHashMap<>();
-        for (Users user : usersRepository.findAll()) {
-            if (!java.util.Objects.equals(groupId, user.getWorkspaceGroupId())) continue;
+        for (ProfileSummary user : usersRepository.findByWorkspaceGroupId(groupId)) {
             AdminAffinityGraphNodeDto node = toNode(user);
             if (node != null) {
                 nodesById.put(node.id(), node);
@@ -701,7 +700,7 @@ public class AdminAffinityGraphService {
         return new TileBounds(minX, maxX, minZ, maxZ);
     }
 
-    private AdminAffinityGraphNodeDto toNode(Users user) {
+    private AdminAffinityGraphNodeDto toNode(ProfileSummary user) {
         if (user == null) {
             return null;
         }
@@ -894,7 +893,7 @@ public class AdminAffinityGraphService {
         return new GraphEdge(key, source, target, weight, dto);
     }
 
-    private boolean isExcludedUser(String id, Users user) {
+    private boolean isExcludedUser(String id, ProfileSummary user) {
         if (user == null) {
             return true;
         }

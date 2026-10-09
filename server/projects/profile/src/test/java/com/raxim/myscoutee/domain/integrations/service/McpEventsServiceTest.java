@@ -1,14 +1,15 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationWebhookDelivery;
 import com.raxim.myscoutee.domain.integrations.document.McpEventSubscription;
 import com.raxim.myscoutee.domain.integrations.repository.McpEventSubscriptionsRepository;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -37,8 +38,8 @@ class McpEventsServiceTest {
     final MongoTemplate mongo = mock(MongoTemplate.class);
     final JsonMapper json = JsonMapper.builder().build();
     final IntegrationRoleAccessService roles = mock(IntegrationRoleAccessService.class);
-    final McpEventsService service = new McpEventsService(subscriptions, users, assets, eventQueries,
-            mock(CommunityGroupProfilesService.class), oauth, crypto, callbacks, json, mongo, roles);
+    final McpEventsService service = new McpEventsService(subscriptions, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assets),  eventQueries,
+            mock(CommunityGroupProfilesService.class),  oauth,  crypto,  callbacks,  json,  mongo,  roles);
     final AuthenticatedIntegrationClient client = new AuthenticatedIntegrationClient("alice", "token-a", "shared-chatgpt",
             "mcp", IntegrationAccess.Mode.FULL, "grant-a");
     final String secret = "whsec_" + Base64.getEncoder().encodeToString(new byte[32]);
@@ -51,7 +52,7 @@ class McpEventsServiceTest {
         owner.setIntegrationAccess(new IntegrationAccess(1, IntegrationAccess.Mode.FULL, Map.of("token-a", IntegrationAccess.Mode.FULL)));
         when(users.findByUserId("alice")).thenReturn(Optional.of(owner));
         when(oauth.activeSubscriptionGrant("grant-a", "alice", "token-a", "shared-chatgpt")).thenReturn(true);
-        when(crypto.encrypt(anyString(), anyString())).thenReturn(new DeploymentConfiguration.EncryptedSecret());
+        when(crypto.encrypt(anyString(), anyString())).thenReturn(new EncryptedSecret());
         when(subscriptions.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
         when(callbacks.send(anyString(), anyString(), anyString(), any(), anyString(), isNull(), eq(true)))
                 .thenAnswer(invocation -> new McpEventCallbackClient.Response(200,
@@ -98,7 +99,7 @@ class McpEventsServiceTest {
     @Test void refreshRotatesKeysAndRestartedServiceUsesPersistedVerification() throws Exception {
         var existing = new McpEventSubscription(); existing.id = McpEventsService.identity(client, request(null));
         existing.enabled = true; existing.grantId = "grant-a"; existing.generation = "generation"; existing.expiresAt = Instant.now().plusSeconds(3600);
-        existing.secretHash = "old"; existing.secret = new DeploymentConfiguration.EncryptedSecret();
+        existing.secretHash = "old"; existing.secret = new EncryptedSecret();
         existing.verifiedUntil = Instant.now().plusSeconds(120);
         when(subscriptions.findById(existing.id)).thenReturn(Optional.of(existing));
         when(subscriptions.findFirstByOwnerUserIdAndTokenIdAndClientIdAndCallbackUrlAndSecretHashAndVerifiedUntilAfter(

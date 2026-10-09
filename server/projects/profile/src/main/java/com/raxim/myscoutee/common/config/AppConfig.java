@@ -19,7 +19,7 @@ import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.domain.accounts.config.FirebaseProperties;
 import com.raxim.myscoutee.domain.media.config.MediaStorageProperties;
-import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.platform.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.operator.config.OperatorTlsProperties;
 import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
 import com.raxim.myscoutee.domain.registry.config.RegistryProperties;

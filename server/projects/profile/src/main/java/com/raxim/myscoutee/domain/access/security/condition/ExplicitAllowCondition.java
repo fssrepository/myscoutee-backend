@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.access.security.condition;
 
 import org.springframework.stereotype.Component;
 
-import com.raxim.myscoutee.domain.access.security.AccessGrantEffect;
+import com.raxim.myscoutee.domain.access.api.AccessGrantEffect;
 import com.raxim.myscoutee.domain.access.security.AccessPolicyCondition;
 import com.raxim.myscoutee.domain.access.security.AccessPolicyContext;
 import com.raxim.myscoutee.domain.access.security.AccessPolicyData;

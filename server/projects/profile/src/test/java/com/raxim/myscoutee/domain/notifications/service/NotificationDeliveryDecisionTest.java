@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -24,9 +26,10 @@ import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.service.AccountNotificationService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
-import com.raxim.myscoutee.domain.notifications.service.FirebaseMessagingGateway.FirebaseBatchSendResult;
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery.FirebaseBatchSendResult;
 
 class NotificationDeliveryDecisionTest {
     private final ConfigProperties config = new ConfigProperties();
@@ -34,7 +37,49 @@ class NotificationDeliveryDecisionTest {
     private final UsersRepository users = mock(UsersRepository.class);
     private final ChatWebSocketSessionRegistry sessions = mock(ChatWebSocketSessionRegistry.class);
     private final MongoTemplate mongo = mock(MongoTemplate.class);
-    private final FirebaseMessagingGateway gateway = mock(FirebaseMessagingGateway.class);
+    private final FirebasePushDelivery gateway = mock(FirebasePushDelivery.class);
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void workspaceProfilesResolveOnlyMissingBaseAccountsAndKeepTheirDeviceIdentity() {
+        config.setFirebaseEnabled(true);
+        Users first = user("profile-1", device("workspace-device", "not-an-account-token", true));
+        first.setAccountUserId("account");
+        first.setWorkspaceGroupId("workspace");
+        Users second = user("profile-2");
+        second.setAccountUserId("account");
+        second.setWorkspaceGroupId("workspace");
+        when(users.findByUserIdIn(List.of("profile-1", "profile-2"))).thenReturn(List.of(first, second));
+        when(users.findByUserIdIn(List.of("account"))).thenReturn(List.of(user("account", device("phone", "account-token", true))));
+
+        var item = producer().enqueue(intent(List.of("profile-1", "profile-2"))).orElseThrow();
+
+        assertThat(item.getRecipientUserIds()).containsExactly("account");
+        assertThat(item.getPayload()).containsEntry("workspaceGroupId", "workspace");
+        assertThat(item.getFirebaseDevices()).containsOnlyKeys("account");
+        assertThat(item.getFirebaseDevices().get("account"))
+                .containsExactlyEntriesOf(Map.of("phone", NotificationOutboxService.sha256("account-token")));
+        verify(users).findByUserIdIn(List.of("profile-1", "profile-2"));
+        verify(users).findByUserIdIn(List.of("account"));
+        verifyNoMoreInteractions(users);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void mixedProfileAndBaseAccountAudienceReusesTheAlreadyLoadedAccount() {
+        config.setFirebaseEnabled(true);
+        Users profile = user("profile");
+        profile.setAccountUserId("account");
+        when(users.findByUserIdIn(List.of("profile", "account")))
+                .thenReturn(List.of(profile, user("account", device("phone", "account-token", true))));
+
+        var item = producer().enqueue(intent(List.of("profile", "account"))).orElseThrow();
+
+        assertThat(item.getRecipientUserIds()).containsExactly("account");
+        assertThat(item.getFirebaseDevices().get("account")).containsKey("phone");
+        verify(users).findByUserIdIn(List.of("profile", "account"));
+        verifyNoMoreInteractions(users);
+    }
 
     @Test
     @org.junit.jupiter.api.Tag("standard")
@@ -48,7 +93,7 @@ class NotificationDeliveryDecisionTest {
         @SuppressWarnings("unchecked") ObjectProvider<UserNotificationService> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(inbox);
         NotificationOutboxService producer = new NotificationOutboxService(outbox, null, null, null, provider);
-        producer.configureDelivery(config, users, sessions);
+        producer.configureDelivery(config, new AccountNotificationService(users, mongo), sessions);
         wireProducerScope(producer);
         when(outbox.save(any())).thenAnswer(call -> call.getArgument(0));
 
@@ -61,7 +106,7 @@ class NotificationDeliveryDecisionTest {
         assertThat(item.getFirebaseDevices().toString()).doesNotContain("test-token", "denied-token");
         assertThat(item.getRecipientUserIds()).containsExactly("allowed", "denied", "absent");
         verify(inbox).materialize(item);
-        verify(users, times(2)).findByUserIdIn(List.of("allowed", "denied", "absent"));
+        verify(users).findByUserIdIn(List.of("allowed", "denied", "absent"));
     }
 
     @Test
@@ -77,7 +122,7 @@ class NotificationDeliveryDecisionTest {
 
         assertThat(item.getFirebaseDevices().get("missing")).isEmpty();
         assertThat(item.getFirebaseDevices().get("located")).containsKey("phone");
-        verify(users, times(2)).findByUserIdIn(List.of("missing", "located"));
+        verify(users).findByUserIdIn(List.of("missing", "located"));
         verifyNoMoreInteractions(users);
     }
 
@@ -132,15 +177,16 @@ class NotificationDeliveryDecisionTest {
         NotificationOutboxItem first = producer.enqueue(intent(List.of("viewer"))).orElseThrow();
         when(outbox.findFirstByCollapseKeyAndStatusInAndCreatedDateGreaterThanEqualOrderByCreatedDateAsc(
                 anyString(), anyCollection(), anyString())).thenReturn(Optional.of(first));
-        when(users.findByUserIdIn(List.of("other"))).thenReturn(List.of(user("other", device("other-phone", "other-token", true))));
+        when(users.findByUserIdIn(List.of("viewer", "other"))).thenReturn(List.of(
+                user("viewer", device("phone", "test-token", true)),
+                user("other", device("other-phone", "other-token", true))));
 
         NotificationOutboxItem merged = producer.enqueue(intent(List.of("viewer", "other"))).orElseThrow();
 
         assertThat(merged.getFirebaseDevices().get("viewer")).isEmpty();
         assertThat(merged.getFirebaseDevices().get("other")).containsKey("other-phone");
-        verify(users, times(2)).findByUserIdIn(List.of("viewer"));
+        verify(users).findByUserIdIn(List.of("viewer"));
         verify(users).findByUserIdIn(List.of("viewer", "other"));
-        verify(users).findByUserIdIn(List.of("other"));
         verifyNoMoreInteractions(users);
     }
 
@@ -273,7 +319,7 @@ class NotificationDeliveryDecisionTest {
     private NotificationOutboxService producer() {
         when(outbox.save(any())).thenAnswer(call -> call.getArgument(0));
         NotificationOutboxService producer = new NotificationOutboxService(outbox);
-        producer.configureDelivery(config, users, sessions);
+        producer.configureDelivery(config, new AccountNotificationService(users, mongo), sessions);
         wireProducerScope(producer);
         return producer;
     }
@@ -283,10 +329,10 @@ class NotificationDeliveryDecisionTest {
         when(mongo.updateFirst(any(Query.class), any(Update.class), eq(NotificationOutboxItem.class)))
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
         when(outbox.findById(item.getId())).thenReturn(Optional.of(item));
-        NotificationOutboxWorkerService worker = new NotificationOutboxWorkerService(config, outbox, users, sessions, mongo, null, null,
+        NotificationOutboxWorkerService worker = new NotificationOutboxWorkerService(config, outbox, new AccountNotificationService(users, mongo), sessions, mongo, null, null,
                 mock(AdminTelemetryService.class), gateway, 50, 500, 5, 300000L, 60000L, 0, 24, null);
         var registry = mock(NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         @SuppressWarnings("unchecked") ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         worker.setNotificationRuleRegistryServiceProvider(provider);

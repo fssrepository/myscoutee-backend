@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.payments.service.AffiliateService;
+import com.raxim.myscoutee.domain.payments.api.Affiliates;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,21 +8,22 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 
 /** Coordinates the existing API and MCP settings into one load/save boundary. */
 @Service
 public class IntegrationSettingsService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountIntegrationAccess accountIntegrationAccess;
     private final IntegrationTokenService tokens;
     private final McpAuthorizationService mcp;
-    private final UsersRepository users;
-    private final AffiliateService affiliates;
+    private final ProfileDirectory users;
+    private final Affiliates affiliates;
     private final IntegrationPublicEndpointResolver endpoint;
 
     public IntegrationSettingsService(IntegrationTokenService tokens, McpAuthorizationService mcp,
-            UsersRepository users, AffiliateService affiliates, IntegrationPublicEndpointResolver endpoint) {
+            ProfileDirectory users, Affiliates affiliates, IntegrationPublicEndpointResolver endpoint) {
         this.tokens = tokens; this.mcp = mcp; this.users = users;
         this.affiliates = affiliates; this.endpoint = endpoint;
     }
@@ -65,7 +66,7 @@ public class IntegrationSettingsService {
             next.put(client.id(), client.accessMode());
         }
         var saved = new IntegrationAccess(previous.revision() + 1, request.mcpAccess(), Map.copyOf(next));
-        if (users.updateIntegrationAccess(owner, previous.revision(), saved) != 1) throw error(HttpStatus.CONFLICT);
+        if (accountIntegrationAccess.updateIntegrationAccess(owner, previous.revision(), saved) != 1) throw error(HttpStatus.CONFLICT);
         return load(owner, admin);
     }
 

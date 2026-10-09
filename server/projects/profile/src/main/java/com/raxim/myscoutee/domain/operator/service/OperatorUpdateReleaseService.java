@@ -24,9 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorUpdateManifestDto;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -53,13 +52,13 @@ public class OperatorUpdateReleaseService {
 
     public record ReleasePage(String checkedAt, List<OperatorAnnouncementDto> items) {}
 
-    private com.raxim.myscoutee.domain.notifications.service.RoleNotificationService notifications;
-    private com.raxim.myscoutee.domain.registry.config.RegistryProperties registryProperties;
+    private com.raxim.myscoutee.domain.notifications.api.RoleNotifications notifications;
+    private com.raxim.myscoutee.domain.registry.api.RegistryConfiguration registryProperties;
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner sessionRunner;
 
     @Autowired
-    void setNotificationDelivery(com.raxim.myscoutee.domain.notifications.service.RoleNotificationService notifications,
-            com.raxim.myscoutee.domain.registry.config.RegistryProperties registryProperties,
+    void setNotificationDelivery(com.raxim.myscoutee.domain.notifications.api.RoleNotifications notifications,
+            com.raxim.myscoutee.domain.registry.api.RegistryConfiguration registryProperties,
             com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner sessionRunner) {
         this.notifications = notifications;
         this.registryProperties = registryProperties;
@@ -207,7 +206,7 @@ public class OperatorUpdateReleaseService {
         }
         byte[] manifestBytes = Base64.getDecoder().decode(envelope.path("manifestBase64").asText());
         PublicKey key = releaseKey();
-        if (!RegistryCrypto.verifyBase64(key, signedMessage(manifestBytes), envelope.path("signature").asText())) {
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(key, signedMessage(manifestBytes), envelope.path("signature").asText())) {
             throw new IllegalArgumentException("Invalid release metadata signature.");
         }
         UpdateManifest manifest = mapper.readValue(manifestBytes, UpdateManifest.class);
@@ -229,7 +228,7 @@ public class OperatorUpdateReleaseService {
         RegistryProtocol.requireHash(manifest.artifactSha256(), "artifact hash");
         OperatorUpdateArtifactDownloader.requireHttpsArtifactUri(manifest.artifactUrl());
         if (!RegistryProtocol.packageSigningKeyId(key.getEncoded()).equals(manifest.packageSigningKeyId())
-                || !RegistryCrypto.verifyBase64(key, RegistryProtocol.releasePackage(manifest), manifest.packageSignature())) {
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(key, RegistryProtocol.releasePackage(manifest), manifest.packageSignature())) {
             throw new IllegalArgumentException("Invalid package signature.");
         }
         String hash = RegistryProtocol.sha256(RegistryProtocol.updateManifest(manifest));
@@ -257,7 +256,7 @@ public class OperatorUpdateReleaseService {
         if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) || Files.size(path) > 4096) {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_REQUIRED, "The trusted release key is not configured.");
         }
-        return RegistryCrypto.parsePublicKeyPemOrDer(Files.readAllBytes(path), "release public key");
+        return com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyPemOrDer(Files.readAllBytes(path), "release public key");
     }
 
     private static URI configuredOrigin(String value) {

@@ -59,10 +59,12 @@ class ModelStatusPropagationServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
-                eventsRepository,
-                membersRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 notificationOutboxService,
                 mock(ChatAttachmentLifecycleService.class));
@@ -114,10 +116,12 @@ class ModelStatusPropagationServiceTest {
         when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of());
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
-                eventsRepository,
-                membersRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class));
@@ -154,10 +158,12 @@ class ModelStatusPropagationServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
-                eventsRepository,
-                membersRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class));
@@ -198,10 +204,12 @@ class ModelStatusPropagationServiceTest {
                 .thenReturn(UpdateResult.acknowledged(1, 1L, null));
 
         ModelStatusPropagationService service = new ModelStatusPropagationService(
-                usersRepository,
-                eventsRepository,
-                membersRepository,
-                assetsRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(eventsRepository, mongoTemplate),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
+                com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(assetsRepository, mongoTemplate),
                 mongoTemplate,
                 mock(NotificationOutboxService.class),
                 mock(ChatAttachmentLifecycleService.class));

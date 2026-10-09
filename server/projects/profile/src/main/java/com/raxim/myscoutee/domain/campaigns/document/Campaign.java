@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.campaigns.document;
 
-import com.raxim.myscoutee.domain.media.document.DocumentAttachment;
+import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
 
 import java.util.List;
 import org.springframework.data.annotation.Id;
@@ -13,4 +13,4 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Campaign(@Id String id, String workspaceGroupId, String ownerUserId,
         String title, String description, String kind, String category, @org.springframework.data.mongodb.core.index.Indexed(name="campaign_images") List<String> imageUrls, List<DocumentAttachment> attachments,
         String status,
-        String createdAtIso, String updatedAtIso, @Version Long version) {}
+        String createdAtIso, String updatedAtIso, @Version Long version) implements com.raxim.myscoutee.domain.campaigns.api.CampaignView {}

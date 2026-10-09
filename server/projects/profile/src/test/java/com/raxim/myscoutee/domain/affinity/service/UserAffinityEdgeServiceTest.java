@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.campaigns.service.CampaignRatingProjectionService;
+import com.raxim.myscoutee.domain.affinity.service.CampaignRatingProjectionService;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +35,19 @@ class UserAffinityEdgeServiceTest {
     private UserRatesRepository userRatesRepository;
     @Mock
     private AffinityConfigsRepository affinityConfigsRepository;
+
+    @Test
+    void campaignGraphsUseOneEvidenceReadAndKeepParticipantsInTheirOwnCampaign() {
+        var first = singleRate("a", "u1", "u2", .6d, true); first.setCampaignId("a");
+        var second = singleRate("b", "u3", "u4", .8d, true); second.setCampaignId("b");
+        var service = service(null);
+        when(userRatesRepository.findByCampaignIdIn(List.of("a", "b"))).thenReturn(List.of(first, second));
+        var result = service.campaignGraphs(List.of("a", "b"));
+        assertThat(result.get("a").userIds()).containsExactly("u1", "u2");
+        assertThat(result.get("b").userIds()).containsExactly("u3", "u4");
+        assertThat(result.get("a").edges()).singleElement().satisfies(edge -> assertThat(edge.getLeftUserId()).isEqualTo("u1"));
+        verify(userRatesRepository).findByCampaignIdIn(List.of("a", "b"));
+    }
 
     @Test
     void recomputeCombinesMultipleEvidenceRecordsIntoOnePairEdge() {
@@ -106,7 +119,7 @@ class UserAffinityEdgeServiceTest {
     private UserAffinityEdgeService service(List<UserRate> relevantRates) {
         when(affinityConfigsRepository.findFirstByKeyAndActiveTrueOrderByVersionDesc("default"))
                 .thenReturn(Optional.of(AffinityConfig.defaults()));
-        when(userRatesRepository.findEvidenceForPair("u1", "u2")).thenReturn(relevantRates);
+        if (relevantRates != null) when(userRatesRepository.findEvidenceForPair("u1", "u2")).thenReturn(relevantRates);
         lenient().when(userAffinityEdgesRepository.findByPairKey("u1:u2")).thenReturn(Optional.empty());
         var groupScope = org.mockito.Mockito.mock(JobGroupScopeService.class);
         when(groupScope.usersByGroup(any())).thenAnswer(a -> {

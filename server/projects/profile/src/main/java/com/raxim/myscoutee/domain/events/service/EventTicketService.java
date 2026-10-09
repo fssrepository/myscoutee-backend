@@ -27,7 +27,7 @@ import com.raxim.myscoutee.domain.events.document.EventTicket;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.events.repository.EventTicketsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class EventTicketService {
@@ -43,14 +43,14 @@ public class EventTicketService {
     private final EventTicketsRepository eventTicketsRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMembersRepository activityMembersRepository;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final MongoTemplate mongoTemplate;
 
     public EventTicketService(
             EventTicketsRepository eventTicketsRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMembersRepository activityMembersRepository,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             MongoTemplate mongoTemplate) {
         this.eventTicketsRepository = eventTicketsRepository;
         this.activityEventsRepository = activityEventsRepository;
@@ -420,7 +420,7 @@ public class EventTicketService {
             boolean valid,
             String reason,
             EventTicket ticket,
-            ActivityEvent event) {
+            ActivityEvent event) implements com.raxim.myscoutee.domain.events.api.ParticipationTickets.CheckIn {
         public static CheckInResult checkedIn(EventTicket ticket, ActivityEvent event) {
             return new CheckInResult(true, "valid", ticket, event);
         }

@@ -27,8 +27,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.registry.config.RegistryDemoProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryDemoConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.CandidateDefaultsDto;
@@ -41,28 +41,28 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryOpti
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.domain.operator.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.domain.operator.repository.OperatorRegistrySettingsRepository;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.BindingArchive;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.BindingArchiveRequest;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorOperations;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkOperations;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimStatus;
-import com.raxim.myscoutee.domain.registry.RegistryPreflightService.RegistryInspection;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchive;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchiveRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryOperations;
+import com.raxim.myscoutee.domain.registry.api.RegistryNetwork;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.dto.RegistryInspection;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
 
 @Service
 public class OperatorRegistryService {
     private static final Duration INSPECTION_TTL = Duration.ofMinutes(30);
 
     private final OperatorRegistrySettingsRepository repository;
-    private final RegistryProperties realProperties;
-    private final RegistryDemoProperties demoProperties;
-    private final RegistryOperatorOperations operations;
-    private final RegistryOperatorNetworkOperations networkOperations;
+    private final RegistryConfiguration realProperties;
+    private final RegistryDemoConfiguration demoProperties;
+    private final RegistryOperations operations;
+    private final RegistryNetwork networkOperations;
     private final OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
     private final OperatorRegistryEndpointService endpointService;
     private final OperatorRegistryMapper mapper;
@@ -73,10 +73,10 @@ public class OperatorRegistryService {
     @Autowired
     public OperatorRegistryService(
             OperatorRegistrySettingsRepository repository,
-            RegistryProperties realProperties,
-            RegistryDemoProperties demoProperties,
-            RegistryOperatorOperations operations,
-            RegistryOperatorNetworkOperations networkOperations,
+            RegistryConfiguration realProperties,
+            RegistryDemoConfiguration demoProperties,
+            RegistryOperations operations,
+            RegistryNetwork networkOperations,
             OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
             OperatorRegistryEndpointService endpointService,
             OperatorRegistryMapper mapper) {
@@ -95,10 +95,10 @@ public class OperatorRegistryService {
 
     OperatorRegistryService(
             OperatorRegistrySettingsRepository repository,
-            RegistryProperties realProperties,
-            RegistryDemoProperties demoProperties,
-            RegistryOperatorOperations operations,
-            RegistryOperatorNetworkOperations networkOperations,
+            RegistryConfiguration realProperties,
+            RegistryDemoConfiguration demoProperties,
+            RegistryOperations operations,
+            RegistryNetwork networkOperations,
             OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository,
             OperatorRegistryEndpointService endpointService,
             OperatorRegistryMapper mapper,
@@ -217,7 +217,7 @@ public class OperatorRegistryService {
             touch(settings, now, actorUserId);
             save(settings);
 
-            RegistryOperatorOperations.EnrollmentOutcome outcome =
+            com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.EnrollmentOutcome outcome =
                     synchronizeLive(settings, mode, actorUserId);
             boolean created = outcome != null
                     && !outcome.registrationDuplicate()
@@ -263,9 +263,9 @@ public class OperatorRegistryService {
             LinkedHashSet<String> removedLeaderboardEntryIds =
                     new LinkedHashSet<>();
             BindingArchive archivedBinding = null;
-            RegistryProperties archivedRuntime = null;
+            RegistryConfiguration archivedRuntime = null;
             if (requiresSignedDeactivation(settings)) {
-                RegistryProperties runtime = registeredRuntime(mode, settings);
+                RegistryConfiguration runtime = registeredRuntime(mode, settings);
                 archivedRuntime = runtime;
                 String deploymentId =
                         settings.getEnrollment().getDeploymentCode().trim();
@@ -366,7 +366,7 @@ public class OperatorRegistryService {
     }
 
     private BindingArchive archiveActiveBinding(
-            RegistryProperties runtime,
+            RegistryConfiguration runtime,
             OperatorRegistrySettings.RegistrySelection selection,
             String deploymentId,
             OperatorActionReceipt receipt,
@@ -402,7 +402,7 @@ public class OperatorRegistryService {
     }
 
     private void restoreArchivedBinding(
-            RegistryProperties runtime,
+            RegistryConfiguration runtime,
             BindingArchive archived,
             RuntimeException failure) {
         if (runtime == null || archived == null) {
@@ -417,7 +417,7 @@ public class OperatorRegistryService {
         }
     }
 
-    private RegistryProperties registeredRuntime(
+    private RegistryConfiguration registeredRuntime(
             MongoSessionMode mode,
             OperatorRegistrySettings settings) {
         OperatorRegistrySettings.RegistrySelection selection =
@@ -431,7 +431,7 @@ public class OperatorRegistryService {
     }
 
     private ClaimStatus confirmedClaimStatus(
-            RegistryProperties runtime) {
+            RegistryConfiguration runtime) {
         try {
             ClaimStatus status =
                     networkOperations.claimStatus(runtime);
@@ -448,7 +448,7 @@ public class OperatorRegistryService {
     }
 
     private ActionOutcome confirmedDeactivation(
-            RegistryProperties runtime,
+            RegistryConfiguration runtime,
             String deploymentId) {
         try {
             ActionOutcome outcome = networkOperations.apply(
@@ -487,7 +487,7 @@ public class OperatorRegistryService {
     }
 
     private LeaderboardRow findClaimedLeaderboardRow(
-            RegistryProperties runtime,
+            RegistryConfiguration runtime,
             String groupId) {
         try {
             String cursor = "";
@@ -531,12 +531,12 @@ public class OperatorRegistryService {
                         cause);
     }
 
-    private RegistryOperatorOperations.EnrollmentOutcome synchronizeLive(
+    private com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.EnrollmentOutcome synchronizeLive(
             OperatorRegistrySettings settings,
             MongoSessionMode mode,
             String actorUserId) {
         Instant now = clock.instant();
-        RegistryProperties runtime = runtimeProperties(
+        RegistryConfiguration runtime = runtimeProperties(
                 mode,
                 settings.getSelection().getBaseUrl(),
                 settings.getSelection().getRegistryScope(),
@@ -550,7 +550,7 @@ public class OperatorRegistryService {
             touch(settings, now, actorUserId);
             save(settings);
 
-            RegistryOperatorOperations.NodeStatus observed = operations.inspectNodeIdentity(runtime);
+            com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.NodeStatus observed = operations.inspectNodeIdentity(runtime);
             if ("INCOMPLETE".equals(observed.state())) {
                 fail(settings, "NODE_IDENTITY_INCOMPLETE",
                         "Deployment identity is incomplete; restore the matching key files.", false, actorUserId);
@@ -593,7 +593,7 @@ public class OperatorRegistryService {
                 return null;
             }
 
-            RegistryOperatorOperations.EnrollmentOutcome outcome = operations.synchronize(runtime);
+            com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.EnrollmentOutcome outcome = operations.synchronize(runtime);
             OperatorRegistrySettings.EnrollmentSummary enrollment =
                     new OperatorRegistrySettings.EnrollmentSummary();
             enrollment.setDeploymentCode(outcome.deploymentCode());
@@ -647,7 +647,7 @@ public class OperatorRegistryService {
                         options.getFirst().baseUrl(),
                         options.getFirst().registryScope());
         NodeIdentityDto observed = null;
-        RegistryProperties runtime = runtimeProperties(
+        RegistryConfiguration runtime = runtimeProperties(
                 mode,
                 settings != null && settings.getSelection() != null
                         ? settings.getSelection().getBaseUrl()
@@ -660,7 +660,7 @@ public class OperatorRegistryService {
                         : "",
                 settings != null && settings.getSelection() != null);
         try {
-            RegistryOperatorOperations.NodeStatus node = operations.inspectNodeIdentity(runtime);
+            com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.NodeStatus node = operations.inspectNodeIdentity(runtime);
             String initializedAt = settings != null && settings.getNodeIdentity() != null
                     ? settings.getNodeIdentity().getInitializedAt()
                     : null;
@@ -698,13 +698,13 @@ public class OperatorRegistryService {
         }
     }
 
-    private RegistryProperties runtimeProperties(
+    private RegistryConfiguration runtimeProperties(
             MongoSessionMode mode,
             String baseUrl,
             String scope,
             String fingerprint,
             boolean operatorConfirmed) {
-        RegistryProperties runtime = new RegistryProperties();
+        RegistryConfiguration runtime = new RegistryConfiguration();
         // operatorConfirmed is true only for an explicit register/retry action.
         // A persisted selection alone is configuration, never enrollment consent.
         runtime.setEnabled(true);

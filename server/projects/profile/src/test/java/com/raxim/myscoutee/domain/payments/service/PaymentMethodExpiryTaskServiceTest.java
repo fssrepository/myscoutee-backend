@@ -38,7 +38,7 @@ class PaymentMethodExpiryTaskServiceTest {
         NotificationRuleConfig rule = new NotificationRuleConfig();
         rule.setRuleKey(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY);
         SavedPaymentMethod method = dueMethod();
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         var scope = mock(com.raxim.myscoutee.domain.platform.service.JobGroupScopeService.class);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope", scope);
 
@@ -56,7 +56,9 @@ class PaymentMethodExpiryTaskServiceTest {
                 eq("Scanning expired saved payment cards."),
                 eq("payment-method-expiry-task"),
                 any(Instant.class))).thenReturn(rule);
-        when(scope.findOwned(any(org.springframework.data.mongodb.core.query.Query.class), eq(SavedPaymentMethod.class), eq("userId"))).thenReturn(List.of(method), List.of());
+        var jobs = mock(PaymentJobQueries.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "paymentJobs", jobs);
+        when(jobs.find(any(org.springframework.data.mongodb.core.query.Query.class), eq(SavedPaymentMethod.class), any())).thenReturn(List.of(method), List.of());
         when(repository.markExpired(eq("payment-method-1"), eq("user-1"), anyString())).thenReturn(1L);
 
         service.markExpiredAndNotify();

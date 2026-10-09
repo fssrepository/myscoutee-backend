@@ -1,28 +1,18 @@
 package com.raxim.myscoutee.domain.operator.repository;
-
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
-
-import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-
-import com.mongodb.client.MongoCursor;
-import com.raxim.myscoutee.domain.operator.repository.QualifiedMauEvidenceRepository.QualifiedMauActionEvidence;
-
-/**
- * Reads the frozen qmau-v1 action vocabulary from the authoritative domain
- * collections. Mongo performs the union, eligibility filtering, and sort so
- * the JVM only retains one user's evidence at a time.
- */
+import com.raxim.myscoutee.common.measurement.*;
+import com.raxim.myscoutee.domain.accounts.api.MeasurementEligibility;
+import com.raxim.myscoutee.domain.affinity.api.RatingMeasurement;
+import com.raxim.myscoutee.domain.assets.api.AssetMeasurement;
+import com.raxim.myscoutee.domain.chat.api.ChatMeasurement;
+import com.raxim.myscoutee.domain.events.api.EventMeasurement;
+/** Merges sorted owner streams with bounded memory; never reads a foreign collection. */
 @Repository
-public class MongoQualifiedMauEvidenceRepository
-        implements QualifiedMauEvidenceRepository {
+public class MongoQualifiedMauEvidenceRepository implements QualifiedMauEvidenceRepository {
     public static final String ACTION_RATE = "rate";
     public static final String ACTION_JOIN = "join";
     public static final String ACTION_MESSAGE = "message";
@@ -31,218 +21,49 @@ public class MongoQualifiedMauEvidenceRepository
     public static final String ACTION_VERIFIED_ATTENDANCE =
             "verified-attendance";
 
-    private final MongoTemplate mongoTemplate;
-
-    public MongoQualifiedMauEvidenceRepository(
-            MongoTemplate mongoTemplate) {
-        this.mongoTemplate = Objects.requireNonNull(mongoTemplate);
+    private final RatingMeasurement ratings;
+    private final EventMeasurement events;
+    private final ChatMeasurement chats;
+    private final AssetMeasurement assets;
+    private final MeasurementEligibility eligibility;
+    public MongoQualifiedMauEvidenceRepository(RatingMeasurement ratings, EventMeasurement events,
+            ChatMeasurement chats, AssetMeasurement assets, MeasurementEligibility eligibility) {
+        this.ratings = ratings; this.events = events; this.chats = chats; this.assets = assets; this.eligibility = eligibility;
     }
-
-    @Override
-    public void read(
-            Instant startInclusive,
-            Instant endExclusive,
-            Consumer<QualifiedMauActionEvidence> consumer) {
+    @Override public void read(Instant startInclusive, Instant endExclusive, Consumer<QualifiedMauActionEvidence> consumer) {
         Objects.requireNonNull(startInclusive, "QMAU start must not be null.");
         Objects.requireNonNull(endExclusive, "QMAU end must not be null.");
         Objects.requireNonNull(consumer, "QMAU consumer must not be null.");
-        if (!startInclusive.isBefore(endExclusive)) {
-            throw new IllegalArgumentException(
-                    "QMAU evidence window must be positive.");
+        if (!startInclusive.isBefore(endExclusive)) throw new IllegalArgumentException("QMAU evidence window must be positive.");
+        try (var rates = ratings.rates(startInclusive, endExclusive);
+             var joins = events.joins(startInclusive, endExclusive);
+             var messages = chats.messages(startInclusive, endExclusive);
+             var hosts = events.hosts(startInclusive, endExclusive);
+             var bookings = assets.bookings(startInclusive, endExclusive);
+             var attendance = events.attendance(startInclusive, endExclusive)) {
+            var queue = new PriorityQueue<Head>(Comparator.comparing(Head::row, MeasurementEvidence.ORDER).thenComparingInt(Head::source));
+            var cursors = List.of(rates, joins, messages, hosts, bookings, attendance);
+            for (int i = 0; i < cursors.size(); i++) if (cursors.get(i).hasNext()) queue.add(new Head(cursors.get(i).next(), i));
+            var batch = new ArrayList<MeasurementEvidence>(1_000);
+            while (!queue.isEmpty()) {
+                var head = queue.remove(); batch.add(head.row());
+                var cursor = cursors.get(head.source());
+                if (cursor.hasNext()) queue.add(new Head(cursor.next(), head.source()));
+                if (batch.size() == 1_000) { publish(batch, startInclusive, endExclusive, consumer); batch.clear(); }
+            }
+            if (!batch.isEmpty()) publish(batch, startInclusive, endExclusive, consumer);
         }
-
-        String start = startInclusive.toString();
-        String end = endExclusive.toString();
-        List<Document> pipeline = new ArrayList<>();
-        pipeline.add(match(new Document("scoreGiven", new Document("$gt", 0))
-                .append("$or", List.of(
-                        rangeClause("updatedDate", start, end),
-                        new Document("$and", List.of(
-                                new Document("updatedDate",
-                                        new Document(
-                                                "$in",
-                                                Arrays.asList(null, ""))),
-                                rangeClause("createdDate", start, end)))))));
-        pipeline.add(project(
-                "$ownerUserId",
-                ACTION_RATE,
-                new Document("$cond", List.of(
-                        new Document(
-                                "$in",
-                                List.of(
-                                        "$updatedDate",
-                                        Arrays.asList(null, ""))),
-                        "$createdDate",
-                        "$updatedDate")),
-                new Document("$toString", "$_id")));
-
-        pipeline.add(union("activityMembers", List.of(
-                match(new Document("ownerType", "event")
-                        .append("status", "accepted")
-                        .append("actionAtIso", range(start, end))),
-                project(
-                        "$userId",
-                        ACTION_JOIN,
-                        "$actionAtIso",
-                source("event:", "$ownerId", ":", new Document("$toString", "$_id"))))));
-
-        pipeline.add(union("chatMessages", List.of(
-                match(new Document("sentAtIso", range(start, end))
-                        .append("senderAvatar.id",
-                                new Document("$exists", true).append("$ne", ""))
-                        .append("$or", List.of(
-                                new Document(
-                                        "deletedAtIso",
-                                        new Document("$exists", false)),
-                                new Document("deletedAtIso", null),
-                                new Document("deletedAtIso", "")))),
-                project(
-                        "$senderAvatar.id",
-                        ACTION_MESSAGE,
-                        "$sentAtIso",
-                        source("chat:", "$chatId", ":", "$id")))));
-
-        pipeline.add(union("events", List.of(
-                match(new Document("status", "A")
-                        .append("generated", new Document("$ne", true))
-                        .append("creatorUserId",
-                                new Document("$exists", true).append("$ne", ""))
-                        .append("createdDate", range(start, end))),
-                project(
-                        "$creatorUserId",
-                        ACTION_HOST,
-                        "$createdDate",
-                        source(
-                                "event:",
-                                new Document(
-                                        "$ifNull",
-                                        List.of(
-                                                "$sourceId",
-                                                new Document(
-                                                        "$toString",
-                                                        "$_id"))))))));
-
-        pipeline.add(union("assetRequests", List.of(
-                match(new Document("status", "accepted")
-                        .append("booking", new Document("$ne", null))
-                        .append("userId",
-                                new Document("$exists", true).append("$ne", ""))
-                        .append("requestedAtIso", range(start, end))),
-                project(
-                        "$userId",
-                        ACTION_BOOK,
-                        "$requestedAtIso",
-                        source(
-                                "booking:",
-                                new Document("$toString", "$_id"))))));
-
-        pipeline.add(union("eventFeedbackStates", List.of(
-                match(new Document("removed", new Document("$ne", true))
-                        .append("submittedAtIso", range(start, end))),
-                new Document("$lookup", new Document("from", "activityMembers")
-                        .append("let", new Document("eventId", "$eventId")
-                                .append("userId", "$viewerUserId"))
-                        .append("pipeline", List.of(
-                                new Document("$match", new Document(
-                                        "$expr",
-                                        new Document("$and", List.of(
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$ownerType",
-                                                                "event")),
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$ownerId",
-                                                                "$$eventId")),
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$userId",
-                                                                "$$userId")),
-                                                new Document(
-                                                        "$eq",
-                                                        List.of(
-                                                                "$status",
-                                                                "accepted")))))),
-                                new Document("$limit", 1)))
-                        .append("as", "acceptedMembership")),
-                match(new Document(
-                        "acceptedMembership.0",
-                        new Document("$exists", true))),
-                project(
-                        "$viewerUserId",
-                        ACTION_VERIFIED_ATTENDANCE,
-                        "$submittedAtIso",
-                        source("attendance:", "$eventId")))));
-
-        /*
-         * Only persisted human profiles participate. Explicit exclusions cover
-         * bots/test/synthetic profiles; lifecycle and workspace checks exclude
-         * deleted, blocked, inactive, and admin actors.
-         */
-        pipeline.add(new Document("$lookup", new Document("from", "users")
-                .append("localField", "userId")
-                .append("foreignField", "userId")
-                .append("as", "qmauUser")));
-        pipeline.add(match(new Document(
-                "qmauUser.0",
-                new Document("$exists", true))));
-        pipeline.add(new Document(
-                "$set",
-                new Document(
-                        "qmauUser",
-                        new Document("$arrayElemAt", List.of("$qmauUser", 0)))));
-        pipeline.add(match(new Document(
-                        "qmauUser.networkMeasurementExcluded",
-                        new Document("$ne", true))
-                .append(
-                        "qmauUser.status",
-                        new Document("$nin", List.of("D", "B", "I")))
-                .append(
-                        "qmauUser.profileStatus",
-                        new Document(
-                                "$nin",
-                                List.of(
-                                        "deleted",
-                                        "blocked",
-                                        "inactive")))
-                .append(
-                        "qmauUser.hostTier",
-                        new Document(
-                                "$not",
-                                new Document(
-                                        "$regex",
-                                        "^admin$")
-                                        .append("$options", "i")))
-                .append(
-                        "qmauUser.statusText",
-                        new Document(
-                                "$not",
-                                new Document(
-                                        "$regex",
-                                        "^admin workspace$")
-                                        .append("$options", "i")))));
-        pipeline.add(new Document(
-                "$sort",
-                new Document("userId", 1)
-                        .append("occurredAt", 1)
-                        .append("actionType", 1)
-                        .append("sourceId", 1)));
-
-        try (MongoCursor<Document> cursor = mongoTemplate
-                .getCollection("userRates")
-                .aggregate(pipeline)
-                .allowDiskUse(true)
-                .batchSize(1_000)
-                .iterator()) {
-            while (cursor.hasNext()) {
-                Document row = cursor.next();
-                String userId = text(row.get("userId"));
-                String actionType = text(row.get("actionType"));
-                String occurredAt = text(row.get("occurredAt"));
-                String sourceId = text(row.get("sourceId"));
+    }
+    private void publish(List<MeasurementEvidence> batch, Instant startInclusive, Instant endExclusive, Consumer<QualifiedMauActionEvidence> consumer) {
+        var ids = new LinkedHashSet<String>();
+        for (var row : batch) if (row.userId() != null) ids.add(row.userId());
+        var allowed = eligibility.eligible(ids);
+        for (var row : batch) {
+            if (!allowed.contains(row.userId())) continue;
+                String userId = text(row.userId());
+                String actionType = text(row.actionType());
+                String occurredAt = text(row.occurredAt());
+                String sourceId = text(row.sourceId());
                 if (!StringUtils.hasText(userId)
                         || !StringUtils.hasText(actionType)
                         || !StringUtils.hasText(occurredAt)
@@ -268,52 +89,8 @@ public class MongoQualifiedMauEvidenceRepository
                         actionType,
                         parsedAt,
                         sourceId));
-            }
         }
     }
-
-    private static Document range(String start, String end) {
-        return new Document("$gte", start).append("$lt", end);
-    }
-
-    private static Document rangeClause(
-            String field,
-            String start,
-            String end) {
-        return new Document(field, range(start, end));
-    }
-
-    private static Document match(Document criteria) {
-        return new Document("$match", criteria);
-    }
-
-    private static Document project(
-            Object userId,
-            String actionType,
-            Object occurredAt,
-            Object sourceId) {
-        return new Document(
-                "$project",
-                new Document("_id", 0)
-                        .append("userId", userId)
-                        .append("actionType", actionType)
-                        .append("occurredAt", occurredAt)
-                        .append("sourceId", sourceId));
-    }
-
-    private static Document union(
-            String collection,
-            List<Document> pipeline) {
-        return new Document(
-                "$unionWith",
-                new Document("coll", collection).append("pipeline", pipeline));
-    }
-
-    private static Document source(Object... parts) {
-        return new Document("$concat", List.of(parts));
-    }
-
-    private static String text(Object value) {
-        return value == null ? "" : String.valueOf(value).trim();
-    }
+    private record Head(MeasurementEvidence row, int source) {}
+    private static String text(Object value) { return value == null ? "" : String.valueOf(value).trim(); }
 }

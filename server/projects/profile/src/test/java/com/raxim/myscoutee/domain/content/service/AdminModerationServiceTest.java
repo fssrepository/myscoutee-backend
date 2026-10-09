@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryEvent;
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
@@ -40,7 +40,7 @@ import com.raxim.myscoutee.domain.content.repository.UserFeedbackSubmissionsRepo
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")
@@ -76,19 +76,26 @@ class AdminModerationServiceTest {
     void setUp() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new AdminModerationService(
-                org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class),
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)),
                 configProperties,
                 reportsRepository,
                 feedbackRepository,
-                usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository),
+                new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
                 chatService,
                 userActivityCountersService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 appSettingsService,
                 notificationOutboxService);
+        var statusWork = new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(usersRepository,
+                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null);
+        org.springframework.test.util.ReflectionTestUtils.setField(statusWork, "supportMessages", chatService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileModeration",
+                new com.raxim.myscoutee.domain.accounts.service.ProfileModerationService(usersRepository, statusWork));
+        org.springframework.test.util.ReflectionTestUtils.setField(userActivityCountersService, "usersRepository", usersRepository);
+        org.mockito.Mockito.lenient().doCallRealMethod().when(userActivityCountersService).hasSupportCaseCounters(org.mockito.ArgumentMatchers.any());
     }
 
     @AfterEach
@@ -104,6 +111,51 @@ class AdminModerationServiceTest {
         var activity = new AdminTelemetryEvent("event.synced", "events", "event", member.getUserId(), 1L, "2026-10-05T00:00:00Z", tags);
         var job = new AdminTelemetryEvent("jobs.run.completed", "jobs", "job", "worker", 1L, "2026-10-05T00:00:00Z", tags);
         assertThat(service.baseProfileEvents(List.of(activity, job)).get("myscoutee-work")).containsExactly(job);
+    }
+
+    @Test
+    void warningWithoutReportIdUsesTheTargetWorkspaceAndSendsSupportMessage() {
+        UserReportSubmission report = new UserReportSubmission();
+        report.setTargetUserId("target");
+        Users admin = new Users();
+        admin.setUserId("admin-demo-ava");
+        admin.setWorkspaceGroupId("myscoutee-work");
+        Users target = new Users();
+        target.setUserId("target");
+        target.setWorkspaceGroupId("myscoutee-work");
+        when(configProperties.isFirebaseEnabled()).thenReturn(false);
+        when(reportsRepository.findByTargetUserIdOrderByCreatedDateDesc("target")).thenReturn(List.of(report));
+        when(usersRepository.findByUserId("admin-demo-ava")).thenReturn(Optional.of(admin));
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+
+        service.warn("target", new AdminActionRequestDto("admin-demo-ava", "Warning text", null));
+
+        verify(chatService).sendAdminSupportMessage("target", "admin-demo-ava", "Ava Moderation", "AM", "Warning text", "warned");
+        verify(reportsRepository, never()).save(any(UserReportSubmission.class));
+        verify(adminTelemetryService).record("admin.user.warned", "moderation", "target", "admin-demo-ava");
+    }
+
+    @Test
+    void warningWithoutReportIdStillRejectsAnotherWorkspace() {
+        UserReportSubmission report = new UserReportSubmission();
+        report.setTargetUserId("target");
+        Users admin = new Users();
+        admin.setUserId("admin-demo-ava");
+        admin.setWorkspaceGroupId("myscoutee-work");
+        Users target = new Users();
+        target.setUserId("target");
+        target.setWorkspaceGroupId("myscoutee-community");
+        when(configProperties.isFirebaseEnabled()).thenReturn(false);
+        when(reportsRepository.findByTargetUserIdOrderByCreatedDateDesc("target")).thenReturn(List.of(report));
+        when(usersRepository.findByUserId("admin-demo-ava")).thenReturn(Optional.of(admin));
+        when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
+
+        assertThatThrownBy(() -> service.warn("target", new AdminActionRequestDto("admin-demo-ava", "Warning text", null)))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class)
+                .hasMessageContaining("404")
+                .hasMessageContaining("Case not found in this workspace");
+        verify(chatService, never()).sendAdminSupportMessage(anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(reportsRepository, never()).save(any(UserReportSubmission.class));
     }
 
     @Test

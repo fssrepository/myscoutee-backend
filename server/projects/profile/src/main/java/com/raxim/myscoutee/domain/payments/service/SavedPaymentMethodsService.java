@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.payments.service;
 
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
+
 import static com.raxim.myscoutee.domain.payments.dto.PaymentDtos.*;
 
 import java.time.Duration;
@@ -32,14 +34,15 @@ import com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod;
 import com.raxim.myscoutee.domain.payments.repository.PaymentMethodRegistrationsRepository;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.payments.repository.SavedPaymentMethodsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.AccountPaymentReads;
+import com.raxim.myscoutee.domain.accounts.dto.AccountPaymentSummaryDto;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient.GatewayRegistration;
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentProviderResolver;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
 @Service
-public class SavedPaymentMethodsService {
+public class SavedPaymentMethodsService implements com.raxim.myscoutee.domain.payments.api.PaymentMethods {
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.payments.service.PaymentEuroService euroService;
     private static final Logger LOG = LoggerFactory.getLogger(SavedPaymentMethodsService.class);
@@ -54,7 +57,7 @@ public class SavedPaymentMethodsService {
     private final PaymentsRepository paymentsRepository;
     private final PaymentSimulatorRegistrationClient simulatorClient;
     private final DeploymentPaymentProviderResolver paymentProviderResolver;
-    private final UsersRepository usersRepository;
+    private final AccountPaymentReads usersRepository;
 
     @Value("${payment.registration.ttl:PT10M}")
     private Duration registrationTtl = DEFAULT_REGISTRATION_TTL;
@@ -65,7 +68,7 @@ public class SavedPaymentMethodsService {
             PaymentsRepository paymentsRepository,
             PaymentSimulatorRegistrationClient simulatorClient,
             DeploymentPaymentProviderResolver paymentProviderResolver,
-            UsersRepository usersRepository) {
+            AccountPaymentReads usersRepository) {
         this.paymentMethodsRepository = paymentMethodsRepository;
         this.registrationsRepository = registrationsRepository;
         this.paymentsRepository = paymentsRepository;
@@ -304,13 +307,14 @@ public class SavedPaymentMethodsService {
         int from = Math.min(all.size(), pageIndex * pageSize);
         int to = Math.min(all.size(), from + pageSize);
         List<PaymentHistoryItemDto> items = all.subList(from, to).stream().map(this::toHistoryDto).toList();
+        var accountSummary = usersRepository.paymentSummary(ownerId).orElse(null);
         return new PaymentHistoryPageDto(
                 items,
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
-                spendingTotals(ownerId),
-                incomeTotals(ownerId),
-                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
+                spendingTotals(accountSummary),
+                incomeTotals(accountSummary),
+                pendingRefundCount(accountSummary), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public PaymentHistoryPageDto queryHistory(String userId, Integer page, Integer size) {
@@ -343,13 +347,14 @@ public class SavedPaymentMethodsService {
         int pageIndex = Math.max(0, page == null ? 0 : page);
         int from = Math.min(all.size(), pageIndex * pageSize);
         int to = Math.min(all.size(), from + pageSize);
+        var accountSummary = usersRepository.paymentSummary(ownerId).orElse(null);
         return new PaymentHistoryPageDto(
                 all.subList(from, to).stream().map(payment -> toHistoryDto(payment, ownerId)).toList(),
                 all.size(),
                 to < all.size() ? Integer.toString(pageIndex + 1) : null,
-                spendingTotals(ownerId),
-                incomeTotals(ownerId),
-                pendingRefundCount(ownerId), euroService == null ? null : euroService.summary(ownerId, false));
+                spendingTotals(accountSummary),
+                incomeTotals(accountSummary),
+                pendingRefundCount(accountSummary), euroService == null ? null : euroService.summary(ownerId, false));
     }
 
     public synchronized void delete(String userId, String paymentMethodId) {
@@ -623,15 +628,18 @@ public class SavedPaymentMethodsService {
                             || ownerId.equals(normalizeId(original.getRecipientUserId())))
                     .ifPresent(original -> changed.add(toHistoryDto(original, ownerId)));
         }
+        var accountSummary = usersRepository.paymentSummary(ownerId).orElse(null);
         return new PaymentHistoryMutationDto(
-                item, spendingTotals(ownerId), incomeTotals(ownerId), pendingRefundCount(ownerId),
+                item, spendingTotals(accountSummary), incomeTotals(accountSummary), pendingRefundCount(accountSummary),
                 euroService == null ? null : euroService.summary(ownerId, false), changed);
     }
 
     public int pendingRefundCount(String userId) {
-        return usersRepository.findByUserId(normalizeId(userId))
-                .map(user -> Math.max(0, user.getPaymentRefundsPending() == null ? 0 : user.getPaymentRefundsPending()))
-                .orElse(0);
+        return pendingRefundCount(usersRepository.paymentSummary(normalizeId(userId)).orElse(null));
+    }
+
+    private int pendingRefundCount(AccountPaymentSummaryDto summary) {
+        return summary == null || summary.pendingRefunds() == null ? 0 : Math.max(0, summary.pendingRefunds());
     }
 
     private List<Payment> mergeHistory(List<Payment> expenses, List<Payment> income) {
@@ -668,10 +676,8 @@ public class SavedPaymentMethodsService {
         return direction;
     }
 
-    private Map<String, Double> spendingTotals(String userId) {
-        Map<String, Double> stored = usersRepository.findByUserId(userId)
-                .map(com.raxim.myscoutee.domain.accounts.document.Users::getPaymentSpentTotals)
-                .orElse(Map.of());
+    private Map<String, Double> spendingTotals(AccountPaymentSummaryDto summary) {
+        Map<String, Double> stored = summary == null || summary.spent() == null ? Map.of() : summary.spent();
         Map<String, Double> normalized = new LinkedHashMap<>();
         stored.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
@@ -685,10 +691,8 @@ public class SavedPaymentMethodsService {
         return Map.copyOf(normalized);
     }
 
-    private Map<String, Double> incomeTotals(String userId) {
-        Map<String, Double> stored = usersRepository.findByUserId(userId)
-                .map(com.raxim.myscoutee.domain.accounts.document.Users::getPaymentIncomeTotals)
-                .orElse(Map.of());
+    private Map<String, Double> incomeTotals(AccountPaymentSummaryDto summary) {
+        Map<String, Double> stored = summary == null || summary.income() == null ? Map.of() : summary.income();
         return normalizedTotals(stored);
     }
 

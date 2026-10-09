@@ -31,8 +31,8 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventFeedbackToggleReque
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventStageActionRequestDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 import com.raxim.myscoutee.domain.media.dto.MediaDtos.MediaImageImportRequestDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 
 @org.junit.jupiter.api.Tag("standard")
 class BoundaryPolicyAnnotationTest {

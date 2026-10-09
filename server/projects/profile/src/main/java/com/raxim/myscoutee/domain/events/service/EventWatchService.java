@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.UUID;
 import org.bson.types.ObjectId;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.api.FriendshipReads;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -30,15 +30,15 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventWatchActionResultDt
 import com.raxim.myscoutee.common.dto.SharedDtos.EventSlotOccurrenceDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.EventWatchSubscriptionsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class EventWatchService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
@@ -48,18 +48,18 @@ public class EventWatchService {
 
     private final EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final HomeUserProfileService homeUserProfileService;
-    private final FriendshipFacts friendshipFacts;
-    private final UserActivityCountersService userActivityCountersService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final SelectedProfile homeUserProfileService;
+    private final FriendshipReads friendshipFacts;
+    private final ActivityCounters userActivityCountersService;
+    private final NotificationDelivery notificationOutboxService;
 
     public EventWatchService(
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventsRepository activityEventsRepository,
-            HomeUserProfileService homeUserProfileService,
-            FriendshipFacts friendshipFacts,
-            UserActivityCountersService userActivityCountersService,
-            NotificationOutboxService notificationOutboxService) {
+            SelectedProfile homeUserProfileService,
+            FriendshipReads friendshipFacts,
+            ActivityCounters userActivityCountersService,
+            NotificationDelivery notificationOutboxService) {
         this.eventWatchSubscriptionsRepository = eventWatchSubscriptionsRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -210,8 +210,7 @@ public class EventWatchService {
     }
 
     private String resolveUserId(String requestedUserId) {
-        var user = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String userId = normalizeId(user == null ? null : user.getId());
+        String userId = normalizeId(homeUserProfileService.resolveSelectedUserId(requestedUserId));
         if (!StringUtils.hasText(userId)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Active user is required.");
         }

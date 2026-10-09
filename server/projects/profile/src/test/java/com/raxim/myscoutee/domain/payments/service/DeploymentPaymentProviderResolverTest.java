@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
 import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
-import com.raxim.myscoutee.domain.payments.service.PaymentProviderChangedException;
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
 
 @org.junit.jupiter.api.Tag("standard")
 class DeploymentPaymentProviderResolverTest {
@@ -80,8 +80,7 @@ class DeploymentPaymentProviderResolverTest {
                 mock(PaymentProviderService.class);
         when(providerService.availableProviders())
                 .thenReturn(availableProviders);
-        return new Fixture(new DeploymentPaymentProviderResolver(
-                repository,
+        return new Fixture(new DeploymentPaymentProviderResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository),
                 providerService));
     }
 

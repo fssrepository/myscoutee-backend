@@ -1,9 +1,9 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,15 +30,14 @@ import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class EventCounterExpiryService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates eventCounterUpdates;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventCounterExpiryService.class);
     private static final String SYSTEM_USER = "event-counter-expiry";
@@ -53,11 +52,10 @@ public class EventCounterExpiryService {
     private static final String REQUEST_KIND_WAITLIST_INVITE = "waitlist-invite";
 
     private final ActivityMembersRepository activityMembersRepository;
-    private final UsersRepository usersRepository;
     private final MongoTemplate mongoTemplate;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
-    private final AdminTelemetryService adminTelemetryService;
-    private final UserActivityCountersService userActivityCountersService;
+    private final NotificationJobs notificationRuleRegistryService;
+    private final OperationalTelemetry adminTelemetryService;
+    private final ActivityCounters userActivityCountersService;
     private final EventFriendshipProjectionService eventFriendshipProjectionService;
     private final int batchSize;
     private final java.util.concurrent.ConcurrentHashMap<String, AtomicBoolean> processing = new java.util.concurrent.ConcurrentHashMap<>();
@@ -79,15 +77,13 @@ public class EventCounterExpiryService {
 
     public EventCounterExpiryService(
             ActivityMembersRepository activityMembersRepository,
-            UsersRepository usersRepository,
             MongoTemplate mongoTemplate,
-            NotificationRuleRegistryService notificationRuleRegistryService,
-            AdminTelemetryService adminTelemetryService,
-            UserActivityCountersService userActivityCountersService,
+            NotificationJobs notificationRuleRegistryService,
+            OperationalTelemetry adminTelemetryService,
+            ActivityCounters userActivityCountersService,
             EventFriendshipProjectionService eventFriendshipProjectionService,
             @Value("${events.counter-expiry.batch-size:200}") int batchSize) {
         this.activityMembersRepository = activityMembersRepository;
-        this.usersRepository = usersRepository;
         this.mongoTemplate = mongoTemplate;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
         this.adminTelemetryService = adminTelemetryService;
@@ -111,26 +107,24 @@ public class EventCounterExpiryService {
         }
         Instant startedAt = requestedStart == null ? Instant.now() : requestedStart;
         int claimedPendingCount = 0;
-        boolean runStarted = !scheduled;
+        boolean runStarted = false;
         try {
             if (scheduled) {
                 if (notificationRuleRegistryService.beginScheduledRun(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         "Scanning expired event counters.",
                         SYSTEM_USER,
                         startedAt) == null) {
                     return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
                 }
-            } else {
-                notificationRuleRegistryService.beginRun(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
-                        "Scanning expired event counters.",
-                        SYSTEM_USER,
-                        startedAt);
+            } else if (notificationRuleRegistryService.beginRun(
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
+                    "Scanning expired event counters.", SYSTEM_USER, startedAt) == null) {
+                return new ExpiryRunResult(0, 0, 0, 0L, 0L, 0, 0, 0);
             }
             runStarted = true;
             claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY);
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY, startedAt);
             ExpiryRunResult result = processDueEvents(Instant.now());
             String detail = result.processedSources() == 0 && result.markedTicketRecords() == 0
                     ? "No expired event counters, ticket records, feedback counters, or friendships were due."
@@ -143,7 +137,7 @@ public class EventCounterExpiryService {
                     + result.feedbackProjectionSources() + " event source(s); projected friendships for "
                     + result.friendshipProjectionSources() + " event source(s).";
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                     result.processedSources(),
                     "completed",
                     detail,
@@ -153,7 +147,7 @@ public class EventCounterExpiryService {
                 adminTelemetryService.record(
                         "event.counter.expired",
                         "jobs",
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         SYSTEM_USER,
                         result.dueSources());
             }
@@ -161,14 +155,14 @@ public class EventCounterExpiryService {
         } catch (RuntimeException exception) {
             if (runStarted) {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         claimedPendingCount,
-                        "admin.jobs.table.affected");
+                        "admin.jobs.table.affected", startedAt);
             }
             LOGGER.warn("Event counter expiry pass failed.", exception);
             if (runStarted) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                        NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -331,29 +325,17 @@ public class EventCounterExpiryService {
         Map<String, ActivityEvent> preferredEventsBySourceId =
                 preferredEventRecordsBySourceId(loadEventDocumentsBySourceIds(memberOwnerIds(userMembers)));
 
-        List<Users> changedUsers = new ArrayList<>();
-        for (Users user : usersRepository.findByUserIdIn(normalizedUserIds)) {
-            String userId = normalizeId(user == null ? null : user.getUserId());
-            if (!StringUtils.hasText(userId)) {
-                continue;
-            }
+        List<com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates.Change> changedUsers = new ArrayList<>();
+        for (String userId : normalizedUserIds) {
             EventCounterState counters = countersForUser(
                     userId,
                     directRecordsByUserId.get(userId),
                     membersByUserId.get(userId),
                     preferredEventsBySourceId,
                     nowIso);
-            Users.UserActivitiesRecord next = withEventCounters(user.getActivities(), counters);
-            if (!activitiesEqual(user.getActivities(), next)) {
-                user.setActivities(next);
-                changedUsers.add(user);
-            }
+            changedUsers.add(new com.raxim.myscoutee.domain.accounts.api.EventCounterUpdates.Change(userId, counters.invitations(), counters.events(), counters.hosting()));
         }
-
-        if (!changedUsers.isEmpty()) {
-            usersRepository.saveAll(changedUsers);
-        }
-        return changedUsers.size();
+        return eventCounterUpdates.replaceExpired(changedUsers);
     }
 
     private EventCounterState countersForUser(
@@ -444,69 +426,6 @@ public class EventCounterExpiryService {
         return REQUEST_KIND_INVITE.equals(requestKind)
                 || REQUEST_KIND_WAITLIST_INVITE.equals(requestKind)
                 || "admin".equals(safeText(member.getPendingSource()));
-    }
-
-    private Users.UserActivitiesRecord withEventCounters(
-            Users.UserActivitiesRecord existing,
-            EventCounterState counters) {
-        EventCounterState safeCounters = counters == null ? new EventCounterState(0, 0, 0) : counters;
-        return new Users.UserActivitiesRecord(
-                count(existing == null ? null : existing.game()),
-                count(existing == null ? null : existing.chats()),
-                safeCounters.invitations(),
-                safeCounters.events(),
-                safeCounters.hosting(),
-                count(existing == null ? null : existing.cars()),
-                count(existing == null ? null : existing.accommodation()),
-                count(existing == null ? null : existing.supplies()),
-                count(existing == null ? null : existing.tickets()),
-                count(existing == null ? null : existing.contacts()),
-                count(existing == null ? null : existing.feedback()),
-                existing == null ? null : existing.chat(),
-                new Users.UserEventCountersRecord(
-                        safeCounters.events()
-                                + safeCounters.invitations()
-                                + safeCounters.hosting()
-                                + count(existing == null || existing.event() == null ? null : existing.event().pending())
-                                + count(existing == null || existing.event() == null ? null : existing.event().drafts()),
-                        safeCounters.events(),
-                        count(existing == null || existing.event() == null ? null : existing.event().pending()),
-                        safeCounters.invitations(),
-                        safeCounters.hosting(),
-                        count(existing == null || existing.event() == null ? null : existing.event().drafts()),
-                        count(existing == null || existing.event() == null ? null : existing.event().trash()),
-                        count(existing == null || existing.event() == null ? null : existing.event().watchlist())),
-                existing == null ? null : existing.asset(),
-                existing == null ? null : existing.eventFeedback(),
-                count(existing == null ? null : existing.adminJobs()),
-                count(existing == null ? null : existing.adminMetrics()),
-                count(existing == null ? null : existing.notifications()),
-                count(existing == null ? null : existing.serviceFeedbackPending()));
-    }
-
-    boolean activitiesEqual(Users.UserActivitiesRecord first, Users.UserActivitiesRecord second) {
-        if (first == second) {
-            return true;
-        }
-        if (first == null || second == null) {
-            return false;
-        }
-        return Objects.equals(count(first.game()), count(second.game()))
-                && Objects.equals(count(first.chats()), count(second.chats()))
-                && Objects.equals(first.chat(), second.chat())
-                && Objects.equals(first.event(), second.event())
-                && Objects.equals(count(first.invitations()), count(second.invitations()))
-                && Objects.equals(count(first.events()), count(second.events()))
-                && Objects.equals(count(first.hosting()), count(second.hosting()))
-                && Objects.equals(count(first.cars()), count(second.cars()))
-                && Objects.equals(count(first.accommodation()), count(second.accommodation()))
-                && Objects.equals(count(first.supplies()), count(second.supplies()))
-                && Objects.equals(count(first.tickets()), count(second.tickets()))
-                && Objects.equals(count(first.contacts()), count(second.contacts()))
-                && Objects.equals(count(first.feedback()), count(second.feedback()))
-                && Objects.equals(count(first.adminJobs()), count(second.adminJobs()))
-                && Objects.equals(count(first.adminMetrics()), count(second.adminMetrics()))
-                && Objects.equals(count(first.notifications()), count(second.notifications()));
     }
 
     private List<ActivityEvent> loadDirectEventDocuments(Collection<String> userIds) {

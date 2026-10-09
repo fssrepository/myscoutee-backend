@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.campaigns.service.CampaignRatingProjectionService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.affinity.service.CampaignRatingProjectionService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,7 +21,7 @@ import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepositor
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 
 @Service
-public class UserAffinityEdgeService {
+public class UserAffinityEdgeService implements com.raxim.myscoutee.domain.affinity.api.CampaignGraphs {
     private static final String MODE_PAIR = "pair";
     private static final String MODE_SINGLE = "single";
     private static final String SOCIAL_SEPARATED_FRIENDS = "separated-friends";
@@ -29,13 +29,13 @@ public class UserAffinityEdgeService {
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
     private final AffinityConfigsRepository affinityConfigsRepository;
-    private final JobGroupScopeService groupScope;
+    private final JobAudience groupScope;
     private final CampaignRatingProjectionService campaignRatings;
 
     public UserAffinityEdgeService(
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
-            AffinityConfigsRepository affinityConfigsRepository, JobGroupScopeService groupScope,
+            AffinityConfigsRepository affinityConfigsRepository, JobAudience groupScope,
             CampaignRatingProjectionService campaignRatings) {
         this.campaignRatings = campaignRatings;
         this.groupScope = groupScope;
@@ -79,6 +79,21 @@ public class UserAffinityEdgeService {
         return result;
     }
 
+    @Override public Map<String, Snapshot> campaignGraphs(java.util.Collection<String> campaignIds) {
+        var rates = userRatesRepository.findByCampaignIdIn(campaignIds);
+        var edges = projectCampaignEdges(rates);
+        var contexts = rates.stream().collect(java.util.stream.Collectors.groupingBy(UserRate::getCampaignId));
+        Map<String, Snapshot> result = new LinkedHashMap<>();
+        contexts.forEach((id, rows) -> {
+            var ids = new java.util.ArrayList<String>();
+            for (var rate : rows) {
+                ids.add(rate.getOwnerUserId()); ids.add(rate.getRelatedUserId());
+            }
+            result.put(id, new Snapshot(ids, edges.getOrDefault(id, List.of())));
+        });
+        return result;
+    }
+
     public synchronized void recomputeForRates(List<UserRate> rates) {
         Map<String, PairKey> affectedPairs = new LinkedHashMap<>();
         if (rates != null) {
@@ -111,7 +126,7 @@ public class UserAffinityEdgeService {
         }
     }
 
-    public List<com.raxim.myscoutee.domain.campaigns.document.CampaignRatingSummary> ratingSummaries(String userId) {
+    public List<com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary> ratingSummaries(String userId) {
         return campaignRatings.forUser(userId);
     }
 

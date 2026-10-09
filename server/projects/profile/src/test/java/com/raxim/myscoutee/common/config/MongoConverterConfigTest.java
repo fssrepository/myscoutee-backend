@@ -26,6 +26,65 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 
 class MongoConverterConfigTest {
     @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void integrationAccessRetainsItsLegacyIdentityAndRevisionAcrossProfileReload() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess(7,
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ,
+                java.util.Map.of("client", com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.FULL));
+        var document = new Document(); converter.write(new Payload(value), document);
+        assertThat(document.get("value", Document.class).getString("_class")).isEqualTo("com.raxim.myscoutee.profile.data.document.IntegrationAccess");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+        var user = new Users(); user.setUserId("member"); user.setIntegrationAccess(value);
+        var profile = new Document(); converter.write(user, profile);
+        profile.get("integrationAccess", Document.class).remove("_class");
+        assertThat(converter.read(Users.class, profile).getIntegrationAccess()).isEqualTo(value);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void affiliateAttributionReloadsAsRootAndEmbeddedValueWithoutATypeDiscriminator() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration("member", "owner", "code", "now");
+        var document = new Document(); converter.write(value, document);
+        assertThat(document.getString("_class")).isEqualTo("com.raxim.myscoutee.profile.data.document.AffiliateRegistration");
+        assertThat(converter.read(Object.class, document)).isEqualTo(value);
+        var user = new Users(); user.setUserId("member"); user.setAffiliateRegistration(value);
+        var profile = new Document(); converter.write(user, profile);
+        profile.get("affiliateRegistration", Document.class).remove("_class");
+        assertThat(converter.read(Users.class, profile).getAffiliateRegistration()).isEqualTo(value);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void assetValuesRetainTheirHistoricalStoredIdentities() {
+        var converter = domainConverter();
+        var booking = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord(
+                "event", "Event", "stage", "Stage", "slot", "Slot", "Window", "start", "end", 2,
+                30d, "EUR", java.util.List.of("policy"), "payment", true);
+        var request = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord(
+                "request", "user", "Name", "NM", "man", "accepted", "note", "borrow", "now", booking);
+        var policy = new com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetPolicyRecord("policy", "Policy", "Description", true);
+        for (Object value : java.util.List.of(booking, request, policy)) {
+            var document = new Document(); converter.write(new Payload(value), document);
+            assertThat(document.get("value", Document.class).getString("_class"))
+                    .isEqualTo("com.raxim.myscoutee.profile.data.document.Asset$" + value.getClass().getSimpleName());
+            assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+        }
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void feedCounterValueRetainsHistoricalIdentityAndCounts() {
+        var converter = domainConverter();
+        var value = new com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord(7, java.util.Map.of("accepted", 3L));
+        var document = new Document(); converter.write(new Payload(value), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+            .isEqualTo("com.raxim.myscoutee.profile.data.document.Users$FeedCountersRecord");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+    }
+
+    @Test
 
     @org.junit.jupiter.api.Tag("embedded")
     void preservesDottedKeysWhenAnotherPostProcessorCreatesTheConverterEarly() {
@@ -164,6 +223,78 @@ class MongoConverterConfigTest {
         converter.write(new FutureSnapshot("value"), document);
         assertThat(document.getString("_class")).isEqualTo("future-snapshot");
         assertThat(converter.read(Object.class, document)).isEqualTo(new FutureSnapshot("value"));
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void immutableCaseValuesRetainHistoricalNestedIdentities() {
+        var converter = domainConverter();
+        var values = java.util.List.of(
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.Support("provider", "service", "accepted"),
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.Recommendation("member", "provider", "service"),
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.BoardTask("task", "Title", "", "open", java.util.List.of("member"), java.util.List.of(), null, null, java.util.List.of()),
+                new com.raxim.myscoutee.domain.community.dto.CaseDetails.Offer("offer", "provider", "service", 25, "EUR", "", "accepted", "now", null, null, java.util.List.of(), java.util.List.of()));
+        for (var value : values) {
+            var document = new Document(); converter.write(new Payload(value), document);
+            assertThat(document.get("value", Document.class).getString("_class"))
+                    .isEqualTo("com.raxim.myscoutee.profile.data.document.ServiceCase$" + value.getClass().getSimpleName());
+            assertThat(converter.read(Payload.class, document).value()).isEqualTo(value);
+        }
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void groupPolicyRetainsHistoricalNestedIdentityAndFieldValues() {
+        var converter = domainConverter();
+        var policy = new com.raxim.myscoutee.domain.groups.dto.GroupPolicy(true, true, java.util.List.of("profile.name"));
+        var document = new Document();
+        converter.write(new Payload(policy), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.document.CommunityGroup$Policy");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(policy);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void encryptedEnvelopeRetainsHistoricalNestedIdentityAndFieldValues() {
+        var converter = domainConverter();
+        var envelope = new com.raxim.myscoutee.domain.platform.dto.EncryptedSecret();
+        envelope.setAlgorithm("A256GCM"); envelope.setKeyId("key");
+        envelope.setNonce("nonce"); envelope.setCiphertext("ciphertext");
+        var document = new Document();
+        converter.write(new Payload(envelope), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.document.DeploymentConfiguration$EncryptedSecret");
+        var restored = (com.raxim.myscoutee.domain.platform.dto.EncryptedSecret) converter.read(Payload.class, document).value();
+        assertThat(restored).usingRecursiveComparison().isEqualTo(envelope);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void attachmentContractRetainsStoredTypeIdentity() {
+        var converter = domainConverter();
+        var attachment = new com.raxim.myscoutee.domain.media.dto.DocumentAttachment(
+                "report.pdf", "/api/media/private?key=private/documents/u/e/report.pdf", "application/pdf", 42);
+        var document = new Document();
+        converter.write(new Payload(attachment), document);
+        assertThat(document.get("value", Document.class).getString("_class"))
+                .isEqualTo("com.raxim.myscoutee.profile.data.document.DocumentAttachment");
+        assertThat(converter.read(Payload.class, document).value()).isEqualTo(attachment);
+    }
+
+    @Test
+    @org.junit.jupiter.api.Tag("standard")
+    void campaignRatingProjectionRetainsItsNestedEvidenceIdentity() {
+        var converter = domainConverter();
+        var rate = new com.raxim.myscoutee.domain.affinity.document.UserRate();
+        rate.setOwnerUserId("left"); rate.setRelatedUserId("right"); rate.setScoreGiven(6);
+        var summary = new com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary("pair", "left", "right", rate, 1);
+        var document = new Document();
+        converter.write(summary, document);
+        assertThat(document.getString("_class")).isEqualTo("com.raxim.myscoutee.profile.data.document.CampaignRatingSummary");
+        var restored = (com.raxim.myscoutee.domain.affinity.document.CampaignRatingSummary) converter.read(Object.class, document);
+        assertThat(restored.rate().getScoreGiven()).isEqualTo(6d);
+        assertThat(restored.rate().getOwnerUserId()).isEqualTo("left");
     }
 
     private MappingMongoConverter domainConverter() {

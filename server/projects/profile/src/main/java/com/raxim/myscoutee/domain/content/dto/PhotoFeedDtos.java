@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto;
 import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageEventReference;
-import com.raxim.myscoutee.domain.accounts.document.Users.FeedCountersRecord;
+import com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord;
 
 public final class PhotoFeedDtos {
     private PhotoFeedDtos() {}

@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.events.service.EventVipInvitation;
-import com.raxim.myscoutee.domain.localization.service.TranslationService;
+import com.raxim.myscoutee.domain.localization.api.MessageTranslations;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutBasketItemDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutLineItemDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutPromoCodeValidationRequestDto;
@@ -38,8 +37,8 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingPromoCodeDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingSlotOverrideDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingTimeRuleDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.SubEventDefinitionDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 
 /**
  * Rebuilds event checkout prices from the current event definition. Client
@@ -47,35 +46,29 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
  * processor without passing through this service.
  */
 @Service
-public class EventCheckoutPricingService {
+public class EventCheckoutPricingService implements com.raxim.myscoutee.domain.payments.api.ServiceSlotPricing, com.raxim.myscoutee.domain.payments.api.CheckoutPricing {
     public static final String INVALID_PROMO_CODE_MESSAGE_KEY = "event.checkout.promo.invalid";
 
-    private final ActivityEventsRepository activityEventsRepository;
-    private final TranslationService translationService;
-    private final ActivityMembersRepository activityMembersRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final MessageTranslations translationService;
+    private final MemberDirectory activityMembersRepository;
 
     public EventCheckoutPricingService(
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
-            TranslationService translationService) {
+            EventOwnershipReads activityEventsRepository,
+            MemberDirectory activityMembersRepository,
+            MessageTranslations translationService) {
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.translationService = translationService;
     }
 
     public PricingConfigDto vipPricingOffer(String sourceId, String userId) {
-        ActivityEvent parent = resolveParentEvent(sourceId);
+        Event parent = resolveParentEvent(sourceId);
         return parent == null ? null : storedVipOffer(parent.getSourceId(), userId);
     }
 
     private PricingConfigDto storedVipOffer(String sourceId, String userId) {
-        return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
-                "event", normalizeId(sourceId), normalizeId(userId))
-                .filter(EventVipInvitation::eligible)
-                .map(com.raxim.myscoutee.domain.events.document.ActivityMember::getEventVipOfferedPricing)
-                .filter(pricing -> !Boolean.FALSE.equals(pricing.enabled()) && pricing.audience() != null
-                        && Boolean.TRUE.equals(pricing.audience().enabled()) && pricing.audience().vipPrice() != null)
-                .orElse(null);
+        return activityMembersRepository.vipPricingOffer(normalizeId(sourceId), normalizeId(userId));
     }
 
     /**
@@ -93,7 +86,7 @@ public class EventCheckoutPricingService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Checkout event is required.");
         }
 
-        ActivityEvent parent = resolveParentEvent(sourceId);
+        Event parent = resolveParentEvent(sourceId);
         if (parent == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checkout event was not found.");
         }
@@ -123,7 +116,7 @@ public class EventCheckoutPricingService {
 
     /** Canonical payment cutoff; neither client deadlines nor approval time extend it. */
     public String checkoutDeadline(EventCheckoutRequestDto request) {
-        ActivityEvent parent = resolveParentEvent(normalizeId(request.sourceId()));
+        Event parent = resolveParentEvent(normalizeId(request.sourceId()));
         if (parent == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checkout event was not found.");
         }
@@ -159,7 +152,7 @@ public class EventCheckoutPricingService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Checkout event is required.");
         }
 
-        ActivityEvent parent = resolveParentEvent(sourceId);
+        Event parent = resolveParentEvent(sourceId);
         if (parent == null) {
             if (hasEventCheckoutItems(request)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Checkout event was not found.");
@@ -313,7 +306,7 @@ public class EventCheckoutPricingService {
 
     private MainQuote quoteMainItem(
             EventCheckoutRequestDto request,
-            ActivityEvent parent,
+            Event parent,
             EventCheckoutBasketItemDto incoming,
             String requestedSlotSourceId,
             List<String> appliedPromoCodes,
@@ -343,7 +336,7 @@ public class EventCheckoutPricingService {
 
     private EventCheckoutBasketItemDto quoteOptionalItem(
             EventCheckoutRequestDto request,
-            ActivityEvent parent,
+            Event parent,
             EventCheckoutBasketItemDto incoming,
             String optionalId,
             MainQuote mainQuote,
@@ -391,9 +384,9 @@ public class EventCheckoutPricingService {
                 "An optional event selection is missing its event slot.");
     }
 
-    private ActivityEvent resolveParentEvent(String sourceId) {
-        List<ActivityEvent> records = safeEvents(activityEventsRepository.findBySourceId(sourceId));
-        ActivityEvent selected = records.stream()
+    private Event resolveParentEvent(String sourceId) {
+        List<? extends Event> records = safeEvents(activityEventsRepository.findBySourceId(sourceId));
+        Event selected = records.stream().map(Event.class::cast)
                 .filter(Objects::nonNull)
                 .filter(item -> !isGeneratedSlot(item))
                 .max(Comparator.comparingInt(this::eventDefinitionPriority))
@@ -416,19 +409,19 @@ public class EventCheckoutPricingService {
                 .anyMatch(kind -> "event".equals(kind) || "sub_event".equals(kind));
     }
 
-    private int eventDefinitionPriority(ActivityEvent event) {
+    private int eventDefinitionPriority(Event event) {
         int priority = event != null && event.getPricing() != null ? 4 : 0;
         if (event != null && normalizeId(event.getOwnerUserId()) != null
                 && normalizeId(event.getOwnerUserId()).equals(normalizeId(event.getCreatorUserId()))) {
             priority += 2;
         }
-        if (event != null && ActivityEvent.STATUS_ACTIVE.equals(event.getStatus())) {
+        if (event != null && "A".equals(event.getStatus())) {
             priority += 1;
         }
         return priority;
     }
 
-    private EventSlotOccurrenceDto resolveSlot(ActivityEvent parent, String slotSourceId) {
+    private EventSlotOccurrenceDto resolveSlot(Event parent, String slotSourceId) {
         String normalizedSlotId = normalizeId(slotSourceId);
         if (!StringUtils.hasText(normalizedSlotId)) {
             return null;
@@ -443,7 +436,7 @@ public class EventCheckoutPricingService {
         if (occurrence != null) {
             return occurrence;
         }
-        ActivityEvent slotRecord = safeEvents(activityEventsRepository.findBySourceId(normalizedSlotId)).stream()
+        Event slotRecord = safeEvents(activityEventsRepository.findBySourceId(normalizedSlotId)).stream()
                 .filter(Objects::nonNull)
                 .filter(this::isGeneratedSlot)
                 .findFirst()
@@ -467,7 +460,7 @@ public class EventCheckoutPricingService {
 
     private PricingSnapshot calculatePricing(
             PricingConfigDto pricing,
-            ActivityEvent parent,
+            Event parent,
             EventSlotOccurrenceDto slot,
             String requestedSlotTemplateId,
             String baseKey,
@@ -686,7 +679,7 @@ public class EventCheckoutPricingService {
 
     private EventCheckoutBasketItemDto canonicalMainItem(
             EventCheckoutRequestDto request,
-            ActivityEvent parent,
+            Event parent,
             EventCheckoutBasketItemDto incoming,
             EventSlotOccurrenceDto slot,
             String slotSourceId,
@@ -719,7 +712,7 @@ public class EventCheckoutPricingService {
 
     private EventCheckoutBasketItemDto canonicalOptionalItem(
             EventCheckoutRequestDto request,
-            ActivityEvent parent,
+            Event parent,
             SubEventDefinitionDto definition,
             EventCheckoutBasketItemDto incoming,
             EventSlotOccurrenceDto slot,
@@ -754,7 +747,7 @@ public class EventCheckoutPricingService {
 
     private EventCheckoutBasketItemDto canonicalResourceItem(
             EventCheckoutRequestDto request,
-            ActivityEvent parent,
+            Event parent,
             EventCheckoutBasketItemDto incoming,
             String currency) {
         String id = normalizeId(incoming == null ? null : incoming.id());
@@ -784,7 +777,7 @@ public class EventCheckoutPricingService {
                 safeText(incoming.expiresAtIso()));
     }
 
-    private Map<String, SubEventDefinitionDto> optionalDefinitions(ActivityEvent parent, String slotTemplateId) {
+    private Map<String, SubEventDefinitionDto> optionalDefinitions(Event parent, String slotTemplateId) {
         Map<String, SubEventDefinitionDto> definitions = new LinkedHashMap<>();
         addDefinitions(definitions, parent.getSubEventDefinitions());
         for (EventSlotTemplateDto template : parent.getSlotTemplates() == null
@@ -995,11 +988,11 @@ public class EventCheckoutPricingService {
                 .toList();
     }
 
-    private List<ActivityEvent> safeEvents(List<ActivityEvent> values) {
+    private List<? extends Event> safeEvents(List<? extends Event> values) {
         return values == null ? List.of() : values;
     }
 
-    private boolean isGeneratedSlot(ActivityEvent event) {
+    private boolean isGeneratedSlot(Event event) {
         return event != null && (Boolean.TRUE.equals(event.getGenerated())
                 || "slot".equalsIgnoreCase(safeText(event.getEventType()))
                 || StringUtils.hasText(normalizeId(event.getParentEventId())));
@@ -1072,6 +1065,6 @@ public class EventCheckoutPricingService {
     public record PricingSnapshot(
             double amount,
             String currency,
-            List<EventCheckoutPricingSummaryRowDto> rows) {
+            List<EventCheckoutPricingSummaryRowDto> rows) implements com.raxim.myscoutee.domain.payments.api.ServiceSlotPricing.Quote {
     }
 }

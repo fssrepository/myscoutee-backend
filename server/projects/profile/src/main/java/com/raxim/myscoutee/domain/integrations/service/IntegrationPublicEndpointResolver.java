@@ -7,16 +7,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 
 @Service
 public class IntegrationPublicEndpointResolver {
-    private final DeploymentConfigurationRepository repository;
+    private final DeploymentSettings repository;
     private final String fallbackBaseUrl;
 
     public IntegrationPublicEndpointResolver(
-            DeploymentConfigurationRepository repository,
+            DeploymentSettings repository,
             @Value("${integration.public-base-url:http://localhost/api/integrations/v1}")
             String fallbackBaseUrl) {
         this.repository = repository;
@@ -28,9 +28,9 @@ public class IntegrationPublicEndpointResolver {
             key = "T(com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext).currentMode().name()")
     public String resolve() {
         String configured = repository
-                .findById(DeploymentConfiguration.SINGLETON_ID)
-                .map(DeploymentConfiguration::getIntegration)
-                .map(DeploymentConfiguration.Integration::getPublicBaseUrl)
+                .findById(DeploymentSettings.SINGLETON_ID)
+                .map(DeploymentSettings.Configuration::getIntegration)
+                .map(DeploymentSettings.Integration::getPublicBaseUrl)
                 .orElse(null);
         return StringUtils.hasText(configured)
                 ? requirePublicBaseUrl(configured)

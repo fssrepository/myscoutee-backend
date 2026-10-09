@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
+import com.raxim.myscoutee.domain.assets.api.Assets;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,13 +28,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime.GroupResourceMetricRecord;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventAssignedAssetSettingsRecord;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource.SubEventResourceMetricRecord;
@@ -52,42 +52,42 @@ import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetDetailDto;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ActivitiesResourcesService {
+public class ActivitiesResourcesService implements com.raxim.myscoutee.domain.events.api.ResourceAssignments {
     private static final String STATUS_ACTIVE = "A";
     private static final String STATUS_DELETED = "D";
 
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
     private final ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventsRepository activityEventsRepository;
-    private final UsersRepository usersRepository;
-    private final AssetsService assetsService;
+    private final ProfileSummaries usersRepository;
+    private final Assets assetsService;
     private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final ActivitySubEventResourceMapper activitySubEventResourceMapper;
     private final EventSlotReadModelService eventSlotReadModelService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
-    private final ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider;
+    private final ObjectProvider<NotificationDelivery> notificationOutboxServiceProvider;
     private final MongoTemplate mongoTemplate;
 
     public ActivitiesResourcesService(
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
             ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository,
             ActivityEventsRepository activityEventsRepository,
-            UsersRepository usersRepository,
-            AssetsService assetsService,
+            ProfileSummaries usersRepository,
+            Assets assetsService,
             ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             ActivitySubEventResourceMapper activitySubEventResourceMapper,
             EventSlotReadModelService eventSlotReadModelService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,
-            ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider,
+            ObjectProvider<NotificationDelivery> notificationOutboxServiceProvider,
             MongoTemplate mongoTemplate) {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.activitySubEventStageRuntimeRepository = activitySubEventStageRuntimeRepository;
@@ -527,17 +527,17 @@ public class ActivitiesResourcesService {
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        Map<String, Users> contributorsById = (contributorUserIds.isEmpty()
-                ? List.<Users>of()
+        Map<String, ProfileSummary> contributorsById = (contributorUserIds.isEmpty()
+                ? List.<ProfileSummary>of()
                 : usersRepository.findByUserIdIn(contributorUserIds)).stream()
                 .filter(Objects::nonNull)
                 .collect(LinkedHashMap::new,
-                        (target, user) -> target.put(normalizeId(user.getId()), user),
+                        (target, user) -> target.put(normalizeId(user.getUserId()), user),
                         Map::putAll);
         List<SubEventSupplyContributionEntryDto> items = pageEntries.stream()
                 .filter(Objects::nonNull)
                 .map(entry -> {
-                    Users contributor = contributorsById.get(normalizeId(entry.userId()));
+                    ProfileSummary contributor = contributorsById.get(normalizeId(entry.userId()));
                     return new SubEventSupplyContributionEntryDto(
                             safeText(entry.id()),
                             safeText(entry.userId()),
@@ -854,7 +854,7 @@ public class ActivitiesResourcesService {
             String actorUserId,
             Set<String> addedSupplyAssetIds,
             Map<String, AssetDetailDto> assetDetails) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || addedSupplyAssetIds == null || addedSupplyAssetIds.isEmpty()) {
@@ -906,7 +906,7 @@ public class ActivitiesResourcesService {
             String actorUserId,
             List<SupplyContributionAddition> additions,
             Map<String, AssetDetailDto> assetDetails) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || additions == null || additions.isEmpty()) {
@@ -962,7 +962,7 @@ public class ActivitiesResourcesService {
             String actorUserId,
             List<SupplyContributionRemoval> removals,
             Map<String, AssetDetailDto> assetDetails) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || removals == null || removals.isEmpty()) {
@@ -1019,7 +1019,7 @@ public class ActivitiesResourcesService {
             String assetOwnerUserId,
             String removedAtIso,
             List<AssetAssignmentRemoval> removals) {
-        NotificationOutboxService notificationOutboxService = notificationOutboxServiceProvider == null
+        NotificationDelivery notificationOutboxService = notificationOutboxServiceProvider == null
                 ? null
                 : notificationOutboxServiceProvider.getIfAvailable();
         if (notificationOutboxService == null || removals == null || removals.isEmpty()) {

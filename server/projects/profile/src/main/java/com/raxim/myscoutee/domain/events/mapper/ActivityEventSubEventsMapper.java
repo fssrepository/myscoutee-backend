@@ -18,7 +18,7 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventSubEventsQueryDto;
@@ -36,7 +36,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.SubEventSupplyContributionEntry
 import com.raxim.myscoutee.domain.events.service.TournamentGroupCountPolicy;
 
 @Component
-public class ActivityEventSubEventsMapper {
+public class ActivityEventSubEventsMapper implements com.raxim.myscoutee.domain.events.api.SlotRecurrence {
     public List<SubEventItem> runtimeStages(ActivityEvent event) {
         if (event == null) {
             return List.of();

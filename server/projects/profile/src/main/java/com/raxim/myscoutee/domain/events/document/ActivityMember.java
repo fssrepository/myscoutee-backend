@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "activity_member_status_request", def = "{'ownerType': 1, 'status': 1, 'requestKind': 1}"),
         @CompoundIndex(name = "activity_member_qmau_join", def = "{'ownerType': 1, 'status': 1, 'actionAtIso': 1, 'userId': 1}")
 })
-public class ActivityMember {
+public class ActivityMember implements com.raxim.myscoutee.domain.events.api.MemberDirectory.Member {
     @Id
     private String id;
 

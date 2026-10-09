@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.content.controller;
 
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
@@ -13,26 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.domain.content.dto.LandingContentDtos.LandingContentDto;
 import com.raxim.myscoutee.domain.content.dto.LandingContentDtos.SupportedCountryDto;
-import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
+import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostPublicPageDto;
-import com.raxim.myscoutee.domain.help.service.HelpCenterService;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.help.api.HelpCenter;
+import com.raxim.myscoutee.domain.accounts.api.LocationEligibility;
 import com.raxim.myscoutee.domain.content.service.IdeaPostsService;
 
 @RestController
 @RequestMapping("/landing")
 public class LandingContentController {
-    private final HelpCenterService helpCenterService;
+    private final HelpCenter helpCenterService;
     private final IdeaPostsService ideaPostsService;
-    private final HomeUserProfileService homeUserProfileService;
-    private final CountryPartitionService countryPartitionService;
+    private final LocationEligibility homeUserProfileService;
+    private final CountryDirectory countryPartitionService;
 
     public LandingContentController(
-            HelpCenterService helpCenterService,
+            HelpCenter helpCenterService,
             IdeaPostsService ideaPostsService,
-            HomeUserProfileService homeUserProfileService,
-            CountryPartitionService countryPartitionService) {
+            LocationEligibility homeUserProfileService,
+            CountryDirectory countryPartitionService) {
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
         this.homeUserProfileService = homeUserProfileService;
@@ -89,7 +91,7 @@ public class LandingContentController {
 
     private String publicGroupId(String groupId) {
         if (groupId == null || groupId.isBlank()) return null;
-        if (com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId)) return groupId;
+        if (com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)) return groupId;
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 

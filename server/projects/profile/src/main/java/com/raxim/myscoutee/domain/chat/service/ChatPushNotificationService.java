@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ChatPushNotificationService {
@@ -22,13 +22,13 @@ public class ChatPushNotificationService {
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
-    private final UsersRepository usersRepository;
-    private final NotificationOutboxService notificationOutboxService;
+    private final ProfileSummaries usersRepository;
+    private final NotificationDelivery notificationOutboxService;
     private final ChatWebSocketSessionRegistry chatWebSocketSessionRegistry;
 
     public ChatPushNotificationService(
-            UsersRepository usersRepository,
-            NotificationOutboxService notificationOutboxService,
+            ProfileSummaries usersRepository,
+            NotificationDelivery notificationOutboxService,
             ChatWebSocketSessionRegistry chatWebSocketSessionRegistry) {
         this.usersRepository = usersRepository;
         this.notificationOutboxService = notificationOutboxService;
@@ -141,7 +141,7 @@ public class ChatPushNotificationService {
     }
 
     private String resolveSenderAvatarUrl(String senderUserId) {
-        Users sender = usersRepository.findByUserId(safeText(senderUserId)).orElse(null);
+        ProfileSummary sender = usersRepository.findByUserId(safeText(senderUserId)).orElse(null);
         if (sender != null && sender.getImages() != null) {
             for (String imageUrl : sender.getImages()) {
                 String normalizedImageUrl = safeText(imageUrl);

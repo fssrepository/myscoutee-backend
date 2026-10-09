@@ -34,17 +34,16 @@ import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityLinkStateRep
 import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityPresenceOutboxRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRepository;
 import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauCalculator.QualifiedMauDetailedSnapshot;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient.RegistryHttpException;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityEvent;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityPresenceBatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityPresenceBatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentitySnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityVoprfKey;
+import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityEvent;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityPresenceBatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityPresenceBatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentitySnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityVoprfKey;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -765,9 +764,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                         item.getPayloadHash(),
                         signature);
         GlobalIdentityPresenceBatchResponse response =
-                new RegistryHttpClient(
-                        runtime.properties(),
-                        objectMapper).submitGlobalIdentityPresenceBatch(
+                runtimeResolver.transport(runtime).submitGlobalIdentityPresenceBatch(
                                 request);
         verifyResponse(
                 runtime,
@@ -837,7 +834,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                 RegistryProtocol.globalIdentityPresenceChunkReceipt(
                         response));
         if (!expectedReceiptHash.equals(response.receiptHash())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityPresenceChunkReceipt(
                                 response),

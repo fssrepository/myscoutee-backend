@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateApprovalDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateEventPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateJobDto;
@@ -78,7 +78,7 @@ public class OperatorUpdateController {
 
     private String actorUserId(Authentication authentication) {
         if (authentication != null
-                && authentication.getPrincipal() instanceof FirebasePrincipal principal) {
+                && authentication.getPrincipal() instanceof AccountIdentity principal) {
             return principal.getUserId();
         }
         return authentication == null ? null : authentication.getName();

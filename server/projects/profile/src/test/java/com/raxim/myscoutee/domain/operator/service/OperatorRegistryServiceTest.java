@@ -35,8 +35,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.registry.config.RegistryDemoProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryDemoConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.domain.operator.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryInspectRequestDto;
@@ -44,22 +44,22 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryOpti
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryRegisterRequestDto;
 import com.raxim.myscoutee.domain.operator.repository.OperatorClaimSubmissionSnapshotRepository;
 import com.raxim.myscoutee.domain.operator.repository.OperatorRegistrySettingsRepository;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.BindingArchive;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.BindingArchiveRequest;
-import com.raxim.myscoutee.domain.registry.RegistryNodeIdentityService.NodeIdentity;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchive;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchiveRequest;
+import com.raxim.myscoutee.domain.registry.dto.NodeIdentity;
 import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkOperations;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
 import com.raxim.myscoutee.domain.registry.RegistryOperatorOperations;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorOperations.EnrollmentOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorOperations.NodeStatus;
-import com.raxim.myscoutee.domain.registry.RegistryPreflightService.RegistryInspection;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionResponse;
+import com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.EnrollmentOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryEnrollmentValues.NodeStatus;
+import com.raxim.myscoutee.domain.registry.dto.RegistryInspection;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionResponse;
 
 @org.junit.jupiter.api.Tag("standard")
 class OperatorRegistryServiceTest {
@@ -76,8 +76,8 @@ class OperatorRegistryServiceTest {
     private RegistryOperatorOperations operations;
     private RegistryOperatorNetworkOperations networkOperations;
     private OperatorClaimSubmissionSnapshotRepository claimSubmissionRepository;
-    private RegistryProperties realProperties;
-    private RegistryDemoProperties demoProperties;
+    private RegistryConfiguration realProperties;
+    private RegistryDemoConfiguration demoProperties;
     private OperatorRegistryEndpointService endpointService;
     private AtomicReference<OperatorRegistrySettings> stored;
 
@@ -89,11 +89,11 @@ class OperatorRegistryServiceTest {
         claimSubmissionRepository =
                 mock(OperatorClaimSubmissionSnapshotRepository.class);
         endpointService = mock(OperatorRegistryEndpointService.class);
-        realProperties = new RegistryProperties();
+        realProperties = new RegistryConfiguration();
         realProperties.setPrivateKeyPath(tempDirectory.resolve("real/key.pem"));
         realProperties.setPublicKeyPath(tempDirectory.resolve("real/key.der"));
         realProperties.setStateDir(tempDirectory.resolve("real/state"));
-        demoProperties = new RegistryDemoProperties();
+        demoProperties = new RegistryDemoConfiguration();
         demoProperties.setPrivateKeyPath(tempDirectory.resolve("demo/key.pem"));
         demoProperties.setPublicKeyPath(tempDirectory.resolve("demo/key.der"));
         demoProperties.setStateDir(tempDirectory.resolve("demo/state"));
@@ -246,7 +246,7 @@ class OperatorRegistryServiceTest {
         verify(operations).initializeNodeIdentity(any());
         verify(operations, times(2)).synchronize(any());
 
-        ArgumentCaptor<RegistryProperties> runtime = ArgumentCaptor.forClass(RegistryProperties.class);
+        ArgumentCaptor<RegistryConfiguration> runtime = ArgumentCaptor.forClass(RegistryConfiguration.class);
         verify(operations, times(2)).synchronize(runtime.capture());
         assertThat(runtime.getAllValues())
                 .allSatisfy(properties -> {
@@ -380,8 +380,8 @@ class OperatorRegistryServiceTest {
                 .isEqualTo("dep_0123456789abcdef0123456789abcdef");
         assertThat(realProperties.isOperatorRegistrationConfirmed()).isFalse();
 
-        ArgumentCaptor<RegistryProperties> inspections =
-                ArgumentCaptor.forClass(RegistryProperties.class);
+        ArgumentCaptor<RegistryConfiguration> inspections =
+                ArgumentCaptor.forClass(RegistryConfiguration.class);
         verify(operations, times(3)).inspect(inspections.capture());
         assertThat(inspections.getAllValues())
                 .allSatisfy(properties -> {
@@ -390,8 +390,8 @@ class OperatorRegistryServiceTest {
                     assertThat(properties.isOperatorRegistrationConfirmed()).isFalse();
                 });
 
-        ArgumentCaptor<RegistryProperties> enrollment =
-                ArgumentCaptor.forClass(RegistryProperties.class);
+        ArgumentCaptor<RegistryConfiguration> enrollment =
+                ArgumentCaptor.forClass(RegistryConfiguration.class);
         verify(operations).synchronize(enrollment.capture());
         assertThat(enrollment.getValue().isEnabled()).isTrue();
         assertThat(enrollment.getValue().isOutboundAllowed()).isTrue();
@@ -416,8 +416,8 @@ class OperatorRegistryServiceTest {
                 new RegistryInspectRequestDto("https://registry.example", "prod:one"),
                 "operator");
 
-        ArgumentCaptor<RegistryProperties> runtime =
-                ArgumentCaptor.forClass(RegistryProperties.class);
+        ArgumentCaptor<RegistryConfiguration> runtime =
+                ArgumentCaptor.forClass(RegistryConfiguration.class);
         verify(operations).inspect(runtime.capture());
         assertThat(runtime.getValue().isEnabled()).isTrue();
         assertThat(runtime.getValue().isOperatorRegistrationConfirmed()).isFalse();
@@ -619,7 +619,7 @@ class OperatorRegistryServiceTest {
     void configuredButUnregisteredSelectionCanMoveToANewBaseUrl() {
         configureLiveDemo();
         when(operations.inspect(any())).thenAnswer(invocation -> {
-            RegistryProperties properties = invocation.getArgument(0);
+            RegistryConfiguration properties = invocation.getArgument(0);
             return registryInspection(
                     properties.getBaseUrl(),
                     "demo:local-registry",
@@ -652,7 +652,7 @@ class OperatorRegistryServiceTest {
         configureLiveDemo();
         stored.set(registeredSettings());
         when(operations.inspect(any())).thenAnswer(invocation -> {
-            RegistryProperties properties = invocation.getArgument(0);
+            RegistryConfiguration properties = invocation.getArgument(0);
             return registryInspection(
                     properties.getBaseUrl(),
                     "demo:local-registry",

@@ -83,7 +83,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRep
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.accounts.service.FriendshipFacts;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivityEventMapper;
@@ -91,7 +91,7 @@ import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventStageRuntimeMapper;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")
@@ -171,7 +171,7 @@ class ActivitiesEventsServiceTest {
     @BeforeEach
     void setUp() {
         lenient().when(eventCheckoutBasketService.loadCardStatesByEvent(anyString(), anyList()))
-                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
+                .thenReturn(new com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of()));
         service = new ActivitiesEventsService(
                 campaigns,
                 activityEventsRepository,
@@ -180,9 +180,9 @@ class ActivitiesEventsServiceTest {
                 activitySubEventStageRuntimeRepository,
                 activityMembersRepository,
                 activityMingleSessionsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 friendshipFacts,
-                userAffinityEdgesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 homeUserProfileService,
                 activitiesMembersService,
                 activitiesResourcesService,
@@ -191,7 +191,8 @@ class ActivitiesEventsServiceTest {
                 eventCheckoutBasketService,
                 eventCheckoutPricingService,
                 scheduledMessageTaskService,
-                absoluteAffinityService,
+                new com.raxim.myscoutee.domain.affinity.service.EventAffinityService(absoluteAffinityService,
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 mongoTemplate,
@@ -210,6 +211,16 @@ class ActivitiesEventsServiceTest {
                 activityEventSubEventsMapper,
                 activitySubEventResourceMapper,
                 activitySubEventStageRuntimeMapper);
+        org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters> counterProvider = org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
+        lenient().when(counterProvider.getObject()).thenReturn(userActivityCountersService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "lifecycleWork",
+                new EventLifecycleWork(mongoTemplate, null, chatAttachmentLifecycleService,
+                        scheduledMessageTaskService, affinityRecomputeTaskService, counterProvider));
+        var lifecycleChats = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.ChatDirectory.class);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "lifecycleChats", lifecycleChats);
+        lenient().doReturn(java.util.Optional.of(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.ChatDirectory.Chat.class)))
+                .when(lifecycleChats).findByOwnerUserIdAndChatId(anyString(), anyString());
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongoTemplate));
         lenient().when(eventCheckoutPricingService.reprice(any())).thenAnswer(invocation -> invocation.getArgument(0));
         lenient().when(accessControlService.canCurrentActorCreateEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorEditEvent(anyString())).thenReturn(true);
@@ -220,6 +231,7 @@ class ActivitiesEventsServiceTest {
         lenient().when(accessControlService.canCurrentActorTakeOverEvent(anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorJoinEvent(anyString(), anyString())).thenReturn(true);
         lenient().when(accessControlService.canCurrentActorApplyEventStageAction(anyString())).thenReturn(true);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "followingEvents", new com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService(mongoTemplate, friendshipFacts));
     }
 
     @Test
@@ -525,6 +537,10 @@ class ActivitiesEventsServiceTest {
                 .thenReturn(Map.of("event-1", membersSnapshot));
         when(chatService.ensurePublishedMainEventChat(any(ActivityEvent.class), eq(List.of("host"))))
                 .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+        var lifecycleChats = (com.raxim.myscoutee.domain.chat.api.ChatDirectory)
+                org.springframework.test.util.ReflectionTestUtils.getField(service, "lifecycleChats");
+        org.mockito.Mockito.doReturn(java.util.Optional.empty()).when(lifecycleChats)
+                .findByOwnerUserIdAndChatId("host", "event-1");
 
         EventParticipationActionResultDto result = service.publish(new EventActionRequestDto(
                 "host",
@@ -622,7 +638,8 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChangedOnce(
+                anyString(),
                 eq("event-1"),
                 eq("event-1"),
                 audienceCaptor.capture(),
@@ -674,6 +691,10 @@ class ActivitiesEventsServiceTest {
                 any(ActivityEvent.class),
                 eq(List.of("host", "accepted-member"))))
                 .thenReturn(new ChatService.PublishedMainEventChatResult("event-1", Set.of("host")));
+        var lifecycleChats = (com.raxim.myscoutee.domain.chat.api.ChatDirectory)
+                org.springframework.test.util.ReflectionTestUtils.getField(service, "lifecycleChats");
+        org.mockito.Mockito.doReturn(java.util.Optional.empty()).when(lifecycleChats)
+                .findByOwnerUserIdAndChatId("host", "event-1");
 
         service.publish(new EventActionRequestDto(
                 "host",
@@ -688,7 +709,8 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChangedOnce(
+                anyString(),
                 eq("event-1"),
                 eq("event-1"),
                 audienceCaptor.capture(),
@@ -855,7 +877,8 @@ class ActivitiesEventsServiceTest {
 
         @SuppressWarnings("unchecked")
         ArgumentCaptor<Collection<String>> audienceCaptor = ArgumentCaptor.forClass(Collection.class);
-        verify(scheduledMessageTaskService).scheduleEventLifecycleChanged(
+        verify(scheduledMessageTaskService).scheduleEventLifecycleChangedOnce(
+                anyString(),
                 eq("event-1"),
                 eq("event-1"),
                 audienceCaptor.capture(),
@@ -2756,7 +2779,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(List.of("watched-event")))
                 .thenReturn(List.of(canonical, suppressed));
         when(eventCheckoutBasketService.loadCardStatesByEvent("viewer", List.of("watched-event")))
-                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
+                .thenReturn(new com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "viewer", "watchlist", "all", "recent", "date", "day", 10, null, null, null, null));
@@ -2822,7 +2845,7 @@ class ActivitiesEventsServiceTest {
         when(activityEventsRepository.findBySourceIdIn(List.of("shared-event")))
                 .thenReturn(List.of(canonical, otherMemberTrash));
         when(eventCheckoutBasketService.loadCardStatesByEvent("riley", List.of("shared-event")))
-                .thenReturn(new EventCheckoutBasketService.CheckoutCardStates(Map.of(), Map.of()));
+                .thenReturn(new com.raxim.myscoutee.domain.payments.api.CheckoutBaskets.CheckoutCardStates(Map.of(), Map.of()));
 
         EventListPageDto page = service.queryActivitiesEventListPage(new EventsFilterRequestDto(
                 "riley", "active-events", "all", "recent", "date", "day", 10, null, null, null, null));

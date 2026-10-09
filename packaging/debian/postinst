@@ -317,7 +317,7 @@ ensure_mongo_seed_allow_list() {
   local file current updated required_collections collection
 
   file="/etc/myscoutee/myscoutee.env"
-  required_collections="emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations,exchangeRates"
+  required_collections="landingSlides,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations,exchangeRates"
   current="$(read_env_file_value MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB "${file}" || true)"
 
   if [[ -z "${current}" ]]; then
@@ -326,7 +326,7 @@ ensure_mongo_seed_allow_list() {
   fi
 
   for collection in \
-    emailTemplates emailCampaignRules notificationTemplates \
+    landingSlides emailTemplates emailCampaignRules notificationTemplates \
     scheduledMessageTasks operatorRegistryEndpoints paymentProviders \
     deploymentConfigurations exchangeRates; do
     if [[ "${current}" != *"${collection}"* ]]; then

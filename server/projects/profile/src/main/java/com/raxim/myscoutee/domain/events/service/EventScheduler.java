@@ -1,11 +1,11 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.affinity.service.UserAffinityEdgeService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.domain.affinity.api.CampaignGraphs;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
+import com.raxim.myscoutee.domain.platform.api.SchedulingPolicy;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -55,25 +55,25 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
-import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
-import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration;
+import com.raxim.myscoutee.domain.events.document.SchedulerPlanMarker;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardStateDto;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMainEventRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
-import com.raxim.myscoutee.domain.platform.repository.SchedulerPlanMarkersRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.events.repository.SchedulerPlanMarkersRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class EventScheduler {
+public class EventScheduler implements com.raxim.myscoutee.domain.events.api.RandomGroupAssignment {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventScheduler.class);
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_GROUP = "group";
@@ -103,11 +103,11 @@ public class EventScheduler {
     private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups;
-    private final com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository;
-    private final UserAffinityEdgeService affinityEdgeService;
-    private final UsersRepository usersRepository;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
+    private final com.raxim.myscoutee.domain.affinity.api.RatingDirectory userRatesRepository;
+    private final CampaignGraphs affinityEdgeService;
+    private final ProfileSummaries usersRepository;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository;
     private final SchedulerPlanMarkersRepository schedulerPlanMarkersRepository;
@@ -116,16 +116,16 @@ public class EventScheduler {
     private final ActivityTournamentGroupCounterService activityTournamentGroupCounterService;
     private final EventInviteNotificationService eventInviteNotificationService;
     private final EventCounterExpiryService eventCounterExpiryService;
-    private final EventCheckoutBasketService eventCheckoutBasketService;
-    private final ChatService chatService;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
-    private final PlatformParametersService platformParametersService;
-    private final NotificationOutboxService notificationOutboxService;
+    private final CheckoutBaskets eventCheckoutBasketService;
+    private final EventConversations chatService;
+    private final NotificationJobs notificationRuleRegistryService;
+    private final SchedulingPolicy platformParametersService;
+    private final NotificationDelivery notificationOutboxService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     private final ActivityEventSubEventsMapper subEventsMapper;
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private EventJobQueries jobGroupScope;
 
     private final Algo algo = new Algo();
     private final EventGeneratorByRandom eventGeneratorByRandom = new EventGeneratorByRandom();
@@ -140,11 +140,11 @@ public class EventScheduler {
     private boolean waitlistInviterEnabled;
 
     public EventScheduler(
-            com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository,
-            UserAffinityEdgeService affinityEdgeService,
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroups,
-            UsersRepository usersRepository,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            com.raxim.myscoutee.domain.affinity.api.RatingDirectory userRatesRepository,
+            CampaignGraphs affinityEdgeService,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups,
+            ProfileSummaries usersRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivityMainEventRuntimeRepository activityMainEventRuntimeRepository,
             SchedulerPlanMarkersRepository schedulerPlanMarkersRepository,
@@ -153,11 +153,11 @@ public class EventScheduler {
             ActivityTournamentGroupCounterService activityTournamentGroupCounterService,
             EventInviteNotificationService eventInviteNotificationService,
             EventCounterExpiryService eventCounterExpiryService,
-            EventCheckoutBasketService eventCheckoutBasketService,
-            ChatService chatService,
-            NotificationRuleRegistryService notificationRuleRegistryService,
-            PlatformParametersService platformParametersService,
-            NotificationOutboxService notificationOutboxService,
+            CheckoutBaskets eventCheckoutBasketService,
+            EventConversations chatService,
+            NotificationJobs notificationRuleRegistryService,
+            SchedulingPolicy platformParametersService,
+            NotificationDelivery notificationOutboxService,
             ActivityEventSubEventsMapper subEventsMapper) {
         this.userRatesRepository = userRatesRepository;
         this.affinityEdgeService = affinityEdgeService;
@@ -202,7 +202,7 @@ public class EventScheduler {
 
     private void runScheduledWrappersForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(Set.of(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW, NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE), this::runScheduledWrappersForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(Set.of(NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW, NotificationJobs.RULE_EVENT_RANDOM_GROUPS, NotificationJobs.RULE_EVENT_COUNTER_EXPIRY, NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE), this::runScheduledWrappersForCurrentDatabaseInGroup);
     }
 
     private void runScheduledWrappersForCurrentDatabaseInGroup() {
@@ -212,25 +212,25 @@ public class EventScheduler {
 
         Instant now = Instant.now();
         boolean tournamentRuleConfigured = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
+                .findRule(NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW)
                 .isPresent();
         boolean tournamentReviewDue = tournamentRuleConfigured
                 && notificationRuleRegistryService.shouldRunScheduledRule(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         now);
         if (tournamentReviewDue) {
             runTournamentReview(now, tournamentRuleConfigured);
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS, now)) {
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationJobs.RULE_EVENT_RANDOM_GROUPS, now)) {
             runScheduledRandomGroups();
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY, now)) {
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationJobs.RULE_EVENT_COUNTER_EXPIRY, now)) {
             int expiredCount = eventCounterExpiryService.runScheduledExpiryPass(now);
             if (expiredCount > 0) {
                 LOGGER.info("Processed {} due event counter source(s).", expiredCount);
             }
         }
-        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationRuleRegistryService.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
+        if (notificationRuleRegistryService.shouldRunScheduledRule(NotificationJobs.RULE_EVENT_CHECKOUT_BASKET_PURGE, now)) {
             int purgedCount = eventCheckoutBasketService.purgeExpiredDraftBasketsScheduled(now);
             if (purgedCount > 0) {
                 LOGGER.info("Purged {} checkout basket item(s).", purgedCount);
@@ -249,7 +249,7 @@ public class EventScheduler {
 
     private void runWaitlistInviterForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER, this::runWaitlistInviterForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_EVENT_AUTO_INVITER, this::runWaitlistInviterForCurrentDatabaseInGroup);
     }
 
     private void runWaitlistInviterForCurrentDatabaseInGroup() {
@@ -258,27 +258,26 @@ public class EventScheduler {
         }
         Instant now = Instant.now();
         boolean ruleConfigured = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
+                .findRule(NotificationJobs.RULE_EVENT_AUTO_INVITER)
                 .isPresent();
         boolean due = ruleConfigured
                 && notificationRuleRegistryService.shouldRunScheduledRule(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         now);
         if (!due) {
             return;
         }
         if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                NotificationJobs.RULE_EVENT_AUTO_INVITER,
                 "Scheduled event auto-inviter started.",
                 MARKER_UPDATED_BY,
                 now) == null) {
             return;
         }
-        int claimedPendingCount = ruleConfigured
-                ? notificationRuleRegistryService.claimPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER)
-                : 0;
+        int claimedPendingCount = 0;
         try {
+            if (ruleConfigured) claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationJobs.RULE_EVENT_AUTO_INVITER, now);
             int waitlistChangedCount = activitiesMembersService.sweepEventWaitlists();
             if (waitlistChangedCount > 0) {
                 LOGGER.info("Adjusted {} event wait-list invitation(s).", waitlistChangedCount);
@@ -292,7 +291,7 @@ public class EventScheduler {
             }
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         waitlistChangedCount + autoInvitedCount,
                         "completed",
                         "Processed scheduled wait-list and automatic invitations.",
@@ -302,11 +301,11 @@ public class EventScheduler {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         claimedPendingCount,
-                        "admin.jobs.table.affected");
+                        "admin.jobs.table.affected", now);
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                        NotificationJobs.RULE_EVENT_AUTO_INVITER,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -320,18 +319,19 @@ public class EventScheduler {
     private void runScheduledRandomGroups() {
         Instant startedAt = Instant.now();
         if (notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                 "Scheduled random grouping started.",
                 MARKER_UPDATED_BY,
                 startedAt) == null) {
             return;
         }
-        int claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
-                NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS);
+        int claimedPendingCount = 0;
         try {
+            claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS, startedAt);
             List<GeneratedEventPlan> plans = generateRandomPlans();
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     affectedUsers(plans),
                     "completed",
                     "Generated random event group plans.",
@@ -339,11 +339,11 @@ public class EventScheduler {
                     startedAt);
         } catch (RuntimeException exception) {
             notificationRuleRegistryService.restoreClaimedPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     claimedPendingCount,
-                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
+                    NotificationJobs.PENDING_COUNT_UNIT_USERS, startedAt);
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     0,
                     "failed",
                     safeText(exception.getMessage()),
@@ -370,17 +370,16 @@ public class EventScheduler {
     private void runTournamentReview(Instant now, boolean ruleConfigured) {
         Instant startedAt = now == null ? Instant.now() : now;
         if (ruleConfigured && notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                 "Scheduled tournament review started.",
                 MARKER_UPDATED_BY,
                 startedAt) == null) {
             return;
         }
-        int claimedPendingCount = ruleConfigured
-                ? notificationRuleRegistryService.claimPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW)
-                : 0;
+        int claimedPendingCount = 0;
         try {
+            if (ruleConfigured) claimedPendingCount = notificationRuleRegistryService.claimPendingCount(
+                    NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW, startedAt);
             int startReviewCount = moveTournamentFirstStagesToStartReview(startedAt);
             if (startReviewCount > 0) {
                 LOGGER.info("Moved {} tournament first stage(s) to start review.", startReviewCount);
@@ -402,7 +401,7 @@ public class EventScheduler {
             }
             if (ruleConfigured) {
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         startReviewCount + reviewCount + scorePlanRun.changedGroupCount()
                                 + scorePlanRun.processedResultRevisionCount(),
                         "completed",
@@ -413,11 +412,11 @@ public class EventScheduler {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 notificationRuleRegistryService.restoreClaimedPendingCount(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         claimedPendingCount,
-                        "admin.jobs.table.affected");
+                        "admin.jobs.table.affected", startedAt);
                 notificationRuleRegistryService.recordRun(
-                        NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                        NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -758,6 +757,13 @@ public class EventScheduler {
                 .filter(event -> !JobGroupContext.isActive() || jobGroupScope.matchesWorkspace(event.getWorkspaceGroupId())).toList();
     }
 
+    @Override
+    public Result assignRandomGroups(Consumer<Progress> progress) {
+        List<GeneratedEventPlan> plans = generateRandomPlans(progress == null ? null
+                : update -> progress.accept(new Progress(update.progressPercent(), update.detail())));
+        return new Result(plans.size(), affectedUsers(plans));
+    }
+
     public List<GeneratedEventPlan> generateRandomPlans() {
         return generateRandomPlans(null, configuredRandomRoomSourceEventIds());
     }
@@ -791,8 +797,8 @@ public class EventScheduler {
     }
 
     private List<String> configuredRandomRoomSourceEventIds() {
-        NotificationRuleConfig rule = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS)
+        Configuration rule = notificationRuleRegistryService
+                .findRule(NotificationJobs.RULE_EVENT_RANDOM_GROUPS)
                 .orElse(null);
         if (rule == null || rule.getParameters() == null) {
             return List.of();
@@ -801,7 +807,7 @@ public class EventScheduler {
                 .filter(Objects::nonNull)
                 .filter(parameter -> RANDOM_ROOM_SOURCE_EVENT_IDS_PARAMETER.equals(
                         safeText(parameter.getKey())))
-                .map(NotificationRuleConfig.ParameterField::getTextValue)
+                .map(NotificationJobs.Parameter::getTextValue)
                 .filter(StringUtils::hasText)
                 .flatMap(value -> List.of(value.split("[,;\\s]+")).stream())
                 .map(this::normalizeId)
@@ -843,13 +849,13 @@ public class EventScheduler {
         Set<String> groupIds = events.stream().map(ActivityEvent::getWorkspaceGroupId).filter(StringUtils::hasText)
             .collect(Collectors.toSet());
         Set<String> campaignOrServiceGroupIds = groupIds.isEmpty() ? Set.of() : communityGroups.findByIdIn(groupIds).stream()
-            .filter(group -> !"dating".equals(group.effectiveType())).map(com.raxim.myscoutee.domain.groups.document.CommunityGroup::id)
+            .filter(group -> !"dating".equals(group.effectiveType())).map(com.raxim.myscoutee.domain.groups.api.GroupView::id)
             .collect(Collectors.toSet());
         if (!includeAllAcceptedMembers) events = events.stream().filter(event -> !campaignOrServiceGroupIds.contains(normalizeId(event.getWorkspaceGroupId()))).toList();
         Map<String, List<ActivityEvent>> eventDocumentsById = eventDocumentsBySourceId(eventRecords);
         AtomicInteger observedQueries = new AtomicInteger(1);
         publishRandomProgress(progressConsumer, 0, 0, events.size(), 0, observedQueries.get(), "Loaded " + events.size() + " event record(s).");
-        
+
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Map<String, Set<String>> existingTournamentUserIdsByEventId = new LinkedHashMap<>();
@@ -958,7 +964,7 @@ public class EventScheduler {
                 return;
             }
             FGraph eventGraph = eventGraph(event, graph, campaignGraphs, tournamentUserIds, priorityOffGroups);
-            
+
             if (eventGraph.getNodes().isEmpty()) return;
 
             // Standard for-loop inside the lambda, so we use 'continue' here
@@ -966,7 +972,7 @@ public class EventScheduler {
             for (int subEventIndex = 0; subEventIndex < subEvents.size(); subEventIndex += 1) {
                 SubEventItem subEvent = subEvents.get(subEventIndex);
                 String subEventId = normalizeId(subEvent == null ? null : subEvent.id());
-                if (!StringUtils.hasText(subEventId)) continue; 
+                if (!StringUtils.hasText(subEventId)) continue;
                 int currentSubEvent = processedSubEvents.get() + 1;
                 publishRandomProgress(
                         progressConsumer,
@@ -1006,7 +1012,7 @@ public class EventScheduler {
 
                 List<GroupAssignmentTarget> targets = resolveGroupAssignmentTargets(
                         eventId, subEventId, subEvent, stageEligibleUserIds, true, "random", observedQueries, eventDocumentsById);
-                        
+
                 if (targets.isEmpty()) {
                     int processedSubEvent = processedSubEvents.incrementAndGet();
                     publishRandomProgress(
@@ -1019,7 +1025,7 @@ public class EventScheduler {
                             "Skipped sub-event " + processedSubEvent + "/" + totalSubEvents + "; no target groups.");
                     continue;
                 }
-                
+
                 List<GeneratedEventPlan> assignedMembers = assignMembersToTargets(
                         event,
                         stageGraph,
@@ -1031,7 +1037,7 @@ public class EventScheduler {
                         requireExactTargetCoverage,
                         includeAllAcceptedMembers && requireExactTargetCoverage,
                         beforeRoomNotifications);
-                        
+
                 // Thread-safe addition
                 plans.addAll(assignedMembers);
                 int processedSubEvent = processedSubEvents.incrementAndGet();
@@ -1062,7 +1068,7 @@ public class EventScheduler {
         }));
         publishRandomProgress(progressConsumer, 96, snapshotsByEventId.size(), snapshotsByEventId.size(), requiredUserIds.size(),
                 observedQueries.get(), "Finalizing random event groups after " + observedQueries.get() + " backend lookup(s).");
-        
+
         return plans;
     }
 
@@ -1072,8 +1078,8 @@ public class EventScheduler {
             return Set.of();
         }
         Set<String> publicUserIds = new LinkedHashSet<>();
-        for (Users user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
-            String userId = normalizeId(user == null ? null : user.getId());
+        for (ProfileSummary user : usersRepository.findByUserIdIn(normalizedCandidateUserIds)) {
+            String userId = normalizeId(user == null ? null : user.getUserId());
             if (StringUtils.hasText(userId)
                     && PUBLIC_PROFILE_STATUS.equalsIgnoreCase(safeText(user.getProfileStatus()))) {
                 publicUserIds.add(userId);
@@ -1126,7 +1132,7 @@ public class EventScheduler {
                     .filter(event -> requestedSourceIds.contains(normalizeId(event == null ? null : event.getSourceId())))
                     .toList();
         }
-        
+
         Set<String> priorityOffGroups = priorityOffGroups(events);
         events = events.stream().filter(event -> !priorityOffGroups.contains(normalizeId(event.getWorkspaceGroupId()))).toList();
         if (events.isEmpty()) return List.of();
@@ -1134,18 +1140,18 @@ public class EventScheduler {
         // --- PHASE 1: PRE-FETCH (Sequential) ---
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Set<String> requiredUserIds = new LinkedHashSet<>();
-        
+
         for (ActivityEvent event : events) {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) {
                 continue;
             }
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) continue;
-            
+
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
             snapshotsByEventId.put(eventId, snapshot);
             requiredUserIds.add(normalizeId(event.getCreatorUserId()));
-            
+
             if (snapshot != null) {
                 requiredUserIds.addAll(snapshot.acceptedMemberUserIds());
                 requiredUserIds.addAll(snapshot.pendingMemberUserIds());
@@ -1161,8 +1167,8 @@ public class EventScheduler {
         }
         Set<String> graphUserIds = new LinkedHashSet<>(graph.getNodes().keySet());
         campaignGraphs.values().forEach(value -> graphUserIds.addAll(value.getNodes().keySet()));
-        Map<String, Users> graphUsers = usersRepository.findAllById(graphUserIds).stream()
-                .collect(Collectors.toMap(Users::getUserId, user -> user, (first, second) -> first));
+        Map<String, ProfileSummary> graphUsers = usersRepository.findByUserIdIn(graphUserIds).stream()
+                .collect(Collectors.toMap(ProfileSummary::getUserId, user -> user, (first, second) -> first));
 
         // THREAD SAFETY: Synchronized list for parallel addition
         List<InviteBatchPlan> plans = Collections.synchronizedList(new ArrayList<>());
@@ -1171,16 +1177,16 @@ public class EventScheduler {
         MongoSessionMode sessionMode = MongoSessionModeContext.currentMode();
         events.parallelStream().forEach(event -> withMongoSessionMode(sessionMode, () -> {
             if (event == null || !Boolean.TRUE.equals(event.getAutoInviter()) || !Boolean.TRUE.equals(event.getPublished())) return;
-            
+
             String eventId = normalizeId(event.getSourceId());
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
-            
+
             int acceptedMembers = snapshot == null ? 0 : snapshot.acceptedMembers();
             int reservedInvitations = reservedInvitationCount(snapshot);
             int openSpots = Math.max(
                     0,
                     safeCount(event.getCapacityTotal()) - acceptedMembers - reservedInvitations);
-            
+
             if (!StringUtils.hasText(eventId) || openSpots <= 0) return;
 
             Set<String> lockedUserIds = new LinkedHashSet<>();
@@ -1199,38 +1205,38 @@ public class EventScheduler {
                         .filter(StringUtils::hasText)
                         .forEach(lockedUserIds::add);
             }
-            
+
             FGraph eventGraph = StringUtils.hasText(event.getCampaignId())
                     ? campaignGraphs.getOrDefault(event.getCampaignId(), new FGraph()) : graph;
             Set<String> candidateUserIds = new LinkedHashSet<>(eventGraph.getNodes().keySet());
             candidateUserIds.removeAll(lockedUserIds);
             candidateUserIds.removeIf(id -> {
-                Users user = graphUsers.get(id);
+                ProfileSummary user = graphUsers.get(id);
                 return user == null || !Objects.equals(event.getWorkspaceGroupId(), user.getWorkspaceGroupId())
                         || Set.of("inactive", "blocked", "deleted").contains(safeText(user.getProfileStatus()));
             });
 
             InviteBatchPlan plan = eventGeneratorByPriority.generate(new PriorityGeneratorRequest(
                     eventId, eventGraph, candidateUserIds, lockedUserIds, Range.of(openSpots, openSpots), List.of(), true, 0d));
-                    
+
             if (plan.invitedUserIds().isEmpty()) return;
 
             // These DB writes now execute concurrently across cores
             List<String> persistedInviteUserIds = activitiesMembersService.inviteUsers(
                     eventId, resolveInviterUserId(event), plan.invitedUserIds(), event);
-                    
+
             if (!persistedInviteUserIds.isEmpty()) {
                 recordPlanMarker("priority", MARKER_ACTION_INVITE_BATCH, eventId, eventId, persistedInviteUserIds);
                 eventInviteNotificationService.notifyInvitees(
                         event,
                         persistedInviteUserIds,
                         resolveInviterUserId(event));
-                
+
                 // Thread-safe addition
                 plans.add(new InviteBatchPlan(eventId, persistedInviteUserIds));
             }
         }));
-        
+
         return plans;
     }
 
@@ -1276,22 +1282,22 @@ public class EventScheduler {
                 .filter(this::shouldReviewTournamentStages)
                 .filter(event -> !advancementOnly || hasFinalizedTournamentTransition(event))
                 .toList();
-        
+
         // --- PHASE 1: PRE-FETCH (Runs Sequentially) ---
         // Gather all users and snapshots up front to eliminate N+1 database queries
         Map<String, ActivitiesMembersService.OwnerMembersSnapshot> snapshotsByEventId = new LinkedHashMap<>();
         Map<String, Set<String>> existingTournamentUserIdsByEventId = new LinkedHashMap<>();
         Set<String> allRequiredUserIds = new LinkedHashSet<>();
-        
+
         for (ActivityEvent event : events) {
             if (event == null || event.getSubEvents() == null) continue;
-            
+
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) continue;
-            
+
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
             snapshotsByEventId.put(eventId, snapshot);
-            
+
             if (snapshot != null && snapshot.acceptedMemberUserIds() != null) {
                 allRequiredUserIds.addAll(snapshot.acceptedMemberUserIds());
             }
@@ -1299,7 +1305,7 @@ public class EventScheduler {
             existingTournamentUserIdsByEventId.put(eventId, existingTournamentUserIds);
             allRequiredUserIds.addAll(existingTournamentUserIds);
         }
-        
+
         Set<String> priorityOffGroups=priorityOffGroups(events);
         FGraph globalGraph=allRequiredUserIds.isEmpty()||events.stream().allMatch(e->priorityOffGroups.contains(normalizeId(e.getWorkspaceGroupId())))
             ? participantGraph(allRequiredUserIds):buildGraphSnapshot(allRequiredUserIds);
@@ -1312,17 +1318,17 @@ public class EventScheduler {
             if (event == null || event.getSubEvents() == null || !shouldReviewTournamentStages(event)) {
                 return;
             }
-            
+
             String eventId = normalizeId(event.getSourceId());
             if (!StringUtils.hasText(eventId)) return;
-            
+
             ActivitiesMembersService.OwnerMembersSnapshot snapshot = snapshotsByEventId.get(eventId);
             Set<String> acceptedUserIds = snapshot == null
                     ? new LinkedHashSet<>()
                     : new LinkedHashSet<>(normalizeUserIds(snapshot.acceptedMemberUserIds()));
             Set<String> tournamentUserIds = new LinkedHashSet<>(acceptedUserIds);
             tournamentUserIds.addAll(existingTournamentUserIdsByEventId.getOrDefault(eventId, Set.of()));
-            
+
             FGraph eventGraph = tournamentUserIds.isEmpty()
                     ? new FGraph()
                     : eventGraph(event, globalGraph, campaignGraphs, tournamentUserIds, priorityOffGroups);
@@ -1340,15 +1346,15 @@ public class EventScheduler {
                 }
 
                 String subEventId = normalizeId(subEvent.id());
-                
+
                 activitiesEventLeaderboardService.materializeGeneratedGroups(eventId, subEventId);
                 EventLeaderboardStateDto state = activitiesEventLeaderboardService.queryState(eventId, subEventId);
-                
+
                 if (state == null) {
                     logDiagnostic("score", eventId, subEventId, "Leaderboard state lookup returned no data.");
-                    continue; 
+                    continue;
                 }
-                
+
                 if (state.groups().stream().anyMatch(group -> !group.advancingMemberIds().isEmpty())) {
                     states.add(state); // Thread-safe addition
                 }
@@ -1712,19 +1718,16 @@ public class EventScheduler {
                 .filter(StringUtils::hasText).collect(Collectors.toSet());
         Map<String, FGraph> graphs = new LinkedHashMap<>();
         if (campaignIds.isEmpty()) return graphs;
-        var campaignRates = userRatesRepository.findByCampaignIdIn(campaignIds);
-        var ratesByCampaign = campaignRates.stream().collect(Collectors.groupingBy(com.raxim.myscoutee.domain.affinity.document.UserRate::getCampaignId));
-        var edgesByCampaign = affinityEdgeService.projectCampaignEdges(campaignRates);
+        var snapshots = affinityEdgeService.campaignGraphs(campaignIds);
         for (String campaignId : campaignIds) {
-            var rates = ratesByCampaign.getOrDefault(campaignId, List.of());
+            var snapshot = snapshots.getOrDefault(campaignId, new CampaignGraphs.Snapshot(List.of(), List.of()));
             Map<String, Node> nodes = new LinkedHashMap<>();
             List<Edge> edges = new ArrayList<>();
-            for (var rate : rates) {
-                for (String id : List.of(normalizeId(rate.getOwnerUserId()), normalizeId(rate.getRelatedUserId()))) {
-                    if (StringUtils.hasText(id)) nodes.putIfAbsent(id, new Node(id));
-                }
+            for (String userId : snapshot.userIds()) {
+                String id = normalizeId(userId);
+                if (StringUtils.hasText(id)) nodes.putIfAbsent(id, new Node(id));
             }
-            for (UserAffinityEdge edge : edgesByCampaign.getOrDefault(campaignId, List.of())) addUserAffinityEdge(edges, nodes, edge);
+            for (EdgeView edge : snapshot.edges()) addUserAffinityEdge(edges, nodes, edge);
             graphs.put(campaignId, new FGraph(nodes, edges));
         }
         return graphs;
@@ -1732,7 +1735,7 @@ public class EventScheduler {
 
     private Set<String> priorityOffGroups(List<ActivityEvent> events) {
         var ids=events.stream().map(ActivityEvent::getWorkspaceGroupId).filter(StringUtils::hasText).collect(Collectors.toSet());
-        return ids.isEmpty()?Set.of():communityGroups.findByIdIn(ids).stream().filter(g->!g.priorityEnabled()).map(com.raxim.myscoutee.domain.groups.document.CommunityGroup::id).collect(Collectors.toSet());
+        return ids.isEmpty()?Set.of():communityGroups.findByIdIn(ids).stream().filter(g->!g.priorityEnabled()).map(com.raxim.myscoutee.domain.groups.api.GroupView::id).collect(Collectors.toSet());
     }
     private FGraph participantGraph(Set<String> participants) {
         Map<String,Node> nodes=new LinkedHashMap<>();if(participants!=null)participants.forEach(id->nodes.put(id,new Node(id)));return new FGraph(nodes,List.of());
@@ -1762,9 +1765,9 @@ public class EventScheduler {
                     .forEach(discoveredUserIds::add);
         }
 
-        List<UserAffinityEdge> affinityEdges = resolveRelevantEdges(discoveredUserIds);
+        List<? extends EdgeView> affinityEdges = resolveRelevantEdges(discoveredUserIds);
         incrementObservedQueries(observedQueries);
-        for (UserAffinityEdge edge : affinityEdges) {
+        for (EdgeView edge : affinityEdges) {
             if (edge == null) {
                 continue;
             }
@@ -1772,18 +1775,18 @@ public class EventScheduler {
         }
 
         Map<String, Node> nodesByUserId = new LinkedHashMap<>();
-        for (Users user : usersRepository.findAllById(discoveredUserIds)) {
+        for (ProfileSummary user : usersRepository.findByUserIdIn(discoveredUserIds)) {
             incrementObservedQueries(observedQueries);
-            if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
+            if (user == null || !StringUtils.hasText(normalizeId(user.getUserId()))) {
                 continue;
             }
-            nodesByUserId.put(normalizeId(user.getId()), new Node(normalizeId(user.getId()), safeText(user.getGender())));
+            nodesByUserId.put(normalizeId(user.getUserId()), new Node(normalizeId(user.getUserId()), safeText(user.getGender())));
         }
         for (String userId : discoveredUserIds) {
             nodesByUserId.putIfAbsent(userId, new Node(userId));
         }
 
-        for (UserAffinityEdge edge : affinityEdges) {
+        for (EdgeView edge : affinityEdges) {
             if (edge == null) {
                 continue;
             }
@@ -1792,7 +1795,7 @@ public class EventScheduler {
         return new FGraph(nodesByUserId, edges);
     }
 
-    private List<UserAffinityEdge> resolveRelevantEdges(Set<String> requiredUserIds) {
+    private List<? extends EdgeView> resolveRelevantEdges(Set<String> requiredUserIds) {
         List<String> normalizedUserIds = requiredUserIds == null
                 ? List.of()
                 : requiredUserIds.stream()
@@ -1806,7 +1809,7 @@ public class EventScheduler {
         return userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds);
     }
 
-    private void collectAffinityEdgeUserIds(Set<String> userIds, UserAffinityEdge edge) {
+    private void collectAffinityEdgeUserIds(Set<String> userIds, EdgeView edge) {
         String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
         String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
         if (StringUtils.hasText(leftUserId)) {
@@ -1817,7 +1820,7 @@ public class EventScheduler {
         }
     }
 
-    private void addUserAffinityEdge(List<Edge> edges, Map<String, Node> nodesByUserId, UserAffinityEdge affinityEdge) {
+    private void addUserAffinityEdge(List<Edge> edges, Map<String, Node> nodesByUserId, EdgeView affinityEdge) {
         String leftUserId = normalizeId(affinityEdge.getLeftUserId());
         String rightUserId = normalizeId(affinityEdge.getRightUserId());
         double weight = affinityEdge.getEdgeWeight() == null ? 0d : Math.max(0d, affinityEdge.getEdgeWeight());
@@ -2642,7 +2645,7 @@ public class EventScheduler {
             payload.put("senderName", RANDOM_ROOM_SYSTEM_NAME);
 
             notificationOutboxService.enqueue(new NotificationIntent(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     OWNER_TYPE_EVENT,
                     roomEventId,
                     "random-room-participants",
@@ -2664,7 +2667,7 @@ public class EventScheduler {
 
     private String roomWelcomeMessage(ActivityEvent sourceEvent, boolean tournamentRoomPresentation) {
         if (!tournamentRoomPresentation) {
-            return ChatService.RANDOM_ROOM_WELCOME_MESSAGE;
+            return EventConversations.RANDOM_ROOM_WELCOME_MESSAGE;
         }
         String eventTitle = firstNonBlank(
                 sourceEvent == null ? null : sourceEvent.getTitle(),
@@ -2675,8 +2678,8 @@ public class EventScheduler {
 
     private String roomWelcomeMessageType(boolean tournamentRoomPresentation) {
         return tournamentRoomPresentation
-                ? ChatService.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE
-                : ChatService.RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
+                ? EventConversations.TOURNAMENT_ROOM_WELCOME_MESSAGE_TYPE
+                : EventConversations.RANDOM_ROOM_WELCOME_MESSAGE_TYPE;
     }
 
     private int incrementObservedQueries(AtomicInteger observedQueries) {
@@ -2760,18 +2763,18 @@ public class EventScheduler {
         return userIds.stream()
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
-                .distinct() 
+                .distinct()
                 .toList();
     }
 
     private List<String> mergeUserIds(Collection<String> left, Collection<String> right) {
         if (left == null) left = List.of();
         if (right == null) right = List.of();
-        
+
         // OPTIMIZATION: LinkedHashSet guarantees O(1) inserts while preventing duplicates
         Set<String> merged = new LinkedHashSet<>(normalizeUserIds(left));
         merged.addAll(normalizeUserIds(right));
-        
+
         return merged.stream().sorted().toList();
     }
 
@@ -2810,10 +2813,10 @@ public class EventScheduler {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(normalized.getBytes(StandardCharsets.UTF_8));
-            
+
             // OPTIMIZATION: Replaces the slow, memory-heavy String.format loop
             return java.util.HexFormat.of().formatHex(hash);
-            
+
         } catch (NoSuchAlgorithmException exception) {
             throw new IllegalStateException("Missing SHA-256 support for scheduler plan markers.", exception);
         }

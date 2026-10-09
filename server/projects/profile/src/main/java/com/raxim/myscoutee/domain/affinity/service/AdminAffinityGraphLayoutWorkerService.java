@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphMetaDto;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class AdminAffinityGraphLayoutWorkerService {
@@ -20,12 +18,12 @@ public class AdminAffinityGraphLayoutWorkerService {
     private static final String WORKER_ID = "affinity-graph-layout";
 
     private final AdminAffinityGraphService adminAffinityGraphService;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final NotificationJobs notificationRuleRegistryService;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
 
     public AdminAffinityGraphLayoutWorkerService(
             AdminAffinityGraphService adminAffinityGraphService,
-            NotificationRuleRegistryService notificationRuleRegistryService) {
+            NotificationJobs notificationRuleRegistryService) {
         this.adminAffinityGraphService = adminAffinityGraphService;
         this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
@@ -46,24 +44,14 @@ public class AdminAffinityGraphLayoutWorkerService {
 
     private void rebuildDueLayoutForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT, this::rebuildDueLayoutForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT, this::rebuildDueLayoutForCurrentDatabaseInGroup);
     }
 
     private void rebuildDueLayoutForCurrentDatabaseInGroup() {
-        Optional<NotificationRuleConfig> configuredRule = notificationRuleRegistryService.findRule(
-                NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT);
-        if (configuredRule.isEmpty()) {
-            return;
-        }
-
         Instant startedAt = Instant.now();
-        if (!notificationRuleRegistryService.shouldRunScheduledRule(
-                NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT,
-                startedAt)) {
-            return;
-        }
+        // The owner rejects missing, disabled, not-due and already claimed rules.
         if (notificationRuleRegistryService.beginScheduledRun(
-                    NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT,
+                    NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT,
                     "Scheduled affinity graph layout rebuild started.",
                     WORKER_ID,
                     startedAt) == null) {
@@ -75,7 +63,7 @@ public class AdminAffinityGraphLayoutWorkerService {
             int linkCount = count(result == null ? null : result.linkCount());
             int memberCount = count(result == null ? null : result.memberCount());
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT,
+                    NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT,
                     linkCount,
                     "completed",
                     "Materialized affinity graph layout with " + memberCount + " members and " + linkCount + " links.",
@@ -83,7 +71,7 @@ public class AdminAffinityGraphLayoutWorkerService {
                     startedAt);
         } catch (RuntimeException exception) {
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT,
+                    NotificationJobs.RULE_AFFINITY_GRAPH_LAYOUT,
                     0,
                     "failed",
                     failureDetail(exception),

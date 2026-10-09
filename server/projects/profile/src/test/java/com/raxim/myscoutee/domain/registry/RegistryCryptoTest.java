@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -10,7 +11,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 @org.junit.jupiter.api.Tag("integration")
 class RegistryCryptoTest {
@@ -41,7 +42,7 @@ class RegistryCryptoTest {
                 "-out",
                 publicKey.toString()).exitCode()).isZero();
 
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setPrivateKeyPath(privateKey);
         properties.setPublicKeyPath(publicKey);
         RegistryCrypto crypto = RegistryCrypto.load(properties);
@@ -87,8 +88,8 @@ class RegistryCryptoTest {
         assertThat(signWithOpenSsl.exitCode())
                 .withFailMessage(signWithOpenSsl.output())
                 .isZero();
-        assertThat(RegistryCrypto.verify(
-                RegistryCrypto.parsePublicKeyDer(Files.readAllBytes(publicKey), "test public key"),
+        assertThat(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verify(
+                com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyDer(Files.readAllBytes(publicKey), "test public key"),
                 canonical,
                 Files.readAllBytes(openSslSignature))).isTrue();
     }

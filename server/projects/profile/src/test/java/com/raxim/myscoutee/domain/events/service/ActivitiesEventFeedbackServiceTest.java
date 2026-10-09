@@ -52,7 +52,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 import com.raxim.myscoutee.domain.events.mapper.EventFeedbackStatMapper;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")
@@ -88,24 +88,30 @@ class ActivitiesEventFeedbackServiceTest {
     void setUp() {
         service = new ActivitiesEventFeedbackService(
                 homeUserProfileService,
+                homeUserProfileService,
                 activityEventsRepository,
                 mingleRoundsRepository,
                 eventFeedbackStatesRepository,
                 eventFeedbackAnswersRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 accessControlService,
                 userActivityCountersService,
                 eventFeedbackStatMapper,
                 notificationOutboxService);
+        @SuppressWarnings("unchecked") var counterProvider = (org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.api.ActivityCounters>) org.mockito.Mockito.mock(org.springframework.beans.factory.ObjectProvider.class);
+        org.mockito.Mockito.lenient().when(counterProvider.getObject()).thenReturn(userActivityCountersService);
+        var work = new com.raxim.myscoutee.domain.events.service.FeedbackCounterWork(eventFeedbackStatesRepository,
+                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), counterProvider, null);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "counterWork", work);
     }
 
     @Test
     void mingleFeedbackUnionsSharedTablesAcrossRoundsWithoutDuplicatesOrFivePersonLimit() {
         ActivityEvent event = finishedFeedbackEvent("Mingle");
         Users viewer = feedbackUser("viewer");
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(activityEventsRepository.findAcceptedMembershipEvents("viewer")).thenReturn(List.of(event));
         when(usersRepository.findByUserIdIn(anyCollection())).thenAnswer(invocation -> {
@@ -132,7 +138,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void mingleWithoutSharedCompletedTablesDoesNotFallBackToEventMembers() {
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(feedbackUser("viewer")));
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 feedbackUser("viewer"), feedbackUser("host"), feedbackUser("outsider")));
@@ -146,7 +152,7 @@ class ActivitiesEventFeedbackServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"Casual", "Tournament"})
     void ordinaryEventFeedbackStillUsesItsMembers(String mode) {
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(feedbackUser("viewer")));
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent(mode)));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 feedbackUser("viewer"), feedbackUser("host"), feedbackUser("outsider")));
@@ -160,7 +166,7 @@ class ActivitiesEventFeedbackServiceTest {
     @Test
     void mingleRejectsSubmittedFeedbackForAnotherTableBeforeSaving() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(feedbackUser("viewer")));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
@@ -179,7 +185,7 @@ class ActivitiesEventFeedbackServiceTest {
     @Test
     void mingleSharedTableFeedbackUsesExistingAnswerPersistenceAndReload() {
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(feedbackUser("viewer"));
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(feedbackUser("viewer")));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
@@ -311,7 +317,7 @@ class ActivitiesEventFeedbackServiceTest {
         event.setEndAtIso("2020-01-01T12:00:00Z");
         event.setImageUrl("");
 
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(activityEventsRepository.findAcceptedMembershipEvents("viewer")).thenReturn(List.of(event));
         when(activityEventsRepository.findAdminVisibleEvents("viewer")).thenReturn(List.of());
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
@@ -342,7 +348,7 @@ class ActivitiesEventFeedbackServiceTest {
         event.setEndAtIso("2020-01-01T12:00:00Z");
         event.setImageUrl("/media/event-own.webp");
 
-        when(homeUserProfileService.resolveCurrentUser("host")).thenReturn(host);
+        when(homeUserProfileService.resolveFeedbackSession("host")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(host));
         when(activityEventsRepository.findAcceptedMembershipEvents("host")).thenReturn(List.of());
         when(activityEventsRepository.findAdminVisibleEvents("host")).thenReturn(List.of(event));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(host));
@@ -395,7 +401,7 @@ class ActivitiesEventFeedbackServiceTest {
         memberScoped.setStartAtIso("2020-01-01T10:00:00Z");
         memberScoped.setEndAtIso("2020-01-01T12:00:00Z");
 
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(activityEventsRepository.findBySourceId("event-1"))
                 .thenReturn(List.of(memberScoped, canonical));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
@@ -447,7 +453,7 @@ class ActivitiesEventFeedbackServiceTest {
         answer.setSecondaryValue("resources");
         answer.setPersonalityTraitIds(List.of("reliable-one"));
 
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
         when(eventFeedbackStatesRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
@@ -512,12 +518,11 @@ class ActivitiesEventFeedbackServiceTest {
         AtomicReference<List<EventFeedbackAnswer>> persistedAnswers = new AtomicReference<>(List.of());
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(source));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));
         when(eventFeedbackStatesRepository.findByViewerUserIdAndEventId("viewer", "event-1"))
-                .thenReturn(Optional.empty(), Optional.empty())
                 .thenAnswer(ignored -> Optional.ofNullable(persistedState.get()));
         when(eventFeedbackAnswersRepository.findByViewerUserIdAndEventIdAndCardId(
                 "viewer",
@@ -531,6 +536,7 @@ class ActivitiesEventFeedbackServiceTest {
         });
         when(eventFeedbackStatesRepository.save(any(EventFeedbackState.class))).thenAnswer(invocation -> {
             EventFeedbackState state = invocation.getArgument(0);
+            state.setVersion(state.getVersion() == null ? 0L : state.getVersion() + 1L);
             persistedState.set(state);
             return state;
         });
@@ -601,7 +607,7 @@ class ActivitiesEventFeedbackServiceTest {
         existingState.setSubmittedAtIso("2026-07-23T17:00:00Z");
 
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
-        when(homeUserProfileService.resolveCurrentUser("viewer")).thenReturn(viewer);
+        when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(source));
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(viewer, host));

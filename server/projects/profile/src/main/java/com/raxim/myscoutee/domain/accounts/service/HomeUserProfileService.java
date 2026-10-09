@@ -1,20 +1,21 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.content.service.ContentModerationService;
-import com.raxim.myscoutee.domain.email.service.ScheduledMessageTaskService;
-import com.raxim.myscoutee.domain.events.service.EventParticipationTicketService;
-import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.payments.service.AffiliateService;
-import com.raxim.myscoutee.domain.payments.service.SavedPaymentMethodsService;
-import com.raxim.myscoutee.domain.platform.service.CountryPartitionService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
+import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.affinity.api.UserAffinityScores;
+import com.raxim.myscoutee.domain.affinity.api.UserAffinityChanges;
+import com.raxim.myscoutee.domain.assets.api.TicketReads;
+import com.raxim.myscoutee.domain.content.api.ContentRegistration;
+import com.raxim.myscoutee.domain.email.api.UserActivityScheduling;
+import com.raxim.myscoutee.domain.payments.api.AffiliateRegistrations;
+import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
+import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,25 +47,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentityEmail;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
-import com.raxim.myscoutee.domain.access.config.RegionSecurityProperties;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
-import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.chat.document.ChatMessage;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.events.document.EventFeedbackAnswer;
-import com.raxim.myscoutee.domain.events.document.EventFeedbackState;
-import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
+import com.raxim.myscoutee.domain.access.api.RegionSecurity;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
+import com.raxim.myscoutee.domain.events.api.EventHomeReads.Event;
+import static com.raxim.myscoutee.domain.events.api.EventOwnership.Event.STATUS_ACTIVE;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
+import com.raxim.myscoutee.domain.events.api.FeedbackDirectory.Answer;
 import com.raxim.myscoutee.domain.accounts.document.UserFilterPreferences;
 import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.UserFriendship;
-import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
+import com.raxim.myscoutee.domain.affinity.api.RatingView;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserByIdResponseDto;
@@ -99,29 +94,28 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponse
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetTicketsPageDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
-import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackAnswersRepository;
-import com.raxim.myscoutee.domain.events.repository.EventFeedbackStatesRepository;
-import com.raxim.myscoutee.domain.content.repository.UserFeedbackSubmissionsRepository;
+import com.raxim.myscoutee.domain.events.api.EventHomeReads;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
+import com.raxim.myscoutee.domain.events.api.FeedbackDirectory;
+import com.raxim.myscoutee.domain.content.api.UserFeedback;
 import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserExperienceProfilesRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
+import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
+import com.raxim.myscoutee.domain.content.api.UserReports;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
-public class HomeUserProfileService {
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
+        com.raxim.myscoutee.domain.accounts.api.ProfileReadState,
+        com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards,
+        com.raxim.myscoutee.domain.accounts.api.LocationEligibility {
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
 
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
@@ -151,7 +145,7 @@ public class HomeUserProfileService {
     private static final long MILLIS_PER_DAY = 24L * 60L * 60L * 1000L;
     private static final long USER_READ_SNAPSHOT_CACHE_TTL_MS = 5_000L;
     private static final int OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE = 18;
-    public static final int HOME_GAME_RATE_PROJECTION_VERSION = 1;
+    public static final int HOME_GAME_RATE_PROJECTION_VERSION = com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections.RATING_VERSION;
     private static final List<PersonalityTraitDefinition> PERSONALITY_TRAIT_DEFINITIONS = List.of(
             new PersonalityTraitDefinition(
                     "social-charmer",
@@ -224,49 +218,46 @@ public class HomeUserProfileService {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ContentModerationService contentModeration;
+    private ContentRegistration contentModeration;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private SavedPaymentMethodsService savedPaymentMethods;
+    private PaymentMethods savedPaymentMethods;
 
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroupsRepository;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository serviceCasesRepository;
+    private com.raxim.myscoutee.domain.community.api.CaseParticipants caseParticipants;
     private final UsersRepository usersRepository;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    @org.springframework.beans.factory.annotation.Autowired private ProfileStatusWork profileStatusWork;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
-    private final UserRatesRepository userRatesRepository;
-    private final ChatsRepository chatsRepository;
-    private final ChatMessagesRepository chatMessagesRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
-    private final AssetsRepository assetsRepository;
-    private final EventParticipationTicketService eventParticipationTicketService;
-    private final EventFeedbackStatesRepository eventFeedbackStatesRepository;
-    private final EventFeedbackAnswersRepository eventFeedbackAnswersRepository;
-    private final UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository;
-    private final UserReportSubmissionsRepository userReportSubmissionsRepository;
+    private final RatingDirectory userRatesRepository;
+    private final com.raxim.myscoutee.domain.chat.api.ChatReview chatReview;
+    private final EventHomeReads activityEventsRepository;
+    private final MemberDirectory activityMembersRepository;
+    private final FeedbackDirectory eventFeedbackAnswersRepository;
+    private final UserFeedback userFeedbackSubmissionsRepository;
+    private final UserReports userReportSubmissionsRepository;
     private final UserSessionActionsRepository userSessionActionsRepository;
-    private final ScheduledMessageTaskService scheduledMessageTaskService;
-    private final CountryPartitionService countryPartitionService;
-    private final RegionSecurityProperties regionSecurityProperties;
-    private final AbsoluteAffinityService absoluteAffinityService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
-    private final AdminMenuCounterService adminMenuCounterService;
-    private final AccessControlService accessControlService;
-    private final AssetsService assetsService;
-    private final AffiliateService affiliateService;
-    private NotificationRuleRegistryService notificationRuleRegistryService;
-    private com.raxim.myscoutee.domain.notifications.service.RoleNotificationService roleNotifications;
+    private final UserActivityScheduling scheduledMessageTaskService;
+    private final CountryDirectory countryPartitionService;
+    private final RegionSecurity regionSecurityProperties;
+    private final UserAffinityScores absoluteAffinityService;
+    private final UserAffinityChanges affinityRecomputeTaskService;
+    private final OperationalTelemetry adminTelemetryService;
+    private final AdministratorClassification adminMenuCounterService;
+    private final AccessPermissions accessControlService;
+    private final TicketReads assetsService;
+    private final AffiliateRegistrations affiliateService;
+    private NotificationJobs notificationRuleRegistryService;
+    private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
 
     @org.springframework.beans.factory.annotation.Autowired
-    void setRoleNotifications(com.raxim.myscoutee.domain.notifications.service.RoleNotificationService value) {
+    void setRoleNotifications(com.raxim.myscoutee.domain.notifications.api.RoleNotifications value) {
         this.roleNotifications = value;
     }
-    private UserNotificationPageRepository userNotificationPageRepository;
+    private NotificationCatalog notificationCatalog;
     private final Map<String, CacheEntry<UserImpressionsDto>> userImpressionsCacheByUserId = new ConcurrentHashMap<>();
     private final Map<String, CacheEntry<Map<String, Double>>> affinityWeightsCacheByUserIdsKey = new ConcurrentHashMap<>();
     private final Map<String, Object> userReadCacheLocksByUserId = new ConcurrentHashMap<>();
@@ -277,31 +268,27 @@ public class HomeUserProfileService {
             UsersRepository usersRepository,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             UserFriendshipsRepository userFriendshipsRepository,
-            UserRatesRepository userRatesRepository,
-            ChatsRepository chatsRepository,
-            ChatMessagesRepository chatMessagesRepository,
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
-            AssetsRepository assetsRepository,
-            EventParticipationTicketService eventParticipationTicketService,
-            EventFeedbackStatesRepository eventFeedbackStatesRepository,
-            EventFeedbackAnswersRepository eventFeedbackAnswersRepository,
-            UserFeedbackSubmissionsRepository userFeedbackSubmissionsRepository,
-            UserReportSubmissionsRepository userReportSubmissionsRepository,
+            RatingDirectory userRatesRepository,
+            com.raxim.myscoutee.domain.chat.api.ChatReview chatReview,
+            EventHomeReads activityEventsRepository,
+            MemberDirectory activityMembersRepository,
+            FeedbackDirectory eventFeedbackAnswersRepository,
+            UserFeedback userFeedbackSubmissionsRepository,
+            UserReports userReportSubmissionsRepository,
             UserSessionActionsRepository userSessionActionsRepository,
-            ScheduledMessageTaskService scheduledMessageTaskService,
-            CountryPartitionService countryPartitionService,
-            RegionSecurityProperties regionSecurityProperties,
-            AbsoluteAffinityService absoluteAffinityService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
-            AdminMenuCounterService adminMenuCounterService,
-            AccessControlService accessControlService,
-            AssetsService assetsService,
-            AffiliateService affiliateService,
-            com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository communityGroupsRepository) {
+            UserActivityScheduling scheduledMessageTaskService,
+            CountryDirectory countryPartitionService,
+            RegionSecurity regionSecurityProperties,
+            UserAffinityScores absoluteAffinityService,
+            UserAffinityChanges affinityRecomputeTaskService,
+            OperationalTelemetry adminTelemetryService,
+            AdministratorClassification adminMenuCounterService,
+            AccessPermissions accessControlService,
+            TicketReads assetsService,
+            AffiliateRegistrations affiliateService,
+            com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
@@ -309,13 +296,9 @@ public class HomeUserProfileService {
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userFriendshipsRepository = userFriendshipsRepository;
         this.userRatesRepository = userRatesRepository;
-        this.chatsRepository = chatsRepository;
-        this.chatMessagesRepository = chatMessagesRepository;
+        this.chatReview = chatReview;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMembersRepository = activityMembersRepository;
-        this.assetsRepository = assetsRepository;
-        this.eventParticipationTicketService = eventParticipationTicketService;
-        this.eventFeedbackStatesRepository = eventFeedbackStatesRepository;
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
@@ -333,14 +316,14 @@ public class HomeUserProfileService {
     }
 
     @Autowired(required = false)
-    void setNotificationRuleRegistryService(NotificationRuleRegistryService notificationRuleRegistryService) {
+    void setNotificationRuleRegistryService(NotificationJobs notificationRuleRegistryService) {
         this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Autowired(required = false)
-    void setUserNotificationPageRepository(
-            UserNotificationPageRepository userNotificationPageRepository) {
-        this.userNotificationPageRepository = userNotificationPageRepository;
+    void setNotificationCatalog(
+            NotificationCatalog notificationCatalog) {
+        this.notificationCatalog = notificationCatalog;
     }
 
     public UserByIdResponseDto queryUserById(String requestedUserId) {
@@ -608,6 +591,7 @@ public class HomeUserProfileService {
                 0,
                 OFFLINE_TICKET_SNAPSHOT_PAGE_SIZE,
                 "upcoming");
+        var following = OrganizerFollowingService.state(user);
         return new UserRealtimeLongPollResponseDto(
                 resolvedUserId,
                 safeText(user.getProfileStatus()),
@@ -623,9 +607,10 @@ public class HomeUserProfileService {
                         .toList(),
                 buildRealtimeCursor(user, counters),
                 Instant.now().toString(),
-                OrganizerFollowingService.state(user),
+                new com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFollowingDto(
+                        following.organizerIds(), following.eventCount(), following.nextExpiryAtIso()),
                 contentModeration != null && adminMenuCounterService.isAdminUser(user) ? contentModeration.snapshot() : null,
-                user.getFeedCounters() == null ? Users.FeedCountersRecord.empty() : user.getFeedCounters(),
+                user.getFeedCounters() == null ? com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord.empty() : user.getFeedCounters(),
                 savedPaymentMethods != null && savedPaymentMethods.cardsAvailable(),
                 account != null && account != user ? buildMenuCounters(account, account) : null);
     }
@@ -716,7 +701,9 @@ public class HomeUserProfileService {
         affiliateService.recordRegistration(saved.getAffiliateRegistration());
         if (completingRegistration && !PROFILE_STATUS_ONBOARDING.equals(saved.getProfileStatus())
                 && "A".equals(saved.getStatus()) && roleNotifications != null) {
-            roleNotifications.memberJoined(saved);
+            roleNotifications.memberJoined(new com.raxim.myscoutee.domain.notifications.api.RoleNotifications.MemberRegistration(
+                    saved.getUserId(), saved.getEmail(), saved.isOperator(),
+                    StringUtils.hasText(saved.getWorkspaceGroupId()) || StringUtils.hasText(saved.getAccountUserId())));
         }
         if (existing == null && userFilterPreferencesRepository.findByUserId(normalizedUserId).isEmpty()) {
             persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
@@ -759,21 +746,9 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Unable to send feedback.");
         }
 
-        String nowIso = Instant.now().toString();
-        UserFeedbackSubmission document = new UserFeedbackSubmission();
-        document.setId(new ObjectId().toHexString());
-        document.setSyncKey(UUID.randomUUID().toString());
-        document.setUserId(userId);
-        document.setCategory(safeText(request.category()));
-        document.setSubject(safeText(request.subject()));
-        document.setDetails(safeText(request.details()));
-        document.setCreatedDate(nowIso);
-        document.setCreatedUser(userId);
-        document.setUpdatedDate(nowIso);
-        document.setUpdatedUser(userId);
-        userFeedbackSubmissionsRepository.save(document);
-        if (roleNotifications != null) roleNotifications.moderationSubmitted("feedback-submitted", document.getId());
-        adminTelemetryService.record("feedback.submitted", "moderation", document.getId(), userId);
+        String submissionId = userFeedbackSubmissionsRepository.submit(userId, safeText(request.category()), safeText(request.subject()), safeText(request.details()));
+        if (roleNotifications != null) roleNotifications.moderationSubmitted("feedback-submitted", submissionId);
+        adminTelemetryService.record("feedback.submitted", "moderation", submissionId, userId);
         return new UserSubmitActionResponseDto(true, null);
     }
 
@@ -792,9 +767,9 @@ public class HomeUserProfileService {
             return new UserSubmitActionResponseDto(false, "Reports can only be submitted for an event organizer or a member you shared an event with.");
         }
 
-        ActivityEvent eventRecord = resolvePreferredEventRecord(eventId);
-        ActivityMember reporterMembership = resolveAcceptedReportMember(eventId, userId);
-        ActivityMember targetMembership = resolveAcceptedReportMember(eventId, targetUserId);
+        Event eventRecord = resolvePreferredEventRecord(eventId);
+        Member reporterMembership = resolveAcceptedReportMember(eventId, userId);
+        Member targetMembership = resolveAcceptedReportMember(eventId, targetUserId);
         boolean sharedAcceptedEvent = reporterMembership != null && targetMembership != null;
         boolean reportableEventOrganizer = isReportableEventOrganizer(eventRecord, targetUserId);
         if (!sharedAcceptedEvent && !reportableEventOrganizer) {
@@ -815,18 +790,16 @@ public class HomeUserProfileService {
         String messageId = normalizeOptionalText(request.messageId());
         String assetId = normalizeOptionalText(request.assetId());
         String assetType = normalizeOptionalText(request.assetType());
-        ChatMessage reportedChatMessage = null;
         if (StringUtils.hasText(chatId) || "chat".equalsIgnoreCase(safeText(sourceType))) {
-            Chat reportedChat = resolveReportableChat(userId, targetUserId, chatId, messageId);
+            var reportedChat = chatReview.reportEvidence(userId, targetUserId, chatId, messageId);
             if (reportedChat == null) {
                 return new UserSubmitActionResponseDto(false, "Reports can only include chat messages you can view.");
             }
-            reportedChatMessage = findChatMessage(reportedChat.getChatId(), messageId);
-            chatId = normalizeOptionalText(reportedChat.getChatId());
-            messageId = normalizeOptionalText(reportedChatMessage == null ? messageId : reportedChatMessage.getId());
+            chatId = normalizeOptionalText(reportedChat.chatId());
+            messageId = normalizeOptionalText(reportedChat.messageId());
             sourceType = "chat";
             sourceId = normalizeOptionalText(firstNonBlank(sourceId, messageId));
-            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChatMessage == null ? null : reportedChatMessage.getText()));
+            sourceText = normalizeOptionalText(firstNonBlank(sourceText, reportedChat.text()));
         }
 
         String reportSyncKey = reportSyncKey(
@@ -840,45 +813,31 @@ public class HomeUserProfileService {
                 chatId,
                 messageId,
                 assetId);
-        if (userReportSubmissionsRepository.findBySyncKey(reportSyncKey).isPresent()) {
+        if (userReportSubmissionsRepository.exists(reportSyncKey)) {
             return new UserSubmitActionResponseDto(true, "Report already submitted.");
         }
 
-        String nowIso = Instant.now().toString();
-        UserReportSubmission document = new UserReportSubmission();
-        document.setId(new ObjectId().toHexString());
-        document.setSyncKey(reportSyncKey);
-        document.setUserId(userId);
-        document.setHandle(safeText(request.handle()));
-        document.setReason(safeText(request.reason()));
-        document.setDetails(safeText(request.details()));
-        document.setTargetUserId(targetUserId);
-        document.setMemberEntryId(resolvedTargetMemberEntryId);
-        document.setEventId(eventId);
-        document.setEventTitle(normalizeOptionalText(firstNonBlank(
-                eventRecord == null ? null : eventRecord.getTitle(),
-                request.eventTitle())));
-        document.setEventStartAtIso(normalizeOptionalText(firstNonBlank(
-                eventRecord == null ? null : eventRecord.getStartAtIso(),
-                request.eventStartAtIso())));
-        document.setSourceType(sourceType);
-        document.setSourceId(sourceId);
-        document.setSourceText(sourceText);
-        document.setChatId(chatId);
-        document.setMessageId(messageId);
-        document.setAssetId(assetId);
-        document.setAssetType(assetType);
-        document.setCreatedDate(nowIso);
-        document.setCreatedUser(userId);
-        document.setUpdatedDate(nowIso);
-        document.setUpdatedUser(userId);
-        try {
-            userReportSubmissionsRepository.save(document);
-        } catch (DuplicateKeyException duplicate) {
-            return new UserSubmitActionResponseDto(true, "Report already submitted.");
-        }
-        if (roleNotifications != null) roleNotifications.moderationSubmitted("report-submitted", document.getId());
-        adminTelemetryService.record("report.submitted", "moderation", document.getId(), userId);
+        var submission = userReportSubmissionsRepository.submit(new com.raxim.myscoutee.domain.content.api.UserReports.ReportDraft(
+                reportSyncKey,
+                userId,
+                safeText(request.handle()),
+                safeText(request.reason()),
+                safeText(request.details()),
+                targetUserId,
+                resolvedTargetMemberEntryId,
+                eventId,
+                normalizeOptionalText(firstNonBlank(eventRecord == null ? null : eventRecord.getTitle(), request.eventTitle())),
+                normalizeOptionalText(firstNonBlank(eventRecord == null ? null : eventRecord.getStartAtIso(), request.eventStartAtIso())),
+                sourceType,
+                sourceId,
+                sourceText,
+                chatId,
+                messageId,
+                assetId,
+                assetType));
+        if (submission.duplicate()) return new UserSubmitActionResponseDto(true, "Report already submitted.");
+        if (roleNotifications != null) roleNotifications.moderationSubmitted("report-submitted", submission.id());
+        adminTelemetryService.record("report.submitted", "moderation", submission.id(), userId);
         return new UserSubmitActionResponseDto(true, null);
     }
 
@@ -924,12 +883,11 @@ public class HomeUserProfileService {
         user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
         user.setDeletedAtIso(Instant.now().toString());
         user.setAccountPurgePendingCounterTracked(true);
-        usersRepository.save(user);
+        profileStatusWork.save(user);
         if (newlyTrackedForPurge) {
             adjustAccountPurgePendingCount(user.getUserId(), 1);
         }
         evictUserReadCaches(resolvedUserId);
-        affinityRecomputeTaskService.enqueueAdminStatusChanged(resolvedUserId);
         recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
         adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
         return new UserSubmitActionResponseDto(true, null);
@@ -961,7 +919,7 @@ public class HomeUserProfileService {
         return snapshot.visibleGameUsers().stream()
                 .filter(Objects::nonNull)
                 .filter(this::isPublicGameUser)
-                .filter(user -> CommunityGroupProfilesService.sameWorkspace(activeUser, user))
+                .filter(user -> WorkspaceContext.sameWorkspace(activeUser, user))
                 .filter(user -> !normalizedUserId.equals(normalizeId(user.getId())))
                 .filter(user -> !metUserIds.contains(normalizeId(user.getId())))
                 .filter(user -> !ratedUserIds.contains(normalizeId(user.getId())))
@@ -1291,7 +1249,7 @@ public class HomeUserProfileService {
         String selectorRole = normalizeDemoSelectorRole(role);
         Map<LocationCoordinatesDto, Boolean> locationChecks = new java.util.HashMap<>();
         var allUsers = usersRepository.findAllByOrderByNameAscUserIdAsc();
-        var baseIds = com.raxim.myscoutee.domain.groups.document.CommunityGroup.BASE_IDS;
+        var baseIds = com.raxim.myscoutee.domain.groups.api.BaseGroups.BASE_IDS;
         var baseTypes = new java.util.HashMap<String, String>();
         communityGroupsRepository.findByIdIn(baseIds).stream()
                 .filter(group -> !group.deleted() && group.policy().workspace())
@@ -1312,6 +1270,33 @@ public class HomeUserProfileService {
                         && demoLocationRequired(user, locationChecks), memberships.getOrDefault(user.getUserId(), List.of("dating"))))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Override public com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto resolveFeedbackSession(String requestedUserId) {
+        return com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(resolveCurrentUser(requestedUserId));
+    }
+
+    @Override public com.raxim.myscoutee.domain.accounts.dto.RatingSessionDto resolveRatingSession(String requestedUserId) {
+        var user = resolveCurrentUser(requestedUserId);
+        if (user == null) return null;
+        var location = user.getLocationCoordinates();
+        return new com.raxim.myscoutee.domain.accounts.dto.RatingSessionDto(
+                new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
+                        normalizeId(user.getUserId()), user.getAccountUserId(), user.getWorkspaceGroupId()),
+                location == null ? null : new LocationCoordinatesDto(location.latitude(), location.longitude()),
+                user.getActivities() == null ? null : user.getActivities().game());
+    }
+
+    @Override public List<UserDto> presentProfiles(Collection<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) return List.of();
+        return usersRepository.findByUserIdIn(userIds).stream().filter(Objects::nonNull)
+                .map(this::toUserDto).toList();
+    }
+
+    @Override public List<UserDto> presentGameCards(Collection<String> userIds) {
+        if (userIds == null || userIds.isEmpty()) return List.of();
+        return usersRepository.findByUserIdIn(userIds).stream().filter(Objects::nonNull)
+                .map(this::toGameCardUserDto).toList();
     }
 
     public List<UserDto> queryUsersByIds(Collection<String> userIds) {
@@ -1339,6 +1324,12 @@ public class HomeUserProfileService {
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    @Override public UserDto present(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
+        return toUserDto((Users) profile);
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.groups.api.GroupAdministration groupAdministration;
 
     public UserDto toUserDto(Users user) {
         return toUserDto(user, true);
@@ -1482,6 +1473,19 @@ public class HomeUserProfileService {
             return null;
         }
 
+        if (authentication != null
+                && authentication.getPrincipal() instanceof com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor actor) {
+            if (!authentication.isAuthenticated()) return null;
+            var identity = actor.getProfileIdentity();
+            if (identity == null || !java.util.Objects.equals(actor.getUserId(), identity.userId())) return null;
+            Users user = findUser(normalizeId(actor.getUserId()));
+            // The signed selection is a constraint, not permission to switch to a
+            // requested profile or to keep a profile after its ownership changes.
+            return user != null
+                    && java.util.Objects.equals(identity.accountUserId(), user.getAccountUserId())
+                    && java.util.Objects.equals(identity.workspaceGroupId(), user.getWorkspaceGroupId()) ? user : null;
+        }
+
         String normalizedRequestedUserId = normalizeId(requestedUserId);
         if (StringUtils.hasText(normalizedRequestedUserId)) {
             return findUser(normalizedRequestedUserId);
@@ -1493,6 +1497,12 @@ public class HomeUserProfileService {
     public String resolveSelectedUserId(String requestedUserId) {
         Users currentUser = resolveCurrentUser(requestedUserId);
         return currentUser == null ? null : normalizeId(currentUser.getId());
+    }
+
+    @Override public com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto resolveSelectedIdentity(String requestedUserId) {
+        Users currentUser = resolveCurrentUser(requestedUserId);
+        return currentUser == null ? null : new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
+                normalizeId(currentUser.getId()), currentUser.getAccountUserId(), currentUser.getWorkspaceGroupId());
     }
 
     private Users findUser(String userId) {
@@ -1623,7 +1633,7 @@ public class HomeUserProfileService {
         }
 
         Map<String, Double> weightsByPairKey = new LinkedHashMap<>();
-        for (UserAffinityEdge edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
+        for (EdgeView edge : userAffinityEdgesRepository.findRelevantByUserIds(normalizedUserIds)) {
             String leftUserId = normalizeId(edge == null ? null : edge.getLeftUserId());
             String rightUserId = normalizeId(edge == null ? null : edge.getRightUserId());
             if (!StringUtils.hasText(leftUserId) || !StringUtils.hasText(rightUserId) || leftUserId.equals(rightUserId)) {
@@ -1646,7 +1656,7 @@ public class HomeUserProfileService {
 
     private Map<String, Long> queryLatestHomeActivityMsByUserId(
             List<Users> visibleGameUsers,
-            List<ActivityEvent> memberProjections) {
+            List<? extends Event> memberProjections) {
         Map<String, Long> latestByUserId = new LinkedHashMap<>();
         boolean allRateProjectionsCurrent = visibleGameUsers != null
                 && !visibleGameUsers.isEmpty()
@@ -1661,7 +1671,7 @@ public class HomeUserProfileService {
                                 : user.getHomeGameLastRateActivityMs().longValue());
             }
         } else {
-            for (UserRate record : userRatesRepository.findAll()) {
+            for (RatingView record : userRatesRepository.findAll()) {
                 if (record == null) {
                     continue;
                 }
@@ -1678,14 +1688,14 @@ public class HomeUserProfileService {
         }
 
         if (hasHomeGameMemberProjections(memberProjections)) {
-            for (ActivityEvent event : memberProjections) {
+            for (Event event : memberProjections) {
                 long timestampMs = homeGameEventActivityMillis(event);
                 for (String userId : normalizeStrings(event == null ? null : event.getAcceptedMemberUserIds())) {
                     rememberLatestActivityMs(latestByUserId, userId, timestampMs);
                 }
             }
         } else {
-            for (ActivityMember member : activityMembersRepository.findAll()) {
+            for (Member member : activityMembersRepository.findAll()) {
                 if (member == null) {
                     continue;
                 }
@@ -1775,7 +1785,7 @@ public class HomeUserProfileService {
         }
     }
 
-    private double resolveAffinityEdgeWeight(UserAffinityEdge edge) {
+    private double resolveAffinityEdgeWeight(EdgeView edge) {
         if (edge == null) {
             return 0d;
         }
@@ -1846,6 +1856,21 @@ public class HomeUserProfileService {
                 && INSIDE_NETWORK_GAME_PROFILE_STATUSES.contains(resolveProfileStatus(user));
     }
 
+    @Override public boolean activityRateVisible(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
+        return isActivityRateVisibleUser((Users) profile);
+    }
+
+    @Override
+    public List<com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto> queryRatingProfiles(java.util.Collection<String> userIds) {
+        return usersRepository.findByUserIdIn(userIds).stream().map(user -> {
+            if (user == null) return (com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto) null;
+            var coordinates = user.getLocationCoordinates();
+            return new com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto(user.getId(), user.getUserId(),
+                    user.getWorkspaceGroupId(), coordinates == null ? null
+                            : new LocationCoordinatesDto(coordinates.latitude(), coordinates.longitude()),
+                    activityRateVisible(user));
+        }).toList();
+    }
     public boolean isActivityRateVisibleUser(Users user) {
         return isUsableUserDocument(user)
                 && !isDemoOperatorUserDocument(user)
@@ -1877,7 +1902,7 @@ public class HomeUserProfileService {
         }
 
         Set<String> ratedUserIds = new LinkedHashSet<>();
-        for (UserRate record : userRatesRepository.findHomeGameExclusionProjections(normalizedRaterUserId)) {
+        for (RatingView record : userRatesRepository.findHomeGameExclusionProjections(normalizedRaterUserId)) {
             if (!hasOwnRecordedActivityRate(record, normalizedRaterUserId)) {
                 continue;
             }
@@ -1905,7 +1930,7 @@ public class HomeUserProfileService {
             return Set.copyOf(ratedPairKeys);
         }
 
-        for (UserRate record : userRatesRepository.findHomeGameExclusionProjections(raterUserId)) {
+        for (RatingView record : userRatesRepository.findHomeGameExclusionProjections(raterUserId)) {
             if (!"pair".equals(safeText(record == null ? null : record.getMode()))) {
                 continue;
             }
@@ -1939,7 +1964,7 @@ public class HomeUserProfileService {
         }
     }
 
-    private boolean hasOwnRecordedActivityRate(UserRate record, String ownerUserId) {
+    private boolean hasOwnRecordedActivityRate(RatingView record, String ownerUserId) {
         if (record == null || !ownerUserId.equals(normalizeId(record.getOwnerUserId()))) {
             return false;
         }
@@ -1965,16 +1990,16 @@ public class HomeUserProfileService {
         return new ActivitySocialGraph(neighborsByUserId, latestEventNameByEdgeKey);
     }
 
-    private boolean hasHomeGameMemberProjections(List<ActivityEvent> memberProjections) {
+    private boolean hasHomeGameMemberProjections(List<? extends Event> memberProjections) {
         return memberProjections != null
                 && memberProjections.stream()
                         .filter(Objects::nonNull)
-                        .map(ActivityEvent::getAcceptedMemberUserIds)
+                        .map(Event::getAcceptedMemberUserIds)
                         .filter(Objects::nonNull)
                         .anyMatch(userIds -> !userIds.isEmpty());
     }
 
-    private long homeGameEventActivityMillis(ActivityEvent event) {
+    private long homeGameEventActivityMillis(Event event) {
         return parseIsoMillis(firstNonBlank(
                 event == null ? null : event.getStartAtIso(),
                 event == null ? null : event.getUpdatedDate(),
@@ -1999,7 +2024,7 @@ public class HomeUserProfileService {
                     .filter(Objects::nonNull)
                     .filter(this::isUsableUserDocument)
                     .toList();
-            List<ActivityEvent> homeGameMemberProjections = activityEventsRepository.findHomeGameMemberProjections();
+            List<? extends Event> homeGameMemberProjections = activityEventsRepository.findHomeGameMemberProjections();
             GameStackSnapshot snapshot = new GameStackSnapshot(
                     List.copyOf(visibleGameUsers),
                     indexUsersById(visibleGameUsers),
@@ -2040,7 +2065,7 @@ public class HomeUserProfileService {
         }
     }
 
-    private long resolveMemberRecordTimestampMs(ActivityMember member) {
+    private long resolveMemberRecordTimestampMs(Member member) {
         try {
             return Instant.parse(firstNonBlank(
                     member == null ? null : member.getActionAtIso(),
@@ -2246,15 +2271,13 @@ public class HomeUserProfileService {
     }
 
     private int communityCaseCount(Users user) {
-        if (serviceCasesRepository == null || user.getWorkspaceGroupId() == null) return 0;
-        boolean community = com.raxim.myscoutee.domain.groups.document.CommunityGroup.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
+        if (caseParticipants == null || user.getWorkspaceGroupId() == null) return 0;
+        boolean community = com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
                 || communityGroupsRepository.findById(user.getWorkspaceGroupId()).map(g -> "community".equals(g.effectiveType())).orElse(false);
         if (!community) return 0;
         String account = StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId();
-        var managed = CommunityAccessService.managedGroups(account, activityMembersRepository, communityGroupsRepository);
-        long total = serviceCasesRepository.bucketCounts(com.raxim.myscoutee.domain.groups.document.CommunityGroup.COMMUNITY_BASE_ID, account, managed)
-                .stream().filter(bucket -> !"trash".equals(bucket.status())).mapToLong(bucket -> bucket.count()).sum();
-        return (int) Math.min(Integer.MAX_VALUE, total);
+        var managed = groupAdministration.managedGroups(account);
+        return caseParticipants.visibleCount(com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID, account, managed);
     }
 
     private UserMenuCountersDto emptyMenuCounters() {
@@ -2381,7 +2404,7 @@ public class HomeUserProfileService {
             return;
         }
         JobGroupContext.run(jobGroupScope.forUser(userId), () -> notificationRuleRegistryService.adjustPendingCount(
-                NotificationRuleRegistryService.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
+                NotificationJobs.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
     }
 
     private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
@@ -2608,7 +2631,7 @@ public class HomeUserProfileService {
         return safeText(value).contains(SEED_USER_IMAGE_HOST);
     }
 
-    private ActivityEvent resolvePreferredEventRecord(String eventId) {
+    private Event resolvePreferredEventRecord(String eventId) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return null;
@@ -2616,14 +2639,14 @@ public class HomeUserProfileService {
         return preferredEventRecordsBySourceId(activityEventsRepository.findBySourceId(normalizedEventId)).get(normalizedEventId);
     }
 
-    private ActivityMember resolveAcceptedReportMember(String eventId, String userId) {
+    private Member resolveAcceptedReportMember(String eventId, String userId) {
         String normalizedEventId = normalizeId(eventId);
         String normalizedUserId = normalizeId(userId);
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(normalizedUserId)) {
             return null;
         }
 
-        ActivityMember storedMember = activityMembersRepository
+        Member storedMember = activityMembersRepository
                 .findByOwnerTypeAndOwnerIdAndUserId(OWNER_TYPE_EVENT, normalizedEventId, normalizedUserId)
                 .orElse(null);
         if (storedMember != null) {
@@ -2634,10 +2657,10 @@ public class HomeUserProfileService {
         return null;
     }
 
-    private boolean isReportableEventOrganizer(ActivityEvent eventRecord, String userId) {
+    private boolean isReportableEventOrganizer(Event eventRecord, String userId) {
         String normalizedUserId = normalizeId(userId);
         if (eventRecord == null
-                || !ActivityEvent.STATUS_ACTIVE.equals(eventRecord.getStatus())
+                || !STATUS_ACTIVE.equals(eventRecord.getStatus())
                 || !StringUtils.hasText(normalizedUserId)) {
             return false;
         }
@@ -2650,56 +2673,13 @@ public class HomeUserProfileService {
                 .anyMatch(normalizedUserId::equals);
     }
 
-    private Chat resolveReportableChat(
-            String reporterUserId,
-            String targetUserId,
-            String chatId,
-            String messageId) {
-        String normalizedReporterUserId = normalizeId(reporterUserId);
-        String normalizedTargetUserId = normalizeId(targetUserId);
-        String normalizedChatId = normalizeId(chatId);
-        String normalizedMessageId = normalizeId(messageId);
-        if (!StringUtils.hasText(normalizedReporterUserId)
-                || !StringUtils.hasText(normalizedTargetUserId)
-                || !StringUtils.hasText(normalizedChatId)
-                || !StringUtils.hasText(normalizedMessageId)) {
-            return null;
-        }
-        Chat chat = chatsRepository
-                .findByOwnerUserIdAndChatId(normalizedReporterUserId, normalizedChatId)
-                .orElse(null);
-        if (chat == null || !chatHasMember(chat, normalizedTargetUserId)) {
-            return null;
-        }
-        ChatMessage message = findChatMessage(normalizedChatId, normalizedMessageId);
-        if (message == null || message.getSenderAvatar() == null) {
-            return null;
-        }
-        return normalizedTargetUserId.equals(normalizeId(message.getSenderAvatar().getId())) ? chat : null;
-    }
 
-    private boolean chatHasMember(Chat chat, String userId) {
-        String normalizedUserId = normalizeId(userId);
-        if (chat == null || !StringUtils.hasText(normalizedUserId)) {
-            return false;
-        }
-        return chat.getMemberIds().stream()
-                .map(this::normalizeId)
-                .anyMatch(normalizedUserId::equals);
-    }
 
-    private ChatMessage findChatMessage(String chatId, String messageId) {
-        String normalizedChatId = normalizeId(chatId);
-        String normalizedMessageId = normalizeId(messageId);
-        if (!StringUtils.hasText(normalizedChatId) || !StringUtils.hasText(normalizedMessageId)) {
-            return null;
-        }
-        return chatMessagesRepository.findByChatIdAndMessageId(normalizedChatId, normalizedMessageId)
-                .map(message -> (ChatMessage) message)
-                .orElse(null);
-    }
 
-    private String resolveActivityMemberEntryId(ActivityMember member) {
+
+
+
+    private String resolveActivityMemberEntryId(Member member) {
         if (member == null) {
             return null;
         }
@@ -2725,9 +2705,9 @@ public class HomeUserProfileService {
         return normalizedStatus;
     }
 
-    private Map<String, ActivityEvent> preferredEventRecordsBySourceId(List<ActivityEvent> records) {
-        LinkedHashMap<String, ActivityEvent> preferredBySourceId = new LinkedHashMap<>();
-        for (ActivityEvent record : records == null ? List.<ActivityEvent>of() : records) {
+    private Map<String, Event> preferredEventRecordsBySourceId(List<? extends Event> records) {
+        LinkedHashMap<String, Event> preferredBySourceId = new LinkedHashMap<>();
+        for (Event record : records == null ? List.<Event>of() : records) {
             if (record == null) {
                 continue;
             }
@@ -2735,7 +2715,7 @@ public class HomeUserProfileService {
             if (!StringUtils.hasText(sourceId)) {
                 continue;
             }
-            ActivityEvent current = preferredBySourceId.get(sourceId);
+            Event current = preferredBySourceId.get(sourceId);
             if (current == null || shouldPreferEventRecord(record, current)) {
                 preferredBySourceId.put(sourceId, record);
             }
@@ -2743,7 +2723,7 @@ public class HomeUserProfileService {
         return preferredBySourceId;
     }
 
-    private boolean shouldPreferEventRecord(ActivityEvent next, ActivityEvent current) {
+    private boolean shouldPreferEventRecord(Event next, Event current) {
         boolean nextActive = "A".equals(safeText(next == null ? null : next.getStatus()));
         boolean currentActive = "A".equals(safeText(current == null ? null : current.getStatus()));
         if (nextActive != currentActive) {
@@ -2752,7 +2732,7 @@ public class HomeUserProfileService {
         return normalizeCount(next.getAcceptedMembers()) >= normalizeCount(current.getAcceptedMembers());
     }
 
-    private boolean isHostingRecordForUser(ActivityEvent record, String userId) {
+    private boolean isHostingRecordForUser(Event record, String userId) {
         if (record == null || !StringUtils.hasText(userId) || Boolean.TRUE.equals(record.getIsTrashed())) {
             return false;
         }
@@ -2823,10 +2803,10 @@ public class HomeUserProfileService {
             Users user,
             Integer storedNotificationCount) {
         String userId = normalizeId(user == null ? null : StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId());
-        if (userNotificationPageRepository == null || !StringUtils.hasText(userId)) {
+        if (notificationCatalog == null || !StringUtils.hasText(userId)) {
             return normalizeCount(storedNotificationCount);
         }
-        long unreadCount = userNotificationPageRepository.countUnread(userId);
+        long unreadCount = notificationCatalog.countUnread(userId);
         return unreadCount > Integer.MAX_VALUE
                 ? Integer.MAX_VALUE
                 : (int) Math.max(0L, unreadCount);
@@ -3334,7 +3314,7 @@ public class HomeUserProfileService {
     }
 
     private UserImpressionsDto resolveMergedUserImpressionsUncached(Users user) {
-        List<EventFeedbackAnswer> feedbackAnswers = eventFeedbackAnswersRepository
+        List<? extends Answer> feedbackAnswers = eventFeedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc(normalizeId(user.getId()));
         UserImpressionsSectionDto host = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().host(), "event", feedbackAnswers);
         UserImpressionsSectionDto member = resolveMergedImpressionsSection(user, user.getImpressions() == null ? null : user.getImpressions().member(), "attendee", feedbackAnswers);
@@ -3348,7 +3328,7 @@ public class HomeUserProfileService {
             Users user,
             Users.UserImpressionsSectionRecord record,
             String feedbackKind,
-            List<EventFeedbackAnswer> feedbackAnswers) {
+            List<? extends Answer> feedbackAnswers) {
         boolean hasStoredData = hasImpressionsSectionRecordData(record);
         if (!hasStoredData
                 && !hasImpressionActivity(user, feedbackKind)
@@ -3415,7 +3395,7 @@ public class HomeUserProfileService {
                                 && (normalizeCount(trait.percent()) > 0 || normalizeCount(trait.evidenceCount()) > 0));
     }
 
-    private boolean hasFeedbackAnswerSignals(String feedbackKind, List<EventFeedbackAnswer> feedbackAnswers) {
+    private boolean hasFeedbackAnswerSignals(String feedbackKind, List<? extends Answer> feedbackAnswers) {
         String expectedKind = normalizeToken(feedbackKind);
         return safeList(feedbackAnswers).stream()
                 .filter(Objects::nonNull)
@@ -3432,7 +3412,7 @@ public class HomeUserProfileService {
             Users user,
             Users.UserImpressionsSectionRecord record,
             String feedbackKind,
-            List<EventFeedbackAnswer> feedbackAnswers) {
+            List<? extends Answer> feedbackAnswers) {
         Map<String, Double> scoreByTraitId = new LinkedHashMap<>();
         Map<String, Integer> evidenceByTraitId = new LinkedHashMap<>();
         Map<String, String> lastRatedAtByTraitId = new LinkedHashMap<>();
@@ -3512,12 +3492,12 @@ public class HomeUserProfileService {
 
     private void applyFeedbackAnswerTraitSignals(
             String feedbackKind,
-            List<EventFeedbackAnswer> feedbackAnswers,
+            List<? extends Answer> feedbackAnswers,
             Map<String, Double> scoreByTraitId,
             Map<String, Integer> evidenceByTraitId,
             Map<String, String> lastRatedAtByTraitId) {
         String expectedKind = normalizeToken(feedbackKind);
-        for (EventFeedbackAnswer answer : safeList(feedbackAnswers)) {
+        for (Answer answer : safeList(feedbackAnswers)) {
             if (answer == null || !Objects.equals(expectedKind, normalizeToken(answer.getKind()))) {
                 continue;
             }
@@ -3912,4 +3892,5 @@ public class HomeUserProfileService {
             Integer percent) {
     }
 
+    @Override public UserDto presentGameCard(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) { return toGameCardUserDto((Users) profile); }
 }

@@ -1,8 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.events.api.MingleEncounters;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationExternalIdsRepository;
 
 import java.nio.charset.StandardCharsets;
@@ -11,26 +10,24 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MingleEncounters.Round;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
 
 
 @Service
 public class IntegrationEventQueryService {
-    private final ActivityEventsRepository events;
-    private final ActivityMingleRoundsRepository rounds;
-    private final ActivityMingleSessionsRepository sessions;
+    private final EventOwnershipReads events;
+    private final MingleEncounters encounters;
     private final IntegrationExternalIdsRepository externalIds;
 
-    public IntegrationEventQueryService(ActivityEventsRepository events, ActivityMingleRoundsRepository rounds,
-            ActivityMingleSessionsRepository sessions, IntegrationExternalIdsRepository externalIds) {
-        this.events = events; this.rounds = rounds; this.sessions = sessions; this.externalIds = externalIds;
+    public IntegrationEventQueryService(EventOwnershipReads events, MingleEncounters encounters, IntegrationExternalIdsRepository externalIds) {
+        this.events = events; this.encounters = encounters; this.externalIds = externalIds;
     }
 
     public IntegrationEventDto event(String ownerUserId, String eventId) {
-        ActivityEvent event = requireOwnedEvent(ownerUserId, eventId);
+        Event event = requireOwnedEvent(ownerUserId, eventId);
         String id = externalIds.findByOwnerUserIdAndResourceTypeAndInternalId(ownerUserId, "event", eventId)
                 .map(IntegrationExternalId::getExternalId).orElse(null);
         return new IntegrationEventDto(id, eventId, event.getTitle(), event.getStatus(), event.getSourceLink(),
@@ -48,13 +45,13 @@ public class IntegrationEventQueryService {
     public IntegrationEncountersDto completedEncounters(String ownerUserId, String eventId) {
         IntegrationEventDto event = event(ownerUserId, eventId);
         if (!"Mingle".equals(event.mode())) throw new ResponseStatusException(HttpStatus.CONFLICT, "Event is not Mingle.");
-        var session = sessions.findByEventId(eventId)
+        var session = encounters.findSession(eventId)
                 .filter(value -> "COMPLETED".equals(value.getStatus()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT, "Mingle has not completed."));
-        List<ActivityMingleRound> completed = rounds.findByEventIdInAndStatusOrderByRoundNumberAsc(List.of(eventId), "COMPLETED");
+        var completed = encounters.completedRounds(List.of(eventId));
         Set<Pair> unique = new TreeSet<>(Comparator.comparing(Pair::first).thenComparing(Pair::second));
         Set<String> users = new HashSet<>();
-        for (ActivityMingleRound round : completed) {
+        for (Round round : completed) {
             for (var table : round.getTables()) {
                 List<String> ids = table.memberUserIds().stream().filter(Objects::nonNull).filter(id -> !id.isBlank()).distinct().sorted().toList();
                 users.addAll(ids);
@@ -85,7 +82,7 @@ public class IntegrationEventQueryService {
                 all.total(), end < all.total() ? end : null);
     }
 
-    ActivityEvent requireOwnedEvent(String ownerUserId, String eventId) {
+    Event requireOwnedEvent(String ownerUserId, String eventId) {
         return events.findByOwnerUserIdAndSourceId(ownerUserId, eventId)
                 .filter(event -> Boolean.TRUE.equals(event.getIsAdmin()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));

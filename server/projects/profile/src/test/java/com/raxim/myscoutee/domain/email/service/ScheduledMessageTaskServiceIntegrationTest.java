@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.email.service;
 
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,7 +64,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private UsersRepository usersRepository;
+    private UsersRepository profiles;
     @Autowired
     private ScheduledMessageTasksRepository scheduledMessageTasksRepository;
     @Autowired
@@ -92,27 +92,28 @@ class ScheduledMessageTaskServiceIntegrationTest {
     void groupOwnedSelectionFiltersBeforeBatchLimit() {
         var dating = activeUser("dating-owner");
         var work = activeUser("work-owner"); work.setWorkspaceGroupId("myscoutee-work");
-        usersRepository.saveAll(List.of(dating, work));
+        profiles.saveAll(List.of(dating, work));
         mongoTemplate.dropCollection(com.raxim.myscoutee.domain.payments.document.Payment.class);
         for (var owner : List.of("dating-owner", "work-owner")) {
             var payment = new com.raxim.myscoutee.domain.payments.document.Payment();
             payment.setUserId(owner); payment.setStatus("pending"); payment.setCreatedDate(owner);
             mongoTemplate.save(payment);
         }
-        var scope = new JobGroupScopeService(mongoTemplate);
+        var scope = new JobGroupScopeService();
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
         var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("status").is("pending"))
                 .with(org.springframework.data.domain.Sort.by("createdDate")).limit(1);
-        var result = JobGroupContext.call("myscoutee-work", () -> scope.findOwned(query,
-                com.raxim.myscoutee.domain.payments.document.Payment.class, "userId"));
+        var result = JobGroupContext.call("myscoutee-work", () -> com.raxim.myscoutee.domain.payments.service.PaymentTestSupport.scopedPayments(mongoTemplate, scope, query));
         assertThat(result).extracting(com.raxim.myscoutee.domain.payments.document.Payment::getUserId).containsExactly("work-owner");
-        assertThat(JobGroupContext.call(null, () -> scope.findOwned(query,
-                com.raxim.myscoutee.domain.payments.document.Payment.class, "userId")))
+        assertThat(JobGroupContext.call(null, () -> com.raxim.myscoutee.domain.payments.service.PaymentTestSupport.scopedPayments(mongoTemplate, scope, query)))
                 .extracting(com.raxim.myscoutee.domain.payments.document.Payment::getUserId).containsExactly("dating-owner");
     }
 
     @Test
     void activityRefreshUpdatesControllerStateBeforeOriginalWorkerCanInactivate() throws Exception {
-        usersRepository.save(activeUser("user-refresh"));
+        profiles.save(activeUser("user-refresh"));
         String taskKey = userInactivityTaskKey("user-refresh");
         Instant originalDueAt = Instant.now().plusSeconds(8);
         ScheduledMessageTask task = scheduledMessageTasksRepository.save(inactivityTask(
@@ -126,7 +127,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         scheduledMessageTaskService.touchUserActivity("user-refresh");
         Thread.sleep(Duration.ofSeconds(5).toMillis());
 
-        Users user = usersRepository.findByUserId("user-refresh").orElseThrow();
+        Users user = profiles.findByUserId("user-refresh").orElseThrow();
         ScheduledMessageTask refreshedTask = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseThrow();
 
         assertThat(user.getStatus()).isEqualTo("A");
@@ -139,7 +140,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @Test
     void dueControllerWorkerInactivatesProfileWhenThereWasNoActivityRefresh() {
-        usersRepository.save(activeUser("user-due"));
+        profiles.save(activeUser("user-due"));
         ScheduledMessageTask task = scheduledMessageTasksRepository.save(inactivityTask(
                 userInactivityTaskKey("user-due"),
                 "user-due",
@@ -148,7 +149,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         scheduledMessageTaskService.acceptTaskMetadata(task);
 
         await().atMost(Duration.ofSeconds(12)).pollInterval(Duration.ofMillis(250)).untilAsserted(() -> {
-            Users user = usersRepository.findByUserId("user-due").orElseThrow();
+            Users user = profiles.findByUserId("user-due").orElseThrow();
             assertThat(user.getStatus()).isEqualTo("I");
             assertThat(user.getProfileStatus()).isEqualTo("inactive");
             assertThat(scheduledMessageTasksRepository
@@ -164,7 +165,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
 
     @Test
     void pollReconciliationCancelsSuspendedWorkerBeforeDueTime() throws Exception {
-        usersRepository.save(activeUser("user-suspend"));
+        profiles.save(activeUser("user-suspend"));
         ScheduledMessageTask task = scheduledMessageTasksRepository.save(inactivityTask(
                 userInactivityTaskKey("user-suspend"),
                 "user-suspend",
@@ -182,7 +183,7 @@ class ScheduledMessageTaskServiceIntegrationTest {
         scheduledMessageTaskService.runDueTasks();
         Thread.sleep(Duration.ofSeconds(7).toMillis());
 
-        Users user = usersRepository.findByUserId("user-suspend").orElseThrow();
+        Users user = profiles.findByUserId("user-suspend").orElseThrow();
         ScheduledMessageTask retainedTask = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElseThrow();
 
         assertThat(user.getStatus()).isEqualTo("A");
@@ -269,6 +270,30 @@ class ScheduledMessageTaskServiceIntegrationTest {
         assertThat(scheduledMessageTasksRepository.findByEventIdAndActionKey(
                 "tournament-stage-no-reminder",
                 ScheduledMessageTaskService.ACTION_EVENT_STAGE_REMINDER)).isEmpty();
+    }
+
+    @Test
+    void lifecycleReceiptDoesNotRescheduleCompletedWorkAndRejectsChangedContent() {
+        // This case verifies persisted acceptance/replay, not the separately tested delivery worker.
+        mongoTemplate.updateFirst(org.springframework.data.mongodb.core.query.Query.query(
+                org.springframework.data.mongodb.core.query.Criteria.where("ruleKey").is("scheduled-messages")),
+                new org.springframework.data.mongodb.core.query.Update().set("enabled", false),
+                com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig.class);
+        String delivery = UUID.randomUUID().toString();
+        var task = scheduledMessageTaskService.scheduleEventLifecycleChangedOnce(delivery, "receipt-event", "Event",
+                List.of("recipient"), List.of("deleted"), "actor");
+        task.setStatus("completed"); task.setPendingCounterTracked(false);
+        scheduledMessageTasksRepository.save(task);
+        var repeated = scheduledMessageTaskService.scheduleEventLifecycleChangedOnce(delivery, "receipt-event", "Event",
+                List.of("recipient"), List.of("deleted"), "actor");
+        assertThat(repeated.getId()).isEqualTo(task.getId());
+        assertThat(repeated.getStatus()).isEqualTo("completed");
+        assertThat(repeated.getPendingCounterTracked()).isFalse();
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> scheduledMessageTaskService.scheduleEventLifecycleChangedOnce(
+                delivery, "receipt-event", "Changed title", List.of("recipient"), List.of("deleted"), "actor"))
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+        assertThat(scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElseThrow().getPayload())
+                .isEqualTo(task.getPayload());
     }
 
     private Users activeUser(String userId) {
@@ -370,10 +395,30 @@ class ScheduledMessageTaskServiceIntegrationTest {
     @EnableMongoRepositories(basePackages = "com.raxim.myscoutee.domain")
     @Import({
             ScheduledMessageTaskService.class,
+            com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService.class,
+            com.raxim.myscoutee.domain.accounts.service.AccountInactivityService.class,
+            com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork.class,
             ScheduledMessageAuditService.class,
+            com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.class,
+            com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.class,
+            com.raxim.myscoutee.domain.events.service.MemberAttentionService.class,
+            com.raxim.myscoutee.domain.groups.service.GroupDirectoryService.class,
+            com.raxim.myscoutee.domain.affinity.service.ConfigurationCatalogService.class,
+            com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService.class,
+            com.raxim.myscoutee.domain.events.service.EventOwnershipService.class,
+            com.raxim.myscoutee.domain.assets.service.AssetOwnershipService.class,
             JobGroupScopeService.class
     })
     static class Config {
+        @Bean
+        com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner databases() {
+            return new com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner(
+                    "scheduled-message-task-test", "scheduled-message-task-test");
+        }
+        @Bean
+        com.raxim.myscoutee.domain.chat.api.SupportMessages supportMessages() {
+            return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.SupportMessages.class);
+        }
         @Bean
         com.raxim.myscoutee.domain.community.service.ServiceFeedbackService serviceFeedback() {
             return org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.service.ServiceFeedbackService.class);

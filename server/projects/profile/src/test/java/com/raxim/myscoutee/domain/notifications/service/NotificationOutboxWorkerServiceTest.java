@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.notifications.service;
 
+import com.raxim.myscoutee.domain.platform.api.FirebasePushDelivery;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -27,6 +29,8 @@ import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
 import com.raxim.myscoutee.domain.notifications.repository.NotificationOutboxRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.service.AccountNotificationService;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
 
@@ -42,8 +46,8 @@ class NotificationOutboxWorkerServiceTest {
         ChatWebSocketSessionRegistry sessionRegistry =
                 org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
         MongoTemplate mongoTemplate = org.mockito.Mockito.mock(MongoTemplate.class);
-        FirebaseMessagingGateway gateway =
-                org.mockito.Mockito.mock(FirebaseMessagingGateway.class);
+        FirebasePushDelivery gateway =
+                org.mockito.Mockito.mock(FirebasePushDelivery.class);
         NotificationRuleRegistryService registry =
                 org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
@@ -53,7 +57,7 @@ class NotificationOutboxWorkerServiceTest {
         rule.setRuleKey(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX);
         rule.setEnabled(true);
         when(registryProvider.getIfAvailable()).thenReturn(registry);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
         when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX))
                 .thenReturn(Optional.of(rule));
         when(registry.shouldRunScheduledRule(
@@ -69,7 +73,7 @@ class NotificationOutboxWorkerServiceTest {
         NotificationOutboxWorkerService service = new NotificationOutboxWorkerService(
                 configProperties,
                 outboxRepository,
-                usersRepository,
+                new AccountNotificationService(usersRepository, mongoTemplate),
                 sessionRegistry,
                 mongoTemplate,
                 null,
@@ -122,7 +126,7 @@ class NotificationOutboxWorkerServiceTest {
         rule.setRuleKey(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX);
         rule.setEnabled(true);
         when(registryProvider.getIfAvailable()).thenReturn(registry);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
         when(registry.findRule(NotificationRuleRegistryService.RULE_NOTIFICATION_OUTBOX))
                 .thenReturn(Optional.of(rule));
         NotificationOutboxWorkerService service = service(
@@ -204,13 +208,13 @@ class NotificationOutboxWorkerServiceTest {
         NotificationOutboxWorkerService service = new NotificationOutboxWorkerService(
                 configProperties,
                 outboxRepository,
-                usersRepository,
+                new AccountNotificationService(usersRepository, mongoTemplate),
                 sessionRegistry,
                 mongoTemplate,
                 null,
                 null,
                 org.mockito.Mockito.mock(AdminTelemetryService.class),
-                org.mockito.Mockito.mock(FirebaseMessagingGateway.class),
+                org.mockito.Mockito.mock(FirebasePushDelivery.class),
                 50,
                 500,
                 5,
@@ -221,7 +225,7 @@ class NotificationOutboxWorkerServiceTest {
                 null);
 
         var registry = org.mockito.Mockito.mock(NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(any(String.class), any(Runnable.class));
         @SuppressWarnings("unchecked") ObjectProvider<NotificationRuleRegistryService> provider = org.mockito.Mockito.mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         service.setNotificationRuleRegistryServiceProvider(provider);
@@ -257,13 +261,13 @@ class NotificationOutboxWorkerServiceTest {
         return new NotificationOutboxWorkerService(
                 new ConfigProperties(),
                 org.mockito.Mockito.mock(NotificationOutboxRepository.class),
-                org.mockito.Mockito.mock(UsersRepository.class),
+                org.mockito.Mockito.mock(AccountNotifications.class),
                 sessionRegistry,
                 org.mockito.Mockito.mock(MongoTemplate.class),
                 null,
                 null,
                 org.mockito.Mockito.mock(AdminTelemetryService.class),
-                org.mockito.Mockito.mock(FirebaseMessagingGateway.class),
+                org.mockito.Mockito.mock(FirebasePushDelivery.class),
                 50,
                 500,
                 5,

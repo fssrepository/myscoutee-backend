@@ -55,7 +55,7 @@ class EventCheckoutPricingServiceTest {
             when(messages.findByLang(language)).thenReturn(List.of(message));
         }
         DBMessageSource messageSource = new DBMessageSource(messages);
-        service = new EventCheckoutPricingService(eventsRepository, membersRepository, new TranslationService(messageSource));
+        service = new EventCheckoutPricingService(new com.raxim.myscoutee.domain.events.service.EventOwnershipService(eventsRepository), new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(membersRepository),  new TranslationService(messageSource));
         LocaleContextHolder.setLocale(Locale.ENGLISH);
     }
 

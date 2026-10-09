@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Instant;
 import java.time.YearMonth;
@@ -16,30 +16,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs.Configuration;
 import com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod;
 import com.raxim.myscoutee.domain.payments.repository.SavedPaymentMethodsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class PaymentMethodExpiryTaskService {
+    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PaymentMethodExpiryTaskService.class);
     private static final String ACTIVE = "active";
     private static final String SYSTEM_USER = "payment-method-expiry-task";
     private final SavedPaymentMethodsRepository repository;
-    private final NotificationOutboxService notificationOutboxService;
-    private final NotificationRuleRegistryService notificationRuleRegistryService;
+    private final NotificationDelivery notificationOutboxService;
+    private final NotificationJobs notificationRuleRegistryService;
     private final ScheduledMongoSessionRunner scheduledMongoSessionRunner;
 
     public PaymentMethodExpiryTaskService(
             SavedPaymentMethodsRepository repository,
-            NotificationOutboxService notificationOutboxService,
-            NotificationRuleRegistryService notificationRuleRegistryService,
+            NotificationDelivery notificationOutboxService,
+            NotificationJobs notificationRuleRegistryService,
             ScheduledMongoSessionRunner scheduledMongoSessionRunner) {
         this.repository = repository;
         this.notificationOutboxService = notificationOutboxService;
@@ -54,21 +56,21 @@ public class PaymentMethodExpiryTaskService {
 
     private void runScheduledPassForCurrentDatabase() {
         var registry = notificationRuleRegistryService;
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY, this::runScheduledPassForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_PAYMENT_METHOD_EXPIRY, this::runScheduledPassForCurrentDatabaseInGroup);
     }
 
     private void runScheduledPassForCurrentDatabaseInGroup() {
         Instant startedAt = Instant.now();
-        NotificationRuleConfig rule = notificationRuleRegistryService
-                .findRule(NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY)
+        Configuration rule = notificationRuleRegistryService
+                .findRule(NotificationJobs.RULE_PAYMENT_METHOD_EXPIRY)
                 .orElse(null);
         if (rule == null || !notificationRuleRegistryService.shouldRunScheduledRule(
-                NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY,
+                NotificationJobs.RULE_PAYMENT_METHOD_EXPIRY,
                 startedAt)) {
             return;
         }
         if (notificationRuleRegistryService.beginScheduledRun(
-                NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY,
+                NotificationJobs.RULE_PAYMENT_METHOD_EXPIRY,
                 "Scanning expired saved payment cards.",
                 SYSTEM_USER,
                 startedAt) == null) {
@@ -77,7 +79,7 @@ public class PaymentMethodExpiryTaskService {
         try {
             int expiredCount = expireDuePaymentMethods();
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY,
+                    NotificationJobs.RULE_PAYMENT_METHOD_EXPIRY,
                     expiredCount,
                     "completed",
                     expiredCount == 0
@@ -88,7 +90,7 @@ public class PaymentMethodExpiryTaskService {
         } catch (RuntimeException exception) {
             LOGGER.warn("Saved payment card expiry pass failed.", exception);
             notificationRuleRegistryService.recordRun(
-                    NotificationRuleRegistryService.RULE_PAYMENT_METHOD_EXPIRY,
+                    NotificationJobs.RULE_PAYMENT_METHOD_EXPIRY,
                     0,
                     "failed",
                     safeText(exception.getMessage()),
@@ -102,11 +104,11 @@ public class PaymentMethodExpiryTaskService {
         int currentExpiryKey = now.getYear() * 100 + now.getMonthValue();
         int expiredCount = 0;
         while (true) {
-            List<SavedPaymentMethod> candidates = jobGroupScope.findOwned(
+            List<SavedPaymentMethod> candidates = paymentJobs.find(
                     org.springframework.data.mongodb.core.query.Query.query(
                         org.springframework.data.mongodb.core.query.Criteria.where("status").is(ACTIVE)
                             .and("expiryKey").lt(currentExpiryKey).and("expiredNotifiedAtIso").is(null))
-                        .with(org.springframework.data.domain.Sort.by("expiryKey")).limit(100), SavedPaymentMethod.class, "userId");
+                        .with(org.springframework.data.domain.Sort.by("expiryKey")).limit(100), SavedPaymentMethod.class, SavedPaymentMethod::getUserId);
             if (candidates.isEmpty()) {
                 return expiredCount;
             }

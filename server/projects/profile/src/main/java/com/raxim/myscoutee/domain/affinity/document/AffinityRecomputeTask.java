@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "affinity_recompute_task_status_available", def = "{'status': 1, 'availableAtIso': 1}"),
         @CompoundIndex(name = "affinity_recompute_task_target_status", def = "{'targetType': 1, 'status': 1}")
 })
-public class AffinityRecomputeTask {
+public class AffinityRecomputeTask implements com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges.Task {
     private String baseGroupId;
     public String getBaseGroupId() { return baseGroupId; }
     public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }

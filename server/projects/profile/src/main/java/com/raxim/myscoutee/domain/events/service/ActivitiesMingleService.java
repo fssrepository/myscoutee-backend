@@ -29,8 +29,8 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleRound.TableAssignment;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
-import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.affinity.api.EdgeView;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleActionRequestDto;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleParticipantDto;
 import com.raxim.myscoutee.domain.events.dto.MingleDtos.MingleStateDto;
@@ -39,11 +39,11 @@ import com.raxim.myscoutee.common.dto.SharedDtos.MingleConfigurationDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleRoundsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsRepository;
-import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
 public class ActivitiesMingleService {
@@ -59,23 +59,23 @@ public class ActivitiesMingleService {
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivityMingleSessionsRepository activityMingleSessionsRepository;
     private final ActivityMingleRoundsRepository activityMingleRoundsRepository;
-    private final UsersRepository usersRepository;
-    private final UserAffinityEdgesRepository userAffinityEdgesRepository;
+    private final ProfileSummaries usersRepository;
+    private final EdgeDirectory userAffinityEdgesRepository;
     private final ActivitiesMembersService activitiesMembersService;
-    private final AccessControlService accessControlService;
-    private final NotificationOutboxService notificationOutboxService;
-    private final com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups;
+    private final AccessPermissions accessControlService;
+    private final NotificationDelivery notificationOutboxService;
+    private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     private final EventGeneratorByMingle generator = new EventGeneratorByMingle();
 
     public ActivitiesMingleService(
             ActivityEventsRepository activityEventsRepository,
             ActivityMingleSessionsRepository activityMingleSessionsRepository,
             ActivityMingleRoundsRepository activityMingleRoundsRepository,
-            UsersRepository usersRepository,
-            UserAffinityEdgesRepository userAffinityEdgesRepository,
+            ProfileSummaries usersRepository,
+            EdgeDirectory userAffinityEdgesRepository,
             ActivitiesMembersService activitiesMembersService,
-            AccessControlService accessControlService,
-            NotificationOutboxService notificationOutboxService, com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groups) {
+            AccessPermissions accessControlService,
+            NotificationDelivery notificationOutboxService, com.raxim.myscoutee.domain.groups.api.GroupDirectory groups) {
         this.groups=groups;
         this.activityEventsRepository = activityEventsRepository;
         this.activityMingleSessionsRepository = activityMingleSessionsRepository;
@@ -282,7 +282,7 @@ public class ActivitiesMingleService {
                     Map.of("accepted", eligibleUserIds.size(), "required", 2));
         }
         MingleConfigurationDto config = mingleConfiguration(event);
-        boolean priorityEnabled=event.getWorkspaceGroupId()==null || groups.findById(event.getWorkspaceGroupId()).map(com.raxim.myscoutee.domain.groups.document.CommunityGroup::priorityEnabled).orElse(true);
+        boolean priorityEnabled=event.getWorkspaceGroupId()==null || groups.findById(event.getWorkspaceGroupId()).map(com.raxim.myscoutee.domain.groups.api.GroupView::priorityEnabled).orElse(true);
         MingleRoundPlan plan = generator.generate(new MingleGeneratorRequest(
                 priorityEnabled?buildPriorityGraph(eligibleUserIds):new FGraph(),
                 eligibleUserIds,
@@ -359,7 +359,7 @@ public class ActivitiesMingleService {
         Set<String> visibleUserIds = visibleTables.stream()
                 .flatMap(table -> table.memberUserIds().stream())
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
-        Map<String, Users> usersById = usersRepository.findByUserIdIn(visibleUserIds).stream()
+        Map<String, ProfileSummary> usersById = usersRepository.findByUserIdIn(visibleUserIds).stream()
                 .filter(Objects::nonNull)
                 .filter(user -> StringUtils.hasText(normalizeId(user.getUserId())))
                 .collect(java.util.stream.Collectors.toMap(
@@ -394,7 +394,7 @@ public class ActivitiesMingleService {
                 count(session.getRevision()));
     }
 
-    private MingleParticipantDto participant(String userId, Users user) {
+    private MingleParticipantDto participant(String userId, ProfileSummary user) {
         String normalizedUserId = normalizeId(userId);
         String name = user == null ? normalizedUserId : firstNonBlank(user.getName(), normalizedUserId);
         String initials = user == null ? initials(name) : firstNonBlank(user.getInitials(), initials(name));
@@ -502,7 +502,7 @@ public class ActivitiesMingleService {
         Map<String, Node> nodes = new LinkedHashMap<>();
         eligibleUserIds.forEach(userId -> nodes.put(userId, new Node(userId)));
         List<Edge> edges = new ArrayList<>();
-        for (UserAffinityEdge affinity : userAffinityEdgesRepository.findRelevantByUserIds(List.copyOf(eligibleUserIds))) {
+        for (EdgeView affinity : userAffinityEdgesRepository.findRelevantByUserIds(List.copyOf(eligibleUserIds))) {
             String left = normalizeId(affinity == null ? null : affinity.getLeftUserId());
             String right = normalizeId(affinity == null ? null : affinity.getRightUserId());
             if (!eligibleUserIds.contains(left) || !eligibleUserIds.contains(right) || left.equals(right)) {
@@ -518,7 +518,7 @@ public class ActivitiesMingleService {
 
     private Map<String, String> userGenders(Set<String> eligibleUserIds) {
         Map<String, String> genders = new LinkedHashMap<>();
-        for (Users user : usersRepository.findByUserIdIn(eligibleUserIds)) {
+        for (ProfileSummary user : usersRepository.findByUserIdIn(eligibleUserIds)) {
             String userId = normalizeId(user == null ? null : user.getUserId());
             String gender = safeText(user == null ? null : user.getGender()).toLowerCase();
             if (eligibleUserIds.contains(userId) && StringUtils.hasText(gender)) {

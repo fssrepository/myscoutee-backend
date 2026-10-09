@@ -36,7 +36,8 @@ class UserNotificationPageRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        repository = new UserNotificationPageRepository(mongoTemplate);
+        repository = new UserNotificationPageRepository(mongoTemplate,
+                new com.raxim.myscoutee.domain.events.service.MemberAttentionService(mongoTemplate));
     }
 
     @Test

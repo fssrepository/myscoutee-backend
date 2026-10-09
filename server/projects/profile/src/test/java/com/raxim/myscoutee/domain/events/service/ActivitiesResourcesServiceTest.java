@@ -69,13 +69,13 @@ import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntime
 import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.security.AccessPolicyTestSupport;
 import com.raxim.myscoutee.domain.access.security.ChatPolicyFacts;
 import com.raxim.myscoutee.domain.access.security.MemberPolicyFacts;
 import com.raxim.myscoutee.domain.events.mapper.ActivitySubEventResourceMapper;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.mongodb.client.result.UpdateResult;
 
 @ExtendWith(MockitoExtension.class)
@@ -112,7 +112,7 @@ class ActivitiesResourcesServiceTest {
     @Mock
     private ActivityTournamentGroupCounterService tournamentGroupCounterService;
     @Mock
-    private ObjectProvider<NotificationOutboxService> notificationOutboxServiceProvider;
+    private ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationDelivery> notificationOutboxServiceProvider;
     @Mock
     private NotificationOutboxService notificationOutboxService;
     @Mock
@@ -132,14 +132,14 @@ class ActivitiesResourcesServiceTest {
                 accessPolicyDefinitionsRepository,
                 configProperties,
                 AccessPolicyTestSupport.conditionRegistry(),
-                new MemberPolicyFacts(activityMembersRepository, activityEventsRepository, assetsRepository, usersRepository),
-                new ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)));
+                new MemberPolicyFacts(new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository), new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository), new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository)),
+                new ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class))));
         accessControlService.loadAccessControlCacheAtStartup();
         service = new ActivitiesResourcesService(
                 activitySubEventResourcesRepository,
                 activitySubEventStageRuntimeRepository,
                 activityEventsRepository,
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 assetsService,
                 activitiesMembersServiceProvider,
                 accessControlService,

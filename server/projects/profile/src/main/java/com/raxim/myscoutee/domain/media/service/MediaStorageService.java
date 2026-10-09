@@ -5,7 +5,6 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -32,13 +31,14 @@ import org.springframework.web.util.UriUtils;
 import com.raxim.myscoutee.domain.media.config.MediaStorageProperties;
 import com.raxim.myscoutee.domain.media.service.MediaObjectStoreClient;
 import com.raxim.myscoutee.domain.media.service.MediaObjectStoreClient.StoredObject;
-import com.raxim.myscoutee.domain.media.service.MediaAccessPaths;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
+import com.raxim.myscoutee.domain.media.api.MediaImageVariant;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
-public class MediaStorageService {
+public class MediaStorageService implements com.raxim.myscoutee.domain.media.api.MediaStorage {
     private static final String IMAGE_MEDIA_KIND = "images";
     private static final String AUDIO_MEDIA_KIND = "audio";
     private static final String IMAGE_VARIANT_CONTENT_TYPE = "image/webp";
@@ -91,6 +91,25 @@ public class MediaStorageService {
                     image.getBytes());
         } catch (IOException | RuntimeException ex) {
             return null;
+        }
+    }
+
+    public StoredImageSet storeImportedImageSet(String ownerId, String entityId, MultipartFile image) {
+        if (!isEnabled() || image == null || image.isEmpty()) return null;
+        String owner = sanitizeSegment(ownerId), entity = sanitizeSegment(entityId);
+        String contentType = normalizeContentType(image.getContentType());
+        if (!StringUtils.hasText(owner) || !StringUtils.hasText(entity) || !isAllowedImageContentType(contentType)) return null;
+        try {
+            byte[] bytes = image.getBytes();
+            var digest = java.security.MessageDigest.getInstance("SHA-256");
+            digest.update(contentType.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            digest.update((byte) 0);
+            String key = "import-" + java.util.HexFormat.of().formatHex(digest.digest(bytes));
+            return storeImageObjectSet(owner, entity, image.getOriginalFilename(), contentType, bytes, key, false);
+        } catch (java.io.IOException error) {
+            throw new IllegalStateException("Cannot read import image", error);
+        } catch (java.security.NoSuchAlgorithmException impossible) {
+            throw new IllegalStateException(impossible);
         }
     }
 
@@ -242,18 +261,11 @@ public class MediaStorageService {
         return new StoredMediaObject(storedObject.bytes(), storedObject.contentType());
     }
 
-    public void deletePublicObject(String mediaUrlOrKey) {
-        try {
-            deletePublicObjectOrThrow(mediaUrlOrKey);
-        } catch (RuntimeException ignored) {
-        }
-    }
-
     public void deletePublicObjectOrThrow(String mediaUrlOrKey) {
         if (!isEnabled()) {
             return;
         }
-        String key = extractPublicObjectKey(mediaUrlOrKey);
+        String key = MediaAccessPaths.extractPublicObjectKey(mediaUrlOrKey);
         if (!StringUtils.hasText(key)) {
             return;
         }
@@ -276,35 +288,39 @@ public class MediaStorageService {
             String originalFilename,
             String contentType,
             byte[] bytes) {
-        String imageGroupKey = String.join("/",
-                uploadNamespace(normalizedEntityId),
-                IMAGE_MEDIA_KIND,
-                normalizedOwnerId,
-                StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared",
-                Instant.now().toEpochMilli() + "-" + UUID.randomUUID());
+        return storeImageObjectSet(normalizedOwnerId, normalizedEntityId, originalFilename, contentType, bytes,
+                Instant.now().toEpochMilli() + "-" + UUID.randomUUID(), true);
+    }
+
+    private StoredImageSet storeImageObjectSet(String normalizedOwnerId, String normalizedEntityId,
+            String originalFilename, String contentType, byte[] bytes, String groupId, boolean discardPartial) {
+        String imageGroupKey = String.join("/", uploadNamespace(normalizedEntityId), IMAGE_MEDIA_KIND,
+                normalizedOwnerId, StringUtils.hasText(normalizedEntityId) ? normalizedEntityId : "shared", groupId);
         String originalKey = imageGroupKey + "/" + ORIGINAL_IMAGE_OBJECT_NAME;
         objectStoreClient.putObject(properties.getBucket(), originalKey, contentType, bytes);
         String originalUrl = publicMediaUrl(originalKey);
 
-        Map<ImageVariant, String> variantUrls = storeImageVariants(imageGroupKey, originalFilename, contentType, bytes);
-        String smallUrl = variantUrls.get(ImageVariant.SMALL);
-        String mediumUrl = variantUrls.get(ImageVariant.MEDIUM);
-        String largeUrl = variantUrls.get(ImageVariant.LARGE);
+        Map<MediaImageVariant, String> variantUrls = storeImageVariants(imageGroupKey, originalFilename, contentType, bytes);
+        String smallUrl = variantUrls.get(MediaImageVariant.SMALL);
+        String mediumUrl = variantUrls.get(MediaImageVariant.MEDIUM);
+        String largeUrl = variantUrls.get(MediaImageVariant.LARGE);
         if (StringUtils.hasText(smallUrl) && StringUtils.hasText(mediumUrl) && StringUtils.hasText(largeUrl)) {
             return new StoredImageSet(largeUrl, originalUrl, smallUrl, mediumUrl, largeUrl);
         }
-        deleteManagedImageSetObjects(originalKey);
+        // A concurrent/retried import owns these same keys. Never delete a
+        // completed peer upload because this attempt failed to convert a variant.
+        if (discardPartial) deleteManagedImageSetObjects(originalKey);
         return null;
     }
 
-    private Map<ImageVariant, String> storeImageVariants(
+    private Map<MediaImageVariant, String> storeImageVariants(
             String imageGroupKey,
             String originalFilename,
             String contentType,
             byte[] bytes) {
-        EnumMap<ImageVariant, String> urls = new EnumMap<>(ImageVariant.class);
+        EnumMap<MediaImageVariant, String> urls = new EnumMap<>(MediaImageVariant.class);
         try {
-            for (ImageVariant variant : ImageVariant.values()) {
+            for (MediaImageVariant variant : MediaImageVariant.values()) {
                 byte[] converted = convertImageVariant(originalFilename, contentType, bytes, variant);
                 if (converted == null || converted.length == 0) {
                     return Map.of();
@@ -323,7 +339,7 @@ public class MediaStorageService {
             String originalFilename,
             String contentType,
             byte[] bytes,
-            ImageVariant variant) {
+            MediaImageVariant variant) {
         for (String commandName : IMAGE_MAGICK_COMMANDS) {
             byte[] converted = runImageMagickVariant(commandName, originalFilename, contentType, bytes, variant);
             if (converted != null && converted.length > 0) {
@@ -338,7 +354,7 @@ public class MediaStorageService {
             String originalFilename,
             String contentType,
             byte[] bytes,
-            ImageVariant variant) {
+            MediaImageVariant variant) {
         Path inputPath = null;
         Path outputPath = null;
         try {
@@ -412,40 +428,19 @@ public class MediaStorageService {
     }
 
     private boolean deleteManagedImageSetObjects(String key) {
-        String imageGroupKey = managedImageSetGroupKeyFromObjectKey(key);
+        String imageGroupKey = MediaAccessPaths.managedImageSetGroupKeyFromObjectKey(key);
         if (!StringUtils.hasText(imageGroupKey)) {
             return false;
         }
         objectStoreClient.deleteObject(properties.getBucket(), imageGroupKey + "/" + ORIGINAL_IMAGE_OBJECT_NAME);
-        for (ImageVariant variant : ImageVariant.values()) {
+        for (MediaImageVariant variant : MediaImageVariant.values()) {
             objectStoreClient.deleteObject(properties.getBucket(), imageGroupKey + "/" + variant.objectName());
         }
         return true;
     }
 
     public String managedImageSetGroupKey(String mediaUrlOrKey) {
-        return managedImageSetGroupKeyFromObjectKey(extractPublicObjectKey(mediaUrlOrKey));
-    }
-
-    private String managedImageSetGroupKeyFromObjectKey(String key) {
-        String normalized = safeText(key);
-        if (!normalized.startsWith(IMAGE_MEDIA_KIND + "/")) {
-            return "";
-        }
-        int slashIndex = normalized.lastIndexOf('/');
-        if (slashIndex <= 0 || slashIndex >= normalized.length() - 1) {
-            return "";
-        }
-        String objectName = normalized.substring(slashIndex + 1);
-        if (ORIGINAL_IMAGE_OBJECT_NAME.equals(objectName)) {
-            return normalized.substring(0, slashIndex);
-        }
-        for (ImageVariant variant : ImageVariant.values()) {
-            if (variant.objectName().equals(objectName)) {
-                return normalized.substring(0, slashIndex);
-            }
-        }
-        return "";
+        return MediaAccessPaths.managedImageSetGroupKey(mediaUrlOrKey);
     }
 
     private String normalizeContentType(String value) {
@@ -601,7 +596,7 @@ public class MediaStorageService {
     }
 
     private String sanitizeSegment(String value) {
-        return com.raxim.myscoutee.domain.media.service.MediaAccessPaths.storageSegment(value);
+        return com.raxim.myscoutee.domain.media.api.MediaAccessPaths.storageSegment(value);
     }
 
     private String resolveExtension(String originalFilename, String contentType) {
@@ -628,78 +623,11 @@ public class MediaStorageService {
         return value == null ? "" : value.trim();
     }
 
-    private String extractPublicObjectKey(String value) {
-        String normalized = safeText(value);
-        if (!StringUtils.hasText(normalized)) {
-            return "";
-        }
-        if (!normalized.contains("/media/public") && !normalized.contains("/media/private")) {
-            return normalized.contains("/") ? "" : normalized;
-        }
-        int keyIndex = normalized.indexOf("key=");
-        if (keyIndex < 0) {
-            return "";
-        }
-        String encoded = normalized.substring(keyIndex + 4);
-        int separatorIndex = encoded.indexOf('&');
-        if (separatorIndex >= 0) {
-            encoded = encoded.substring(0, separatorIndex);
-        }
-        try {
-            return URLDecoder.decode(encoded, StandardCharsets.UTF_8);
-        } catch (IllegalArgumentException ex) {
-            return "";
-        }
-    }
-
-    public record StoredMediaObject(
-            byte[] bytes,
-            String contentType) {
-    }
-
-    public record StoredImageSet(
-            String imageUrl,
-            String originalUrl,
-            String smallUrl,
-            String mediumUrl,
-            String largeUrl) {
-    }
-
     private record ImportedImage(
             byte[] bytes,
             String contentType,
             String originalFilename) {
     }
 
-    private enum ImageVariant {
-        SMALL("small", 128, 76),
-        MEDIUM("medium", 640, 82),
-        LARGE("large", 1280, 86);
 
-        private final String key;
-        private final int dimension;
-        private final int quality;
-
-        ImageVariant(String key, int dimension, int quality) {
-            this.key = key;
-            this.dimension = dimension;
-            this.quality = quality;
-        }
-
-        private String key() {
-            return key;
-        }
-
-        private int quality() {
-            return quality;
-        }
-
-        private String geometry() {
-            return dimension + "x" + dimension + ">";
-        }
-
-        private String objectName() {
-            return key + ".webp";
-        }
-    }
 }

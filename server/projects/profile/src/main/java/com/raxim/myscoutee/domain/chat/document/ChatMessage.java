@@ -389,6 +389,9 @@ public class ChatMessage {
     }
 
     public static class ChatMessageAttachmentRecord {
+        private Long lifecycleRevision;
+        public Long getLifecycleRevision() { return lifecycleRevision; }
+        public void setLifecycleRevision(Long value) { lifecycleRevision = value; }
         @Field("id")
         private String id;
         private String type;

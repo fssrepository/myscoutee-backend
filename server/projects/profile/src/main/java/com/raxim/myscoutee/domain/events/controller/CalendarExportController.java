@@ -6,16 +6,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.service.CalendarExportService;
 
 @RestController
 @RequestMapping("/activities/events/calendar")
 public class CalendarExportController {
-    private final AccessControlService access;
+    private final AccessPermissions access;
     private final CalendarExportService calendar;
 
-    public CalendarExportController(AccessControlService access, CalendarExportService calendar) {
+    public CalendarExportController(AccessPermissions access, CalendarExportService calendar) {
         this.access = access;
         this.calendar = calendar;
     }

@@ -78,7 +78,7 @@ class DeploymentBrandingResolverTest {
                 new DeploymentBrandingResolver(repository).resolve();
 
         assertThat(resolved)
-                .isEqualTo(DeploymentBrandingResolver.fallback());
+                .isEqualTo(com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback());
     }
 
     @Test

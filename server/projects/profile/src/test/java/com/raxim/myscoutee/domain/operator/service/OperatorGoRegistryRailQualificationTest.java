@@ -54,30 +54,30 @@ import com.mongodb.client.MongoClients;
 import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.QualifiedMauReportOutboxItem;
 import com.raxim.myscoutee.domain.operator.document.RevenueReportOutboxItem;
 import com.raxim.myscoutee.domain.operator.repository.MongoQualifiedMauEvidenceRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRepository;
 import com.raxim.myscoutee.domain.operator.repository.RevenueReportOutboxRepository;
 import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauCalculator.QualifiedMauSnapshot;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.registry.RegistryCrypto;
 import com.raxim.myscoutee.domain.registry.RegistryEnrollmentService;
 import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient.RegistryHttpException;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 import com.raxim.myscoutee.domain.registry.RegistryLocalStore;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
 import com.raxim.myscoutee.domain.registry.RegistryNodeIdentityService;
 import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimVerification;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.BatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueBatchRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueBatchResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueCurrencyRow;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimVerification;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueBatchRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueBatchResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueCurrencyRow;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -504,7 +504,7 @@ class OperatorGoRegistryRailQualificationTest {
                 enrolledRuntime,
                 registry.baseUrl());
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         when(resolver.resolveSettlement(MongoSessionMode.REAL))
                 .thenReturn(
                         OperatorRevenueRegistryRuntimeResolver
@@ -667,7 +667,7 @@ class OperatorGoRegistryRailQualificationTest {
             String baseUrl,
             String registryScope,
             ObjectMapper objectMapper) throws IOException {
-        RegistryProperties properties = clientProperties(baseUrl);
+        RegistryConfiguration properties = clientProperties(baseUrl);
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setOperatorRegistrationConfirmed(true);
@@ -697,7 +697,7 @@ class OperatorGoRegistryRailQualificationTest {
         LocalState state = localStore.load().orElseThrow();
         var registration = state.registration().receipt();
         PublicKey registryPublicKey =
-                RegistryCrypto.parseRegistryPublicKey(
+                com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(
                         registration.registryPublicKey());
         String fingerprint = RegistryProtocol.publicKeyFingerprint(
                 registryPublicKey.getEncoded());
@@ -729,8 +729,8 @@ class OperatorGoRegistryRailQualificationTest {
                 enrolled.registryKeyId());
     }
 
-    private RegistryProperties clientProperties(String baseUrl) {
-        RegistryProperties properties = new RegistryProperties();
+    private RegistryConfiguration clientProperties(String baseUrl) {
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setBaseUrl(baseUrl);
         properties.setAllowInsecureHttp(true);
         properties.setInsecureHttpAllowedHosts("127.0.0.1");
@@ -747,7 +747,7 @@ class OperatorGoRegistryRailQualificationTest {
             QualifiedMauReportOutboxRepository repository,
             ObjectMapper objectMapper) {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         when(resolver.resolveMau(MongoSessionMode.REAL))
                 .thenReturn(
                         OperatorRevenueRegistryRuntimeResolver
@@ -767,7 +767,7 @@ class OperatorGoRegistryRailQualificationTest {
             RevenueReportOutboxRepository repository,
             ObjectMapper objectMapper) {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         when(resolver.resolveRevenue(MongoSessionMode.REAL))
                 .thenReturn(
                         OperatorRevenueRegistryRuntimeResolver

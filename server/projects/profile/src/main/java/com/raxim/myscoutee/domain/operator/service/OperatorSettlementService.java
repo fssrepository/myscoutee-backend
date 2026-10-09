@@ -19,15 +19,14 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorSettlementDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorSettlementPageDto;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient.RegistryHttpException;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.SettlementHistoryItem;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.SettlementQueryRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.SettlementQueryResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.SettlementHistoryItem;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.SettlementQueryRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.SettlementQueryResponse;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -140,9 +139,7 @@ public class OperatorSettlementService {
                 payloadHash,
                 runtime.deploymentCrypto().signBase64(requestMessage));
         try {
-            SettlementQueryResponse response = new RegistryHttpClient(
-                    runtime.properties(),
-                    objectMapper).querySettlements(request);
+            SettlementQueryResponse response = runtimeResolver.transport(runtime).querySettlements(request);
             verifyResponse(
                     runtime,
                     query,
@@ -207,7 +204,7 @@ public class OperatorSettlementService {
                         RegistryProtocol.settlementHistoryItemsHash(
                                 response.items()),
                         response.itemsHash())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.settlementQueryResponse(response),
                         response.signature())) {

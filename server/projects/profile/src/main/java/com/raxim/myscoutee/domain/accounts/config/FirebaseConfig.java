@@ -9,16 +9,16 @@ import org.springframework.context.annotation.Configuration;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 
 import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class FirebaseConfig {
 
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
 
-    public FirebaseConfig(ConfigProperties configProperties) {
+    public FirebaseConfig(RuntimeConfiguration configProperties) {
         this.configProperties = configProperties;
     }
 

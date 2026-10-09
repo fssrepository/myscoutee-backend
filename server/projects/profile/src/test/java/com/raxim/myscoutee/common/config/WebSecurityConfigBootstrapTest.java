@@ -141,17 +141,18 @@ class WebSecurityConfigBootstrapTest {
                 com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService.class,
                 () -> mock(com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService.class));
         applicationContext.registerBean(
-                com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class,
-                () -> mock(com.raxim.myscoutee.domain.media.service.MediaSessionAccessService.class));
+                com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class,
+                () -> mock(com.raxim.myscoutee.common.security.media.MediaSessionAccessService.class));
         applicationContext.registerBean(
                 OperatorBootstrapAuthenticationService.class,
                 () -> bootstrapService);
+        applicationContext.registerBean(com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService.class,
+                com.raxim.myscoutee.domain.accounts.service.ProfileAuthenticationService::new);
         applicationContext.registerBean(
                 IntegrationTokenAuthenticationFilter.class,
                 () -> new IntegrationTokenAuthenticationFilter(mock(
-                        com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class),
-                        mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class),
-                        mock(com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.class),
+                        com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)),
+                        mock(com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService.class),
                         mock(com.raxim.myscoutee.domain.integrations.service.IntegrationRoleAccessService.class)));
         applicationContext.registerBean(AdminClientAuthenticationFilter.class,
                 () -> new AdminClientAuthenticationFilter(mock(com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.class),

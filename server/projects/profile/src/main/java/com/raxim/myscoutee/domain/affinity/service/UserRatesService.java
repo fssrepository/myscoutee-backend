@@ -1,10 +1,15 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.OrganizerFollowingService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.community.service.ServiceFeedbackService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
+import com.raxim.myscoutee.domain.accounts.api.RatingSession;
+import com.raxim.myscoutee.domain.accounts.api.ProfileCards;
+import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
+import com.raxim.myscoutee.domain.accounts.api.FollowingEvents;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,7 +19,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,28 +27,19 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.bson.types.ObjectId;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.mongodb.client.model.BulkWriteOptions;
-import com.mongodb.client.model.UpdateOneModel;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.WriteModel;
 
 import jakarta.annotation.PostConstruct;
 
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.dto.RatingSessionDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.ActivityRatePageResponseDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.RateMenuItemDto;
@@ -53,40 +48,54 @@ import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.RatingSnapshotDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncRequestDto;
 import com.raxim.myscoutee.domain.affinity.dto.RatesDtos.UserRatesSyncResponseDto;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.accounts.api.RatingProfiles;
+import com.raxim.myscoutee.domain.accounts.dto.RatingProfileDto;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class UserRatesService {
+public class UserRatesService implements com.raxim.myscoutee.domain.affinity.api.Ratings {
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog campaignCatalog;
     private static final RateDistance ZERO_DISTANCE = new RateDistance(0);
 
+    @Autowired
+    private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
     private final UserRatesRepository userRatesRepository;
-    private final UsersRepository usersRepository;
-    private final HomeUserProfileService homeUserProfileService;
+    private final RatingProfiles ratingProfiles;
+    private final RatingSession ratingSession;
+    private final ProfileCards profileCards;
+    private final ProfileReadState profileReadState;
     private final AffinityCalculationService affinityCalculationService;
     private final UserAffinityEdgeService userAffinityEdgeService;
     private final MongoTemplate mongoTemplate;
-    private final AdminTelemetryService adminTelemetryService;
+    private final OperationalTelemetry adminTelemetryService;
     private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final NotificationOutboxService notificationOutboxService;
-    private final OrganizerFollowingService organizerFollowingService;
+    private final NotificationDelivery notificationOutboxService;
+    private final FollowingEvents organizerFollowingService;
+    @Autowired private com.raxim.myscoutee.domain.accounts.api.FriendshipProjections friendships;
 
     @Autowired
     public UserRatesService(
             UserRatesRepository userRatesRepository,
-            UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService,
+            RatingProfiles ratingProfiles,
+            RatingSession ratingSession,
+            ProfileCards profileCards,
+            ProfileReadState profileReadState,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService,
+            OperationalTelemetry adminTelemetryService,
             AffinityRecomputeTaskService affinityRecomputeTaskService,
-            NotificationOutboxService notificationOutboxService,
-            OrganizerFollowingService organizerFollowingService) {
+            NotificationDelivery notificationOutboxService,
+            FollowingEvents organizerFollowingService) {
         this.userRatesRepository = userRatesRepository;
-        this.usersRepository = usersRepository;
-        this.homeUserProfileService = homeUserProfileService;
+        this.ratingProfiles = ratingProfiles;
+        this.ratingSession = ratingSession;
+        this.profileCards = profileCards;
+        this.profileReadState = profileReadState;
         this.affinityCalculationService = affinityCalculationService;
         this.userAffinityEdgeService = userAffinityEdgeService;
         this.mongoTemplate = mongoTemplate;
@@ -98,17 +107,21 @@ public class UserRatesService {
 
     UserRatesService(
             UserRatesRepository userRatesRepository,
-            UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService,
+            RatingProfiles ratingProfiles,
+            RatingSession ratingSession,
+            ProfileCards profileCards,
+            ProfileReadState profileReadState,
             AffinityCalculationService affinityCalculationService,
             UserAffinityEdgeService userAffinityEdgeService,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService,
-            OrganizerFollowingService organizerFollowingService) {
+            OperationalTelemetry adminTelemetryService,
+            FollowingEvents organizerFollowingService) {
         this(
                 userRatesRepository,
-                usersRepository,
-                homeUserProfileService,
+                ratingProfiles,
+                ratingSession,
+                profileCards,
+                profileReadState,
                 affinityCalculationService,
                 userAffinityEdgeService,
                 mongoTemplate,
@@ -130,8 +143,8 @@ public class UserRatesService {
     }
 
     public List<RateMenuItemDto> queryRateItemsByUser(String requestedUserId, String campaignId) {
-        Users currentUser = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        RatingSessionDto currentUser = ratingSession.resolveRatingSession(requestedUserId);
+        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.identity().userId());
         if (!StringUtils.hasText(ownerUserId)) {
             return List.of();
         }
@@ -170,13 +183,13 @@ public class UserRatesService {
             Integer limitValue,
             String rangeStartIso,
             String rangeEndIso, String campaignId) {
-        Users currentUser = homeUserProfileService.resolveCurrentUser(requestedUserId);
-        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.getId());
+        RatingSessionDto currentUser = ratingSession.resolveRatingSession(requestedUserId);
+        String ownerUserId = currentUser == null ? null : normalizeId(currentUser.identity().userId());
         String mode = normalizeMode(modeValue);
         String direction = normalizeDisplayDirection(directionValue);
-        int gameCounter = currentUser == null || currentUser.getActivities() == null
+        int gameCounter = currentUser == null
                 ? 0
-                : Math.max(0, Objects.requireNonNullElse(currentUser.getActivities().game(), 0));
+                : Math.max(0, Objects.requireNonNullElse(currentUser.gameCount(), 0));
         if (!StringUtils.hasText(ownerUserId) || !StringUtils.hasText(mode) || !StringUtils.hasText(direction)) {
             return new ActivityRatePageResponseDto(List.of(), 0, null, List.of(), gameCounter);
         }
@@ -211,7 +224,7 @@ public class UserRatesService {
         String nextCursor = endIndex < items.size() && !pageItems.isEmpty()
                 ? serializeCursor(pageItems.get(pageItems.size() - 1))
                 : null;
-        List<UserDto> users = homeUserProfileService.queryUsersByIds(resolveDisplayUserIds(pageItems));
+        List<UserDto> users = profileCards.queryUsersByIds(resolveDisplayUserIds(pageItems));
 
         return new ActivityRatePageResponseDto(pageItems, items.size(), nextCursor, users, gameCounter);
     }
@@ -230,19 +243,19 @@ public class UserRatesService {
         for (var rate : request.rates()) if (rate != null) {
             addIfText(participantIds, rate.ownerUserId()); addIfText(participantIds, rate.fromUserId()); addIfText(participantIds, rate.toUserId());
         }
-        Set<String> workspaceParticipants = usersRepository.findByUserIdIn(participantIds).stream()
-                .filter(user -> CommunityGroupProfilesService.allows(user.getWorkspaceGroupId()))
-                .map(Users::getUserId).collect(java.util.stream.Collectors.toSet());
+        Map<String, RatingProfileDto> participantProfiles = ratingProfiles.queryRatingProfiles(participantIds).stream()
+                .filter(Objects::nonNull).collect(java.util.stream.Collectors.toMap(RatingProfileDto::userId, user -> user, (left, right) -> right));
+        Set<String> workspaceParticipants = participantProfiles.values().stream()
+                .filter(user -> WorkspaceContext.allows(user.workspaceGroupId()))
+                .map(RatingProfileDto::userId).collect(java.util.stream.Collectors.toSet());
         Set<String> campaignIds = request.rates().stream().filter(Objects::nonNull).map(UserRateRecordDto::campaignId)
                 .filter(StringUtils::hasText).collect(java.util.stream.Collectors.toSet());
-        var campaigns = campaignIds.isEmpty() ? Map.<String, com.raxim.myscoutee.domain.campaigns.document.Campaign>of()
-                : mongoTemplate.find(Query.query(Criteria.where("_id").in(campaignIds)), com.raxim.myscoutee.domain.campaigns.document.Campaign.class)
-                    .stream().collect(java.util.stream.Collectors.toMap(com.raxim.myscoutee.domain.campaigns.document.Campaign::id, c -> c));
+        var campaigns = campaignCatalog.findByIds(campaignIds);
         for (UserRateRecordDto rate : request.rates()) {
             if (rate != null && StringUtils.hasText(rate.campaignId())) {
                 var campaign = campaigns.get(rate.campaignId());
                 if (campaign == null || !"published".equals(campaign.status()) || !"single".equals(rate.mode())
-                    || !CommunityGroupProfilesService.allows(campaign.workspaceGroupId())
+                    || !WorkspaceContext.allows(campaign.workspaceGroupId())
                     || (!campaign.ownerUserId().equals(rate.ownerUserId()) && !campaign.ownerUserId().equals(rate.toUserId()) && !campaign.ownerUserId().equals(rate.fromUserId()))) {
                     if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
                     continue;
@@ -253,7 +266,7 @@ public class UserRatesService {
                 if (StringUtils.hasText(rate.id())) failedRateIds.add(rate.id());
                 continue;
             }
-            NormalizedRate normalizedResult = normalizeRecord(rate, affectedHomeProjectionOwnerIds);
+            NormalizedRate normalizedResult = normalizeRecord(rate, affectedHomeProjectionOwnerIds, participantProfiles);
             if (normalizedResult == null || normalizedResult.rate() == null) {
                 String failedId = rate == null ? "" : normalizeId(rate.id());
                 if (StringUtils.hasText(failedId)) {
@@ -305,7 +318,7 @@ public class UserRatesService {
         if (persistedRates == null || persistedRates.isEmpty()) {
             return;
         }
-        Map<String, WriteModel<Document>> writesByPair = new LinkedHashMap<>();
+        Map<String, com.raxim.myscoutee.domain.accounts.api.FriendshipProjections.Meeting> writesByPair = new LinkedHashMap<>();
         Set<String> affectedUsers = new LinkedHashSet<>();
         for (UserRate rate : persistedRates) {
             if (rate == null
@@ -324,53 +337,17 @@ public class UserRatesService {
             }
             String left = ownerUserId.compareTo(relatedUserId) <= 0 ? ownerUserId : relatedUserId;
             String right = ownerUserId.compareTo(relatedUserId) <= 0 ? relatedUserId : ownerUserId;
-            writesByPair.put(left.length() + ":" + left + right, mutualMetFriendshipWrite(left, right, rate));
+            writesByPair.put(left.length() + ":" + left + right, new com.raxim.myscoutee.domain.accounts.api.FriendshipProjections.Meeting(left, right,
+                    parseIsoMillis(firstNonBlank(rate.getUpdatedDate(), rate.getCreatedDate()), Instant.now().toEpochMilli()),
+                    safeText(rate.getMetEventId()), safeText(rate.getEventName())));
             affectedUsers.add(left);
             affectedUsers.add(right);
         }
         if (writesByPair.isEmpty()) {
             return;
         }
-        mongoTemplate.getCollection("userFriendships").bulkWrite(
-                new ArrayList<>(writesByPair.values()),
-                new BulkWriteOptions().ordered(false));
+        friendships.projectMeetings(new ArrayList<>(writesByPair.values()));
         organizerFollowingService.refreshForViewers(affectedUsers);
-    }
-
-    private WriteModel<Document> mutualMetFriendshipWrite(
-            String left,
-            String right,
-            UserRate rate) {
-        long projectedAtMs = parseIsoMillis(
-                firstNonBlank(rate.getUpdatedDate(), rate.getCreatedDate()),
-                Instant.now().toEpochMilli());
-        Date projectedAt = new Date(projectedAtMs);
-        String eventId = safeText(rate.getMetEventId());
-        String eventName = safeText(rate.getEventName());
-        Object earlier = new Document("$or", List.of(
-                new Document("$eq", List.of(new Document("$ifNull", List.of("$friendsSince", false)), false)),
-                new Document("$lt", List.of(projectedAt, "$friendsSince"))));
-        Object later = new Document("$or", List.of(
-                new Document("$eq", List.of(new Document("$ifNull", List.of("$lastMetAt", false)), false)),
-                new Document("$gt", List.of(projectedAt, "$lastMetAt"))));
-        Document values = new Document("leftUserId", literal(left))
-                .append("rightUserId", literal(right))
-                .append("friendsSince", conditional(earlier, projectedAt, "$friendsSince"))
-                .append("firstEventId", conditional(earlier, literal(eventId), "$firstEventId"))
-                .append("lastMetAt", conditional(later, projectedAt, "$lastMetAt"))
-                .append("lastEventId", conditional(later, literal(eventId), "$lastEventId"))
-                .append("lastEventName", conditional(later, literal(eventName), "$lastEventName"));
-        return new UpdateOneModel<>(new Document("_id", left.length() + ":" + left + right),
-                List.of(new Document("$set", values)),
-                new UpdateOptions().upsert(true));
-    }
-
-    private Object conditional(Object condition, Object value, String existing) {
-        return new Document("$cond", List.of(condition, value, existing));
-    }
-
-    private Object literal(String value) {
-        return new Document("$literal", value);
     }
 
     private void enqueueRatingNotifications(
@@ -379,17 +356,22 @@ public class UserRatesService {
         if (notificationOutboxService == null || persistedRates == null || persistedRates.isEmpty()) {
             return;
         }
-        for (UserRate rate : persistedRates) {
-            if (rate == null) {
-                continue;
-            }
+        var changedRates = persistedRates.stream().filter(Objects::nonNull).filter(rate -> {
             double currentScore = normalizeScore(rate.getScoreGiven());
-            double previousScore = previousScoresByNaturalKey == null
-                    ? currentScore
+            double previousScore = previousScoresByNaturalKey == null ? currentScore
                     : previousScoresByNaturalKey.getOrDefault(naturalKey(rate), currentScore);
-            if (currentScore <= 0 || currentScore == previousScore) {
-                continue;
-            }
+            return currentScore > 0 && currentScore != previousScore;
+        }).toList();
+        if (changedRates.isEmpty()) return;
+        var candidateRecipients = new LinkedHashSet<String>();
+        for (var rate : changedRates) {
+            addIfText(candidateRecipients, rate.getRelatedUserId());
+            if ("pair".equals(normalizeMode(rate.getMode()))) addIfText(candidateRecipients, rate.getSecondaryRelatedUserId());
+        }
+        var existingRecipients = candidateRecipients.isEmpty() ? Set.<String>of()
+                : ratingProfiles.queryRatingProfiles(candidateRecipients).stream().filter(Objects::nonNull)
+                        .map(RatingProfileDto::userId).collect(java.util.stream.Collectors.toSet());
+        for (UserRate rate : changedRates) {
             String actorUserId = normalizeId(rate.getOwnerUserId());
             LinkedHashSet<String> recipientUserIds = new LinkedHashSet<>();
             addIfText(recipientUserIds, rate.getRelatedUserId());
@@ -397,7 +379,7 @@ public class UserRatesService {
                 addIfText(recipientUserIds, rate.getSecondaryRelatedUserId());
             }
             recipientUserIds.remove(actorUserId);
-            recipientUserIds.removeIf(userId -> usersRepository.findByUserId(userId).isEmpty());
+            recipientUserIds.retainAll(existingRecipients);
             if (recipientUserIds.isEmpty()) {
                 continue;
             }
@@ -451,43 +433,20 @@ public class UserRatesService {
     }
 
     private void backfillHomeGameRateProjections() {
-        Query staleUsersQuery = Query.query(Criteria.where("homeGameRateProjectionVersion")
-                .ne(HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION));
-        staleUsersQuery.fields().include("userId");
-        List<Users> staleUsers = mongoTemplate.find(staleUsersQuery, Users.class);
-        if (staleUsers == null || staleUsers.isEmpty()) {
-            return;
-        }
-
-        Set<String> staleUserIds = staleUsers.stream()
-                .map(user -> normalizeId(user == null ? null : user.getId()))
-                .filter(StringUtils::hasText)
-                .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        if (staleUserIds.isEmpty()) {
-            return;
-        }
+        Set<String> staleUserIds = new LinkedHashSet<>(accountProjections.staleRatingProfileIds());
+        if (staleUserIds.isEmpty()) return;
 
         List<UserRate> rates = userRatesRepository.findHomeGameRateProjectionsByOwnerUserIdIn(staleUserIds);
         Map<String, List<UserRate>> ratesByOwnerUserId = ratesByOwnerUserId(rates);
         Map<String, Long> latestActivityMsByUserId = latestRateActivityMsByUserId(rates);
         String nowIso = Instant.now().toString();
-        BulkOperations updates = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class);
+        var projections = new ArrayList<com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections.RatingProjection>();
         for (String userId : staleUserIds) {
-            HomeGameRateProjection projection = buildHomeGameRateProjection(
-                    userId,
-                    ratesByOwnerUserId.getOrDefault(userId, List.of()));
-            Update update = new Update()
-                    .set("homeGameRatedUserIds", projection.ratedUserIds())
-                    .set("homeGameRatedPairKeys", projection.ratedPairKeys())
-                    .set("homeGameRateProjectionVersion", HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION)
-                    .set("homeGameRateProjectionUpdatedAtIso", nowIso);
-            Long latestActivityMs = latestActivityMsByUserId.get(userId);
-            if (latestActivityMs != null && latestActivityMs.longValue() > 0L) {
-                update.max("homeGameLastRateActivityMs", latestActivityMs);
-            }
-            updates.updateOne(Query.query(Criteria.where("userId").is(userId)), update);
+            HomeGameRateProjection projection = buildHomeGameRateProjection(userId, ratesByOwnerUserId.getOrDefault(userId, List.of()));
+            projections.add(new com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections.RatingProjection(
+                    userId, projection.ratedUserIds(), projection.ratedPairKeys(), latestActivityMsByUserId.get(userId)));
         }
-        updates.execute();
+        accountProjections.backfillRatings(projections, nowIso);
     }
 
     private void refreshHomeGameRateProjections(
@@ -514,14 +473,8 @@ public class UserRatesService {
             HomeGameRateProjection projection = buildHomeGameRateProjection(
                     ownerUserId,
                     ratesByOwnerUserId.getOrDefault(ownerUserId, List.of()));
-            mongoTemplate.updateFirst(
-                    Query.query(Criteria.where("userId").is(ownerUserId)),
-                    new Update()
-                            .set("homeGameRatedUserIds", projection.ratedUserIds())
-                            .set("homeGameRatedPairKeys", projection.ratedPairKeys())
-                            .set("homeGameRateProjectionVersion", HomeUserProfileService.HOME_GAME_RATE_PROJECTION_VERSION)
-                            .set("homeGameRateProjectionUpdatedAtIso", nowIso),
-                    Users.class);
+            accountProjections.refreshRating(new com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections.RatingProjection(
+                    ownerUserId, projection.ratedUserIds(), projection.ratedPairKeys(), null), nowIso);
         }
 
         LinkedHashSet<String> affectedUserIds = new LinkedHashSet<>(ownerUserIds);
@@ -539,13 +492,10 @@ public class UserRatesService {
                 continue;
             }
             for (String userId : rateUserIds) {
-                mongoTemplate.updateFirst(
-                        Query.query(Criteria.where("userId").is(userId)),
-                        new Update().max("homeGameLastRateActivityMs", activityMs),
-                        Users.class);
+                accountProjections.touchRatingActivity(userId, activityMs);
             }
         }
-        homeUserProfileService.evictUserReadCaches(affectedUserIds);
+        profileReadState.evictUserReadCaches(affectedUserIds);
     }
 
     private Map<String, List<UserRate>> ratesByOwnerUserId(List<UserRate> rates) {
@@ -684,10 +634,10 @@ public class UserRatesService {
         indexOps.dropIndex(indexName);
     }
 
-    private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId) {
+    private List<RateMenuItemDto> queryNormalizedRateItems(RatingSessionDto currentUser, String ownerUserId) {
         return queryNormalizedRateItems(currentUser, ownerUserId, null);
     }
-    private List<RateMenuItemDto> queryNormalizedRateItems(Users currentUser, String ownerUserId, String campaignId) {
+    private List<RateMenuItemDto> queryNormalizedRateItems(RatingSessionDto currentUser, String ownerUserId, String campaignId) {
         List<UserRate> records = userRatesRepository.findRelevantInCampaign(ownerUserId,
                 StringUtils.hasText(campaignId) ? campaignId : null);
         if (StringUtils.hasText(campaignId)) {
@@ -707,9 +657,8 @@ public class UserRatesService {
                     item.scoreGiven(), item.scoreReceived(), item.eventName(), item.happenedAt(), item.distanceMetersExact(),
                     item.met(), item.ratingSnapshot(), null));
         }
-        String workspaceId = currentUser.getWorkspaceGroupId();
-        var group = StringUtils.hasText(workspaceId) ? mongoTemplate.findById(workspaceId,
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class) : null;
+        String workspaceId = currentUser.identity().workspaceGroupId();
+        var group = StringUtils.hasText(workspaceId) ? groupDirectory.findById(workspaceId).orElse(null) : null;
         String defaultDomain = group == null ? "dating" : "work".equals(group.effectiveType()) ? "work"
                 : "community".equals(group.effectiveType()) ? "service-interest" : "dating";
         return filterActivityRateVisibleItems(dedupeRateItems(items.stream().map(item -> item.withRatingDomain(
@@ -780,9 +729,9 @@ public class UserRatesService {
             return items;
         }
 
-        Map<String, Users> usersById = usersRepository.findByUserIdIn(checkedUserIds).stream()
+        Map<String, RatingProfileDto> usersById = ratingProfiles.queryRatingProfiles(checkedUserIds).stream()
                 .filter(Objects::nonNull)
-                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.getId()), user), Map::putAll);
+                .collect(LinkedHashMap::new, (target, user) -> target.put(normalizeId(user.id()), user), Map::putAll);
         return items.stream()
                 .filter(item -> activityRateItemUsersAreVisible(item, ownerUserId, usersById))
                 .toList();
@@ -791,7 +740,7 @@ public class UserRatesService {
     private boolean activityRateItemUsersAreVisible(
             RateMenuItemDto item,
             String ownerUserId,
-            Map<String, Users> usersById) {
+            Map<String, RatingProfileDto> usersById) {
         if (item == null) {
             return false;
         }
@@ -802,8 +751,8 @@ public class UserRatesService {
         addUserId(displayedUserIds, item.bridgeUserId());
         displayedUserIds.remove(normalizedOwnerUserId);
         for (String userId : displayedUserIds) {
-            Users user = usersById.get(normalizeId(userId));
-            if (!homeUserProfileService.isActivityRateVisibleUser(user)) {
+            RatingProfileDto user = usersById.get(normalizeId(userId));
+            if (user == null || !user.activityRateVisible()) {
                 return false;
             }
         }
@@ -845,7 +794,7 @@ public class UserRatesService {
         return new ArrayList<>(deduped.values());
     }
 
-    private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds) {
+    private NormalizedRate normalizeRecord(UserRateRecordDto rate, Set<String> affectedHomeProjectionOwnerIds, Map<String, RatingProfileDto> participantProfiles) {
         if (rate == null || !validRatingSnapshot(rate.ratingSnapshot(), resolveScoreGiven(rate))
                 || (StringUtils.hasText(rate.campaignId()) && rate.ratingSnapshot() != null && !"campaign".equals(rate.ratingSnapshot().profileType()))) {
             return null;
@@ -901,7 +850,7 @@ public class UserRatesService {
         document.setUpdatedDate(normalizeDate(rate.updatedAtIso(), nowIso));
         document.setUpdatedUser(updatedUserId);
         document.setOwnerUserId(ownerUserId);
-        document.setOwnerLocation(resolveLocationSnapshot(ownerUserId));
+        document.setOwnerLocation(resolveLocationSnapshot(participantProfiles.get(ownerUserId)));
 
         UserRate normalized = normalizeRateRecord(document, rate, mode, ownerUserId, fromUserId, toUserId);
         if (normalized != null && metCounterpartyScore != null) {
@@ -926,7 +875,7 @@ public class UserRatesService {
             case "campaign" -> Set.of("relevance", "appeal", "clarity", "collaboration");
             case "work" -> Set.of("fit", "interests", "communication", "collaboration");
             case "service-interest" -> Set.of("relevance", "clarity", "confidence", "value");
-            case "service" -> ServiceFeedbackService.CRITERIA;
+            case "service" -> CaseFeedbackPreparation.CRITERIA;
             default -> Set.of();
         };
         if (!Integer.valueOf(1).equals(snapshot.version()) || keys.isEmpty() || snapshot.criteria() == null
@@ -1036,15 +985,15 @@ public class UserRatesService {
         return document;
     }
 
-    private RateMenuItemDto toRateMenuItem(UserRate record, Users currentUser) {
+    private RateMenuItemDto toRateMenuItem(UserRate record, RatingSessionDto currentUser) {
         if (record == null || currentUser == null) {
             return null;
         }
         return toActivityRateMenuItem(record, currentUser);
     }
 
-    private RateMenuItemDto toActivityRateMenuItem(UserRate record, Users currentUser) {
-        String currentUserId = normalizeOptionalId(currentUser == null ? null : currentUser.getId());
+    private RateMenuItemDto toActivityRateMenuItem(UserRate record, RatingSessionDto currentUser) {
+        String currentUserId = normalizeOptionalId(currentUser == null ? null : currentUser.identity().userId());
         String recordOwnerUserId = normalizeOptionalId(record.getOwnerUserId());
         if (currentUserId == null || recordOwnerUserId == null) {
             return null;
@@ -1339,7 +1288,6 @@ public class UserRatesService {
         return normalizeOptionalText(rate.displayId());
     }
 
-
     private String resolveCreatedUser(
             UserRateRecordDto rate,
             String ownerUserId,
@@ -1360,9 +1308,9 @@ public class UserRatesService {
     }
 
     private String resolveUpdatedUser(UserRateRecordDto rate, String ownerUserId, String fromUserId, String toUserId) {
-        Users currentUser = homeUserProfileService.resolveCurrentUser(ownerUserId);
-        if (currentUser != null && StringUtils.hasText(normalizeId(currentUser.getId()))) {
-            return normalizeId(currentUser.getId());
+        RatingSessionDto currentUser = ratingSession.resolveRatingSession(ownerUserId);
+        if (currentUser != null && StringUtils.hasText(normalizeId(currentUser.identity().userId()))) {
+            return normalizeId(currentUser.identity().userId());
         }
         String persistedDirection = normalizeDisplayDirection(rate.displayDirection());
         if ("received".equals(persistedDirection)) {
@@ -1662,23 +1610,19 @@ public class UserRatesService {
         return normalizeOptionalId(toUserId);
     }
 
-    private UserRate.LocationSnapshot resolveLocationSnapshot(String userId) {
-        if (!StringUtils.hasText(userId)) {
+    private UserRate.LocationSnapshot resolveLocationSnapshot(RatingProfileDto user) {
+        if (user == null || user.locationCoordinates() == null) {
             return null;
         }
-        Users user = usersRepository.findByUserId(userId).orElse(null);
-        if (user == null || user.getLocationCoordinates() == null) {
-            return null;
-        }
-        Double latitude = user.getLocationCoordinates().latitude();
-        Double longitude = user.getLocationCoordinates().longitude();
+        Double latitude = user.locationCoordinates().latitude();
+        Double longitude = user.locationCoordinates().longitude();
         if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
             return null;
         }
         return new UserRate.LocationSnapshot(latitude, longitude);
     }
 
-    private RateDistance resolveActivityDistance(Users currentUser, UserRate record) {
+    private RateDistance resolveActivityDistance(RatingSessionDto currentUser, UserRate record) {
         if (record != null && record.getDistanceMetersExact() != null) {
             return new RateDistance(Math.max(0, record.getDistanceMetersExact()));
         }
@@ -1689,12 +1633,12 @@ public class UserRatesService {
         return distanceBetween(origin, record == null ? null : record.getOwnerLocation());
     }
 
-    private UserRate.LocationSnapshot resolveCurrentUserLocation(Users currentUser) {
-        if (currentUser == null || currentUser.getLocationCoordinates() == null) {
+    private UserRate.LocationSnapshot resolveCurrentUserLocation(RatingSessionDto currentUser) {
+        if (currentUser == null || currentUser.locationCoordinates() == null) {
             return null;
         }
-        Double latitude = currentUser.getLocationCoordinates().latitude();
-        Double longitude = currentUser.getLocationCoordinates().longitude();
+        Double latitude = currentUser.locationCoordinates().latitude();
+        Double longitude = currentUser.locationCoordinates().longitude();
         if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
             return null;
         }

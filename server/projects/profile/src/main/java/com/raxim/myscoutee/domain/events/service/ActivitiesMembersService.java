@@ -1,15 +1,15 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.payments.service.PaymentService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
+import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
+import com.raxim.myscoutee.domain.assets.api.Assets;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
+import com.raxim.myscoutee.domain.payments.api.CheckoutBaskets;
+import com.raxim.myscoutee.domain.payments.api.EventPayments;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -41,9 +41,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionRequestDto;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberActionResponseDto;
 import com.raxim.myscoutee.domain.events.dto.ActivityMembersDtos.ActivityMemberInviteRejectionDto;
@@ -63,14 +63,14 @@ import com.raxim.myscoutee.common.dto.SharedDtos.ActivityMembersSummaryDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventResourcesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.events.mapper.ActivityMemberMapper;
 
 @Service
-public class ActivitiesMembersService {
+public class ActivitiesMembersService implements com.raxim.myscoutee.domain.events.api.PartnerInvitationAdmission, com.raxim.myscoutee.domain.events.api.CheckoutMemberships, com.raxim.myscoutee.domain.events.api.MemberAudience {
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private EventJobQueries jobGroupScope;
 
     private static final String RANDOM_ROOM_EVENT_TYPE = "random-room";
     private static final String TOURNAMENT_ROOM_EVENT_TYPE = "tournament-room";
@@ -123,20 +123,23 @@ public class ActivitiesMembersService {
     private final ActivityMembersRepository activityMembersRepository;
     private final ActivityEventsRepository activityEventsRepository;
     private final ActivitySubEventResourcesRepository activitySubEventResourcesRepository;
-    private final UsersRepository usersRepository;
-    private final HomeUserProfileService homeUserProfileService;
-    private final AssetsService assetsService;
+    private final ProfileSummaries usersRepository;
+    private final SelectedProfile homeUserProfileService;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileCards profileCards;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileReadState profileReadState;
+    private final Assets assetsService;
     private final ActivitiesResourcesService activitiesResourcesService;
     private final EventParticipationTicketService eventParticipationTicketService;
-    private final EventCheckoutBasketService eventCheckoutBasketService;
-    private final PaymentService paymentService;
+    private final CheckoutBaskets eventCheckoutBasketService;
+    private final EventPayments paymentService;
     private final EventInviteNotificationService eventInviteNotificationService;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private final AdminTelemetryService adminTelemetryService;
-    private final ChatService chatService;
+    @org.springframework.beans.factory.annotation.Autowired private EventMembershipCounterWork membershipCounterWork;
+    private final AffinityStatusChanges affinityRecomputeTaskService;
+    private final OperationalTelemetry adminTelemetryService;
+    private final EventConversations chatService;
     private final EventSlotReadModelService eventSlotReadModelService;
-    private final AccessControlService accessControlService;
-    private final UserActivityCountersService userActivityCountersService;
+    private final AccessPermissions accessControlService;
+    private final ActivityCounters userActivityCountersService;
     private final ActivityTournamentGroupCounterService tournamentGroupCounterService;
     private final ActivityMemberMapper activityMemberMapper;
     private final ConcurrentMap<String, Object> eventJoinLocks = new ConcurrentHashMap<>();
@@ -145,20 +148,22 @@ public class ActivitiesMembersService {
             ActivityMembersRepository activityMembersRepository,
             ActivityEventsRepository activityEventsRepository,
             ActivitySubEventResourcesRepository activitySubEventResourcesRepository,
-            UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService,
-            AssetsService assetsService,
+            ProfileSummaries usersRepository,
+            SelectedProfile homeUserProfileService,
+            com.raxim.myscoutee.domain.accounts.api.ProfileCards profileCards,
+            com.raxim.myscoutee.domain.accounts.api.ProfileReadState profileReadState,
+            Assets assetsService,
             ActivitiesResourcesService activitiesResourcesService,
             EventParticipationTicketService eventParticipationTicketService,
-            EventCheckoutBasketService eventCheckoutBasketService,
-            PaymentService paymentService,
+            CheckoutBaskets eventCheckoutBasketService,
+            EventPayments paymentService,
             EventInviteNotificationService eventInviteNotificationService,
-            AffinityRecomputeTaskService affinityRecomputeTaskService,
-            AdminTelemetryService adminTelemetryService,
-            ChatService chatService,
+            AffinityStatusChanges affinityRecomputeTaskService,
+            OperationalTelemetry adminTelemetryService,
+            EventConversations chatService,
             EventSlotReadModelService eventSlotReadModelService,
-            AccessControlService accessControlService,
-            UserActivityCountersService userActivityCountersService,
+            AccessPermissions accessControlService,
+            ActivityCounters userActivityCountersService,
             ActivityTournamentGroupCounterService tournamentGroupCounterService,
             ActivityMemberMapper activityMemberMapper) {
         this.activityMembersRepository = activityMembersRepository;
@@ -166,6 +171,8 @@ public class ActivitiesMembersService {
         this.activitySubEventResourcesRepository = activitySubEventResourcesRepository;
         this.usersRepository = usersRepository;
         this.homeUserProfileService = homeUserProfileService;
+        this.profileCards = profileCards;
+        this.profileReadState = profileReadState;
         this.assetsService = assetsService;
         this.activitiesResourcesService = activitiesResourcesService;
         this.eventParticipationTicketService = eventParticipationTicketService;
@@ -245,9 +252,10 @@ public class ActivitiesMembersService {
                 normalizedOwnerType,
                 normalizedOwnerId,
                 ownerMembers);
-        Map<String, Users> usersById = memberUsersById(ownerMembers);
+        Map<String, ProfileSummary> usersById = memberUsersById(ownerMembers);
+        var cardsById = memberCardsById(usersById);
         return ownerMembers.stream()
-                .map(member -> toEntryDto(member, viewerUserId, usersById))
+                .map(member -> toEntryDto(member, viewerUserId, usersById, cardsById))
                 .filter(Objects::nonNull)
                 .map(entry -> withInvolvements(entry, involvementsByUserId.getOrDefault(normalizeId(entry.userId()), List.of())))
                 .toList();
@@ -381,7 +389,7 @@ public class ActivitiesMembersService {
                 members.add(owner);
             }
         }
-        for (Asset.AssetRequestRecord request : asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()) {
+        for (com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord request : asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord>of() : asset.getRequests()) {
             String requestUserId = normalizeId(request == null ? null : request.userId());
             ActivityMember member = scopedAssetRequestMember(
                     asset,
@@ -468,7 +476,7 @@ public class ActivitiesMembersService {
 
     private ActivityMember scopedAssetRequestMember(
             Asset asset,
-            Asset.AssetRequestRecord request,
+            com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord request,
             ActivityMember storedAssetMember,
             String scopedManagerUserId) {
         String assetId = normalizeId(asset == null ? null : asset.getAssetId());
@@ -600,7 +608,7 @@ public class ActivitiesMembersService {
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
         Map<String, String> namesByUserId = new LinkedHashMap<>();
         if (!userIds.isEmpty()) {
-            for (Users user : usersRepository.findByUserIdIn(userIds)) {
+            for (ProfileSummary user : usersRepository.findByUserIdIn(userIds)) {
                 String userId = normalizeId(user == null ? null : user.getUserId());
                 if (StringUtils.hasText(userId)) {
                     namesByUserId.putIfAbsent(userId, safeText(user.getName()));
@@ -1602,7 +1610,7 @@ public class ActivitiesMembersService {
         String actorUserId = resolveActorUserId(request == null ? null : request.actorUserId());
         return new ActivityMemberActionResponseDto(
                 members,
-                homeUserProfileService.queryMenuCounters(actorUserId));
+                profileReadState.queryMenuCounters(actorUserId));
     }
 
     private void persistScopedAssetAction(
@@ -1618,7 +1626,8 @@ public class ActivitiesMembersService {
         List<ActivityMemberEntryDto> nextEntries = new ArrayList<>();
         List<ActivityMember> profileMembers = new ArrayList<>(existing == null ? List.of() : existing);
         if (next != null) profileMembers.add(next);
-        Map<String, Users> usersById = memberUsersById(profileMembers);
+        Map<String, ProfileSummary> usersById = memberUsersById(profileMembers);
+        var cardsById = memberCardsById(usersById);
         for (ActivityMember member : existing == null ? List.<ActivityMember>of() : existing) {
             String memberId = member == null ? "" : firstNonBlank(
                     normalizeId(member.getSyncKey()),
@@ -1629,13 +1638,13 @@ public class ActivitiesMembersService {
             if (member == null || target) {
                 continue;
             }
-            ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId, usersById);
+            ActivityMemberEntryDto entry = toEntryDto(member, viewerUserId, usersById, cardsById);
             if (entry != null) {
                 nextEntries.add(entry);
             }
         }
         if (next != null && !STATUS_DELETED.equals(normalizeStatus(next.getStatus()))) {
-            ActivityMemberEntryDto nextEntry = toEntryDto(next, viewerUserId, usersById);
+            ActivityMemberEntryDto nextEntry = toEntryDto(next, viewerUserId, usersById, cardsById);
             if (nextEntry != null) {
                 nextEntries.add(nextEntry);
             }
@@ -1676,27 +1685,27 @@ public class ActivitiesMembersService {
         return next;
     }
 
-    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord) {
+    public OwnerMembersSnapshot requestJoin(String eventId, ProfileSummary viewer, ActivityEvent eventRecord) {
         return requestJoin(eventId, viewer, eventRecord, false);
     }
 
-    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted) {
+    public OwnerMembersSnapshot requestJoin(String eventId, ProfileSummary viewer, ActivityEvent eventRecord, boolean accepted) {
         return requestJoin(eventId, viewer, eventRecord, accepted, false);
     }
 
-    public OwnerMembersSnapshot requestJoin(String eventId, Users viewer, ActivityEvent eventRecord, boolean accepted, boolean waitingList) {
+    public OwnerMembersSnapshot requestJoin(String eventId, ProfileSummary viewer, ActivityEvent eventRecord, boolean accepted, boolean waitingList) {
         return requestJoin(eventId, viewer, eventRecord, accepted, waitingList, false);
     }
 
     public OwnerMembersSnapshot requestJoin(
             String eventId,
-            Users viewer,
+            ProfileSummary viewer,
             ActivityEvent eventRecord,
             boolean accepted,
             boolean waitingList,
             boolean approvalRequested) {
         String normalizedEventId = normalizeId(eventId);
-        String viewerUserId = viewer == null ? null : normalizeId(viewer.getId());
+        String viewerUserId = viewer == null ? null : normalizeId(viewer.getUserId());
         if (!StringUtils.hasText(normalizedEventId) || !StringUtils.hasText(viewerUserId)) {
             return queryOwnerSnapshot(OWNER_TYPE_EVENT, normalizedEventId);
         }
@@ -2933,8 +2942,10 @@ public class ActivitiesMembersService {
     }
 
     /** Called only after a stored partner invitation has been bound to the signed-in recipient. */
-    public void claimIntegrationInvite(com.raxim.myscoutee.domain.integrations.document.IntegrationParticipantInvite invite,
-            ActivityEvent event, String actorUserId) {
+    public void claimIntegrationInvite(com.raxim.myscoutee.domain.integrations.api.ParticipantInvitation invite,
+            String eventRecordId, String actorUserId) {
+        ActivityEvent event = activityEventsRepository.findById(eventRecordId)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND));
         if (!actorUserId.equals(invite.claimedUserId()) || !invite.eventId().equals(event.getSourceId())
                 || (!invite.reusable() && !invite.ownerUserId().equals(event.getOwnerUserId()))
                 || !accessControlService.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {
@@ -3139,15 +3150,14 @@ public class ActivitiesMembersService {
                 normalizedSyncedUserIds.size(),
                 materializedEvent.getCapacityTotal() == null ? 0 : materializedEvent.getCapacityTotal()));
         materializedEvent.setFull(resolveDirectEventFull(materializedEvent));
-        activityEventsRepository.save(materializedEvent);
-        LinkedHashSet<String> addedUserIds = new LinkedHashSet<>(normalizedSyncedUserIds);
-        addedUserIds.removeAll(previousAcceptedUserIds);
-        previousAcceptedUserIds.removeAll(new LinkedHashSet<>(normalizedSyncedUserIds));
-        if (!StringUtils.hasText(normalizeId(materializedEvent.getParentEventId()))) {
-            userActivityCountersService.applyActiveEventMembershipDeltas(
-                    addedUserIds,
-                    previousAcceptedUserIds);
+        boolean rootEvent = !StringUtils.hasText(normalizeId(materializedEvent.getParentEventId()));
+        if (rootEvent) {
+            var affected = new LinkedHashSet<>(previousAcceptedUserIds);
+            affected.addAll(normalizedSyncedUserIds);
+            EventMembershipCounterWork.prepare(materializedEvent, affected);
         }
+        activityEventsRepository.save(materializedEvent);
+        if (rootEvent) membershipCounterWork.deliver(materializedEvent);
         return normalizedSyncedUserIds;
     }
 
@@ -4266,25 +4276,34 @@ public class ActivitiesMembersService {
         return toSortableDate(next.getUpdatedDate()) >= toSortableDate(current.getUpdatedDate());
     }
 
-    private Map<String, Users> memberUsersById(Collection<ActivityMember> members) {
+    private Map<String, ProfileSummary> memberUsersById(Collection<ActivityMember> members) {
         Set<String> userIds = new LinkedHashSet<>();
         for (ActivityMember member : members) {
             String userId = normalizeId(member == null ? null : member.getUserId());
             if (StringUtils.hasText(userId)) userIds.add(userId);
         }
         if (userIds.isEmpty()) return Map.of();
-        Map<String, Users> usersById = new LinkedHashMap<>();
-        for (Users user : usersRepository.findByUserIdIn(userIds)) {
+        Map<String, ProfileSummary> usersById = new LinkedHashMap<>();
+        for (ProfileSummary user : usersRepository.findByUserIdIn(userIds)) {
             if (user != null) usersById.put(normalizeId(user.getUserId()), user);
         }
         return usersById;
     }
 
-    private ActivityMemberEntryDto toEntryDto(ActivityMember member, String viewerUserId, Map<String, Users> usersById) {
+    private Map<String, com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto> memberCardsById(Map<String, ProfileSummary> usersById) {
+        if (usersById.isEmpty()) return Map.of();
+        Map<String, com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto> cards = new LinkedHashMap<>();
+        for (var card : profileCards.presentGameCards(usersById.keySet())) {
+            if (card != null) cards.put(normalizeId(card.id()), card);
+        }
+        return cards;
+    }
+
+    private ActivityMemberEntryDto toEntryDto(ActivityMember member, String viewerUserId, Map<String, ProfileSummary> usersById, Map<String, com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto> cardsById) {
         if (member == null || !StringUtils.hasText(normalizeId(member.getUserId()))) {
             return null;
         }
-        Users user = usersById.get(normalizeId(member.getUserId()));
+        ProfileSummary user = usersById.get(normalizeId(member.getUserId()));
         String role = resolveStoredRole(member, member.getOwnerType(), member.getOwnerId());
         String status = normalizeStatus(member.getStatus());
         String pendingSource = resolvePendingSource(member.getPendingSource(), status);
@@ -4308,7 +4327,7 @@ public class ActivitiesMembersService {
                 actionAtIso,
                 safeText(member.getMetWhere()),
                 resolveAvatarUrl(user),
-                user == null ? null : homeUserProfileService.toGameCardUserDto(user),
+                user == null ? null : cardsById.get(normalizeId(user.getUserId())),
                 List.of(),
                 memberRevision(member),
                 nullableText(member.getAttendanceStatus()),
@@ -4698,7 +4717,6 @@ public class ActivitiesMembersService {
         return false;
     }
 
-
     private boolean canCancelEventInvitation(String eventId, String actorUserId, String targetUserId) {
         ActivityMember target = findEventMember(eventId, targetUserId);
         return target != null
@@ -4788,7 +4806,7 @@ public class ActivitiesMembersService {
                 .filter(document -> normalizedLeavingOwnerUserId.equals(normalizeId(document.getCreatorUserId())))
                 .findFirst()
                 .orElse(findPreferredEventRecord(normalizedEventId));
-        Users successor = usersRepository.findByUserId(normalizedSuccessorAdminUserId).orElse(null);
+        ProfileSummary successor = usersRepository.findByUserId(normalizedSuccessorAdminUserId).orElse(null);
         List<ActivityEvent> duplicateSuccessorOverlays = documents.stream()
                 .filter(document -> document != canonical)
                 .filter(document -> normalizedSuccessorAdminUserId.equals(normalizeId(document.getOwnerUserId())))
@@ -5085,7 +5103,7 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(normalizeId(eventId)) || member == null) {
             return;
         }
-        Users user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
+        ProfileSummary user = usersRepository.findByUserId(normalizeId(member.getUserId())).orElse(null);
         String displayName = firstNonBlank(user == null ? null : user.getName(), normalizeId(member.getUserId()));
         String text = ACTION_REINSTATE.equals(action)
                 ? displayName + " was reinstated to the event."
@@ -5268,7 +5286,7 @@ public class ActivitiesMembersService {
         if (!StringUtils.hasText(userId)) {
             return "";
         }
-        Users user = usersRepository.findByUserId(userId).orElse(null);
+        ProfileSummary user = usersRepository.findByUserId(userId).orElse(null);
         return firstNonBlank(user == null ? null : user.getName(), userId);
     }
 
@@ -5750,7 +5768,7 @@ public class ActivitiesMembersService {
         return "woman".equals(safeText(value)) ? "woman" : "man";
     }
 
-    private String resolveAvatarUrl(Users user) {
+    private String resolveAvatarUrl(ProfileSummary user) {
         if (user == null || user.getImages() == null || user.getImages().isEmpty()) {
             return "";
         }
@@ -5827,6 +5845,12 @@ public class ActivitiesMembersService {
     }
 
     public record StoredMemberState(String status, String name) {
+    }
+
+    @Override public Audience queryNotificationAudience(String ownerType, String ownerId) {
+        var snapshot = queryOwnerSnapshot(ownerType, ownerId);
+        return snapshot == null ? null : new Audience(snapshot.acceptedMemberUserIds(), snapshot.pendingMemberUserIds(),
+                snapshot.invitedMemberUserIds(), snapshot.pendingRequestMemberUserIds());
     }
 
     public record OwnerMembersSnapshot(

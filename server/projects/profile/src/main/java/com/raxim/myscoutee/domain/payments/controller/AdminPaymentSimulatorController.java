@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient;
@@ -19,14 +19,14 @@ import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationC
 @RequestMapping("/admin/payment-simulator")
 public class AdminPaymentSimulatorController {
     private final PaymentSimulatorRegistrationClient simulatorClient;
-    private final com.raxim.myscoutee.domain.content.service.AdminModerationService moderation;
+    private final com.raxim.myscoutee.domain.content.api.AdministrativeActors moderation;
     private final org.springframework.data.mongodb.core.MongoTemplate mongo;
-    private final com.raxim.myscoutee.domain.accounts.repository.UsersRepository users;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileIdentities users;
 
     public AdminPaymentSimulatorController(PaymentSimulatorRegistrationClient simulatorClient,
-            com.raxim.myscoutee.domain.content.service.AdminModerationService moderation,
+            com.raxim.myscoutee.domain.content.api.AdministrativeActors moderation,
             org.springframework.data.mongodb.core.MongoTemplate mongo,
-            com.raxim.myscoutee.domain.accounts.repository.UsersRepository users) {
+            com.raxim.myscoutee.domain.accounts.api.ProfileIdentities users) {
         this.moderation = moderation; this.mongo = mongo; this.users = users;
         this.simulatorClient = simulatorClient;
     }
@@ -42,10 +42,7 @@ public class AdminPaymentSimulatorController {
     @PreAuthorize("hasAuthority('A')")
     public GatewayConfigurationAccess createAuthorizationAccess() {
         String groupId = requireDemoAdmin();
-        var query = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("workspaceGroupId").is(groupId));
-        query.fields().include("userId");
-        var ids = mongo.find(query, com.raxim.myscoutee.domain.accounts.document.Users.class).stream()
-                .map(com.raxim.myscoutee.domain.accounts.document.Users::getUserId).toList();
+        var ids = users.userIdsByWorkspace(groupId);
         var paymentQuery = org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").in(ids));
         paymentQuery.fields().include("checkoutSessionId");
         var references = mongo.find(paymentQuery, com.raxim.myscoutee.domain.payments.document.Payment.class).stream()
@@ -58,11 +55,11 @@ public class AdminPaymentSimulatorController {
     private String requireDemoAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication != null
-                && authentication.getPrincipal() instanceof FirebasePrincipal principal
+                && authentication.getPrincipal() instanceof AuthenticatedActor principal
                 ? principal.getUserId()
                 : "";
-        var profile = users.findByUserId(userId == null ? "" : userId).orElse(null);
-        String accountId = profile != null && profile.getAccountUserId() != null ? profile.getAccountUserId() : userId;
+        var profile = users.findIdentityByUserId(userId == null ? "" : userId).orElse(null);
+        String accountId = profile != null && profile.accountUserId() != null ? profile.accountUserId() : userId;
         if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO
                 || userId == null
                 || accountId == null || !accountId.trim().startsWith("admin-demo-")) {

@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.payments.document.AffiliateRegistration;
+import com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration;
 import com.raxim.myscoutee.domain.payments.document.Payment;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.AffiliateRevenueDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.AffiliateCurrencyRevenueDto;
@@ -23,10 +23,12 @@ import com.raxim.myscoutee.domain.payments.repository.AffiliateRevenueRepository
 
 @Service
 public class AffiliateRevenueService {
+    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 
@@ -43,7 +45,7 @@ public class AffiliateRevenueService {
         if (payment == null || !"payment".equals(payment.getAuditKind())) return;
         if (!payment.isAffiliateAttributionResolved()) {
             AffiliateRegistration registration = isCash(payment) ? null
-                    : mongo.findById(payment.getUserId(), AffiliateRegistration.class);
+                    : mongo.findById(payment.getUserId(), AffiliateRegistration.class, "affiliateRegistrations");
             payment.setAffiliateOwnerUserId(registration == null ? null : registration.referrerUserId());
             payment.setAffiliateAttributionResolved(true);
         }
@@ -99,7 +101,7 @@ public class AffiliateRevenueService {
     @Scheduled(fixedDelay = 30_000L)
     public void finishInterruptedWrites() {
         sessions.runAcrossConfiguredDatabases(() -> groupRules.runScheduledGroups("affiliate-revenue", () -> {
-            for (Payment payment : jobGroupScope.findOwned(Query.query(Criteria.where("affiliateRevenuePending").is(true)).limit(100), Payment.class, "userId")) {
+            for (Payment payment : paymentJobs.find(Query.query(Criteria.where("affiliateRevenuePending").is(true)).limit(100), Payment.class, Payment::getUserId)) {
                 try { record(payment); }
                 catch (RuntimeException error) {
                     org.slf4j.LoggerFactory.getLogger(AffiliateRevenueService.class)

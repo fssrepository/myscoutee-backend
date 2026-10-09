@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterStateDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentSaveRequestDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.help.service.HelpCenterService;
 
 @RestController

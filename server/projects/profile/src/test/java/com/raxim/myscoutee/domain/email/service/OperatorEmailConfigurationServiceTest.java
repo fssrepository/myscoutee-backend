@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.server.ResponseStatusException;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 import com.raxim.myscoutee.domain.email.service.EmailProvider;
 import com.raxim.myscoutee.domain.email.service.OperatorEmailConfigurationService.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,13 +37,13 @@ class OperatorEmailConfigurationServiceTest {
         verifyNoInteractions(crypto);
     }
     @Test void newSecretIsEncryptedAndPersistedWithoutPlaintext() {
-        provider(); var envelope = new EncryptedSecret(); when(crypto.encrypt(anyString(), eq("operator-key"))).thenReturn(envelope);
+        provider(); var envelope = new EncryptedSecret(); when(crypto.encryptEmailSecret(any(com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose.class), eq("operator-key"))).thenReturn(envelope);
         when(mongo.findAndModify(any(Query.class), any(Update.class), any(FindAndModifyOptions.class), eq(Configuration.class))).thenAnswer(call -> {
             Update update = call.getArgument(1); var fields = (org.bson.Document) update.getUpdateObject().get("$set");
             assertSame(envelope, fields.get("credential")); assertFalse(fields.values().contains("operator-key"));
             return new Configuration("global", 1, true, "sendgrid", "from@example.test", "", envelope, "");
         });
         service.save(new Save(0, true, "sendgrid", "from@example.test", "", "operator-key", false));
-        verify(crypto).encrypt("operator-email-provider", "operator-key");
+        verify(crypto).encryptEmailSecret(com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose.PROVIDER, "operator-key");
     }
 }

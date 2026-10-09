@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.community.document;
 
-import com.raxim.myscoutee.domain.media.document.DocumentAttachment;
+import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
 
 import java.util.List;
 import org.springframework.data.annotation.Id;

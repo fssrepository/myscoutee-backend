@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
 import com.raxim.myscoutee.domain.assets.document.AssetRequest;
 
 @org.junit.jupiter.api.Tag("standard")

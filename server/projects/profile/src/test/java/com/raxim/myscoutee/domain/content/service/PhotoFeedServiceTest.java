@@ -21,13 +21,15 @@ import static org.mockito.Mockito.*;
 @org.junit.jupiter.api.Tag("standard")
 class PhotoFeedServiceTest {
     private final PhotoFeedRepository repository = mock(PhotoFeedRepository.class);
+    private final com.raxim.myscoutee.domain.accounts.api.FeedCounts counts = mock(com.raxim.myscoutee.domain.accounts.api.FeedCounts.class);
     private final PhotoFeedService service = new PhotoFeedService(repository);
     private final ActivitiesEventsService events = mock(ActivitiesEventsService.class);
     private final ImageEventReference event = new ImageEventReference("event", "Event", "organizer", "Organizer", "Budapest");
     @BeforeEach void setUp() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "feedCounts", counts);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "events", events);
         when(events.queryFeedEventOptions("alice")).thenReturn(List.of(new EventOption(event, "", "")));
-        when(repository.counters("alice")).thenReturn(Users.FeedCountersRecord.empty());
+        when(counts.counters("alice")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord.empty());
     }
     private final Users actor = actor();
     private static Users actor() {

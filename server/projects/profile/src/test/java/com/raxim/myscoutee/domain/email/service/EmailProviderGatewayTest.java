@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.email.service;
 
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
+
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

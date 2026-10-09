@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,28 +19,34 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.accounts.api.ScoringProfile;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.events.api.EventDerivedUpdates;
+import com.raxim.myscoutee.domain.events.dto.EventVersionDto;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ScoringProfiles;
 
 @Service
 public class AffinityMaintenanceService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.platform.api.JobAudience jobGroupScope;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String STATUS_ACCEPTED = "accepted";
-    private final UsersRepository usersRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
-    private final AssetsRepository assetsRepository;
+    private final ScoringProfiles usersRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final EventDerivedUpdates eventDerivedUpdates;
+    private final MemberDirectory activityMembersRepository;
+    private final AssetOwnershipReads assetsRepository;
+    private final com.raxim.myscoutee.domain.assets.api.AssetDerivedUpdates assetDerivedUpdates;
     private final UserRatesRepository userRatesRepository;
     private final AbsoluteAffinityService absoluteAffinityService;
     private final AffinityCalculationService affinityCalculationService;
@@ -48,10 +54,12 @@ public class AffinityMaintenanceService {
     private final MongoTemplate mongoTemplate;
 
     public AffinityMaintenanceService(
-            UsersRepository usersRepository,
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
-            AssetsRepository assetsRepository,
+            ScoringProfiles usersRepository,
+            EventOwnershipReads activityEventsRepository,
+            EventDerivedUpdates eventDerivedUpdates,
+            MemberDirectory activityMembersRepository,
+            AssetOwnershipReads assetsRepository,
+            com.raxim.myscoutee.domain.assets.api.AssetDerivedUpdates assetDerivedUpdates,
             UserRatesRepository userRatesRepository,
             AbsoluteAffinityService absoluteAffinityService,
             AffinityCalculationService affinityCalculationService,
@@ -59,8 +67,10 @@ public class AffinityMaintenanceService {
             MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.eventDerivedUpdates = eventDerivedUpdates;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
+        this.assetDerivedUpdates = assetDerivedUpdates;
         this.userRatesRepository = userRatesRepository;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityCalculationService = affinityCalculationService;
@@ -76,7 +86,7 @@ public class AffinityMaintenanceService {
         usersRepository.findByUserId(normalizedUserId).ifPresent(this::refreshForUser);
     }
 
-    public void refreshForUser(Users changedUser) {
+    public void refreshForUser(ScoringProfile changedUser) {
         String changedUserId = normalizeId(changedUser == null ? null : changedUser.getId());
         if (!StringUtils.hasText(changedUserId)) {
             return;
@@ -93,7 +103,7 @@ public class AffinityMaintenanceService {
         usersRepository.findByUserId(normalizedUserId).ifPresent(this::refreshUserAffinityAndDependents);
     }
 
-    public void refreshUserAffinityAndDependents(Users user) {
+    public void refreshUserAffinityAndDependents(ScoringProfile user) {
         if (user == null) {
             return;
         }
@@ -102,10 +112,10 @@ public class AffinityMaintenanceService {
             return;
         }
         double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
-        Users refreshed = user;
+        ScoringProfile refreshed = user;
         if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
             if (updateUserAffinityOnly(user, nextAffinity)) {
-                refreshed = user;
+                refreshed = com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user).withAffinity(nextAffinity);
             }
         }
         refreshRateAffinitiesForUser(refreshed);
@@ -120,7 +130,7 @@ public class AffinityMaintenanceService {
         usersRepository.findByUserId(normalizedUserId).ifPresent(this::refreshUserAffinityAndRates);
     }
 
-    public void refreshUserAffinityAndRates(Users user) {
+    public void refreshUserAffinityAndRates(ScoringProfile user) {
         if (user == null) {
             return;
         }
@@ -129,10 +139,10 @@ public class AffinityMaintenanceService {
             return;
         }
         double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
-        Users refreshed = user;
+        ScoringProfile refreshed = user;
         if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
             if (updateUserAffinityOnly(user, nextAffinity)) {
-                refreshed = user;
+                refreshed = com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user).withAffinity(nextAffinity);
             }
         }
         refreshRateAffinitiesForUser(refreshed);
@@ -145,7 +155,7 @@ public class AffinityMaintenanceService {
         }
 
         LinkedHashSet<String> eventSourceIds = new LinkedHashSet<>();
-        for (ActivityEvent event : activityEventsRepository.findByCreatorUserId(normalizedUserId)) {
+        for (Event event : activityEventsRepository.findByCreatorUserId(normalizedUserId)) {
             String sourceId = normalizeId(event == null ? null : event.getSourceId());
             if (StringUtils.hasText(sourceId)) {
                 eventSourceIds.add(sourceId);
@@ -176,7 +186,7 @@ public class AffinityMaintenanceService {
         if (normalizedAssetIds.isEmpty()) {
             return RecomputeOutcome.empty();
         }
-        List<Asset> assets = normalizedAssetIds.size() == 1
+        List<? extends Asset> assets = normalizedAssetIds.size() == 1
                 ? assetsRepository.findByAssetId(normalizedAssetIds.get(0)).map(List::of).orElseGet(List::of)
                 : assetsRepository.findByAssetIdIn(normalizedAssetIds);
         if (assets == null || assets.isEmpty()) {
@@ -191,14 +201,14 @@ public class AffinityMaintenanceService {
             }
         }
 
-        Map<String, Users> ownersById = indexUsers(usersRepository.findByUserIdIn(new ArrayList<>(ownerUserIds)));
+        Map<String, ScoringProfile> ownersById = indexUsers(usersRepository.findByUserIdIn(new ArrayList<>(ownerUserIds)));
         List<String> updatedAssetIds = new ArrayList<>();
         List<String> conflictedAssetIds = new ArrayList<>();
         for (Asset asset : assets) {
             if (asset == null) {
                 continue;
             }
-            Users owner = ownersById.get(normalizeId(asset.getOwnerUserId()));
+            ScoringProfile owner = ownersById.get(normalizeId(asset.getOwnerUserId()));
             double nextAffinity = absoluteAffinityService.resolveAssetAffinity(asset, owner);
             double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
             if (Math.abs(safeDouble(asset.getAffinity()) - nextAffinity) > 0.000001d
@@ -218,25 +228,25 @@ public class AffinityMaintenanceService {
         if (normalizedUserIds.isEmpty()) {
             return;
         }
-        List<Users> users = usersRepository.findByUserIdIn(normalizedUserIds);
-        for (Users user : users == null ? List.<Users>of() : users) {
+        List<? extends ScoringProfile> users = usersRepository.findByUserIdIn(normalizedUserIds);
+        for (ScoringProfile user : users == null ? List.<ScoringProfile>of() : users) {
             refreshForUser(user);
         }
     }
 
     public StoredAffinityRecomputeOutcome refreshAllStoredAffinities() {
-        List<Users> users = (JobGroupContext.isActive() ? mongoTemplate.find(Query.query(jobGroupScope.workspaceCriteria("workspaceGroupId")), Users.class) : usersRepository.findAll()).stream()
+        List<? extends ScoringProfile> users = accountProjections.profilesForCurrentJob().stream()
                 .filter(user -> StringUtils.hasText(normalizeId(user == null ? null : user.getId())))
                 .toList();
-        for (Users user : users) {
+        Map<String, ScoringProfile> usersById = indexUsers(users);
+        for (ScoringProfile user : users) {
             double nextAffinity = absoluteAffinityService.resolveUserAffinity(user);
-            if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d) {
-                updateUserAffinityOnly(user, nextAffinity);
+            if (Math.abs(safeDouble(user.getAffinity()) - nextAffinity) > 0.000001d && updateUserAffinityOnly(user, nextAffinity)) {
+                usersById.put(normalizeId(user.getId()), com.raxim.myscoutee.domain.accounts.dto.ScoringProfileDto.from(user).withAffinity(nextAffinity));
             }
         }
 
-        Map<String, Users> usersById = indexUsers(users);
-        refreshAllRateAffinities();
+        refreshAllRateAffinities(usersById.keySet());
         RecomputeOutcome eventOutcome = refreshAllEventAffinities(usersById);
         RecomputeOutcome assetOutcome = refreshAllAssetAffinities(usersById);
         return new StoredAffinityRecomputeOutcome(eventOutcome, assetOutcome);
@@ -255,14 +265,14 @@ public class AffinityMaintenanceService {
         if (normalizedSourceIds.isEmpty()) {
             return RecomputeOutcome.empty();
         }
-        List<ActivityEvent> events = normalizedSourceIds.size() == 1
+        List<? extends Event> events = normalizedSourceIds.size() == 1
                 ? activityEventsRepository.findBySourceId(normalizedSourceIds.get(0))
                 : activityEventsRepository.findBySourceIdIn(normalizedSourceIds);
         if (events == null || events.isEmpty()) {
             return RecomputeOutcome.empty();
         }
         LinkedHashSet<String> participantUserIds = new LinkedHashSet<>();
-        for (ActivityEvent event : events) {
+        for (Event event : events) {
             String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
             if (StringUtils.hasText(creatorUserId)) {
                 participantUserIds.add(creatorUserId);
@@ -271,9 +281,9 @@ public class AffinityMaintenanceService {
         participantUserIds.addAll(eventAcceptedMemberUserIdsBySourceId(events).values().stream()
                 .flatMap(Collection::stream)
                 .toList());
-        Map<String, Users> usersById = new LinkedHashMap<>();
-        List<Users> participants = usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds));
-        for (Users user : participants == null ? List.<Users>of() : participants) {
+        Map<String, ScoringProfile> usersById = new LinkedHashMap<>();
+        List<? extends ScoringProfile> participants = usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds));
+        for (ScoringProfile user : participants == null ? List.<ScoringProfile>of() : participants) {
             String userId = normalizeId(user == null ? null : user.getId());
             if (StringUtils.hasText(userId)) {
                 usersById.put(userId, user);
@@ -282,13 +292,13 @@ public class AffinityMaintenanceService {
         return saveChangedEvents(events, usersById);
     }
 
-    private void refreshEventAffinitiesForUser(Users changedUser) {
+    private void refreshEventAffinitiesForUser(ScoringProfile changedUser) {
         String changedUserId = normalizeId(changedUser == null ? null : changedUser.getId());
         if (!StringUtils.hasText(changedUserId)) {
             return;
         }
 
-        LinkedHashMap<String, ActivityEvent> affectedEventsByDocumentId = new LinkedHashMap<>();
+        LinkedHashMap<String, Event> affectedEventsByDocumentId = new LinkedHashMap<>();
         addAffectedEvents(affectedEventsByDocumentId, activityEventsRepository.findByCreatorUserId(changedUserId));
         Set<String> memberEventSourceIds = acceptedEventSourceIdsForUser(changedUserId);
         if (!memberEventSourceIds.isEmpty()) {
@@ -300,7 +310,7 @@ public class AffinityMaintenanceService {
 
         LinkedHashSet<String> participantUserIds = new LinkedHashSet<>();
         participantUserIds.add(changedUserId);
-        for (ActivityEvent event : affectedEventsByDocumentId.values()) {
+        for (Event event : affectedEventsByDocumentId.values()) {
             String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
             if (StringUtils.hasText(creatorUserId)) {
                 participantUserIds.add(creatorUserId);
@@ -310,10 +320,10 @@ public class AffinityMaintenanceService {
                 .flatMap(Collection::stream)
                 .toList());
 
-        Map<String, Users> usersById = new LinkedHashMap<>();
+        Map<String, ScoringProfile> usersById = new LinkedHashMap<>();
         usersById.put(changedUserId, changedUser);
-        List<Users> participants = usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds));
-        for (Users user : participants == null ? List.<Users>of() : participants) {
+        List<? extends ScoringProfile> participants = usersRepository.findByUserIdIn(new ArrayList<>(participantUserIds));
+        for (ScoringProfile user : participants == null ? List.<ScoringProfile>of() : participants) {
             String userId = normalizeId(user == null ? null : user.getId());
             if (StringUtils.hasText(userId)) {
                 usersById.put(userId, user);
@@ -322,20 +332,20 @@ public class AffinityMaintenanceService {
         saveChangedEvents(affectedEventsByDocumentId.values(), usersById);
     }
 
-    private RecomputeOutcome refreshAllEventAffinities(Map<String, Users> usersById) {
+    private RecomputeOutcome refreshAllEventAffinities(Map<String, ScoringProfile> usersById) {
         return saveChangedEvents(activityEventsRepository.findAll(), usersById);
     }
 
-    private RecomputeOutcome saveChangedEvents(Collection<ActivityEvent> events, Map<String, Users> usersById) {
-        List<ActivityEvent> eventList = events == null
+    private RecomputeOutcome saveChangedEvents(Collection<? extends Event> events, Map<String, ScoringProfile> usersById) {
+        List<? extends Event> eventList = events == null
                 ? List.of()
                 : events.stream().filter(event -> event != null)
                         .filter(event -> !JobGroupContext.isActive() || jobGroupScope.matchesWorkspace(event.getWorkspaceGroupId())).toList();
         Map<String, List<String>> acceptedMembersBySourceId = eventAcceptedMemberUserIdsBySourceId(eventList);
         List<String> updatedSourceIds = new ArrayList<>();
         List<String> conflictedSourceIds = new ArrayList<>();
-        for (ActivityEvent event : eventList) {
-            List<Users> participants = eventAffinityParticipants(event, usersById, acceptedMembersBySourceId.get(normalizeId(event.getSourceId())));
+        for (Event event : eventList) {
+            List<? extends ScoringProfile> participants = eventAffinityParticipants(event, usersById, acceptedMembersBySourceId.get(normalizeId(event.getSourceId())));
             double nextAffinity = absoluteAffinityService.resolveEventAffinity(
                     event,
                     participants);
@@ -352,7 +362,7 @@ public class AffinityMaintenanceService {
         return new RecomputeOutcome(updatedSourceIds, conflictedSourceIds);
     }
 
-    private RecomputeOutcome refreshAssetAffinitiesForOwner(Users owner) {
+    private RecomputeOutcome refreshAssetAffinitiesForOwner(ScoringProfile owner) {
         String ownerUserId = normalizeId(owner == null ? null : owner.getId());
         if (!StringUtils.hasText(ownerUserId)) {
             return RecomputeOutcome.empty();
@@ -377,14 +387,14 @@ public class AffinityMaintenanceService {
         return new RecomputeOutcome(updatedAssetIds, conflictedAssetIds);
     }
 
-    private RecomputeOutcome refreshAllAssetAffinities(Map<String, Users> usersById) {
+    private RecomputeOutcome refreshAllAssetAffinities(Map<String, ScoringProfile> usersById) {
         List<String> updatedAssetIds = new ArrayList<>();
         List<String> conflictedAssetIds = new ArrayList<>();
         for (Asset asset : assetsRepository.findAll()) {
             if (asset == null) {
                 continue;
             }
-            Users owner = usersById.get(normalizeId(asset.getOwnerUserId()));
+            ScoringProfile owner = usersById.get(normalizeId(asset.getOwnerUserId()));
             if (JobGroupContext.isActive() && owner == null) continue;
             double nextAffinity = absoluteAffinityService.resolveAssetAffinity(asset, owner);
             double nextBoost = absoluteAffinityService.resolveAssetBoost(asset, owner);
@@ -400,8 +410,8 @@ public class AffinityMaintenanceService {
         return new RecomputeOutcome(updatedAssetIds, conflictedAssetIds);
     }
 
-    private void addAffectedEvents(Map<String, ActivityEvent> target, List<ActivityEvent> events) {
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+    private void addAffectedEvents(Map<String, Event> target, List<? extends Event> events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             String documentId = normalizeId(event == null ? null : event.getId());
             if (StringUtils.hasText(documentId)) {
                 target.put(documentId, event);
@@ -409,14 +419,14 @@ public class AffinityMaintenanceService {
         }
     }
 
-    private List<Users> eventAffinityParticipants(ActivityEvent event, Map<String, Users> usersById, List<String> acceptedMemberUserIds) {
-        LinkedHashMap<String, Users> participantsById = new LinkedHashMap<>();
+    private List<? extends ScoringProfile> eventAffinityParticipants(Event event, Map<String, ScoringProfile> usersById, List<String> acceptedMemberUserIds) {
+        LinkedHashMap<String, ScoringProfile> participantsById = new LinkedHashMap<>();
         String creatorUserId = normalizeId(event == null ? null : event.getCreatorUserId());
         if (StringUtils.hasText(creatorUserId) && usersById.containsKey(creatorUserId)) {
             participantsById.put(creatorUserId, usersById.get(creatorUserId));
         }
         for (String userId : normalizeIds(acceptedMemberUserIds)) {
-            Users user = usersById.get(userId);
+            ScoringProfile user = usersById.get(userId);
             if (user != null) {
                 participantsById.put(userId, user);
             }
@@ -431,15 +441,15 @@ public class AffinityMaintenanceService {
         }
         return activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, normalizedUserId).stream()
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeMemberStatus(member == null ? null : member.getStatus())))
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
     }
 
-    private Map<String, List<String>> eventAcceptedMemberUserIdsBySourceId(Collection<ActivityEvent> events) {
+    private Map<String, List<String>> eventAcceptedMemberUserIdsBySourceId(Collection<? extends Event> events) {
         LinkedHashSet<String> sourceIds = new LinkedHashSet<>();
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             String sourceId = normalizeId(event == null ? null : event.getSourceId());
             if (StringUtils.hasText(sourceId)) {
                 sourceIds.add(sourceId);
@@ -449,7 +459,7 @@ public class AffinityMaintenanceService {
             return Map.of();
         }
         LinkedHashMap<String, LinkedHashSet<String>> membersBySourceId = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+        for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
             if (member == null || !STATUS_ACCEPTED.equals(normalizeMemberStatus(member.getStatus()))) {
                 continue;
             }
@@ -466,7 +476,7 @@ public class AffinityMaintenanceService {
         return result;
     }
 
-    private void refreshRateAffinitiesForUser(Users changedUser) {
+    private void refreshRateAffinitiesForUser(ScoringProfile changedUser) {
         String userId = normalizeId(changedUser == null ? null : changedUser.getId());
         if (!StringUtils.hasText(userId)) {
             return;
@@ -474,8 +484,13 @@ public class AffinityMaintenanceService {
         refreshRateAffinities(userRatesRepository.findRelevantByUserIds(List.of(userId)));
     }
 
-    private void refreshAllRateAffinities() {
-        refreshRateAffinities(JobGroupContext.isActive() ? jobGroupScope.findOwned(new Query(), UserRate.class, "ownerUserId") : userRatesRepository.findAll());
+    private void refreshAllRateAffinities(Collection<String> scopedOwners) {
+        if (!JobGroupContext.isActive()) { refreshRateAffinities(userRatesRepository.findAll()); return; }
+        var owners = new ArrayList<>(scopedOwners);
+        var rates = new ArrayList<UserRate>();
+        for (int offset = 0; offset < owners.size(); offset += 1000)
+            rates.addAll(userRatesRepository.findByOwnerUserIdIn(owners.subList(offset, Math.min(owners.size(), offset + 1000))));
+        refreshRateAffinities(rates);
     }
 
     private void refreshRateAffinities(List<UserRate> rates) {
@@ -511,77 +526,16 @@ public class AffinityMaintenanceService {
         userAffinityEdgeService.recomputeForRates(rates);
     }
 
-    private boolean updateUserAffinityOnly(Users user, double nextAffinity) {
-        if (user == null) {
-            return false;
-        }
-        String userId = normalizeId(user.getId());
-        if (!StringUtils.hasText(userId)) {
-            return false;
-        }
-        UpdateResult result = mongoTemplate.updateFirst(
-                new Query(Criteria.where("userId").is(userId)),
-                new Update().set("affinity", nextAffinity),
-                Users.class);
-        if (result.getMatchedCount() <= 0) {
-            return false;
-        }
-        user.setAffinity(nextAffinity);
-        return true;
+    private boolean updateUserAffinityOnly(ScoringProfile user, double nextAffinity) {
+        return accountProjections.updateAffinity(user.getId(), nextAffinity);
     }
 
-    private boolean updateEventDerivedFieldsIfSnapshotCurrent(ActivityEvent event, double nextAffinity, double nextBoost) {
-        if (event == null) {
-            return false;
-        }
-        String id = normalizeId(event.getId());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(event.getUpdatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        UpdateResult result = mongoTemplate.updateFirst(
-                new Query(criteria),
-                new Update()
-                        .set("affinity", nextAffinity)
-                        .set("boost", nextBoost),
-                ActivityEvent.class);
-        if (result.getMatchedCount() <= 0) {
-            return false;
-        }
-        event.setAffinity(nextAffinity);
-        event.setBoost(nextBoost);
-        return true;
+    private boolean updateEventDerivedFieldsIfSnapshotCurrent(Event event, double nextAffinity, double nextBoost) {
+        return eventDerivedUpdates.updateAffinityVersion(new EventVersionDto(event.getId(), event.getUpdatedDate()), nextAffinity, nextBoost);
     }
 
     private boolean updateAssetDerivedFieldsIfSnapshotCurrent(Asset asset, double nextAffinity, double nextBoost) {
-        if (asset == null) {
-            return false;
-        }
-        String id = normalizeId(asset.getId());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(asset.getUpdatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        UpdateResult result = mongoTemplate.updateFirst(
-                new Query(criteria),
-                new Update()
-                        .set("affinity", nextAffinity)
-                        .set("boost", nextBoost),
-                Asset.class);
-        if (result.getMatchedCount() <= 0) {
-            return false;
-        }
-        asset.setAffinity(nextAffinity);
-        asset.setBoost(nextBoost);
-        return true;
+        return assetDerivedUpdates.updateAffinityVersion(new com.raxim.myscoutee.domain.assets.dto.AssetVersionDto(asset.getId(), asset.getUpdatedDate()), nextAffinity, nextBoost);
     }
 
     private boolean updateRateDerivedFieldsIfSnapshotCurrent(UserRate rate) {
@@ -608,9 +562,9 @@ public class AffinityMaintenanceService {
         return result.getMatchedCount() > 0;
     }
 
-    private Map<String, Users> indexUsers(List<Users> users) {
-        Map<String, Users> usersById = new LinkedHashMap<>();
-        for (Users user : users == null ? List.<Users>of() : users) {
+    private Map<String, ScoringProfile> indexUsers(List<? extends ScoringProfile> users) {
+        Map<String, ScoringProfile> usersById = new LinkedHashMap<>();
+        for (ScoringProfile user : users == null ? List.<ScoringProfile>of() : users) {
             String userId = normalizeId(user == null ? null : user.getId());
             if (StringUtils.hasText(userId)) {
                 usersById.put(userId, user);

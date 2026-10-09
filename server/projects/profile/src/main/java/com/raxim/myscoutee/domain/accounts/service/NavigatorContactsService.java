@@ -1,14 +1,12 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessDto;
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessSnapshot;
 import com.raxim.myscoutee.domain.accounts.dto.NavigatorContactsDtos.ContactChatAccessCommand;
-import com.raxim.myscoutee.domain.chat.document.ContactChatAccess;
-import com.raxim.myscoutee.domain.chat.repository.ContactChatAccessRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
+import com.raxim.myscoutee.domain.chat.api.ContactPermissions.Permission;
+import com.raxim.myscoutee.domain.chat.api.ContactPermissions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -43,8 +41,8 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
 import com.raxim.myscoutee.domain.accounts.dto.ExperienceDtos.ExperienceEntryDto;
 import com.raxim.myscoutee.domain.accounts.repository.NavigatorContactsProfilesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.FriendshipFacts;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
+import com.raxim.myscoutee.domain.accounts.api.Friendships;
 
 @Service
 public class NavigatorContactsService {
@@ -65,21 +63,21 @@ public class NavigatorContactsService {
     private final HomeUserProfileService homeUserProfileService;
     private final UserExperienceProfilesService userExperienceProfilesService;
     private final UsersRepository usersRepository;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final MongoTemplate mongo;
-    private final FriendshipFacts friendshipFacts;
-    private final ContactChatAccessRepository chatAccess;
-    private final NotificationOutboxService notifications;
+    private final Friendships friendshipFacts;
+    private final ContactPermissions chatAccess;
+    private final ContactChatAccessWorkflow contactWorkflow;
 
     public NavigatorContactsService(
             NavigatorContactsProfilesRepository navigatorContactsProfilesRepository,
             HomeUserProfileService homeUserProfileService,
             UserExperienceProfilesService userExperienceProfilesService,
             UsersRepository usersRepository,
-            AccessControlService accessControlService,
-            FriendshipFacts friendshipFacts,
-            ContactChatAccessRepository chatAccess,
-            NotificationOutboxService notifications,
+            AccessPermissions accessControlService,
+            Friendships friendshipFacts,
+            ContactPermissions chatAccess,
+            ContactChatAccessWorkflow contactWorkflow,
             MongoTemplate mongo) {
         this.navigatorContactsProfilesRepository = navigatorContactsProfilesRepository;
         this.homeUserProfileService = homeUserProfileService;
@@ -88,7 +86,7 @@ public class NavigatorContactsService {
         this.accessControlService = accessControlService;
         this.friendshipFacts = friendshipFacts;
         this.chatAccess = chatAccess;
-        this.notifications = notifications;
+        this.contactWorkflow = contactWorkflow;
         this.mongo = mongo;
     }
 
@@ -119,7 +117,8 @@ public class NavigatorContactsService {
         Users owner = usersRepository.findByUserId(actor).orElse(null);
         Users peer = usersRepository.findByUserId(target).orElse(null);
         if (actor.equals(target) || !availableChatPeer(owner, peer)) throw chatAccessError(404, "Contact unavailable.");
-        String id = ContactChatAccess.pairId(actor, target);
+        String id = chatAccess.pairId(actor, target);
+        contactWorkflow.finishPending(id);
         var current = chatAccess.findById(id).orElse(null);
         String action = command == null ? "" : safeText(command.action());
         String status;
@@ -140,32 +139,16 @@ public class NavigatorContactsService {
                 throw chatAccessError(409, "The request has changed.");
             requester = current.requestedBy(); requestedAt = current.requestedAtIso();
         } else throw chatAccessError(400, "Unknown chat access action.");
-        var next = new ContactChatAccess(id,
+        var draft = new ContactPermissions.Change(id,
                 actor.compareTo(target) < 0 ? actor : target, actor.compareTo(target) < 0 ? target : actor,
                 requester, status, requestedAt, "pending".equals(status) ? null : now, current == null ? null : current.version());
-        try { next = chatAccess.save(next); }
-        catch (org.springframework.dao.OptimisticLockingFailureException | org.springframework.dao.DuplicateKeyException conflict) {
+        Permission next;
+        try {
+            next = contactWorkflow.accept(actor, target, owner.getWorkspaceGroupId(), draft,
+                    chatContact(draft.requestedAtIso(), draft.decidedAtIso(), peer));
+        } catch (org.springframework.dao.OptimisticLockingFailureException | org.springframework.dao.DuplicateKeyException conflict) {
             throw chatAccessError(409, "The request has changed.");
         }
-        if ("approved".equals(status)) {
-            List<NavigatorContactDto> contacts = new ArrayList<>(loadContacts(null));
-            if (contacts.stream().noneMatch(contact -> target.equals(contact.userId()))) {
-                contacts.add(chatAccessDto(next, peer).contact());
-                saveContacts(new NavigatorContactsSaveRequestDto(null, contacts));
-            }
-        }
-        String counterOwner = "pending".equals(status) ? target : actor;
-        var counterCriteria = Criteria.where("userId").is(counterOwner);
-        if (!"pending".equals(status)) counterCriteria.and("contactRequestsPending").gt(0);
-        mongo.updateFirst(Query.query(counterCriteria),
-                new Update().inc("contactRequestsPending", "pending".equals(status) ? 1 : -1), Users.class);
-        String kind = "contact-chat-" + ("pending".equals(status) ? "requested" : status);
-        String messageKey = "notification.kind." + kind + ".message";
-        notifications.enqueue(new NotificationIntent(
-                kind, "contact", id, "users", List.of(target), "MyScoutee", messageKey, "/game",
-                "/assets/logo/heart.webp", "/assets/logo/heart.webp", kind + "-" + id,
-                Map.of("notification_message_key", messageKey, "senderUserId", actor,
-                        "contactUserId", actor, "requestVersion", String.valueOf(next.version())), actor));
         return chatAccessDto(next, peer);
     }
 
@@ -177,17 +160,20 @@ public class NavigatorContactsService {
 
     private boolean availableChatPeer(Users owner, Users peer) {
         return owner != null && peer != null && !StringUtils.hasText(peer.getDeletedAtIso())
-                && !"deleted".equalsIgnoreCase(peer.getProfileStatus()) && CommunityGroupProfilesService.sameWorkspace(owner, peer);
+                && !"deleted".equalsIgnoreCase(peer.getProfileStatus()) && WorkspaceContext.sameWorkspace(owner, peer);
     }
 
     private ContactChatAccessDto chatAccessDto(
-            ContactChatAccess value, Users peer) {
-        var contact = new NavigatorContactDto(peer.getUserId(), peer.getUserId(), contactName(peer.getName()),
+            Permission value, Users peer) {
+        return new ContactChatAccessDto(value.id(), value.requestedBy(), value.status(), value.requestedAtIso(),
+                value.decidedAtIso(), value.version(), chatContact(value.requestedAtIso(), value.decidedAtIso(), peer));
+    }
+
+    private NavigatorContactDto chatContact(String requestedAt, String decidedAt, Users peer) {
+        return new NavigatorContactDto(peer.getUserId(), peer.getUserId(), contactName(peer.getName()),
                 safeText(peer.getInitials()), normalizeGender(peer.getGender()), safeText(peer.getCity()),
                 peer.getImages() == null || peer.getImages().isEmpty() ? "" : peer.getImages().get(0),
-                "", value.requestedAtIso(), value.decidedAtIso() == null ? value.requestedAtIso() : value.decidedAtIso(), List.of());
-        return new ContactChatAccessDto(
-                value.id(), value.requestedBy(), value.status(), value.requestedAtIso(), value.decidedAtIso(), value.version(), contact);
+                "", requestedAt, decidedAt == null ? requestedAt : decidedAt, List.of());
     }
 
     private ResponseStatusException chatAccessError(int status, String message) {
@@ -211,7 +197,7 @@ public class NavigatorContactsService {
             return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
         Users record = usersRepository.findByUserId(targetUserId).orElse(null);
-        if (record == null || record.getWorkspaceGroupId() != null && !CommunityGroupProfilesService.allows(record.getWorkspaceGroupId())) {
+        if (record == null || record.getWorkspaceGroupId() != null && !WorkspaceContext.allows(record.getWorkspaceGroupId())) {
             return new NavigatorContactProfileDto(null, List.of(), List.of());
         }
         String viewer = accessControlService.resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
@@ -387,72 +373,12 @@ public class NavigatorContactsService {
     }
 
     private void updateContactsCounter(String userId, int contactsCount) {
-        usersRepository.findByUserId(userId).ifPresent(user -> {
-            user.setActivities(withContactsCount(user.getActivities(), contactsCount));
-            usersRepository.save(user);
-        });
-    }
-
-    private Users.UserActivitiesRecord withContactsCount(Users.UserActivitiesRecord current, int contactsCount) {
-        Users.UserActivitiesRecord safe = current == null ? emptyActivities() : current;
-        return new Users.UserActivitiesRecord(
-                count(safe.game()),
-                count(safe.chats()),
-                count(safe.invitations()),
-                count(safe.events()),
-                count(safe.hosting()),
-                count(safe.cars()),
-                count(safe.accommodation()),
-                count(safe.supplies()),
-                count(safe.tickets()),
-                Math.max(0, contactsCount),
-                count(safe.feedback()),
-                safe.chat() == null ? emptyChatCounters() : safe.chat(),
-                safe.event() == null ? emptyEventCounters() : safe.event(),
-                safe.asset() == null ? emptyAssetCounters() : safe.asset(),
-                safe.eventFeedback() == null ? emptyEventFeedbackCounters() : safe.eventFeedback(),
-                count(safe.adminJobs()),
-                count(safe.adminMetrics()),
-                count(safe.notifications()),
-                count(safe.serviceFeedbackPending()));
-    }
-
-    private Users.UserActivitiesRecord emptyActivities() {
-        return new Users.UserActivitiesRecord(
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                emptyChatCounters(),
-                emptyEventCounters(),
-                emptyAssetCounters(),
-                emptyEventFeedbackCounters(),
-                0,
-                0,
-                0);
-    }
-
-    private Users.UserChatCountersRecord emptyChatCounters() {
-        return new Users.UserChatCountersRecord(0, 0, 0, 0, 0, 0);
-    }
-
-    private Users.UserEventCountersRecord emptyEventCounters() {
-        return new Users.UserEventCountersRecord(0, 0, 0, 0, 0, 0, 0);
-    }
-
-    private Users.UserAssetCountersRecord emptyAssetCounters() {
-        return new Users.UserAssetCountersRecord(0, 0, 0, 0);
-    }
-
-    private Users.UserEventFeedbackCountersRecord emptyEventFeedbackCounters() {
-        return new Users.UserEventFeedbackCountersRecord(0, 0, 0, 0);
+        var update = org.springframework.data.mongodb.core.aggregation.AggregationUpdate.update()
+                .set("activities").toValue((org.springframework.data.mongodb.core.aggregation.AggregationExpression) context ->
+                        new org.bson.Document("$mergeObjects", List.of(
+                                new org.bson.Document("$ifNull", List.of("$activities", new org.bson.Document())),
+                                new org.bson.Document("contacts", Math.max(0, contactsCount)))));
+        mongo.updateFirst(Query.query(Criteria.where("userId").is(userId)), update, Users.class);
     }
 
     private String resolveUserId(String requestedUserId) {

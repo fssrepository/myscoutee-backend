@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.assets.document;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,14 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
         @CompoundIndex(name = "asset_owner_asset_id", def = "{'ownerUserId': 1, 'assetId': 1}", unique = true),
         @CompoundIndex(name = "asset_owner_updated", def = "{'ownerUserId': 1, 'updatedDate': -1}")
 })
-public class Asset {
+public class Asset implements com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset {
+    @org.springframework.data.annotation.Version private Long version;
+    private java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> lifecycleWork = new java.util.ArrayList<>();
+    public Long getVersion() { return version; }
+    public void setVersion(Long value) { version = value; }
+    public java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> getLifecycleWork() { return lifecycleWork == null ? java.util.List.of() : lifecycleWork; }
+    public void setLifecycleWork(java.util.List<com.raxim.myscoutee.domain.assets.dto.AssetLifecycleWorkDto> value) { lifecycleWork = new java.util.ArrayList<>(value); }
+
     @org.springframework.data.mongodb.core.index.Indexed
     private String workspaceGroupId;
     public String getWorkspaceGroupId() { return workspaceGroupId; }
@@ -312,79 +320,6 @@ public class Asset {
 
     public void setUpdatedUser(String updatedUser) {
         this.updatedUser = updatedUser;
-    }
-
-    public record AssetRequestRecord(
-            String id,
-            String userId,
-            String name,
-            String initials,
-            String gender,
-            String status,
-            String note,
-            String requestKind,
-            String requestedAtIso,
-            AssetRequestBookingRecord booking) {
-    }
-
-    public record AssetRequestBookingRecord(
-            String eventId,
-            String eventTitle,
-            String subEventId,
-            String subEventTitle,
-            String slotKey,
-            String slotLabel,
-            String timeframe,
-            String startAtIso,
-            String endAtIso,
-            Integer quantity,
-            Double totalAmount,
-            Double previousTotalAmount,
-            String currency,
-            List<String> acceptedPolicyIds,
-            String paymentSessionId,
-            Boolean inventoryApplied) {
-        public AssetRequestBookingRecord(
-                String eventId,
-                String eventTitle,
-                String subEventId,
-                String subEventTitle,
-                String slotKey,
-                String slotLabel,
-                String timeframe,
-                String startAtIso,
-                String endAtIso,
-                Integer quantity,
-                Double totalAmount,
-                String currency,
-                List<String> acceptedPolicyIds,
-                String paymentSessionId,
-                Boolean inventoryApplied) {
-            this(
-                    eventId,
-                    eventTitle,
-                    subEventId,
-                    subEventTitle,
-                    slotKey,
-                    slotLabel,
-                    timeframe,
-                    startAtIso,
-                    endAtIso,
-                    quantity,
-                    totalAmount,
-                    null,
-                    currency,
-                    acceptedPolicyIds,
-                    paymentSessionId,
-                    inventoryApplied);
-        }
-    }
-
-    public record AssetPolicyRecord(
-            String id,
-            String title,
-            String description,
-            Boolean required) {
     }
 
     private static boolean hasText(String value) {

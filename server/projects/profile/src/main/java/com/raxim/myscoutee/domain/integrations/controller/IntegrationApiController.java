@@ -28,7 +28,7 @@ import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationEv
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationSyncResponseDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationWatchRequestDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationWatchResponseDto;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationSyncService;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationWebhookService;
@@ -39,7 +39,7 @@ public class IntegrationApiController {
     private final IntegrationSyncService syncService;
     private final IntegrationEventQueryService eventQueries;
     private final com.raxim.myscoutee.domain.integrations.service.IntegrationParticipantInviteService invites;
-    private final AccessControlService accessControlService;
+    private final AccessPermissions accessControlService;
     private final IntegrationWebhookService webhookService;
     private final com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService capabilities;
 
@@ -47,7 +47,7 @@ public class IntegrationApiController {
             IntegrationSyncService syncService,
             IntegrationEventQueryService eventQueries,
             com.raxim.myscoutee.domain.integrations.service.IntegrationParticipantInviteService invites,
-            AccessControlService accessControlService,
+            AccessPermissions accessControlService,
             IntegrationWebhookService webhookService,
             com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService capabilities) {
         this.syncService = syncService;

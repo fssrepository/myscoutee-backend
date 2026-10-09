@@ -1,15 +1,16 @@
 package com.raxim.myscoutee.domain.community.service;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.community.document.ServiceCase;
 import com.raxim.myscoutee.domain.community.document.ServiceOffering;
 import com.raxim.myscoutee.domain.community.document.ServiceProviderCalendar;
 import com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceOfferingsRepository;
 import com.raxim.myscoutee.domain.community.repository.ServiceProviderCalendarsRepository;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
-import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
+import com.raxim.myscoutee.domain.payments.api.ServiceSlotPricing;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -21,25 +22,25 @@ import com.raxim.myscoutee.domain.community.document.ServiceProviderCalendar.App
 import com.raxim.myscoutee.domain.community.dto.CaseAppointmentDtos.*;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.*;
 
-import com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper;
-import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
+import com.raxim.myscoutee.domain.events.api.SlotRecurrence;
+import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
 public class CaseAppointmentsService {
     private final CommunityCasesService cases;
     private final ServiceOfferingsService services;
     private final ServiceProviderCalendarsRepository calendars;
-    private final ActivityEventSubEventsMapper recurrence;
-    private final EventCheckoutPricingService pricing;
-    private final ServiceCasesRepository caseRecords; private final ServiceOfferingsRepository serviceRecords; private final UsersRepository users;
+    private final SlotRecurrence recurrence;
+    private final ServiceSlotPricing pricing;
+    private final ServiceCasesRepository caseRecords; private final ServiceOfferingsRepository serviceRecords; private final ProfileSummaries users;
     public CaseAppointmentsService(CommunityCasesService cases,ServiceOfferingsService services,ServiceProviderCalendarsRepository calendars,
-            ActivityEventSubEventsMapper recurrence,EventCheckoutPricingService pricing,ServiceCasesRepository caseRecords,ServiceOfferingsRepository serviceRecords,UsersRepository users) {
+            SlotRecurrence recurrence,ServiceSlotPricing pricing,ServiceCasesRepository caseRecords,ServiceOfferingsRepository serviceRecords,ProfileSummaries users) {
         this.cases=cases;this.services=services;this.calendars=calendars;this.recurrence=recurrence;this.pricing=pricing;this.caseRecords=caseRecords;this.serviceRecords=serviceRecords;this.users=users;
     }
     private record Context(ServiceCase caseRecord, ServiceOffering service, ServiceProviderCalendar calendar) {}
     private Context context(String actor,String caseId,String serviceId,String provider) {
         var c=cases.visible(actor,caseId);var s=serviceRecords.findById(serviceId).orElseThrow(()->error(HttpStatus.NOT_FOUND));
-        if (!CommunityGroup.COMMUNITY_BASE_ID.equals(s.baseGroupId()) || !c.activeParticipantAccountIds().contains(actor)
+        if (!BaseGroups.COMMUNITY_BASE_ID.equals(s.baseGroupId()) || !c.activeParticipantAccountIds().contains(actor)
                 || c.support().stream().noneMatch(v->provider.equals(v.accountId())&&serviceId.equals(v.serviceId()))) throw error(HttpStatus.FORBIDDEN);
         return new Context(c,s,calendars.findById(provider).orElse(new ServiceProviderCalendar(provider,List.of(),null,null,null)));
     }
@@ -74,11 +75,11 @@ public class CaseAppointmentsService {
                 .sorted(Comparator.comparing(Appointment::startAtIso)).toList()).orElse(List.of());
         var caseMap=new HashMap<String,ServiceCase>();caseRecords.findAllById(rows.stream().map(Appointment::caseId).distinct().toList()).forEach(c->caseMap.put(c.id(),c));
         var serviceMap=new HashMap<String,ServiceOffering>();serviceRecords.findAllById(rows.stream().map(Appointment::serviceId).distinct().toList()).forEach(s->serviceMap.put(s.id(),s));
-        var people=new HashMap<String,Users>();users.findByUserIdIn(rows.stream().map(Appointment::customerAccountId).distinct().toList()).forEach(u->people.put(u.getUserId(),u));
+        var people=new HashMap<String,ProfileSummary>();users.findByUserIdIn(rows.stream().map(Appointment::customerAccountId).distinct().toList()).forEach(u->people.put(u.getUserId(),u));
         var entries = new ArrayList<CalendarEntry>();
         rows.stream().filter(a->caseMap.containsKey(a.caseId())&&caseMap.get(a.caseId()).activeParticipantAccountIds().contains(actor)).forEach(a->entries.add(new CalendarEntry(a,caseMap.get(a.caseId()).title(),
                 serviceMap.containsKey(a.serviceId())?serviceMap.get(a.serviceId()).title():"",people.containsKey(a.customerAccountId())?people.get(a.customerAccountId()).getName():"",a.caseId(),null)));
-        for (var c : caseRecords.assignedCalendar(CommunityGroup.COMMUNITY_BASE_ID, actor, from, to)) {
+        for (var c : caseRecords.assignedCalendar(BaseGroups.COMMUNITY_BASE_ID, actor, from, to)) {
             if (!c.activeParticipantAccountIds().contains(actor)) continue;
             for (var task : c.boardTasks()) {
                 if ("deleted".equals(task.status()) || !task.assigneeAccountIds().contains(actor) || task.startAtIso() == null) continue;

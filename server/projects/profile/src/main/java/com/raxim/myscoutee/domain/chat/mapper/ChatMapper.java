@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseAssigneeRecord;
 import com.raxim.myscoutee.domain.chat.document.Chat.SupportCaseRecord;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMemberDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMetricsDto;
@@ -33,7 +33,7 @@ public class ChatMapper {
         return toDto(record, Map.of());
     }
 
-    public ChatDto toDto(Chat record, Map<String, Users> usersById) {
+    public ChatDto toDto(Chat record, Map<String, ProfileSummary> usersById) {
         if (record == null) {
             return null;
         }
@@ -68,7 +68,7 @@ public class ChatMapper {
         return toMap(records, Map.of());
     }
 
-    public Map<String, ChatDto> toMap(Collection<Chat> records, Map<String, Users> usersById) {
+    public Map<String, ChatDto> toMap(Collection<Chat> records, Map<String, ProfileSummary> usersById) {
         Map<String, ChatDto> result = new LinkedHashMap<>();
         for (Chat record : records == null ? List.<Chat>of() : records) {
             ChatDto dto = toDto(record, usersById);
@@ -110,7 +110,7 @@ public class ChatMapper {
                 dto.navigationContext(), dto.caseOfferId());
     }
 
-    public ChatDto withMembers(ChatDto dto, List<String> memberIds, Map<String, Users> usersById) {
+    public ChatDto withMembers(ChatDto dto, List<String> memberIds, Map<String, ProfileSummary> usersById) {
         if (dto == null) {
             return null;
         }
@@ -179,7 +179,7 @@ public class ChatMapper {
         return value == null || value < 1L ? 1L : value;
     }
 
-    private List<ChatMemberDto> toMemberDtos(List<String> memberIds, Map<String, Users> usersById) {
+    private List<ChatMemberDto> toMemberDtos(List<String> memberIds, Map<String, ProfileSummary> usersById) {
         if (memberIds == null || memberIds.isEmpty() || usersById == null || usersById.isEmpty()) {
             return List.of();
         }
@@ -189,7 +189,7 @@ public class ChatMapper {
             if (!StringUtils.hasText(normalizedMemberId)) {
                 continue;
             }
-            Users user = usersById.get(normalizedMemberId);
+            ProfileSummary user = usersById.get(normalizedMemberId);
             if (user == null) {
                 continue;
             }
@@ -206,11 +206,11 @@ public class ChatMapper {
         return members;
     }
 
-    public ChatMemberDto toMemberDto(Users user) {
+    public ChatMemberDto toMemberDto(ProfileSummary user) {
         return toMemberDto(user, "accepted");
     }
 
-    public ChatMemberDto toMemberDto(Users user, String status) {
+    public ChatMemberDto toMemberDto(ProfileSummary user, String status) {
         if (user == null || !StringUtils.hasText(normalizeId(user.getUserId()))) {
             return null;
         }

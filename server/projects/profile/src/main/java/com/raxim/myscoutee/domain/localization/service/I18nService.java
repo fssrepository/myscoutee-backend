@@ -27,7 +27,7 @@ import com.raxim.myscoutee.domain.localization.repository.I18nMessageRepository;
 import jakarta.annotation.PostConstruct;
 
 @Service
-public class I18nService {
+public class I18nService implements com.raxim.myscoutee.domain.localization.api.TranslationBundles {
     private static final String DEFAULT_LANG = "en";
     private static final Logger LOGGER = LoggerFactory.getLogger(I18nService.class);
 

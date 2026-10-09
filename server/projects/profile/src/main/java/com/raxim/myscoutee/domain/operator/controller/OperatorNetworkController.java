@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionReferenceRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionRequestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionResultDto;
@@ -25,7 +25,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeade
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorRedeemClientTokenRequestDto;
 import com.raxim.myscoutee.domain.operator.service.OperatorNetworkService;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 @RestController
 @RequestMapping("/operator")
@@ -208,7 +208,7 @@ public class OperatorNetworkController {
 
     private String actorUserId(Authentication authentication) {
         if (authentication != null
-                && authentication.getPrincipal() instanceof FirebasePrincipal principal) {
+                && authentication.getPrincipal() instanceof AccountIdentity principal) {
             return principal.getUserId();
         }
         return authentication == null ? null : authentication.getName();

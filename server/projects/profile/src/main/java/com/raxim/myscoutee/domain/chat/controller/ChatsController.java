@@ -23,8 +23,8 @@ import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatServiceEnsureRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSupportCaseMutationRequestDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 
 @RestController

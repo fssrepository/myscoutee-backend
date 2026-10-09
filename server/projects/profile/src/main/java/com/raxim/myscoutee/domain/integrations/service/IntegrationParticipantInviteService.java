@@ -1,10 +1,12 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
-import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
-import com.raxim.myscoutee.domain.payments.service.AffiliateService;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
+import com.raxim.myscoutee.domain.events.api.EventOperations;
+import com.raxim.myscoutee.domain.events.api.PartnerInvitationAdmission;
+import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
+import com.raxim.myscoutee.domain.payments.api.Affiliates;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -25,33 +27,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationExternalId;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationParticipantInvite;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.*;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class IntegrationParticipantInviteService {
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
+    @org.springframework.beans.factory.annotation.Autowired
+    private GroupDirectory groupDirectory;
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.MingleEncounters encounters;
     private final MongoTemplate mongo;
-    private final ActivityEventsRepository events;
-    private final AccessControlService access;
-    private final ActivitiesMembersService members;
+    private final EventOwnershipReads events;
+    private final AccessPermissions access;
+    private final PartnerInvitationAdmission members;
     private final IntegrationPublicEndpointResolver endpoint;
-    private final HomeUserProfileService profiles;
+    private final SelectedProfile profiles;
     @org.springframework.beans.factory.annotation.Autowired
-    private CommunityGroupsService groups;
+    private IntegrationGroups groups;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.accounts.repository.UsersRepository users;
+    private com.raxim.myscoutee.domain.accounts.api.ProfileDirectory users;
     @org.springframework.beans.factory.annotation.Autowired
-    private AffiliateService affiliates;
+    private Affiliates affiliates;
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
-    private ActivitiesEventsService eventActions;
+    private EventOperations eventActions;
     private final SecureRandom random = new SecureRandom();
 
-    public IntegrationParticipantInviteService(MongoTemplate mongo, ActivityEventsRepository events, AccessControlService access,
-            ActivitiesMembersService members, IntegrationPublicEndpointResolver endpoint, HomeUserProfileService profiles) {
+    public IntegrationParticipantInviteService(MongoTemplate mongo, EventOwnershipReads events, AccessPermissions access,
+            PartnerInvitationAdmission members, IntegrationPublicEndpointResolver endpoint, SelectedProfile profiles) {
         this.mongo = mongo; this.events = events; this.access = access; this.members = members; this.endpoint = endpoint; this.profiles = profiles;
     }
 
@@ -123,13 +128,14 @@ public class IntegrationParticipantInviteService {
                     .filter(profile -> invite.claimedUserId().equals(profile.getUserId())).isEmpty())
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
             var original = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (original == null || !(original.getPrincipal() instanceof com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal))
+            if (!profileAuthentication.isAccount(original))
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             var recipient = groups.claimEventInvite(event.getWorkspaceGroupId(), invite.ownerUserId(), accountId);
             groups.joinWorkspaceBase(groups.actor(accountId), event.getWorkspaceGroupId());
             try {
                 org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
-                        com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationToken.forProfile(original, recipient));
+                        profileAuthentication.forProfile(original, users.findByUserId(recipient.getUserId())
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED))));
                 return claimBoundInvite(recipient.getUserId(), invite, event, false, true);
             } finally {
                 org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(original);
@@ -139,7 +145,7 @@ public class IntegrationParticipantInviteService {
     }
 
     private IntegrationParticipantClaimDto claimBoundInvite(String actor, IntegrationParticipantInvite invite,
-            ActivityEvent event, boolean community, boolean invitationAvailable) {
+            Event event, boolean community, boolean invitationAvailable) {
         if (!community && !invite.reusable() && invitationAvailable) requireInvitePermission(invite.ownerUserId(), invite.eventId());
         if (invite.claimedUserId() != null && !actor.equals(invite.claimedUserId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "This invitation belongs to another account.");
@@ -178,7 +184,7 @@ public class IntegrationParticipantInviteService {
         }
         if (invitationAvailable) {
             if (!invite.reusable() || access.canInviteEventMembers(invite.eventId(), invite.ownerUserId())) {
-                members.claimIntegrationInvite(claimed, event, actor);
+                members.claimIntegrationInvite(claimed, event.getId(), actor);
             } else {
                 // A public share grants no inviter/admin privileges. Use the recipient's normal admission command.
                 var result = eventActions.requestJoin(new com.raxim.myscoutee.domain.events.dto.EventsDtos.EventActionRequestDto(
@@ -226,8 +232,7 @@ public class IntegrationParticipantInviteService {
     private String invitationLandingType(String actor, String ownerType, String entityId) {
         var profile = users.findByUserId(actor).orElse(null);
         String groupId = "community".equals(ownerType) ? entityId : profile == null ? null : profile.getWorkspaceGroupId();
-        var group = groupId == null ? null : mongo.findById(groupId,
-                com.raxim.myscoutee.domain.groups.document.CommunityGroup.class);
+        var group = groupId == null ? null : groupDirectory.findById(groupId).orElse(null);
         return group == null ? "dating" : group.effectiveType();
     }
 
@@ -236,7 +241,7 @@ public class IntegrationParticipantInviteService {
         return URI.create(endpoint.resolve()).resolve("/game") + "?" + affiliateQuery;
     }
 
-    private ActivityEvent sharedEventRecord(IntegrationParticipantInvite invite) {
+    private Event sharedEventRecord(IntegrationParticipantInvite invite) {
         var inviter = users.findByUserId(invite.ownerUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return events.findBySourceId(invite.eventId()).stream()
                 .filter(event -> Objects.equals(inviter.getWorkspaceGroupId(), event.getWorkspaceGroupId()))
@@ -245,13 +250,13 @@ public class IntegrationParticipantInviteService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
     }
 
-    private ActivityEvent requireEvent(String ownerUserId, String eventId) {
+    private Event requireEvent(String ownerUserId, String eventId) {
         var event = requireOwnedEvent(ownerUserId, eventId);
         requireInvitePermission(ownerUserId, eventId);
         return event;
     }
 
-    private ActivityEvent requireOwnedEvent(String ownerUserId, String eventId) {
+    private Event requireOwnedEvent(String ownerUserId, String eventId) {
         return events.findByOwnerUserIdAndSourceId(ownerUserId, eventId)
                 .filter(value -> Boolean.TRUE.equals(value.getIsAdmin()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
@@ -263,13 +268,11 @@ public class IntegrationParticipantInviteService {
         }
     }
 
-    private boolean hasEnded(ActivityEvent event) {
+    private boolean hasEnded(Event event) {
         if (Boolean.TRUE.equals(event.getIsExpired())) return true;
         if (event.getEndAtIso() != null && !event.getEndAtIso().isBlank()
                 && !Instant.parse(event.getEndAtIso()).isAfter(Instant.now())) return true;
-        return "Mingle".equals(event.getMode()) && mongo.exists(Query.query(
-                Criteria.where("eventId").is(event.getSourceId()).and("status").is("COMPLETED")),
-                ActivityMingleSession.class);
+        return "Mingle".equals(event.getMode()) && encounters.isCompleted(event.getSourceId());
     }
 
     private static String digest(String value) {

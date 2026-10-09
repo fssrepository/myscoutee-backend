@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.payments.service;
 
+import com.raxim.myscoutee.domain.payments.api.PaymentProviderChangedException;
+
 import java.util.Locale;
 import java.util.Objects;
 
@@ -10,19 +12,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 
 @Service
-public class CurrentPaymentProviderService {
+public class CurrentPaymentProviderService implements com.raxim.myscoutee.domain.payments.api.CurrentPaymentProvider {
     public static final String RESPONSE_HEADER = "X-MyScoutee-Payment-Provider";
     public static final String CASH_ONLY_WIRE_VALUE = "none";
 
-    private final DeploymentConfigurationRepository repository;
+    private final DeploymentSettings repository;
     private final PaymentSimulatorRegistrationClient simulatorClient;
 
     public CurrentPaymentProviderService(
-            DeploymentConfigurationRepository repository,
+            DeploymentSettings repository,
             PaymentSimulatorRegistrationClient simulatorClient) {
         this.repository = Objects.requireNonNull(repository);
         this.simulatorClient = Objects.requireNonNull(simulatorClient);
@@ -57,12 +59,12 @@ public class CurrentPaymentProviderService {
                     configuration.connected() ? provider : null);
         }
 
-        DeploymentConfiguration configuration = repository
-                .findById(DeploymentConfiguration.SINGLETON_ID)
+        Configuration configuration = repository
+                .findById(DeploymentSettings.SINGLETON_ID)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.SERVICE_UNAVAILABLE,
                         "Deployment payment configuration is unavailable."));
-        DeploymentConfiguration.Payment payment = configuration.getPayment();
+        DeploymentSettings.Payment payment = configuration.getPayment();
         return Snapshot.available(normalize(
                 payment == null ? null : payment.getProviderId()));
     }

@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 @org.junit.jupiter.api.Tag("standard")
 class RegistryNodeIdentityServiceTest {
@@ -27,14 +27,14 @@ class RegistryNodeIdentityServiceTest {
 
     @Test
     void constructionIsDormantAndOnlyExplicitInitializationCreatesTheIdentity() throws Exception {
-        RegistryProperties properties = properties("explicit");
+        RegistryConfiguration properties = properties("explicit");
         RegistryNodeIdentityService service = new RegistryNodeIdentityService(properties);
 
         assertThat(Files.exists(properties.getPrivateKeyPath())).isFalse();
         assertThat(Files.exists(properties.getPublicKeyPath())).isFalse();
         assertThat(Files.exists(properties.getStateDir())).isFalse();
 
-        RegistryNodeIdentityService.NodeIdentity initialized = service.initializeNodeIdentity();
+        com.raxim.myscoutee.domain.registry.dto.NodeIdentity initialized = service.initializeNodeIdentity();
 
         assertThat(Files.isRegularFile(properties.getPrivateKeyPath())).isTrue();
         assertThat(Files.isRegularFile(properties.getPublicKeyPath())).isTrue();
@@ -49,27 +49,27 @@ class RegistryNodeIdentityServiceTest {
 
     @Test
     void concurrentAndRepeatedInitializationKeepsOneUnchangedKeyPair() throws Exception {
-        RegistryProperties properties = properties("concurrent");
+        RegistryConfiguration properties = properties("concurrent");
         RegistryNodeIdentityService firstService = new RegistryNodeIdentityService(properties);
         RegistryNodeIdentityService secondService = new RegistryNodeIdentityService(properties);
-        List<Callable<RegistryNodeIdentityService.NodeIdentity>> calls = new ArrayList<>();
+        List<Callable<com.raxim.myscoutee.domain.registry.dto.NodeIdentity>> calls = new ArrayList<>();
         for (int index = 0; index < 24; index++) {
             RegistryNodeIdentityService selected = index % 2 == 0 ? firstService : secondService;
             calls.add(selected::initializeNodeIdentity);
         }
 
-        List<Future<RegistryNodeIdentityService.NodeIdentity>> futures;
+        List<Future<com.raxim.myscoutee.domain.registry.dto.NodeIdentity>> futures;
         try (ExecutorService executor = Executors.newFixedThreadPool(8)) {
             futures = executor.invokeAll(calls);
         }
         Set<String> fingerprints = new java.util.HashSet<>();
-        for (Future<RegistryNodeIdentityService.NodeIdentity> future : futures) {
+        for (Future<com.raxim.myscoutee.domain.registry.dto.NodeIdentity> future : futures) {
             fingerprints.add(future.get().publicKeyFingerprint());
         }
         byte[] privateKeyBefore = Files.readAllBytes(properties.getPrivateKeyPath());
         byte[] publicKeyBefore = Files.readAllBytes(properties.getPublicKeyPath());
 
-        RegistryNodeIdentityService.NodeIdentity repeated = firstService.initializeNodeIdentity();
+        com.raxim.myscoutee.domain.registry.dto.NodeIdentity repeated = firstService.initializeNodeIdentity();
 
         assertThat(fingerprints).containsExactly(repeated.publicKeyFingerprint());
         assertThat(Files.readAllBytes(properties.getPrivateKeyPath())).isEqualTo(privateKeyBefore);
@@ -80,7 +80,7 @@ class RegistryNodeIdentityServiceTest {
 
     @Test
     void refusesOrphansSymlinksAndMismatchedExistingPairs() throws Exception {
-        RegistryProperties orphanProperties = properties("orphan");
+        RegistryConfiguration orphanProperties = properties("orphan");
         prepareKeyDirectory(orphanProperties);
         Files.writeString(orphanProperties.getPrivateKeyPath(), "do-not-overwrite");
         assertThatThrownBy(() -> new RegistryNodeIdentityService(orphanProperties).initializeNodeIdentity())
@@ -89,7 +89,7 @@ class RegistryNodeIdentityServiceTest {
         assertThat(Files.readString(orphanProperties.getPrivateKeyPath())).isEqualTo("do-not-overwrite");
         assertThat(Files.exists(orphanProperties.getPublicKeyPath())).isFalse();
 
-        RegistryProperties symlinkProperties = properties("symlink");
+        RegistryConfiguration symlinkProperties = properties("symlink");
         prepareKeyDirectory(symlinkProperties);
         Path symlinkTarget = temporaryDirectory.resolve("public-target.der");
         Files.writeString(symlinkTarget, "not-a-key");
@@ -98,7 +98,7 @@ class RegistryNodeIdentityServiceTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("non-symlink");
 
-        RegistryProperties mismatchProperties = properties("mismatch");
+        RegistryConfiguration mismatchProperties = properties("mismatch");
         prepareKeyDirectory(mismatchProperties);
         KeyPair firstPair = RegistryTestIdentity.generate();
         RegistryTestIdentity.writeDeploymentIdentity(
@@ -115,13 +115,13 @@ class RegistryNodeIdentityServiceTest {
 
     @Test
     void recoversOnlyThePublicFirstPowerLossStateBeforeAnyRegistryStateExists() throws Exception {
-        RegistryProperties properties = properties("power-loss");
+        RegistryConfiguration properties = properties("power-loss");
         RegistryNodeIdentityService service = new RegistryNodeIdentityService(properties);
-        RegistryNodeIdentityService.NodeIdentity interrupted = service.initializeNodeIdentity();
+        com.raxim.myscoutee.domain.registry.dto.NodeIdentity interrupted = service.initializeNodeIdentity();
         byte[] interruptedPublicKey = Files.readAllBytes(properties.getPublicKeyPath());
         Files.delete(properties.getPrivateKeyPath());
 
-        RegistryNodeIdentityService.NodeIdentity recovered = service.initializeNodeIdentity();
+        com.raxim.myscoutee.domain.registry.dto.NodeIdentity recovered = service.initializeNodeIdentity();
 
         assertThat(Files.isRegularFile(properties.getPrivateKeyPath())).isTrue();
         assertThat(Files.isRegularFile(properties.getPublicKeyPath())).isTrue();
@@ -133,7 +133,7 @@ class RegistryNodeIdentityServiceTest {
 
     @Test
     void refusesAnyReplacementWhenPreservedRegistryStateExists() throws Exception {
-        RegistryProperties missingPair = properties("lost-pair");
+        RegistryConfiguration missingPair = properties("lost-pair");
         Files.createDirectories(missingPair.getStateDir());
         Files.writeString(missingPair.statePath(), "{\"preserved\":true}");
 
@@ -143,7 +143,7 @@ class RegistryNodeIdentityServiceTest {
         assertThat(Files.exists(missingPair.getPrivateKeyPath())).isFalse();
         assertThat(Files.exists(missingPair.getPublicKeyPath())).isFalse();
 
-        RegistryProperties publicOnly = properties("public-only-with-state");
+        RegistryConfiguration publicOnly = properties("public-only-with-state");
         RegistryNodeIdentityService initialized = new RegistryNodeIdentityService(publicOnly);
         initialized.initializeNodeIdentity();
         Files.delete(publicOnly.getPrivateKeyPath());
@@ -160,7 +160,7 @@ class RegistryNodeIdentityServiceTest {
 
     @Test
     void rejectsAKeyDirectoryThatIsAccessibleByOtherUsers() throws Exception {
-        RegistryProperties properties = properties("unsafe-directory");
+        RegistryConfiguration properties = properties("unsafe-directory");
         Files.createDirectories(properties.getPrivateKeyPath().getParent());
         Files.setPosixFilePermissions(
                 properties.getPrivateKeyPath().getParent(),
@@ -173,16 +173,16 @@ class RegistryNodeIdentityServiceTest {
         assertThat(Files.exists(properties.getPublicKeyPath())).isFalse();
     }
 
-    private RegistryProperties properties(String directoryName) {
+    private RegistryConfiguration properties(String directoryName) {
         Path keyDirectory = temporaryDirectory.resolve(directoryName).resolve("keys");
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setPrivateKeyPath(keyDirectory.resolve("deployment-private-key.pem"));
         properties.setPublicKeyPath(keyDirectory.resolve("deployment-public-key.der"));
         properties.setStateDir(temporaryDirectory.resolve(directoryName).resolve("state"));
         return properties;
     }
 
-    private void prepareKeyDirectory(RegistryProperties properties) throws Exception {
+    private void prepareKeyDirectory(RegistryConfiguration properties) throws Exception {
         Files.createDirectories(properties.getPrivateKeyPath().getParent());
         Files.setPosixFilePermissions(
                 properties.getPrivateKeyPath().getParent(),

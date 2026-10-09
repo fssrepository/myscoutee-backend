@@ -27,7 +27,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
             name = "payment_revenue_period_scan",
             def = "{'status': 1, 'provider': 1, 'auditKind': 1, 'createdDate': 1, '_id': 1}")
 })
-public class Payment {
+public class Payment implements com.raxim.myscoutee.domain.payments.api.PaymentView {
     @Id
     private String id;
     @Version

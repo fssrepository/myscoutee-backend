@@ -1,7 +1,9 @@
 package com.raxim.myscoutee.domain.groups.mapper;
 
+import com.raxim.myscoutee.domain.groups.dto.GroupPolicy;
+
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 
 import java.util.List;
@@ -58,7 +60,7 @@ class CommunityGroupMapperTest {
 
     @Test void deletedGroupRestoreRequiresVoluntaryDepartureAsAdminButNotTheLastDeparture() {
         var group = new CommunityGroup("group", "owner", "Group", "", null, "friends", "private", false,
-                new CommunityGroup.Policy(true, false, List.of()), "created", "last-leave", 1L,
+                new GroupPolicy(true, false, List.of()), "created", "last-leave", 1L,
                 "accepted", 0L, 0L, 0L, 0L, "deleted", "last-leave", List.of());
         var former = member("Admin", "deleted", null, 0);
         former.setCommunityAction("remove"); former.setCommunityActor(former.getUserId());
@@ -74,20 +76,20 @@ class CommunityGroupMapperTest {
 
     private CommunityGroup groupWithPendingMembers(long pending) {
         return new CommunityGroup("A", "owner", "Group", "", "", "friends", "public", false,
-                new CommunityGroup.Policy(true, false, List.of()), "now", "now", 1L, "accepted", 1L, 0L, 0L, pending);
+                new GroupPolicy(true, false, List.of()), "now", "now", 1L, "accepted", 1L, 0L, 0L, pending);
     }
 
-    private ActivityMember member(String role, String status, String request, long updates) {
-        var member = new ActivityMember(); member.setUserId("owner"); member.setRole(role);
+    private CommunityMember member(String role, String status, String request, long updates) {
+        var member = new CommunityMember(); member.setUserId("owner"); member.setRole(role);
         member.setStatus(status); member.setRequestKind(request); member.setCommunityUpdates(updates);
         return member;
     }
 
     @Test void storedModerationAttentionIsExposedOnlyToAnAcceptedGroupAdmin() {
         var group = new CommunityGroup("A", "owner", "Group", "", "", "friends", "public", false,
-                new CommunityGroup.Policy(true, false, List.of()), "now", "now", 1L, "accepted", 1L, 3L, 8L);
+                new GroupPolicy(true, false, List.of()), "now", "now", 1L, "accepted", 1L, 3L, 8L);
         var owner = new Users(); owner.setUserId("owner");
-        var admin = new ActivityMember(); admin.setUserId("owner"); admin.setRole("Admin"); admin.setStatus("accepted");
+        var admin = new CommunityMember(); admin.setUserId("owner"); admin.setRole("Admin"); admin.setStatus("accepted");
         var dto = CommunityGroupMapper.toDto(group, owner, owner, List.of(admin), 4);
         assertEquals(3, dto.moderationPending()); assertEquals(7, dto.activity()); assertEquals(8, dto.moderationQueueRevision());
         admin.setRole("Member");

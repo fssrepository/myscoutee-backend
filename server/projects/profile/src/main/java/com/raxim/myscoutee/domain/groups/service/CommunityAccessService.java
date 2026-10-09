@@ -1,9 +1,12 @@
 package com.raxim.myscoutee.domain.groups.service;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces;
+
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
+import com.raxim.myscoutee.domain.events.api.CommunityMemberships;
 import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
 
@@ -12,35 +15,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-
-
 /** Case participants are accounts; workspace membership is checked only for private-community authority. */
 @Service
-public class CommunityAccessService {
-    private final HomeUserProfileService profiles;
-    private final CommunityGroupProfilesService workspaceProfiles;
+public class CommunityAccessService implements com.raxim.myscoutee.domain.groups.api.CommunityAuthority {
+    private final SelectedProfile profiles;
+    private final AccountWorkspaces workspaceProfiles;
     private final CommunityGroupsRepository groups;
-    private final ActivityMembersRepository members;
-    public CommunityAccessService(HomeUserProfileService profiles, CommunityGroupProfilesService workspaceProfiles,
-            CommunityGroupsRepository groups, ActivityMembersRepository members) {
+    private final CommunityMemberships members;
+    public CommunityAccessService(SelectedProfile profiles, AccountWorkspaces workspaceProfiles,
+            CommunityGroupsRepository groups, CommunityMemberships members) {
         this.profiles = profiles; this.workspaceProfiles = workspaceProfiles; this.groups = groups; this.members = members;
     }
     public String actor(String requestedId) {
-        Users profile = profiles.resolveCurrentUser(requestedId);
+        var profile = profiles.resolveSelectedIdentity(requestedId);
         if (profile == null) throw error(HttpStatus.UNAUTHORIZED);
-        String accountId = profile.getAccountUserId() == null ? profile.getUserId() : profile.getAccountUserId();
+        String accountId = profile.accountUserId() == null ? profile.userId() : profile.accountUserId();
         requireBaseMember(accountId);
         return accountId;
     }
-    public void requireBaseMember(String accountId) { workspaceProfiles.select(accountId, CommunityGroup.COMMUNITY_BASE_ID); }
+    public void requireBaseMember(String accountId) { workspaceProfiles.select(accountId, BaseGroups.COMMUNITY_BASE_ID); }
     public CommunityGroup group(String groupId) {
         CommunityGroup group = groups.findById(groupId).orElseThrow(() -> error(HttpStatus.NOT_FOUND));
-        if (!"community".equals(group.effectiveType()) || CommunityGroup.isBaseId(group.id()) || group.deleted() || group.awaitingOwner())
+        if (!"community".equals(group.effectiveType()) || BaseGroups.isBaseId(group.id()) || group.deleted() || group.awaitingOwner())
             throw error(HttpStatus.NOT_FOUND);
         return group;
     }
-    public ActivityMember member(String groupId, String accountId) {
-        return members.findByOwnerTypeAndOwnerIdAndUserId("community", groupId, accountId)
+    public CommunityMember member(String groupId, String accountId) {
+        return members.member(groupId, accountId)
                 .filter(m -> "accepted".equals(m.getStatus())).orElse(null);
     }
     public boolean admin(String groupId, String accountId) {
@@ -58,23 +59,23 @@ public class CommunityAccessService {
         if (!admin(groupId, accountId)) throw error(HttpStatus.FORBIDDEN);
         return group;
     }
-    public List<ActivityMember> roster(String groupId) {
-        return members.findByOwnerTypeAndOwnerIdAndStatus("community", groupId, "accepted");
+    public List<CommunityMember> roster(String groupId) {
+        return members.accepted(groupId);
     }
     public Set<String> managedGroups(String accountId) {
         return managedGroups(accountId, members, groups);
     }
-    public static Set<String> managedGroups(String accountId, ActivityMembersRepository members, CommunityGroupsRepository groups) {
-        var ids = members.findByOwnerTypeAndUserId("community", accountId).stream()
+    public static Set<String> managedGroups(String accountId, CommunityMemberships members, CommunityGroupsRepository groups) {
+        var ids = members.forAccount(accountId).stream()
                 .filter(m -> "accepted".equals(m.getStatus()) && "Admin".equals(m.getRole()))
-                .map(ActivityMember::getOwnerId).toList();
+                .map(CommunityMember::getOwnerId).toList();
         var result = new HashSet<String>();
         if (!ids.isEmpty()) groups.findByIdIn(ids).stream().filter(g -> "community".equals(g.effectiveType())
-                && !CommunityGroup.isBaseId(g.id()) && !g.deleted() && !g.awaitingOwner()).forEach(g -> result.add(g.id()));
+                && !BaseGroups.isBaseId(g.id()) && !g.deleted() && !g.awaitingOwner()).forEach(g -> result.add(g.id()));
         return result;
     }
-    public List<String> audience(List<ActivityMember> roster, boolean all, List<String> selected) {
-        var accepted = roster.stream().map(ActivityMember::getUserId).collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
+    public List<String> audience(List<CommunityMember> roster, boolean all, List<String> selected) {
+        var accepted = roster.stream().map(CommunityMember::getUserId).collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
         if (all) return List.copyOf(accepted);
         if (selected == null || selected.size() > 10000 || selected.stream().anyMatch(id -> id == null || !accepted.contains(id)))
             throw error(HttpStatus.BAD_REQUEST);

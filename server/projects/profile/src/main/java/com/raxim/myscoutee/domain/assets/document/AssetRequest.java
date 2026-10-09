@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
 
 @Document(collection = "assetRequests")
 @CompoundIndexes({

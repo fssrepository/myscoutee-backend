@@ -3,9 +3,9 @@ package com.raxim.myscoutee.domain.events.service;
 import com.raxim.myscoutee.domain.affinity.service.UserAffinityEdgeService;
 import com.raxim.myscoutee.domain.chat.service.ChatService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.common.config.PlatformParametersService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,7 +46,7 @@ import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMainEventRuntime;
 import com.raxim.myscoutee.domain.events.document.ActivitySubEventStageRuntime;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
-import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
+import com.raxim.myscoutee.domain.events.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.EventLeaderboardDtos.EventLeaderboardGroupDto;
@@ -57,11 +57,11 @@ import com.raxim.myscoutee.common.dto.SharedDtos.SubEventGroupItemDto;
 import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMainEventRuntimeRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivitySubEventStageRuntimeRepository;
-import com.raxim.myscoutee.domain.platform.repository.SchedulerPlanMarkersRepository;
+import com.raxim.myscoutee.domain.events.repository.SchedulerPlanMarkersRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +70,14 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository userRatesRepository;
     @Mock private UserAffinityEdgeService affinityEdgeService;
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
+    private EventJobQueries jobScope() {
+        var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
+        var scope = new JobGroupScopeService();
+        var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
+        return new EventJobQueries(mongo, scope);
+    }
     @Mock
     private UsersRepository usersRepository;
     @Mock
@@ -102,6 +110,27 @@ class EventSchedulerTest {
     private PlatformParametersService platformParametersService;
     @Mock
     private NotificationOutboxService notificationOutboxService;
+
+    @Test
+    void assignmentContractReportsProgressAndCountsDistinctMembersWithoutExposingPlans() {
+        EventScheduler scheduler = spy(createScheduler());
+        doAnswer(call -> {
+            java.util.function.Consumer<EventScheduler.RandomPlanProgress> progress = call.getArgument(0);
+            progress.accept(new EventScheduler.RandomPlanProgress(50, 1, 2, 3, 1, "First event assigned"));
+            return java.util.Arrays.asList(
+                    new GeneratedEventPlan("room-1", java.util.Arrays.asList(" u1 ", "", null)),
+                    new GeneratedEventPlan("room-2", List.of("u1", "u2")), null);
+        }).when(scheduler).generateRandomPlans(any(java.util.function.Consumer.class));
+        var updates = new ArrayList<com.raxim.myscoutee.domain.events.api.RandomGroupAssignment.Progress>();
+
+        var result = scheduler.assignRandomGroups(updates::add);
+
+        assertThat(result.plans()).isEqualTo(3);
+        assertThat(result.affectedUsers()).isEqualTo(2);
+        assertThat(updates).containsExactly(
+                new com.raxim.myscoutee.domain.events.api.RandomGroupAssignment.Progress(50, "First event assigned"));
+        verify(scheduler).generateRandomPlans(any(java.util.function.Consumer.class));
+    }
 
     @Test
     void priorityOffEventUsesParticipantsWithoutGlobalOrCampaignAffinity() {
@@ -246,7 +275,7 @@ class EventSchedulerTest {
                 .thenReturn(List.of(event));
         Users workCandidate = user("work-candidate");
         workCandidate.setWorkspaceGroupId("myscoutee-work");
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("candidate-1"), workCandidate));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
@@ -299,12 +328,10 @@ class EventSchedulerTest {
         when(activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
         var candidates = List.of(user("organizer"), user("other-campaign"), user("candidate-a"));
         candidates.forEach(user -> user.setWorkspaceGroupId("myscoutee-work"));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(candidates);
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(candidates);
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(rate("organizer", "other-campaign", 1d)));
-        var evidence = new com.raxim.myscoutee.domain.affinity.document.UserRate();
-        evidence.setCampaignId("campaign-a"); evidence.setOwnerUserId("candidate-a"); evidence.setRelatedUserId("organizer");
-        when(userRatesRepository.findByCampaignIdIn(Set.of("campaign-a"))).thenReturn(List.of(evidence));
-        when(affinityEdgeService.projectCampaignEdges(List.of(evidence))).thenReturn(Map.of("campaign-a", List.of(rate("organizer", "candidate-a", .8d))));
+        when(affinityEdgeService.campaignGraphs(Set.of("campaign-a"))).thenReturn(Map.of("campaign-a",
+            new com.raxim.myscoutee.domain.affinity.api.CampaignGraphs.Snapshot(List.of("candidate-a", "organizer"), List.of(rate("organizer", "candidate-a", .8d)))));
         when(activitiesMembersService.inviteUsers("work-event", "organizer", List.of("candidate-a"), event)).thenReturn(List.of("candidate-a"));
         assertThat(scheduler.generatePriorityPlansForEvents(List.of("work-event")))
                 .singleElement().satisfies(plan -> assertThat(plan.invitedUserIds()).containsExactly("candidate-a"));
@@ -369,7 +396,7 @@ class EventSchedulerTest {
         event.setLocation("Bratislava");
 
         when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("locked-1"),
                 user("pending-1"),
@@ -425,7 +452,7 @@ class EventSchedulerTest {
         event.setTitle("Board Game Night");
 
         when(activityEventsRepository.findByAutoInviterTrue()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("creator-1"),
                 user("accepted-1"),
                 user("request-1"),
@@ -474,7 +501,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(subEvent("sub-1", 2, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3"),
@@ -628,7 +655,7 @@ class EventSchedulerTest {
         Users privateUser = user("private-user");
         privateUser.setProfileStatus("friends only");
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("public-1"),
                 user("public-2"),
                 privateUser));
@@ -708,7 +735,7 @@ class EventSchedulerTest {
         when(activityEventsRepository.findBySourceIdIn(argThat(sourceIds ->
                 sourceIds.size() == 1 && sourceIds.contains("event-stage-start"))))
                 .thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 nonPublicAcceptedUser,
                 user("nova"),
                 user("riley")));
@@ -755,7 +782,10 @@ class EventSchedulerTest {
         assertThat(notificationOrder.get(0)).isEqualTo("Tournament started");
         assertThat(notificationOrder.subList(1, notificationOrder.size()))
                 .allSatisfy(title -> assertThat(title).matches("Tournament Group R[12] is ready"));
-        verify(usersRepository, never()).findByUserIdIn(anyCollection());
+        // One graph batch for all accepted members, without reloading profiles for each generated room.
+        verify(usersRepository).findByUserIdIn(argThat(ids -> ids.size() == 3
+                && ids.containsAll(List.of("casey", "nova", "riley"))));
+        verify(usersRepository, times(1)).findByUserIdIn(anyCollection());
         verify(activityEventsRepository, never()).findAll();
         ArgumentCaptor<ActivityEvent> roomCaptor = ArgumentCaptor.forClass(ActivityEvent.class);
         verify(activitiesMembersService, times(2)).syncMaterializedSystemEventMembers(
@@ -836,7 +866,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(subEvent("stage-partial", 3, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("a1"),
                 user("a2"),
                 user("b1"),
@@ -945,7 +975,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(explicitSubEvent("sub-2")));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3"),
@@ -1075,7 +1105,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1182,7 +1212,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1271,7 +1301,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         2));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups("event-no-winners", "qualifier"))
                 .thenReturn(List.of(group("qualifier-a", "A")));
@@ -1343,7 +1373,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         2));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("u1"), user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
                 "event-capacity-overflow", "qualifier"))
@@ -1401,7 +1431,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         2));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
@@ -1458,7 +1488,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         1));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(user("u1")));
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("u1")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.queryState("event-locked-final", "qualifier"))
                 .thenReturn(qualifierState);
@@ -1502,7 +1532,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"), user("u2"), user("u3")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of());
         when(activitiesEventLeaderboardService.materializeGeneratedGroups(
@@ -1620,7 +1650,7 @@ class EventSchedulerTest {
                         List.of(),
                         Set.of("creator-1"),
                         3));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1708,7 +1738,7 @@ class EventSchedulerTest {
                                 List.of())));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2"),
                 user("u3")));
@@ -1767,7 +1797,7 @@ class EventSchedulerTest {
                 nonTournamentSubEvent("second", "A")));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
@@ -1816,7 +1846,7 @@ class EventSchedulerTest {
         event.setSubEvents(List.of(subEvent("sub-4", 1, 2, 2)));
 
         when(activityEventsRepository.findAll()).thenReturn(List.of(event));
-        when(usersRepository.findAllById(anyCollection())).thenReturn(List.of(
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(
                 user("u1"),
                 user("u2")));
         when(userAffinityEdgesRepository.findRelevantByUserIds(anyList())).thenReturn(List.of(
@@ -1945,11 +1975,11 @@ class EventSchedulerTest {
                         anyList()))
                 .thenAnswer(invocation -> invocation.getArgument(2));
         EventScheduler scheduler = new EventScheduler(
-                userRatesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
                 affinityEdgeService,
-                groupsRepository,
-                usersRepository,
-                userAffinityEdgesRepository,
+                new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
+                new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 activityEventsRepository,
                 activityMainEventRuntimeRepository,
                 schedulerPlanMarkersRepository,
@@ -1965,7 +1995,7 @@ class EventSchedulerTest {
                 notificationOutboxService,
                 new com.raxim.myscoutee.domain.events.mapper.ActivityEventSubEventsMapper());
         scheduler.setActivitySubEventStageRuntimeRepository(activitySubEventStageRuntimeRepository);
-        org.springframework.test.util.ReflectionTestUtils.setField(scheduler, "jobGroupScope", new JobGroupScopeService(org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(scheduler, "jobGroupScope", jobScope());
         return scheduler;
     }
 

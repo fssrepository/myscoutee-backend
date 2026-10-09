@@ -20,7 +20,7 @@ import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityLinkStateRep
 import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityPresenceOutboxRepository;
 import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRepository;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import tools.jackson.databind.ObjectMapper;
 

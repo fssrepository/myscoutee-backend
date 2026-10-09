@@ -7,9 +7,9 @@ import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceStateDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicies;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicies;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 
 @org.junit.jupiter.api.Tag("standard")
 class ActivitiesResourcesControllerPolicyTest {

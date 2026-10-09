@@ -107,4 +107,5 @@ if [[ "${NGINX_CONFIG_TEST_ONLY:-false}" == "true" ]]; then
     exit 0
 fi
 
+/scripts/runtime-status.sh &
 exec nginx -g 'daemon off;'

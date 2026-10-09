@@ -1,12 +1,13 @@
 package com.raxim.myscoutee.domain.accounts.document;
 
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
-import com.raxim.myscoutee.domain.payments.document.AffiliateRegistration;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
+import com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import com.raxim.myscoutee.domain.accounts.dto.FeedCountersRecord;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -26,7 +27,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                 def = "{'name': 1, 'userId': 1}",
                 collation = "{ 'locale': 'en', 'strength': 2 }")
 })
-public class Users {
+public class Users implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile {
     private IntegrationAccess integrationAccess;
     public IntegrationAccess getIntegrationAccess() { return integrationAccess; }
     public void setIntegrationAccess(IntegrationAccess value) { integrationAccess = value; }
@@ -44,9 +45,6 @@ public class Users {
     private FeedCountersRecord feedCounters;
     public FeedCountersRecord getFeedCounters() { return feedCounters; }
     public void setFeedCounters(FeedCountersRecord value) { feedCounters = value; }
-    public record FeedCountersRecord(long revision, Map<String, Long> counts) {
-        public static FeedCountersRecord empty() { return new FeedCountersRecord(0, Map.of()); }
-    }
     private FollowingRecord following;
 
     public FollowingRecord getFollowing() { return following; }
@@ -111,6 +109,16 @@ public class Users {
     private String status;
     private String profileStatus;
     private String previousProfileStatus;
+    public record ProfileSupportWork(@org.springframework.data.mongodb.core.mapping.Field("id") String id, String adminUserId, String adminName, String adminInitials, String text) {}
+    private List<ProfileSupportWork> profileSupportWork = new ArrayList<>();
+    public List<ProfileSupportWork> getProfileSupportWork() { return profileSupportWork == null ? List.of() : profileSupportWork; }
+    public void setProfileSupportWork(List<ProfileSupportWork> value) { profileSupportWork = new ArrayList<>(value); }
+    private Map<String, Boolean> feedbackCounterReceipts = new LinkedHashMap<>();
+    public Map<String, Boolean> getFeedbackCounterReceipts() { return feedbackCounterReceipts; }
+    public void setFeedbackCounterReceipts(Map<String, Boolean> value) { feedbackCounterReceipts = value; }
+    private String profileStatusWork;
+    public String getProfileStatusWork() { return profileStatusWork; }
+    public void setProfileStatusWork(String value) { profileStatusWork = value; }
     private String deletedAtIso;
     private Boolean accountPurgePendingCounterTracked;
     /*
@@ -139,6 +147,13 @@ public class Users {
     }
     private Integer paymentRefundsPending;
     private Integer contactRequestsPending;
+    private Map<String, Long> contactPermissionCounterVersions = new LinkedHashMap<>();
+    private Map<String, Long> contactPermissionContactVersions = new LinkedHashMap<>();
+
+    public Map<String, Long> getContactPermissionCounterVersions() { return contactPermissionCounterVersions; }
+    public void setContactPermissionCounterVersions(Map<String, Long> value) { contactPermissionCounterVersions = value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value); }
+    public Map<String, Long> getContactPermissionContactVersions() { return contactPermissionContactVersions; }
+    public void setContactPermissionContactVersions(Map<String, Long> value) { contactPermissionContactVersions = value == null ? new LinkedHashMap<>() : new LinkedHashMap<>(value); }
 
     public String getMongoId() {
         return mongoId;
@@ -571,7 +586,7 @@ public class Users {
 
     public record LocationCoordinatesRecord(
             Double latitude,
-            Double longitude) {
+            Double longitude) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.Coordinates {
     }
 
     public record UserActivitiesRecord(
@@ -593,7 +608,7 @@ public class Users {
             Integer adminJobs,
             Integer adminMetrics,
             Integer notifications,
-            Integer serviceFeedbackPending) {
+            Integer serviceFeedbackPending) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ActivityCounts {
         public UserActivitiesRecord(
                 Integer game,
                 Integer chats,
@@ -672,7 +687,7 @@ public class Users {
             Integer groupSupport,
             Integer contacts,
             Integer campaign,
-            Integer cases) {
+            Integer cases) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ChatCounts {
         public UserChatCountersRecord(Integer all, Integer event, Integer subEvent, Integer group, Integer service,
                 Integer appSupport, UserSupportCaseCountersRecord supportCases, Integer groupSupport, Integer contacts) {
             this(all, event, subEvent, group, service, appSupport, supportCases, groupSupport, contacts, 0, 0);
@@ -703,7 +718,7 @@ public class Users {
             Integer picked,
             Integer solved,
             Integer blocked,
-            Integer all) {
+            Integer all) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.SupportCounts {
     }
 
     public record UserEventCountersRecord(
@@ -748,22 +763,22 @@ public class Users {
             Integer ownEvents,
             Integer pending,
             Integer feedbacked,
-            Integer removed) {
+            Integer removed) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.FeedbackCounts {
     }
 
     public record ProfileDetailGroupRecord(
             String title,
-            List<ProfileDetailRowRecord> rows) {
+            List<ProfileDetailRowRecord> rows) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ProfileDetailGroupRecord {
     }
 
     public record ProfileDetailRowRecord(
             String labelKey,
             String value,
             String privacy,
-            List<String> options) {
+            List<String> options) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.ProfileDetailRowRecord {
     }
 
-    public static class UserDeviceRecord {
+    public static class UserDeviceRecord implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.Device {
         private String deviceId;
         private String platform;
         private String firebaseToken;
@@ -822,7 +837,7 @@ public class Users {
 
     public record UserImpressionsRecord(
             UserImpressionsSectionRecord host,
-            UserImpressionsSectionRecord member) {
+            UserImpressionsSectionRecord member) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.UserImpressionsRecord {
     }
 
     public record UserImpressionsSectionRecord(
@@ -835,7 +850,7 @@ public class Users {
             List<String> vibeBadges,
             List<String> personalityBadges,
             List<UserPersonalityTraitRecord> personalityTraits,
-            List<String> categoryBadges) {
+            List<String> categoryBadges) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.UserImpressionsSectionRecord {
     }
 
     public record UserPersonalityTraitRecord(
@@ -843,6 +858,6 @@ public class Users {
             String label,
             Integer percent,
             Integer evidenceCount,
-            String lastRatedAtIso) {
+            String lastRatedAtIso) implements com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile.UserPersonalityTraitRecord {
     }
 }

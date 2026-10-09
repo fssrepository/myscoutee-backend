@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.notifications.websocket;
 
-import com.raxim.myscoutee.domain.chat.websocket.ChatHandshakeInterceptor;
+import com.raxim.myscoutee.domain.chat.api.ChatSessionAttributes;
 
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,21 +9,21 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
+import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.notifications.service.AdminNotificationSocketSessionRegistry;
 
 @Component
 public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
     private final AdminNotificationSocketSessionRegistry sessionRegistry;
-    private final AdminModerationService adminModerationService;
-    private final ConfigProperties configProperties;
+    private final AdministrativeActors adminModerationService;
+    private final AuthenticationMode configProperties;
 
     public AdminNotificationWebSocketHandler(
             AdminNotificationSocketSessionRegistry sessionRegistry,
-            AdminModerationService adminModerationService,
-            ConfigProperties configProperties) {
+            AdministrativeActors adminModerationService,
+            AuthenticationMode configProperties) {
         this.sessionRegistry = sessionRegistry;
         this.adminModerationService = adminModerationService;
         this.configProperties = configProperties;
@@ -52,7 +52,7 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
     }
 
     private boolean authorizeScope(WebSocketSession session) {
-        FirebasePrincipal principal = resolvePrincipal(session);
+        AuthenticatedActor principal = resolvePrincipal(session);
         if (configProperties.isFirebaseEnabled() && (principal == null || principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).noneMatch("A"::equals))) return false;
         var previousMode = com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.currentMode();
@@ -61,7 +61,7 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
         if (session.getPrincipal() instanceof org.springframework.security.core.Authentication authentication) {
             security.setAuthentication(authentication);
         }
-        Object sessionKind = session.getAttributes().get(ChatHandshakeInterceptor.SESSION_KIND_ATTRIBUTE);
+        Object sessionKind = session.getAttributes().get(ChatSessionAttributes.SESSION_KIND);
         var mode = "demo".equalsIgnoreCase(String.valueOf(sessionKind))
                 ? com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO
                 : com.raxim.myscoutee.common.config.mongo.MongoSessionMode.REAL;
@@ -82,12 +82,12 @@ public class AdminNotificationWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private FirebasePrincipal resolvePrincipal(WebSocketSession session) {
+    private AuthenticatedActor resolvePrincipal(WebSocketSession session) {
         if (!(session.getPrincipal() instanceof org.springframework.security.core.Authentication authentication)) {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        return principal instanceof FirebasePrincipal firebasePrincipal ? firebasePrincipal : null;
+        return principal instanceof AuthenticatedActor firebasePrincipal ? firebasePrincipal : null;
     }
 
     private String resolveQueryValue(WebSocketSession session, String key) {

@@ -1,6 +1,5 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +48,10 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
-            new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+            com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
 
         service.enqueueEventChanged("event-1", "u1");
         AffinityRecomputeTask merged = service.enqueueEventMembersChanged("event-1", "u2");
@@ -78,14 +79,16 @@ class AffinityRecomputeTaskServiceTest {
         });
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationJobs> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         AffinityRecomputeTaskService service = new AffinityRecomputeTaskService(
                 repository,
                 properties,
                 mock(MongoTemplate.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
-            new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+            com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueEventChanged("event-1", "u1");
@@ -127,7 +130,7 @@ class AffinityRecomputeTaskServiceTest {
         });
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationJobs> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         when(mongoTemplate.exists(any(Query.class), eq(Users.class))).thenReturn(true);
@@ -135,8 +138,10 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
-            new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+            com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueUserChanged("user-1");
@@ -163,7 +168,7 @@ class AffinityRecomputeTaskServiceTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
         NotificationRuleRegistryService registry = mock(NotificationRuleRegistryService.class);
         @SuppressWarnings("unchecked")
-        ObjectProvider<NotificationRuleRegistryService> provider = mock(ObjectProvider.class);
+        ObjectProvider<com.raxim.myscoutee.domain.notifications.api.NotificationJobs> provider = mock(ObjectProvider.class);
         when(provider.getIfAvailable()).thenReturn(registry);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
         when(mongoTemplate.exists(any(Query.class), eq(Users.class))).thenReturn(false);
@@ -171,8 +176,10 @@ class AffinityRecomputeTaskServiceTest {
                 repository,
                 properties,
                 mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountProjections", new com.raxim.myscoutee.domain.accounts.service.AccountAffinityProjectionService(
+            (MongoTemplate) org.springframework.test.util.ReflectionTestUtils.getField(service, "mongoTemplate"), org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
-            new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+            com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         service.setNotificationRuleRegistryServiceProvider(provider);
 
         service.enqueueUserChanged("user-1");

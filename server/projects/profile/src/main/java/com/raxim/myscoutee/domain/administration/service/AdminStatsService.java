@@ -1,8 +1,10 @@
 package com.raxim.myscoutee.domain.administration.service;
 
-import com.raxim.myscoutee.domain.affinity.service.AdminGraphScienceService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+
+import com.raxim.myscoutee.domain.affinity.api.GraphScience;
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -23,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.administration.document.AdminStatsSnapshot;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsBreakdownItemDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsDashboardDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsGraphDto;
@@ -32,7 +34,7 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsMetricD
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsSegmentDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsTimelinePointDto;
 import com.raxim.myscoutee.domain.administration.repository.AdminStatsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileStatistics;
 
 @Service
 public class AdminStatsService {
@@ -41,17 +43,17 @@ public class AdminStatsService {
     private static final Set<String> ACTIVE_PROFILE_STATUSES = Set.of("public", "friends only", "host only");
 
     private final AdminStatsRepository adminStatsRepository;
-    private final UsersRepository usersRepository;
-    private final AdminModerationService adminModerationService;
-    private final AdminGraphScienceService adminGraphScienceService;
+    private final ProfileStatistics profileStatistics;
+    private final AdministrativeAccess adminModerationService;
+    private final GraphScience adminGraphScienceService;
 
     public AdminStatsService(
             AdminStatsRepository adminStatsRepository,
-            UsersRepository usersRepository,
-            AdminModerationService adminModerationService,
-            AdminGraphScienceService adminGraphScienceService) {
+            ProfileStatistics profileStatistics,
+            AdministrativeAccess adminModerationService,
+            GraphScience adminGraphScienceService) {
         this.adminStatsRepository = adminStatsRepository;
-        this.usersRepository = usersRepository;
+        this.profileStatistics = profileStatistics;
         this.adminModerationService = adminModerationService;
         this.adminGraphScienceService = adminGraphScienceService;
     }
@@ -186,16 +188,16 @@ public class AdminStatsService {
         if (StringUtils.hasText(safeText(lastStreamId))) {
             snapshot.setLastTelemetryStreamId(safeText(lastStreamId));
         }
-        adminGraphScienceService.refresh(snapshot);
+        refreshGraph(snapshot);
         refreshProfileCounts(snapshot);
         adminStatsRepository.save(snapshot);
     }
 
     public void refreshGraphScienceSnapshot() {
         for (String key : JobGroupContext.isActive() ? List.of(JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId())
-                : List.of("global", com.raxim.myscoutee.domain.groups.document.CommunityGroup.WORK_BASE_ID, com.raxim.myscoutee.domain.groups.document.CommunityGroup.COMMUNITY_BASE_ID)) {
+                : List.of("global", com.raxim.myscoutee.domain.groups.api.BaseGroups.WORK_BASE_ID, com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID)) {
             AdminStatsSnapshot snapshot = "global".equals(key) ? adminStatsRepository.ensureGlobalSnapshot() : adminStatsRepository.ensureSnapshot(key);
-            adminGraphScienceService.refresh(snapshot);
+            refreshGraph(snapshot);
             refreshProfileCounts(snapshot);
             snapshot.setGeneratedAtIso(Instant.now().toString());
             adminStatsRepository.save(snapshot);
@@ -569,61 +571,24 @@ public class AdminStatsService {
                 .count();
     }
 
+    private void refreshGraph(AdminStatsSnapshot snapshot) {
+        var result = adminGraphScienceService.refresh(snapshot.getStatsKey(), snapshot.getDailyGraphActivity());
+        snapshot.setGraphHealthScore(result.healthScore());
+        snapshot.setGraphHealthLabelKey(result.healthLabelKey());
+        snapshot.setGraphInsightKey(result.insightKey());
+        snapshot.setGraphMetrics(result.metrics());
+        snapshot.setGraphBridgeUsers(result.bridgeUsers());
+        snapshot.setGraphCommunities(result.communities());
+        snapshot.setGraphSignals(result.signals());
+        snapshot.setDailyGraphActivity(result.dailyGraphActivity());
+    }
+
     private void refreshProfileCounts(AdminStatsSnapshot snapshot) {
-        Map<String, Long> statusCounts = new LinkedHashMap<>();
-        Map<String, Long> visibilityCounts = new LinkedHashMap<>();
-        Map<String, String> activeProfileUsers = new LinkedHashMap<>();
-        Map<String, Long> activeGenders = new LinkedHashMap<>();
-        for (Users user : usersRepository.findAll()) {
-            if (user == null || isAdminSeedUser(user) || !Objects.equals(user.getWorkspaceGroupId(),
-                    "global".equals(snapshot.getStatsKey()) ? null : snapshot.getStatsKey())) {
-                continue;
-            }
-            String profileStatus = normalizeProfileStatus(user);
-            if (!StringUtils.hasText(profileStatus)) {
-                continue;
-            }
-            increment(statusCounts, profileStatus, 1L);
-            if (ACTIVE_PROFILE_STATUSES.contains(profileStatus)) {
-                increment(visibilityCounts, profileStatus, 1L);
-                if (!Set.of("admin", "operator").contains(safeText(user.getHostTier()).toLowerCase(Locale.ROOT))) {
-                    String gender = safeText(user.getGender()).toLowerCase(Locale.ROOT);
-                    increment(activeGenders, switch (gender) {
-                        case "woman", "female" -> "female"; case "man", "male" -> "male"; default -> "other";
-                    }, 1L);
-                }
-                String userId = firstNonBlank(user.getUserId(), user.getId());
-                if (StringUtils.hasText(userId)) {
-                    activeProfileUsers.put(userId, profileStatus);
-                }
-            }
-        }
-        snapshot.setProfileStatusCounts(statusCounts);
-        snapshot.setProfileVisibilityCounts(visibilityCounts);
-        snapshot.setActiveProfileUsers(activeProfileUsers);
-        snapshot.setActiveProfileGenders(activeGenders);
-    }
-
-    private boolean isAdminSeedUser(Users user) {
-        String id = firstNonBlank(user.getId(), user.getUserId());
-        return safeText(id).startsWith("admin-demo-");
-    }
-
-    private String normalizeProfileStatus(Users user) {
-        String profileStatus = safeText(user == null ? null : user.getProfileStatus()).toLowerCase(Locale.ROOT);
-        if (StringUtils.hasText(profileStatus)) {
-            return profileStatus;
-        }
-        String status = safeText(user == null ? null : user.getStatus()).toUpperCase(Locale.ROOT);
-        return switch (status) {
-            case "D" -> "deleted";
-            case "B" -> "blocked";
-            case "I" -> "inactive";
-            case "F" -> "friends only";
-            case "H" -> "host only";
-            case "A" -> "public";
-            default -> "public";
-        };
+        var counts = profileStatistics.counts(snapshot.getStatsKey());
+        snapshot.setProfileStatusCounts(counts.statusCounts());
+        snapshot.setProfileVisibilityCounts(counts.visibilityCounts());
+        snapshot.setActiveProfileUsers(counts.activeProfileUsers());
+        snapshot.setActiveProfileGenders(counts.activeGenders());
     }
 
     private long activeProfileCount(Map<String, Long> profileVisibilityCounts) {

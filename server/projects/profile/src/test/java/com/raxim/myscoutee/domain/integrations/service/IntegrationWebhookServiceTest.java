@@ -154,9 +154,9 @@ class IntegrationWebhookServiceTest {
         // Invalid callback deliberately proves rejection occurs before URL resolution/delivery.
         deliverySubscription("not-a-url");
         var owner = new Users(); owner.setUserId("owner-timeout");
-        owner.setIntegrationAccess(new com.raxim.myscoutee.domain.integrations.document.IntegrationAccess(1,
-                com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.WRITE,
-                java.util.Map.of("token-timeout", com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.BLOCKED)));
+        owner.setIntegrationAccess(new com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess(1,
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.WRITE,
+                java.util.Map.of("token-timeout", com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.BLOCKED)));
         when(usersRepository.findByUserId("owner-timeout")).thenReturn(Optional.of(owner));
         var delivery = pendingDelivery();
         org.springframework.test.util.ReflectionTestUtils.invokeMethod(service, "deliver", delivery);
@@ -198,14 +198,17 @@ class IntegrationWebhookServiceTest {
                 subscriptionsRepository,
                 deliveriesRepository,
                 externalIdsRepository,
-                tokensRepository,
-                usersRepository,
+                tokensRepository, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 mongoTemplate,
                 new ObjectMapper(),
                 true,
                 true,
                 100,
                 100);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
+        org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate));
     }
 
     @Test

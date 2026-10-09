@@ -32,7 +32,7 @@ public class AdminClientAuthenticationFilter extends OncePerRequestFilter {
         try {
             var owner = access.requireAdmin(client.ownerUserId());
             var permissions = owner.getIntegrationAccess();
-            if (permissions != null && permissions.clientMode(client.tokenId()) == com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.BLOCKED) {
+            if (permissions != null && permissions.clientMode(client.tokenId()) == com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.BLOCKED) {
                 response.sendError(403); return;
             }
         }

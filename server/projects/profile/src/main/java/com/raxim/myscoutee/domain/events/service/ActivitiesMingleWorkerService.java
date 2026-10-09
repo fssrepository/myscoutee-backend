@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,9 +17,9 @@ import com.raxim.myscoutee.domain.events.repository.ActivityMingleSessionsReposi
 @Service
 public class ActivitiesMingleWorkerService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobGroupScope;
+    private com.raxim.myscoutee.domain.events.service.EventJobQueries jobGroupScope;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
 

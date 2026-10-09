@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.email.config.EmailProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
+import com.raxim.myscoutee.domain.email.api.EmailLinks;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.FacebookDataDeletionResponseDto;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
@@ -30,15 +30,15 @@ public class FacebookDataDeletionService {
     private static final String PAYLOAD_ALGORITHM = "HMAC-SHA256";
     private static final String PUBLIC_STATUS_ROUTE = "/api/auth/facebook/data-deletion/status";
 
-    private final ConfigProperties configProperties;
-    private final EmailProperties emailProperties;
+    private final RuntimeConfiguration configProperties;
+    private final EmailLinks emailProperties;
     private final UsersRepository usersRepository;
     private final HomeUserProfileService homeUserProfileService;
     private final ObjectMapper objectMapper;
 
     public FacebookDataDeletionService(
-            ConfigProperties configProperties,
-            EmailProperties emailProperties,
+            RuntimeConfiguration configProperties,
+            EmailLinks emailProperties,
             UsersRepository usersRepository,
             HomeUserProfileService homeUserProfileService,
             ObjectMapper objectMapper) {

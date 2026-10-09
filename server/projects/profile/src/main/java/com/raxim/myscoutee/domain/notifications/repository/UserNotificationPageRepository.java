@@ -22,9 +22,12 @@ public class UserNotificationPageRepository {
             Sort.Order.desc("_id"));
 
     private final MongoTemplate mongoTemplate;
+    private final com.raxim.myscoutee.domain.events.api.MemberAttention memberAttention;
 
-    public UserNotificationPageRepository(MongoTemplate mongoTemplate) {
+    public UserNotificationPageRepository(MongoTemplate mongoTemplate,
+            com.raxim.myscoutee.domain.events.api.MemberAttention memberAttention) {
         this.mongoTemplate = mongoTemplate;
+        this.memberAttention = memberAttention;
     }
 
     public UserNotificationSlice findPage(
@@ -101,10 +104,7 @@ public class UserNotificationPageRepository {
     private void incrementCommunityUpdates(UserNotification notification, int delta) {
         if (notification == null || !"community".equals(notification.getSourceType())
                 || !"members".equals(notification.getPayload().get("communityAttention"))) return;
-        var identity = Criteria.where("ownerType").is("community").and("ownerId").is(notification.getSourceId())
-                .and("userId").is(notification.getRecipientUserId());
-        if (delta < 0) identity.and("communityUpdates").gte(-delta);
-        mongoTemplate.updateFirst(Query.query(identity), new Update().inc("communityUpdates", delta), "activityMembers");
+        memberAttention.incrementCommunityUpdates(notification.getSourceId(), notification.getRecipientUserId(), delta);
     }
 
     public boolean insertIfAbsent(UserNotification notification) {
@@ -231,23 +231,6 @@ public class UserNotificationPageRepository {
                         .inc("revision", 1L),
                 UserNotification.class);
         return result.getModifiedCount();
-    }
-
-    public void incrementUnreadCounter(String recipientUserId, int delta) {
-        if (delta == 0) {
-            return;
-        }
-        mongoTemplate.updateFirst(
-                Query.query(Criteria.where("userId").is(recipientUserId)),
-                new Update().inc("activities.notifications", delta),
-                com.raxim.myscoutee.domain.accounts.document.Users.class);
-    }
-
-    public void setMutedPreference(String recipientUserId, boolean muted) {
-        mongoTemplate.updateFirst(
-                Query.query(Criteria.where("userId").is(recipientUserId)),
-                new Update().set("notificationPreferences.muted", muted),
-                com.raxim.myscoutee.domain.accounts.document.Users.class);
     }
 
     private Criteria pageCriteria(

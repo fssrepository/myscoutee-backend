@@ -32,7 +32,7 @@ class AdminStatsServiceTest {
         when(repository.globalSnapshotOrDefault()).thenReturn(snapshot);
         AdminStatsService service = new AdminStatsService(
                 repository,
-                mock(UsersRepository.class),
+                new com.raxim.myscoutee.domain.accounts.service.ProfileStatisticsService(mock(UsersRepository.class)),
                 mock(AdminModerationService.class),
                 mock(AdminGraphScienceService.class));
 

@@ -4,15 +4,15 @@ import java.time.Instant;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
 public class ContentModerationWorker {
     public static final String RULE = "content-auto-approve";
     private final ContentModerationService moderation;
-    private final NotificationRuleRegistryService rules;
+    private final NotificationJobs rules;
     private final ScheduledMongoSessionRunner databases;
-    public ContentModerationWorker(ContentModerationService moderation, NotificationRuleRegistryService rules, ScheduledMongoSessionRunner databases) {
+    public ContentModerationWorker(ContentModerationService moderation, NotificationJobs rules, ScheduledMongoSessionRunner databases) {
         this.moderation = moderation; this.rules = rules; this.databases = databases;
     }
     @Scheduled(fixedDelayString="${moderation.worker-check-delay-ms:60000}")

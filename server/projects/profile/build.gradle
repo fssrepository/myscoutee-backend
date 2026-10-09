@@ -1,9 +1,9 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.8'
-	id 'io.spring.dependency-management' version '1.1.7'
+	alias(libs.plugins.spring.boot)
+	alias(libs.plugins.dependency.management)
 	id 'jacoco'
-	id "org.sonarqube" version "4.2.1.3168"
+	alias(libs.plugins.sonar)
 }
 
 group = 'com.raxim'
@@ -23,10 +23,10 @@ if (isolatedJunitBuild.get()) {
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(25)
+		languageVersion = JavaLanguageVersion.of(libs.versions.java.get().toInteger())
 	}
-	sourceCompatibility = JavaVersion.toVersion(25)
-	targetCompatibility = JavaVersion.toVersion(25)
+	sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+	targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
 }
 
 repositories {
@@ -72,20 +72,16 @@ configurations {
     e2eTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
-// Security fixes not yet included in the Spring Boot 4.0.8 dependency BOM.
-ext['httpclient5.version'] = '5.6.3'
-ext['httpcore5.version'] = '5.4.3'
-ext['tomcat.version'] = '11.0.25'
-ext['opentelemetry.version'] = '1.62.0'
+apply from: rootProject.file('gradle/dependency-policy.gradle')
 
 dependencies {
-	implementation 'com.google.firebase:firebase-admin:9.10.0'
-	implementation 'org.bouncycastle:bcprov-jdk18on:1.84'
+	implementation libs.firebase
+	implementation libs.bouncycastle
 	implementation 'org.apache.httpcomponents:httpasyncclient'
 	implementation 'org.apache.httpcomponents.client5:httpclient5'
-	implementation 'org.jsoup:jsoup:1.23.1'
-	implementation 'software.amazon.awssdk:s3:2.32.20'
-	implementation 'software.amazon.awssdk:url-connection-client:2.32.20'
+	implementation libs.jsoup
+	implementation libs.s3
+	implementation libs.s3.http
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	implementation ('com.querydsl:querydsl-mongodb') {
@@ -102,14 +98,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation 'com.stripe:stripe-java:24.0.0'
+	implementation libs.stripe
 
-	implementation 'com.itextpdf:itextpdf:5.5.13.3'
+	implementation libs.itext
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.integration:spring-integration-test'
-	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:4.7.0'
+	testImplementation libs.embedded.mongo
 }
 
 tasks.named('jacocoTestReport') {

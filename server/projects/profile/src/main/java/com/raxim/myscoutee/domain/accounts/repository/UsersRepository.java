@@ -13,7 +13,7 @@ public interface UsersRepository extends MongoRepository<Users, String> {
     @Query("{ 'userId': ?0, '$or': [ { 'integrationAccess.revision': ?1 }, { 'integrationAccess': null, '$expr': { '$eq': [?1, 0] } } ] }")
     @org.springframework.data.mongodb.repository.Update("{ '$set': { 'integrationAccess': ?2 } }")
     long updateIntegrationAccess(String userId, long expectedRevision,
-            com.raxim.myscoutee.domain.integrations.document.IntegrationAccess value);
+            com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess value);
 
     @Query("{ 'userId': ?0, 'workspaceGroupId': null }")
     @org.springframework.data.mongodb.repository.Update("{ '$set': { 'activeWorkspaceGroupId': ?1 } }")

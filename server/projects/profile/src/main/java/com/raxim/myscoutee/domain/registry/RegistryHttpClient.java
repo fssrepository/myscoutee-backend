@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,17 +16,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
-public final class RegistryHttpClient {
-    private final RegistryProperties properties;
+public final class RegistryHttpClient implements com.raxim.myscoutee.domain.registry.api.RegistryTransport {
+    private final RegistryConfiguration properties;
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
 
-    public RegistryHttpClient(RegistryProperties properties, ObjectMapper objectMapper) {
+    public RegistryHttpClient(RegistryConfiguration properties, ObjectMapper objectMapper) {
         this(
                 properties,
                 objectMapper,
@@ -35,7 +37,7 @@ public final class RegistryHttpClient {
     }
 
     RegistryHttpClient(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             ObjectMapper objectMapper,
             HttpClient httpClient) {
         this.properties = Objects.requireNonNull(properties, "Registry properties must not be null.");
@@ -448,30 +450,5 @@ public final class RegistryHttpClient {
         return false;
     }
 
-    public static final class RegistryHttpException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
 
-        private final int statusCode;
-        private final String errorCode;
-
-        RegistryHttpException(int statusCode, String errorCode, String message) {
-            super(message);
-            this.statusCode = statusCode;
-            this.errorCode = errorCode;
-        }
-
-        RegistryHttpException(int statusCode, String errorCode, String message, Throwable cause) {
-            super(message, cause);
-            this.statusCode = statusCode;
-            this.errorCode = errorCode;
-        }
-
-        public int getStatusCode() {
-            return statusCode;
-        }
-
-        public String getErrorCode() {
-            return errorCode;
-        }
-    }
 }

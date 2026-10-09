@@ -1,16 +1,17 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionCommand;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.AnnouncementOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimStatus;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeploymentPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionCommand;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.AnnouncementOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeploymentPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -18,19 +19,19 @@ import tools.jackson.databind.ObjectMapper;
  * Stateless Spring bridge for per-mode, operator-selected registry settings.
  */
 @Component
-public class RegistryOperatorNetworkOperations {
+public class RegistryOperatorNetworkOperations implements com.raxim.myscoutee.domain.registry.api.RegistryNetwork {
     private final ObjectMapper objectMapper;
 
     public RegistryOperatorNetworkOperations(ObjectMapper objectMapper) {
         this.objectMapper = Objects.requireNonNull(objectMapper, "Object mapper must not be null.");
     }
 
-    public ActionOutcome apply(RegistryProperties properties, ActionCommand command) {
+    public ActionOutcome apply(RegistryConfiguration properties, ActionCommand command) {
         return new RegistryOperatorNetworkService(properties, objectMapper).apply(command);
     }
 
     public LeaderboardPage leaderboard(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             String view,
             String throughPeriod,
             Integer limit,
@@ -39,12 +40,12 @@ public class RegistryOperatorNetworkOperations {
                 .leaderboard(view, throughPeriod, limit, cursor);
     }
 
-    public ClaimStatus claimStatus(RegistryProperties properties) {
+    public ClaimStatus claimStatus(RegistryConfiguration properties) {
         return new RegistryOperatorNetworkService(properties, objectMapper).claimStatus();
     }
 
     public AnnouncementOutcome announcements(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             String kind,
             String severity,
             String channel,
@@ -62,7 +63,7 @@ public class RegistryOperatorNetworkOperations {
     }
 
     public LeaderboardDeploymentPage leaderboardDeployments(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             String groupId,
             String throughPeriod,
             Integer limit,

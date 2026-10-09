@@ -48,7 +48,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMember;
@@ -80,7 +80,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-content-u03@example.test",
                 "auth.region-security.enabled=true",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
@@ -128,6 +128,8 @@ class BackendContentMediaE2ETest {
     @Autowired
     private InMemoryMediaObjectStoreClient mediaObjectStoreClient;
 
+    private String mediaCookie;
+
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(5))
             .build();
@@ -164,7 +166,8 @@ class BackendContentMediaE2ETest {
     }
 
     @Test
-    void mediaContentPrivacyLandingAndShareTokensWorkThroughHttp() {
+    void mediaContentPrivacyLandingAndShareTokensWorkThroughHttp() throws Exception {
+        seedMediaSession();
         JsonNode imageUpload = uploadImage("/media/images", "image", Map.of(
                 "ownerId", MEDIA_USER_ID,
                 "entityId", "avatar"),
@@ -172,7 +175,7 @@ class BackendContentMediaE2ETest {
                 "image/png",
                 pngBytes());
         String imageUrl = imageUpload.path("url").asString();
-        assertThat(imageUrl).startsWith("/media/public?key=images/");
+        assertThat(imageUrl).startsWith("/api/media/private?key=private/images/");
         String originalImageUrl = mediaUploadUrl(imageUpload, "originalUrl", imageUrl);
         String smallImageUrl = mediaUploadUrl(imageUpload, "smallUrl", imageUrl);
         String mediumImageUrl = mediaUploadUrl(imageUpload, "mediumUrl", imageUrl);
@@ -180,10 +183,12 @@ class BackendContentMediaE2ETest {
         assertThat(imageUrl).isEqualTo(largeImageUrl);
         assertThat(List.of(originalImageUrl, smallImageUrl, mediumImageUrl, largeImageUrl))
                 .doesNotHaveDuplicates();
-        assertPublicMedia(originalImageUrl, "image/png", pngBytes());
-        assertPublicMediaContentType(smallImageUrl, "image/webp");
-        assertPublicMediaContentType(mediumImageUrl, "image/webp");
-        assertPublicMediaContentType(largeImageUrl, "image/webp");
+        assertThat(sendBytes(HttpRequest.newBuilder(uri(originalImageUrl.replaceFirst("^/api/", "/")))
+                .GET().build()).statusCode()).isEqualTo(401);
+        assertPrivateMedia(originalImageUrl, "image/png", pngBytes());
+        assertPrivateMediaContentType(smallImageUrl, "image/webp");
+        assertPrivateMediaContentType(mediumImageUrl, "image/webp");
+        assertPrivateMediaContentType(largeImageUrl, "image/webp");
 
         String profileImageUrl = uploadImage("/media/images", "image", Map.of(
                 "ownerId", MEDIA_USER_ID,
@@ -202,8 +207,8 @@ class BackendContentMediaE2ETest {
                 "voice.wav",
                 "audio/wav",
                 wavBytes()).path("url").asString();
-        assertThat(audioUrl).startsWith("/media/public?key=audio/");
-        assertPublicMedia(audioUrl, "audio/wav", wavBytes());
+        assertThat(audioUrl).startsWith("/api/media/private?key=private/audio/");
+        assertPrivateMedia(audioUrl, "audio/wav", wavBytes());
 
         assertThat(uploadStatus("/media/images", "image", Map.of(
                 "ownerId", MEDIA_USER_ID),
@@ -343,6 +348,7 @@ class BackendContentMediaE2ETest {
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
+        mongoTemplate.remove(new Query(), com.raxim.myscoutee.domain.accounts.document.UserSessionState.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Asset.class);
@@ -660,6 +666,7 @@ class BackendContentMediaE2ETest {
         byte[] body = multipartBody(boundary, fileFieldName, fields, filename, contentType, bytes);
         return sendString(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("X-App-Session-Id", "e2e-media-session")
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
                 .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                 .build());
@@ -689,8 +696,27 @@ class BackendContentMediaE2ETest {
         return output.toByteArray();
     }
 
-    private void assertPublicMedia(String mediaUrl, String contentType, byte[] bytes) {
-        HttpResponse<byte[]> response = sendBytes(HttpRequest.newBuilder(uri(mediaUrl))
+    private void seedMediaSession() throws Exception {
+        // Fixture-issued media credential, using the same stored session contract as the dev qualification.
+        String token = java.util.Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(MEDIA_USER_ID.getBytes(StandardCharsets.UTF_8)) + "."
+                + UUID.randomUUID().toString().replace("-", "") + UUID.randomUUID().toString().replace("-", "");
+        String hash = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+                .digest(token.getBytes(StandardCharsets.UTF_8)));
+        var state = new com.raxim.myscoutee.domain.accounts.document.UserSessionState();
+        state.setId(MEDIA_USER_ID);
+        state.setUserId(MEDIA_USER_ID);
+        var session = new com.raxim.myscoutee.domain.accounts.document.UserSessionState.ActiveSession();
+        session.setSessionId("e2e-media-session");
+        session.setMediaTokenHash(hash);
+        state.setActiveSessions(List.of(session));
+        withReal(() -> mongoTemplate.save(state));
+        mediaCookie = "myscoutee_media_session=" + token;
+    }
+
+    private void assertPrivateMedia(String mediaUrl, String contentType, byte[] bytes) {
+        HttpResponse<byte[]> response = sendBytes(HttpRequest.newBuilder(uri(mediaUrl.replaceFirst("^/api/", "/")))
+                .header("Cookie", mediaCookie)
                 .GET()
                 .build());
         assertThat(response.statusCode()).as(mediaUrl).isEqualTo(200);
@@ -699,8 +725,9 @@ class BackendContentMediaE2ETest {
         assertThat(extractPublicKey(mediaUrl)).isNotBlank();
     }
 
-    private void assertPublicMediaContentType(String mediaUrl, String contentType) {
-        HttpResponse<byte[]> response = sendBytes(HttpRequest.newBuilder(uri(mediaUrl))
+    private void assertPrivateMediaContentType(String mediaUrl, String contentType) {
+        HttpResponse<byte[]> response = sendBytes(HttpRequest.newBuilder(uri(mediaUrl.replaceFirst("^/api/", "/")))
+                .header("Cookie", mediaCookie)
                 .GET()
                 .build());
         assertThat(response.statusCode()).as(mediaUrl).isEqualTo(200);
@@ -724,16 +751,15 @@ class BackendContentMediaE2ETest {
     }
 
     private byte[] pngBytes() {
-        return new byte[] {
-                (byte) 137, 80, 78, 71, 13, 10, 26, 10,
-                0, 0, 0, 13, 73, 72, 68, 82,
-                0, 0, 0, 1, 0, 0, 0, 1,
-                8, 2, 0, 0, 0, (byte) 144, 119, 83, (byte) 222,
-                0, 0, 0, 12, 73, 68, 65, 84,
-                8, (byte) 215, 99, (byte) 248, (byte) 207, (byte) 192, 0, 0, 3, 1, 1, 0,
-                24, (byte) 221, (byte) 141, (byte) 180,
-                0, 0, 0, 0, 73, 69, 78, 68, (byte) 174, 66, 96, (byte) 130
-        };
+        try {
+            var image = new java.awt.image.BufferedImage(2, 2, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            image.setRGB(0, 0, 0xff0000);
+            var output = new ByteArrayOutputStream();
+            assertThat(javax.imageio.ImageIO.write(image, "png", output)).isTrue();
+            return output.toByteArray();
+        } catch (java.io.IOException exception) {
+            throw new AssertionError("Unable to generate the PNG fixture", exception);
+        }
     }
 
     private byte[] wavBytes() {
@@ -754,6 +780,7 @@ class BackendContentMediaE2ETest {
     private JsonNode getJson(String path, String sessionKind) {
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("X-App-Session-Id", "e2e-media-session")
                 .GET();
         applySessionHeader(builder, sessionKind);
         HttpResponse<String> response = sendString(builder.build());
@@ -766,9 +793,13 @@ class BackendContentMediaE2ETest {
     }
 
     private JsonNode postJson(String path, Object body, String sessionKind) {
+        if (body instanceof Map<?, ?> payload && payload.get("userId") instanceof String actorId) {
+            path += (path.contains("?") ? "&" : "?") + "userId=" + actorId;
+        }
         String json = writeJson(body);
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("X-App-Session-Id", "e2e-media-session")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json));
         applySessionHeader(builder, sessionKind);
@@ -781,6 +812,7 @@ class BackendContentMediaE2ETest {
         String json = writeJson(body);
         HttpRequest.Builder builder = HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
+                .header("X-App-Session-Id", "e2e-media-session")
                 .header("Content-Type", "application/json")
                 .method("DELETE", HttpRequest.BodyPublishers.ofString(json));
         applySessionHeader(builder, sessionKind);
@@ -908,6 +940,8 @@ class BackendContentMediaE2ETest {
         mongoBaseUri = "mongodb://" + serverAddress.getHost() + ":" + serverAddress.getPort();
         seedCountryPartition(REAL_DB);
         seedCountryPartition(DEMO_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, REAL_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, DEMO_DB);
         seedFastPlatformConfig(REAL_DB);
         seedFastPlatformConfig(DEMO_DB);
     }

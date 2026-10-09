@@ -26,7 +26,7 @@ import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
 import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
 
 @Service
-public class EventParticipationTicketService {
+public class EventParticipationTicketService implements com.raxim.myscoutee.domain.events.api.ParticipationTickets {
     private static final String OWNER_TYPE_EVENT = "event";
 
     private final ActivityEventsRepository activityEventsRepository;
@@ -97,7 +97,7 @@ public class EventParticipationTicketService {
                 .toList();
     }
 
-    public record TicketSnapshotRecord(ActivityEvent event, EventTicket credential) {
+    public record TicketSnapshotRecord(ActivityEvent event, EventTicket credential) implements com.raxim.myscoutee.domain.events.api.ParticipationTickets.Snapshot {
     }
 
     public EventTicket findActiveCredential(ActivityEvent ticketRecord) {

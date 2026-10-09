@@ -28,7 +28,7 @@ class AdminAudienceServiceTest {
     @Test
     void demoAudienceIncludesBothDemoAdmins() {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
-        AdminAudienceService service = new AdminAudienceService(mock(UsersRepository.class), mock(AppSettingsService.class));
+        AdminAudienceService service = new AdminAudienceService(new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(mock(UsersRepository.class)), mock(AppSettingsService.class));
 
         List<String> recipients = service.adminNotificationRecipientUserIds("admin-demo-ava");
 
@@ -46,7 +46,7 @@ class AdminAudienceServiceTest {
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(inactive));
         when(usersRepository.findByEmailIn(anyCollection())).thenReturn(List.of(lead));
         when(usersRepository.findByUserId("actor-admin")).thenReturn(Optional.empty());
-        AdminAudienceService service = new AdminAudienceService(usersRepository, appSettingsService);
+        AdminAudienceService service = new AdminAudienceService(new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), appSettingsService);
 
         List<String> recipients = service.adminNotificationRecipientUserIds("actor-admin");
 

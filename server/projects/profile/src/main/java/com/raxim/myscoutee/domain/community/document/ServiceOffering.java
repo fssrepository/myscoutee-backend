@@ -16,4 +16,4 @@ public record ServiceOffering(@Id String id, String baseGroupId, String ownerAcc
         Double maxDistanceKm, List<String> languages, List<String> staffAccountIds,
         boolean slotsEnabled, String startAtIso, String endAtIso, String frequency, int durationMinutes,
         List<EventSlotTemplateDto> slotTemplates, PricingConfigDto pricing, String status,
-        String createdAtIso, String updatedAtIso, @Version Long version, String sourceLink) {}
+        String createdAtIso, String updatedAtIso, @Version Long version, String sourceLink) implements com.raxim.myscoutee.domain.community.api.ServiceOfferingView {}

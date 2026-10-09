@@ -22,6 +22,45 @@ import com.raxim.myscoutee.domain.payments.service.PaymentService.GatewayTransit
 class PaymentAuthorizationCoordinatorTest {
 
     @Test
+    void unknownRemoteOutcomeKeepsFulfillmentPendingAndDoesNotRefund() {
+        PaymentService payments = mock(PaymentService.class);
+        var events = mock(com.raxim.myscoutee.domain.events.api.EventCheckout.class);
+        var payment = capturedPayment("pending");
+        var authorization = authorization();
+        when(payments.applyGatewayAuthorization("pay-1", authorization, "stripe:event-1"))
+                .thenReturn(new GatewayTransition(payment, true, false));
+        var unknown = new com.raxim.myscoutee.domain.events.api.EventCheckout.OutcomeUnknown(new java.io.IOException("lost reply"));
+        when(events.finalizeAuthorizedPayment(payment)).thenThrow(unknown);
+        var coordinator = new PaymentAuthorizationCoordinator(payments, events);
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> coordinator.apply("pay-1", authorization, "stripe:event-1"))
+                .isSameAs(unknown);
+        verify(payments, never()).markGatewayFulfillment(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyBoolean(), org.mockito.ArgumentMatchers.any());
+        verify(payments, never()).refundFailedFulfillment(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
+        assertThat(payment.getFulfillmentStatus()).isEqualTo("pending");
+    }
+
+    @Test
+    void acceptedMembershipIsNeverRefundedWhenItsReceiptCannotBeSaved() {
+        var payments = mock(PaymentService.class);
+        var events = mock(com.raxim.myscoutee.domain.events.api.EventCheckout.class);
+        var payment = capturedPayment("pending");
+        var authorization = authorization();
+        var transition = new GatewayTransition(payment, true, false);
+        when(payments.applyGatewayAuthorization("pay-1", authorization, "stripe:event-1")).thenReturn(transition);
+        var accepted = mock(com.raxim.myscoutee.domain.events.dto.EventsDtos.EventParticipationActionResultDto.class);
+        when(accepted.membershipStatus()).thenReturn("accepted");
+        when(events.finalizeAuthorizedPayment(payment)).thenReturn(accepted);
+        var lostReceipt = new org.springframework.dao.DataAccessResourceFailureException("lost receipt reply");
+        when(payments.markGatewayFulfillment(payment.getId(), true, null)).thenThrow(lostReceipt).thenReturn(payment);
+        var coordinator = new PaymentAuthorizationCoordinator(payments, events);
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> coordinator.apply("pay-1", authorization, "stripe:event-1"))
+                .isSameAs(lostReceipt);
+        assertThat(coordinator.apply("pay-1", authorization, "stripe:event-1")).isSameAs(transition);
+        verify(payments, never()).markGatewayFulfillment(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(false), org.mockito.ArgumentMatchers.any());
+        verify(payments, never()).refundFailedFulfillment(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
     void fulfillmentExceptionPersistsFailureAndRefundsTheCapturedPayment() {
         PaymentService paymentService = mock(PaymentService.class);
         ActivitiesEventsService activitiesEventsService = mock(ActivitiesEventsService.class);

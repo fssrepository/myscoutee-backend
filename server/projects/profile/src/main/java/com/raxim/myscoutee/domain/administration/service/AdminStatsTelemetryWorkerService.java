@@ -1,7 +1,11 @@
 package com.raxim.myscoutee.domain.administration.service;
 
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.accounts.api.AdminCounterRefresh;
+
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +28,7 @@ import tools.jackson.databind.ObjectMapper;
 @Service
 public class AdminStatsTelemetryWorkerService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminStatsTelemetryWorkerService.class);
@@ -33,7 +37,7 @@ public class AdminStatsTelemetryWorkerService {
     private final ObjectMapper objectMapper;
     private final AdminStatsService adminStatsService;
     private final AdminMonitoringService adminMonitoringService;
-    private final AdminMenuCounterService adminMenuCounterService;
+    private final AdminCounterRefresh adminMenuCounterService;
     private final AdminStatsProperties properties;
     private final RedisStreamRetentionService redisStreamRetentionService;
 
@@ -45,7 +49,7 @@ public class AdminStatsTelemetryWorkerService {
             ObjectMapper objectMapper,
             AdminStatsService adminStatsService,
             AdminMonitoringService adminMonitoringService,
-            AdminMenuCounterService adminMenuCounterService,
+            AdminCounterRefresh adminMenuCounterService,
             AdminStatsProperties properties,
             RedisStreamRetentionService redisStreamRetentionService) {
         this.stringRedisTemplate = stringRedisTemplate;

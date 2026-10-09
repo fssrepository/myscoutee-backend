@@ -62,7 +62,7 @@ import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.chat.service.ChatStreamPublisher;
 import com.raxim.myscoutee.domain.chat.service.ChatWebSocketSessionRegistry;
-import com.raxim.myscoutee.domain.chat.service.RedisStreamRetentionService;
+import com.raxim.myscoutee.common.redis.RedisStreamRetentionService;
 import com.raxim.myscoutee.domain.chat.websocket.ChatHandshakeInterceptor;
 import com.raxim.myscoutee.domain.chat.websocket.ChatWebSocketHandler;
 
@@ -81,7 +81,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-chat-stream-sender@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",

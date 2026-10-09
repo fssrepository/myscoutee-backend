@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.chat.service;
+import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
@@ -7,9 +8,11 @@ import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -47,8 +50,8 @@ import com.raxim.myscoutee.domain.events.document.ActivitySubEventResource;
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatAvatarRecord;
 import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatReadAvatarRecord;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserChatCountersDto;
@@ -62,7 +65,7 @@ import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 import com.raxim.myscoutee.domain.chat.repository.ChatsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMapper;
 import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
@@ -111,14 +114,13 @@ class ChatServiceTest {
     void setUp() {
         org.mockito.Mockito.lenient().when(accessControlService.resolveChatActorUserId(any(), any()))
                 .thenAnswer(call -> call.getArgument(1));
-        service = new ChatService(
+        service = campaignAware(new ChatService(
                 chatsRepository,
                 chatMessagesRepository,
                 mongoTemplate,
-                usersRepository,
-                activityMembersRepository,
-                activitySubEventResourcesRepository,
-                activitySubEventStageRuntimeRepository,
+                profileDirectory(),
+                memberDirectory(),
+                new com.raxim.myscoutee.domain.events.service.EventResourceDirectoryService(activitySubEventResourcesRepository, activitySubEventStageRuntimeRepository),
                 homeUserProfileService,
                 userActivityCountersService,
                 chatStreamPublisher,
@@ -128,7 +130,13 @@ class ChatServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 new ChatMapper(),
-                new ChatMessageMapper(usersRepository));
+                new ChatMessageMapper(profileDirectory())), mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accountDevices", new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "chatCounters", new com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", homeUserProfileService);
+        var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
+        org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
     }
 
     @AfterEach
@@ -167,7 +175,7 @@ class ChatServiceTest {
         when(chatsRepository.findByOwnerUserIdAndChatId("provider-profile", "c-case-case")).thenReturn(Optional.of(stale));
         var c = new com.raxim.myscoutee.domain.community.document.ServiceCase("case", "myscoutee-community", "private", "owner", "Repair", "", "fault", "open", false,
                 List.of("owner"), List.of("owner", "provider"), List.of(),
-                List.of(new com.raxim.myscoutee.domain.community.document.ServiceCase.Support("provider", null, "declined")), List.of(), List.of(), null, null, "now", "now", 1L, java.util.Map.of(), List.of(), List.of());
+                List.of(new com.raxim.myscoutee.domain.community.dto.CaseDetails.Support("provider", null, "declined")), List.of(), List.of(), null, null, "now", "now", 1L, java.util.Map.of(), List.of(), List.of());
         when(mongoTemplate.findById("case", com.raxim.myscoutee.domain.community.document.ServiceCase.class)).thenReturn(c);
         assertThat(service.hasChatAccess("c-case-case", "provider-profile")).isFalse();
     }
@@ -341,11 +349,12 @@ class ChatServiceTest {
 
     @Test
     void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("viewer", "Viewer", "VU")));
         when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));
         when(chatMessagesRepository.findActiveSharesBySender("chat-1", "viewer", "event"))
                 .thenReturn(List.of(message("old-share", "viewer", "viewer", "2026-05-26T08:00:01Z")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "VU")));
+
         assertThat(service.querySharedMessages("chat-1", "viewer", "event"))
                 .extracting(item -> item.id()).containsExactly("old-share");
         verify(chatMessagesRepository, never()).findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class));
@@ -364,6 +373,7 @@ class ChatServiceTest {
 
     @Test
     void queryMessagesPageReusesUserLookupCacheForRepeatedParticipants() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU"), user("viewer", "Viewer User", "VU")));
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat senderChat = chat("chat-1", "sender", 0);
         List<ChatMessage> messages = List.of(
@@ -375,16 +385,16 @@ class ChatServiceTest {
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(3L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class))).thenReturn(messages);
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+
+
 
         var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
 
         assertThat(result.items()).hasSize(3);
         assertThat(result.total()).isEqualTo(3);
         assertThat(result.read()).isNull();
-        verify(usersRepository, times(1)).findByUserId("sender");
-        verify(usersRepository, times(1)).findByUserId("viewer");
+        verify(usersRepository).findByUserIdIn(argThat(ids -> ids.size() == 2 && ids.containsAll(List.of("sender", "viewer"))));
+        verify(usersRepository, never()).findByUserId(anyString());
         verify(chatMessagesRepository, never()).saveAll(anyList());
         verify(chatsRepository, never()).save(any(Chat.class));
     }
@@ -675,6 +685,7 @@ class ChatServiceTest {
 
     @Test
     void openingFirstMessagePageClearsTheWholePersistedUnreadCount() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU")));
         Chat viewerChat = chat("chat-1", "viewer", 4, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
@@ -684,7 +695,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(unreadMessage));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+
         Users viewer = user("viewer", "Viewer User", "VU");
         viewer.setImages(List.of("/images/profiles/viewer/small.webp"));
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
@@ -711,6 +722,7 @@ class ChatServiceTest {
 
     @Test
     void notificationTargetReadsOnlyItsMessageAndKeepsOtherNotificationsUnread() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU"), user("viewer", "Viewer User", "VU")));
         Chat viewerChat = chat("chat-1", "viewer", 2, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage target = message("target", "sender", "someone-else", "2026-05-26T08:00:02Z");
@@ -721,8 +733,8 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(2L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(target, previous));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+
+
         when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -738,6 +750,7 @@ class ChatServiceTest {
 
     @Test
     void openingOlderMessagePageAddsReaderWithAtomicMongoUpdate() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU"), user("viewer", "Viewer User", "VU")));
         Chat viewerChat = chat("chat-1", "viewer", 1, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
@@ -747,8 +760,8 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(16L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(unreadMessage));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
-        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer User", "VU")));
+
+
         when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq(ChatMessage.class)))
                 .thenReturn(UpdateResult.acknowledged(1L, 1L, null));
         when(chatsRepository.save(any(Chat.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -766,6 +779,7 @@ class ChatServiceTest {
 
     @Test
     void reopeningDeletedMessageDoesNotRecreateReadReceipts() {
+        when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("sender", "Sender User", "SU")));
         Chat viewerChat = chat("chat-1", "viewer", 0, "2026-05-26T08:00:00Z", "groupSubEvent");
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage deletedMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
@@ -778,7 +792,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(deletedMessage));
-        when(usersRepository.findByUserId("sender")).thenReturn(Optional.of(user("sender", "Sender User", "SU")));
+
 
         var result = service.queryMessagesPage("chat-1", "viewer", 10, null);
 
@@ -1139,7 +1153,7 @@ class ChatServiceTest {
             assertThat(chat.getOwnerId()).isNull();
             assertThat(chat.getMemberIds()).containsExactly("target", "moderator");
         });
-        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(chatsRepository, usersRepository, adminMenuCounterService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class));
+        var access = new com.raxim.myscoutee.domain.access.security.ChatPolicyFacts(new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(chatsRepository), new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), adminMenuCounterService, new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class)));
         when(chatsRepository.findByChatId(chatId)).thenReturn(definitions.getValue());
         assertThat(access.canAccessChat(chatId, "app-admin")).isFalse();
         assertThat(access.canAccessChat(chatId, "other-group-profile")).isFalse();
@@ -1355,5 +1369,32 @@ class ChatServiceTest {
         user.setStatus("A");
         user.setProfileStatus("public");
         return user;
+    }
+
+    private static ChatService campaignAware(ChatService service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo));
+        var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class));
+        org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongo);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "ratings", ratings);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+        var caseRepository = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class, call ->
+                "findById".equals(call.getMethod().getName())
+                        ? java.util.Optional.ofNullable(mongo.findById(call.getArgument(0), com.raxim.myscoutee.domain.community.document.ServiceCase.class))
+                        : org.mockito.Answers.RETURNS_DEFAULTS.answer(call));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "cases", new com.raxim.myscoutee.domain.community.service.CaseParticipantsService(caseRepository));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "announcements", new com.raxim.myscoutee.domain.community.service.AnnouncementDirectoryService(mongo));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
+        return service;
+    }
+    private com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService profileDirectory() {
+        var owner = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
+        return owner;
+    }
+    private com.raxim.myscoutee.domain.events.api.MemberDirectory memberDirectory() {
+        var owner = new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository);
+        org.springframework.test.util.ReflectionTestUtils.setField(owner, "mongo", mongoTemplate);
+        return owner;
     }
 }

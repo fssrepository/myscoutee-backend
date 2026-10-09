@@ -21,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.UserNotification;
-import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationDto;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationPreferenceDto;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationReadResponseDto;
@@ -33,11 +32,11 @@ import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageR
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.UserNotificationCursor;
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository.UserNotificationSlice;
 import com.raxim.myscoutee.domain.notifications.repository.UserNotificationsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 import com.raxim.myscoutee.domain.notifications.mapper.UserNotificationMapper;
 
 @Service
-public class UserNotificationService {
+public class UserNotificationService implements com.raxim.myscoutee.domain.notifications.api.NotificationInbox {
     private static final String BUCKET_NEW = "new";
     private static final String BUCKET_ALL = "all";
     private static final String EVENT_INVITE_KIND = "event-invite";
@@ -50,17 +49,17 @@ public class UserNotificationService {
 
     private final UserNotificationsRepository userNotificationsRepository;
     private final UserNotificationPageRepository userNotificationPageRepository;
-    private final UsersRepository usersRepository;
+    private final AccountNotifications accounts;
     private final UserNotificationMapper userNotificationMapper;
 
     public UserNotificationService(
             UserNotificationsRepository userNotificationsRepository,
             UserNotificationPageRepository userNotificationPageRepository,
-            UsersRepository usersRepository,
+            AccountNotifications accounts,
             UserNotificationMapper userNotificationMapper) {
         this.userNotificationsRepository = userNotificationsRepository;
         this.userNotificationPageRepository = userNotificationPageRepository;
-        this.usersRepository = usersRepository;
+        this.accounts = accounts;
         this.userNotificationMapper = userNotificationMapper;
     }
 
@@ -105,7 +104,7 @@ public class UserNotificationService {
                 .findByIdAndRecipientUserId(normalizedNotificationId, normalizedRecipientUserId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification was not found.")));
         if (markedRead.isPresent()) {
-            userNotificationPageRepository.incrementUnreadCounter(normalizedRecipientUserId, -1);
+            accounts.incrementUnreadCounter(normalizedRecipientUserId, -1);
         }
         int unreadCount = currentUnreadCount(normalizedRecipientUserId);
         return new UserNotificationReadResponseDto(
@@ -213,7 +212,7 @@ public class UserNotificationService {
                 Instant.now().toString());
         int changedCount = safeInt(changed);
         if (changedCount > 0) {
-            userNotificationPageRepository.incrementUnreadCounter(
+            accounts.incrementUnreadCounter(
                     normalizedRecipientUserId,
                     -changedCount);
         }
@@ -256,14 +255,13 @@ public class UserNotificationService {
 
     private String notificationAccountId(String userId) {
         String id = safeText(userId);
-        return usersRepository.findByUserId(id).map(user -> StringUtils.hasText(user.getAccountUserId())
-                ? user.getAccountUserId() : id).orElse(id);
+        return accounts.notificationAccountId(id);
     }
 
     private int applyChatNotificationReadCount(String recipientUserId, long changed) {
         int changedCount = safeInt(changed);
         if (changedCount > 0) {
-            userNotificationPageRepository.incrementUnreadCounter(recipientUserId, -changedCount);
+            accounts.incrementUnreadCounter(recipientUserId, -changedCount);
         }
         return changedCount;
     }
@@ -273,7 +271,7 @@ public class UserNotificationService {
         if (muted == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Muted preference is required.");
         }
-        userNotificationPageRepository.setMutedPreference(normalizedRecipientUserId, muted);
+        accounts.setMuted(normalizedRecipientUserId, muted);
         return new UserNotificationPreferenceDto(muted);
     }
 
@@ -310,7 +308,7 @@ public class UserNotificationService {
                 incrementUnread = userNotificationPageRepository.insertIfAbsent(notification);
             }
             if (incrementUnread) {
-                userNotificationPageRepository.incrementUnreadCounter(recipientUserId, 1);
+                accounts.incrementUnreadCounter(recipientUserId, 1);
             }
         }
     }
@@ -470,11 +468,7 @@ public class UserNotificationService {
     }
 
     private boolean isMuted(String recipientUserId) {
-        return usersRepository.findByUserId(recipientUserId)
-                .map(Users::getNotificationPreferences)
-                .map(Users.UserNotificationPreferencesRecord::muted)
-                .map(Boolean.TRUE::equals)
-                .orElse(false);
+        return accounts.muted(recipientUserId);
     }
 
     private String normalizeBucket(String bucket) {

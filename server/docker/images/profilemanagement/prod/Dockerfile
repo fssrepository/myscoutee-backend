@@ -1,12 +1,17 @@
-FROM eclipse-temurin:25.0.2_10-jre-alpine
+FROM eclipse-temurin:25.0.2_10-jre-alpine AS jre-runtime
 
 EXPOSE 8080
 
-RUN apk add --no-cache imagemagick libwebp-tools && \
-    addgroup -S -g 10001 myscoutee && \
+RUN addgroup -S -g 10001 myscoutee && \
     adduser -S -D -H -u 10001 -G myscoutee myscoutee && \
-    install -d -o myscoutee -g myscoutee /app && \
-    install -d -m 0700 -o myscoutee -g myscoutee \
+    install -d -o myscoutee -g myscoutee /app
+
+FROM jre-runtime AS media-runtime
+RUN apk add --no-cache imagemagick libwebp-tools
+
+# Preserve the monolith production runtime while exporting the two small base stages.
+FROM media-runtime AS application
+RUN install -d -m 0700 -o myscoutee -g myscoutee \
       /var/lib/myscoutee/registry-demo/keys \
       /var/lib/myscoutee/registry-demo/state && \
     install -d -o myscoutee -g myscoutee \

@@ -1,6 +1,8 @@
 package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -38,7 +40,7 @@ import jakarta.annotation.PreDestroy;
  * use short-lived isolated apps and therefore cannot switch live traffic.
  */
 @Service
-public class DeploymentFirebaseRuntime {
+public class DeploymentFirebaseRuntime implements com.raxim.myscoutee.domain.platform.api.FirebaseRuntime {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(DeploymentFirebaseRuntime.class);
     private static final String APP_NAME_PREFIX =
@@ -164,7 +166,7 @@ public class DeploymentFirebaseRuntime {
         String projectId = requireText(
                 firebase.getProjectId(),
                 "Activated Firebase project id is missing.");
-        DeploymentConfiguration.EncryptedSecret envelope =
+        EncryptedSecret envelope =
                 kind == CredentialKind.AUTHENTICATION
                         ? firebase.getAuthenticationCredentialEnvelope()
                         : firebase.getMessagingCredentialEnvelope();
@@ -296,7 +298,7 @@ public class DeploymentFirebaseRuntime {
         if (!runtimeReady(firebase)) {
             return null;
         }
-        DeploymentConfiguration.EncryptedSecret envelope =
+        EncryptedSecret envelope =
                 kind == CredentialKind.AUTHENTICATION
                         ? firebase.getAuthenticationCredentialEnvelope()
                         : firebase.getMessagingCredentialEnvelope();
@@ -341,7 +343,7 @@ public class DeploymentFirebaseRuntime {
     }
 
     private String credentialFingerprint(
-            DeploymentConfiguration.EncryptedSecret envelope) {
+            EncryptedSecret envelope) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             updateFingerprint(digest, envelope.getAlgorithm());
@@ -398,7 +400,7 @@ public class DeploymentFirebaseRuntime {
             String projectId,
             long revision,
             String credentialFingerprint,
-            DeploymentConfiguration.EncryptedSecret credentialEnvelope,
+            EncryptedSecret credentialEnvelope,
             String purpose,
             boolean legacyStartup) {
         private static ResolvedCredential legacy() {

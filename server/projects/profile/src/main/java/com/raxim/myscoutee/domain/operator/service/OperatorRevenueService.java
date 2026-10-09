@@ -28,19 +28,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestRecord;
-import com.raxim.myscoutee.domain.payments.document.Payment;
-import com.raxim.myscoutee.domain.events.document.SubEventItem;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
+import com.raxim.myscoutee.domain.payments.api.RevenuePayment;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRevenueDtos.OperatorRevenueDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingConfigDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingSlotOverrideDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
+import com.raxim.myscoutee.domain.payments.api.PaymentRevenue;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 @Service
 public class OperatorRevenueService {
@@ -61,17 +61,17 @@ public class OperatorRevenueService {
     private static final String STATUS_ACCEPTED = "accepted";
     private static final String REQUEST_KIND_BORROW = "borrow";
 
-    private final ActivityEventsRepository activityEventsRepository;
-    private final AssetsRepository assetsRepository;
-    private final PaymentsRepository paymentsRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final AssetOwnershipReads assetsRepository;
+    private final PaymentRevenue paymentsRepository;
     private final OperatorRevenueMapper mapper;
     private final Clock clock;
 
     @Autowired
     public OperatorRevenueService(
-            ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository,
-            PaymentsRepository paymentsRepository,
+            EventOwnershipReads activityEventsRepository,
+            AssetOwnershipReads assetsRepository,
+            PaymentRevenue paymentsRepository,
             OperatorRevenueMapper mapper) {
         this(
                 activityEventsRepository,
@@ -82,9 +82,9 @@ public class OperatorRevenueService {
     }
 
     OperatorRevenueService(
-            ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository,
-            PaymentsRepository paymentsRepository,
+            EventOwnershipReads activityEventsRepository,
+            AssetOwnershipReads assetsRepository,
+            PaymentRevenue paymentsRepository,
             OperatorRevenueMapper mapper,
             Clock clock) {
         this.activityEventsRepository = Objects.requireNonNull(activityEventsRepository);
@@ -142,7 +142,7 @@ public class OperatorRevenueService {
             }
         }
         long unmappedTimestampRecords = 0L;
-        for (Payment payment
+        for (RevenuePayment payment
                 : nonNull(paymentsRepository.findRevenueCandidates())) {
             if (isSimulatedPayment(payment)
                     || isPaymentRevision(payment)
@@ -185,7 +185,7 @@ public class OperatorRevenueService {
                 exclusiveEnd,
                 "Revenue period upper bound must not be null.");
         Set<LocalDate> periods = new TreeSet<>();
-        for (Payment payment
+        for (RevenuePayment payment
                 : nonNull(paymentsRepository.findRevenueCandidates())) {
             if (isSimulatedPayment(payment)
                     || isPaymentRevision(payment)
@@ -222,8 +222,8 @@ public class OperatorRevenueService {
 
     private void accumulateEvents(
             Accumulation accumulation,
-            List<ActivityEvent> events) {
-        for (ActivityEvent event : nonNull(events)) {
+            List<? extends Event> events) {
+        for (Event event : nonNull(events)) {
             if (Boolean.TRUE.equals(event.getGenerated())
                     || !StringUtils.hasText(safeText(event.getSourceId()))
                     || !Boolean.TRUE.equals(event.getTicketing())) {
@@ -235,7 +235,7 @@ public class OperatorRevenueService {
                     accumulation,
                     unitMinorByCurrency,
                     event.getPricing());
-            for (SubEventItem subEvent : nonNull(event.getSubEvents())) {
+            for (SubEvent subEvent : nonNull(event.getSubEvents())) {
                 if (Boolean.TRUE.equals(subEvent.optional())) {
                     addPricingUnit(
                             accumulation,
@@ -296,7 +296,7 @@ public class OperatorRevenueService {
 
     private void accumulateAssets(
             Accumulation accumulation,
-            List<Asset> assets) {
+            List<? extends Asset> assets) {
         for (Asset asset : nonNull(assets)) {
             if (!StringUtils.hasText(safeText(asset.getAssetId()))) {
                 continue;
@@ -379,9 +379,9 @@ public class OperatorRevenueService {
 
     private void accumulatePayments(
             Accumulation accumulation,
-            List<Payment> payments,
+            List<? extends RevenuePayment> payments,
             LocalDate onlyOriginalPaymentDay) {
-        for (Payment payment : nonNull(payments)) {
+        for (RevenuePayment payment : nonNull(payments)) {
             accumulatePayment(
                     accumulation,
                     payment,
@@ -391,7 +391,7 @@ public class OperatorRevenueService {
 
     private void accumulatePayment(
             Accumulation accumulation,
-            Payment payment,
+            RevenuePayment payment,
             LocalDate onlyOriginalPaymentDay) {
         if (isSimulatedPayment(payment)) {
             accumulation.diagnostics.excludedSimulatedPayments++;
@@ -552,7 +552,7 @@ public class OperatorRevenueService {
     }
 
     private Optional<Long> refundMinor(
-            Payment payment,
+            RevenuePayment payment,
             String status,
             CurrencyKey currency,
             long capturedMinor,
@@ -657,12 +657,12 @@ public class OperatorRevenueService {
         }
     }
 
-    private boolean isPaymentRevision(Payment payment) {
+    private boolean isPaymentRevision(RevenuePayment payment) {
         return StringUtils.hasText(safeText(payment.getAuditKind()))
                 && !PAYMENT_AUDIT_KIND.equals(normalize(payment.getAuditKind()));
     }
 
-    private boolean isSimulatedPayment(Payment payment) {
+    private boolean isSimulatedPayment(RevenuePayment payment) {
         return SIMULATED_PAYMENT_PROVIDER.equals(
                 normalize(payment == null ? null : payment.getProvider()))
                 || normalize(payment == null

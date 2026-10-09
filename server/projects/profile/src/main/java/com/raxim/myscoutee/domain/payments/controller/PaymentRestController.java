@@ -15,25 +15,25 @@ import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutStateChangeRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventParticipationActionResultDto;
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
+import com.raxim.myscoutee.domain.events.api.EventCheckout;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutPricingService;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
 
 @RestController
 @RequestMapping("/activities/events")
-public class PaymentRestController {
+public class PaymentRestController implements com.raxim.myscoutee.domain.payments.api.PaymentProviderResponse {
 
     private final PaymentService paymentService;
     private final EventCheckoutBasketService basketService;
     private final EventCheckoutPricingService pricingService;
-    private final ActivitiesEventsService activitiesEventsService;
+    private final EventCheckout activitiesEventsService;
 
     public PaymentRestController(
             PaymentService paymentService,
             EventCheckoutBasketService basketService,
             EventCheckoutPricingService pricingService,
-            ActivitiesEventsService activitiesEventsService) {
+            EventCheckout activitiesEventsService) {
         this.paymentService = paymentService;
         this.basketService = basketService;
         this.pricingService = pricingService;

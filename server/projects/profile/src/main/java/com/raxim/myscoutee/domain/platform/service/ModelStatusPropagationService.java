@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.chat.service.ChatAttachmentLifecycleService;
+import com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
@@ -20,19 +20,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.mongodb.client.result.UpdateResult;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.events.api.EventDerivedUpdates;
+import com.raxim.myscoutee.domain.events.dto.EventVersionDto;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class ModelStatusPropagationService {
+public class ModelStatusPropagationService implements com.raxim.myscoutee.domain.platform.api.ModelStatusChanges {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String OWNER_TYPE_ASSET = "asset";
     private static final String ROLE_ADMIN = "Admin";
@@ -46,26 +48,32 @@ public class ModelStatusPropagationService {
     private static final String STATUS_TRASHED = "T";
     private static final Set<String> SUPPRESSED_STATUSES = Set.of(STATUS_UNDER_REVIEW, STATUS_BLOCKED, STATUS_DELETED, STATUS_INACTIVE);
 
-    private final UsersRepository usersRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final ActivityMembersRepository activityMembersRepository;
-    private final AssetsRepository assetsRepository;
+    private final ProfileDirectory usersRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final EventDerivedUpdates eventDerivedUpdates;
+    private final MemberDirectory activityMembersRepository;
+    private final AssetOwnershipReads assetsRepository;
+    private final com.raxim.myscoutee.domain.assets.api.AssetDerivedUpdates assetDerivedUpdates;
     private final MongoTemplate mongoTemplate;
-    private final NotificationOutboxService notificationOutboxService;
-    private final ChatAttachmentLifecycleService chatAttachmentLifecycleService;
+    private final NotificationDelivery notificationOutboxService;
+    private final AttachmentLifecycle chatAttachmentLifecycleService;
 
     public ModelStatusPropagationService(
-            UsersRepository usersRepository,
-            ActivityEventsRepository activityEventsRepository,
-            ActivityMembersRepository activityMembersRepository,
-            AssetsRepository assetsRepository,
+            ProfileDirectory usersRepository,
+            EventOwnershipReads activityEventsRepository,
+            EventDerivedUpdates eventDerivedUpdates,
+            MemberDirectory activityMembersRepository,
+            AssetOwnershipReads assetsRepository,
+            com.raxim.myscoutee.domain.assets.api.AssetDerivedUpdates assetDerivedUpdates,
             MongoTemplate mongoTemplate,
-            NotificationOutboxService notificationOutboxService,
-            ChatAttachmentLifecycleService chatAttachmentLifecycleService) {
+            NotificationDelivery notificationOutboxService,
+            AttachmentLifecycle chatAttachmentLifecycleService) {
         this.usersRepository = usersRepository;
         this.activityEventsRepository = activityEventsRepository;
+        this.eventDerivedUpdates = eventDerivedUpdates;
         this.activityMembersRepository = activityMembersRepository;
         this.assetsRepository = assetsRepository;
+        this.assetDerivedUpdates = assetDerivedUpdates;
         this.mongoTemplate = mongoTemplate;
         this.notificationOutboxService = notificationOutboxService;
         this.chatAttachmentLifecycleService = chatAttachmentLifecycleService;
@@ -76,12 +84,12 @@ public class ModelStatusPropagationService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return ModelStatusPropagationOutcome.empty();
         }
-        Users user = usersRepository.findByUserId(normalizedUserId).orElse(null);
+        WorkspaceProfile user = usersRepository.findByUserId(normalizedUserId).orElse(null);
         if (user == null) {
             return ModelStatusPropagationOutcome.empty();
         }
 
-        LinkedHashMap<String, ActivityEvent> affectedEventsById = affectedAdminEventsByDocumentId(normalizedUserId);
+        LinkedHashMap<String, Event> affectedEventsById = affectedAdminEventsByDocumentId(normalizedUserId);
         RecomputeTargets eventTargets = applyEventStatuses(affectedEventsById.values());
         RecomputeTargets assetTargets = applyAssetStatuses(normalizedUserId);
         return new ModelStatusPropagationOutcome(
@@ -90,15 +98,15 @@ public class ModelStatusPropagationService {
                 eventTargets.hasConflicts() || assetTargets.hasConflicts());
     }
 
-    private LinkedHashMap<String, ActivityEvent> affectedAdminEventsByDocumentId(String userId) {
-        LinkedHashMap<String, ActivityEvent> eventsById = new LinkedHashMap<>();
+    private LinkedHashMap<String, Event> affectedAdminEventsByDocumentId(String userId) {
+        LinkedHashMap<String, Event> eventsById = new LinkedHashMap<>();
         addEvents(eventsById, activityEventsRepository.findByCreatorUserId(userId));
         addEvents(eventsById, activityEventsRepository.findByAdminsContaining(userId));
 
         List<String> adminMemberEventIds = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_EVENT, userId).stream()
                 .filter(member -> MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .filter(member -> ROLE_ADMIN.equals(safeText(member == null ? null : member.getRole())))
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -109,8 +117,8 @@ public class ModelStatusPropagationService {
         return eventsById;
     }
 
-    private RecomputeTargets applyEventStatuses(Collection<ActivityEvent> events) {
-        List<ActivityEvent> eventList = events == null
+    private RecomputeTargets applyEventStatuses(Collection<? extends Event> events) {
+        List<? extends Event> eventList = events == null
                 ? List.of()
                 : events.stream().filter(event -> event != null).toList();
         if (eventList.isEmpty()) {
@@ -126,11 +134,11 @@ public class ModelStatusPropagationService {
         Set<String> allAdminIds = adminIdsBySourceId.values().stream()
                 .flatMap(Collection::stream)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(allAdminIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(allAdminIds));
 
         LinkedHashSet<String> targetSourceIds = new LinkedHashSet<>();
         boolean conflict = false;
-        for (ActivityEvent event : eventList) {
+        for (Event event : eventList) {
             if (!isOperationalEvent(event)) {
                 continue;
             }
@@ -150,7 +158,7 @@ public class ModelStatusPropagationService {
     }
 
     private RecomputeTargets applyAssetStatuses(String userId) {
-        List<Asset> assets = new ArrayList<>(affectedResponsibleAssetsByDocumentId(userId).values());
+        List<? extends Asset> assets = new ArrayList<>(affectedResponsibleAssetsByDocumentId(userId).values());
         if (assets.isEmpty()) {
             return RecomputeTargets.empty();
         }
@@ -159,7 +167,7 @@ public class ModelStatusPropagationService {
         Set<String> allResponsibleUserIds = responsibleUserIdsByAssetId.values().stream()
                 .flatMap(Collection::stream)
                 .collect(LinkedHashSet::new, Set::add, Set::addAll);
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(allResponsibleUserIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(allResponsibleUserIds));
 
         LinkedHashSet<String> targetAssetIds = new LinkedHashSet<>();
         boolean conflict = false;
@@ -186,11 +194,11 @@ public class ModelStatusPropagationService {
         LinkedHashMap<String, Asset> assetsById = new LinkedHashMap<>();
         addAssets(assetsById, assetsRepository.findByOwnerUserId(userId));
 
-        List<ActivityMember> managerMemberships = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId);
-        List<String> managedAssetIds = (managerMemberships == null ? List.<ActivityMember>of() : managerMemberships).stream()
+        List<? extends Member> managerMemberships = activityMembersRepository.findByOwnerTypeAndUserId(OWNER_TYPE_ASSET, userId);
+        List<String> managedAssetIds = (managerMemberships == null ? List.<Member>of() : managerMemberships).stream()
                 .filter(member -> MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member == null ? null : member.getStatus())))
                 .filter(member -> isManagerRole(member == null ? null : member.getRole()))
-                .map(ActivityMember::getOwnerId)
+                .map(Member::getOwnerId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .distinct()
@@ -201,7 +209,7 @@ public class ModelStatusPropagationService {
         return assetsById;
     }
 
-    private boolean suppressEvent(ActivityEvent event, String suppressionStatus) {
+    private boolean suppressEvent(Event event, String suppressionStatus) {
         if (event == null) {
             return false;
         }
@@ -224,7 +232,7 @@ public class ModelStatusPropagationService {
         return updated;
     }
 
-    private boolean restoreEventIfSuppressed(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
+    private boolean restoreEventIfSuppressed(Event event, Map<String, Integer> acceptedMemberCountsBySourceId) {
         if (event == null) {
             return true;
         }
@@ -266,7 +274,7 @@ public class ModelStatusPropagationService {
         if (!StringUtils.hasText(previousStatus)) {
             previousStatus = STATUS_ACTIVE;
         }
-        boolean updated = updateAssetStatusIfSnapshotCurrent(asset, suppressionStatus, previousStatus);
+        boolean updated = assetDerivedUpdates.updateStatusVersionIfCurrent(new com.raxim.myscoutee.domain.assets.dto.AssetVersionDto(asset.getId(), asset.getUpdatedDate()), suppressionStatus, previousStatus);
         if (updated) {
             enqueueAssetStatusNotification(asset, suppressionStatus, previousStatus);
             markAssetAttachmentUnavailable(asset, suppressionStatus);
@@ -290,8 +298,8 @@ public class ModelStatusPropagationService {
         }
         String previousStatus = safeText(asset.getStatusBeforeSuppression());
         String restoredStatus = StringUtils.hasText(previousStatus) ? previousStatus : STATUS_ACTIVE;
-        boolean updated = updateAssetStatusIfSnapshotCurrent(
-                asset,
+        boolean updated = assetDerivedUpdates.updateStatusVersionIfCurrent(
+                new com.raxim.myscoutee.domain.assets.dto.AssetVersionDto(asset.getId(), asset.getUpdatedDate()),
                 restoredStatus,
                 null);
         if (updated) {
@@ -301,14 +309,14 @@ public class ModelStatusPropagationService {
         return updated;
     }
 
-    private void markEventAttachmentUnavailable(ActivityEvent event, String reason) {
+    private void markEventAttachmentUnavailable(Event event, String reason) {
         String sourceId = normalizeId(event == null ? null : event.getSourceId());
         if (chatAttachmentLifecycleService != null && StringUtils.hasText(sourceId)) {
             chatAttachmentLifecycleService.markEventUnavailable(sourceId, reason);
         }
     }
 
-    private void markEventAttachmentAvailable(ActivityEvent event) {
+    private void markEventAttachmentAvailable(Event event) {
         String sourceId = normalizeId(event == null ? null : event.getSourceId());
         if (chatAttachmentLifecycleService != null && StringUtils.hasText(sourceId)) {
             chatAttachmentLifecycleService.markEventAvailable(sourceId);
@@ -389,7 +397,7 @@ public class ModelStatusPropagationService {
                 safeText(asset.getUpdatedUser())));
     }
 
-    private void enqueueEventStatusNotification(ActivityEvent event, String nextStatus, String previousStatus) {
+    private void enqueueEventStatusNotification(Event event, String nextStatus, String previousStatus) {
         if (event == null || notificationOutboxService == null) {
             return;
         }
@@ -449,53 +457,13 @@ public class ModelStatusPropagationService {
                 safeText(event.getUpdatedUser())));
     }
 
-    private boolean updateEventStatusIfSnapshotCurrent(ActivityEvent event, String nextStatus, String previousStatus) {
-        if (event == null) {
-            return false;
-        }
-        String id = normalizeId(event.getId());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(event.getUpdatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        Update update = new Update().set("status", nextStatus);
-        if (StringUtils.hasText(previousStatus)) {
-            update.set("statusBeforeSuppression", previousStatus);
-        } else {
-            update.unset("statusBeforeSuppression");
-        }
-        UpdateResult result = mongoTemplate.updateFirst(new Query(criteria), update, ActivityEvent.class);
-        return result.getMatchedCount() > 0;
+    private boolean updateEventStatusIfSnapshotCurrent(Event event, String nextStatus, String previousStatus) {
+        return eventDerivedUpdates.updateStatusVersionIfCurrent(new EventVersionDto(event.getId(), event.getUpdatedDate()), nextStatus, previousStatus);
     }
 
-    private boolean updateAssetStatusIfSnapshotCurrent(Asset asset, String nextStatus, String previousStatus) {
-        if (asset == null) {
-            return false;
-        }
-        String id = normalizeId(asset.getId());
-        if (!StringUtils.hasText(id)) {
-            return false;
-        }
-        Criteria criteria = Criteria.where("_id").is(id);
-        String updatedDate = normalizeId(asset.getUpdatedDate());
-        if (StringUtils.hasText(updatedDate)) {
-            criteria = criteria.and("updatedDate").is(updatedDate);
-        }
-        Update update = new Update().set("status", nextStatus);
-        if (StringUtils.hasText(previousStatus)) {
-            update.set("statusBeforeSuppression", previousStatus);
-        } else {
-            update.unset("statusBeforeSuppression");
-        }
-        UpdateResult result = mongoTemplate.updateFirst(new Query(criteria), update, Asset.class);
-        return result.getMatchedCount() > 0;
-    }
 
-    private boolean canRestoreEvent(ActivityEvent event, Map<String, Integer> acceptedMemberCountsBySourceId) {
+
+    private boolean canRestoreEvent(Event event, Map<String, Integer> acceptedMemberCountsBySourceId) {
         if (!isOperationalEvent(event)) {
             return false;
         }
@@ -515,7 +483,7 @@ public class ModelStatusPropagationService {
             return Map.of();
         }
         LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+        for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
             if (member == null || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))) {
                 continue;
             }
@@ -527,10 +495,10 @@ public class ModelStatusPropagationService {
         return result;
     }
 
-    private Map<String, Set<String>> resolveAdminIdsBySourceId(Collection<ActivityEvent> events) {
+    private Map<String, Set<String>> resolveAdminIdsBySourceId(Collection<? extends Event> events) {
         LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
         LinkedHashSet<String> sourceIds = new LinkedHashSet<>();
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             if (event == null) {
                 continue;
             }
@@ -548,7 +516,7 @@ public class ModelStatusPropagationService {
         }
 
         if (!sourceIds.isEmpty()) {
-            for (ActivityMember member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
+            for (Member member : activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_EVENT, sourceIds)) {
                 if (member == null
                         || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                         || !ROLE_ADMIN.equals(safeText(member.getRole()))) {
@@ -564,7 +532,7 @@ public class ModelStatusPropagationService {
         return result;
     }
 
-    private Map<String, Set<String>> resolveResponsibleUserIdsByAssetId(Collection<Asset> assets) {
+    private Map<String, Set<String>> resolveResponsibleUserIdsByAssetId(Collection<? extends Asset> assets) {
         LinkedHashMap<String, Set<String>> result = new LinkedHashMap<>();
         LinkedHashMap<String, Asset> assetsByAssetId = new LinkedHashMap<>();
         LinkedHashSet<String> assetIds = new LinkedHashSet<>();
@@ -587,8 +555,8 @@ public class ModelStatusPropagationService {
         }
 
         if (!assetIds.isEmpty()) {
-            List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
-            for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
+            List<? extends Member> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerIdIn(OWNER_TYPE_ASSET, assetIds);
+            for (Member member : assetMembers == null ? List.<Member>of() : assetMembers) {
                 if (member == null
                         || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                         || !isManagerRole(member.getRole())) {
@@ -622,8 +590,8 @@ public class ModelStatusPropagationService {
                 && !StringUtils.hasText(safeText(asset.getOwnerReleasedAtIso()))) {
             candidateIds.add(ownerUserId);
         }
-        List<ActivityMember> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
-        for (ActivityMember member : assetMembers == null ? List.<ActivityMember>of() : assetMembers) {
+        List<? extends Member> assetMembers = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, assetId);
+        for (Member member : assetMembers == null ? List.<Member>of() : assetMembers) {
             if (member == null
                     || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                     || !isManagerRole(member.getRole())) {
@@ -639,13 +607,13 @@ public class ModelStatusPropagationService {
         if (candidateIds.isEmpty()) {
             return List.of();
         }
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
         return candidateIds.stream()
                 .filter(userId -> isActiveUser(usersById.get(userId)))
                 .toList();
     }
 
-    private List<String> activeEventAdminUserIds(ActivityEvent event) {
+    private List<String> activeEventAdminUserIds(Event event) {
         if (event == null) {
             return List.of();
         }
@@ -659,8 +627,8 @@ public class ModelStatusPropagationService {
         if (StringUtils.hasText(creatorUserId)) {
             candidateIds.add(creatorUserId);
         }
-        List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
-        for (ActivityMember member : members == null ? List.<ActivityMember>of() : members) {
+        List<? extends Member> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
+        for (Member member : members == null ? List.<Member>of() : members) {
             if (member == null
                     || !MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus()))
                     || !ROLE_ADMIN.equals(safeText(member.getRole()))) {
@@ -674,13 +642,13 @@ public class ModelStatusPropagationService {
         if (candidateIds.isEmpty()) {
             return List.of();
         }
-        Map<String, Users> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
+        Map<String, WorkspaceProfile> usersById = indexUsers(usersRepository.findByUserIdIn(candidateIds));
         return candidateIds.stream()
                 .filter(userId -> isActiveUser(usersById.get(userId)))
                 .toList();
     }
 
-    private List<String> eventMemberUserIds(ActivityEvent event) {
+    private List<String> eventMemberUserIds(Event event) {
         if (event == null) {
             return List.of();
         }
@@ -693,10 +661,10 @@ public class ModelStatusPropagationService {
         if (StringUtils.hasText(creatorUserId)) {
             adminUserIds.add(creatorUserId);
         }
-        List<ActivityMember> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
-        return (members == null ? List.<ActivityMember>of() : members).stream()
+        List<? extends Member> members = activityMembersRepository.findByOwnerTypeAndOwnerId(OWNER_TYPE_EVENT, sourceId);
+        return (members == null ? List.<Member>of() : members).stream()
                 .filter(member -> member != null && MEMBER_STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
-                .map(ActivityMember::getUserId)
+                .map(Member::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .filter(userId -> !adminUserIds.contains(userId))
@@ -710,7 +678,7 @@ public class ModelStatusPropagationService {
         }
         String ownerUserId = normalizeId(asset.getOwnerUserId());
         return asset.getRequests().stream()
-                .map(Asset.AssetRequestRecord::userId)
+                .map(com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord::userId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .filter(userId -> !userId.equals(ownerUserId))
@@ -718,7 +686,7 @@ public class ModelStatusPropagationService {
                 .toList();
     }
 
-    private AdminStatusSnapshot adminStatusSnapshot(Collection<String> userIds, Map<String, Users> usersById) {
+    private AdminStatusSnapshot adminStatusSnapshot(Collection<String> userIds, Map<String, WorkspaceProfile> usersById) {
         String strongest = "";
         boolean hasSuppressedAdmin = false;
         boolean hasActiveAdmin = false;
@@ -749,7 +717,7 @@ public class ModelStatusPropagationService {
         return snapshot.hasActiveAdmin() ? STATUS_UNDER_REVIEW : snapshot.strongestSuppressionStatus();
     }
 
-    private String suppressionStatusForUser(Users user) {
+    private String suppressionStatusForUser(WorkspaceProfile user) {
         String profileStatus = safeText(user == null ? null : user.getProfileStatus());
         String status = safeText(user == null ? null : user.getStatus());
         if ("deleted".equals(profileStatus) || STATUS_DELETED.equalsIgnoreCase(status)) {
@@ -764,7 +732,7 @@ public class ModelStatusPropagationService {
         return "";
     }
 
-    private boolean isActiveUser(Users user) {
+    private boolean isActiveUser(WorkspaceProfile user) {
         return !StringUtils.hasText(suppressionStatusForUser(user));
     }
 
@@ -773,7 +741,7 @@ public class ModelStatusPropagationService {
         return StringUtils.hasText(title) ? title : "This asset";
     }
 
-    private String eventTitle(ActivityEvent event) {
+    private String eventTitle(Event event) {
         String title = safeText(event == null ? null : event.getTitle());
         return StringUtils.hasText(title) ? title : "This event";
     }
@@ -783,7 +751,7 @@ public class ModelStatusPropagationService {
         return StringUtils.hasText(normalizedFirst) ? normalizedFirst : safeText(second);
     }
 
-    private boolean isOperationalEvent(ActivityEvent event) {
+    private boolean isOperationalEvent(Event event) {
         if (event == null) {
             return false;
         }
@@ -812,8 +780,8 @@ public class ModelStatusPropagationService {
         }
     }
 
-    private void addEvents(Map<String, ActivityEvent> target, List<ActivityEvent> events) {
-        for (ActivityEvent event : events == null ? List.<ActivityEvent>of() : events) {
+    private void addEvents(Map<String, Event> target, List<? extends Event> events) {
+        for (Event event : events == null ? List.<Event>of() : events) {
             String documentId = normalizeId(event == null ? null : event.getId());
             if (StringUtils.hasText(documentId)) {
                 target.put(documentId, event);
@@ -821,7 +789,7 @@ public class ModelStatusPropagationService {
         }
     }
 
-    private void addAssets(Map<String, Asset> target, List<Asset> assets) {
+    private void addAssets(Map<String, Asset> target, List<? extends Asset> assets) {
         for (Asset asset : assets == null ? List.<Asset>of() : assets) {
             String documentId = normalizeId(asset == null ? null : asset.getId());
             if (StringUtils.hasText(documentId)) {
@@ -830,9 +798,9 @@ public class ModelStatusPropagationService {
         }
     }
 
-    private Map<String, Users> indexUsers(List<Users> users) {
-        LinkedHashMap<String, Users> result = new LinkedHashMap<>();
-        for (Users user : users == null ? List.<Users>of() : users) {
+    private Map<String, WorkspaceProfile> indexUsers(List<? extends WorkspaceProfile> users) {
+        LinkedHashMap<String, WorkspaceProfile> result = new LinkedHashMap<>();
+        for (WorkspaceProfile user : users == null ? List.<WorkspaceProfile>of() : users) {
             String userId = normalizeId(user == null ? null : user.getId());
             if (StringUtils.hasText(userId)) {
                 result.put(userId, user);
@@ -882,7 +850,7 @@ public class ModelStatusPropagationService {
     private record AdminStatusSnapshot(String strongestSuppressionStatus, boolean hasSuppressedAdmin, boolean hasActiveAdmin) {
     }
 
-    public record ModelStatusPropagationOutcome(List<String> eventSourceIds, List<String> assetIds, boolean hasConflicts) {
+    public record ModelStatusPropagationOutcome(List<String> eventSourceIds, List<String> assetIds, boolean hasConflicts) implements com.raxim.myscoutee.domain.platform.api.ModelStatusChanges.Outcome {
         public ModelStatusPropagationOutcome {
             eventSourceIds = compact(eventSourceIds);
             assetIds = compact(assetIds);

@@ -109,6 +109,10 @@ Firebase capability tests:
 node e2e/functional/backend/run.mjs --group operator
 ```
 
+Admin contracts use the seeded `admin-demo-ava` profile by default. Override
+`E2E_ADMIN_USER_ID` only with an admin profile present in the target database;
+the operator email and an app-admin profile are separate identities.
+
 Override the seeded identity only when a matching operator exists in the
 target database:
 
@@ -128,9 +132,14 @@ E2E_SERVER_BASE_URL=https://127.0.0.1
 E2E mode is for destructive or weird end-to-end flows. It uses
 `e2e_db`, not `demo_db`.
 
+The `flows/auth-session/two-session-limit` case requires the E2E server's
+`AUTH_MAX_ACTIVE_SESSIONS=2` override. The application default remains unlimited
+(`-1`). Set the override when creating the E2E backend container, as below; an
+environment variable on the Node runner cannot change the running server.
+
 ```bash
 cd server
-docker compose -f docker-compose.e2e.yml up --build --wait
+AUTH_MAX_ACTIVE_SESSIONS=2 docker compose -f docker-compose.e2e.yml up --build --wait
 docker compose -f docker-compose.e2e.yml \
   cp nginx:/etc/nginx/keys/nginx.crt /tmp/myscoutee-e2e-nginx-ca.pem
 

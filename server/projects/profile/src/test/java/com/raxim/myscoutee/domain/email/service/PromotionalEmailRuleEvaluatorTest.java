@@ -15,6 +15,34 @@ class PromotionalEmailRuleEvaluatorTest {
     private final PromotionalEmailRuleEvaluator evaluator = new PromotionalEmailRuleEvaluator();
 
     @Test
+    void wireProfilePreservesEligibilityAndTemplateValuesWithoutExportingPushCredentials() {
+        var mapper = new com.raxim.myscoutee.common.config.JsonConfig().objectMapper();
+        Users user = activeUser();
+        user.setCity("Budapest");
+        user.setPartitionKey("country:hu");
+        var device = new Users.UserDeviceRecord();
+        device.setFirebaseToken("private-push-token-never-exported");
+        device.setLastSeenAtIso("invalid-timestamp");
+        device.setLastRegisteredAtIso(java.time.Instant.now().minusSeconds(10 * 86400L).toString());
+        user.setDevices(List.of(device));
+        var rule = new EmailCampaignRule();
+        rule.setRequireMissingRegisteredDevice(true);
+        rule.setMinInactiveDays(5);
+        rule.setMaxInactiveDays(20);
+        for (Boolean enabled : java.util.Arrays.asList(null, true, false)) {
+            device.setNotificationsEnabled(enabled);
+            var snapshot = com.raxim.myscoutee.domain.accounts.dto.EmailProfileDto.from(user);
+            String json = mapper.writeValueAsString(snapshot);
+            assertThat(json).doesNotContain("private-push-token-never-exported", "firebaseToken", "paymentSpentTotals", "integrationAccess");
+            var received = mapper.readValue(json, com.raxim.myscoutee.domain.accounts.dto.EmailProfileDto.class);
+            assertThat(evaluator.qualifies(received, rule)).isEqualTo(evaluator.qualifies(user, rule));
+            assertThat(evaluator.qualifies(received, rule)).isEqualTo(Boolean.FALSE.equals(enabled));
+            assertThat(evaluator.buildTemplateVariables(received, rule, "https://app.example.invalid"))
+                    .isEqualTo(evaluator.buildTemplateVariables(user, rule, "https://app.example.invalid"));
+        }
+    }
+
+    @Test
     void qualifiesFallbackEmailForActiveUserWithoutRegisteredDevice() {
         Users user = activeUser();
         user.setDevices(List.of());

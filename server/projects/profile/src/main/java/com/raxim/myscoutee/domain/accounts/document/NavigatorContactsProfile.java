@@ -18,6 +18,12 @@ public class NavigatorContactsProfile {
 
     private String updatedAtIso;
     private List<NavigatorContactRecord> contacts = new ArrayList<>();
+    private java.util.Map<String, Long> contactPermissionVersions = new java.util.LinkedHashMap<>();
+
+    public java.util.Map<String, Long> getContactPermissionVersions() { return contactPermissionVersions; }
+    public void setContactPermissionVersions(java.util.Map<String, Long> value) {
+        contactPermissionVersions = value == null ? new java.util.LinkedHashMap<>() : new java.util.LinkedHashMap<>(value);
+    }
 
     public String getMongoId() {
         return mongoId;

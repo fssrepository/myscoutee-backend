@@ -48,6 +48,11 @@ public class PaymentGatewayWebhookController {
         this.simulatorStripeWebhookSecret = simulatorStripeWebhookSecret;
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(com.raxim.myscoutee.domain.events.api.EventCheckout.OutcomeUnknown.class)
+    public ResponseEntity<Void> fulfillmentPending() {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
     @PostMapping("/stripe")
     public ResponseEntity<Void> stripe(
             @RequestBody String rawBody,

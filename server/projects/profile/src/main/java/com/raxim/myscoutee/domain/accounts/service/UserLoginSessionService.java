@@ -31,14 +31,14 @@ import com.raxim.myscoutee.domain.accounts.document.UserSessionState.ActiveSessi
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginResponseDto;
 import com.raxim.myscoutee.domain.accounts.repository.UserLoginAuditsRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
-public class UserLoginSessionService {
-    public static final String SESSION_ID_HEADER = "X-App-Session-Id";
+public class UserLoginSessionService implements com.raxim.myscoutee.domain.accounts.api.BootstrapLoginAudit {
+    public static final String SESSION_ID_HEADER = com.raxim.myscoutee.domain.accounts.api.AccountMediaSessions.SESSION_ID_HEADER;
 
     private static final int MAX_OPAQUE_ID_LENGTH = 128;
     private static final String SECURITY_NOTIFICATION_TITLE_KEY =
@@ -50,13 +50,13 @@ public class UserLoginSessionService {
 
     private final MongoTemplate mongoTemplate;
     private final UserLoginAuditsRepository userLoginAuditsRepository;
-    private final NotificationOutboxService notificationOutboxService;
+    private final NotificationDelivery notificationOutboxService;
     private final int maxActiveSessions;
 
     public UserLoginSessionService(
             MongoTemplate mongoTemplate,
             UserLoginAuditsRepository userLoginAuditsRepository,
-            NotificationOutboxService notificationOutboxService,
+            NotificationDelivery notificationOutboxService,
             @Value("${auth.max-active-sessions:-1}") int maxActiveSessions) {
         this.mongoTemplate = mongoTemplate;
         this.userLoginAuditsRepository = userLoginAuditsRepository;

@@ -31,14 +31,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.RevenueReportOutboxItem;
 import com.raxim.myscoutee.domain.operator.repository.RevenueReportOutboxRepository;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryLocalStore.LocalState;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RevenueCurrencyRow;
+import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RevenueCurrencyRow;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -52,7 +52,7 @@ class OperatorRevenueReportServiceTest {
     @Test
     void unregisteredDeploymentReturnsBeforePaymentOrOutboxAccess() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorRevenueService revenueService =
                 mock(OperatorRevenueService.class);
         RevenueReportOutboxRepository outbox =
@@ -77,7 +77,7 @@ class OperatorRevenueReportServiceTest {
     @Test
     void exploreModeUsesOnlyItsModeScopedRegistryRuntime() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorRevenueService revenueService =
                 mock(OperatorRevenueService.class);
         RevenueReportOutboxRepository outbox =
@@ -103,7 +103,7 @@ class OperatorRevenueReportServiceTest {
     @Test
     void firstRunBackfillsHistoricalCompletedDaysInBoundedChunks() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorRevenueService revenueService =
                 mock(OperatorRevenueService.class);
         List<RevenueReportOutboxItem> stored = new ArrayList<>();
@@ -154,7 +154,7 @@ class OperatorRevenueReportServiceTest {
     @Test
     void blockedReportCanBeInspectedAndTargetedForRequeueWithoutNetworkIo() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         OperatorRevenueService revenueService =
                 mock(OperatorRevenueService.class);
         RevenueReportOutboxRepository outbox =
@@ -204,7 +204,7 @@ class OperatorRevenueReportServiceTest {
     @Test
     void requeueRejectsForeignMalformedOrNonBlockedReports() {
         OperatorRevenueRegistryRuntimeResolver resolver =
-                mock(OperatorRevenueRegistryRuntimeResolver.class);
+                RegistryRuntimeTestSupport.resolver();
         RevenueReportOutboxRepository outbox =
                 mock(RevenueReportOutboxRepository.class);
         RegisteredRuntime runtime = runtime();
@@ -251,7 +251,7 @@ class OperatorRevenueReportServiceTest {
     }
 
     private static RegisteredRuntime runtime() {
-        RegistryProperties properties = new RegistryProperties();
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setBaseUrl("http://127.0.0.1:1");
         properties.setAllowInsecureHttp(true);
         properties.setInsecureHttpAllowedHosts("127.0.0.1");

@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 import java.math.*;
 import com.raxim.myscoutee.domain.payments.dto.ExchangeRateDtos.Snapshot;
 import com.raxim.myscoutee.domain.payments.dto.ExchangeRateDtos.Summary;
@@ -15,8 +15,12 @@ import com.raxim.myscoutee.domain.payments.document.Payment;
 
 @Service
 public class PaymentEuroService {
+    @org.springframework.beans.factory.annotation.Autowired private PaymentJobQueries paymentJobs;
+
+    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.PaymentTotals accountPaymentTotals;
+
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
     private final ExchangeRateStore rates;
     private final MongoTemplate mongo;
     public PaymentEuroService(ExchangeRateStore rates, MongoTemplate mongo) { this.rates = rates; this.mongo = mongo; }
@@ -71,7 +75,7 @@ public class PaymentEuroService {
         if (!refreshed) criteria.orOperator(Criteria.where("euroCheckedAt").is(null),
                 Criteria.where("euroCheckedAt").lt(Instant.now().minusSeconds(3600).toString()));
         Query query = Query.query(criteria).with(org.springframework.data.domain.Sort.by("euroCheckedAt")).limit(100);
-        for (Payment payment : jobGroupScope.findOwned(query, Payment.class, "userId")) {
+        for (Payment payment : paymentJobs.find(query, Payment.class, Payment::getUserId)) {
             prepare(payment);
             Update update = new Update().set("euroCheckedAt", Instant.now().toString());
             if (payment.getEuro() != null) update.set("euro", payment.getEuro());
@@ -81,9 +85,7 @@ public class PaymentEuroService {
         return updated;
     }
     public String currency(String userId) {
-        Document user = mongo.getCollection("users").find(new Document("userId", userId))
-                .projection(new Document("summaryCurrency", 1)).first();
-        String value = user == null ? null : user.getString("summaryCurrency");
+        String value = accountPaymentTotals.summaryCurrency(userId);
         return value == null || !value.matches("[A-Z]{3}") ? "EUR" : value;
     }
     public List<String> currencies() {
@@ -98,8 +100,7 @@ public class PaymentEuroService {
     public void selectCurrency(String userId, String currency) {
         if (currency == null || !currencies().contains(currency))
             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.BAD_REQUEST, "Unsupported summary currency.");
-        mongo.getCollection("users").updateOne(new Document("userId", userId),
-                new Document("$set", new Document("summaryCurrency", currency)));
+        accountPaymentTotals.selectSummaryCurrency(userId, currency);
     }
     public Summary summary(String userId, boolean affiliate) {
         return JobGroupContext.call(jobGroupScope.forUser(userId), () -> summaryInGroup(userId, affiliate));

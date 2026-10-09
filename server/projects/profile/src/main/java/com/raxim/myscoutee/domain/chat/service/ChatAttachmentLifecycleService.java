@@ -12,16 +12,37 @@ import com.raxim.myscoutee.domain.chat.document.ChatMessage.ChatMessageAttachmen
 import com.raxim.myscoutee.domain.chat.repository.ChatMessagesRepository;
 
 @Service
-public class ChatAttachmentLifecycleService {
+public class ChatAttachmentLifecycleService implements com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle {
     private static final String TYPE_EVENT = "event";
     private static final String TYPE_ASSET = "asset";
     private static final String STATUS_AVAILABLE = "available";
     private static final String STATUS_UNAVAILABLE = "unavailable";
 
+    @org.springframework.beans.factory.annotation.Autowired private org.springframework.data.mongodb.core.MongoTemplate mongo;
     private final ChatMessagesRepository chatMessagesRepository;
 
     public ChatAttachmentLifecycleService(ChatMessagesRepository chatMessagesRepository) {
         this.chatMessagesRepository = chatMessagesRepository;
+    }
+
+    /** A late delivery must not undo a newer lifecycle transition. The search
+     * index contains attachment identity, not status, so no whole-message save is needed. */
+    public void project(com.raxim.myscoutee.domain.chat.api.AttachmentLifecycle.Projection projection) {
+        if (projection == null || !List.of(TYPE_EVENT, TYPE_ASSET).contains(projection.type())
+                || !StringUtils.hasText(projection.entityId()) || projection.revision() < 0)
+            throw new IllegalArgumentException("Invalid attachment lifecycle projection");
+        var matching = org.springframework.data.mongodb.core.query.Criteria.where("type").is(projection.type())
+                .and("entityId").is(projection.entityId());
+        var element = org.springframework.data.mongodb.core.query.Criteria.where("attachment.type").is(projection.type())
+                .and("attachment.entityId").is(projection.entityId()).orOperator(
+                    org.springframework.data.mongodb.core.query.Criteria.where("attachment.lifecycleRevision").exists(false),
+                    org.springframework.data.mongodb.core.query.Criteria.where("attachment.lifecycleRevision").lte(projection.revision()));
+        var update = new org.springframework.data.mongodb.core.query.Update()
+                .set("attachments.$[attachment].status", projection.available() ? STATUS_AVAILABLE : STATUS_UNAVAILABLE)
+                .set("attachments.$[attachment].unavailableReason", projection.available() ? null : safeText(projection.reason()))
+                .set("attachments.$[attachment].lifecycleRevision", projection.revision()).filterArray(element);
+        mongo.updateMulti(org.springframework.data.mongodb.core.query.Query.query(
+                org.springframework.data.mongodb.core.query.Criteria.where("attachments").elemMatch(matching)), update, ChatMessage.class);
     }
 
     public void markEventUnavailable(String eventId, String reason) {

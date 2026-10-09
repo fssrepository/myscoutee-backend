@@ -38,6 +38,9 @@ class EventFriendshipProjectionServiceTest {
     private final MongoCollection<Document> rateCollection = mock(MongoCollection.class);
     private final UserRatesService rates = mock(UserRatesService.class);
     private final EventFriendshipProjectionService service = new EventFriendshipProjectionService(mongo, members, rates);
+    @org.junit.jupiter.api.BeforeEach void wireMeetingEvidence() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "meetingEvidence", new com.raxim.myscoutee.domain.affinity.service.MeetingEvidenceService(mongo));
+    }
     private final Instant now = Instant.parse("2026-09-14T12:00:00Z");
 
     @ParameterizedTest

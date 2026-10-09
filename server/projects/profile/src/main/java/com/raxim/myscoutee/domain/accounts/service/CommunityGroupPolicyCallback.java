@@ -1,0 +1,24 @@
+package com.raxim.myscoutee.domain.accounts.service;
+
+
+import java.util.*;
+import org.springframework.data.mongodb.core.mapping.event.BeforeConvertCallback;
+import org.springframework.stereotype.Component;
+import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+
+@Component
+public class CommunityGroupPolicyCallback implements BeforeConvertCallback<Users> {
+    private final org.springframework.beans.factory.ObjectProvider<GroupDirectory> groups;
+    public CommunityGroupPolicyCallback(org.springframework.beans.factory.ObjectProvider<GroupDirectory> groups) { this.groups = groups; }
+    @Override public Users onBeforeConvert(Users user, String collection) {
+        if (user.getWorkspaceGroupId() == null) return user;
+        var group = groups.getObject().findById(user.getWorkspaceGroupId()).orElse(null);
+        if (group == null || !group.policy().enabled() || user.getProfileDetails() == null) return user;
+        var required = new HashSet<>(group.policy().requiredFields());
+        user.setProfileDetails(user.getProfileDetails().stream().map(section -> new Users.ProfileDetailGroupRecord(section.title(),
+            section.rows().stream().map(row -> required.contains(row.labelKey())
+                ? new Users.ProfileDetailRowRecord(row.labelKey(), row.value(), "Public", row.options()) : row).toList())).toList());
+        return user;
+    }
+}

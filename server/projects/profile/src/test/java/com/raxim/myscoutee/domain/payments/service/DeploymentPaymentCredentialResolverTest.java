@@ -14,7 +14,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.platform.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
 
@@ -40,14 +40,14 @@ class DeploymentPaymentCredentialResolverTest {
         configuration.setPayment(new DeploymentConfiguration.Payment());
         configuration.getPayment().setProviderId("stripe");
         configuration.getPayment().setCredentialEnvelope(crypto.encrypt(
-                DeploymentPaymentCredentialResolver.credentialPurpose("stripe"),
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
                 "operator-stripe-token"));
         DeploymentConfigurationRepository repository =
                 mock(DeploymentConfigurationRepository.class);
         when(repository.findById(DeploymentConfiguration.SINGLETON_ID))
                 .thenReturn(Optional.of(configuration));
         DeploymentPaymentCredentialResolver resolver =
-                new DeploymentPaymentCredentialResolver(repository, crypto);
+                new DeploymentPaymentCredentialResolver(new com.raxim.myscoutee.domain.platform.service.DeploymentSettingsService(repository),  crypto);
 
         assertThat(resolver.resolve("stripe", "environment-stripe-token"))
                 .isEqualTo("operator-stripe-token");

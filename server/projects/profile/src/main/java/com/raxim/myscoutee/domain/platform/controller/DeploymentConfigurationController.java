@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
-import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient;
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration;
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 
@@ -20,11 +20,11 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 @RequestMapping("/deployment/configuration")
 public class DeploymentConfigurationController {
     private final OperatorConfigurationService service;
-    private final PaymentSimulatorRegistrationClient simulatorClient;
+    private final PaymentSimulatorConfiguration simulatorClient;
 
     public DeploymentConfigurationController(
             OperatorConfigurationService service,
-            PaymentSimulatorRegistrationClient simulatorClient) {
+            PaymentSimulatorConfiguration simulatorClient) {
         this.service = service;
         this.simulatorClient = simulatorClient;
     }
@@ -36,7 +36,7 @@ public class DeploymentConfigurationController {
         if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
             return configuration;
         }
-        PaymentSimulatorRegistrationClient.GatewayConfiguration simulatorConfiguration =
+        PaymentSimulatorConfiguration.GatewayConfiguration simulatorConfiguration =
                 simulatorClient.isEnabled() ? simulatorClient.configuration() : null;
         String provider = simulatorConfiguration == null
                 ? "none"

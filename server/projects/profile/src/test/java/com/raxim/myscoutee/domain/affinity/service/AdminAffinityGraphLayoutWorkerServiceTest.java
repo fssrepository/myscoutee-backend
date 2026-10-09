@@ -28,7 +28,7 @@ class AdminAffinityGraphLayoutWorkerServiceTest {
     void setUp() {
         adminAffinityGraphService = mock(AdminAffinityGraphService.class);
         notificationRuleRegistryService = mock(NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(notificationRuleRegistryService).forEachGroup(any(String.class), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(notificationRuleRegistryService).forEachGroup(any(String.class), any(Runnable.class));
         worker = new AdminAffinityGraphLayoutWorkerService(
                 adminAffinityGraphService,
                 notificationRuleRegistryService);
@@ -43,7 +43,7 @@ class AdminAffinityGraphLayoutWorkerServiceTest {
         worker.rebuildDueLayout();
 
         verify(adminAffinityGraphService, never()).rebuildMaterializedLayout();
-        verify(notificationRuleRegistryService, never()).beginScheduledRun(
+        verify(notificationRuleRegistryService).beginScheduledRun(
                 any(String.class),
                 any(String.class),
                 any(String.class),
@@ -84,6 +84,8 @@ class AdminAffinityGraphLayoutWorkerServiceTest {
         worker.rebuildDueLayout();
 
         verify(adminAffinityGraphService).rebuildMaterializedLayout();
+        verify(notificationRuleRegistryService, never()).findRule(any(String.class));
+        verify(notificationRuleRegistryService, never()).shouldRunScheduledRule(any(String.class), any(Instant.class));
         verify(notificationRuleRegistryService).recordRun(
                 eq(NotificationRuleRegistryService.RULE_AFFINITY_GRAPH_LAYOUT),
                 eq(313),

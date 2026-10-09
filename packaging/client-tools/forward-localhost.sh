@@ -7,7 +7,7 @@ TRANSPORT_SCRIPT="${SCRIPT_DIR}/remote-transport.sh"
 usage() {
   cat >&2 <<'USAGE'
 Usage:
-  packaging/client-tools/forward-localhost.sh
+  packaging/client-tools/forward-localhost.sh [start|stop]
 
 The helper reads its SSH target from packaging/client-tools/install.env, or CONFIG_FILE.
 It creates same-port forwards to 127.0.0.1 on the remote deployment by default.
@@ -21,10 +21,12 @@ fail() {
 
 LOCAL_FORWARD_PORTS_OVERRIDE_VALUE="${LOCAL_FORWARD_PORTS_OVERRIDE:-}"
 CONFIG_FILE="${CONFIG_FILE:-${SCRIPT_DIR}/install.env}"
+ACTION="${1:-start}"
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   usage
   exit 0
 fi
+case "$ACTION" in start|stop) ;; *) usage; exit 2 ;; esac
 [ -f "$CONFIG_FILE" ] || fail "config file not found: $CONFIG_FILE"
 [ -f "$TRANSPORT_SCRIPT" ] || fail "transport helper not found: $TRANSPORT_SCRIPT"
 
@@ -190,9 +192,11 @@ OLD_IFS="$IFS"
 IFS=","
 for spec in $LOCAL_FORWARD_PORTS; do
   parse_forward_spec "$spec"
-  replace_existing_forward "$PARSED_LOCAL_PORT" "$PARSED_REMOTE_PORT"
-  start_forward "$PARSED_LOCAL_PORT" "$PARSED_REMOTE_PORT"
+  IFS="$OLD_IFS" replace_existing_forward "$PARSED_LOCAL_PORT" "$PARSED_REMOTE_PORT"
+  if [ "$ACTION" = start ]; then
+    IFS="$OLD_IFS" start_forward "$PARSED_LOCAL_PORT" "$PARSED_REMOTE_PORT"
+  fi
 done
 IFS="$OLD_IFS"
 
-echo "Forward active"
+if [ "$ACTION" = start ]; then echo "Forward active"; else echo "Forward stopped"; fi

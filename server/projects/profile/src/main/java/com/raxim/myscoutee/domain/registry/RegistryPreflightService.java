@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.dto.RegistryInspection;
 
 import java.net.URI;
 import java.security.PublicKey;
@@ -7,8 +9,8 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistryIdentityResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistryIdentityResponse;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -22,18 +24,18 @@ import tools.jackson.databind.ObjectMapper;
  */
 @Service
 public class RegistryPreflightService {
-    private final RegistryProperties properties;
+    private final RegistryConfiguration properties;
     private final RegistryHttpClient httpClient;
 
     @Autowired
     public RegistryPreflightService(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             ObjectMapper objectMapper) {
         this(properties, new RegistryHttpClient(properties, objectMapper));
     }
 
     RegistryPreflightService(
-            RegistryProperties properties,
+            RegistryConfiguration properties,
             RegistryHttpClient httpClient) {
         this.properties = Objects.requireNonNull(properties, "Registry properties must not be null.");
         this.httpClient = Objects.requireNonNull(httpClient, "Registry HTTP client must not be null.");
@@ -81,7 +83,7 @@ public class RegistryPreflightService {
         byte[] publicKeyDer = RegistryProtocol.decodeStandardBase64(
                 identity.registryPublicKey(),
                 "registry_public_key");
-        PublicKey publicKey = RegistryCrypto.parsePublicKeyDer(publicKeyDer, "registry_public_key");
+        PublicKey publicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyDer(publicKeyDer, "registry_public_key");
         String fingerprint = RegistryProtocol.publicKeyFingerprint(publicKeyDer);
         if (!RegistryProtocol.registryKeyId(fingerprint).equals(registryKeyId)) {
             throw new IllegalArgumentException(
@@ -99,7 +101,7 @@ public class RegistryPreflightService {
             }
         }
 
-        if (!RegistryCrypto.verifyBase64(
+        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                 publicKey,
                 RegistryProtocol.registryIdentity(identity),
                 identity.signature())) {
@@ -111,12 +113,5 @@ public class RegistryPreflightService {
         return value == null ? "" : value.trim();
     }
 
-    public record RegistryInspection(
-            String registryEndpoint,
-            String protocolVersion,
-            String registryScope,
-            String registryKeyId,
-            String registryPublicKeyFingerprint,
-            String registryPublicKey) {
-    }
+
 }

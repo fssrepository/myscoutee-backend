@@ -1,7 +1,6 @@
 package com.raxim.myscoutee.domain.platform.service;
 
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
-import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentCredentialResolver;
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -31,12 +30,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.platform.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration.EncryptedSecret;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
 
 @Component
-public class DeploymentConfigurationCrypto {
+public class DeploymentConfigurationCrypto implements com.raxim.myscoutee.domain.platform.api.SecretEncryption,
+        com.raxim.myscoutee.domain.platform.api.EmailSecrets, com.raxim.myscoutee.domain.platform.api.PaymentCredentialSecrets {
     static final String ALGORITHM = "AES-256-GCM";
     private static final String CIPHER = "AES/GCM/NoPadding";
     private static final int KEY_BYTES = 32;
@@ -78,7 +78,7 @@ public class DeploymentConfigurationCrypto {
             DeploymentConfiguration.Payment payment = configuration.getPayment();
             if (payment != null && payment.getCredentialEnvelope() != null) {
                 verify(
-                        DeploymentPaymentCredentialResolver.credentialPurpose(
+                        com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose(
                                 payment.getProviderId()),
                         payment.getCredentialEnvelope());
             }
@@ -95,6 +95,16 @@ public class DeploymentConfigurationCrypto {
         } catch (IllegalStateException | IllegalArgumentException exception) {
             return exception.getMessage();
         }
+    }
+
+    @Override public EncryptedSecret encryptEmailSecret(com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose purpose, String plaintext) {
+        return encrypt(Objects.requireNonNull(purpose).aadPurpose(), plaintext);
+    }
+    @Override public String decryptEmailSecret(com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose purpose, EncryptedSecret envelope) {
+        return decrypt(Objects.requireNonNull(purpose).aadPurpose(), envelope);
+    }
+    @Override public String decryptPaymentCredential(String providerId, EncryptedSecret envelope) {
+        return decrypt(com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose(providerId), envelope);
     }
 
     public EncryptedSecret encrypt(String purpose, String plaintext) {

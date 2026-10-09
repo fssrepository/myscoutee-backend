@@ -10,7 +10,7 @@ import com.raxim.myscoutee.domain.email.document.EmailCampaignRule;
 import com.raxim.myscoutee.domain.email.document.ScheduledMessageDelivery;
 import com.raxim.myscoutee.domain.email.document.ScheduledMessageRun;
 import com.raxim.myscoutee.domain.email.document.ScheduledMessageTask;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
 import com.raxim.myscoutee.domain.email.repository.ScheduledMessageDeliveriesRepository;
 import com.raxim.myscoutee.domain.email.repository.ScheduledMessageRunsRepository;
 
@@ -73,7 +73,7 @@ public class ScheduledMessageAuditService {
     public void recordDelivery(
             String runId,
             EmailCampaignRule rule,
-            Users user,
+            EmailProfile user,
             String channel,
             String status,
             String detail) {
@@ -97,7 +97,7 @@ public class ScheduledMessageAuditService {
     public void recordDelivery(
             String runId,
             ScheduledMessageTask task,
-            Users user,
+            EmailProfile user,
             String channel,
             String status,
             String detail) {

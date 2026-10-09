@@ -25,6 +25,16 @@ class ContentModerationServiceTest {
     State state = new State("global", 0, new Settings(true, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of());
     final AdminUserDto admin = new AdminUserDto("admin", "Admin", "", "", "", "", List.of());
     @BeforeEach void persistence() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "eventModeration", new com.raxim.myscoutee.domain.events.service.EventModerationService(mongo));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetModeration", new com.raxim.myscoutee.domain.assets.service.AssetModerationProjectionService(mongo));
+        var profiles = mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class, call ->
+            "findByUserId".equals(call.getMethod().getName()) ? Optional.ofNullable(mongo.findOne(
+                org.springframework.data.mongodb.core.query.Query.query(org.springframework.data.mongodb.core.query.Criteria.where("userId").is(call.getArgument(0))),
+                com.raxim.myscoutee.domain.accounts.document.Users.class)) : org.mockito.Answers.RETURNS_DEFAULTS.answer(call));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profiles", new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(profiles));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupDirectory", com.raxim.myscoutee.domain.groups.service.GroupTestSupport.directory(mongo));
+
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "groupModeration", new com.raxim.myscoutee.domain.groups.service.GroupModerationProjectionService(mongo));
         when(repository.state()).thenAnswer(call -> state);
         when(repository.state(anyString())).thenAnswer(call -> groupStates.computeIfAbsent(call.getArgument(0),
                 id -> new State("group:" + id, 0, new Settings(false, false, 0, List.of("asset", "event", "feed")), Map.of(), List.of())));
@@ -84,7 +94,7 @@ class ContentModerationServiceTest {
         service.settings(new SaveSettings("moderator", 0, new Settings(true, true, 5, List.of("feed"))), "A");
         Item item = service.register("feed", "scoped", "profile", "Photo", "");
         when(repository.due(any(), anyString(), eq(100), eq("A"))).thenReturn(List.of(item));
-        assertEquals(1, com.raxim.myscoutee.domain.platform.service.JobGroupContext.call("A", service::approveDue));
+        assertEquals(1, com.raxim.myscoutee.domain.platform.api.JobGroupContext.call("A", service::approveDue));
         assertEquals("accepted", service.scopedItem(item.id(), "A").status());
         assertEquals(1, service.snapshot("A").counts().get("feed").get("accepted"));
         assertTrue(service.snapshot().counts().isEmpty());
@@ -193,7 +203,7 @@ class ContentModerationServiceTest {
             assertTrue(age >= 599 && age <= 601);
             return List.of(item);
         });
-        assertEquals(1, com.raxim.myscoutee.domain.platform.service.JobGroupContext.call(null, service::approveDue));
+        assertEquals(1, com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(null, service::approveDue));
         assertEquals("accepted", items.get(item.id()).status());
         assertEquals(0, service.snapshot().pendingCount());
         verifyNoInteractions(chat);

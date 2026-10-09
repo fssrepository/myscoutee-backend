@@ -16,7 +16,7 @@ class ContentModerationWorkerTest {
     final ContentModerationWorker worker = new ContentModerationWorker(service, rules, databases);
     final String key = ContentModerationWorker.RULE;
     @BeforeEach void database() {
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(rules).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(rules).forEachGroup(anyString(), any(Runnable.class));
         doAnswer(call -> { ((Runnable) call.getArgument(0)).run(); return null; }).when(databases).runAcrossConfiguredDatabases(any());
     }
     @Test void disabledOrNotDueJobDoesNotApproveButRepairsCommittedDelivery() {

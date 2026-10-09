@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 /** Configured ECB-compatible XML source. Redirects and XML external entities are forbidden. */
 @Service
-public class ExchangeRateSource {
+public class ExchangeRateSource implements com.raxim.myscoutee.domain.payments.api.ExchangeRateConfiguration {
     private final Set<String> developmentHosts;
     private final URI simulatorOrigin;
     public ExchangeRateSource(@Value("${payment.exchange-rates.development-hosts:}") String hosts,

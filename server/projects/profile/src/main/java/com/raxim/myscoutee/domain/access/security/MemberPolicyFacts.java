@@ -10,13 +10,13 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.assets.document.Asset;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.events.api.EventMembershipFacts.Event;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
+import com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts.Asset;
+import com.raxim.myscoutee.domain.events.api.EventMembershipFacts;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
+import com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
 
 @Component
 public class MemberPolicyFacts {
@@ -32,16 +32,16 @@ public class MemberPolicyFacts {
     private static final Set<String> EVENT_ADMIN_ROLES = Set.of("Admin");
     private static final Set<String> MANAGER_ROLES = Set.of("Admin", "Manager");
 
-    private final ActivityMembersRepository activityMembersRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final AssetsRepository assetsRepository;
-    private final UsersRepository usersRepository;
+    private final MemberDirectory activityMembersRepository;
+    private final EventMembershipFacts activityEventsRepository;
+    private final AssetMembershipFacts assetsRepository;
+    private final ProfileDirectory usersRepository;
 
     public MemberPolicyFacts(
-            ActivityMembersRepository activityMembersRepository,
-            ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository,
-            UsersRepository usersRepository) {
+            MemberDirectory activityMembersRepository,
+            EventMembershipFacts activityEventsRepository,
+            AssetMembershipFacts assetsRepository,
+            ProfileDirectory usersRepository) {
         this.activityMembersRepository = activityMembersRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.assetsRepository = assetsRepository;
@@ -125,7 +125,7 @@ public class MemberPolicyFacts {
                 || !isActiveUser(normalizedActorUserId)) {
             return false;
         }
-        ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
+        Event eventRecord = findPreferredEventRecord(normalizedEventId);
         if (eventRecord == null) {
             return false;
         }
@@ -141,7 +141,7 @@ public class MemberPolicyFacts {
                 || !isActiveUser(normalizedActorUserId)) {
             return false;
         }
-        ActivityEvent eventRecord = findPreferredEventRecord(normalizedEventId);
+        Event eventRecord = findPreferredEventRecord(normalizedEventId);
         return eventRecord != null
                 && EVENT_STATUS_UNDER_REVIEW.equals(safeText(eventRecord.getStatus()))
                 && (isEventCreatorOrAdmin(normalizedEventId, normalizedActorUserId)
@@ -181,7 +181,7 @@ public class MemberPolicyFacts {
             return false;
         }
         String releasedOwnerUserId = normalizeId(asset.getOwnerUserId());
-        List<ActivityMember> acceptedActiveMembers = activityMembersRepository
+        List<? extends Member> acceptedActiveMembers = activityMembersRepository
                 .findByOwnerTypeAndOwnerId(OWNER_TYPE_ASSET, normalizedAssetId)
                 .stream()
                 .filter(member -> member != null
@@ -190,27 +190,27 @@ public class MemberPolicyFacts {
                 .filter(member -> !normalizeId(member.getUserId()).equals(releasedOwnerUserId))
                 .toList();
         Set<String> acceptedActiveUserIds = new LinkedHashSet<>();
-        (asset.getRequests() == null ? List.<Asset.AssetRequestRecord>of() : asset.getRequests()).stream()
+        (asset.getRequests() == null ? List.<com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts.Request>of() : asset.getRequests()).stream()
                 .filter(request -> request != null
                         && STATUS_ACCEPTED.equals(normalizeStatus(request.status())))
-                .map(Asset.AssetRequestRecord::userId)
+                .map(com.raxim.myscoutee.domain.assets.api.AssetMembershipFacts.Request::userId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .filter(userId -> !userId.equals(releasedOwnerUserId))
                 .filter(this::isActiveUser)
                 .forEach(acceptedActiveUserIds::add);
         acceptedActiveMembers.stream()
-                .map(ActivityMember::getUserId)
+                .map(Member::getUserId)
                 .map(this::normalizeId)
                 .filter(StringUtils::hasText)
                 .forEach(acceptedActiveUserIds::add);
         boolean hasActiveManager = acceptedActiveMembers.stream()
-                .map(ActivityMember::getRole)
+                .map(Member::getRole)
                 .map(this::safeText)
                 .anyMatch(MANAGER_ROLES::contains);
         boolean actorIsManager = acceptedActiveMembers.stream()
                 .filter(member -> normalizedActorUserId.equals(normalizeId(member.getUserId())))
-                .map(ActivityMember::getRole)
+                .map(Member::getRole)
                 .map(this::safeText)
                 .anyMatch(MANAGER_ROLES::contains);
         return acceptedActiveUserIds.contains(normalizedActorUserId)
@@ -218,7 +218,7 @@ public class MemberPolicyFacts {
     }
 
     private boolean isEventCreatorOrAdmin(String eventId, String userId) {
-        ActivityEvent eventRecord = findPreferredEventRecord(eventId);
+        Event eventRecord = findPreferredEventRecord(eventId);
         if (eventRecord == null) {
             return false;
         }
@@ -228,18 +228,18 @@ public class MemberPolicyFacts {
     }
 
     private boolean isEventCreator(String eventId, String userId) {
-        ActivityEvent eventRecord = findPreferredEventRecord(eventId);
+        Event eventRecord = findPreferredEventRecord(eventId);
         return eventRecord != null && normalizeId(userId).equals(normalizeId(eventRecord.getCreatorUserId()));
     }
 
-    private ActivityEvent findPreferredEventRecord(String sourceId) {
+    private Event findPreferredEventRecord(String sourceId) {
         String normalizedSourceId = normalizeId(sourceId);
         if (!StringUtils.hasText(normalizedSourceId)) {
             return null;
         }
-        ActivityEvent preferred = null;
-        for (ActivityEvent document : activityEventsRepository.findBySourceId(normalizedSourceId)) {
-            if (document == null || !com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.allows(document.getWorkspaceGroupId())) {
+        Event preferred = null;
+        for (Event document : activityEventsRepository.findBySourceId(normalizedSourceId)) {
+            if (document == null || !com.raxim.myscoutee.domain.groups.api.WorkspaceContext.allows(document.getWorkspaceGroupId())) {
                 continue;
             }
             if (preferred == null || preferEventRecord(document, preferred)) {
@@ -249,7 +249,7 @@ public class MemberPolicyFacts {
         return preferred;
     }
 
-    private boolean preferEventRecord(ActivityEvent next, ActivityEvent current) {
+    private boolean preferEventRecord(Event next, Event current) {
         return toSortableDate(next == null ? null : next.getUpdatedDate()) >= toSortableDate(current == null ? null : current.getUpdatedDate());
     }
 
@@ -281,7 +281,7 @@ public class MemberPolicyFacts {
         return activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(ownerType, ownerId,
                         OWNER_TYPE_ASSET.equals(ownerType) ? accountUserId(userId) : userId)
                 .filter(member -> STATUS_ACCEPTED.equals(normalizeStatus(member.getStatus())))
-                .map(ActivityMember::getRole)
+                .map(Member::getRole)
                 .map(this::safeText)
                 .filter(roles::contains)
                 .isPresent();

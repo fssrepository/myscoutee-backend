@@ -1,5 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
+import com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.LinkedHashMap;
@@ -20,7 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.HttpStatus;
 
 @Service
-public class PaymentSimulatorRegistrationClient {
+public class PaymentSimulatorRegistrationClient implements com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration {
     private final boolean enabled;
     private final String baseUrl;
     private final String apiKey;
@@ -230,12 +231,6 @@ public class PaymentSimulatorRegistrationClient {
             Integer expiryYear,
             String cardholderName,
             String expiresAt) {}
-
-    public record GatewayConfiguration(
-            String provider,
-            boolean requires3ds,
-            boolean connected,
-            String credential) {}
 
     public record AuthorizationScope(String baseGroupId, java.util.List<String> userReferences, java.util.List<String> paymentReferences) {}
 

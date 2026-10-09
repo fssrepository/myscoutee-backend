@@ -11,20 +11,39 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
-import com.raxim.myscoutee.domain.registry.config.RegistryDemoProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryDemoConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.document.OperatorRegistrySettings;
 import com.raxim.myscoutee.domain.operator.repository.OperatorRegistrySettingsRepository;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import tools.jackson.databind.ObjectMapper;
 
 @org.junit.jupiter.api.Tag("standard")
 class OperatorRevenueRegistryRuntimeResolverTest {
     @Test
+    void operatorGatesRunBeforeAnyRegistryKeyStateOrTransportAccess() {
+        var repository = mock(OperatorRegistrySettingsRepository.class);
+        var operations = mock(com.raxim.myscoutee.domain.registry.api.RegistryOperations.class);
+        var real = realProperties();
+        var resolver = new OperatorRevenueRegistryRuntimeResolver(repository, real, demoProperties(), operations);
+        when(repository.findById(OperatorRegistrySettings.SINGLETON_ID)).thenReturn(Optional.empty());
+        assertThat(resolver.resolveReal().code()).isEqualTo("REGISTRY_NOT_CONFIGURED");
+        var settings = registeredSettings("https://registry.example.test", "real:registry");
+        when(repository.findById(OperatorRegistrySettings.SINGLETON_ID)).thenReturn(Optional.of(settings));
+        settings.setEnabled(false);
+        assertThat(resolver.resolveReal().code()).isEqualTo("REGISTRY_DISABLED");
+        settings.setEnabled(true); settings.setLifecycle("DRAFT");
+        assertThat(resolver.resolveReal().code()).isEqualTo("DEPLOYMENT_NOT_REGISTERED");
+        settings.setLifecycle("REGISTERED"); real.setOutboundAllowed(false);
+        assertThat(resolver.resolveReal().code()).isEqualTo("REGISTRY_OUTBOUND_DISABLED");
+        org.mockito.Mockito.verifyNoInteractions(operations);
+    }
+
+    @Test
     void demoRuntimeUsesOnlyPinnedEndpointScopeAndSeparateFiles() {
-        RegistryProperties real = realProperties();
-        RegistryDemoProperties demo = demoProperties();
+        RegistryConfiguration real = realProperties();
+        RegistryDemoConfiguration demo = demoProperties();
         OperatorRevenueRegistryRuntimeResolver resolver = resolver(
                 mock(OperatorRegistrySettingsRepository.class),
                 real,
@@ -32,7 +51,7 @@ class OperatorRevenueRegistryRuntimeResolverTest {
         OperatorRegistrySettings.RegistrySelection selection =
                 selection("http://registry:8080/", "demo:myscoutee");
 
-        RegistryProperties runtime = resolver.runtimeProperties(
+        RegistryConfiguration runtime = resolver.runtimeProperties(
                 selection,
                 MongoSessionMode.DEMO);
 
@@ -85,7 +104,7 @@ class OperatorRevenueRegistryRuntimeResolverTest {
                 realProperties(),
                 demoProperties());
 
-        RegistryProperties runtime = resolver.runtimeProperties(
+        RegistryConfiguration runtime = resolver.runtimeProperties(
                 selection(
                         "https://registry.example.test",
                         "real:registry"),
@@ -108,17 +127,17 @@ class OperatorRevenueRegistryRuntimeResolverTest {
 
     private static OperatorRevenueRegistryRuntimeResolver resolver(
             OperatorRegistrySettingsRepository repository,
-            RegistryProperties real,
-            RegistryDemoProperties demo) {
+            RegistryConfiguration real,
+            RegistryDemoConfiguration demo) {
         return new OperatorRevenueRegistryRuntimeResolver(
                 repository,
                 real,
                 demo,
-                new ObjectMapper());
+                new com.raxim.myscoutee.domain.registry.RegistryOperatorOperations(new ObjectMapper()));
     }
 
-    private static RegistryProperties realProperties() {
-        RegistryProperties properties = new RegistryProperties();
+    private static RegistryConfiguration realProperties() {
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setOutboundAllowed(true);
         properties.setPrivateKeyPath(
                 Path.of("/real/keys/private.pem"));
@@ -128,8 +147,8 @@ class OperatorRevenueRegistryRuntimeResolverTest {
         return properties;
     }
 
-    private static RegistryDemoProperties demoProperties() {
-        RegistryDemoProperties properties = new RegistryDemoProperties();
+    private static RegistryDemoConfiguration demoProperties() {
+        RegistryDemoConfiguration properties = new RegistryDemoConfiguration();
         properties.setBaseUrl("http://registry:8080");
         properties.setRegistryScope("demo:myscoutee");
         properties.setPrivateKeyPath(

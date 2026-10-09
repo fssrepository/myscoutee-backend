@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.email.document.EmailCampaignRule;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
 
 @Service
 public class PromotionalEmailRuleEvaluator {
-    public boolean qualifies(Users user, EmailCampaignRule rule) {
+    public boolean qualifies(EmailProfile user, EmailCampaignRule rule) {
         if (user == null || rule == null || !isActiveProfile(user)) {
             return false;
         }
@@ -32,7 +32,7 @@ public class PromotionalEmailRuleEvaluator {
         if (!matchesInactivity(user, rule)) {
             return false;
         }
-        Users.UserActivitiesRecord activities = user.getActivities();
+        EmailProfile.ActivityCounts activities = user.getActivities();
         int completion = normalizeCount(user.getCompletion());
         int eventCount = activities == null ? 0 : normalizeCount(activities.events());
         int hostingCount = activities == null ? 0 : normalizeCount(activities.hosting());
@@ -41,7 +41,7 @@ public class PromotionalEmailRuleEvaluator {
                 && matchesRange(hostingCount, rule.getMinHostingCount(), rule.getMaxHostingCount());
     }
 
-    public Map<String, String> buildTemplateVariables(Users user, EmailCampaignRule rule, String baseUrl) {
+    public Map<String, String> buildTemplateVariables(EmailProfile user, EmailCampaignRule rule, String baseUrl) {
         Map<String, String> variables = new LinkedHashMap<>();
         String firstName = resolveFirstName(user == null ? null : user.getName());
         String fullName = safeText(user == null ? null : user.getName());
@@ -81,21 +81,19 @@ public class PromotionalEmailRuleEvaluator {
         return variables;
     }
 
-    boolean isActiveProfile(Users user) {
+    boolean isActiveProfile(EmailProfile user) {
         String profileStatus = resolveProfileStatus(user);
         return !"deleted".equals(profileStatus) && !"inactive".equals(profileStatus);
     }
 
-    boolean hasRegisteredDevice(Users user) {
-        return (user == null ? List.<Users.UserDeviceRecord>of() : user.getDevices()).stream()
+    boolean hasRegisteredDevice(EmailProfile user) {
+        return (user == null ? List.<EmailProfile.Device>of() : user.getDevices()).stream()
                 .filter(device -> device != null)
                 .filter(device -> !Boolean.FALSE.equals(device.getNotificationsEnabled()))
-                .map(Users.UserDeviceRecord::getFirebaseToken)
-                .map(this::safeText)
-                .anyMatch(StringUtils::hasText);
+                .anyMatch(EmailProfile.Device::hasPushToken);
     }
 
-    private boolean matchesInactivity(Users user, EmailCampaignRule rule) {
+    private boolean matchesInactivity(EmailProfile user, EmailCampaignRule rule) {
         Integer minInactiveDays = rule == null ? null : rule.getMinInactiveDays();
         Integer maxInactiveDays = rule == null ? null : rule.getMaxInactiveDays();
         if (minInactiveDays == null && maxInactiveDays == null) {
@@ -112,9 +110,9 @@ public class PromotionalEmailRuleEvaluator {
         return maxInactiveDays == null || inactiveDays <= Math.max(0, maxInactiveDays.intValue());
     }
 
-    private Instant lastSeenAt(Users user) {
+    private Instant lastSeenAt(EmailProfile user) {
         Instant latest = null;
-        for (Users.UserDeviceRecord device : user == null ? List.<Users.UserDeviceRecord>of() : user.getDevices()) {
+        for (EmailProfile.Device device : user == null ? List.<EmailProfile.Device>of() : user.getDevices()) {
             Instant candidate = firstInstant(device == null ? null : device.getLastSeenAtIso(),
                     device == null ? null : device.getLastRegisteredAtIso());
             if (candidate != null && (latest == null || candidate.isAfter(latest))) {
@@ -141,7 +139,7 @@ public class PromotionalEmailRuleEvaluator {
         }
     }
 
-    private boolean matchesCountry(Users user, EmailCampaignRule rule) {
+    private boolean matchesCountry(EmailProfile user, EmailCampaignRule rule) {
         Set<String> targetCountryCodes = new LinkedHashSet<>();
         for (String countryCode : rule == null ? List.<String>of() : rule.getCountryCodes()) {
             String normalized = normalizeCountryCode(countryCode);
@@ -178,7 +176,7 @@ public class PromotionalEmailRuleEvaluator {
         return separator > 0 ? normalized.substring(0, separator) : normalized;
     }
 
-    private String resolveProfileStatus(Users user) {
+    private String resolveProfileStatus(EmailProfile user) {
         if (user == null) {
             return "inactive";
         }
@@ -193,7 +191,7 @@ public class PromotionalEmailRuleEvaluator {
         return StringUtils.hasText(normalizedProfileStatus) ? normalizedProfileStatus : "public";
     }
 
-    private String resolveCountryCode(Users user) {
+    private String resolveCountryCode(EmailProfile user) {
         String partitionKey = safeText(user == null ? null : user.getPartitionKey());
         if (partitionKey.startsWith("country:")) {
             return normalizeCountryCode(partitionKey.substring("country:".length()));

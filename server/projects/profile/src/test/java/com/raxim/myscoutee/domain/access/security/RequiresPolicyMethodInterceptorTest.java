@@ -1,5 +1,11 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.common.security.policy.PolicyExpressionEvaluator;
+import com.raxim.myscoutee.common.security.policy.RequiresPolicyMethodInterceptor;
+
+import com.raxim.myscoutee.domain.access.api.RequiresPolicies;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

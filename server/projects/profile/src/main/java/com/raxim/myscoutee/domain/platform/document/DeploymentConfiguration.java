@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.domain.platform.document;
 
-import com.raxim.myscoutee.domain.payments.document.Payment;
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "deploymentConfigurations")
-public class DeploymentConfiguration {
+public class DeploymentConfiguration implements com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration {
     public static final String SINGLETON_ID = "deployment-configuration";
     public static final int SCHEMA_VERSION = 5;
 
@@ -145,7 +146,6 @@ public class DeploymentConfiguration {
             this.logoUrl = logoUrl;
         }
 
-
         public Long getRevision() {
             return revision;
         }
@@ -155,7 +155,7 @@ public class DeploymentConfiguration {
         }
     }
 
-    public static class Payment {
+    public static class Payment implements com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Payment {
         private String exchangeRateUrl;
         public String getExchangeRateUrl() { return exchangeRateUrl; }
         public void setExchangeRateUrl(String value) { exchangeRateUrl = value; }
@@ -275,7 +275,7 @@ public class DeploymentConfiguration {
         }
     }
 
-    public static class Integration {
+    public static class Integration implements com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Integration {
         private String publicBaseUrl;
 
         public String getPublicBaseUrl() {
@@ -461,42 +461,4 @@ public class DeploymentConfiguration {
         }
     }
 
-    public static class EncryptedSecret {
-        private String algorithm;
-        private String keyId;
-        private String nonce;
-        private String ciphertext;
-
-        public String getAlgorithm() {
-            return algorithm;
-        }
-
-        public void setAlgorithm(String algorithm) {
-            this.algorithm = algorithm;
-        }
-
-        public String getKeyId() {
-            return keyId;
-        }
-
-        public void setKeyId(String keyId) {
-            this.keyId = keyId;
-        }
-
-        public String getNonce() {
-            return nonce;
-        }
-
-        public void setNonce(String nonce) {
-            this.nonce = nonce;
-        }
-
-        public String getCiphertext() {
-            return ciphertext;
-        }
-
-        public void setCiphertext(String ciphertext) {
-            this.ciphertext = ciphertext;
-        }
-    }
 }

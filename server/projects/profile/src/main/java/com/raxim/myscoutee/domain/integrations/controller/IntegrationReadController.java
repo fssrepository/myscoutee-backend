@@ -1,15 +1,15 @@
 package com.raxim.myscoutee.domain.integrations.controller;
 
-import com.raxim.myscoutee.domain.affinity.service.UserRatesService;
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.campaigns.service.CampaignsService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
-import com.raxim.myscoutee.domain.community.service.CommunityAnnouncementsService;
-import com.raxim.myscoutee.domain.community.service.CommunityCasesService;
-import com.raxim.myscoutee.domain.community.service.CommunityScheduledTasksService;
-import com.raxim.myscoutee.domain.community.service.ServiceOfferingsService;
-import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.affinity.api.RatingPageReads;
+import com.raxim.myscoutee.domain.assets.api.Assets;
+import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
+import com.raxim.myscoutee.domain.chat.api.ChatQueries;
+import com.raxim.myscoutee.domain.community.api.Announcements;
+import com.raxim.myscoutee.domain.community.api.Cases;
+import com.raxim.myscoutee.domain.community.api.ScheduledCases;
+import com.raxim.myscoutee.domain.community.api.ServiceOfferings;
+import com.raxim.myscoutee.domain.events.api.EventOperations;
+import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationCapabilitiesService;
 
 import org.springframework.http.HttpStatus;
@@ -17,25 +17,25 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationReads;
 
 /** Read/Full-pack reads. Actor identity never comes from query parameters or model arguments. */
 @RestController
 @RequestMapping("/integrations/v1")
 public class IntegrationReadController {
     private final IntegrationCapabilitiesService access;
-    private final ActivitiesEventsService events;
-    private final CommunityGroupsService groups;
-    private final ChatService chats;
-    private final UserNotificationService notifications;
-    private final UserRatesService ratings;
-    private final AssetsService assets;
-    private final CampaignsService campaigns;
-    private final ServiceOfferingsService services;
-    private final CommunityCasesService cases;
-    private final CommunityAnnouncementsService announcements;
-    private final CommunityScheduledTasksService tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, ActivitiesEventsService events, CommunityGroupsService groups, ChatService chats, UserNotificationService notifications, UserRatesService ratings, AssetsService assets, CampaignsService campaigns, ServiceOfferingsService services, CommunityCasesService cases, CommunityAnnouncementsService announcements, CommunityScheduledTasksService tasks) {
+    private final EventOperations events;
+    private final IntegrationGroups groups;
+    private final ChatQueries chats;
+    private final NotificationReads notifications;
+    private final RatingPageReads ratings;
+    private final Assets assets;
+    private final Campaigns campaigns;
+    private final ServiceOfferings services;
+    private final Cases cases;
+    private final Announcements announcements;
+    private final ScheduledCases tasks;
+    public IntegrationReadController(IntegrationCapabilitiesService access, EventOperations events, IntegrationGroups groups, ChatQueries chats, NotificationReads notifications, RatingPageReads ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;

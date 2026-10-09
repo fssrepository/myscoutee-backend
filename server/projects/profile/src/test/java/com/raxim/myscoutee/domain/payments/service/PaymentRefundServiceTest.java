@@ -29,7 +29,7 @@ import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationPolicyDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PricingCancellationRuleDto;
 import com.raxim.myscoutee.domain.payments.repository.PaymentsRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @org.junit.jupiter.api.Tag("standard")
 class PaymentRefundServiceTest {
@@ -148,6 +148,8 @@ class PaymentRefundServiceTest {
                 history,
                 outbox,
                 mongo);
+
+        private Fixture() { PaymentTestSupport.wire(service, mongo); }
 
         private Payment payment(String status) {
             Payment payment = new Payment();

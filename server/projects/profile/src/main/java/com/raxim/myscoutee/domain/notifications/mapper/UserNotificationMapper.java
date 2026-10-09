@@ -11,16 +11,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.notifications.document.UserNotification;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Sender;
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationDto;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.AccountNotifications;
 
 @Component
 public class UserNotificationMapper {
-    private final UsersRepository usersRepository;
+    private final AccountNotifications accounts;
 
-    public UserNotificationMapper(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    public UserNotificationMapper(AccountNotifications accounts) {
+        this.accounts = accounts;
     }
 
     public List<UserNotificationDto> toDtos(List<UserNotification> notifications) {
@@ -33,13 +33,13 @@ public class UserNotificationMapper {
                 .filter(StringUtils::hasText)
                 .distinct()
                 .toList();
-        Map<String, Users> usersById = senderUserIds.isEmpty()
+        Map<String, Sender> usersById = senderUserIds.isEmpty()
                 ? Map.of()
-                : usersRepository.findByUserIdIn(senderUserIds).stream()
+                : accounts.senders(senderUserIds).stream()
                         .filter(Objects::nonNull)
-                        .filter(user -> StringUtils.hasText(user.getId()))
+                        .filter(user -> StringUtils.hasText(user.userId()))
                         .collect(Collectors.toMap(
-                                Users::getId,
+                                Sender::userId,
                                 Function.identity(),
                                 (left, right) -> left,
                                 LinkedHashMap::new));
@@ -57,13 +57,13 @@ public class UserNotificationMapper {
         if (notification == null) {
             return null;
         }
-        Users sender = StringUtils.hasText(notification.getSenderUserId())
-                ? usersRepository.findByUserId(notification.getSenderUserId()).orElse(null)
+        Sender sender = StringUtils.hasText(notification.getSenderUserId())
+                ? accounts.senders(List.of(notification.getSenderUserId())).stream().findFirst().orElse(null)
                 : null;
         return toDto(notification, sender);
     }
 
-    private UserNotificationDto toDto(UserNotification notification, Users sender) {
+    private UserNotificationDto toDto(UserNotification notification, Sender sender) {
         Map<String, String> payload = notification.getPayload() == null
                 ? Map.of()
                 : Map.copyOf(notification.getPayload());
@@ -77,8 +77,8 @@ public class UserNotificationMapper {
                 safeText(notification.getCreatedDate()),
                 nullableText(notification.getReadAtIso()),
                 nullableText(notification.getSenderUserId()),
-                firstNonBlank(sender == null ? null : sender.getName(), payload.get("senderName")),
-                firstNonBlank(firstImage(sender), payload.get("senderAvatarUrl")),
+                firstNonBlank(sender == null ? null : sender.name(), payload.get("senderName")),
+                firstNonBlank(sender == null ? null : sender.avatarUrl(), payload.get("senderAvatarUrl")),
                 safeText(notification.getActionPath()),
                 safeText(notification.getSourceType()),
                 safeText(notification.getSourceId()),
@@ -89,17 +89,6 @@ public class UserNotificationMapper {
                 notification.getRevision() == null
                         ? 1L
                         : Math.max(1L, notification.getRevision()));
-    }
-
-    private String firstImage(Users user) {
-        if (user == null || user.getImages() == null) {
-            return null;
-        }
-        return user.getImages().stream()
-                .filter(StringUtils::hasText)
-                .map(String::trim)
-                .findFirst()
-                .orElse(null);
     }
 
     private String firstNonBlank(String... values) {

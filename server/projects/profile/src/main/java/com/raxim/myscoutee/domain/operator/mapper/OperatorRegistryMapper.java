@@ -18,7 +18,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryInsp
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistryOptionDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.RegistrySelectionDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorRegistryDtos.SafeRegistryErrorDto;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
 
 @Component
 public class OperatorRegistryMapper {

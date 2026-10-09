@@ -13,12 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import tools.jackson.databind.ObjectMapper;
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
+import com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSocketRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSocketEventDto;
@@ -33,14 +33,14 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final ChatService chatService;
     private final ChatWebSocketSessionRegistry sessionRegistry;
-    private final ConfigProperties configProperties;
+    private final AuthenticationMode configProperties;
     private final ChatCallSignalingService calls;
 
     public ChatWebSocketHandler(
             ObjectMapper objectMapper,
             ChatService chatService,
             ChatWebSocketSessionRegistry sessionRegistry,
-            ConfigProperties configProperties,
+            AuthenticationMode configProperties,
             ChatCallSignalingService calls) {
         this.objectMapper = objectMapper;
         this.chatService = chatService;
@@ -203,11 +203,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String resolveViewerUserId(WebSocketSession session) {
-        FirebasePrincipal principal = resolvePrincipal(session);
+        AuthenticatedActor principal = resolvePrincipal(session);
         if (principal != null) {
-            Users user = principal.getUser();
-            String principalUserId = user != null && StringUtils.hasText(user.getId())
-                    ? user.getId().trim()
+            ProfileIdentityDto user = principal.getProfileIdentity();
+            String principalUserId = user != null && StringUtils.hasText(user.userId())
+                    ? user.userId().trim()
                     : (principal.getUserId() == null ? "" : principal.getUserId().trim());
             if (StringUtils.hasText(principalUserId)) {
                 return principalUserId;
@@ -219,12 +219,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         return resolveRequestedUserId(session);
     }
 
-    private FirebasePrincipal resolvePrincipal(WebSocketSession session) {
+    private AuthenticatedActor resolvePrincipal(WebSocketSession session) {
         if (!(session.getPrincipal() instanceof org.springframework.security.core.Authentication authentication)) {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        return principal instanceof FirebasePrincipal firebasePrincipal ? firebasePrincipal : null;
+        return principal instanceof AuthenticatedActor firebasePrincipal ? firebasePrincipal : null;
     }
 
     private void sendSocketError(

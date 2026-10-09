@@ -29,10 +29,11 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserReportUserSubmitRequ
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginResponseDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponseDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.ProfileWorkspaceLoads;
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 import jakarta.servlet.http.HttpServletResponse;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
 
@@ -44,12 +45,12 @@ import jakarta.validation.Valid;
 public class AuthController {
     private final HomeUserProfileService homeUserProfileService;
     private final UserLoginSessionService userLoginSessionService;
-    private final CommunityGroupsService groups;
+    private final ProfileWorkspaceLoads groups;
 
     public AuthController(
             HomeUserProfileService homeUserProfileService,
             UserLoginSessionService userLoginSessionService,
-            CommunityGroupsService groups) {
+            ProfileWorkspaceLoads groups) {
         this.groups = groups;
         this.homeUserProfileService = homeUserProfileService;
         this.userLoginSessionService = userLoginSessionService;
@@ -132,7 +133,12 @@ public class AuthController {
         httpResponse.setHeader("Cache-Control", "no-store");
         var response = homeUserProfileService.loadProfileExtById(userId, latitude, longitude);
         if (response == null) return null;
-        return groups.completeProfileLoad(groups.actor(userId), response, groupId);
+        var actor = homeUserProfileService.resolveCurrentUser(userId);
+        if (actor == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        String accountId = actor.getAccountUserId() == null ? actor.getUserId() : actor.getAccountUserId();
+        var context = groups.loadProfileWorkspace(accountId, WorkspaceContext.currentGroupId(), groupId);
+        return new ProfileExtByIdResponseDto(response.profileExt(), response.filterCount(), response.filterPreferences(),
+                response.counterOverrides(), context.workspace(), context.accountProfile());
     }
 
     @PostMapping("/me/feedback")

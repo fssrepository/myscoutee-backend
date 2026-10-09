@@ -37,9 +37,24 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @org.junit.jupiter.api.Tag("standard")
 class DeletedAccountPurgeServiceTest {
-    private void wireGlobalJob(DeletedAccountPurgeService service) {
+    private void wireGlobalJob(DeletedAccountPurgeService service, MongoTemplate mongoTemplate) {
+        var owner = org.springframework.test.util.ReflectionTestUtils.getField(service, "assetsRepository");
+        var repository = (AssetsRepository) org.springframework.test.util.ReflectionTestUtils.getField(owner, "assets");
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "assetPrivacy", new com.raxim.myscoutee.domain.assets.service.AssetPrivacyService(repository, mongoTemplate,
+            (com.raxim.myscoutee.domain.media.api.MediaStorage) org.springframework.test.util.ReflectionTestUtils.getField(service, "mediaStorageService")));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "contentPrivacy", new com.raxim.myscoutee.domain.content.service.ContentPrivacyService(mongoTemplate,
+            (com.raxim.myscoutee.domain.media.api.MediaStorage) org.springframework.test.util.ReflectionTestUtils.getField(service, "mediaStorageService")));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "integrationPrivacy", new com.raxim.myscoutee.domain.integrations.service.IntegrationPrivacyService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "paymentPrivacy", new com.raxim.myscoutee.domain.payments.service.PaymentPrivacyService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "affinityPrivacy", new com.raxim.myscoutee.domain.affinity.service.AffinityPrivacyService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "emailPrivacy",
+                new com.raxim.myscoutee.domain.email.service.EmailPrivacyService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "helpPrivacy",
+                new com.raxim.myscoutee.domain.help.service.HelpPrivacyService(mongoTemplate));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "notificationPrivacy",
+                new com.raxim.myscoutee.domain.notifications.service.NotificationPrivacyService(mongoTemplate));
         var registry = mock(com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService.class);
-        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.service.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
+        org.mockito.Mockito.doAnswer(call -> { com.raxim.myscoutee.domain.platform.api.JobGroupContext.run(null, call.getArgument(1, Runnable.class)); return null; }).when(registry).forEachGroup(anyString(), any(Runnable.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "notificationRuleRegistryService", registry);
         var scope = mock(com.raxim.myscoutee.domain.platform.service.JobGroupScopeService.class);
         when(scope.matchesWorkspace(any())).thenReturn(true);
@@ -82,7 +97,9 @@ class DeletedAccountPurgeServiceTest {
         when(usersRepository.findByProfileStatusAndDeletedAtIsoLessThanEqual(eq("deleted"), anyString()))
                 .thenReturn(List.of(user));
         when(activityEventsRepository.findByCreatorUserId("u1")).thenReturn(List.of(event));
+        when(activityEventsRepository.findAllById(List.of("event-doc-1"))).thenReturn(List.of(event));
         when(assetsRepository.findByOwnerUserId("u1")).thenReturn(List.of(asset));
+        when(assetsRepository.findByAssetIdIn(List.of("asset-1"))).thenReturn(List.of(asset));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("event"), any()))
                 .thenReturn(List.of(eventMember));
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdIn(eq("asset"), any()))
@@ -94,17 +111,15 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
-                activityEventsRepository,
-                assetsRepository,
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
+                new com.raxim.myscoutee.domain.events.service.EventPrivacyService(activityEventsRepository, activityMembersRepository, mongoTemplate, mediaStorageService),
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 accountPurgeJobsRepository,
                 mediaStorageService,
                 mongoTemplate,
                 null);
 
-        wireGlobalJob(service);
+        wireGlobalJob(service, mongoTemplate);
         service.purgeExpiredDeletedAccounts();
 
         verify(mediaStorageService).deletePublicObjectOrThrow("https://cdn.example/avatar-u1.webp");
@@ -159,17 +174,15 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
-                activityEventsRepository,
-                assetsRepository,
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
+                new com.raxim.myscoutee.domain.events.service.EventPrivacyService(activityEventsRepository, activityMembersRepository, mongoTemplate, mediaStorageService),
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 accountPurgeJobsRepository,
                 mediaStorageService,
                 mongoTemplate,
                 null);
 
-        wireGlobalJob(service);
+        wireGlobalJob(service, mongoTemplate);
         service.purgeExpiredDeletedAccounts();
 
         verify(usersRepository, never()).delete(any(Users.class));
@@ -212,17 +225,15 @@ class DeletedAccountPurgeServiceTest {
 
         DeletedAccountPurgeService service = new DeletedAccountPurgeService(
                 usersRepository,
-                chatsRepository,
-                chatMessagesRepository,
-                activityEventsRepository,
-                assetsRepository,
-                activityMembersRepository,
+                new com.raxim.myscoutee.domain.chat.service.ChatPrivacyService(chatsRepository, chatMessagesRepository, mediaStorageService),
+                new com.raxim.myscoutee.domain.events.service.EventPrivacyService(activityEventsRepository, activityMembersRepository, mongoTemplate, mediaStorageService),
+                new com.raxim.myscoutee.domain.assets.service.AssetOwnershipService(assetsRepository),
                 accountPurgeJobsRepository,
                 mediaStorageService,
                 mongoTemplate,
                 null);
 
-        wireGlobalJob(service);
+        wireGlobalJob(service, mongoTemplate);
         service.purgeExpiredDeletedAccounts();
 
         verify(usersRepository).delete(onboardingUser);

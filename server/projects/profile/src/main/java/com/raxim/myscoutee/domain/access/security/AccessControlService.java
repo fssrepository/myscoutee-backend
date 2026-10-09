@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.access.security;
 
+import com.raxim.myscoutee.domain.access.api.AccessGrantEffect;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -9,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,27 +18,25 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import com.raxim.myscoutee.domain.access.document.AccessGrant;
 import com.raxim.myscoutee.domain.access.document.AccessPolicyDefinition;
-import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceStateDto;
 import com.raxim.myscoutee.domain.access.repository.AccessGrantsRepository;
 import com.raxim.myscoutee.domain.access.repository.AccessPolicyDefinitionsRepository;
 
 import jakarta.annotation.PostConstruct;
 
 @Service("accessControl")
-public class AccessControlService implements AccessPolicyData {
+public class AccessControlService implements AccessPolicyData, com.raxim.myscoutee.domain.access.api.AccessPermissions {
     private static final String EFFECT_ALLOW = "allow";
     private static final String EFFECT_DENY = "deny";
 
     private final AccessGrantsRepository accessGrantsRepository;
     private final AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository;
-    private final ConfigProperties configProperties;
+    private final RuntimeConfiguration configProperties;
     private final AccessPolicyConditionRegistry conditionRegistry;
     private final MemberPolicyFacts memberPolicyFacts;
     private final ChatPolicyFacts chatPolicyFacts;
@@ -47,7 +46,7 @@ public class AccessControlService implements AccessPolicyData {
     public AccessControlService(
             AccessGrantsRepository accessGrantsRepository,
             AccessPolicyDefinitionsRepository accessPolicyDefinitionsRepository,
-            ConfigProperties configProperties,
+            RuntimeConfiguration configProperties,
             AccessPolicyConditionRegistry conditionRegistry,
             MemberPolicyFacts memberPolicyFacts,
             ChatPolicyFacts chatPolicyFacts) {
@@ -165,22 +164,13 @@ public class AccessControlService implements AccessPolicyData {
         return chatPolicyFacts.resolveActorUserId(chatId, profileId);
     }
 
-    public boolean canSubmitEventResourceAssignment(Authentication authentication, ActivitySubEventResourceStateDto request) {
-        String eventId = normalizeId(request == null ? null : request.authorizationEventId());
-        String subEventId = normalizeId(request == null ? null : request.subEventId());
-        String assetOwnerUserId = normalizeId(request == null ? null : request.assetOwnerUserId());
-        if (!StringUtils.hasText(eventId)
-                || !StringUtils.hasText(subEventId)
-                || !StringUtils.hasText(assetOwnerUserId)) {
-            return false;
-        }
-        String actorUserId = resolveActorUserId(authentication);
-        return StringUtils.hasText(actorUserId)
-                && can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, actorUserId, assetOwnerUserId, eventId);
-    }
-
-    public boolean canCurrentActorAssignEventResources(ActivitySubEventResourceStateDto request) {
-        return canSubmitEventResourceAssignment(SecurityContextHolder.getContext().getAuthentication(), request);
+    @Override public boolean canCurrentActorAssignEventResourceScope(String requestedEventId, String requestedSubEventId, String requestedOwnerId) {
+        String eventId = normalizeId(requestedEventId);
+        String subEventId = normalizeId(requestedSubEventId);
+        String ownerId = normalizeId(requestedOwnerId);
+        if (!StringUtils.hasText(eventId) || !StringUtils.hasText(subEventId) || !StringUtils.hasText(ownerId)) return false;
+        String actorId = resolveActorUserId(SecurityContextHolder.getContext().getAuthentication());
+        return StringUtils.hasText(actorId) && can(AccessPolicyKeys.RESOURCE_ASSIGN_SUBMIT, actorId, ownerId, eventId);
     }
 
     public boolean canAssignEventResourcesForSubject(String eventId, String userId) {
@@ -446,8 +436,8 @@ public class AccessControlService implements AccessPolicyData {
         return can(AccessPolicyKeys.EVENT_MEMBER_INVITE, normalizedActorUserId, normalizedActorUserId, normalizedEventId);
     }
 
-    public boolean canCurrentActorManageEventResourceAssignment(ActivitySubEventResourceStateDto request) {
-        String eventId = normalizeId(request == null ? null : request.authorizationEventId());
+    public boolean canCurrentActorManageEventResourceScope(String requestedEventId) {
+        String eventId = normalizeId(requestedEventId);
         if (!StringUtils.hasText(eventId)) {
             return false;
         }
@@ -525,20 +515,6 @@ public class AccessControlService implements AccessPolicyData {
     @Override
     public boolean canManageSupportChat(String chatId, String actorUserId) {
         return chatPolicyFacts.canManageSupportChat(chatId, actorUserId);
-    }
-
-    public String resolveActorUserId(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
-        }
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof FirebasePrincipal firebasePrincipal) {
-            return normalizeId(firebasePrincipal.getUserId());
-        }
-        if (principal instanceof String value) {
-            return normalizeId(value);
-        }
-        return normalizeId(authentication.getName());
     }
 
     @Override

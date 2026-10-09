@@ -44,7 +44,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateApprovalDto;
@@ -53,7 +53,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdate
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateEventPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateJobDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateOverviewDto;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import jakarta.annotation.PreDestroy;
 import tools.jackson.databind.ObjectMapper;
@@ -87,7 +87,7 @@ public class OperatorUpdateService {
     private final OperatorUpdateReleaseService releaseService;
     private final OperatorUpdateArtifactDownloader downloader;
     private final OperatorUpdateProperties properties;
-    private final RegistryProperties registryProperties;
+    private final RegistryConfiguration registryProperties;
     private final ObjectMapper objectMapper;
     private final ExecutorService executor;
     private final Clock clock;
@@ -100,7 +100,7 @@ public class OperatorUpdateService {
             OperatorUpdateReleaseService releaseService,
             OperatorUpdateArtifactDownloader downloader,
             OperatorUpdateProperties properties,
-            RegistryProperties registryProperties,
+            RegistryConfiguration registryProperties,
             ObjectMapper objectMapper) {
         this(
                 releaseService,
@@ -117,7 +117,7 @@ public class OperatorUpdateService {
             OperatorUpdateReleaseService releaseService,
             OperatorUpdateArtifactDownloader downloader,
             OperatorUpdateProperties properties,
-            RegistryProperties registryProperties,
+            RegistryConfiguration registryProperties,
             ObjectMapper objectMapper,
             ExecutorService executor,
             Clock clock,

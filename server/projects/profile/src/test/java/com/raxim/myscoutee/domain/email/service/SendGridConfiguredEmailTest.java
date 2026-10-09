@@ -1,4 +1,6 @@
 package com.raxim.myscoutee.domain.email.service;
+
+import com.raxim.myscoutee.domain.email.api.EmailSendRequest;
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;

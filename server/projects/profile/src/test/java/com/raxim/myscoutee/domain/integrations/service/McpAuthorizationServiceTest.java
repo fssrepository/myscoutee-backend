@@ -3,8 +3,8 @@ package com.raxim.myscoutee.domain.integrations.service;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationToken;
 import com.raxim.myscoutee.domain.integrations.document.McpAuthorization;
 import com.raxim.myscoutee.domain.integrations.document.McpOAuthClient;
@@ -23,7 +23,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.mongo.*;
-
 
 import com.raxim.myscoutee.domain.integrations.dto.McpDtos;
 
@@ -47,7 +46,7 @@ class McpAuthorizationServiceTest {
     final McpOAuthClientsRepository registrations = mock(McpOAuthClientsRepository.class);
     final CommunityGroupProfilesService profiles = mock(CommunityGroupProfilesService.class);
     final com.raxim.myscoutee.domain.platform.config.ConfigProperties config = new com.raxim.myscoutee.domain.platform.config.ConfigProperties();
-    final McpAuthorizationService service = new McpAuthorizationService(keys, tokens, grants, users, groups, endpoint, registrations, profiles, config);
+    final McpAuthorizationService service = new McpAuthorizationService(keys,  tokens,  grants, new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users),  new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groups),  endpoint,  registrations,  profiles,  config);
     final String id = UUID.randomUUID().toString(), verifier = "x".repeat(43);
     IntegrationToken client;
     @BeforeEach void setup() {
@@ -57,7 +56,7 @@ class McpAuthorizationServiceTest {
         client.setExpiresAtIso(Instant.now().plusSeconds(86400).toString());
         when(tokens.findById(id)).thenReturn(Optional.of(client));
         Users owner = new Users(); owner.setUserId("owner"); owner.setName("Owner");
-        owner.setIntegrationAccess(new com.raxim.myscoutee.domain.integrations.document.IntegrationAccess(1, com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.WRITE, Map.of()));
+        owner.setIntegrationAccess(new com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess(1, com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.WRITE, Map.of()));
         when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
     }
     @AfterEach void cleanup() { MongoSessionModeContext.clear(); }
@@ -204,7 +203,7 @@ class McpAuthorizationServiceTest {
         client.setOauthClientId(publicId);
         var second = new IntegrationToken(); second.setId("bob-token"); second.setOwnerUserId("bob");
         second.setScope("mcp"); second.setOauthClientId(publicId); second.setExpiresAtIso(client.getExpiresAtIso());
-        var bob = new Users(); bob.setUserId("bob"); bob.setIntegrationAccess(new com.raxim.myscoutee.domain.integrations.document.IntegrationAccess(1, com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.WRITE, Map.of()));
+        var bob = new Users(); bob.setUserId("bob"); bob.setIntegrationAccess(new com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess(1, com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.WRITE, Map.of()));
         when(users.findByUserId("bob")).thenReturn(Optional.of(bob));
         when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("owner")).thenReturn(List.of(client));
         when(tokens.findByOwnerUserIdOrderByCreatedAtIsoDesc("bob")).thenReturn(List.of(second));
@@ -287,7 +286,7 @@ class McpAuthorizationServiceTest {
     @Test void absentMcpPreferenceIsBlockedWithoutGeneratingAConnection() {
         var owner = new Users(); owner.setUserId("owner");
         when(users.findByUserId("owner")).thenReturn(Optional.of(owner));
-        assertThat(service.context("owner", request()).accessMode()).isEqualTo(com.raxim.myscoutee.domain.integrations.document.IntegrationAccess.Mode.BLOCKED);
+        assertThat(service.context("owner", request()).accessMode()).isEqualTo(com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.BLOCKED);
         assertThatThrownBy(() -> service.authorize("owner", new McpDtos.Consent(request(), true, "owner")))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(keys, never()).create(anyString(), any(), anyString());

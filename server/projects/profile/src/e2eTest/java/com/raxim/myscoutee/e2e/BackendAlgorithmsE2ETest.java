@@ -55,7 +55,7 @@ import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.events.document.EventLeaderboardEntry;
 import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.NotificationRuleConfig;
-import com.raxim.myscoutee.domain.platform.document.SchedulerPlanMarker;
+import com.raxim.myscoutee.domain.events.document.SchedulerPlanMarker;
 import com.raxim.myscoutee.domain.events.document.SubEventItem;
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.accounts.document.Users;
@@ -78,7 +78,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=member1@myscoutee.local",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -375,7 +375,7 @@ class BackendAlgorithmsE2ETest {
         }
 
         List<NotificationOutboxItem> roomNotifications = fromDemo(() -> mongoTemplate.find(
-                Query.query(Criteria.where("type")
+                Query.query(Criteria.where("notificationType")
                         .is(NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS)),
                 NotificationOutboxItem.class));
         assertThat(roomNotifications).hasSize(4);
@@ -521,9 +521,14 @@ class BackendAlgorithmsE2ETest {
     }
 
     private HttpResponse<String> post(String path, Object body) {
+        String actor = body instanceof Map<?, ?> payload
+                ? String.valueOf(payload.containsKey("userId") ? payload.get("userId")
+                        : payload.containsKey("actorUserId") ? payload.get("actorUserId") : ADMIN_ID)
+                : ADMIN_ID;
         String json = writeJson(body);
         HttpResponse<String> response = send(HttpRequest.newBuilder(uri(path))
                 .header(SESSION_KIND_HEADER, DEMO_SESSION)
+                .header("X-Demo-User-Id", actor)
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))

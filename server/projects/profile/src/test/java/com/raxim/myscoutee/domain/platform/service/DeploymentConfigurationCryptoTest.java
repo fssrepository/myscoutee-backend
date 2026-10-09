@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.platform.service;
 
+import com.raxim.myscoutee.domain.platform.dto.EncryptedSecret;
+
 import com.raxim.myscoutee.domain.payments.service.DeploymentPaymentCredentialResolver;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +14,7 @@ import java.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.raxim.myscoutee.domain.operator.config.OperatorConfigurationProperties;
+import com.raxim.myscoutee.domain.platform.config.OperatorConfigurationProperties;
 import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
 
 @org.junit.jupiter.api.Tag("standard")
@@ -68,7 +70,7 @@ class DeploymentConfigurationCryptoTest {
                 "000102030405060708090a0b0c0d0e0f"
                         + "101112131415161718191a1b1c1d1e1f\n");
         var envelope = crypto.encrypt(
-                DeploymentPaymentCredentialResolver.credentialPurpose("stripe"),
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
                 "operator-secret");
         byte[] ciphertext = Base64.getDecoder().decode(envelope.getCiphertext());
         ciphertext[ciphertext.length - 1] ^= 0x01;
@@ -79,7 +81,7 @@ class DeploymentConfigurationCryptoTest {
                 .contains("could not be decrypted");
 
         envelope = crypto.encrypt(
-                DeploymentPaymentCredentialResolver.credentialPurpose("stripe"),
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
                 "operator-secret");
         configuration = configuration(envelope);
         DeploymentConfigurationCrypto wrongKey = crypto(
@@ -89,6 +91,35 @@ class DeploymentConfigurationCryptoTest {
 
         assertThat(wrongKey.unavailableReason(configuration))
                 .contains("different or unsupported master key");
+    }
+
+    @Test
+    void scopedPortsReadExistingEnvelopesWithoutCrossingPurposeBoundaries() throws Exception {
+        var crypto = crypto(tempDir.resolve("purpose-key"),
+                "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
+        var email = crypto.encrypt("operator-email-provider", "email-test-secret");
+        var unsubscribe = crypto.encrypt("email-unsubscribe-v1", "unsubscribe-test-secret");
+        var payment = crypto.encrypt(
+                com.raxim.myscoutee.domain.payments.api.PaymentCredentialPurpose.credentialPurpose("stripe"),
+                "payment-test-secret");
+        var providerPurpose = com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose.PROVIDER;
+        var unsubscribePurpose = com.raxim.myscoutee.domain.platform.api.EmailSecrets.Purpose.UNSUBSCRIBE;
+
+        assertThat(crypto.decryptEmailSecret(providerPurpose, email)).isEqualTo("email-test-secret");
+        assertThat(crypto.decryptEmailSecret(unsubscribePurpose, unsubscribe)).isEqualTo("unsubscribe-test-secret");
+        assertThat(crypto.decryptPaymentCredential(" STRIPE ", payment)).isEqualTo("payment-test-secret");
+        assertThat(crypto.decrypt("operator-email-provider",
+                crypto.encryptEmailSecret(providerPurpose, "new-email-secret"))).isEqualTo("new-email-secret");
+        assertThat(crypto.decryptEmailSecret(providerPurpose, null)).isNull();
+        assertThat(crypto.decryptPaymentCredential("stripe", null)).isNull();
+        assertThatThrownBy(() -> crypto.decryptEmailSecret(providerPurpose, payment))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> crypto.decryptEmailSecret(providerPurpose, unsubscribe))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> crypto.decryptPaymentCredential("stripe", email))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> crypto.decryptPaymentCredential("other-provider", payment))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     private DeploymentConfigurationCrypto crypto(
@@ -102,7 +133,7 @@ class DeploymentConfigurationCryptoTest {
     }
 
     private DeploymentConfiguration configuration(
-            DeploymentConfiguration.EncryptedSecret envelope) {
+            EncryptedSecret envelope) {
         DeploymentConfiguration configuration = new DeploymentConfiguration();
         DeploymentConfiguration.Payment payment =
                 new DeploymentConfiguration.Payment();

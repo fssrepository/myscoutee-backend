@@ -25,21 +25,21 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeade
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardRowDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardSnapshotDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorUpdateManifestDto;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ActionOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.AnnouncementOutcome;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.ClaimStatus;
-import com.raxim.myscoutee.domain.registry.RegistryOperatorNetworkService.PackageVerification;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementEntry;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementLink;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementLocalization;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.AnnouncementSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeployment;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardDeploymentPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardPage;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardRow;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.LeaderboardSnapshot;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.OperatorActionReceipt;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.AnnouncementOutcome;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
+import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.PackageVerification;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementEntry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLink;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementLocalization;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.AnnouncementSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeployment;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardDeploymentPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardSnapshot;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
 
 @Component
 public class OperatorNetworkMapper {

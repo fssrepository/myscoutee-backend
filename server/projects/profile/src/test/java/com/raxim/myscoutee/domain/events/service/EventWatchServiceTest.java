@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.events.service;
 
 import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,7 +35,7 @@ class EventWatchServiceTest {
         watcher.setId("watcher");
         ActivityEvent event = visibleEvent();
         event.setVisibility("Invitation only");
-        when(fixture.homeUserProfileService.resolveCurrentUser("watcher")).thenReturn(watcher);
+        when(fixture.homeUserProfileService.resolveSelectedUserId("watcher")).thenReturn("watcher");
         when(fixture.activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
 
         assertThatThrownBy(() -> fixture.service.watch("watcher", "event-1"))
@@ -57,7 +57,7 @@ class EventWatchServiceTest {
         event.setVisibility("Invitation only");
         event.setCapacityTotal(2);
         event.setAcceptedMembers(1);
-        var scope = mock(JobGroupScopeService.class);
+        var scope = mock(EventJobQueries.class);
         when(scope.findEventOwned(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq(EventWatchSubscription.class), org.mockito.ArgumentMatchers.eq("eventId"))).thenReturn(List.of(subscription));
         org.springframework.test.util.ReflectionTestUtils.setField(fixture.service, "jobGroupScope", scope);
         when(fixture.activityEventsRepository.findBySourceIdIn(anyCollection())).thenReturn(List.of(event));
@@ -95,7 +95,7 @@ class EventWatchServiceTest {
         UserActivityCountersService counters = mock(UserActivityCountersService.class);
         NotificationOutboxService outbox = mock(NotificationOutboxService.class);
         return new Fixture(
-                new EventWatchService(subscriptions, events, profiles, mock(com.raxim.myscoutee.domain.access.security.FriendshipFacts.class), counters, outbox),
+                new EventWatchService(subscriptions, events, profiles, mock(com.raxim.myscoutee.domain.accounts.service.FriendshipFacts.class), counters, outbox),
                 subscriptions,
                 events,
                 profiles,

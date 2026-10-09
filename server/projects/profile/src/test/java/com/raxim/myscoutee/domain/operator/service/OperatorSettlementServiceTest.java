@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.SettlementHistoryItem;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.SettlementHistoryItem;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -142,7 +142,7 @@ class OperatorSettlementServiceTest {
 
     private static OperatorSettlementService service() {
         return new OperatorSettlementService(
-                mock(OperatorRevenueRegistryRuntimeResolver.class),
+                RegistryRuntimeTestSupport.resolver(),
                 new ObjectMapper(),
                 Clock.fixed(
                         Instant.parse("2026-07-29T00:00:00Z"),

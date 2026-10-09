@@ -39,14 +39,14 @@ import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementSnapshotDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateApprovalDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorUpdateDtos.OperatorUpdateJobDto;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -86,7 +86,7 @@ class OperatorUpdateServiceTest {
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
         properties.setMonitorEnabled(true);
-        RegistryProperties registryProperties = registryProperties(properties);
+        RegistryConfiguration registryProperties = registryProperties(properties);
         registryProperties.setSoftwareVersion("1.0.0-qa.1");
         OperatorAnnouncementPageDto announcements =
                 announcementPage(artifact.length, artifactHash, true, targetVersion);
@@ -219,7 +219,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
-        RegistryProperties registryProperties = registryProperties(properties);
+        RegistryConfiguration registryProperties = registryProperties(properties);
         when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
@@ -261,7 +261,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
-        RegistryProperties registryProperties = registryProperties(properties);
+        RegistryConfiguration registryProperties = registryProperties(properties);
         OperatorUpdateService service = new OperatorUpdateService(
                 networkService,
                 downloader,
@@ -287,7 +287,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
-        RegistryProperties registryProperties = registryProperties(properties);
+        RegistryConfiguration registryProperties = registryProperties(properties);
         registryProperties.setSoftwareVersion("3.0.0");
         when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
@@ -320,7 +320,7 @@ class OperatorUpdateServiceTest {
         OperatorUpdateArtifactDownloader downloader =
                 mock(OperatorUpdateArtifactDownloader.class);
         OperatorUpdateProperties properties = updateProperties();
-        RegistryProperties registryProperties = registryProperties(properties);
+        RegistryConfiguration registryProperties = registryProperties(properties);
         when(networkService.find(ANNOUNCEMENT_ID))
                 .thenReturn(announcementPage(
                         10,
@@ -374,7 +374,7 @@ class OperatorUpdateServiceTest {
             throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         OperatorUpdateProperties properties = updateProperties();
-        RegistryProperties registryProperties = registryProperties(properties);
+        RegistryConfiguration registryProperties = registryProperties(properties);
         String jobId = "upd_0123456789abcdef0123456789abcdef";
         Path stage = properties.getStateDir().resolve("staging").resolve(jobId);
         Path worker = properties.getStateDir().resolve("jobs").resolve(jobId);
@@ -533,9 +533,9 @@ class OperatorUpdateServiceTest {
         return properties;
     }
 
-    private RegistryProperties registryProperties(
+    private RegistryConfiguration registryProperties(
             OperatorUpdateProperties properties) {
-        RegistryProperties registry = new RegistryProperties();
+        RegistryConfiguration registry = new RegistryConfiguration();
         registry.setSoftwareVersion("1.0.0");
         registry.setPackageSigningPublicKeyPath(
                 properties.getReleasePublicKeyPath());

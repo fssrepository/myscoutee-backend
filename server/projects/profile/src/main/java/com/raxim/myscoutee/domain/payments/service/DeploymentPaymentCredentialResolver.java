@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.DeploymentConfigurationCrypto;
+import com.raxim.myscoutee.domain.platform.api.PaymentCredentialSecrets;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -9,25 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.document.DeploymentConfiguration;
-import com.raxim.myscoutee.domain.platform.repository.DeploymentConfigurationRepository;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings.Configuration;
+import com.raxim.myscoutee.domain.platform.api.DeploymentSettings;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient;
 
 @Service
 public class DeploymentPaymentCredentialResolver {
-    private static final String PAYMENT_CREDENTIAL_PURPOSE_PREFIX =
-            "payment-credential/";
-
-    private final DeploymentConfigurationRepository repository;
-    private final DeploymentConfigurationCrypto crypto;
+    private final DeploymentSettings repository;
+    private final PaymentCredentialSecrets crypto;
     private final PaymentSimulatorRegistrationClient simulatorClient;
 
     @Autowired
     public DeploymentPaymentCredentialResolver(
-            DeploymentConfigurationRepository repository,
-            DeploymentConfigurationCrypto crypto,
+            DeploymentSettings repository,
+            PaymentCredentialSecrets crypto,
             PaymentSimulatorRegistrationClient simulatorClient) {
         this.repository = Objects.requireNonNull(repository);
         this.crypto = Objects.requireNonNull(crypto);
@@ -35,8 +32,8 @@ public class DeploymentPaymentCredentialResolver {
     }
 
     DeploymentPaymentCredentialResolver(
-            DeploymentConfigurationRepository repository,
-            DeploymentConfigurationCrypto crypto) {
+            DeploymentSettings repository,
+            PaymentCredentialSecrets crypto) {
         this.repository = Objects.requireNonNull(repository);
         this.crypto = Objects.requireNonNull(crypto);
         this.simulatorClient = null;
@@ -54,16 +51,16 @@ public class DeploymentPaymentCredentialResolver {
                     ? simulatorClient.credentialFor(normalizedProvider)
                     : "";
         }
-        DeploymentConfiguration configuration = repository
-                .findById(DeploymentConfiguration.SINGLETON_ID)
+        Configuration configuration = repository
+                .findById(DeploymentSettings.SINGLETON_ID)
                 .orElse(null);
-        DeploymentConfiguration.Payment payment =
+        DeploymentSettings.Payment payment =
                 configuration == null ? null : configuration.getPayment();
         if (payment != null
                 && normalizedProvider.equals(normalize(payment.getProviderId()))
                 && payment.getCredentialEnvelope() != null) {
-            return crypto.decrypt(
-                    credentialPurpose(normalizedProvider),
+            return crypto.decryptPaymentCredential(
+                    normalizedProvider,
                     payment.getCredentialEnvelope());
         }
         return StringUtils.hasText(environmentFallback)
@@ -75,12 +72,5 @@ public class DeploymentPaymentCredentialResolver {
         return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
     }
 
-    public static String credentialPurpose(String providerId) {
-        if (!StringUtils.hasText(providerId)) {
-            throw new IllegalArgumentException(
-                    "Payment provider id is required for credential encryption.");
-        }
-        return PAYMENT_CREDENTIAL_PURPOSE_PREFIX
-                + providerId.trim().toLowerCase(Locale.ROOT);
-    }
+
 }

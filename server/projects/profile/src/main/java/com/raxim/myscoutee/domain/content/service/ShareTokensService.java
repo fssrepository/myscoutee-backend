@@ -11,13 +11,13 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
-import com.raxim.myscoutee.domain.assets.document.Asset;
+import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnership.Asset;
 import com.raxim.myscoutee.domain.content.document.ShareToken;
 import com.raxim.myscoutee.domain.content.dto.ShareTokenDtos.ShareTokenCreateRequestDto;
 import com.raxim.myscoutee.domain.content.dto.ShareTokenDtos.ShareTokenResolvedItemDto;
-import com.raxim.myscoutee.domain.events.repository.ActivityEventsRepository;
-import com.raxim.myscoutee.domain.assets.repository.AssetsRepository;
+import com.raxim.myscoutee.domain.events.api.EventOwnershipReads;
+import com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads;
 import com.raxim.myscoutee.domain.content.repository.ShareTokensRepository;
 
 @Service
@@ -29,13 +29,13 @@ public class ShareTokensService {
     private static final String KIND_ADMIN_HELP = "adminHelp";
 
     private final ShareTokensRepository shareTokensRepository;
-    private final ActivityEventsRepository activityEventsRepository;
-    private final AssetsRepository assetsRepository;
+    private final EventOwnershipReads activityEventsRepository;
+    private final AssetOwnershipReads assetsRepository;
 
     public ShareTokensService(
             ShareTokensRepository shareTokensRepository,
-            ActivityEventsRepository activityEventsRepository,
-            AssetsRepository assetsRepository) {
+            EventOwnershipReads activityEventsRepository,
+            AssetOwnershipReads assetsRepository) {
         this.shareTokensRepository = shareTokensRepository;
         this.activityEventsRepository = activityEventsRepository;
         this.assetsRepository = assetsRepository;
@@ -86,7 +86,7 @@ public class ShareTokensService {
     }
 
     private ShareTokenResolvedItemDto resolveEvent(ShareToken shareToken) {
-        ActivityEvent event = findEvent(shareToken.getEntityId());
+        Event event = findEvent(shareToken.getEntityId());
         if (event == null) {
             return null;
         }
@@ -135,18 +135,18 @@ public class ShareTokensService {
                 safeText(shareToken.getEntityId()));
     }
 
-    private ActivityEvent findEvent(String entityId) {
+    private Event findEvent(String entityId) {
         String normalizedId = normalizeText(entityId);
         if (!StringUtils.hasText(normalizedId)) {
             return null;
         }
-        ActivityEvent byId = activityEventsRepository.findById(normalizedId).orElse(null);
+        Event byId = activityEventsRepository.findById(normalizedId).orElse(null);
         if (byId != null) {
             return byId;
         }
         return activityEventsRepository.findBySourceId(normalizedId).stream()
                 .min(Comparator
-                        .comparing((ActivityEvent event) -> !Boolean.TRUE.equals(event.getPublished()))
+                        .comparing((Event event) -> !Boolean.TRUE.equals(event.getPublished()))
                         .thenComparing(event -> !"active".equals(event.getStatus())))
                 .orElse(null);
     }

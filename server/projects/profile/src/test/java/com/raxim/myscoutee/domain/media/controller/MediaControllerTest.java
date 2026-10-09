@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.raxim.myscoutee.domain.media.dto.MediaDtos.MediaImageImportRequestDto;
 import com.raxim.myscoutee.domain.media.service.MediaStorageService;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService.StoredImageSet;
+import com.raxim.myscoutee.domain.media.api.MediaStorage.StoredImageSet;
 
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")

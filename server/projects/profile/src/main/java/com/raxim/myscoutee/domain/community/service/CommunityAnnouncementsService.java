@@ -1,14 +1,15 @@
 package com.raxim.myscoutee.domain.community.service;
 
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 import com.raxim.myscoutee.domain.community.document.CommunityAnnouncement;
 import com.raxim.myscoutee.domain.community.repository.CommunityAnnouncementsRepository;
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.groups.document.CommunityGroup;
-import com.raxim.myscoutee.domain.groups.service.CommunityAccessService;
-import com.raxim.myscoutee.domain.media.document.DocumentAttachment;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.events.dto.CommunityMember;
+import com.raxim.myscoutee.domain.groups.api.CommunityAuthority;
+import com.raxim.myscoutee.domain.media.dto.DocumentAttachment;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatterBuilder;
@@ -26,20 +27,22 @@ import org.springframework.stereotype.Service;
 
 import com.raxim.myscoutee.domain.community.dto.CommunityAnnouncementDtos.*;
 
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import static com.raxim.myscoutee.domain.groups.service.CommunityAccessService.error;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
+import static com.raxim.myscoutee.domain.groups.api.CommunityAuthority.error;
 
 @Service
-public class CommunityAnnouncementsService {
+public class CommunityAnnouncementsService implements com.raxim.myscoutee.domain.community.api.Announcements {
     public static final String CLOSE_RULE = "community-voting-close";
     public static final List<String> CHOICES = List.of("yes", "no", "abstain");
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     private final CommunityAnnouncementsRepository announcements;
-    private final CommunityAccessService access;
+    private final CommunityAuthority access;
     private final MongoTemplate mongo;
-    private final UsersRepository users;
-    private final NotificationOutboxService notifications;
+    private final ProfileSummaries users;
+    private final NotificationDelivery notifications;
     public CommunityAnnouncementsService(CommunityAnnouncementsRepository announcements,
-            CommunityAccessService access, MongoTemplate mongo, UsersRepository users, NotificationOutboxService notifications) {
+            CommunityAuthority access, MongoTemplate mongo, ProfileSummaries users, NotificationDelivery notifications) {
         this.announcements = announcements; this.access = access; this.mongo = mongo; this.users = users; this.notifications = notifications;
     }
     public String actor(String profileId) { return access.actor(profileId); }
@@ -73,9 +76,9 @@ public class CommunityAnnouncementsService {
         if (old != null && !Objects.equals(old.version(), r.version())) throw error(HttpStatus.CONFLICT);
         if (old != null && !old.ballots().isEmpty() && !r.voting()) throw error(HttpStatus.CONFLICT);
         String deadline = r.voting() ? iso(r.deadlineIso()) : null, now = iso(Instant.now().toString());
-        var attachments = r.attachments() == null ? List.<com.raxim.myscoutee.domain.media.document.DocumentAttachment>of() : r.attachments();
+        var attachments = r.attachments() == null ? List.<com.raxim.myscoutee.domain.media.dto.DocumentAttachment>of() : r.attachments();
         if (attachments.size() > 10) throw error(HttpStatus.BAD_REQUEST);
-        for (var file : attachments) com.raxim.myscoutee.domain.media.service.DocumentAttachments.validate(file, List.of(r.userId(), actor), old == null ? List.of() : old.attachments());
+        for (var file : attachments) com.raxim.myscoutee.domain.media.api.DocumentAttachments.validate(file, List.of(r.userId(), actor), old == null ? List.of() : old.attachments());
         boolean reopened = old != null && "published".equals(old.status()) && r.voting() && deadline.compareTo(now) > 0
                 && !Objects.equals(deadline, old.deadlineIso());
         var a = persist(new CommunityAnnouncement(old == null ? UUID.randomUUID().toString() : old.id(), r.communityId(), old == null ? actor : old.authorAccountId(),
@@ -120,9 +123,21 @@ public class CommunityAnnouncementsService {
         notifyMembers(saved, actor, "voted", actor, true); return dto(actor, saved);
     }
     public int closeDue(Instant now) {
-        if (!CommunityGroup.COMMUNITY_BASE_ID.equals(JobGroupContext.groupId())) return 0;
+        if (!BaseGroups.COMMUNITY_BASE_ID.equals(JobGroupContext.groupId())) return 0;
         int count = 0;
-        var due = announcements.pendingClosure(iso(now.toString()), PageRequest.of(0, 100));
+        // Resolve group eligibility in bounded batches, before the result limit.
+        var due = new java.util.ArrayList<CommunityAnnouncement>(100);
+        String cutoff = iso(now.toString());
+        for (int page = 0; due.size() < 100; page++) {
+            var candidates = announcements.pendingClosure(cutoff, PageRequest.of(page, 100));
+            if (candidates.isEmpty()) break;
+            var eligible = groups.activeCommunityIds(candidates.stream().map(CommunityAnnouncement::communityId).distinct().toList());
+            for (var candidate : candidates) {
+                if (eligible.contains(candidate.communityId())) due.add(candidate);
+                if (due.size() == 100) break;
+            }
+            if (candidates.size() < 100) break;
+        }
         for (var a : due) {
             var closed = a.closedAtIso() == null ? close(a, now) : a;
             notifyClosure(closed, CLOSE_RULE); count++;
@@ -144,19 +159,19 @@ public class CommunityAnnouncementsService {
     }
     private void notifyMembers(CommunityAnnouncement a, String actor, String action, String occurrence, boolean adminsOnly) {
         var accounts = access.roster(a.communityId()).stream().filter(m -> !actor.equals(m.getUserId()) && (!adminsOnly || "Admin".equals(m.getRole())))
-                .map(ActivityMember::getUserId).distinct().toList();
-        var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(a.communityId(), accounts).stream().map(Users::getUserId).toList();
+                .map(CommunityMember::getUserId).distinct().toList();
+        var recipients = users.findByWorkspaceGroupIdAndAccountUserIdIn(a.communityId(), accounts).stream().map(ProfileSummary::getUserId).toList();
         if (recipients.isEmpty()) return;
         String kind = "announcement-" + action;
         var payload = new LinkedHashMap<String, String>(); payload.put("workspaceGroupId", a.communityId()); payload.put("announcementId", a.id());
         payload.put("notification_message_key", "notification.kind." + kind + ".message");
-        JobGroupContext.run(CommunityGroup.COMMUNITY_BASE_ID, () -> notifications.enqueueOnce(kind + ":" + a.id() + ":" + occurrence,
-                new NotificationOutboxService.NotificationIntent(kind, "announcement", a.id(), "community-members", recipients, a.title(), a.title(),
+        JobGroupContext.run(BaseGroups.COMMUNITY_BASE_ID, () -> notifications.enqueueOnce(kind + ":" + a.id() + ":" + occurrence,
+                new NotificationDelivery.NotificationIntent(kind, "announcement", a.id(), "community-members", recipients, a.title(), a.title(),
                         "/game?announcementId=" + a.id(), null, "/assets/logo/heart.webp", "announcement:" + a.id(), payload, actor)));
     }
     private Set<String> eligibleVoters(String group) {
         return access.roster(group).stream().filter(m -> Boolean.TRUE.equals(m.getVotingEligible()))
-                .map(ActivityMember::getUserId).collect(Collectors.toSet());
+                .map(CommunityMember::getUserId).collect(Collectors.toSet());
     }
     private Item dto(String actor, CommunityAnnouncement a) {
         return dto(actor, a, access.admin(a.communityId(), actor), eligibleVoters(a.communityId()));

@@ -24,6 +24,7 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredent
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
+import com.raxim.myscoutee.common.security.media.MediaSessionAccessService;
 import com.raxim.myscoutee.domain.accounts.document.UserSessionState;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
 
@@ -32,7 +33,7 @@ import jakarta.servlet.http.Cookie;
 @org.junit.jupiter.api.Tag("standard")
 class MediaSessionAccessServiceTest {
     private final MongoTemplate mongo = mock(MongoTemplate.class);
-    private final MediaSessionAccessService service = new MediaSessionAccessService(mongo);
+    private final MediaSessionAccessService service = new MediaSessionAccessService(new com.raxim.myscoutee.domain.accounts.service.AccountMediaSessionService(mongo));
     private final UserSessionState.ActiveSession active = new UserSessionState.ActiveSession();
 
     @AfterEach

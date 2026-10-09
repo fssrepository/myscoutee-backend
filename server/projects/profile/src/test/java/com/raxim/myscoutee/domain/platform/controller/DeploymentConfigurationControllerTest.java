@@ -21,8 +21,8 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.Deploym
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentSocialLinkDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient;
-import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient.GatewayConfiguration;
-import com.raxim.myscoutee.domain.operator.service.OperatorConfigurationService;
+import com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration;
+import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 

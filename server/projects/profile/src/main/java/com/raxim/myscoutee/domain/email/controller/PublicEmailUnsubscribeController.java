@@ -4,10 +4,10 @@ import java.util.Map;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.raxim.myscoutee.domain.localization.service.I18nService;
+import com.raxim.myscoutee.domain.localization.api.TranslationBundles;
 import com.raxim.myscoutee.domain.email.service.EmailPresentationService;
 import com.raxim.myscoutee.domain.email.service.EmailUnsubscribeService;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
 import org.springframework.web.util.HtmlUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -19,14 +19,14 @@ import jakarta.validation.constraints.Size;
 public class PublicEmailUnsubscribeController {
     private final EmailUnsubscribeService subscriptions;
     private final EmailPresentationService presentation;
-    private final DeploymentBrandingResolver branding;
-    private final I18nService i18n;
+    private final DeploymentBranding branding;
+    private final TranslationBundles i18n;
     public record TokenRequest(@NotBlank @Size(max = 2048) String token) {
         @Override public String toString() { return "TokenRequest[redacted]"; }
     }
 
     public PublicEmailUnsubscribeController(EmailUnsubscribeService subscriptions,
-            EmailPresentationService presentation, DeploymentBrandingResolver branding, I18nService i18n) {
+            EmailPresentationService presentation, DeploymentBranding branding, TranslationBundles i18n) {
         this.subscriptions = subscriptions; this.presentation = presentation; this.branding = branding; this.i18n = i18n;
     }
 

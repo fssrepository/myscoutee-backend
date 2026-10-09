@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
         @CompoundIndex(name = "notification_outbox_collapse_status", def = "{'collapseKey': 1, 'status': 1}"),
         @CompoundIndex(name = "notification_outbox_entity_created", def = "{'entityType': 1, 'entityId': 1, 'createdDate': -1}")
 })
-public class NotificationOutboxItem {
+public class NotificationOutboxItem implements com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.Receipt {
     private String baseGroupId;
     public String getBaseGroupId() { return baseGroupId; }
     public void setBaseGroupId(String baseGroupId) { this.baseGroupId = baseGroupId; }

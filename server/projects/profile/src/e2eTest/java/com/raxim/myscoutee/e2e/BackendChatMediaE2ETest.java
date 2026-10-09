@@ -33,7 +33,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -69,7 +69,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-chat-u01@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -659,6 +659,9 @@ class BackendChatMediaE2ETest {
     }
 
     private HttpResponse<String> postWithoutStatus(String path, Object body) {
+        if (body instanceof Map<?, ?> payload && payload.get("userId") instanceof String actorId) {
+            path += (path.contains("?") ? "&" : "?") + "userId=" + actorId;
+        }
         String json = writeJson(body);
         return send(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")

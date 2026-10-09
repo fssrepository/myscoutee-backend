@@ -115,15 +115,34 @@ class BackendSecurityContractsE2ETest {
 
     @BeforeEach
     void seedAdminSettings() {
-        AppSettings settings = new AppSettings();
-        settings.setId("e2e-security-app-settings");
-        settings.setSettingsKey(AppSettingsService.GLOBAL_SETTINGS_KEY);
-        settings.setAdminAccessEnabled(true);
-        settings.setAdminEmails(java.util.List.of(ADMIN_EMAIL));
-        settings.setCreatedDate("2026-06-01T00:00:00Z");
-        settings.setUpdatedDate("2026-06-01T00:00:00Z");
-        mongoTemplate.save(settings);
-        appSettingsService.evictCache();
+        for (var mode : com.raxim.myscoutee.common.config.mongo.MongoSessionMode.values()) {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(mode);
+            try {
+                AppSettings settings = new AppSettings();
+                settings.setId("e2e-security-app-settings");
+                settings.setSettingsKey(AppSettingsService.GLOBAL_SETTINGS_KEY);
+                settings.setAdminAccessEnabled(true);
+                settings.setAdminEmails(java.util.List.of(ADMIN_EMAIL));
+                mongoTemplate.save(settings);
+                appSettingsService.evictCache();
+                var account = new com.raxim.myscoutee.domain.accounts.document.Users();
+                account.setMongoId(ADMIN_EMAIL);
+                account.setId(ADMIN_EMAIL);
+                account.setEmail(ADMIN_EMAIL);
+                account.setStatus("A");
+                mongoTemplate.save(account);
+                var profile = new com.raxim.myscoutee.domain.accounts.document.Users();
+                profile.setMongoId("e2e-security-admin");
+                profile.setId("e2e-security-admin");
+                profile.setAccountUserId(ADMIN_EMAIL);
+                profile.setWorkspaceGroupId("myscoutee-community");
+                profile.setHostTier("Admin");
+                profile.setStatus("A");
+                mongoTemplate.save(profile);
+            } finally {
+                com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear();
+            }
+        }
     }
 
     @Test
@@ -159,6 +178,68 @@ class BackendSecurityContractsE2ETest {
         assertThat(demoHeaderAdmin.statusCode())
                 .as("configured admin should still work when the frontend sends session routing headers, body=" + demoHeaderAdmin.body())
                 .isBetween(200, 299);
+    }
+
+    @Test
+    void firebaseEnabledAdminRoutesRejectForgedDemoAdminIdentity() {
+        HttpResponse<String> response = send(HttpRequest.newBuilder(uri("/admin/params?adminUserId=e2e-security-admin"))
+                .header("Accept", "application/json")
+                .header("X-App-Session-Kind", "demo")
+                .header("X-Demo-User-Id", ADMIN_EMAIL)
+                .GET().build());
+        assertThat(response.statusCode()).as(response.body()).isIn(401, 403);
+    }
+
+    @Test
+    void configuredAdminCanResolveSupportShareAndStartTheSelectedMemberSession() {
+        String memberId = "e2e-support-member";
+        com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.set(
+                com.raxim.myscoutee.common.config.mongo.MongoSessionMode.DEMO);
+        try {
+            var member = new com.raxim.myscoutee.domain.accounts.document.Users();
+            member.setMongoId(memberId);
+            member.setId(memberId);
+            member.setEmail("support-member@example.test");
+            member.setName("Support member");
+            member.setStatus("A");
+            member.setProfileStatus("public");
+            member.setHostTier("Member");
+            mongoTemplate.save(member);
+        } finally {
+            com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext.clear();
+        }
+        var json = new tools.jackson.databind.ObjectMapper();
+        // The member shares a help view; the admin resolves it in the existing support flow.
+        var shared = send(HttpRequest.newBuilder(uri("/share-tokens"))
+                .header("X-App-Session-Kind", "demo").header("X-Demo-User-Id", memberId)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(Map.of(
+                        "kind", "adminHelp", "entityId", "/game", "ownerUserId", memberId))))
+                .build());
+        assertThat(shared.statusCode()).as(shared.body()).isEqualTo(200);
+        String token = json.readTree(shared.body()).path("token").asString();
+        assertThat(token).isNotBlank();
+        var resolved = getWithDemoSessionHeader("/share-tokens/resolve?token=" + token, "admin-token");
+        assertThat(resolved.statusCode()).as(resolved.body()).isEqualTo(200);
+        assertThat(json.readTree(resolved.body()).path("kind").asString()).isEqualTo("adminHelp");
+        assertThat(json.readTree(resolved.body()).path("ownerUserId").asString()).isEqualTo(memberId);
+
+        String sessionId = UUID.randomUUID().toString();
+        var login = send(HttpRequest.newBuilder(uri("/auth/session/login"))
+                .header("X-App-Session-Kind", "demo").header("X-Demo-User-Id", memberId)
+                .header("X-App-Session-Id", sessionId).header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json.writeValueAsString(Map.of(
+                        "attemptId", UUID.randomUUID().toString(), "provider", "demo"))))
+                .build());
+        assertThat(login.statusCode()).as(login.body()).isEqualTo(200);
+        assertThat(json.readTree(login.body()).path("accepted").asBoolean()).isTrue();
+        var selectedMember = send(HttpRequest.newBuilder(uri("/auth/me"))
+                .header("X-App-Session-Kind", "demo").header("X-Demo-User-Id", memberId)
+                .header("X-App-Session-Id", sessionId).GET().build());
+        assertThat(selectedMember.statusCode()).as(selectedMember.body()).isEqualTo(200);
+        assertThat(json.readTree(selectedMember.body()).path("id").asString()).as(selectedMember.body()).isEqualTo(memberId);
+        assertThat(getWithDemoSessionHeader("/admin/params?adminUserId=e2e-security-admin", "admin-token").statusCode())
+                .isEqualTo(200);
     }
 
     @Test
@@ -228,7 +309,7 @@ class BackendSecurityContractsE2ETest {
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + token)
-                .POST(HttpRequest.BodyPublishers.ofString(body == null ? "{}" : body.toString()))
+                .POST(HttpRequest.BodyPublishers.ofString(new tools.jackson.databind.ObjectMapper().writeValueAsString(body == null ? Map.of() : body)))
                 .build());
     }
 

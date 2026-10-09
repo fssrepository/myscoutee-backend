@@ -1,10 +1,10 @@
 package com.raxim.myscoutee.domain.content.service;
 
-import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
-import com.raxim.myscoutee.domain.media.service.MediaStorageService;
-import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
+import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
+import com.raxim.myscoutee.domain.media.api.MediaCleanup;
+import com.raxim.myscoutee.domain.media.api.MediaAccessPaths;
+import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 import java.util.Map;
-import com.raxim.myscoutee.domain.media.dto.MediaDtos.ImageDetailsDto;
 import static com.raxim.myscoutee.domain.media.dto.MediaDtos.normalizeImageDetails;
 
 import java.nio.charset.StandardCharsets;
@@ -35,10 +35,10 @@ import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.content.document.IdeaPost;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminActionRequestDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminCountsDto;
@@ -53,7 +53,7 @@ import com.raxim.myscoutee.domain.content.repository.LandingArticlesRepository.L
 import com.raxim.myscoutee.domain.content.mapper.IdeaPostMapper;
 
 @Service
-public class IdeaPostsService {
+public class IdeaPostsService implements com.raxim.myscoutee.domain.content.api.IdeaPosts {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DEFAULT_LANG = "en";
     private static final int EXCERPT_MAX_LENGTH = 180;
@@ -73,25 +73,25 @@ public class IdeaPostsService {
             .preserveRelativeLinks(true);
 
     private final AdminModerationService admins;
-    private final ConfigProperties configProperties;
+    private final AuthenticationMode configProperties;
     private final IdeaPostsRepository ideaPostsRepository;
     private final MongoTemplate mongoTemplate;
-    private final AdminTelemetryService adminTelemetryService;
-    private final AppSettingsService appSettingsService;
+    private final OperationalTelemetry adminTelemetryService;
+    private final AdministratorSettings appSettingsService;
     private final LandingArticlesRepository landingArticlesRepository;
     private final IdeaPostMapper ideaPostMapper;
-    private final MediaStorageService mediaStorageService;
+    private final MediaCleanup mediaStorageService;
 
     public IdeaPostsService(
             AdminModerationService admins,
-            ConfigProperties configProperties,
+            AuthenticationMode configProperties,
             IdeaPostsRepository ideaPostsRepository,
             MongoTemplate mongoTemplate,
-            AdminTelemetryService adminTelemetryService,
-            AppSettingsService appSettingsService,
+            OperationalTelemetry adminTelemetryService,
+            AdministratorSettings appSettingsService,
             LandingArticlesRepository landingArticlesRepository,
             IdeaPostMapper ideaPostMapper,
-            MediaStorageService mediaStorageService) {
+            MediaCleanup mediaStorageService) {
         this.admins = admins;
         this.configProperties = configProperties;
         this.ideaPostsRepository = ideaPostsRepository;
@@ -391,7 +391,7 @@ public class IdeaPostsService {
     private Set<String> managedImageGroups(List<String> imageUrls) {
         Set<String> groups = new LinkedHashSet<>();
         for (String imageUrl : imageUrls == null ? List.<String>of() : imageUrls) {
-            String group = mediaStorageService.managedImageSetGroupKey(imageUrl);
+            String group = MediaAccessPaths.managedImageSetGroupKey(imageUrl);
             if (StringUtils.hasText(group)) {
                 groups.add(group);
             }
@@ -403,7 +403,7 @@ public class IdeaPostsService {
             Map<String, String> removedImagesByGroup,
             Set<String> retainedGroups,
             String imageUrl) {
-        String group = mediaStorageService.managedImageSetGroupKey(imageUrl);
+        String group = MediaAccessPaths.managedImageSetGroupKey(imageUrl);
         if (StringUtils.hasText(group) && !retainedGroups.contains(group)) {
             removedImagesByGroup.putIfAbsent(group, imageUrl);
         }
@@ -422,7 +422,7 @@ public class IdeaPostsService {
                 element.remove();
                 continue;
             }
-            String group = mediaStorageService.managedImageSetGroupKey(reference);
+            String group = MediaAccessPaths.managedImageSetGroupKey(reference);
             if (StringUtils.hasText(group) && removedGroups.contains(group)) {
                 element.remove();
             }
@@ -663,7 +663,7 @@ public class IdeaPostsService {
     private String resolveFirebaseEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication == null ? null : authentication.getPrincipal();
-        if (principal instanceof FirebasePrincipal firebasePrincipal) {
+        if (principal instanceof AuthenticatedActor firebasePrincipal) {
             return normalize(firebasePrincipal.getEmail());
         }
         return normalize(authentication == null ? null : authentication.getName());

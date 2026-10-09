@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.IntegrationGroups;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,25 +12,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
+import com.raxim.myscoutee.domain.accounts.api.AccountIdentity;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationConnectDto;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationGroupScopeDto;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.access.security.AccessControlService;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 import com.raxim.myscoutee.domain.integrations.service.IntegrationTokenService.AuthenticatedIntegrationClient;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 
 /** Describes the authenticated integration, without probing any write endpoint. */
 @Service
 public class IntegrationCapabilitiesService {
-    private final CommunityGroupsService groups;
-    private final CommunityGroupsRepository groupRepository;
-    private final AccessControlService access;
+    private final IntegrationGroups groups;
+    private final GroupDirectory groupRepository;
+    private final AccessPermissions access;
     private final IntegrationRoleAccessService roles;
 
-    public IntegrationCapabilitiesService(CommunityGroupsService groups,
-            CommunityGroupsRepository groupRepository, AccessControlService access, IntegrationRoleAccessService roles) {
+    public IntegrationCapabilitiesService(IntegrationGroups groups,
+            GroupDirectory groupRepository, AccessPermissions access, IntegrationRoleAccessService roles) {
         this.groups = groups;
         this.groupRepository = groupRepository;
         this.access = access; this.roles = roles;
@@ -111,9 +111,9 @@ public class IntegrationCapabilitiesService {
         return profile.getUserId();
     }
 
-    private Users profile(Authentication authentication) {
+    private WorkspaceProfile profile(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof FirebasePrincipal principal)
+                || !(authentication.getPrincipal() instanceof AccountIdentity principal)
                 || principal.getUser() == null
                 || !(authentication.getDetails() instanceof AuthenticatedIntegrationClient client)
                 || !client.ownerUserId().equals(principal.getUser().getUserId())) {

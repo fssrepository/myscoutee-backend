@@ -12,7 +12,7 @@ import com.raxim.myscoutee.domain.events.document.EventTicketAudit;
 import com.raxim.myscoutee.domain.events.repository.EventTicketAuditRepository;
 
 @Service
-public class EventTicketAuditService {
+public class EventTicketAuditService implements com.raxim.myscoutee.domain.events.api.TicketAudit {
     private final EventTicketAuditRepository repository;
 
     public EventTicketAuditService(EventTicketAuditRepository repository) {
@@ -20,10 +20,15 @@ public class EventTicketAuditService {
     }
 
     public EventTicketAudit recordAlreadyUsedAttempt(
-            EventTicket ticket,
-            ActivityEvent event,
+            com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket ticket,
+            com.raxim.myscoutee.domain.events.api.EventOwnership.Event event,
             String actorUserId,
             Instant attemptedAt) {
+        return recordAttempt(ticket, event == null ? null : event.getSourceId(), actorUserId, attemptedAt);
+    }
+
+    private EventTicketAudit recordAttempt(com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket ticket,
+            String eventSourceId, String actorUserId, Instant attemptedAt) {
         String ticketId = text(ticket == null ? null : ticket.getId());
         String holderUserId = text(ticket == null ? null : ticket.getHolderUserId());
         String normalizedActorUserId = text(actorUserId);
@@ -39,7 +44,7 @@ public class EventTicketAuditService {
         audit.setResult("already_used");
         audit.setTicketId(ticketId);
         audit.setEventId(firstText(
-                event == null ? null : event.getSourceId(),
+                eventSourceId,
                 ticket.getEventId()));
         audit.setHolderUserId(holderUserId);
         audit.setActorUserId(normalizedActorUserId);
@@ -62,5 +67,9 @@ public class EventTicketAuditService {
 
     private String text(String value) {
         return value == null ? "" : value.trim();
+    }
+    @Override public void recordReplay(com.raxim.myscoutee.domain.events.api.ParticipationTickets.Ticket ticket,
+            String eventSourceId, String actor, Instant at) {
+        recordAttempt(ticket, eventSourceId, actor, at);
     }
 }

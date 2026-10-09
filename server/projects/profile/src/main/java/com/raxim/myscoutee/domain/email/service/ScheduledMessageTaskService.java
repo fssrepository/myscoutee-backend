@@ -1,11 +1,11 @@
 package com.raxim.myscoutee.domain.email.service;
 
-import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.community.service.ServiceFeedbackService;
-import com.raxim.myscoutee.domain.events.service.ActivitiesMembersService;
-import com.raxim.myscoutee.domain.localization.service.TranslationService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
+import com.raxim.myscoutee.domain.accounts.api.AccountInactivity;
+import com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation;
+import com.raxim.myscoutee.domain.events.api.MemberAudience;
+import com.raxim.myscoutee.domain.localization.api.Translations;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.time.Instant;
 import java.time.Duration;
@@ -41,48 +41,46 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.email.config.EmailProperties;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
+import com.raxim.myscoutee.domain.events.api.EventSchedule;
 import com.raxim.myscoutee.domain.email.document.EmailOutboxItem;
 import com.raxim.myscoutee.domain.email.document.EmailTemplate;
-import com.raxim.myscoutee.domain.notifications.document.NotificationTemplate;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog.Template;
 import com.raxim.myscoutee.domain.email.document.ScheduledMessageTask;
-import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.document.SubEventItem;
+
+import com.raxim.myscoutee.domain.accounts.api.EmailProfile;
+import com.raxim.myscoutee.domain.events.api.EventSchedule.Stage;
 import com.raxim.myscoutee.domain.email.repository.EmailOutboxRepository;
 import com.raxim.myscoutee.domain.email.repository.EmailTemplatesRepository;
-import com.raxim.myscoutee.domain.notifications.repository.NotificationTemplatesRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.email.repository.ScheduledMessageTasksRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+
+import com.raxim.myscoutee.domain.accounts.api.EmailProfiles;
 import com.raxim.myscoutee.domain.email.service.EmailOutboxStatus;
 import com.raxim.myscoutee.domain.email.service.EmailProviderGateway;
 import com.raxim.myscoutee.domain.email.service.EmailTemplateRenderer;
 import com.raxim.myscoutee.domain.email.service.ScheduledMessageAuditService;
 import com.raxim.myscoutee.domain.email.service.ScheduledNotificationDeliveryService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver;
-import com.raxim.myscoutee.domain.platform.service.DeploymentBrandingResolver.ResolvedDeploymentBranding;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding;
+import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploymentBranding;
 
 import jakarta.annotation.PreDestroy;
 
 @Service
-public class ScheduledMessageTaskService {
+public class ScheduledMessageTaskService implements com.raxim.myscoutee.domain.email.api.ScheduledMessages, com.raxim.myscoutee.domain.email.api.UserActivityScheduling {
     @org.springframework.beans.factory.annotation.Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
 
     public static final String ACTION_INACTIVATE_PROFILE_AFTER_INACTIVITY = "user.profile.inactivate-after-inactivity";
     public static final String ACTION_EVENT_STAGE_REMINDER = "event.stage.reminder";
     public static final String ACTION_CASE_FEEDBACK_PREPARE = "case.feedback.prepare";
     @org.springframework.beans.factory.annotation.Autowired
-    private ServiceFeedbackService serviceFeedback;
-    @org.springframework.beans.factory.annotation.Autowired
-    private tools.jackson.databind.ObjectMapper objectMapper;
+    private CaseFeedbackPreparation serviceFeedback;
 
     public static final String ACTION_EVENT_DEFINITION_CHANGED = "event.definition.changed";
 
@@ -105,23 +103,23 @@ public class ScheduledMessageTaskService {
 
     private final MongoTemplate mongoTemplate;
     private final ScheduledMessageTasksRepository scheduledMessageTasksRepository;
-    private final UsersRepository usersRepository;
-    private final UserSessionActionsRepository userSessionActionsRepository;
+    private final EmailProfiles profiles;
+    private final AccountInactivity accountInactivity;
     private final ScheduledMessageAuditService scheduledMessageAuditService;
     private final EmailOutboxRepository emailOutboxRepository;
     private final EmailTemplatesRepository emailTemplatesRepository;
-    private final NotificationTemplatesRepository notificationTemplatesRepository;
-    private final ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider;
+    private final NotificationCatalog notificationTemplatesRepository;
+    private final ObjectProvider<MemberAudience> activitiesMembersServiceProvider;
     private final ObjectProvider<ScheduledNotificationDeliveryService> scheduledNotificationDeliveryServiceProvider;
     private final ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider;
     private final ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider;
     private final ObjectProvider<EmailProperties> emailPropertiesProvider;
-    private final ObjectProvider<ConfigProperties> configPropertiesProvider;
-    private final AffinityRecomputeTaskService affinityRecomputeTaskService;
-    private ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
-    private DeploymentBrandingResolver deploymentBrandingResolver;
+    private final ObjectProvider<AuthenticationMode> configPropertiesProvider;
+
+    private ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider;
+    private DeploymentBranding deploymentBrandingResolver;
     private ScheduledMongoSessionRunner scheduledMongoSessionRunner;
-    private TranslationService translationService;
+    private Translations translationService;
     private final ScheduledExecutorService taskExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable, "scheduled-message-task-controller");
         thread.setDaemon(true);
@@ -137,23 +135,22 @@ public class ScheduledMessageTaskService {
     public ScheduledMessageTaskService(
             MongoTemplate mongoTemplate,
             ScheduledMessageTasksRepository scheduledMessageTasksRepository,
-            UsersRepository usersRepository,
-            UserSessionActionsRepository userSessionActionsRepository,
+            EmailProfiles profiles,
+            AccountInactivity accountInactivity,
             ScheduledMessageAuditService scheduledMessageAuditService,
             EmailOutboxRepository emailOutboxRepository,
             EmailTemplatesRepository emailTemplatesRepository,
-            NotificationTemplatesRepository notificationTemplatesRepository,
-            ObjectProvider<ActivitiesMembersService> activitiesMembersServiceProvider,
+            NotificationCatalog notificationTemplatesRepository,
+            ObjectProvider<MemberAudience> activitiesMembersServiceProvider,
             ObjectProvider<ScheduledNotificationDeliveryService> scheduledNotificationDeliveryServiceProvider,
             ObjectProvider<EmailTemplateRenderer> emailTemplateRendererProvider,
             ObjectProvider<EmailProviderGateway> emailProviderGatewayProvider,
             ObjectProvider<EmailProperties> emailPropertiesProvider,
-            ObjectProvider<ConfigProperties> configPropertiesProvider,
-            AffinityRecomputeTaskService affinityRecomputeTaskService) {
+            ObjectProvider<AuthenticationMode> configPropertiesProvider) {
         this.mongoTemplate = mongoTemplate;
         this.scheduledMessageTasksRepository = scheduledMessageTasksRepository;
-        this.usersRepository = usersRepository;
-        this.userSessionActionsRepository = userSessionActionsRepository;
+        this.profiles = profiles;
+        this.accountInactivity = accountInactivity;
         this.scheduledMessageAuditService = scheduledMessageAuditService;
         this.emailOutboxRepository = emailOutboxRepository;
         this.emailTemplatesRepository = emailTemplatesRepository;
@@ -164,12 +161,12 @@ public class ScheduledMessageTaskService {
         this.emailProviderGatewayProvider = emailProviderGatewayProvider;
         this.emailPropertiesProvider = emailPropertiesProvider;
         this.configPropertiesProvider = configPropertiesProvider;
-        this.affinityRecomputeTaskService = affinityRecomputeTaskService;
+
     }
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void setNotificationRuleRegistryServiceProvider(
-            ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+            ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider) {
         this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
     }
 
@@ -180,12 +177,12 @@ public class ScheduledMessageTaskService {
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     void setDeploymentBrandingResolver(
-            DeploymentBrandingResolver deploymentBrandingResolver) {
+            DeploymentBranding deploymentBrandingResolver) {
         this.deploymentBrandingResolver = deploymentBrandingResolver;
     }
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
-    void setTranslationService(TranslationService translationService) {
+    void setTranslationService(Translations translationService) {
         this.translationService = translationService;
     }
 
@@ -209,21 +206,21 @@ public class ScheduledMessageTaskService {
 
     private void runDueTasksForCurrentDatabase() {
         var registry = notificationRuleRegistry();
-        if (registry != null) registry.forEachGroup(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES, this::runDueTasksForCurrentDatabaseInGroup);
+        if (registry != null) registry.forEachGroup(NotificationJobs.RULE_SCHEDULED_MESSAGES, this::runDueTasksForCurrentDatabaseInGroup);
     }
 
     private void runDueTasksForCurrentDatabaseInGroup() {
         Instant startedAt = Instant.now();
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        NotificationJobs registry = notificationRuleRegistry();
         boolean ruleConfigured = registry != null
-                && registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES).isPresent();
+                && registry.findRule(NotificationJobs.RULE_SCHEDULED_MESSAGES).isPresent();
         if (ruleConfigured && !registry.shouldRunScheduledRule(
-                NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                NotificationJobs.RULE_SCHEDULED_MESSAGES,
                 startedAt)) {
             return;
         }
         if (ruleConfigured && registry.beginScheduledRun(
-                    NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                    NotificationJobs.RULE_SCHEDULED_MESSAGES,
                     "Scheduled message task poll started.",
                     UPDATED_BY,
                     startedAt) == null) {
@@ -244,7 +241,7 @@ public class ScheduledMessageTaskService {
             }
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                        NotificationJobs.RULE_SCHEDULED_MESSAGES,
                         dueTasks.size(),
                         "completed",
                         "Scheduled due message tasks for local execution.",
@@ -254,7 +251,7 @@ public class ScheduledMessageTaskService {
         } catch (RuntimeException exception) {
             if (ruleConfigured) {
                 registry.recordRun(
-                        NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                        NotificationJobs.RULE_SCHEDULED_MESSAGES,
                         0,
                         "failed",
                         safeText(exception.getMessage()),
@@ -287,7 +284,7 @@ public class ScheduledMessageTaskService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return;
         }
-        Users user = usersRepository.findByUserId(normalizedUserId).orElse(null);
+        EmailProfile user = profiles.findByUserId(normalizedUserId).orElse(null);
         if (user == null || isDeleted(user)) {
             return;
         }
@@ -326,7 +323,7 @@ public class ScheduledMessageTaskService {
         return saved;
     }
 
-    public List<ScheduledMessageTask> scheduleEventStageReminders(ActivityEvent event, String actorUserId) {
+    public List<ScheduledMessageTask> scheduleEventStageReminders(EventSchedule event, String actorUserId) {
         String eventId = normalizeId(event == null ? null : event.getSourceId());
         if (!StringUtils.hasText(eventId)) {
             eventId = normalizeId(event == null ? null : event.getId());
@@ -344,7 +341,7 @@ public class ScheduledMessageTaskService {
         List<ScheduledMessageTask> savedTasks = new ArrayList<>();
         Set<String> activeTaskKeys = new LinkedHashSet<>();
         int index = 0;
-        for (SubEventItem subEvent : safeSubEvents(event)) {
+        for (Stage subEvent : safeSubEvents(event)) {
             String subEventId = stageReminderSubEventId(subEvent, index);
             Instant stageStartAt = resolveStageStartAt(event, subEvent);
             index++;
@@ -479,6 +476,13 @@ public class ScheduledMessageTaskService {
                 "event-participants");
     }
 
+    public ScheduledMessageTask scheduleEventLifecycleChangedOnce(String deliveryId, String eventId, String eventTitle,
+            Collection<String> audienceUserIds, Collection<String> reasons, String actorUserId) {
+        if (deliveryId == null || !deliveryId.matches("[a-f0-9-]{36}")) throw new IllegalArgumentException("Invalid lifecycle delivery ID");
+        return scheduleEventDefinitionChangedTask(eventId, eventTitle, audienceUserIds, reasons, actorUserId,
+                eventLifecycleChangedTaskKey(eventId, deliveryId), "event-participants", true);
+    }
+
     private ScheduledMessageTask scheduleEventDefinitionChangedTask(
             String eventId,
             String eventTitle,
@@ -487,6 +491,13 @@ public class ScheduledMessageTaskService {
             String actorUserId,
             String requestedTaskKey,
             String recipientScope) {
+        return scheduleEventDefinitionChangedTask(eventId, eventTitle, audienceUserIds, reasons, actorUserId,
+                requestedTaskKey, recipientScope, false);
+    }
+
+    private ScheduledMessageTask scheduleEventDefinitionChangedTask(String eventId, String eventTitle,
+            Collection<String> audienceUserIds, Collection<String> reasons, String actorUserId,
+            String requestedTaskKey, String recipientScope, boolean once) {
         String normalizedEventId = normalizeId(eventId);
         if (!StringUtils.hasText(normalizedEventId)) {
             return null;
@@ -498,7 +509,9 @@ public class ScheduledMessageTaskService {
         String nowIso = Instant.now().toString();
         String updatedBy = updatedBy(actorUserId);
         String taskKey = safeText(requestedTaskKey);
-        ScheduledMessageTask task = scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
+        // Immutable occurrences must not mutate a loaded receipt before comparison.
+        ScheduledMessageTask task = once ? new ScheduledMessageTask()
+                : scheduledMessageTasksRepository.findByTaskKey(taskKey).orElseGet(ScheduledMessageTask::new);
         if (!StringUtils.hasText(task.getId())) {
             task.setId(new ObjectId().toHexString());
         }
@@ -524,28 +537,26 @@ public class ScheduledMessageTaskService {
                 recipientScope));
         task.setUpdatedDate(nowIso);
         task.setUpdatedUser(updatedBy);
-        ScheduledMessageTask saved = saveRunnableTask(task);
+        ScheduledMessageTask saved = saveRunnableTask(task, once);
         scheduleLocalWorker(saved);
         return saved;
     }
 
-    public void scheduleCaseFeedback(com.raxim.myscoutee.domain.community.document.ServiceCase closed) {
+    public void scheduleCaseFeedback(com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation.Request closed) {
         String now = Instant.now().toString();
         ScheduledMessageTask task = new ScheduledMessageTask();
         task.setId(new ObjectId().toHexString()); task.setSyncKey(UUID.randomUUID().toString());
-        task.setTaskKey("case-feedback:" + closed.id() + ":" + closed.version());
+        task.setTaskKey("case-feedback:" + closed.caseId() + ":" + closed.version());
         task.setActionKey(ACTION_CASE_FEEDBACK_PREPARE);
         task.setBaseGroupId(closed.baseGroupId());
         task.setDueAtIso(now); task.setStatus(STATUS_SCHEDULED); task.setSuspended(false);
         task.setCreatedDate(now); task.setUpdatedDate(now); task.setCreatedUser(UPDATED_BY); task.setUpdatedUser(UPDATED_BY);
-        try { task.setPayload(Map.of("closedCase", objectMapper.writeValueAsString(closed))); }
-        catch (tools.jackson.core.JacksonException error) { throw new IllegalStateException(error); }
+        task.setPayload(Map.of("closedCase", closed.snapshot()));
         scheduleLocalWorker(saveRunnableTask(task));
     }
 
     private TaskResult prepareCaseFeedback(ScheduledMessageTask task) throws tools.jackson.core.JacksonException {
-        var closed = objectMapper.readValue(task.getPayload().get("closedCase"), com.raxim.myscoutee.domain.community.document.ServiceCase.class);
-        return new TaskResult(STATUS_COMPLETED, serviceFeedback.prepare(closed), "Case feedback prepared.");
+        return new TaskResult(STATUS_COMPLETED, serviceFeedback.prepareSnapshot(task.getPayload().get("closedCase")), "Case feedback prepared.");
     }
 
     public void acceptTaskMetadata(ScheduledMessageTask task) {
@@ -642,8 +653,8 @@ public class ScheduledMessageTaskService {
         if (!StringUtils.hasText(taskKey)) {
             return;
         }
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
-        if (registry == null || !registry.findRule(NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES)
+        NotificationJobs registry = notificationRuleRegistry();
+        if (registry == null || !registry.findRule(NotificationJobs.RULE_SCHEDULED_MESSAGES)
                         .map(rule -> Boolean.TRUE.equals(rule.getEnabled()))
                         .orElse(false)) {
             return;
@@ -702,34 +713,11 @@ public class ScheduledMessageTaskService {
     }
 
     private TaskResult inactivateProfileAfterInactivity(ScheduledMessageTask task, String runId) {
-        String userId = normalizeId(task.getUserId());
-        Users user = StringUtils.hasText(userId) ? usersRepository.findByUserId(userId).orElse(null) : null;
-        if (user == null || isDeleted(user)) {
-            return new TaskResult(STATUS_SKIPPED, 0, "User not found or deleted.");
-        }
-
-        int inactiveDays = inactiveDays(task);
-        Instant now = Instant.now();
-        Instant threshold = now.minus(inactiveDays, ChronoUnit.DAYS);
-        Instant lastActivity = latestActivityAt(user);
-        if (lastActivity != null && lastActivity.isAfter(threshold)) {
-            Instant nextDueAt = lastActivity.plus(inactiveDays, ChronoUnit.DAYS);
-            reschedule(task, nextDueAt, "User active; rescheduled.");
-            scheduledMessageAuditService.recordDelivery(runId, task, user, "action", "rescheduled", "User active; rescheduled.");
-            return new TaskResult(STATUS_SCHEDULED, 0, "User active; rescheduled.");
-        }
-
-        if ("inactive".equals(safeText(user.getProfileStatus())) || "I".equals(safeText(user.getStatus()))) {
-            scheduledMessageAuditService.recordDelivery(runId, task, user, "action", STATUS_SKIPPED, "Profile already inactive.");
-            return new TaskResult(STATUS_SKIPPED, 0, "Profile already inactive.");
-        }
-
-        user.setStatus("I");
-        user.setProfileStatus("inactive");
-        usersRepository.save(user);
-        affinityRecomputeTaskService.enqueueAdminStatusChanged(userId);
-        scheduledMessageAuditService.recordDelivery(runId, task, user, "action", STATUS_COMPLETED, "Profile set to inactive.");
-        return new TaskResult(STATUS_COMPLETED, 1, "Profile set to inactive.");
+        var outcome = accountInactivity.inactivate(normalizeId(task.getUserId()), inactiveDays(task), Instant.now());
+        if (outcome.nextDueAt() != null) reschedule(task, outcome.nextDueAt(), outcome.detail());
+        if (outcome.profile() != null) scheduledMessageAuditService.recordDelivery(runId, task, outcome.profile(), "action",
+                outcome.nextDueAt() == null ? outcome.status() : "rescheduled", outcome.detail());
+        return new TaskResult(outcome.status(), outcome.count(), outcome.detail());
     }
 
     private TaskResult markStageReminderDue(ScheduledMessageTask task, String runId) {
@@ -737,20 +725,20 @@ public class ScheduledMessageTaskService {
             return new TaskResult(STATUS_SKIPPED, 0, "No stage reminder task available.");
         }
         String eventId = normalizeId(task.getEventId());
-        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
+        MemberAudience activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
         if (!StringUtils.hasText(eventId) || activitiesMembersService == null) {
             return new TaskResult(STATUS_SKIPPED, 0, "No event audience available.");
         }
 
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
-                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        MemberAudience.Audience snapshot =
+                activitiesMembersService.queryNotificationAudience(OWNER_TYPE_EVENT, eventId);
         Set<String> userIds = new LinkedHashSet<>(snapshot == null ? List.of() : snapshot.acceptedMemberUserIds());
         userIds.removeIf(userId -> !StringUtils.hasText(safeText(userId)));
         if (userIds.isEmpty()) {
             return new TaskResult(STATUS_COMPLETED, 0, "Stage reminder had no accepted members.");
         }
 
-        NotificationTemplate notificationTemplate = resolveNotificationTemplate(task);
+        Template notificationTemplate = resolveNotificationTemplate(task);
         EmailTemplate emailTemplate = resolveEmailTemplate(task);
         ScheduledNotificationDeliveryService notificationDeliveryService =
                 scheduledNotificationDeliveryServiceProvider.getIfAvailable();
@@ -763,7 +751,7 @@ public class ScheduledMessageTaskService {
         String nowIso = Instant.now().toString();
         ResolvedDeploymentBranding branding = deploymentBranding();
 
-        for (Users user : usersRepository.findByUserIdIn(userIds)) {
+        for (EmailProfile user : profiles.findByUserIdIn(userIds)) {
             if (user == null || isDeleted(user)) {
                 continue;
             }
@@ -834,7 +822,7 @@ public class ScheduledMessageTaskService {
             return new TaskResult(STATUS_COMPLETED, 0, "Event change notification had no audience.");
         }
 
-        NotificationTemplate notificationTemplate = resolveNotificationTemplate(task);
+        Template notificationTemplate = resolveNotificationTemplate(task);
         EmailTemplate emailTemplate = resolveEmailTemplate(task);
         ScheduledNotificationDeliveryService notificationDeliveryService =
                 scheduledNotificationDeliveryServiceProvider.getIfAvailable();
@@ -847,7 +835,7 @@ public class ScheduledMessageTaskService {
         String nowIso = Instant.now().toString();
         ResolvedDeploymentBranding branding = deploymentBranding();
 
-        for (Users user : usersRepository.findByUserIdIn(userIds)) {
+        for (EmailProfile user : profiles.findByUserIdIn(userIds)) {
             if (user == null || isDeleted(user)) {
                 continue;
             }
@@ -960,24 +948,6 @@ public class ScheduledMessageTaskService {
         }
     }
 
-    private Instant latestActivityAt(Users user) {
-        String userId = normalizeId(user == null ? null : user.getId());
-        Instant latest = null;
-        for (Users.UserDeviceRecord device : user == null || user.getDevices() == null ? List.<Users.UserDeviceRecord>of() : user.getDevices()) {
-            latest = max(latest, parseInstant(device == null ? null : device.getLastSeenAtIso()));
-            latest = max(latest, parseInstant(device == null ? null : device.getLastRegisteredAtIso()));
-        }
-        if (StringUtils.hasText(userId)) {
-            latest = max(latest, userSessionActionsRepository.findByUserIdOrderByCreatedDateDesc(userId).stream()
-                    .map(UserSessionAction::getCreatedDate)
-                    .map(this::parseInstant)
-                    .filter(item -> item != null)
-                    .max(Comparator.naturalOrder())
-                    .orElse(null));
-        }
-        return latest;
-    }
-
     private int inactiveDays(ScheduledMessageTask task) {
         Map<String, String> payload = task == null ? null : task.getPayload();
         String value = payload == null ? "" : firstNonBlank(payload.get("inactiveDays"), payload.get("inactive_days"));
@@ -988,7 +958,7 @@ public class ScheduledMessageTaskService {
         }
     }
 
-    private boolean isDeleted(Users user) {
+    private boolean isDeleted(EmailProfile user) {
         return user == null || "D".equals(safeText(user.getStatus())) || "deleted".equals(safeText(user.getProfileStatus()));
     }
 
@@ -1056,6 +1026,10 @@ public class ScheduledMessageTaskService {
     }
 
     private ScheduledMessageTask saveRunnableTask(ScheduledMessageTask task) {
+        return saveRunnableTask(task, false);
+    }
+
+    private ScheduledMessageTask saveRunnableTask(ScheduledMessageTask task, boolean once) {
         if (task == null || !StringUtils.hasText(safeText(task.getTaskKey()))) {
             return task;
         }
@@ -1063,6 +1037,15 @@ public class ScheduledMessageTaskService {
                 : jobGroupScope.forUser(task.getUserId());
         task.setBaseGroupId(groupId);
         Update update = runnableTaskUpdate(task);
+        if (once) {
+            Update insertOnly = new Update();
+            var operators = update.getUpdateObject();
+            for (String operator : List.of("$set", "$setOnInsert")) {
+                var fields = operators.get(operator, org.bson.Document.class);
+                if (fields != null) fields.forEach(insertOnly::setOnInsert);
+            }
+            update = insertOnly;
+        }
         ScheduledMessageTask previous;
         try {
             previous = mongoTemplate.findAndModify(
@@ -1080,6 +1063,15 @@ public class ScheduledMessageTaskService {
                     ScheduledMessageTask.class);
         }
         ScheduledMessageTask saved = scheduledMessageTasksRepository.findByTaskKey(task.getTaskKey()).orElse(task);
+        if (once && previous != null) {
+            if (!java.util.Objects.equals(previous.getEventId(), task.getEventId())
+                    || !java.util.Objects.equals(previous.getPayload(), task.getPayload())
+                    || !java.util.Objects.equals(previous.getCreatedUser(), task.getCreatedUser())
+                    || !java.util.Objects.equals(previous.getBaseGroupId(), task.getBaseGroupId()))
+                throw new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.CONFLICT, "Lifecycle delivery ID already has different content.");
+            return saved;
+        }
         saved.setPendingCounterTracked(true);
         if (previous == null || !Boolean.TRUE.equals(previous.getPendingCounterTracked())) {
             JobGroupContext.run(groupId, () -> adjustPendingCount(1));
@@ -1111,30 +1103,30 @@ public class ScheduledMessageTaskService {
     }
 
     private void adjustPendingCount(int delta) {
-        NotificationRuleRegistryService registry = notificationRuleRegistry();
+        NotificationJobs registry = notificationRuleRegistry();
         if (registry == null || delta == 0) {
             return;
         }
         registry.adjustPendingCount(
-                NotificationRuleRegistryService.RULE_SCHEDULED_MESSAGES,
+                NotificationJobs.RULE_SCHEDULED_MESSAGES,
                 delta,
                 "admin.jobs.rule.scheduled.messages");
     }
 
-    private NotificationRuleRegistryService notificationRuleRegistry() {
+    private NotificationJobs notificationRuleRegistry() {
         return notificationRuleRegistryServiceProvider == null
                 ? null
                 : notificationRuleRegistryServiceProvider.getIfAvailable();
     }
 
-    private List<SubEventItem> safeSubEvents(ActivityEvent event) {
+    private List<? extends Stage> safeSubEvents(EventSchedule event) {
         if (event == null || event.getSubEvents() == null) {
             return List.of();
         }
         return event.getSubEvents();
     }
 
-    private boolean isTournamentStage(SubEventItem subEvent) {
+    private boolean isTournamentStage(Stage subEvent) {
         if (subEvent == null || Boolean.TRUE.equals(subEvent.optional())) {
             return false;
         }
@@ -1148,7 +1140,7 @@ public class ScheduledMessageTaskService {
         return value != null && value > 0;
     }
 
-    private String stageReminderSubEventId(SubEventItem subEvent, int index) {
+    private String stageReminderSubEventId(Stage subEvent, int index) {
         String id = normalizeId(subEvent == null ? null : subEvent.id());
         if (StringUtils.hasText(id)) {
             return id;
@@ -1163,7 +1155,7 @@ public class ScheduledMessageTaskService {
         return "stage-" + Math.max(0, index + 1);
     }
 
-    private Instant resolveStageStartAt(ActivityEvent event, SubEventItem subEvent) {
+    private Instant resolveStageStartAt(EventSchedule event, Stage subEvent) {
         Instant subEventStartAt = parseInstant(subEvent == null ? null : subEvent.startAt());
         if (subEventStartAt != null) {
             return subEventStartAt;
@@ -1176,7 +1168,7 @@ public class ScheduledMessageTaskService {
         return eventStartAt;
     }
 
-    private Map<String, String> stageReminderPayload(ActivityEvent event, SubEventItem subEvent, Instant stageStartAt) {
+    private Map<String, String> stageReminderPayload(EventSchedule event, Stage subEvent, Instant stageStartAt) {
         Map<String, String> payload = new LinkedHashMap<>();
         putPayload(payload, "eventTitle", event == null ? null : event.getTitle());
         putPayload(payload, "stageName", subEvent == null ? null : subEvent.name());
@@ -1205,13 +1197,13 @@ public class ScheduledMessageTaskService {
         }
     }
 
-    private NotificationTemplate resolveNotificationTemplate(ScheduledMessageTask task) {
+    private Template resolveNotificationTemplate(ScheduledMessageTask task) {
         String templateKey = safeText(task == null ? null : task.getNotificationTemplateKey());
         if (!StringUtils.hasText(templateKey)) {
             return null;
         }
         return notificationTemplatesRepository.findByTemplateKey(templateKey)
-                .filter(template -> Boolean.TRUE.equals(template.getEnabled()))
+                .filter(template -> Boolean.TRUE.equals(template.enabled()))
                 .orElse(null);
     }
 
@@ -1225,7 +1217,7 @@ public class ScheduledMessageTaskService {
                 .orElse(null);
     }
 
-    private Map<String, String> stageReminderVariables(ScheduledMessageTask task, Users user) {
+    private Map<String, String> stageReminderVariables(ScheduledMessageTask task, EmailProfile user) {
         Map<String, String> payload = task == null ? Map.of() : task.getPayload();
         Map<String, String> variables = new LinkedHashMap<>();
         putPayload(variables, "user_name", user == null ? null : user.getName());
@@ -1239,7 +1231,7 @@ public class ScheduledMessageTaskService {
         return variables;
     }
 
-    private Map<String, String> eventDefinitionChangedVariables(ScheduledMessageTask task, Users user) {
+    private Map<String, String> eventDefinitionChangedVariables(ScheduledMessageTask task, EmailProfile user) {
         Map<String, String> payload = task == null ? Map.of() : task.getPayload();
         String changeReasons = payload == null ? null : payload.get("changeReasons");
         Map<String, String> variables = new LinkedHashMap<>();
@@ -1263,7 +1255,7 @@ public class ScheduledMessageTaskService {
 
     private EmailOutboxItem buildTemplateOutboxItem(
             ScheduledMessageTask task,
-            Users user,
+            EmailProfile user,
             EmailTemplate template,
             EmailTemplateRenderer renderer,
             Map<String, String> variables,
@@ -1299,7 +1291,7 @@ public class ScheduledMessageTaskService {
     }
 
     private boolean firebaseEnabled() {
-        ConfigProperties configProperties = configPropertiesProvider.getIfAvailable();
+        AuthenticationMode configProperties = configPropertiesProvider.getIfAvailable();
         return configProperties != null && configProperties.isFirebaseEnabled();
     }
 
@@ -1315,7 +1307,7 @@ public class ScheduledMessageTaskService {
 
     private ResolvedDeploymentBranding deploymentBranding() {
         return deploymentBrandingResolver == null
-                ? DeploymentBrandingResolver.fallback()
+                ? com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback()
                 : deploymentBrandingResolver.resolve();
     }
 
@@ -1373,7 +1365,11 @@ public class ScheduledMessageTaskService {
     }
 
     private String eventLifecycleChangedTaskKey(String eventId) {
-        return "event-lifecycle-changed:" + normalizeId(eventId) + ":" + UUID.randomUUID();
+        return eventLifecycleChangedTaskKey(eventId, UUID.randomUUID().toString());
+    }
+
+    private String eventLifecycleChangedTaskKey(String eventId, String occurrenceId) {
+        return "event-lifecycle-changed:" + normalizeId(eventId) + ":" + occurrenceId;
     }
 
     private Set<String> eventDefinitionChangedAudienceUserIds(ScheduledMessageTask task) {
@@ -1383,12 +1379,12 @@ public class ScheduledMessageTaskService {
             return userIds;
         }
         String eventId = normalizeId(task == null ? null : task.getEventId());
-        ActivitiesMembersService activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
+        MemberAudience activitiesMembersService = activitiesMembersServiceProvider.getIfAvailable();
         if (!StringUtils.hasText(eventId) || activitiesMembersService == null) {
             return Set.of();
         }
-        ActivitiesMembersService.OwnerMembersSnapshot snapshot =
-                activitiesMembersService.queryOwnerSnapshot(OWNER_TYPE_EVENT, eventId);
+        MemberAudience.Audience snapshot =
+                activitiesMembersService.queryNotificationAudience(OWNER_TYPE_EVENT, eventId);
         LinkedHashSet<String> fallback = new LinkedHashSet<>();
         if (snapshot != null) {
             fallback.addAll(snapshot.acceptedMemberUserIds());

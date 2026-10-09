@@ -11,11 +11,11 @@ public interface EmailCampaignRulesRepository extends MongoRepository<EmailCampa
     List<EmailCampaignRule> findByBaseGroupId(String baseGroupId);
     Optional<EmailCampaignRule> findByBaseGroupIdAndRuleKey(String baseGroupId, String ruleKey);
     default Optional<EmailCampaignRule> findByRuleKey(String ruleKey) {
-        return findByBaseGroupIdAndRuleKey(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId(), ruleKey);
+        return findByBaseGroupIdAndRuleKey(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId(), ruleKey);
     }
 
     List<EmailCampaignRule> findByBaseGroupIdAndEnabledTrueOrderByPriorityDescRuleKeyAsc(String baseGroupId);
     default List<EmailCampaignRule> findByEnabledTrueOrderByPriorityDescRuleKeyAsc() {
-        return findByBaseGroupIdAndEnabledTrueOrderByPriorityDescRuleKeyAsc(com.raxim.myscoutee.domain.platform.service.JobGroupContext.groupId());
+        return findByBaseGroupIdAndEnabledTrueOrderByPriorityDescRuleKeyAsc(com.raxim.myscoutee.domain.platform.api.JobGroupContext.groupId());
     }
 }

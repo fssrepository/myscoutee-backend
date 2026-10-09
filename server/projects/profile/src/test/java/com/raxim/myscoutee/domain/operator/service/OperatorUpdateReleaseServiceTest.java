@@ -18,8 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import com.raxim.myscoutee.common.config.JsonConfig;
 import com.raxim.myscoutee.domain.operator.config.OperatorUpdateProperties;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
 import tools.jackson.databind.ObjectMapper;
 
 @org.junit.jupiter.api.Tag("integration")

@@ -43,7 +43,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
-public class CountryPartitionService {
+public class CountryPartitionService implements com.raxim.myscoutee.domain.platform.api.CountryDirectory {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryPartitionService.class);
     private static final String OSM_SOURCE = "openstreetmap";
     private static final String NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search";

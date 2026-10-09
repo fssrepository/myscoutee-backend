@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.groups.api.GroupDirectory;
+import com.raxim.myscoutee.domain.accounts.api.AccountWorkspaces;
 import com.raxim.myscoutee.domain.integrations.repository.IntegrationTokensRepository;
 import com.raxim.myscoutee.domain.integrations.repository.McpAuthorizationRepository;
 import com.raxim.myscoutee.domain.integrations.repository.McpOAuthClientsRepository;
@@ -21,14 +21,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import com.raxim.myscoutee.domain.integrations.document.McpOAuthClient;
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.integrations.document.IntegrationToken;
-import com.raxim.myscoutee.domain.integrations.document.IntegrationAccess;
+import com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess;
 import com.raxim.myscoutee.domain.integrations.document.McpAuthorization;
 import com.raxim.myscoutee.domain.integrations.dto.McpDtos;
 import com.raxim.myscoutee.domain.integrations.dto.IntegrationDtos.IntegrationTokenCreateRequestDto;
@@ -42,18 +42,18 @@ public class McpAuthorizationService {
     private final IntegrationTokenService keys;
     private final IntegrationTokensRepository tokens;
     private final McpAuthorizationRepository grants;
-    private final UsersRepository users;
-    private final CommunityGroupsRepository groups;
+    private final ProfileDirectory users;
+    private final GroupDirectory groups;
     private final IntegrationPublicEndpointResolver endpoint;
     private final McpOAuthClientsRepository registrations;
-    private final CommunityGroupProfilesService profiles;
-    private final ConfigProperties config;
+    private final AccountWorkspaces profiles;
+    private final RuntimeConfiguration config;
     private final SecureRandom random = new SecureRandom();
 
     public McpAuthorizationService(IntegrationTokenService keys, IntegrationTokensRepository tokens,
-            McpAuthorizationRepository grants, UsersRepository users, CommunityGroupsRepository groups,
+            McpAuthorizationRepository grants, ProfileDirectory users, GroupDirectory groups,
             IntegrationPublicEndpointResolver endpoint, McpOAuthClientsRepository registrations,
-            CommunityGroupProfilesService profiles, ConfigProperties config) {
+            AccountWorkspaces profiles, RuntimeConfiguration config) {
         this.keys = keys; this.tokens = tokens; this.grants = grants; this.users = users;
         this.groups = groups; this.endpoint = endpoint;
         this.registrations = registrations; this.profiles = profiles; this.config = config;

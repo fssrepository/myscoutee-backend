@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,8 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.raxim.myscoutee.common.config.JsonConfig;
-import com.raxim.myscoutee.domain.registry.config.RegistryProperties;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.RegistryIdentityResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.RegistryIdentityResponse;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
@@ -33,13 +34,13 @@ class RegistryPreflightServiceTest {
     void inspectsAndVerifiesPublicIdentityBeforeConfirmationWithoutLocalMutation() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (IdentityServer registry = new IdentityServer(objectMapper, REGISTRY_SCOPE, false, 0)) {
-            RegistryProperties properties = properties(registry);
+            RegistryConfiguration properties = properties(registry);
             properties.setOperatorRegistrationConfirmed(false);
             RegistryPreflightService service = new RegistryPreflightService(
                     properties,
                     objectMapper);
 
-            RegistryPreflightService.RegistryInspection inspection =
+            com.raxim.myscoutee.domain.registry.dto.RegistryInspection inspection =
                     service.inspectConfiguredRegistry();
 
             assertThat(inspection.registryEndpoint())
@@ -61,7 +62,7 @@ class RegistryPreflightServiceTest {
     void hostOutboundKillSwitchBlocksInspectionEvenWithLegacyConfirmationEnabled() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (IdentityServer registry = new IdentityServer(objectMapper, REGISTRY_SCOPE, false, 0)) {
-            RegistryProperties properties = properties(registry);
+            RegistryConfiguration properties = properties(registry);
             properties.setOutboundAllowed(false);
             properties.setOperatorRegistrationConfirmed(true);
 
@@ -79,7 +80,7 @@ class RegistryPreflightServiceTest {
     void rejectsInvalidSelfSignatureScopeAndConfiguredFingerprint() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (IdentityServer registry = new IdentityServer(objectMapper, REGISTRY_SCOPE, true, 0)) {
-            RegistryProperties properties = properties(registry);
+            RegistryConfiguration properties = properties(registry);
             assertThatThrownBy(() -> new RegistryPreflightService(properties, objectMapper)
                             .inspectConfiguredRegistry())
                     .isInstanceOf(IllegalArgumentException.class)
@@ -87,7 +88,7 @@ class RegistryPreflightServiceTest {
         }
 
         try (IdentityServer registry = new IdentityServer(objectMapper, REGISTRY_SCOPE, false, 0)) {
-            RegistryProperties properties = properties(registry);
+            RegistryConfiguration properties = properties(registry);
             properties.setRegistryScope("test-program:parent-b");
             assertThatThrownBy(() -> new RegistryPreflightService(properties, objectMapper)
                             .inspectConfiguredRegistry())
@@ -108,10 +109,10 @@ class RegistryPreflightServiceTest {
     void canDiscoverTheSignedScopeWithoutAClientSideParentDefault() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (IdentityServer registry = new IdentityServer(objectMapper, REGISTRY_SCOPE, false, 0)) {
-            RegistryProperties properties = properties(registry);
+            RegistryConfiguration properties = properties(registry);
             properties.setRegistryScope("");
 
-            RegistryPreflightService.RegistryInspection inspection =
+            com.raxim.myscoutee.domain.registry.dto.RegistryInspection inspection =
                     new RegistryPreflightService(properties, objectMapper)
                             .inspectConfiguredRegistry();
 
@@ -126,18 +127,18 @@ class RegistryPreflightServiceTest {
     void identityGetUsesTheConfiguredResponseSizeBound() throws Exception {
         ObjectMapper objectMapper = new JsonConfig().objectMapper();
         try (IdentityServer registry = new IdentityServer(objectMapper, REGISTRY_SCOPE, false, 2_048)) {
-            RegistryProperties properties = properties(registry);
+            RegistryConfiguration properties = properties(registry);
             properties.setMaxResponseBytes(1_024);
 
             assertThatThrownBy(() -> new RegistryHttpClient(properties, objectMapper).inspectIdentity())
-                    .isInstanceOf(RegistryHttpClient.RegistryHttpException.class)
-                    .extracting(exception -> ((RegistryHttpClient.RegistryHttpException) exception).getErrorCode())
+                    .isInstanceOf(com.raxim.myscoutee.domain.registry.api.RegistryHttpException.class)
+                    .extracting(exception -> ((com.raxim.myscoutee.domain.registry.api.RegistryHttpException) exception).getErrorCode())
                     .isEqualTo("registry_response_too_large");
         }
     }
 
-    private RegistryProperties properties(IdentityServer registry) {
-        RegistryProperties properties = new RegistryProperties();
+    private RegistryConfiguration properties(IdentityServer registry) {
+        RegistryConfiguration properties = new RegistryConfiguration();
         properties.setEnabled(true);
         properties.setOutboundAllowed(true);
         properties.setBaseUrl(registry.baseUrl());

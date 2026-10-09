@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
 @ConfigurationProperties("config")
-public class ConfigProperties {
+public class ConfigProperties implements com.raxim.myscoutee.domain.platform.api.RuntimeConfiguration {
     private String operatorUser;
     private String operatorBootstrapEmail;
     private String operatorBootstrapPasswordSha256;

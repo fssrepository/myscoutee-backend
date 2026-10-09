@@ -1,7 +1,9 @@
 package com.raxim.myscoutee.domain.administration.service;
 
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+
+import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
@@ -37,11 +39,11 @@ public class AdminMonitoringService {
     private static final Set<String> WORKER_FILTER_CATEGORIES = Set.of("matching", "jobs");
 
     private final AdminMonitoringRepository monitoringRepository;
-    private final AdminModerationService adminModerationService;
+    private final AdministrativeAccess adminModerationService;
 
     public AdminMonitoringService(
             AdminMonitoringRepository monitoringRepository,
-            AdminModerationService adminModerationService) {
+            AdministrativeAccess adminModerationService) {
         this.monitoringRepository = monitoringRepository;
         this.adminModerationService = adminModerationService;
     }

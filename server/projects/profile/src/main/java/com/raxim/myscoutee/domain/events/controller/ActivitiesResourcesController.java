@@ -13,21 +13,21 @@ import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceReadReq
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceReadReceiptDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.ActivitySubEventResourceScopeDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.SubEventSupplyContributionPageDto;
-import com.raxim.myscoutee.domain.access.security.AccessPolicyKeys;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicies;
-import com.raxim.myscoutee.domain.access.security.RequiresPolicy;
+import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicies;
+import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
 import com.raxim.myscoutee.domain.events.service.ActivitiesResourcesService;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 
 @RestController
 @RequestMapping("/activities/events/subevent-resources")
 public class ActivitiesResourcesController {
     private final ActivitiesResourcesService activitiesResourcesService;
-    private final HomeUserProfileService homeUserProfileService;
+    private final SelectedProfile homeUserProfileService;
 
     public ActivitiesResourcesController(
             ActivitiesResourcesService activitiesResourcesService,
-            HomeUserProfileService homeUserProfileService) {
+            SelectedProfile homeUserProfileService) {
         this.activitiesResourcesService = activitiesResourcesService;
         this.homeUserProfileService = homeUserProfileService;
     }

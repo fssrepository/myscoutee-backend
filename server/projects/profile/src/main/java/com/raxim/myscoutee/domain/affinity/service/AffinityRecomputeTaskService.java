@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
-import com.raxim.myscoutee.domain.platform.service.PlatformParametersService;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobAudience;
+import com.raxim.myscoutee.domain.platform.api.SchedulingPolicy;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -21,19 +21,16 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.affinity.config.AffinityRecomputeProperties;
 import com.raxim.myscoutee.domain.affinity.document.AffinityRecomputeTask;
-import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.affinity.repository.AffinityRecomputeTasksRepository;
-import com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService;
+import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 
 @Service
-public class AffinityRecomputeTaskService {
+public class AffinityRecomputeTaskService implements com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges {
     public static final String TARGET_USER = "USER";
     public static final String TARGET_EVENT = "EVENT";
     public static final String TARGET_ASSET = "ASSET";
@@ -53,20 +50,22 @@ public class AffinityRecomputeTaskService {
     public static final String STATUS_FAILED = "failed";
 
     @Autowired
-    private JobGroupScopeService jobGroupScope;
+    private JobAudience jobGroupScope;
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.raxim.myscoutee.domain.accounts.api.AccountAffinityProjections accountProjections;
     private final AffinityRecomputeTasksRepository tasksRepository;
     private final AffinityRecomputeProperties properties;
     private final MongoTemplate mongoTemplate;
-    private final PlatformParametersService platformParametersService;
-    private org.springframework.beans.factory.ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider;
+    private final SchedulingPolicy platformParametersService;
+    private org.springframework.beans.factory.ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider;
 
     @Autowired
     public AffinityRecomputeTaskService(
             AffinityRecomputeTasksRepository tasksRepository,
             AffinityRecomputeProperties properties,
             MongoTemplate mongoTemplate,
-            PlatformParametersService platformParametersService) {
+            SchedulingPolicy platformParametersService) {
         this.tasksRepository = tasksRepository;
         this.properties = properties;
         this.mongoTemplate = mongoTemplate;
@@ -82,7 +81,7 @@ public class AffinityRecomputeTaskService {
 
     @Autowired(required = false)
     void setNotificationRuleRegistryServiceProvider(
-            org.springframework.beans.factory.ObjectProvider<NotificationRuleRegistryService> notificationRuleRegistryServiceProvider) {
+            org.springframework.beans.factory.ObjectProvider<NotificationJobs> notificationRuleRegistryServiceProvider) {
         this.notificationRuleRegistryServiceProvider = notificationRuleRegistryServiceProvider;
     }
 
@@ -191,7 +190,7 @@ public class AffinityRecomputeTaskService {
         adjustPendingCount(-1);
     }
 
-    NotificationRuleRegistryService notificationRuleRegistry() {
+    NotificationJobs notificationRuleRegistry() {
         return notificationRuleRegistryServiceProvider == null
                 ? null
                 : notificationRuleRegistryServiceProvider.getIfAvailable();
@@ -298,10 +297,10 @@ public class AffinityRecomputeTaskService {
         if (notificationRuleRegistryServiceProvider == null || delta == 0) {
             return;
         }
-        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
+        NotificationJobs registry = notificationRuleRegistryServiceProvider.getIfAvailable();
         if (registry != null) {
             registry.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_AFFINITY_RECOMPUTE,
+                    NotificationJobs.RULE_AFFINITY_RECOMPUTE,
                     delta,
                     "admin.jobs.rule.affinity.recompute");
         }
@@ -311,28 +310,28 @@ public class AffinityRecomputeTaskService {
         if (notificationRuleRegistryServiceProvider == null) {
             return;
         }
-        NotificationRuleRegistryService registry = notificationRuleRegistryServiceProvider.getIfAvailable();
+        NotificationJobs registry = notificationRuleRegistryServiceProvider.getIfAvailable();
         if (registry == null) {
             return;
         }
         String normalizedTargetType = normalizeTargetType(targetType);
         if (TARGET_USER.equals(normalizedTargetType) && isPublicRandomRoomCandidate(targetId)) {
             registry.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_RANDOM_GROUPS,
+                    NotificationJobs.RULE_EVENT_RANDOM_GROUPS,
                     1,
-                    NotificationRuleRegistryService.PENDING_COUNT_UNIT_USERS);
+                    NotificationJobs.PENDING_COUNT_UNIT_USERS);
         }
         if (TARGET_EVENT.equals(normalizedTargetType)) {
             registry.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_AUTO_INVITER,
+                    NotificationJobs.RULE_EVENT_AUTO_INVITER,
                     1,
                     "admin.jobs.table.affected");
             registry.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_TOURNAMENT_REVIEW,
+                    NotificationJobs.RULE_EVENT_TOURNAMENT_REVIEW,
                     1,
                     "admin.jobs.table.affected");
             registry.adjustPendingCount(
-                    NotificationRuleRegistryService.RULE_EVENT_COUNTER_EXPIRY,
+                    NotificationJobs.RULE_EVENT_COUNTER_EXPIRY,
                     1,
                     "admin.jobs.table.affected");
         }
@@ -343,12 +342,7 @@ public class AffinityRecomputeTaskService {
         if (!StringUtils.hasText(normalizedUserId)) {
             return false;
         }
-        return mongoTemplate.exists(
-                Query.query(Criteria.where("userId")
-                        .is(normalizedUserId)
-                        .and("profileStatus")
-                        .is("public")),
-                Users.class);
+        return accountProjections.publicRandomRoomCandidate(normalizedUserId);
     }
 
     private AffinityRecomputeTask merge(

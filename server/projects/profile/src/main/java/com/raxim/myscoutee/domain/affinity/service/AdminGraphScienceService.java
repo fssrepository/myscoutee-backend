@@ -19,18 +19,18 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.events.document.ActivityMember;
-import com.raxim.myscoutee.domain.administration.document.AdminStatsSnapshot;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory.Member;
+
 import com.raxim.myscoutee.domain.affinity.document.UserAffinityEdge;
 import com.raxim.myscoutee.domain.affinity.document.UserRate;
-import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.events.repository.ActivityMembersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummary;
+import com.raxim.myscoutee.domain.events.api.MemberDirectory;
 import com.raxim.myscoutee.domain.affinity.repository.UserAffinityEdgesRepository;
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
+import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
 
 @Service
-public class AdminGraphScienceService {
+public class AdminGraphScienceService implements com.raxim.myscoutee.domain.affinity.api.GraphScience {
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String STATUS_ACCEPTED = "accepted";
     private static final int TIMELINE_DAYS = 14;
@@ -39,35 +39,25 @@ public class AdminGraphScienceService {
 
     private final UserAffinityEdgesRepository userAffinityEdgesRepository;
     private final UserRatesRepository userRatesRepository;
-    private final ActivityMembersRepository activityMembersRepository;
-    private final UsersRepository usersRepository;
+    private final MemberDirectory activityMembersRepository;
+    private final ProfileSummaries usersRepository;
 
     public AdminGraphScienceService(
             UserAffinityEdgesRepository userAffinityEdgesRepository,
             UserRatesRepository userRatesRepository,
-            ActivityMembersRepository activityMembersRepository,
-            UsersRepository usersRepository) {
+            MemberDirectory activityMembersRepository,
+            ProfileSummaries usersRepository) {
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
         this.userRatesRepository = userRatesRepository;
         this.activityMembersRepository = activityMembersRepository;
         this.usersRepository = usersRepository;
     }
 
-    public void refresh(AdminStatsSnapshot snapshot) {
-        if (snapshot == null) {
-            return;
-        }
-        GraphScienceResult result = calculate("global".equals(snapshot.getStatsKey()) ? null : snapshot.getStatsKey());
-        snapshot.setGraphHealthScore(result.healthScore());
-        snapshot.setGraphHealthLabelKey(result.healthLabelKey());
-        snapshot.setGraphInsightKey(result.insightKey());
-        snapshot.setGraphMetrics(result.metrics());
-        snapshot.setGraphBridgeUsers(result.bridgeUsers());
-        snapshot.setGraphCommunities(result.communities());
-        snapshot.setGraphSignals(result.signals());
-        snapshot.setDailyGraphActivity(mergeDailyGraphActivity(
-                snapshot.getDailyGraphActivity(),
-                result.dailyGraphActivity()));
+    @Override public GraphScienceResult refresh(String statsKey, Map<String, Map<String, Long>> existing) {
+        GraphScienceResult result = calculate("global".equals(statsKey) ? null : statsKey);
+        return new GraphScienceResult(result.healthScore(), result.healthLabelKey(), result.insightKey(),
+                result.metrics(), result.bridgeUsers(), result.communities(), result.signals(),
+                mergeDailyGraphActivity(existing, result.dailyGraphActivity()));
     }
 
     private Map<String, Map<String, Long>> mergeDailyGraphActivity(
@@ -89,7 +79,7 @@ public class AdminGraphScienceService {
     }
 
     private GraphScienceResult calculate(String groupId) {
-        List<Users> users = usersRepository.findAll().stream().filter(user -> Objects.equals(groupId, user.getWorkspaceGroupId())).toList();
+        List<? extends ProfileSummary> users = usersRepository.findByWorkspaceGroupId(groupId);
         Map<String, String> userNamesById = userNamesById(users);
         Map<String, String> userGendersById = userGendersById(users);
         Map<String, GraphEdge> edgesByKey = new LinkedHashMap<>();
@@ -223,8 +213,8 @@ public class AdminGraphScienceService {
     }
 
     private void addEventMemberEdges(Map<String, GraphEdge> edgesByKey, Set<String> nodes) {
-        Map<String, List<ActivityMember>> acceptedByEvent = new LinkedHashMap<>();
-        for (ActivityMember member : activityMembersRepository.findAll()) {
+        Map<String, List<Member>> acceptedByEvent = new LinkedHashMap<>();
+        for (Member member : activityMembersRepository.findAll()) {
             if (member == null || !OWNER_TYPE_EVENT.equals(normalizeKey(member.getOwnerType()))) {
                 continue;
             }
@@ -240,15 +230,15 @@ public class AdminGraphScienceService {
             acceptedByEvent.computeIfAbsent(normalizeId(member.getOwnerId()), ignored -> new ArrayList<>()).add(member);
         }
 
-        for (List<ActivityMember> members : acceptedByEvent.values()) {
-            List<ActivityMember> limited = members.stream()
+        for (List<Member> members : acceptedByEvent.values()) {
+            List<Member> limited = members.stream()
                     .filter(member -> StringUtils.hasText(normalizeId(member.getUserId())))
                     .limit(MAX_EVENT_CLIQUE_SIZE)
                     .toList();
             for (int i = 0; i < limited.size(); i++) {
                 for (int j = i + 1; j < limited.size(); j++) {
-                    ActivityMember left = limited.get(i);
-                    ActivityMember right = limited.get(j);
+                    Member left = limited.get(i);
+                    Member right = limited.get(j);
                     String date = latest(firstNonBlank(left.getMetAtIso(), left.getActionAtIso()), firstNonBlank(right.getMetAtIso(), right.getActionAtIso()));
                     addEdge(edgesByKey, nodes, left.getUserId(), right.getUserId(), 0.22d, 1, true, false, date);
                 }
@@ -552,13 +542,13 @@ public class AdminGraphScienceService {
         return "stats.graph.insight.healthy";
     }
 
-    private Map<String, String> userNamesById(List<Users> users) {
+    private Map<String, String> userNamesById(List<? extends ProfileSummary> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (Users user : users) {
+        for (ProfileSummary user : users) {
             if (user == null) {
                 continue;
             }
-            String userId = normalizeId(user.getId());
+            String userId = normalizeId(user.getUserId());
             if (StringUtils.hasText(userId)) {
                 result.put(userId, firstNonBlank(user.getName(), userId));
             }
@@ -566,13 +556,13 @@ public class AdminGraphScienceService {
         return result;
     }
 
-    private Map<String, String> userGendersById(List<Users> users) {
+    private Map<String, String> userGendersById(List<? extends ProfileSummary> users) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (Users user : users) {
+        for (ProfileSummary user : users) {
             if (user == null) {
                 continue;
             }
-            String userId = normalizeId(user.getId());
+            String userId = normalizeId(user.getUserId());
             String gender = normalizeGender(user.getGender());
             if (StringUtils.hasText(userId) && StringUtils.hasText(gender)) {
                 result.put(userId, gender);
@@ -652,16 +642,6 @@ public class AdminGraphScienceService {
             return null;
         }
     }
-
-    private record GraphScienceResult(
-            int healthScore,
-            String healthLabelKey,
-            String insightKey,
-            Map<String, Long> metrics,
-            Map<String, Long> bridgeUsers,
-            Map<String, Long> communities,
-            Map<String, Long> signals,
-            Map<String, Map<String, Long>> dailyGraphActivity) {}
 
     private static final class GraphEdge {
         private final String left;

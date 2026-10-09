@@ -25,25 +25,24 @@ import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.operator.document.GlobalIdentityLinkState;
 import com.raxim.myscoutee.domain.operator.document.GlobalIdentityLinkState.PendingOperation;
-import com.raxim.myscoutee.domain.accounts.document.PrivacyConsent;
-import com.raxim.myscoutee.domain.accounts.document.Users;
+import com.raxim.myscoutee.domain.accounts.api.AccountConsents.Consent;
+import com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile;
 import com.raxim.myscoutee.domain.operator.repository.GlobalIdentityLinkStateRepository;
-import com.raxim.myscoutee.domain.accounts.repository.PrivacyConsentsRepository;
-import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
-import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.RegisteredRuntime;
+import com.raxim.myscoutee.domain.accounts.api.AccountConsents;
+import com.raxim.myscoutee.domain.accounts.api.ProfileDirectory;
+import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.GlobalIdentityVoprfClient;
-import com.raxim.myscoutee.domain.registry.GlobalIdentityVoprfClient.BlindSession;
-import com.raxim.myscoutee.domain.registry.RegistryCrypto;
-import com.raxim.myscoutee.domain.registry.RegistryHttpClient;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityEvaluationRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityEvaluationResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityLink;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityLinkActionRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityLinkRequest;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityMutationResponse;
-import com.raxim.myscoutee.domain.registry.RegistryProtocol.GlobalIdentityVoprfKey;
+import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient;
+import com.raxim.myscoutee.domain.registry.api.GlobalIdentityVoprfClient.BlindSession;
+import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityEvaluationRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityEvaluationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityLink;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityLinkActionRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityLinkRequest;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityMutationResponse;
+import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityVoprfKey;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -57,7 +56,7 @@ import tools.jackson.databind.ObjectMapper;
  * automatically whenever a registry connection exists.</p>
  */
 @Service
-public class OperatorGlobalIdentityService {
+public class OperatorGlobalIdentityService implements com.raxim.myscoutee.domain.operator.api.GlobalIdentityPrivacy {
     private static final String ACTION_LINK = "LINK";
     private static final String INPUT_DOMAIN =
             "myscoutee-global-identity-email-v1";
@@ -68,8 +67,8 @@ public class OperatorGlobalIdentityService {
 
     private final OperatorRevenueRegistryRuntimeResolver runtimeResolver;
     private final GlobalIdentityLinkStateRepository linkRepository;
-    private final UsersRepository usersRepository;
-    private final PrivacyConsentsRepository privacyConsentsRepository;
+    private final ProfileDirectory usersRepository;
+    private final AccountConsents privacyConsentsRepository;
     private final ObjectMapper objectMapper;
     private final GlobalIdentityVoprfClient voprfClient;
     private final Clock clock;
@@ -81,8 +80,8 @@ public class OperatorGlobalIdentityService {
     public OperatorGlobalIdentityService(
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
-            UsersRepository usersRepository,
-            PrivacyConsentsRepository privacyConsentsRepository,
+            ProfileDirectory usersRepository,
+            AccountConsents privacyConsentsRepository,
             ObjectMapper objectMapper) {
         this(
                 runtimeResolver,
@@ -98,8 +97,8 @@ public class OperatorGlobalIdentityService {
     OperatorGlobalIdentityService(
             OperatorRevenueRegistryRuntimeResolver runtimeResolver,
             GlobalIdentityLinkStateRepository linkRepository,
-            UsersRepository usersRepository,
-            PrivacyConsentsRepository privacyConsentsRepository,
+            ProfileDirectory usersRepository,
+            AccountConsents privacyConsentsRepository,
             ObjectMapper objectMapper,
             GlobalIdentityVoprfClient voprfClient,
             Clock clock,
@@ -230,23 +229,23 @@ public class OperatorGlobalIdentityService {
             return;
         }
         RegistryProtocol.requirePeriod(period);
-        for (Users user : usersRepository.findByUserIdIn(
+        for (WorkspaceProfile user : usersRepository.findByUserIdIn(
                 qualifiedUserIds.stream().distinct().toList())) {
             if (!StringUtils.hasText(user.getUserId())
                     || !StringUtils.hasText(user.getEmail())) {
                 throw new IllegalStateException(
                         "A qualified user has no registry identity source.");
             }
-            PrivacyConsent privacyConsent = privacyConsentsRepository
-                    .findTopByUserIdOrderByUpdatedAtIsoDesc(
+            Consent privacyConsent = privacyConsentsRepository
+                    .latest(
                             user.getUserId().trim())
                     .filter(consent -> StringUtils.hasText(
-                            consent.getAcceptedAtIso()))
+                            consent.acceptedAtIso()))
                     .orElseThrow(() -> new IllegalStateException(
                             "A qualified user has no accepted privacy context."));
-            if (!StringUtils.hasText(privacyConsent.getRevisionId())
-                    || privacyConsent.getRevisionVersion() == null
-                    || privacyConsent.getRevisionVersion() < 1) {
+            if (!StringUtils.hasText(privacyConsent.revisionId())
+                    || privacyConsent.revisionVersion() == null
+                    || privacyConsent.revisionVersion() < 1) {
                 throw new IllegalStateException(
                         "A qualified user's privacy context is incomplete.");
             }
@@ -265,7 +264,7 @@ public class OperatorGlobalIdentityService {
             RegisteredRuntime runtime,
             GlobalIdentityVoprfKey key,
             Member member,
-            PrivacyConsent privacyConsent,
+            Consent privacyConsent,
             String effectivePeriod) {
         GlobalIdentityLinkState state = linkRepository
                 .findByDeploymentIdAndLocalUserId(
@@ -305,9 +304,9 @@ public class OperatorGlobalIdentityService {
         String consentCommitment = RegistryProtocol.sha256(
                 RegistryProtocol.canonical(
                         CONSENT_EVIDENCE_DOMAIN,
-                        privacyConsent.getRevisionId(),
-                        Integer.toString(privacyConsent.getRevisionVersion()),
-                        privacyConsent.getAcceptedAtIso(),
+                        privacyConsent.revisionId(),
+                        Integer.toString(privacyConsent.revisionVersion()),
+                        privacyConsent.acceptedAtIso(),
                         consentNonce));
         PendingOperation pending = pendingLink(
                 evaluated,
@@ -510,9 +509,7 @@ public class OperatorGlobalIdentityService {
                 runtime,
                 state,
                 state.getLocalUserId());
-        RegistryHttpClient client = new RegistryHttpClient(
-                runtime.properties(),
-                objectMapper);
+        RegistryTransport client = runtimeResolver.transport(runtime);
         String timestamp = clock.instant().toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
         String path = ACTION_LINK.equals(pending.getAction())
@@ -662,9 +659,7 @@ public class OperatorGlobalIdentityService {
                     signedMessage);
             GlobalIdentityEvaluationResponse response;
             try {
-                response = new RegistryHttpClient(
-                        runtime.properties(),
-                        objectMapper).evaluateGlobalIdentity(
+                response = runtimeResolver.transport(runtime).evaluateGlobalIdentity(
                                 new GlobalIdentityEvaluationRequest(
                                         RegistryProtocol.PROTOCOL_VERSION,
                                         runtime.state().registryScope(),
@@ -711,9 +706,7 @@ public class OperatorGlobalIdentityService {
             RegisteredRuntime runtime) {
         GlobalIdentityVoprfKey key;
         try {
-            key = new RegistryHttpClient(
-                    runtime.properties(),
-                    objectMapper).currentGlobalIdentityVoprfKey();
+            key = runtimeResolver.transport(runtime).currentGlobalIdentityVoprfKey();
         } catch (RuntimeException exception) {
             throw new ResponseStatusException(
                     HttpStatus.SERVICE_UNAVAILABLE,
@@ -736,7 +729,7 @@ public class OperatorGlobalIdentityService {
                 || !runtime.registryKeyId().equals(key.registryKeyId())
                 || !runtime.registryPublicKeyBase64().equals(
                         key.registryPublicKey())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityVoprfKey(key),
                         key.signature())) {
@@ -781,7 +774,7 @@ public class OperatorGlobalIdentityService {
                 response.evaluatedAt(),
                 "evaluated_at");
         if (!expectedResponseHash.equals(response.responseHash())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityEvaluationReceipt(
                                 response),
@@ -919,7 +912,7 @@ public class OperatorGlobalIdentityService {
         String expectedHash = RegistryProtocol.sha256(
                 RegistryProtocol.globalIdentityEvent(event));
         if (!expectedHash.equals(event.eventHash())
-                || !RegistryCrypto.verifyBase64(
+                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityEventReceipt(event),
                         event.signature())) {

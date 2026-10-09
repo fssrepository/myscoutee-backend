@@ -1,6 +1,5 @@
 package com.raxim.myscoutee.domain.payments.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupScopeService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +55,7 @@ class EventCheckoutBasketServiceTest {
                 mock(org.springframework.beans.factory.ObjectProvider.class),
                 checkoutPricing);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope",
-            new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
+            com.raxim.myscoutee.domain.groups.service.GroupTestSupport.jobScope(mock(org.springframework.data.mongodb.core.MongoTemplate.class)));
         when(repository.findByUserIdAndSourceIdAndStatusInAndVisibleResultState(
                 any(String.class),
                 any(String.class),

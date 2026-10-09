@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.common.config;
 
-import com.raxim.myscoutee.domain.groups.config.GroupWorkspaceFilter;
+import com.raxim.myscoutee.domain.accounts.config.GroupWorkspaceFilter;
 import com.raxim.myscoutee.domain.integrations.config.AdminClientAuthenticationFilter;
 import com.raxim.myscoutee.domain.integrations.config.IntegrationTokenAuthenticationFilter;
 
@@ -19,7 +19,7 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 
 import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationFilter;
 import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationService;
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;
@@ -28,7 +28,7 @@ import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseService;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseTokenVerifier;
 import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
 import com.raxim.myscoutee.domain.accounts.service.UserLoginSessionService;
-import com.raxim.myscoutee.domain.media.service.MediaSessionAccessService;
+import com.raxim.myscoutee.common.security.media.MediaSessionAccessService;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +44,8 @@ public class WebSecurityConfig {
     private final UserLoginSessionService userLoginSessionService;
     private final MediaSessionAccessService mediaSessionAccess;
     private final IntegrationTokenAuthenticationFilter integrationTokenAuthenticationFilter;
-    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService> groupProfiles;
+    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.domain.accounts.service.CommunityGroupProfilesService> groupProfiles;
+    @Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileAuthentication profileAuthentication;
     @Autowired private AdminClientAuthenticationFilter adminClientAuthenticationFilter;
 
     public WebSecurityConfig(FirebaseService firebaseService,
@@ -71,6 +72,8 @@ public class WebSecurityConfig {
     protected void registerProvider(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(firebaseProvider);
     }
+
+    @Autowired private org.springframework.beans.factory.ObjectProvider<com.raxim.myscoutee.common.security.http.HttpSecurityContribution> securityContributions;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -162,6 +165,9 @@ public class WebSecurityConfig {
                                 .policy("geolocation=(), microphone=(), camera=()")))
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .csrf(csrf -> csrf.disable());
+        if (securityContributions != null) {
+            for (var contribution : securityContributions.orderedStream().toList()) contribution.configure(http);
+        }
         return http.build();
     }
 
@@ -178,7 +184,7 @@ public class WebSecurityConfig {
             operatorBootstrapAuthenticationFilter() {
         return new OperatorBootstrapAuthenticationFilter(
                 operatorBootstrapAuthenticationService,
-                configProperties);
+                configProperties, profileAuthentication);
     }
 
     private SessionMongoRoutingFilter sessionMongoRoutingFilter() {

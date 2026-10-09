@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.platform.service.JobGroupContext;
+import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -34,7 +34,7 @@ import com.raxim.myscoutee.domain.affinity.document.AffinityRecomputeTask;
 @Service
 public class AffinityRecomputeChangeStreamService {
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.notifications.service.NotificationRuleRegistryService groupRules;
+    private com.raxim.myscoutee.domain.notifications.api.NotificationJobs groupRules;
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.common.config.mongo.ScheduledMongoSessionRunner groupDatabases;
     private static final Logger LOGGER = LoggerFactory.getLogger(AffinityRecomputeChangeStreamService.class);

@@ -38,7 +38,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import com.raxim.myscoutee.Main;
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
 import com.raxim.myscoutee.domain.accounts.document.AccountPurgeJob;
@@ -71,7 +71,7 @@ import de.flapdoodle.reverse.TransitionWalker;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=member1@myscoutee.local",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -110,6 +110,7 @@ class BackendEmailAccountSchedulersE2ETest {
 
     private static TransitionWalker.ReachedState<RunningMongodProcess> embeddedMongo;
     private static String mongoBaseUri;
+    private static java.nio.file.Path masterKey;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -123,6 +124,7 @@ class BackendEmailAccountSchedulersE2ETest {
     @DynamicPropertySource
     static void mongoProperties(DynamicPropertyRegistry registry) {
         ensureEmbeddedMongo();
+        registry.add("operator.configuration.master-key-path", () -> masterKey.toString());
         registry.add("SPRING_MONGODB_URI", () -> mongoBaseUri + "/" + REAL_DB);
         registry.add("MONGODB_DEMO_URI", () -> mongoBaseUri + "/" + DEMO_DB);
         registry.add("spring.mongodb.database", () -> REAL_DB);
@@ -134,6 +136,9 @@ class BackendEmailAccountSchedulersE2ETest {
         if (embeddedMongo != null) {
             embeddedMongo.close();
         }
+        if (masterKey != null) {
+            java.nio.file.Files.deleteIfExists(masterKey);
+        }
     }
 
     @BeforeEach
@@ -144,6 +149,7 @@ class BackendEmailAccountSchedulersE2ETest {
             seedPurgeReferencedDocuments();
             seedUsersLast();
             seedPromotionalEmailRule();
+            E2eScheduledJobTestSupport.enable(mongoTemplate, "promotional-email-planning", "promotional-email-delivery", "account-purge");
         });
     }
 
@@ -160,7 +166,7 @@ class BackendEmailAccountSchedulersE2ETest {
             List<EmailOutboxItem> emails = promoEmails();
             assertThat(emails).hasSize(30);
             assertThat(emails).allSatisfy(email -> {
-                assertThat(email.getStatus()).isEqualTo(EmailOutboxStatus.SENT);
+                assertThat(email.getStatus()).as("delivery error: %s", email.getErrorMessage()).isEqualTo(EmailOutboxStatus.SENT);
                 assertThat(email.getProvider()).isEqualTo("noop");
                 assertThat(email.getAttemptCount()).isEqualTo(1);
                 assertThat(email.getProviderMessageId()).startsWith("noop-");
@@ -574,6 +580,13 @@ class BackendEmailAccountSchedulersE2ETest {
         if (embeddedMongo != null) {
             return;
         }
+        try {
+            masterKey = java.nio.file.Files.createTempFile("e2e-email-key-", ".key");
+            java.nio.file.Files.writeString(masterKey, "11".repeat(32));
+            masterKey.toFile().deleteOnExit();
+        } catch (java.io.IOException exception) {
+            throw new IllegalStateException("Could not create the isolated test key.", exception);
+        }
         embeddedMongo = Mongod.instance().start(Version.Main.V6_0);
         ServerAddress serverAddress = embeddedMongo.current().getServerAddress();
         mongoBaseUri = "mongodb://" + serverAddress.getHost() + ":" + serverAddress.getPort();
@@ -581,6 +594,21 @@ class BackendEmailAccountSchedulersE2ETest {
         seedCountryPartition(DEMO_DB);
         seedFastPlatformConfig(REAL_DB);
         seedFastPlatformConfig(DEMO_DB);
+        seedEmailTranslations(REAL_DB);
+        seedEmailTranslations(DEMO_DB);
+    }
+
+    private static void seedEmailTranslations(String databaseName) {
+        try (MongoClient client = MongoClients.create(mongoBaseUri)) {
+            var database = client.getDatabase(databaseName);
+            database.getCollection("i18n_bundles").insertOne(new Document("_id", "e2e-en")
+                    .append("lang", "en").append("version", "1"));
+            database.getCollection("i18n_messages").insertMany(List.of(
+                    new Document("_id", "e2e-email-sender").append("lang", "en")
+                            .append("key", "email.sender").append("value", "MyScoutee"),
+                    new Document("_id", "e2e-email-unsubscribe").append("lang", "en")
+                            .append("key", "email.unsubscribe.action").append("value", "Unsubscribe")));
+        }
     }
 
     private static void seedCountryPartition(String databaseName) {

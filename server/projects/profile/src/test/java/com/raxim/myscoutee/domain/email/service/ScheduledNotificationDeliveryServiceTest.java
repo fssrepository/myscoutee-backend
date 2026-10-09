@@ -16,7 +16,7 @@ import com.raxim.myscoutee.domain.notifications.document.NotificationOutboxItem;
 import com.raxim.myscoutee.domain.notifications.document.NotificationTemplate;
 import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @org.junit.jupiter.api.Tag("standard")
 class ScheduledNotificationDeliveryServiceTest {
@@ -46,7 +46,7 @@ class ScheduledNotificationDeliveryServiceTest {
 
         boolean accepted = service.send(
                 user,
-                template,
+                com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(template),
                 Map.of(
                         "product_name",
                         "Community Hub",
@@ -103,7 +103,7 @@ class ScheduledNotificationDeliveryServiceTest {
 
         service.send(
                 user,
-                template,
+                com.raxim.myscoutee.domain.notifications.service.NotificationCatalogService.templateSnapshot(template),
                 Map.of(
                         "event_title", "Weekend hike",
                         "change_summary", "The event is under review.",

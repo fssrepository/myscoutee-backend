@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import com.raxim.myscoutee.domain.assets.service.AssetCatalog;
+import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserPaymentTotalsDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.AssetMemberRequestDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.PolicyItemDto;

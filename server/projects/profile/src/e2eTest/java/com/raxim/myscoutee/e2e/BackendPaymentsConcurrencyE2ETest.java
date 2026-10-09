@@ -60,7 +60,6 @@ import com.raxim.myscoutee.domain.accounts.document.Users;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutRequestDto;
 import com.raxim.myscoutee.domain.events.dto.EventsDtos.EventCheckoutSessionDto;
 import com.raxim.myscoutee.common.dto.SharedDtos.LocationCoordinatesDto;
-import com.raxim.myscoutee.domain.payments.service.PaymentProcessor;
 
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
@@ -77,7 +76,7 @@ import tools.jackson.databind.ObjectMapper;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "config.firebase-enabled=false",
-                "config.dev-user=",
+                "config.member-user=e2e-pay-u01@example.test",
                 "admin.stats.enabled=false",
                 "assets.source-refresh.enabled=false",
                 "media.enabled=false",
@@ -141,7 +140,7 @@ class BackendPaymentsConcurrencyE2ETest {
         withReal(() -> {
             clearE2eCollections();
             seedUsers();
-            seedPaymentConfiguration("e2e");
+            seedPaymentConfiguration("stripe");
         });
     }
 
@@ -149,30 +148,30 @@ class BackendPaymentsConcurrencyE2ETest {
     void paymentSessionsAreIdempotentRejectCrossUserMutationAndIgnoreClientPricesThroughHttp() {
         publishPaidEvent(IDEMPOTENT_EVENT_ID, 3);
 
-        JsonNode checkout = postJson("/activities/events/checkout?provider=e2e", checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d));
+        JsonNode checkout = postJson("/activities/events/checkout?provider=stripe", checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d));
         String paymentSessionId = checkout.path("id").asString();
         assertThat(paymentSessionId).startsWith("e2e_checkout_");
 
-        JsonNode paidOnce = postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+        JsonNode paidOnce = postJson("/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d));
-        JsonNode paidTwice = postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+        JsonNode paidTwice = postJson("/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 30d));
         assertThat(paidOnce.path("id").asString()).isEqualTo(paymentSessionId);
         assertThat(paidTwice.path("id").asString()).isEqualTo(paymentSessionId);
         assertThat(paymentsForEvent(IDEMPOTENT_EVENT_ID)).hasSize(1);
 
         HttpResponse<String> wrongUserPay = postRaw(
-                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                "/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(3), 30d));
         assertThat(wrongUserPay.statusCode()).isEqualTo(409);
 
         HttpResponse<String> wrongSourcePay = postRaw(
-                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                "/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 checkoutPayload("another-event", userId(2), 30d));
         assertThat(wrongSourcePay.statusCode()).isEqualTo(409);
 
         HttpResponse<String> wrongAmountPay = postRaw(
-                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                "/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(2), 31d));
         assertThat(wrongAmountPay.statusCode()).isEqualTo(200);
 
@@ -186,7 +185,7 @@ class BackendPaymentsConcurrencyE2ETest {
                 "amount", 30d,
                 "currency", "USD")));
         HttpResponse<String> wrongCurrencyPay = postRaw(
-                "/activities/events/pay?provider=e2e&paymentSessionId=" + paymentSessionId,
+                "/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 wrongCurrencyPayload);
         assertThat(wrongCurrencyPay.statusCode()).isEqualTo(200);
 
@@ -197,14 +196,17 @@ class BackendPaymentsConcurrencyE2ETest {
         assertThat(paymentsForEvent(IDEMPOTENT_EVENT_ID)).hasSize(1);
         assertThat(paymentsForEvent("another-event")).isEmpty();
 
-        selectPaymentProvider("e2e-fail");
-        HttpResponse<String> failingCheckout = postRaw("/activities/events/checkout?provider=e2e-fail",
+        selectPaymentProvider("barion");
+        withReal(() -> mongoTemplate.updateFirst(Query.query(Criteria.where("_id").is("e2e-card-" + userId(4))),
+                new org.springframework.data.mongodb.core.query.Update().set("provider", "barion"),
+                com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod.class));
+        HttpResponse<String> failingCheckout = postRaw("/activities/events/checkout?provider=barion",
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(4), 30d));
         assertThat(failingCheckout.statusCode()).isGreaterThanOrEqualTo(500);
         assertThat(paymentsForUser(userId(4))).isEmpty();
 
-        selectPaymentProvider("e2e");
-        HttpResponse<String> missingSessionPay = postRaw("/activities/events/pay?provider=e2e",
+        selectPaymentProvider("stripe");
+        HttpResponse<String> missingSessionPay = postRaw("/activities/events/pay?provider=stripe",
                 checkoutPayload(IDEMPOTENT_EVENT_ID, userId(4), 30d));
         assertThat(missingSessionPay.statusCode()).isEqualTo(400);
         assertThat(paymentsForUser(userId(4))).isEmpty();
@@ -220,12 +222,12 @@ class BackendPaymentsConcurrencyE2ETest {
     @Test
     void pendingAndWaitlistPaidJoinsDoNotRecordPaymentOrPostMemberJoinedChatSideEffectsThroughHttp() {
         String eventId = "e2e-pay-side-effects";
-        publishPaidEvent(eventId, 1);
+        publishPaidEvent(eventId, 2); // The host and one paid participant occupy the two seats.
         seedEventChat(eventId);
 
-        String acceptedSessionId = postJson("/activities/events/checkout?provider=e2e",
+        String acceptedSessionId = postJson("/activities/events/checkout?provider=stripe",
                 checkoutPayload(eventId, userId(2), 12d)).path("id").asString();
-        postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + acceptedSessionId,
+        postJson("/activities/events/pay?provider=stripe&paymentSessionId=" + acceptedSessionId,
                 checkoutPayload(eventId, userId(2), 12d));
         postJson("/activities/events/join", joinPayload(eventId, userId(2), acceptedSessionId));
 
@@ -234,9 +236,9 @@ class BackendPaymentsConcurrencyE2ETest {
         assertThat(afterAcceptedMessages.get(0).getClientId()).isEqualTo("member-joined");
         assertThat(onlyPayment(eventId, userId(2)).getBookingStatus()).isEqualTo("joined");
 
-        String waitlistSessionId = postJson("/activities/events/checkout?provider=e2e",
+        String waitlistSessionId = postJson("/activities/events/checkout?provider=stripe",
                 checkoutPayload(eventId, userId(3), 12d)).path("id").asString();
-        postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + waitlistSessionId,
+        postJson("/activities/events/pay?provider=stripe&paymentSessionId=" + waitlistSessionId,
                 checkoutPayload(eventId, userId(3), 12d));
         postJson("/activities/events/join", joinPayload(eventId, userId(3), waitlistSessionId));
 
@@ -249,9 +251,9 @@ class BackendPaymentsConcurrencyE2ETest {
         String approvalEventId = "e2e-pay-approval-side-effects";
         publishPaidEvent(approvalEventId, 4);
         seedEventChat(approvalEventId);
-        String approvalSessionId = postJson("/activities/events/checkout?provider=e2e",
+        String approvalSessionId = postJson("/activities/events/checkout?provider=stripe",
                 checkoutPayload(approvalEventId, userId(4), 12d)).path("id").asString();
-        postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + approvalSessionId,
+        postJson("/activities/events/pay?provider=stripe&paymentSessionId=" + approvalSessionId,
                 checkoutPayload(approvalEventId, userId(4), 12d));
         Map<String, Object> approvalJoinPayload = joinPayload(approvalEventId, userId(4), approvalSessionId);
         approvalJoinPayload.put("pendingReason", "approval");
@@ -271,9 +273,9 @@ class BackendPaymentsConcurrencyE2ETest {
         String eventId = "e2e-pay-duplicate-checkout";
         publishPaidEvent(eventId, 3);
 
-        JsonNode firstCheckout = postJson("/activities/events/checkout?provider=e2e",
+        JsonNode firstCheckout = postJson("/activities/events/checkout?provider=stripe",
                 checkoutPayload(eventId, userId(5), 12d));
-        JsonNode secondCheckout = postJson("/activities/events/checkout?provider=e2e",
+        JsonNode secondCheckout = postJson("/activities/events/checkout?provider=stripe",
                 checkoutPayload(eventId, userId(5), 12d));
 
         assertThat(secondCheckout.path("id").asString()).isNotEqualTo(firstCheckout.path("id").asString());
@@ -292,11 +294,10 @@ class BackendPaymentsConcurrencyE2ETest {
         publishPaidEvent(eventId, 3);
         seedEventChat(eventId);
 
-        JsonNode checkout = postJson("/activities/events/checkout?provider=e2e",
+        JsonNode checkout = postJson("/activities/events/checkout?provider=stripe",
                 checkoutPayload(eventId, userId(6), 12d));
         String paymentSessionId = checkout.path("id").asString();
-        selectPaymentProvider("e2e-fail");
-        HttpResponse<String> failedPay = postRaw("/activities/events/pay?provider=e2e-fail&paymentSessionId=" + paymentSessionId,
+        HttpResponse<String> failedPay = postRaw("/activities/events/pay?provider=stripe&paymentSessionId=" + paymentSessionId,
                 checkoutPayload(eventId, userId(6), 12d));
 
         assertThat(failedPay.statusCode()).isEqualTo(502);
@@ -309,14 +310,14 @@ class BackendPaymentsConcurrencyE2ETest {
 
     @Test
     void concurrentPaidJoinsRespectCapacityWaitlistTicketsAndPaymentStateThroughHttp() throws Exception {
-        publishPaidEvent(CONCURRENCY_EVENT_ID, CONCURRENCY_CAPACITY);
+        publishPaidEvent(CONCURRENCY_EVENT_ID, CONCURRENCY_CAPACITY + 1); // Include the host seat.
         Map<String, String> sessionIdsByUserId = new LinkedHashMap<>();
         for (int index = 2; index <= 50; index++) {
             String userId = userId(index);
-            JsonNode checkout = postJson("/activities/events/checkout?provider=e2e",
+            JsonNode checkout = postJson("/activities/events/checkout?provider=stripe",
                     checkoutPayload(CONCURRENCY_EVENT_ID, userId, 12d));
             String sessionId = checkout.path("id").asString();
-            postJson("/activities/events/pay?provider=e2e&paymentSessionId=" + sessionId,
+            postJson("/activities/events/pay?provider=stripe&paymentSessionId=" + sessionId,
                     checkoutPayload(CONCURRENCY_EVENT_ID, userId, 12d));
             sessionIdsByUserId.put(userId, sessionId);
         }
@@ -337,7 +338,7 @@ class BackendPaymentsConcurrencyE2ETest {
         executor.shutdownNow();
 
         await().atMost(Duration.ofSeconds(5)).pollInterval(Duration.ofMillis(100)).untilAsserted(() ->
-                assertThat(members(CONCURRENCY_EVENT_ID)).hasSize(49));
+                assertThat(nonHostMembers(members(CONCURRENCY_EVENT_ID))).hasSize(49));
 
         List<ActivityMember> accepted = nonHostMembers(members(CONCURRENCY_EVENT_ID, "accepted"));
         List<ActivityMember> waitlisted = members(CONCURRENCY_EVENT_ID, "pending").stream()
@@ -369,6 +370,7 @@ class BackendPaymentsConcurrencyE2ETest {
 
     private void clearE2eCollections() {
         mongoTemplate.remove(new Query(), Users.class);
+        mongoTemplate.remove(new Query(), com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod.class);
         mongoTemplate.remove(new Query(), ActivityEvent.class);
         mongoTemplate.remove(new Query(), ActivityMember.class);
         mongoTemplate.remove(new Query(), Payment.class);
@@ -379,7 +381,7 @@ class BackendPaymentsConcurrencyE2ETest {
     }
 
     private void seedPaymentConfiguration(String activeProvider) {
-        for (String providerId : List.of("stripe", "barion", "e2e", "e2e-fail")) {
+        for (String providerId : List.of("stripe", "barion")) {
             PaymentProvider provider = new PaymentProvider();
             provider.setId(providerId);
             provider.setLabel(providerId);
@@ -422,6 +424,16 @@ class BackendPaymentsConcurrencyE2ETest {
         user.setSyncKey("sync-" + userId + "-" + UUID.randomUUID());
         user.setId(userId);
         user.setEmail(userId + "@example.test");
+        var card = new com.raxim.myscoutee.domain.payments.document.SavedPaymentMethod();
+        card.setId("e2e-card-" + userId);
+        card.setUserId(userId);
+        card.setProvider("stripe");
+        card.setProviderPaymentMethodRef("test-card-" + userId);
+        card.setStatus("active");
+        card.setExpiryYear(java.time.Year.now().getValue() + 2);
+        card.setExpiryMonth(12);
+        mongoTemplate.save(card);
+
         user.setName("Payment User " + String.format("%02d", index));
         user.setInitials("PU");
         user.setAge(25 + (index % 11));
@@ -497,6 +509,7 @@ class BackendPaymentsConcurrencyE2ETest {
                 "detail", "One seat",
                 "amount", amount,
                 "currency", "EUR")));
+        payload.put("paymentMethodId", "e2e-card-" + userId);
         payload.put("totalAmount", amount);
         payload.put("currency", "EUR");
         return payload;
@@ -589,6 +602,10 @@ class BackendPaymentsConcurrencyE2ETest {
     }
 
     private HttpResponse<String> postRaw(String path, Object body) {
+        // Select the request actor through the existing Firebase-disabled test mode.
+        if (body instanceof Map<?, ?> payload && payload.get("userId") instanceof String actorId) {
+            path += (path.contains("?") ? "&" : "?") + "userId=" + actorId;
+        }
         return sendString(HttpRequest.newBuilder(uri(path))
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
@@ -663,6 +680,8 @@ class BackendPaymentsConcurrencyE2ETest {
         mongoBaseUri = "mongodb://" + serverAddress.getHost() + ":" + serverAddress.getPort();
         seedCountryPartition(REAL_DB);
         seedCountryPartition(DEMO_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, REAL_DB);
+        E2eAccessPolicySeedSupport.seedAccessPolicies(mongoBaseUri, DEMO_DB);
     }
 
     private static void seedCountryPartition(String databaseName) {
@@ -701,57 +720,35 @@ class BackendPaymentsConcurrencyE2ETest {
         }
 
         @Bean
-        PaymentProcessor e2ePaymentProcessor() {
-            return new PaymentProcessor() {
-                @Override
-                public String getType() {
-                    return "e2e";
-                }
-
-                @Override
-                public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request) {
-                    return new EventCheckoutSessionDto(
-                            "e2e_checkout_" + UUID.randomUUID(),
-                            "e2e",
-                            "e2e",
-                            "created",
-                            request == null ? 0D : request.totalAmount(),
-                            request == null ? "EUR" : request.currency(),
-                            "/e2e/payment");
-                }
-
-                @Override
-                public EventCheckoutSessionDto pay(EventCheckoutRequestDto request, String paymentSessionId) {
-                    return new EventCheckoutSessionDto(
-                            paymentSessionId,
-                            "e2e",
-                            "e2e",
-                            "approved",
-                            request == null ? 0D : request.totalAmount(),
-                            request == null ? "EUR" : request.currency(),
-                            null);
-                }
-            };
+        com.raxim.myscoutee.domain.payments.service.StripePaymentProcessor stripePaymentProcessor() {
+            var processor = mock(com.raxim.myscoutee.domain.payments.service.StripePaymentProcessor.class);
+            org.mockito.Mockito.when(processor.getType()).thenReturn("stripe");
+            org.mockito.Mockito.when(processor.checkout(org.mockito.ArgumentMatchers.any())).thenAnswer(call -> {
+                EventCheckoutRequestDto request = call.getArgument(0);
+                return new EventCheckoutSessionDto("e2e_checkout_" + UUID.randomUUID(),
+                        "stripe", "stripe", "created", request.totalAmount(), request.currency(), "/e2e/payment");
+            });
+            org.mockito.Mockito.when(processor.pay(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyString()))
+                    .thenAnswer(call -> {
+                        EventCheckoutRequestDto request = call.getArgument(0);
+                        if ("e2e-pay-provider-failure".equals(request.sourceId())) {
+                            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "E2E provider unavailable.");
+                        }
+                        return new EventCheckoutSessionDto(call.getArgument(1), "stripe", "stripe", "approved",
+                                request.totalAmount(), request.currency(), null);
+                    });
+            return processor;
         }
 
         @Bean
-        PaymentProcessor failingPaymentProcessor() {
-            return new PaymentProcessor() {
-                @Override
-                public String getType() {
-                    return "e2e-fail";
-                }
-
-                @Override
-                public EventCheckoutSessionDto checkout(EventCheckoutRequestDto request) {
-                    throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "E2E provider unavailable.");
-                }
-
-                @Override
-                public EventCheckoutSessionDto pay(EventCheckoutRequestDto request, String paymentSessionId) {
-                    throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "E2E provider unavailable.");
-                }
-            };
+        com.raxim.myscoutee.domain.payments.service.BarionPaymentProcessor barionPaymentProcessor() {
+            var processor = mock(com.raxim.myscoutee.domain.payments.service.BarionPaymentProcessor.class);
+            org.mockito.Mockito.when(processor.getType()).thenReturn("barion");
+            org.mockito.Mockito.when(processor.checkout(org.mockito.ArgumentMatchers.any()))
+                    .thenThrow(new ResponseStatusException(HttpStatus.BAD_GATEWAY, "E2E provider unavailable."));
+            org.mockito.Mockito.when(processor.pay(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.anyString()))
+                    .thenThrow(new ResponseStatusException(HttpStatus.BAD_GATEWAY, "E2E provider unavailable."));
+            return processor;
         }
     }
 }

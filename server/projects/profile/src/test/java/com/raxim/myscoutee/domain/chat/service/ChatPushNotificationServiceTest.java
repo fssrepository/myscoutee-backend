@@ -14,7 +14,7 @@ import org.mockito.ArgumentCaptor;
 import com.raxim.myscoutee.domain.chat.document.Chat;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService;
-import com.raxim.myscoutee.domain.notifications.service.NotificationOutboxService.NotificationIntent;
+import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @org.junit.jupiter.api.Tag("standard")
 class ChatPushNotificationServiceTest {
@@ -26,7 +26,7 @@ class ChatPushNotificationServiceTest {
         when(usersRepository.findByUserId("sender")).thenReturn(Optional.empty());
         when(sessionRegistry.isUserConnected("chat-1", "connected-viewer")).thenReturn(true);
         ChatPushNotificationService service = new ChatPushNotificationService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 notificationOutboxService,
                 sessionRegistry);
         Chat chat = new Chat();
@@ -71,7 +71,7 @@ class ChatPushNotificationServiceTest {
         NotificationOutboxService notificationOutboxService = org.mockito.Mockito.mock(NotificationOutboxService.class);
         ChatWebSocketSessionRegistry sessionRegistry = org.mockito.Mockito.mock(ChatWebSocketSessionRegistry.class);
         ChatPushNotificationService service = new ChatPushNotificationService(
-                usersRepository,
+                new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 notificationOutboxService,
                 sessionRegistry);
         Chat chat = new Chat();

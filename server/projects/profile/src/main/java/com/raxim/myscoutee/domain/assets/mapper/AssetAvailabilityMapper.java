@@ -16,7 +16,7 @@ import java.util.Locale;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.raxim.myscoutee.domain.assets.document.Asset.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
 import com.raxim.myscoutee.domain.assets.document.AssetRequest;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetOccupancyPageDto;
 import com.raxim.myscoutee.domain.assets.dto.AssetsDtos.AssetOccupancyRowDto;

@@ -63,7 +63,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UserFilterPreferencesRepos
 import com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository;
 import com.raxim.myscoutee.domain.content.repository.UserReportSubmissionsRepository;
 import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
-import com.raxim.myscoutee.domain.notifications.repository.UserNotificationPageRepository;
+import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
@@ -132,7 +132,7 @@ class HomeUserProfileServiceTest {
     @Mock
     private AssetsService assetsService;
     @Mock
-    private UserNotificationPageRepository userNotificationPageRepository;
+    private NotificationCatalog notificationCatalog;
 
     @Mock
     private UserFriendshipsRepository userFriendshipsRepository;
@@ -159,19 +159,15 @@ class HomeUserProfileServiceTest {
                 usersRepository,
                 userFilterPreferencesRepository,
                 userExperienceProfilesRepository,
-                userAffinityEdgesRepository,
+                new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 userFriendshipsRepository,
-                userRatesRepository,
-                chatsRepository,
-                chatMessagesRepository,
-                activityEventsRepository,
-                activityMembersRepository,
-                assetsRepository,
-                eventParticipationTicketService,
-                eventFeedbackStatesRepository,
-                eventFeedbackAnswersRepository,
-                userFeedbackSubmissionsRepository,
-                userReportSubmissionsRepository,
+                new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
+                new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
+                new com.raxim.myscoutee.domain.events.service.FeedbackDirectoryService(eventFeedbackAnswersRepository),
+                new com.raxim.myscoutee.domain.content.service.UserFeedbackService(userFeedbackSubmissionsRepository),
+                new com.raxim.myscoutee.domain.content.service.CommunityReportService(userReportSubmissionsRepository, adminTelemetryService),
                 userSessionActionsRepository,
                 scheduledMessageTaskService,
                 countryPartitionService,
@@ -181,12 +177,69 @@ class HomeUserProfileServiceTest {
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
-                assetsService, affiliateService, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class));
-        service.setUserNotificationPageRepository(userNotificationPageRepository);
-        lenient().when(userNotificationPageRepository.countUnread("active"))
+                assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileStatusWork",
+                new ProfileStatusWork(usersRepository, org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null));
+        service.setNotificationCatalog(notificationCatalog);
+        lenient().when(notificationCatalog.countUnread("active"))
                 .thenReturn(17L);
     }
 
+    @Test
+    void delegatedSelectionLoadsTheCanonicalProfileAndIgnoresCallerSelectedId() {
+        var selected = new Users(); selected.setUserId("selected"); selected.setName("Selected");
+        selected.setAccountUserId("account"); selected.setWorkspaceGroupId("workspace");
+        when(usersRepository.findByUserId("selected")).thenReturn(Optional.of(selected));
+        var principal = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor.class);
+        when(principal.getUserId()).thenReturn("selected");
+        when(principal.getProfileIdentity()).thenReturn(new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto("selected", "account", "workspace"));
+        var previous = SecurityContextHolder.getContext();
+        var delegated = SecurityContextHolder.createEmptyContext();
+        delegated.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(principal, null, List.of()));
+        SecurityContextHolder.setContext(delegated);
+        try {
+            assertThat(service.resolveCurrentUser("another-account")).isSameAs(selected);
+            verify(usersRepository, never()).findByUserId("another-account");
+            selected.setWorkspaceGroupId("changed-workspace");
+            assertThat(service.resolveCurrentUser("another-account")).isNull();
+        } finally { SecurityContextHolder.setContext(previous); }
+    }
+
+    @Test
+    void missingDelegatedProfileCannotFallBackToRequestIdentity() {
+        when(usersRepository.findByUserId("missing")).thenReturn(Optional.empty());
+        var principal = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor.class);
+        when(principal.getUserId()).thenReturn("missing");
+        when(principal.getProfileIdentity()).thenReturn(new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto("missing", null, null));
+        var previous = SecurityContextHolder.getContext();
+        var delegated = SecurityContextHolder.createEmptyContext();
+        delegated.setAuthentication(UsernamePasswordAuthenticationToken.authenticated(principal, null, List.of()));
+        SecurityContextHolder.setContext(delegated);
+        try {
+            assertThat(service.resolveSelectedUserId("another-account")).isNull();
+            verify(usersRepository, never()).findByUserId("another-account");
+        } finally { SecurityContextHolder.setContext(previous); }
+    }
+
+    @Test
+    void ratingFactsUseExistingVisibilityAndOneRepositoryBatch() {
+        var visible = new Users(); visible.setUserId("visible"); visible.setName("Visible"); visible.setStatus("A");
+        visible.setWorkspaceGroupId("workspace");
+        visible.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.5d, 19d));
+        var blocked = new Users(); blocked.setUserId("blocked"); blocked.setName("Blocked"); blocked.setStatus("B");
+        var operator = new Users(); operator.setUserId("operator"); operator.setName("Operator"); operator.setStatus("A"); operator.setOperator(true);
+        var ids = List.of("visible", "blocked", "operator", "missing");
+        when(usersRepository.findByUserIdIn(ids)).thenReturn(List.of(visible, blocked, operator));
+        var facts = service.queryRatingProfiles(ids);
+        assertThat(facts).hasSize(3);
+        assertThat(facts.get(0).activityRateVisible()).isTrue();
+        assertThat(facts.get(0).workspaceGroupId()).isEqualTo("workspace");
+        assertThat(facts.get(0).locationCoordinates()).isEqualTo(new LocationCoordinatesDto(47.5d, 19d));
+        assertThat(facts.get(1).activityRateVisible()).isFalse();
+        assertThat(facts.get(2).activityRateVisible()).isFalse();
+        assertThat(facts.get(1).locationCoordinates()).isNull();
+        org.mockito.Mockito.verify(usersRepository).findByUserIdIn(ids);
+    }
 
     @Test
     void profileLoadPersistsInitialLocationAsFieldsAndReturnsIt() {
@@ -252,7 +305,7 @@ class HomeUserProfileServiceTest {
 
     @Test
     void newProfileCarriesReferralIntoSavedProfileAndAudit() {
-        var referral = new com.raxim.myscoutee.domain.payments.document.AffiliateRegistration(
+        var referral = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration(
                 "new-member", "referrer", "code", "2026-09-22T00:00:00Z");
         when(usersRepository.findByUserId("new-member")).thenReturn(Optional.empty());
         when(usersRepository.save(any(Users.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -275,7 +328,7 @@ class HomeUserProfileServiceTest {
     @Test
     void retryAfterAuditFailureKeepsOriginalAttribution() {
         Users existing = projectedUser("active", 0d);
-        var referral = new com.raxim.myscoutee.domain.payments.document.AffiliateRegistration(
+        var referral = new com.raxim.myscoutee.domain.payments.dto.AffiliateRegistration(
                 "active", "original-referrer", "original-code", "2026-09-22T00:00:00Z");
         existing.setAffiliateRegistration(referral);
         when(usersRepository.findByUserId("active")).thenReturn(Optional.of(existing));
@@ -898,6 +951,32 @@ class HomeUserProfileServiceTest {
     }
 
     @Test
+    void realtimeSnapshotPreservesStoredFollowingWireFieldsWithoutExposingPersistenceType() {
+        Users active = user("following-contract", 0d);
+        active.setFollowing(new Users.FollowingRecord(List.of("organizer"), 3, "2030-01-01T00:00:00Z"));
+        when(usersRepository.findByUserId("following-contract")).thenReturn(Optional.of(active));
+
+        var snapshot = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("following-contract", null));
+        var mapper = tools.jackson.databind.json.JsonMapper.builder().build();
+
+        assertThat(mapper.<tools.jackson.databind.JsonNode>valueToTree(snapshot.following())).isEqualTo(mapper.valueToTree(active.getFollowing()));
+        assertThat(snapshot.following().getClass().getPackageName()).endsWith("accounts.dto");
+        verify(usersRepository, never()).save(any(Users.class));
+    }
+
+    @Test
+    void realtimeSnapshotPreservesEmptyFollowingDefault() {
+        Users active = user("following-empty", 0d);
+        when(usersRepository.findByUserId("following-empty")).thenReturn(Optional.of(active));
+
+        var following = service.queryRealtimeSnapshot(new UserRealtimeLongPollRequestDto("following-empty", null)).following();
+
+        assertThat(following.organizerIds()).isEmpty();
+        assertThat(following.eventCount()).isZero();
+        assertThat(following.nextExpiryAtIso()).isNull();
+    }
+
+    @Test
     void realtimeSnapshotReportsSavedServerLocationWithoutUpdatingIt() {
         Users active = user("saved-location", 0d);
         active.setLocationCoordinates(new Users.LocationCoordinatesRecord(47.4979d, 19.0402d));
@@ -1054,7 +1133,7 @@ class HomeUserProfileServiceTest {
         when(eventFeedbackAnswersRepository
                 .findByTargetUserIdOrderBySubmittedAtIsoDesc("active"))
                 .thenReturn(List.of());
-        when(userNotificationPageRepository.countUnread("active"))
+        when(notificationCatalog.countUnread("active"))
                 .thenReturn(41L);
 
         var snapshot = service.queryRealtimeSnapshot(

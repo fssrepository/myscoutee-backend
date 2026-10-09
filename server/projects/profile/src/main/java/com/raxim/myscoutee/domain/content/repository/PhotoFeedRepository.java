@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.content.repository;
 
+import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
@@ -18,15 +20,9 @@ public class PhotoFeedRepository {
     public PhotoFeedRepository(MongoTemplate mongo) { this.mongo = mongo; }
     public PhotoFeedPost find(String id) { return mongo.findById(id, PhotoFeedPost.class); }
     public PhotoFeedPost insert(PhotoFeedPost post) { return mongo.insert(post); }
-    public com.raxim.myscoutee.domain.accounts.document.Users.FeedCountersRecord counters(String userId) {
-        var query = Query.query(Criteria.where("userId").is(userId)); query.fields().include("feedCounters");
-        var user = mongo.findOne(query, com.raxim.myscoutee.domain.accounts.document.Users.class);
-        return user == null || user.getFeedCounters() == null
-                ? com.raxim.myscoutee.domain.accounts.document.Users.FeedCountersRecord.empty() : user.getFeedCounters();
-    }
     private org.springframework.data.mongodb.core.query.Criteria visible(String viewer, String status) {
         var criteria = org.springframework.data.mongodb.core.query.Criteria.where("moderationStatus").is(List.of("public", "seen").contains(status) ? "accepted" : status);
-        criteria.and("deleted").ne(true).and("workspaceGroupId").is(com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.currentGroupId());
+        criteria.and("deleted").ne(true).and("workspaceGroupId").is(com.raxim.myscoutee.domain.groups.api.WorkspaceContext.currentGroupId());
         return List.of("public", "seen").contains(status) ? criteria.and("creatorUserId").ne(viewer) : criteria.and("creatorUserId").is(viewer);
     }
     private void filterSeen(List<AggregationOperation> stages, String viewer, String status) {
@@ -47,7 +43,7 @@ public class PhotoFeedRepository {
     }
     public void markSeen(String userId, List<String> ids) {
         var allowed = mongo.find(Query.query(Criteria.where("_id").in(ids).and("creatorUserId").ne(userId).and("moderationStatus").is("accepted")
-                .and("deleted").ne(true).and("workspaceGroupId").is(com.raxim.myscoutee.domain.groups.service.CommunityGroupProfilesService.currentGroupId())), PhotoFeedPost.class);
+                .and("deleted").ne(true).and("workspaceGroupId").is(com.raxim.myscoutee.domain.groups.api.WorkspaceContext.currentGroupId())), PhotoFeedPost.class);
         if (allowed.isEmpty()) return;
         var writes = mongo.bulkOps(org.springframework.data.mongodb.core.BulkOperations.BulkMode.UNORDERED, "photoFeedViews");
         String now = java.time.Instant.now().toString();

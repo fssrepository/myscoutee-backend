@@ -1,21 +1,20 @@
 package com.raxim.myscoutee.domain.content.controller;
 
-import com.raxim.myscoutee.domain.assets.service.AssetsService;
+import com.raxim.myscoutee.domain.groups.api.BaseGroups;
+
+import com.raxim.myscoutee.domain.assets.api.AssetModerationDetails;
 import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
-import com.raxim.myscoutee.domain.groups.service.CommunityGroupsService;
+import com.raxim.myscoutee.domain.groups.api.Groups;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Criteria;
-import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.content.document.PhotoFeedPost;
 import com.raxim.myscoutee.domain.content.dto.ContentModerationDtos.*;
 
-import com.raxim.myscoutee.domain.events.mapper.ActivityEventDetailMapper;
+import com.raxim.myscoutee.domain.events.api.EventModeration;
 import com.raxim.myscoutee.domain.content.mapper.PhotoFeedMapper;
 
 @RestController
@@ -24,11 +23,11 @@ public class ContentModerationController {
     private final AdminModerationService admins;
     private final ContentModerationService moderation;
     private final MongoTemplate mongo;
-    private final AssetsService assets;
-    private final ActivityEventDetailMapper events;
-    private final CommunityGroupsService groups;
+    private final AssetModerationDetails assets;
+    private final EventModeration events;
+    private final Groups groups;
     public ContentModerationController(AdminModerationService admins, ContentModerationService moderation,
-            MongoTemplate mongo, AssetsService assets, ActivityEventDetailMapper events, CommunityGroupsService groups) {
+            MongoTemplate mongo, AssetModerationDetails assets, EventModeration events, Groups groups) {
         this.admins = admins; this.moderation = moderation; this.mongo = mongo; this.assets = assets; this.events = events;
         this.groups = groups;
     }
@@ -56,12 +55,7 @@ public class ContentModerationController {
         return switch (item.category()) {
             case "group" -> groups.moderationDetail(item.sourceId());
             case "asset" -> assets.queryModerationAssetDetail(item.sourceId());
-            case "event" -> {
-                var record = mongo.findOne(Query.query(Criteria.where("sourceId").is(item.sourceId())
-                        .and("ownerUserId").is(item.ownerUserId())), ActivityEvent.class);
-                if (record == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-                yield events.toDto(record, null);
-            }
+            case "event" -> events.detail(item.sourceId(), item.ownerUserId());
             default -> {
                 var record = mongo.findById(item.sourceId(), PhotoFeedPost.class);
                 if (record == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -71,7 +65,7 @@ public class ContentModerationController {
     }
     private com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto actor(String requestedId, String groupId) {
         if (groupId == null) return admins.resolveAdminActor(requestedId);
-        if (com.raxim.myscoutee.domain.groups.document.CommunityGroup.isBaseId(groupId)
+        if (com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)
                 && admins.isBaseAdminProfile(requestedId)) return admins.resolveAdminActor(requestedId);
         var account = groups.actor(requestedId);
         groups.requireAdmin(account, groupId);
