@@ -10,16 +10,46 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.raxim.myscoutee.domain.assets.document.Asset;
 import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetRequestBookingRecord;
+import com.raxim.myscoutee.domain.assets.dto.AssetDetails.AssetPolicyRecord;
 import com.raxim.myscoutee.domain.access.security.AccessControlService;
 
 @org.junit.jupiter.api.Tag("standard")
 class AssetBorrowRejectionPolicyTest {
     private record Case(String name, String status, boolean reject, boolean cancel, boolean fullWrite,
             boolean expected) {}
+
+    @Test
+    void unchangedLegacyBookingRoundTripDoesNotReapplyPoliciesButRealChangesDo() {
+        AssetsService service = mock(AssetsService.class, CALLS_REAL_METHODS);
+        AssetRequestBookingRecord persisted = new AssetRequestBookingRecord(
+                "event", "Event", "stage", "Stage", "stage", "Stage", "window",
+                "2027-03-23T12:00:00Z", "2027-03-23T13:00:00Z", 1, null, "EUR", null, null, null);
+        AssetRequestBookingRecord fromHttp = new AssetRequestBookingRecord(
+                "event", "Event", "stage", "Stage", "stage", "Stage", "window",
+                "2027-03-23T12:00:00Z", "2027-03-23T13:00:00Z", 1, null, "EUR", List.of(), null, null);
+        Asset existing = new Asset();
+        existing.setAssetId("asset");
+        existing.setPoliciesEnabled(true);
+        existing.setPolicies(List.of(new AssetPolicyRecord("required", "Required", "Terms", true)));
+        existing.setRequests(List.of(new AssetRequestRecord(
+                "request", "riley", "Riley", "R", "man", "pending", "", "borrow", "", persisted)));
+        Asset proposed = new Asset();
+        proposed.setAssetId("asset");
+        proposed.setRequests(List.of(new AssetRequestRecord(
+                "request", "riley", "Riley", "R", "man", "pending", "", "borrow", "", fromHttp)));
+        assertEquals(Boolean.TRUE, ReflectionTestUtils.invokeMethod(
+                service, "canApplyAssetRequestPolicies", existing, proposed, true));
+        proposed.setRequests(List.of(new AssetRequestRecord(
+                "request", "riley", "Riley", "R", "man", "pending", "Changed", "borrow", "", fromHttp)));
+        assertEquals(Boolean.FALSE, ReflectionTestUtils.invokeMethod(
+                service, "canApplyAssetRequestPolicies", existing, proposed, true));
+    }
 
     @TestFactory
     Stream<DynamicTest> retainedDeletionAuditUsesTheRemovalPermission() {

@@ -16,6 +16,7 @@
   "checkpoints": {
     "MSC122-COMPONENTS-SUBMODULE": {
       "preserveOtherSessions": true,
+      "geolocation": { "latitude": 47.5075, "longitude": 19.0354, "accuracy": 10 },
       "targetUrl": "http://localhost/entry?redirect=%2Fgame",
       "entryUrl": "http://localhost/entry?redirect=%2Fgame",
       "bootstrapEntryConsent": false,

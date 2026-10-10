@@ -405,6 +405,26 @@ import_deployment_configuration_seed() {
   return 1
 }
 
+ensure_collection_versions() {
+  local target_db="$1"
+  local collection_name="$2"
+
+  case "${collection_name}" in
+    assets|events|eventFeedbackStates)
+      # A seed sync can run after the owner's startup migration. Imported
+      # documents must remain existing entities for Spring Data @Version.
+      mongosh \
+        --host "${mongo_host}" --port "${mongo_port}" \
+        --username "${mongo_username}" --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" --quiet "${target_db}" \
+        --eval "db.getCollection('${collection_name}').updateMany(
+          { version: { \$exists: false } },
+          { \$set: { version: NumberLong('0') } }
+        )" >/dev/null
+      ;;
+  esac
+}
+
 ensure_collection_indexes() {
   local target_db="$1"
   local collection_name="$2"
@@ -1173,6 +1193,7 @@ import_json_file() {
     --jsonArray \
     --type json
 
+  ensure_collection_versions "${target_db}" "${target_collection}"
   ensure_collection_indexes "${target_db}" "${target_collection}"
 }
 
