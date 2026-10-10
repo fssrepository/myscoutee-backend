@@ -133,7 +133,7 @@ Never turn the flag off against replica-set data as an implicit rollback.
 
 Native recovery and HTTP adapter changes are verified by the accumulated suite.
 The [English guide](../guides/manuals/myscoutee-microservices-guide-en.html) and
-[branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.1_EN.pdf) describe
+[branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_EN.pdf) describe
 the actual deployment, operations, measurements and limits.
 
 `assets`, `events` and `eventFeedbackStates` now use optimistic document versions.
@@ -796,7 +796,7 @@ Do not launch the harness documentation's monolith Compose example for this lab.
 Preserve the user's browser control under the repository QA rules. These remain
 unfinished acceptance criteria, not claims implied by a ready k3s API.
 
-The English [Microservices Guide](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.1_EN.pdf)
+The English [Microservices Guide](../guides/manuals/MyScoutee_Microservices_Guide_EN.pdf)
 uses the existing M logo, shared manual stylesheet and PDF generator. Version
 0.1.0 is an implementation preview. Update it with the final application/stress
 results; it is listed in the backend/frontend README documentation tables.
