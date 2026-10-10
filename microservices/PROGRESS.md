@@ -2,9 +2,53 @@
 
 Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **129**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running and its serial qualification passed.
+**Last verified lab state:** Helm revision **130**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity step below passed on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## MSC-122 administrator identity — 2026-10-10
+
+The existing administrator/profile resolution now belongs to `administration`
+(`AdministrativeActorService` and its `AdministrativeActors` API). Its checks,
+profile queries and DTOs are preserved. Content moderation delegates to that
+owner. Help uses the same narrow API as notifications, affinity and payment
+administration. Moderation and its telemetry helpers remain in content.
+
+The existing typed HTTP adapter now routes to identity. Its wire paths, signed
+actor requirement and rejection mapping are unchanged. The profile-summary
+caller allowlist includes the new administration owner. No optional-domain
+framework, chat filtering or template copy is part of this step; community
+cannot yet be omitted from the full application.
+
+Verification:
+
+- **37 focused canonical JUnit tests**, **228 transport/bootstrap tests** and
+  **15 workload-credential tests** pass. The focused tests cover standalone
+  administrator resolution, stored profile data, existing query counts, wrong
+  account/workspace selection, member-profile rejection and DEMO/REAL separation.
+- All **eight JARs/images** pass the assembly audit. KVM revision **130** runs
+  those images from `deploy/images.lock.json`; all eight backends became Ready.
+- `python3 microservices/tools/check-admin-identity.py` passes **23 checks**:
+  seven administrator reads (moderation dashboard, help, privacy, terms, guide,
+  notifications and parameters), rejection of a missing admin profile and of
+  a member actor on those routes, and cleanup of both test sessions.
+- The existing native session check passes login, seven domain reads and logout.
+  A bounded KVM read sample completes **1,199 requests / 30.06 seconds**, four
+  clients, **zero errors**; guest available memory remains about 3.8 GiB. This
+  sample is not a before/after database-performance comparison.
+- After stopping KVM, the same **23 administrator checks** and **nine native
+  session checks** pass on the monolith. Its existing dev `MEMBER_USER` fallback
+  deliberately bypasses the admin route gate, so the member-rejection test was
+  run with that fallback temporarily disabled through a Compose override. Only
+  the existing backend container was stopped/recreated for this check. The
+  original environment was then restored and its equality and health verified.
+
+Reports: `build/reports/{kvm,monolith}-admin-identity.json`,
+`build/reports/{session-smoke,monolith-session-smoke,read-load}.json`.
+The new check's `--origin http://localhost` option requires the monolith's admin
+role gate to be enabled. No browser window or checklist automation was used.
+This verifies administrator identity reads and rejection behavior; it does not
+qualify community-free deployment, every moderation mutation or Firebase login.
 
 ## MSC-122 qualification — 2026-10-10
 

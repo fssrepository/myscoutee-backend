@@ -7,7 +7,6 @@ import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
 import com.raxim.myscoutee.domain.chat.api.SupportMessages;
-import com.raxim.myscoutee.domain.platform.api.AdministratorSettings;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -18,16 +17,10 @@ import java.util.Map;
 import java.util.Locale;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor;
-import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;
-import com.raxim.myscoutee.common.config.mongo.MongoSessionModeContext;
-import com.raxim.myscoutee.domain.platform.api.AuthenticationMode;
 import com.raxim.myscoutee.domain.chat.api.ChatDirectory.Chat;
 import com.raxim.myscoutee.domain.content.document.UserFeedbackSubmission;
 import com.raxim.myscoutee.domain.content.document.UserReportSubmission;
@@ -49,17 +42,11 @@ import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery;
 import com.raxim.myscoutee.domain.notifications.api.NotificationDelivery.NotificationIntent;
 
 @Service
-public class AdminModerationService implements com.raxim.myscoutee.domain.content.api.AdministrativeAccess,
-        com.raxim.myscoutee.domain.content.api.AdministrativeActors {
-    private static final List<AdminUserDto> DEMO_ADMINS = List.of(
-            new AdminUserDto("admin-demo-ava", "Ava Moderation", "AM", "admin1@myscoutee.local",
-                    "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()),
-            new AdminUserDto("admin-demo-noel", "Noel Safety", "NS", "admin2@myscoutee.local",
-                    "Moderation workspace", "Reviews reports, feedback, and support chats.", List.of()));
+public class AdminModerationService implements com.raxim.myscoutee.domain.content.api.AdministrativeAccess {
+    private final com.raxim.myscoutee.domain.administration.api.AdministrativeActors adminActors;
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory groups;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ProfileModeration profileModeration;
-    private final AuthenticationMode configProperties;
     private final UserReportSubmissionsRepository reportsRepository;
     private final UserFeedbackSubmissionsRepository feedbackRepository;
     private final ProfileSummaries usersRepository;
@@ -69,12 +56,11 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private final ActivityCounters userActivityCountersService;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
-    private final AdministratorSettings appSettingsService;
     private final NotificationDelivery notificationOutboxService;
 
     public AdminModerationService(
             com.raxim.myscoutee.domain.groups.api.GroupDirectory groups,
-            AuthenticationMode configProperties,
+            com.raxim.myscoutee.domain.administration.api.AdministrativeActors adminActors,
             UserReportSubmissionsRepository reportsRepository,
             UserFeedbackSubmissionsRepository feedbackRepository,
             ProfileSummaries usersRepository,
@@ -84,10 +70,9 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             ActivityCounters userActivityCountersService,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
-            AdministratorSettings appSettingsService,
             NotificationDelivery notificationOutboxService) {
         this.groups = groups;
-        this.configProperties = configProperties;
+        this.adminActors = adminActors;
         this.reportsRepository = reportsRepository;
         this.feedbackRepository = feedbackRepository;
         this.usersRepository = usersRepository;
@@ -97,7 +82,6 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         this.userActivityCountersService = userActivityCountersService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
-        this.appSettingsService = appSettingsService;
         this.notificationOutboxService = notificationOutboxService;
     }
 
@@ -106,7 +90,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     public AdminDashboardDto dashboard(String adminUserId, String reportsStatus, String feedbackStatus) {
-        AdminUserDto admin = resolveAdmin(adminUserId);
+        AdminUserDto admin = adminActors.resolveAdminActor(adminUserId);
         ensureStoredSupportCaseCounters(admin.id());
         return dashboardFor(
                 admin,
@@ -122,7 +106,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     public AdminUserDto resolveAdminActor(String adminUserId) {
-        return resolveAdmin(adminUserId);
+        return adminActors.resolveAdminActor(adminUserId);
     }
 
     private AdminDashboardDto dashboardFor(AdminUserDto admin) {
@@ -283,30 +267,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     private AdminUserDto resolveAdmin(String adminUserId) {
-        if (configProperties.isFirebaseEnabled()) {
-            AdminUserDto account = resolveFirebaseAdmin();
-            return resolveBaseAdminProfile(account, adminUserId);
-        }
-        if (MongoSessionModeContext.currentMode() != MongoSessionMode.DEMO) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin demo access is restricted to demo data.");
-        }
-        String normalized = normalize(adminUserId);
-        ProfileSummary requested = usersRepository.findByUserId(normalized).orElse(null);
-        String accountId = requested != null && requested.getAccountUserId() != null ? requested.getAccountUserId() : normalized;
-        AdminUserDto admin = DEMO_ADMINS.stream()
-                .filter(candidate -> candidate.id().equals(accountId))
-                .findFirst()
-                .orElse(DEMO_ADMINS.get(0));
-        return resolveBaseAdminProfile(withStoredAdminProfile(admin), adminUserId);
-    }
-
-    private AdminUserDto resolveBaseAdminProfile(AdminUserDto account, String requestedId) {
-        if (!StringUtils.hasText(requestedId) || account.id().equals(requestedId)) return account;
-        ProfileSummary profile = usersRepository.findByUserId(requestedId).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
-        if (!account.id().equals(profile.getAccountUserId())
-            || !com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(profile.getWorkspaceGroupId())
-            || !"Admin".equalsIgnoreCase(profile.getHostTier())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        return withStoredAdminProfile(new AdminUserDto(profile.getUserId(), account.name(), account.initials(), account.email(), account.headline(), account.about(), account.images()));
+        return adminActors.resolveAdminActor(adminUserId);
     }
 
     public boolean isBaseAdminProfile(String userId) {
@@ -316,8 +277,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     public String baseGroupId(String adminUserId) {
-        var actor = resolveAdmin(adminUserId);
-        return usersRepository.findByUserId(actor.id()).map(ProfileSummary::getWorkspaceGroupId).orElse(null);
+        return adminActors.baseGroupId(adminUserId);
     }
 
     /** Base-profile telemetry excludes independent workspaces; those have their own statistics. */
@@ -360,43 +320,6 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         String selected = usersRepository.findByUserId(adminId).map(ProfileSummary::getWorkspaceGroupId).orElse(null);
         if (!java.util.Objects.equals(selected, reportBaseGroup(user, types)))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Case not found in this workspace.");
-    }
-
-    private AdminUserDto resolveFirebaseAdmin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication == null ? null : authentication.getPrincipal();
-        String email = principal instanceof AuthenticatedActor firebasePrincipal
-                ? normalize(firebasePrincipal.getEmail())
-                : normalize(authentication == null ? null : authentication.getName());
-        if (!appSettingsService.isAdminEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is restricted.");
-        }
-        return withStoredAdminProfile(new AdminUserDto(
-                email,
-                email,
-                initialsForEmail(email),
-                email,
-                "Moderation workspace",
-                "Reviews reports, feedback, and support chats.",
-                List.of()));
-    }
-
-    private AdminUserDto withStoredAdminProfile(AdminUserDto admin) {
-        ProfileSummary user = usersRepository.findByUserId(admin.id()).orElse(null);
-        if (user == null) {
-            return admin;
-        }
-        String name = text(user.getName(), admin.name());
-        String initials = text(user.getInitials(), admin.initials());
-        String headline = text(user.getHeadline(), admin.headline());
-        String about = text(user.getAbout(), admin.about());
-        List<String> images = user.getImages() == null
-                ? admin.images()
-                : user.getImages().stream()
-                        .map(this::normalize)
-                        .filter(StringUtils::hasText)
-                        .toList();
-        return new AdminUserDto(admin.id(), name, initials, admin.email(), headline, about, images);
     }
 
     private void ensureReportedUser(String targetUserId) {
@@ -642,13 +565,5 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
 
     private String normalize(String value) { return value == null ? "" : value.trim(); }
     private String text(String value, String fallback) { return StringUtils.hasText(normalize(value)) ? normalize(value) : fallback; }
-    private String initialsForEmail(String email) {
-        String[] parts = normalize(email).split("@")[0].split("[.\\-_\\s]+");
-        StringBuilder out = new StringBuilder();
-        for (String part : parts) {
-            if (!part.isBlank()) out.append(Character.toUpperCase(part.charAt(0)));
-            if (out.length() >= 2) break;
-        }
-        return out.length() == 0 ? "AD" : out.toString();
-    }
+
 }

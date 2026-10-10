@@ -575,6 +575,7 @@
       "propertyPrefix": "profile-summaries",
       "credential": "profileSummariesToken",
       "producerDomains": [
+        "administration",
         "chat",
         "community",
         "events",
@@ -623,7 +624,7 @@
       ]
     },
     {
-      "domain": "content",
+      "domain": "administration",
       "api": "AdministrativeActors",
       "package": "content",
       "configuration": "AdministrativeActors",

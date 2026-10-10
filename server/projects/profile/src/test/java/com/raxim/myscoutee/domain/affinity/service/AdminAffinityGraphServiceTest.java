@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.affinity.service;
 
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +44,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 @org.junit.jupiter.api.Tag("standard")
 class AdminAffinityGraphServiceTest {
     @Mock
-    private AdminModerationService adminModerationService;
+    private AdministrativeActors adminModerationService;
     @Mock
     private UsersRepository usersRepository;
     @Mock

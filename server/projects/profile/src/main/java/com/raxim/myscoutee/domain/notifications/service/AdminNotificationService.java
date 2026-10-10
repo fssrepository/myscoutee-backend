@@ -38,7 +38,7 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotification
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationTemplateOptionDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationTimingDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto;
-import com.raxim.myscoutee.domain.content.api.AdministrativeActors;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.events.api.RandomGroupAssignment;
 

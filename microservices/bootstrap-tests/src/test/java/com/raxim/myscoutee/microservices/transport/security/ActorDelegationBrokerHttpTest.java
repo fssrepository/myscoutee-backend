@@ -292,8 +292,8 @@ class ActorDelegationBrokerHttpTest {
                 public void evictUserReadCaches(Collection<String> ids) { if (ids != null) evicted.addAll(ids); }
             };
         }
-        @Bean com.raxim.myscoutee.domain.content.api.AdministrativeActors administrativeActors() {
-            return new com.raxim.myscoutee.domain.content.api.AdministrativeActors() {
+        @Bean com.raxim.myscoutee.domain.administration.api.AdministrativeActors administrativeActors() {
+            return new com.raxim.myscoutee.domain.administration.api.AdministrativeActors() {
                 public com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto resolveAdminActor(String requested) {
                     var actor = assertInstanceOf(AuthenticatedActor.class, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
                     assertEquals("actor@example.invalid", actor.getEmail());

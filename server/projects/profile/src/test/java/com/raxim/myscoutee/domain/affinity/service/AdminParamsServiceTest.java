@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.administration.service.AdminAudienceService;
 
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,7 +41,7 @@ class AdminParamsServiceTest {
     @Test
     void savingWorkParametersDoesNotDeactivateTheDatingConfiguration() {
         var repository = mock(AffinityConfigsRepository.class);
-        var admins = mock(AdminModerationService.class);
+        var admins = mock(AdministrativeActors.class);
         when(admins.baseGroupId("work-admin")).thenReturn("myscoutee-work");
         var dating = config(7, true, "matching", "Dating");
         var work = config(1, true, "seed", "Work"); work.setKey("myscoutee-work");
@@ -322,7 +322,7 @@ class AdminParamsServiceTest {
             AffinityRecomputeTaskService affinityRecomputeTaskService,
             AdminTelemetryService adminTelemetryService) {
         ObjectMapper objectMapper = JsonMapper.builder().build();
-        return new AdminParamsService(org.mockito.Mockito.mock(AdminModerationService.class),
+        return new AdminParamsService(org.mockito.Mockito.mock(AdministrativeActors.class),
                 repository,
                 objectMapper,
                 notificationOutboxService,

@@ -1,4 +1,4 @@
-package com.raxim.myscoutee.domain.content.api;
+package com.raxim.myscoutee.domain.administration.api;
 
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto;
 

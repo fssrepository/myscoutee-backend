@@ -77,7 +77,8 @@ class AdminModerationServiceTest {
         MongoSessionModeContext.set(MongoSessionMode.DEMO);
         service = new AdminModerationService(
                 new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)),
-                configProperties,
+                new com.raxim.myscoutee.domain.administration.service.AdministrativeActorService(configProperties,
+                        new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository), appSettingsService),
                 reportsRepository,
                 feedbackRepository,
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
@@ -87,7 +88,6 @@ class AdminModerationServiceTest {
                 userActivityCountersService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
-                appSettingsService,
                 notificationOutboxService);
         var statusWork = new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(usersRepository,
                 org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null);
