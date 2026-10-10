@@ -14,6 +14,18 @@
     "screenHeight": 1000
   },
   "checkpoints": {
+    "MSC122-COMPONENTS-SUBMODULE": {
+      "preserveOtherSessions": true,
+      "targetUrl": "http://localhost/entry?redirect=%2Fgame",
+      "entryUrl": "http://localhost/entry?redirect=%2Fgame",
+      "bootstrapEntryConsent": false,
+      "layout": { "columns": 1 },
+      "sessions": [{
+        "actor": "Components submodule regression",
+        "sessionKind": "anonymous",
+        "expectedName": "MSC-122 isolated component regression"
+      }]
+    },
     "CHAT-CALL-001": {
       "preserveOtherSessions": true,
       "fixtureScenario": "chat-call",

@@ -8,7 +8,7 @@ BUILD_CONFIGURATION="${FRONTEND_BUILD_CONFIGURATION:-}"
 BUILD_LOG_FILE="${BUILD_LOG_FILE:-}"
 BUILD_FRONTEND_ROOT="${BUILD_FRONTEND_ROOT:-}"
 SOURCE_SYNC_DEBOUNCE_SECONDS="${SOURCE_SYNC_DEBOUNCE_SECONDS:-1}"
-SOURCE_SYNC_EXCLUDE_REGEX="^${SOURCE_FRONTEND_ROOT}/(node_modules|local|dev|e2e|docs|prod|out-tsc|\\.angular|\\.git|\\.agent)(/|$)"
+SOURCE_SYNC_EXCLUDE_REGEX="(^${SOURCE_FRONTEND_ROOT}/(local|dev|e2e|docs|prod|out-tsc|\\.agent)(/|$))|(/(node_modules|dist|\\.angular|\\.git)(/|$))"
 TEMP_BUILD_ROOT_CREATED="false"
 BUILD_OUTPUT_DIR=""
 
@@ -107,6 +107,18 @@ initialize_build_workspace() {
 }
 
 sync_source_frontend_into_build_workspace() {
+  # npm workspace links resolve into the source checkout. Share those same
+  # directories so their own build/watch writes exactly what the app consumes.
+  local -a workspace_paths=() workspace_excludes=()
+  local workspace_path
+  mapfile -t workspace_paths < <(node -e '
+    const fs = require("node:fs");
+    const pkg = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+    for (const location of pkg.workspaces || []) console.log(location);
+  ' "${SOURCE_FRONTEND_ROOT}/package.json")
+  for workspace_path in "${workspace_paths[@]}"; do
+    workspace_excludes+=(--exclude "/${workspace_path}")
+  done
   rsync -a --delete \
     --exclude '/node_modules' \
     --exclude '/local' \
@@ -118,10 +130,15 @@ sync_source_frontend_into_build_workspace() {
     --exclude '/.angular' \
     --exclude '/.git' \
     --exclude '/.agent' \
+    "${workspace_excludes[@]}" \
     "${SOURCE_FRONTEND_ROOT}/" "${BUILD_FRONTEND_ROOT}/"
 
   rm -rf "${BUILD_FRONTEND_ROOT}/node_modules"
   ln -s "${SOURCE_FRONTEND_ROOT}/node_modules" "${BUILD_FRONTEND_ROOT}/node_modules"
+  for workspace_path in "${workspace_paths[@]}"; do
+    mkdir -p "$(dirname "${BUILD_FRONTEND_ROOT}/${workspace_path}")"
+    ln -sfn "${SOURCE_FRONTEND_ROOT}/${workspace_path}" "${BUILD_FRONTEND_ROOT}/${workspace_path}"
+  done
 }
 
 apply_build_workspace_overrides() {
@@ -281,7 +298,7 @@ WATCHPACK_POLLING_INTERVAL="${WATCHPACK_POLLING_INTERVAL:-1000}" \
 CHOKIDAR_USEPOLLING="${CHOKIDAR_USEPOLLING:-true}" \
 CHOKIDAR_INTERVAL="${CHOKIDAR_INTERVAL:-1000}" \
 NG_BUILD_MAX_WORKERS="${NG_BUILD_MAX_WORKERS:-12}" \
-  ./node_modules/.bin/ng build --watch --configuration "${BUILD_CONFIGURATION}" \
+  node ./scripts/with-components.mjs build --watch --configuration "${BUILD_CONFIGURATION}" \
   > >(tee -a "${BUILD_LOG_FILE}") 2>&1 &
 build_pid=$!
 
