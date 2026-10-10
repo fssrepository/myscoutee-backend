@@ -59,7 +59,7 @@ The later application updates do not replace the full installer release.
 | User Manual | 1.0.0 | MyScoutee 1.0.0 | [PDF](guides/manuals/MyScoutee_User_Manual_v1.0.0_EN.pdf) |
 | Integration API Guide | 1.0.1 | 1.0.1 + MSC-119 source extensions | [PDF](guides/manuals/MyScoutee_Integration_API_Guide_v1.0.1_EN.pdf) |
 | MCP User Guide | 1.0.0 | MCP / client 1.6.0 · MSC-119 | [PDF](guides/manuals/MyScoutee_MCP_User_Guide_v1.0.0_EN.pdf) |
-| Microservices Guide | 0.1.0 | MSC-121; KVM/Helm, replica set, operations and monolith comparison | [HTML source](guides/manuals/myscoutee-microservices-guide-en.html) · [PDF](guides/manuals/MyScoutee_Microservices_Guide_v0.1.0_EN.pdf) |
+| Microservices Guide | 0.1.1 | MSC-121; KVM/Helm, replica set, operations and monolith comparison | [HTML source](guides/manuals/myscoutee-microservices-guide-en.html) · [PDF](guides/manuals/MyScoutee_Microservices_Guide_v0.1.1_EN.pdf) |
 
 Document versions are independent of software versions. The MCP guide documents
 MSC-119 source behavior, including its pending live-host QA.

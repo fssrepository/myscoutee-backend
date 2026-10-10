@@ -118,6 +118,13 @@
       "contentFingerprint": "sha256:e3e443602eacbf675cbc28f9544efe3f18d29163b1514ea9aca46a534289a165",
       "sourceDigests": [],
       "reference": "docker.io/library/myscoutee-service-payment-simulator:0.1.0-d99be2a8d466"
+    },
+    "release-simulator": {
+      "source": "myscoutee-service-release-simulator:msc121",
+      "id": "sha256:1dfc0ebea8fa3d2f3ed17fc5cdc6bac9cfeaf1731da99cdb6dcf279ed8ae261c",
+      "contentFingerprint": "sha256:a192750f9b08c0ff74037dc89d39f3d9c2dc1908bf2fc7ed7fbc7aa766405b67",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-release-simulator:0.1.0-1dfc0ebea8fa"
     }
   }
 }

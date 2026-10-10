@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise one native DEMO login and read routes through all six assemblies.
+"""Exercise one native DEMO login and the retained domain read routes.
 
 Uses the same login DTO/headers as the versioned browser launcher. Creates only
 its own session ID, never clears another session, and revokes it on completion.
@@ -13,10 +13,12 @@ import urllib.parse
 import urllib.request
 import workloads as w
 
+ORIGIN = 'http://127.0.0.1:' + str(w.CONFIG['localPort'])
+
 
 def request(path, headers, payload=None, method=None):
     data = None if payload is None else json.dumps(payload).encode()
-    req = urllib.request.Request('http://127.0.0.1:' + str(w.CONFIG['localPort']) + path,
+    req = urllib.request.Request(ORIGIN + path,
             data=data, method=method, headers={'Accept': 'application/json', 'Content-Type': 'application/json', **headers})
     try:
         response = urllib.request.urlopen(req, timeout=15)
@@ -52,10 +54,16 @@ def end_session(user_id, headers):
 
 
 def main():
+    global ORIGIN
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--user-id', help='Existing canonical DEMO actor; defaults to the first public demo actor')
+    parser.add_argument('--origin', choices=['http://localhost', 'http://127.0.0.1'],
+                        help='Use the already-running local monolith instead of the owned KVM ingress')
     args = parser.parse_args()
-    w.namespace_owned()
+    if args.origin:
+        ORIGIN = args.origin
+    else:
+        w.namespace_owned()
     user_id, headers = start_session(args.user_id)
     print('PASS: native DEMO session login', flush=True)
     results = []
@@ -80,7 +88,7 @@ def main():
         status, revoked = end_session(user_id, headers)
         results.append({'path': '/api/auth/me/logout', 'status': status, 'passed': revoked})
         print(('PASS' if revoked else 'FAIL') + ': native logout of this check session', flush=True)
-        path = w.SHELL / 'build/reports/session-smoke.json'
+        path = w.SHELL / ('build/reports/monolith-session-smoke.json' if args.origin else 'build/reports/session-smoke.json')
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(results, indent=2) + '\n')
     return 0 if all(row['passed'] for row in results) else 1

@@ -2,57 +2,74 @@
 
 Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **123**; six backend and seven supporting Deployments Ready, plus one Mongo StatefulSet **2/2 Ready**. Its original two data volumes, REAL/DEMO document counts, collection hashes and indexes were preserved. Majority-write/secondary-read and idempotent migration rerun pass. The headless VM remains **8192 MiB / 4 vCPU**, host-boot autostart disabled.
+**Last verified lab state:** Helm revision **129**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running and its serial qualification passed.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
 
-## MSC-122 continuation — 2026-10-10, not a new qualified lab revision
+## MSC-122 qualification — 2026-10-10
 
-**Current continuation:** source now also separates operator/Registry into the
-`network` assembly (eight Java services total). New boundaries cover bounded
-measurement eligibility, the durable purge handoff and signed integration report
-reads; narrow existing profile ports are reused. Eight independent JAR builds
-and artifact ownership checks, 228 transport tests and 61 infrastructure checks
-pass. Eight runtime images are built and locked. Network OpenAPI validation
-covers 12 measurement-eligibility, 11 global-identity-privacy and 49 report
-responses. Logs: `/tmp/msc122-network-assemblies.log`,
-`/tmp/msc122-network-images.log`, `/tmp/msc122-network-infra.log`.
+Generic bootstrap/configuration/TLS/update source is owned by platform. `help`
+and the MyScoutee-specific `network` (operator/Registry) are separate assemblies;
+content remains in community. No help/content regrouping or rename was made.
+The template will retain its required models unchanged, including i18n and
+geographic location, and omit product screens where appropriate. Template
+application extraction has not started.
 
-Dev is stopped; libvirt is active following interactive sudo in the opened
-terminal. The separate `vm.py observe` terminal is open. After the user directed
-continuation, VM startup used the existing one-shot `--host-reserve-mib 1792`
-option; guest allocation/defaults are unchanged. Actual startup found 10,251 MiB
-available; cloud-init and k3s API readiness pass. Initial host memory-pressure
-averages are zero. Coordinated backend stop/rollout is in progress.
+Eight JARs/images and all 21 domain owners pass the retained packaging audit.
+The final source regression passes **228 transport tests** and **359 canonical
+backend tests** (340 standard, 10 embedded update HTTP/download tests, 9 signed
+release-discovery integration tests), with zero failures/errors/skips. Logs:
+`/tmp/msc122-final-transports.log`, `/tmp/msc122-final-backend-junit.log`,
+`/tmp/msc122-final-release-embedded.log`, `/tmp/msc122-final-release-junit.log`.
+Infrastructure safety checks pass **65 tests**. These supersede the earlier
+271-test, seven-service checkpoint.
 
-The results below are the preceding seven-service checkpoint.
+KVM evidence:
 
-Runtime order confirmed by the user: complete development → stop dev → KVM
-qualification/CPU diagnosis and repair → stop KVM → monolith qualification.
-The dev stack is stopped for this phase; do not automatically restart it while
-KVM qualification is pending. October-9 CPU evidence and its limitations are
-linked in the template plan.
+- Revision 125: native session/read/logout, published help/privacy/terms/guide,
+  consent save → logout → fresh login/version check; owned fixture cleaned up.
+  Integration report READ denial (403) and native unenrolled network response
+  (409) pass; the owned token/fixture was revoked and removed.
+- Warm read load: **4,498 requests, zero errors, 74.9 requests/s**, 60.05 seconds;
+  both selected assets served; no application restart; temporary scaling restored.
+  The cold 47.4 requests/s result recovered after JVM warm-up. Post-load QEMU
+  averaged 0.639 core (5.32% of 12 host CPUs), total host CPU 12.45%, over 40 seconds.
+- Revisions 127/129: fixed missing platform configuration master key, retained in
+  existing private workload state. Before provisioning, persisted REAL/DEMO
+  configuration had no ciphertext; no prior encryption key/data was overwritten.
+- Revision 129: added the canonical Compose release simulator to the lab. First
+  bootstrap starts support workloads before Java and transfers only the public
+  TLS CA to the platform owner. The simulator's private TLS volume is not shared.
+  The local empty catalog is explicit; discovery never falls back to GitHub.
+- **15 managed headless browser checks pass**: member/operator native login,
+  profile/image-editor entry, help/privacy/terms documents, guide completion,
+  persisted chat messages, events, Work/Dating switches, editable operator
+  configuration and logout. No configuration was saved. The release-discovery
+  request returns **HTTP 200**, with no special 412 exception in the harness.
+  Report: `build/reports/browser/kvm/qualification.json`.
 
-Generic operator deployment capabilities moved to platform; release verification
-uses the extracted canonical crypto/release contracts without Registry beans.
-Help has a dedicated seventh assembly/image and gateway destination. Landing
-content uses a narrow public-help read transport. At that seven-service checkpoint, Java network/Registry still shared identity;
-the subsequent source split above supersedes that grouping.
-Verification: 271 focused backend JUnit tests, 224 transport tests, 61
-infrastructure tests, seven independent JAR builds and artifact ownership checks
-pass. All OpenAPI schemas compile; the new public-help contract validates 24 real
-HTTP responses. The complete wire inventory stops at pre-existing missing
-`affinity/recompute-metrics-v1` response evidence and is not claimed complete.
-The affinity HTTP fixture now supplies its required canonical database-mode runner.
+The browser discovered a separate public release defect: 1.3.0's DEB had been
+uploaded without the separately signed update catalog. On 2026-10-10, the missing
+asset was added using the retained key and unchanged, verified package. The
+canonical Java verifier passes against GitHub; old versions and same-version
+reinstallation are rejected before any job/download. The exact 1.3.0–1.3.0 range
+advertises no unqualified forward upgrade. Existing release assets/tags are
+unchanged. See the [repair evidence](../guides/qualification/evidence/RELEASE_1.3.0_CATALOG_REPAIR_20261010.json).
 
-Seven runtime images are built and locked in `deploy/images.lock.json` (including
-help `0.1.0-b1df9a7c82f9`). Logs: `/tmp/msc122-platform-junit.log`,
-`/tmp/msc122-assemblies.log`, `/tmp/msc122-images.log`. The dev stack was stopped
-for serial packaging and restarted afterwards. At that historical checkpoint, the lab rollout was pending because libvirt
-was stopped; the current memory gate is recorded above. No guest image
-import, new Helm revision, native-flow or persistence result is claimed.
-The previous revision-123 evidence remains historical. Full scope and the resume
-sequence are in [the template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
+The serial monolith gate also passes: native DEMO login, seven domain reads and
+logout; the same **15 browser checks**, including HTTP 200 release discovery.
+The existing backend/frontend owner processes compiled and became healthy; no
+parallel build/server was introduced. Reports: `build/reports/monolith-session-smoke.json`
+and `build/reports/browser/monolith/qualification.json`. KVM/dev were never run
+together. The existing observer terminal remains available; no new visible
+browser or question window was opened.
+
+Limits: no full image edit, Firebase provider login, registered-network/Registry
+persistence, durable global-identity purge, package installation/interruption/
+rollback or new-template installation is claimed. Existing wire evidence covers
+24 public-help, 12 eligibility, 11 privacy and 49 report responses; whole-inventory
+wire validation still lacks the pre-existing affinity recompute response sample.
+Full extraction decisions and next steps are in the [template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
 
 ## Administrative closeout — 2026-10-10
 

@@ -206,6 +206,27 @@ class MongoConversionSafetyTest(unittest.TestCase):
                 mongo_replica.configured()
 
 
+class ReleaseSimulatorSafetyTest(unittest.TestCase):
+    def test_only_one_public_certificate_can_enter_backend_config(self):
+        from types import SimpleNamespace
+        for value in ('-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----',
+                      '-----BEGIN CERTIFICATE-----\npublic\n-----END CERTIFICATE-----\n'
+                      '-----BEGIN PRIVATE KEY-----\nsecret\n-----END PRIVATE KEY-----', 'x' * 8193):
+            with patch.object(workloads, 'kube', return_value=SimpleNamespace(stdout=value)):
+                with self.assertRaisesRegex(RuntimeError, 'public TLS certificate'):
+                    workloads.release_simulator_certificate()
+        value = '-----BEGIN CERTIFICATE-----\npublic\n-----END CERTIFICATE-----\n'
+        with patch.object(workloads, 'kube', return_value=SimpleNamespace(stdout=value)):
+            self.assertEqual(value, workloads.release_simulator_certificate())
+
+    def test_ready_foreign_deployment_cannot_supply_lab_trust(self):
+        from types import SimpleNamespace
+        deployment = {'metadata': {'labels': {}}, 'status': {'availableReplicas': 1}}
+        with patch.object(workloads, 'kube', return_value=SimpleNamespace(stdout=json.dumps(deployment))):
+            with self.assertRaisesRegex(RuntimeError, 'Unowned'):
+                workloads.release_simulator_ready()
+
+
 class BackendUpgradeSafetyTest(unittest.TestCase):
     def deployment(self, image, replicas):
         return {'metadata': {'name': 'identity'}, 'spec': {'replicas': replicas,
@@ -526,6 +547,16 @@ class WorkloadCredentialsTest(unittest.TestCase):
                     workloads.secrets_data()
             self.assertEqual(original,secret_file.read_text())
 
+    def test_invalid_configuration_key_is_not_silently_replaced(self):
+        with tempfile.TemporaryDirectory() as directory:
+            secret_file = Path(directory) / 'workload-secrets.json'
+            original = '{"configurationMasterKey":"invalid"}\n'
+            secret_file.write_text(original)
+            with patch.object(workloads, 'SECRET_FILE', secret_file):
+                with self.assertRaisesRegex(RuntimeError, 'Invalid configuration master key'):
+                    workloads.secrets_data()
+            self.assertEqual(original, secret_file.read_text())
+
     def test_new_transport_tokens_preserve_existing_credentials_and_repeat_without_rewrite(self):
         with tempfile.TemporaryDirectory() as directory:
             secret_file = Path(directory) / 'workload-secrets.json'
@@ -540,6 +571,7 @@ class WorkloadCredentialsTest(unittest.TestCase):
                 second = workloads.secrets_data()
             self.assertEqual(original, {key: first[key] for key in original})
             self.assertRegex(first['minioRootPassword'], r'^[A-Za-z0-9_-]{43}$')
+            self.assertRegex(first['configurationMasterKey'], r'^[0-9a-f]{64}$')
             self.assertRegex(first['paymentSimulatorApiKey'], r'^sk_test_[A-Za-z0-9_-]{43}$')
             self.assertRegex(first['paymentSimulatorWebhookSecret'], r'^whsec_[A-Za-z0-9_-]{43}$')
             self.assertEqual(36, len(first['paymentSimulatorPosKey']))

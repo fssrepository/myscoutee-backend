@@ -18,20 +18,25 @@ Native DEMO login, reads through every assembly and logout pass through
 two-identity contact mutation/replay sample pass. The bounded stress result and
 qualification limits are recorded in [PROGRESS.md](PROGRESS.md).
 
-### MSC-122 preparation — 2026-10-10, KVM gate pending
+### MSC-122 preparation — 2026-10-10, KVM gate passed
 
-The current working tree moves generic bootstrap/configuration/TLS/update source
-into platform without a Registry dependency. Help and MyScoutee operator/Registry
-now have separate `help` and `network` assemblies and gateway routes. Source
-composition has eight processes; identity retains accounts/access/admin/platform/
-integrations. The virtual-company network is excluded from the template.
+Generic bootstrap/configuration/TLS/update source now belongs to platform.
+Help and MyScoutee operator/Registry have separate `help` and `network` assemblies;
+content stays in community. Eight Java processes cover all 21 domains. The
+virtual-company network is excluded from the template; retained minimal models
+stay unchanged, including localization and location.
 
-Eight-service JAR/image packaging and ownership checks pass, with 228 transport
-tests and 61 infrastructure checks. The earlier canonical JUnit result and the
-historical KVM snapshot above predate the network split. The runtime order is: finish development, stop dev,
-qualify KVM (including warmed-up CPU/load and any necessary repairs), stop KVM,
-then qualify the monolith. Never run both stacks together.
-See [the complete template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
+Helm revision 129 is Ready. Native KVM reads/consent and all 15 delegated headless
+browser checks pass, including editable operator configuration and HTTP 200
+release discovery. Warmed read load completed 4,498 requests with zero errors at
+74.9 requests/s. The persistent configuration key and existing Compose release
+simulator are now wired into the lab. The independently found public release
+catalog defect was also repaired, without weakening signature verification.
+
+Final regression: 228 transport, 359 targeted canonical JUnit and 65 infrastructure
+checks pass. The monolith native login/seven reads/logout and the same 15 browser checks also
+pass. KVM is stopped and the existing dev stack is running; never run both together. See [progress/evidence](PROGRESS.md) and
+[the complete template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
 
 ### Latest delegated qualification
 
@@ -128,7 +133,7 @@ Never turn the flag off against replica-set data as an implicit rollback.
 
 Native recovery and HTTP adapter changes are verified by the accumulated suite.
 The [English guide](../guides/manuals/myscoutee-microservices-guide-en.html) and
-[branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.0_EN.pdf) describe
+[branded PDF](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.1_EN.pdf) describe
 the actual deployment, operations, measurements and limits.
 
 `assets`, `events` and `eventFeedbackStates` now use optimistic document versions.
@@ -365,6 +370,22 @@ python3 microservices/tools/workloads.py lock-images
 python3 microservices/tools/workloads.py frontend-up
 python3 microservices/tools/check-support.py
 ```
+
+The developer lab also packages the existing Compose release simulator, including
+its canonical startup wrapper and HTTPS catalog server. Build this image explicitly:
+
+```bash
+bash microservices/tools/lab.sh release-simulator-image
+python3 microservices/tools/workloads.py lock-images
+```
+
+On first deployment, `workloads.py up` starts support services with backend replicas
+at zero, copies only the simulator's public TLS certificate into a ConfigMap, then
+starts the backends. The private TLS volume remains simulator-owned. Only the
+platform owner receives the HTTPS release origins and public CA. An empty local
+catalog is explicit and never falls back to GitHub; it proves discovery, not a
+package upgrade. Signed upgrade/interruption/rollback qualification uses the
+existing release fixture and remains a separate gate.
 
 The check passed all four image healthchecks, STUN Binding Responses over host-to-VM
 UDP and TCP, the localhost MCP private endpoint's 401/OAuth challenge, the simulator
@@ -775,7 +796,7 @@ Do not launch the harness documentation's monolith Compose example for this lab.
 Preserve the user's browser control under the repository QA rules. These remain
 unfinished acceptance criteria, not claims implied by a ready k3s API.
 
-The English [Microservices Guide](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.0_EN.pdf)
+The English [Microservices Guide](../guides/manuals/MyScoutee_Microservices_Guide_v0.1.1_EN.pdf)
 uses the existing M logo, shared manual stylesheet and PDF generator. Version
 0.1.0 is an implementation preview. Update it with the final application/stress
 results; it is listed in the backend/frontend README documentation tables.

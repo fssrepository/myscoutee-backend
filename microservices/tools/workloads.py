@@ -150,6 +150,7 @@ def secrets_data():
         'mongoPassword': secrets.token_hex(24), 'mongoRootPassword': secrets.token_hex(24),
         'localizationToken': secrets.token_urlsafe(32)}
     for key, value in {
+            'configurationMasterKey': secrets.token_hex(32),
             'mongoReplicaKey': base64.b64encode(secrets.token_bytes(512)).decode('ascii'),
             'paymentSimulatorApiKey': 'sk_test_' + secrets.token_urlsafe(32),
             'paymentSimulatorWebhookSecret': 'whsec_' + secrets.token_urlsafe(32),
@@ -158,6 +159,8 @@ def secrets_data():
         if key not in values:
             values[key] = value
             added = True
+    if not re.fullmatch(r'[0-9a-f]{64}', values['configurationMasterKey']):
+        raise RuntimeError('Invalid configuration master key; refusing automatic replacement.')
     if ('delegationPrivateKey' in values) != ('delegationPublicKey' in values):
         raise RuntimeError('Incomplete actor delegation keypair; refusing automatic replacement.')
     if 'delegationPrivateKey' not in values:
@@ -262,6 +265,26 @@ def actor_delegation_settings(services, credentials, capabilities):
     return {'owner': owners[0], 'clients': clients}
 
 
+def release_simulator_ready():
+    result = kube('-n', NAMESPACE, 'get', 'deployment', 'release-simulator', '--ignore-not-found', '-o', 'json')
+    if not result.stdout.strip():
+        return False
+    deployment = json.loads(result.stdout)
+    if any(deployment['metadata'].get('labels', {}).get(k) != v for k, v in LABEL.items()):
+        raise RuntimeError('Unowned release simulator deployment')
+    return deployment.get('status', {}).get('availableReplicas', 0) > 0
+
+
+def release_simulator_certificate():
+    certificate = kube('-n', NAMESPACE, 'exec', 'deployment/release-simulator', '--',
+                       'cat', '/data/tls/certificate.pem').stdout.strip()
+    if (len(certificate) > 8192 or not certificate.startswith('-----BEGIN CERTIFICATE-----\n')
+            or not certificate.endswith('\n-----END CERTIFICATE-----')
+            or certificate.count('-----BEGIN ') != 1):
+        raise RuntimeError('Release simulator did not provide one public TLS certificate')
+    return certificate + '\n'
+
+
 def chart_values(backends_enabled=True):
     backend = Path(os.environ.get('MYSCOUTEE_BACKEND_SOURCE', SHELL.parent))
     transport_runtime, _ = transport_settings(SERVICES)
@@ -270,6 +293,7 @@ def chart_values(backends_enabled=True):
     delegation = actor_delegation_settings(SERVICES, credentials, capabilities)
     return {
         'images': image_lock(),
+        'releaseSimulatorCertificate': release_simulator_certificate() if backends_enabled else '',
         'mongodb': {'replicaSet': CONFIG.get('mongoReplicaSet', False), 'cpuLimit': str(CONFIG.get('mongoCpuLimit', 2))},
         'services': {name: {**config, 'replicas': 1 if backends_enabled else 0} for name, config in SERVICES.items()},
         'frontend': {'replicas': CONFIG['frontendReplicas'], 'nodePort': CONFIG['frontendNodePort']},
@@ -318,11 +342,12 @@ def chart_objects():
              if CONFIG.get('mongoReplicaSet') else
              [('PersistentVolumeClaim', 'mongodb'), ('Deployment', 'mongodb'), ('Service', 'mongodb')])
     return [('Secret', 'runtime'), ('Secret', 'mongodb-bootstrap'), ('Secret', 'minio-bootstrap'), ('Secret', 'payment-simulator'),
-            *mongo, ('Secret', 'actor-delegation-issuer'),
+            *mongo, ('Secret', 'actor-delegation-issuer'), ('Secret', 'deployment-configuration'),
             *[('Secret', 'transport-' + name) for name in SERVICES],
             ('ServiceAccount', 'runtime-status'), ('Role', 'runtime-status'), ('RoleBinding', 'runtime-status'),
-            ('ConfigMap', 'runtime'), ('ConfigMap', 'mongodb-init'), ('ConfigMap', 'frontend'),
+            ('ConfigMap', 'runtime'), ('ConfigMap', 'mongodb-init'), ('ConfigMap', 'frontend'), ('ConfigMap', 'release-simulator-ca'),
             ('Service', 'metrics-gateway'), ('PersistentVolumeClaim', 'minio'),
+            ('PersistentVolumeClaim', 'release-simulator'),
             ('PersistentVolumeClaim', 'registry'), ('PersistentVolumeClaim', 'registry-client'), ('PersistentVolumeClaim', 'payment-simulator'),
             *[(kind, name) for name in [*SERVICES, *CONFIG['dependencies']] if name != 'mongodb' for kind in ['Deployment', 'Service']]]
 
@@ -404,6 +429,10 @@ def migrate_mongo_member_services(services):
 
 
 def deploy_chart(check_only=False, backends_enabled=True):
+    # Start the canonical simulator first on a fresh lab. Transfer only its public
+    # CA into a ConfigMap before starting the platform owner; never share its keys.
+    if backends_enabled and not check_only and not release_simulator_ready():
+        deploy_chart(backends_enabled=False)
     if CONFIG.get('mongoReplicaSet') and not check_only:
         from mongo_replica import configured, require_conversion_receipt, initialize, require_stateful_volumes
         require_conversion_receipt()
@@ -411,7 +440,9 @@ def deploy_chart(check_only=False, backends_enabled=True):
         if backends_enabled and not configured():
             deploy_chart(backends_enabled=False)
             initialize()
-    values = chart_values(backends_enabled=backends_enabled)
+    # Lint the bootstrap form without requiring a running simulator. Real backend
+    # deployment must read its CA successfully; never replace it with an empty value.
+    values = chart_values(backends_enabled=backends_enabled and not check_only)
     chart = SHELL / 'deploy/chart'
     lint = helm('lint', chart, '-f', '-', values=values)
     print(lint.stdout, end='', flush=True)

@@ -24,10 +24,10 @@
     </div>
     <div class="cover-meta" aria-label="Document metadata">
       <div><strong>Document ID</strong><span>MSC-MS-001</span></div>
-      <div><strong>Document version</strong><span>0.1.0</span></div>
-      <div><strong>Applicable software version</strong><span>MSC-121 / MSC-120 working source</span></div>
+      <div><strong>Document version</strong><span>0.1.1</span></div>
+      <div><strong>Applicable software version</strong><span>MSC-122 / MSC-121 / MSC-120 working source</span></div>
       <div><strong>Status</strong><span class="cover-status"><span class="status-dot" aria-hidden="true"></span>Implementation preview</span></div>
-      <div><strong>Released</strong><time datetime="2026-10-09">2026-10-09</time></div>
+      <div><strong>Released</strong><time datetime="2026-10-10">2026-10-10</time></div>
       <div><strong>Language</strong><span>EN</span></div>
     </div>
   </section>
@@ -42,10 +42,11 @@
     </tbody></table>
     <h3>Version History</h3>
     <table><thead><tr><th>Version</th><th>Date</th><th>Change</th></tr></thead><tbody>
+      <tr><td>0.1.1</td><td>2026-10-10</td><td>Eight-service separation, platform deployment capabilities, retained minimal-template models, native KVM browser qualification and local release simulator.</td></tr>
       <tr><td>0.1.0</td><td>2026-10-09</td><td>Verified playground: all six assemblies, native recovery journals, sampled two-pod contact writes, bounded read stress, canonical data imports and observability. Includes the KVM/Kubernetes/Helm layer map, operation and cleanup procedures.</td></tr>
     </tbody></table>
     <aside class="callout warning"><strong>Qualification boundary</strong>
-      The verified deployment is Helm revision 95: all six backends and nine supporting Deployments are Ready. All 21 domains are included. Native DEMO login, reads through all assemblies, logout, nineteen public/content checks, sampled two-pod contact writes and bounded read stress pass. Native recovery and adapter tests pass. Native browser/workspace checks and live contact-worker recovery also pass. Unsampled checkout/publication/role flows remain qualification gates; this playground is not a production-readiness claim. See <code>microservices/PROGRESS.md</code> for the numbered evidence.
+      The latest KVM qualification is Helm revision 129: eight Java backends and eight supporting Deployments are Ready, with a two-member Mongo StatefulSet. All 21 domains remain represented. Native member/operator login, profile editor entry, help/privacy/terms, guide completion, existing chat messages, events, workspace switching, operator configuration and logout pass in the managed headless browser. The local HTTPS release catalog returns HTTP 200. Earlier revision-125 warmed read load completed 4,498 requests with zero errors at 74.9 requests/second. These bounded checks are not production qualification or proof of package installation, Registry enrollment, recovery durability or every business flow. See <code>microservices/PROGRESS.md</code> for evidence. The subsequent serial monolith run passes the same 15 browser checks and native login/seven reads/logout. Final regression passes 228 transport, 359 canonical JUnit and 65 infrastructure tests.
     </aside>
   </section>
 
@@ -84,7 +85,7 @@
     </tbody></table>
     <p>Follow one change through these layers: changing a Java domain needs a new assembly image; changing which domains share a process changes <code>assemblies.json</code>; changing VM memory changes infrastructure. A Grafana panel changes presentation of measurements. Diagnose and edit the layer that owns the problem before restarting surrounding layers.</p>
     <h3>1.2 Current physical placement</h3>
-    <svg viewBox="0 0 650 370" role="img" aria-label="The developer host runs Terraform and libvirt, a KVM Ubuntu guest with k3s, Helm-managed workloads and containerd, and a separate Docker Compose monitoring stack. All six backend metrics targets were reachable at the recorded runtime checkpoint." style="width:100%;height:auto;break-inside:avoid">
+    <svg viewBox="0 0 650 370" role="img" aria-label="The developer host runs Terraform and libvirt, a KVM Ubuntu guest with k3s, Helm-managed workloads and containerd, and a separate Docker Compose monitoring stack. All eight backend metrics targets were reachable at the recorded runtime checkpoint." style="width:100%;height:auto;break-inside:avoid">
       <g font-family="DejaVu Sans,Arial,sans-serif" font-size="12">
         <rect x="2" y="2" width="646" height="365" rx="9" fill="#f3f6f8" stroke="#17324d"/>
         <text x="18" y="26" font-weight="bold" fill="#17324d">DEVELOPER HOST · Ubuntu · approximately 16 GiB RAM</text>
@@ -99,7 +100,7 @@
         <text x="42" y="205">containerd · CoreDNS · local-path storage</text>
         <text x="42" y="224">kubectl: objects / events · crictl: runtime stats</text>
         <rect x="30" y="250" width="364" height="75" rx="5" fill="#e8f4f1" stroke="#0f766e"/>
-        <text x="42" y="271" font-size="10.5">Helm workloads · 6 backends + 8 supporting Deployments</text>
+        <text x="42" y="271" font-size="10.5">Helm workloads · 8 backends + 8 supporting Deployments</text>
         <text x="42" y="292">frontend / routing · 6 service assemblies</text>
         <text x="42" y="313">MongoDB + Redis + MinIO · persistent data volumes</text>
         <rect x="425" y="107" width="209" height="234" rx="6" fill="white" stroke="#0f766e"/>
@@ -114,7 +115,7 @@
         <text x="437" y="319">No host-boot autostart</text>
       </g>
     </svg>
-    <p>The workload box contains all six backends and nine supporting Deployments. Host Docker builds images and runs monitoring; the guest uses containerd, so host <code>docker ps</code> does not list guest pods. Monitoring lives beside the VM, outside Kubernetes. Its application scrape targets need an explicit private network connection; simply installing Kubernetes does not provide that connection.</p>
+    <p>The workload box contains all eight backends and eight supporting Deployments. Host Docker builds images and runs monitoring; the guest uses containerd, so host <code>docker ps</code> does not list guest pods. Monitoring lives beside the VM, outside Kubernetes. Its application scrape targets need an explicit private network connection; simply installing Kubernetes does not provide that connection.</p>
     <h3>1.3 Application composition</h3>
     <table><caption>Current source grouping from assemblies.json</caption><thead><tr><th>Service</th><th>Domains</th><th>Heap / limit</th></tr></thead><tbody>
       <tr><td>identity</td><td>accounts, access, administration, platform, integrations</td><td>512 / 1024 MiB</td></tr>
@@ -126,8 +127,8 @@
       <tr><td>help</td><td>help</td><td>256 / 512 MiB</td></tr>
       <tr><td>network</td><td>operator, registry</td><td>384 / 768 MiB</td></tr>
     </tbody></table>
-    <aside class="callout warning"><strong>MSC-122 source preparation — KVM verification pending (2026-10-10)</strong>
-      Generic operator bootstrap, configuration, TLS and update code now belongs to the platform domain. Release verification shares canonical crypto and release contracts without requiring Registry configuration. The table reflects the new source grouping: help has a dedicated seventh service/image and gateway route. Java operator/Registry have a separate eighth network assembly, with bounded eligibility, durable purge and signed report boundaries. These virtual-company capabilities are excluded from the template. The previously recorded lab qualification predates this change. Finish development, stop dev, test the MyScoutee backend on the retained KVM (including warmed-up CPU/load), then stop KVM and check the monolith. Never run both stacks together. Complete these checks before carrying these foundations into the standalone minimal backend template. See <code>guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md</code> for the complete scope and current gate.
+    <aside class="callout warning"><strong>MSC-122 foundations — eight services (2026-10-10)</strong>
+      Generic bootstrap, configuration, TLS and updates belong to platform. Help remains a separate service; the existing content domain remains in community. Operator/Registry form the MyScoutee-specific network assembly and are excluded from the minimal template. KVM native checks pass; development and KVM must run serially. The template retains the required canonical models unchanged, including identity/session, profile, group/workspace, chat, content/consent, localization and geographic location foundations; screens may be omitted. The platform owner alone receives its persistent configuration key. The lab reuses Compose's release simulator and receives only its public TLS CA, with no GitHub fallback. An empty local catalog proves discovery only. See <code>guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md</code> for the extraction boundary.
     </aside>
     <p>The current source defines eight backend deployments for 21 domains. The mapping is configuration: splitting a group adds an assembly and reassigns its domains. Build project creation, precise Spring scans, Dockerfiles, Helm workloads and monitoring targets follow that map. For implemented boundaries, <code>transport/bindings.json</code> drives generated imports and Helm endpoint addresses from domain ownership, so a regrouped domain receives the matching network destination. A new network boundary still requires a reviewed transport adapter. Helm applies the listed memory limits. The frontend has one replica; the requested scaling experiment must use a working backend service.</p>
     <svg viewBox="0 0 650 235" role="img" aria-label="Canonical source feeds the monolith and eight independent service assemblies, with one shared MongoDB replica set in the VM." style="width:100%;height:auto">
@@ -168,7 +169,7 @@ python3 microservices/tools/workloads.py lock-images
 
 # Ordinary deployment: import missing versions; never build implicitly.
 python3 microservices/tools/workloads.py up</code></pre>
-    <p><code>deploy/images.lock.json</code> records full Docker image configuration IDs, content fingerprints and version references. A reference such as <code>myscoutee-service-assets:0.1.0-&lt;hash&gt;</code> is checked against its full ID before reuse. The host and guest have different image stores. <code>import-images</code> streams only missing locked images from host Docker to guest containerd over the existing pinned SSH connection. Repeated deployment reuses the locked guest cache without rebuilding. The inventory now contains six backend and eight supporting images.</p>
+    <p><code>deploy/images.lock.json</code> records full Docker image configuration IDs, content fingerprints and version references. A reference such as <code>myscoutee-service-assets:0.1.0-&lt;hash&gt;</code> is checked against its full ID before reuse. The host and guest have different image stores. <code>import-images</code> streams only missing locked images from host Docker to guest containerd over the existing pinned SSH connection. Repeated deployment reuses the locked guest cache without rebuilding. The inventory now contains eight backend and nine supporting images.</p>
     <p>Kubernetes uses <code>IfNotPresent</code>. This single-node lab does not need an additional registry container. Custom tags are local artifacts, not published Docker Hub images: a new machine must receive the matching artifact or build it explicitly. A future registry can distribute published versions; cache presence and exact identity must still be verified.</p>
   </section>
 
@@ -279,7 +280,7 @@ python3 microservices/tools/vm.py observe</code></pre>
     <table><thead><tr><th>Term</th><th>Meaning here</th></tr></thead><tbody>
       <tr><td>Node</td><td>The Ubuntu VM registered as <code>myscoutee-msc121</code>. Its Ready condition describes the worker's ability to accept work.</td></tr>
       <tr><td>Pod / container</td><td>A pod is Kubernetes' scheduling unit. A container is the running image inside it. For the planned application, each assembly starts its own JVM container; pod identities may change when replaced.</td></tr>
-      <tr><td>Deployment</td><td>A desired set of replaceable pod replicas and their image/configuration. Each of the six backend Deployments normally has one replica. The bounded scale experiment temporarily gives assets two replicas and restores one afterwards.</td></tr>
+      <tr><td>Deployment</td><td>A desired set of replaceable pod replicas and their image/configuration. Each of the eight backend Deployments normally has one replica. The bounded scale experiment temporarily gives assets two replicas and restores one afterwards.</td></tr>
       <tr><td>Service / CoreDNS</td><td>A Service gives selected pods a stable cluster address. CoreDNS resolves service names inside the cluster. A Service does not automatically expose its pods at the host's localhost.</td></tr>
       <tr><td>Namespace</td><td>A grouping of cluster objects. <code>kube-system</code> contains system components. This is not a MyScoutee tenant, workspace or REAL/DEMO database boundary.</td></tr>
       <tr><td>Local-path storage</td><td>The bundled provisioner can create persistent storage on the guest disk. A volume can outlive a pod, but destroying this VM destroys its local backing data.</td></tr>
@@ -344,7 +345,7 @@ sudo k3s crictl stats
 free -m
 sudo systemctl status k3s --no-pager
 sudo cloud-init status --long</code></pre>
-    <p>Read the output in order: a Ready node confirms the worker; desired/ready Deployment counts show reconciliation; each pod's Ready column counts ready containers. A Running pod can still be unready. Repeated restarts require events and previous container logs. The recorded deployment has all six backends Ready. If a future split introduces a missing binding, use the standalone context probe before rebuilding images. MongoDB, Redis, MinIO and frontend readiness do not make those backend services healthy.</p>
+    <p>Read the output in order: a Ready node confirms the worker; desired/ready Deployment counts show reconciliation; each pod's Ready column counts ready containers. A Running pod can still be unready. Repeated restarts require events and previous container logs. The revision-129 deployment has all eight backends Ready. If a future split introduces a missing binding, use the standalone context probe before rebuilding images. MongoDB, Redis, MinIO and frontend readiness do not make those backend services healthy.</p>
     <p>For a failing pod, use the actual namespace and pod name from the listing with <code>kubectl describe pod</code> and <code>kubectl logs</code>; add <code>--previous</code> for the last crashed instance. Do not paste credentials or user payloads into reports. Container statistics, guest memory and JVM heap have different scopes: they should not be expected to show the same number.</p>
     <h3>5.3 From an image to a reachable application</h3>
     <pre><code>python3 microservices/tools/workloads.py up
@@ -361,7 +362,7 @@ microservices/tools/helm.sh list -n myscoutee-msc121
 microservices/tools/helm.sh status myscoutee-msc121 -n myscoutee-msc121
 microservices/tools/helm.sh history myscoutee-msc121 -n myscoutee-msc121</code></pre>
     <p><code>helm.sh</code> downloads the pinned, checksum-verified tool into private lab state. It keeps its configuration/cache and kubeconfig out of the user's default directories. Helm values and release Secrets contain credentials; do not publish <code>helm get values</code> or manifest output. Mongo's volume claim is retained during release removal; destroying the VM still deletes the lab disk.</p>
-    <p>The completed <code>helm-install-gateway-api-crd</code> system Job belongs to k3s. It installs Kubernetes Gateway API resource definitions, not a running API gateway. Our actual HTTP entry layer is nginx. CoreDNS resolves Service names such as <code>mongodb</code> inside the cluster; <code>local-path-provisioner</code> allocates a directory on the guest disk for Mongo's claim. Neither is one of the six Java business services.</p>
+    <p>The completed <code>helm-install-gateway-api-crd</code> system Job belongs to k3s. It installs Kubernetes Gateway API resource definitions, not a running API gateway. Our actual HTTP entry layer is nginx. CoreDNS resolves Service names such as <code>mongodb</code> inside the cluster; <code>local-path-provisioner</code> allocates a directory on the guest disk for Mongo's claim. Neither is one of the eight Java business services.</p>
   </section>
 
   <section id="observability">
@@ -390,7 +391,7 @@ microservices/tools/lab.sh monitoring-destroy</code></pre>
       <tr><td>JVM process CPU</td><td>Reported process CPU usage. Compare with guest/runtime statistics and the configured CPU constraints before drawing capacity conclusions.</td></tr>
       <tr><td>HTTP server errors per second</td><td>The rate of 5xx responses. It omits 4xx outcomes and application-level failures returned with successful HTTP status, which the flow/stress assertions must catch.</td></tr>
     </tbody></table>
-    <p>Start with <code>up{job="prometheus"}</code> in Prometheus: it checks the collector's own scrape. Then inspect <code>up{job="myscoutee"}</code> by service. The collector self-scrape is verified UP. The private gateway is reachable from the Prometheus container. All six application targets are UP at the verified checkpoint. A stopped or unreachable backend makes its target DOWN; missing JVM series and missing HTTP traffic are distinct from scrape failure. Use the per-service labels and the VM/container statistics alongside JVM panels.</p>
+    <p>Start with <code>up{job="prometheus"}</code> in Prometheus: it checks the collector's own scrape. Then inspect <code>up{job="myscoutee"}</code> by service. The collector self-scrape is verified UP. The private gateway is reachable from the Prometheus container. All eight application targets were reachable at the MSC-122 checkpoint. A stopped or unreachable backend makes its target DOWN; missing JVM series and missing HTTP traffic are distinct from scrape failure. Use the per-service labels and the VM/container statistics alongside JVM panels.</p>
     <aside class="callout warning"><strong>Two different DNS and network scopes</strong>
       Kubernetes Service DNS is internal to the guest cluster. Prometheus therefore scrapes <code>192.168.173.10:30081/metrics/&lt;service&gt;</code>; a separate nginx listener maps only the generated service names to their private <code>8081/metrics</code> endpoint. Its resolver uses fully qualified Kubernetes names. Other paths return 404, and the public frontend listener does not expose this route. Targets and service labels are generated from the same assembly manifest.
     </aside>
@@ -480,14 +481,14 @@ microservices/tools/lab.sh clean-build</code></pre>
   <section id="evidence">
     <h2>10. Verification and Known Limits</h2>
     <table><thead><tr><th>Recorded evidence — 2026-10-09</th><th>Boundary</th></tr></thead><tbody>
-      <tr><td>21 domains in six audited JARs; 183 transport bindings</td><td>All domains are included, with owner implementations excluded from foreign artifacts</td></tr>
+      <tr><td>21 domains in eight audited JARs; 187 transport bindings</td><td>All domains are included, with owner implementations excluded from foreign artifacts</td></tr>
       <tr><td>1,691 standard tests; 81 embedded cases; 219 adapter cases</td><td>Accumulated source-batch verification. Embedded cases passed across the group run and focused email rerun; adapter count includes four added recovery-command round trips.</td></tr>
       <tr><td>Infrastructure safety tests; focused scheduler regression</td><td>Deployment ownership/upgrade guards and schedule/claim semantics</td></tr>
       <tr><td>184 OpenAPI schema graphs compile</td><td>Schema compilation is not HTTP evidence for every binding</td></tr>
-      <tr><td>Six real Spring contexts; six Ready backends; eight Ready supporting workloads</td><td>Wiring and startup, not complete business-flow correctness</td></tr>
+      <tr><td>Eight Ready backends; eight Ready supporting Deployments; Mongo StatefulSet 2/2</td><td>Wiring and startup, not complete business-flow correctness</td></tr>
       <tr><td>19 public/content checks; native login, seven authenticated reads, logout</td><td>Public gateway and basic session/data routing</td></tr>
       <tr><td>Two assets replicas, 3,790 successful bounded read requests</td><td>Read routing/load only; cleanup restored one replica and revoked the test session</td></tr>
-      <tr><td>All six Prometheus application targets up</td><td>Private scrape connectivity and availability</td></tr>
+      <tr><td>Eight application metrics endpoints reachable</td><td>Private scrape connectivity and availability</td></tr>
     </tbody></table>
     <p>The source batch through milestone 20 is implemented and its accumulated verification has run. Contact mutations and sampled two-pod writes pass. The delegated browser sample and contact-worker termination recovery also passed. Broader role, checkout, publication, and other worker-failure flows remain separate qualification work. Startup, read traffic and schema compilation do not prove those boundaries.</p>
     <pre><code>microservices/tools/lab.sh jars

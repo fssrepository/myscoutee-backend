@@ -8,9 +8,10 @@ Updated: 2026-10-10. Task: [MSC-122](https://github.com/fssrepository/myscoutee-
 `myscoutee-backend`: backend, frontend shell, local development, service assembly,
 release/version tags, Debian package, Netcup installation, KVM lab, and a getting
 started guide/PDF. It is not a component demonstration or a frontend-only starter.
-Reuse the existing owners and operational workflows. A template domain may have
-a smaller implementation appropriate to its purpose; retain the full structural
-and operational foundations. Registry models the MyScoutee virtual company and
+Reuse the existing owners and operational workflows. Select the models required by the minimal flows and retain those models unchanged,
+including their seed/local/backend contracts, so later MyScoutee upgrades remain
+compatible. Keep the full structural and operational foundations; minimal UI
+exposure does not authorize truncating retained schemas. Registry models the MyScoutee virtual company and
 is excluded entirely, including the Java network client and Go Registry server.
 
 ### Minimal backend and optional screens
@@ -25,13 +26,13 @@ add speculative abstractions either. A material loss of future capability needs
 a concrete user decision before the cut; the inventory below is not blanket
 authorization to delete every unused field or domain.
 
-The minimum runnable product is a member SmartList and chat, backed by a small
-member model and canonical identity capabilities: REAL/DEMO database and session
+The minimum runnable product is a member SmartList and chat, backed by the selected, unchanged
+MyScoutee member models and canonical identity capabilities: REAL/DEMO database and session
 separation, Firebase authentication, native login/logout and account lifecycle.
 Retain the schemas and minimal seed required by those flows. Derive membership,
-chat participants and authorization from the retained member model, without
-carrying MyScoutee event/matchmaking/payment/Registry structures merely because
-the current product references them. Do not substitute mock login, in-memory
+chat participants and authorization from the retained canonical models. Review the dependency closure before
+excluding event/matchmaking/payment models; do not remove fields from retained
+models merely because the initial screen does not display them. Do not substitute mock login, in-memory
 chat or a disconnected sample list for the existing persisted flows.
 
 Keep the existing group/workspace structure where identity, session scoping and
@@ -67,7 +68,7 @@ Source inventory for that selection (not completed template implementation):
 
 | Minimum flow | Existing owner to reuse | Product coupling to review for the template |
 | --- | --- | --- |
-| Member/session | accounts `Users`, native auth/session controllers, Firebase filters; frontend session and Firebase services | Review matchmaking/profile scoring, organizer/event/payment fields and counters individually; preserve generally reusable structure |
+| Member/session | accounts `Users`, native auth/session controllers, Firebase filters; frontend session and Firebase services | Select required models with their dependency closure; preserve every retained model unchanged, including fields hidden from the minimal UI |
 | Member list | Existing shared SmartList and account-owned profile reads | Product discovery filters and business card compositions |
 | Chat | chat documents/repositories, message/read state and existing client/server transport | Event/asset/support-case conversation branches and their foreign ports; retain member authorization |
 | Account deletion | accounts `DeletedAccountPurgeService` / `AccountPurgeJob`, notification-owned job admission, platform scheduling | Purge stages for omitted product domains; preserve retained-domain cleanup and durable retry |
@@ -174,9 +175,17 @@ write authority is granted. Large identity lookups use bounded batches.
 Landing content consumes the narrow `PublicHelpContent` API; its bounded read
 transport preserves REAL/DEMO and the canonical published-document implementation.
 
-Localization means translation/i18n and currently remains in communication.
-Geographic country partitions belong to platform; login/location eligibility and
-region access policies belong to accounts/access. These are distinct capabilities.
+Both localization/i18n and geographic location are required in the template.
+Localization currently remains in communication; geographic country partitions
+belong to platform, and login/location eligibility and region policies belong to
+accounts/access. An operator configuration switch may disable location use later;
+this does not authorize deleting the location models or creating a parallel feature
+framework. Reuse the existing configuration owner.
+
+The proposed help/content regrouping was withdrawn. `help` stays separate;
+`content` stays inside `community`. Its current scope includes articles/landing,
+photo feed, sharing, feedback/reports, moderation, statistics and privacy cleanup.
+No domain rename or five additional transport boundaries were implemented.
 
 The original monolith, endpoint paths, collection owners, signed field order,
 signing domain strings and helper request schema are retained. In particular,
@@ -185,61 +194,68 @@ unchanged so existing signatures remain verifiable.
 
 ## Verification / current gate
 
-The eight-service source and packaging checks below pass. KVM and final monolith
-qualification remain pending; the earlier 271-test canonical regression result
-predates the network split and does not qualify its latest canonical changes.
+The eight-service KVM gate is complete at Helm revision **129**. The serial
+monolith gate and final focused JUnit batch also pass. No complete-template
+extraction is claimed.
 
-- Existing monolith watcher compiled the source and restarted the application.
-- Source assembly inventory: all 21 domains have exactly one owner.
-- Infrastructure checks: 61 passed (`microservices/tools/test_infra.py`).
-- Focused backend regression: **271 passed**, zero failures/errors/skips, with
-  `tools/run-backend-junit.sh standard` selecting Operator, Registry, Help,
-  MongoConverter and domain-boundary/ownership tests. The runner uses isolated
-  outputs and no dev databases (`/tmp/msc122-platform-junit.log`).
-- Eight independent JAR builds and artifact ownership checks passed; **228**
-  transport tests passed (`/tmp/msc122-network-assemblies.log`). The existing affinity
-  HTTP fixture lacked its canonical `ScheduledMongoSessionRunner` bean; the
-  fixture now supplies it, preserving its native-owner assertions.
-- New public-help transport: **24 actual HTTP responses** validate against its
-  OpenAPI contract, including published content, REAL/DEMO, unknown fields,
-  service credentials, forbidden GET, size/media limits and owner failures.
-  Run `node microservices/tools/verify-transport-contracts.mjs
-  --contract=help/public-help-content-v1` (on one line). All contract schemas
-  compile. Whole-inventory wire validation stops at pre-existing missing
-  `affinity/recompute-metrics-v1` HTTP evidence; no full-inventory pass is claimed.
-- Eight runtime Docker images built; `deploy/images.lock.json` records exact
-  identities (`/tmp/msc122-network-images.log`). No guest image import/deploy has run.
-- New network contracts validate actual HTTP evidence: measurement eligibility
-  12 responses, global-identity privacy 11, operator reports 49. These HTTP
-  fixtures do not prove KVM persistence or production recovery.
-- The domain audit exposed pre-existing change-stream registration literals in
-  `AdminStatsTelemetryWorkerService.watchInputs` and
-  `PromotionalEmailDeliveryProcessor.watchDeliveries` and
-  `ScheduledMessageTaskService.watchScheduledTasks`. Its exception is limited
-  to those exact methods and reviewed subscription collections. Actual foreign
-  document references and other collection accesses remain rejected.
-- KVM runtime/context/flow qualification has **not run for this source**. Dev is
-  stopped and libvirt is active after interactive sudo in the opened terminal.
-  The separate versioned `vm.py observe` terminal is open. After the user directed
-  continuation past the small host-memory shortfall, startup used the existing
-  per-invocation `--host-reserve-mib 1792` option; guest size remains 8192 MiB /
-  4 vCPU and defaults are unchanged. Actual startup preflight found 10,251 MiB
-  available. Cloud-init and k3s API readiness passed; rollout is in progress.
-  Host memory-pressure averages were zero during the initial startup sample.
+- All 21 domains retain exactly one assembly owner. Eight independent JARs/images
+  passed packaging/ownership checks; immutable identities are in
+  `microservices/deploy/images.lock.json`.
+- KVM native DEMO login/read/logout and public routes pass. Native consent save,
+  logout and a fresh login retain the accepted version. The owned fixture was
+  cleaned up. Integration reports reject a write-only token (403); explicit READ
+  reaches the network owner and its native unenrolled-state conflict (409).
+- Managed headless browser: **15 checks pass**, including member/operator native
+  login, profile editor and image-editor entry, help/privacy/terms documents,
+  guide completion, existing chat messages, events, Work/Dating workspace switches,
+  operator configuration and logout. No browser action saves operator configuration.
+  The release catalog returns HTTP 200. Report:
+  `microservices/build/reports/browser/kvm/qualification.json`.
+- KVM configuration initially lacked the platform master's key. A persistent
+  deployment key is now retained in the existing private workload state and
+  mounted only by its owner. Existing REAL/DEMO configuration contained no
+  ciphertext before provisioning; no encrypted configuration key was replaced.
+- The lab now packages the existing Compose release simulator. Bootstrap starts
+  support services first and copies only the public TLS CA into a ConfigMap;
+  private keys stay with the simulator. An empty local catalog never falls back
+  to GitHub and is not package-installation evidence.
+- The independently discovered public 1.3.0 release defect is repaired: its missing
+  signed update catalog was added with the retained signing key and exact existing
+  DEB identity. Canonical Java discovery verifies it from GitHub. Compatibility is
+  exactly 1.3.0–1.3.0; older-worker upgrades still use the signed client installer.
+  See `guides/qualification/evidence/RELEASE_1.3.0_CATALOG_REPAIR_20261010.json`.
+- Revision-125 warmed read stress: **4,498 requests, zero errors, 74.9 requests/s**
+  over 60.05 seconds, both selected assets served, zero application restarts.
+  The cold 47.4 requests/s sample recovered after JVM warm-up; no CPU patch was
+  justified. After load, the 40-second sample measured QEMU at 0.639 core
+  (5.32% of the 12-CPU host), with total host utilization 12.45%.
+- Final regressions: **228 transport tests**, **359 canonical JUnit tests**
+  (340 standard, 10 embedded update HTTP/download tests, 9 release-discovery
+  integration tests), zero failures/errors/skips. Monolith native login, seven
+  domain reads, logout and the same **15 browser checks** pass, including HTTP 200
+  release discovery. KVM is stopped and the existing dev stack is healthy.
+- Infrastructure safety: **65 tests pass**. The platform key survives repeated
+  state reads; an invalid retained key is rejected, not rotated. Foreign simulator
+  deployments and private-key material cannot supply the backend CA.
+- Existing HTTP contract evidence: public help 24 responses; measurement
+  eligibility 12; global-identity privacy 11; operator reports 49. These fixtures
+  do not prove KVM Registry persistence or production recovery. Whole-inventory
+  schema validation still has pre-existing missing affinity recompute response
+  evidence; no full-inventory pass is claimed.
+- Guest resources remain 8192 MiB / 4 vCPU, with no host-boot autostart. Dev and
+  KVM run serially. All original database/media volumes are retained.
 
-Continue the existing serial lifecycle: keep the
-Compose dev owners stopped, reuse the built/locked images above if source is unchanged
-(otherwise run `microservices/tools/lab.sh build` and `workloads.py lock-images`),
-import locked images through `workloads.py`, and deploy to the retained VM with the coordinated
-backend writer guard. Keep the same persistent volumes and canonical REAL/DEMO
-seed. Check real contexts, native login, help/consent and operator deployment
-routes, logout and the applicable existing public/read smoke suite. Record exact
-image identities and results in `microservices/PROGRESS.md`. Do not start the
-8-GiB guest alongside the host dev stack or use a second build cache.
+Registry enrollment/registered-network flows, durable global-identity purge,
+provider Firebase login, full image editing, signed update installation,
+interruption/rollback and template installation remain separate qualification
+scopes. The existing content/help grouping is unchanged. Documentation records
+only exercised behavior, not every optional screen or future template flow.
 
 ## Remaining complete-template work
 
-1. Finish the MyScoutee KVM gate above before template application extraction.
+1. The serial MyScoutee KVM → monolith gate above is complete for this extraction
+   boundary. Preserve its evidence and retain the separately listed unqualified
+   production/update/network scopes.
 2. Inventory remaining product dependencies in accounts/access/platform/admin,
    communication/media and integrations/MCP. Separate required extension ports
    at their current owners; retain login/session/demo, consent/guide, generic

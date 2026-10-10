@@ -96,6 +96,22 @@ build_minio_image() {
   record_image myscoutee-service-minio:msc121
 }
 
+build_release_simulator_image() {
+  require_idle_build_owner
+  install -d -m 0700 "${state_root}"
+  touch "${state_root}/images.tsv"
+  chmod 0600 "${state_root}/images.tsv"
+  mkdir -p "${shell_root}/build/runtime-context"
+  docker build --file "${backend_root}/server/docker/images/release-simulator/Dockerfile" \
+    --label com.myscoutee.task=MSC-121 --tag myscoutee-service-release-simulator-base:msc121 \
+    "${shell_root}/build/runtime-context"
+  record_image myscoutee-service-release-simulator-base:msc121
+  docker build --network=none --pull=false --file "${shell_root}/deploy/release-simulator.Dockerfile" \
+    --build-context "backend-source=${backend_root}" --label com.myscoutee.task=MSC-121 \
+    --tag myscoutee-service-release-simulator:msc121 "${shell_root}/build/runtime-context"
+  record_image myscoutee-service-release-simulator:msc121
+}
+
 build_support_images() {
   require_idle_build_owner
   install -d -m 0700 "${state_root}"
@@ -234,6 +250,7 @@ case "${1:-preflight}" in
   frontend-package) package_frontend_image ;;
   minio-image) build_minio_image ;;
   support-images) build_support_images ;;
+  release-simulator-image) build_release_simulator_image ;;
   render) python3 "${shell_root}/tools/render-deployment.py" ;;
   monitoring-up) monitoring up ;;
   monitoring-stop) monitoring stop ;;
@@ -248,5 +265,5 @@ case "${1:-preflight}" in
     [[ ! -L "${shell_root}/build" && ! -L "${shell_root}/.gradle" ]] || { echo 'Refusing symlinked build paths.' >&2; exit 2; }
     rm -rf -- "${shell_root}/build" "${shell_root}/.gradle"
     ;;
-  *) echo 'Usage: lab.sh [preflight|build|jars|images|frontend-image|frontend-package|minio-image|support-images|render|monitoring-up|monitoring-stop|monitoring-destroy|monitoring-reset-password|clean-images|clean-build]' >&2; exit 2 ;;
+  *) echo 'Usage: lab.sh [preflight|build|jars|images|frontend-image|frontend-package|minio-image|support-images|release-simulator-image|render|monitoring-up|monitoring-stop|monitoring-destroy|monitoring-reset-password|clean-images|clean-build]' >&2; exit 2 ;;
 esac

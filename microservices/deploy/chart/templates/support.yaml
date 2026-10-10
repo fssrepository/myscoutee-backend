@@ -109,7 +109,7 @@ spec:
         {{- end }}
         startupProbe:
           {{- if $service.healthPath }}
-          httpGet: {path: {{ $service.healthPath | quote }}, port: service}
+          httpGet: {path: {{ $service.healthPath | quote }}, port: service, scheme: {{ $service.healthScheme | default "HTTP" }}}
           {{- else }}
           exec: {command: {{ toJson $service.healthCommand }}}
           {{- end }}
@@ -117,14 +117,14 @@ spec:
           failureThreshold: 45
         readinessProbe:
           {{- if $service.healthPath }}
-          httpGet: {path: {{ $service.healthPath | quote }}, port: service}
+          httpGet: {path: {{ $service.healthPath | quote }}, port: service, scheme: {{ $service.healthScheme | default "HTTP" }}}
           {{- else }}
           exec: {command: {{ toJson $service.healthCommand }}}
           {{- end }}
           periodSeconds: 10
         livenessProbe:
           {{- if $service.healthPath }}
-          httpGet: {path: {{ $service.healthPath | quote }}, port: service}
+          httpGet: {path: {{ $service.healthPath | quote }}, port: service, scheme: {{ $service.healthScheme | default "HTTP" }}}
           {{- else }}
           exec: {command: {{ toJson $service.healthCommand }}}
           {{- end }}

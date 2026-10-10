@@ -40,11 +40,11 @@ const manuals = [
   },
   {
     source: 'myscoutee-microservices-guide-en.html',
-    output: 'MyScoutee_Microservices_Guide_v0.1.0_EN.pdf',
+    output: 'MyScoutee_Microservices_Guide_v0.1.1_EN.pdf',
     title: 'Microservices Guide',
     documentId: 'MSC-MS-001',
-    documentVersion: '0.1.0',
-    releaseDate: '2026-10-09'
+    documentVersion: '0.1.1',
+    releaseDate: '2026-10-10'
   },
   {
     source: 'myscoutee-mcp-user-guide-en.html',

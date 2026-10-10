@@ -19,6 +19,7 @@ minio:
   storage: 1Gi
 clusterDns: ""
 runtime: {}
+releaseSimulatorCertificate: ""
 credentials: {}
 transportCredentialsByService: {}
 actorDelegation:
@@ -31,6 +32,13 @@ shared:
 publicBaseUrl: http://localhost:18080
 stunNodePort: 30478
 supportServices:
+  release-simulator:
+    memoryMiB: 128
+    port: 18445
+    storage: 1Gi
+    healthPath: /repos/fssrepository/myscoutee/releases
+    healthScheme: HTTPS
+    environment: {}
   mcp:
     memoryMiB: 128
     port: 8080

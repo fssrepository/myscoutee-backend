@@ -14,7 +14,8 @@
     "stun": "coturn/coturn:4.18.0-r0-alpine",
     "mcp": "myscoutee-service-mcp:msc121",
     "registry": "myscoutee-service-registry:msc121",
-    "payment-simulator": "myscoutee-service-payment-simulator:msc121"
+    "payment-simulator": "myscoutee-service-payment-simulator:msc121",
+    "release-simulator": "myscoutee-service-release-simulator:msc121"
   },
   "stunNodePort": 30478,
   "metricsNodePort": 30081
