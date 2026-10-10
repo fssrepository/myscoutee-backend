@@ -99,8 +99,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     private void ensureStoredSupportCaseCounters(String adminUserId) {
-        ProfileSummary admin = usersRepository.findByUserId(normalize(adminUserId)).orElse(null);
-        if (!userActivityCountersService.hasSupportCaseCounters(admin == null ? null : admin.getUserId())) {
+        if (!userActivityCountersService.hasSupportCaseCounters(normalize(adminUserId))) {
             userActivityCountersService.refreshSupportCaseCountersForAdmins();
         }
     }

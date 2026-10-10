@@ -11,11 +11,13 @@ import fcntl
 import importlib
 import json
 import math
+from pathlib import Path
 import time
 import urllib.parse
 import workloads as w
 
 session = importlib.import_module('check-session')
+resources = importlib.import_module('measure-stress')
 
 
 def owned_deployment(name):
@@ -58,18 +60,29 @@ def main():
     parser.add_argument('--two-assets', action='store_true', help='Temporarily scale only assets from one to two pods')
     parser.add_argument('--seconds', type=int, default=30)
     parser.add_argument('--concurrency', type=int, default=4)
+    parser.add_argument('--profile', choices=['member', 'admin-identity'], default='member')
+    parser.add_argument('--warmup-seconds', type=int, default=0)
+    parser.add_argument('--idle-seconds', type=int, default=10)
+    parser.add_argument('--output', type=Path, help='Retain this sample separately instead of replacing read-load.json')
     args = parser.parse_args()
     if not 5 <= args.seconds <= 120 or not 1 <= args.concurrency <= 8:
         parser.error('Bounded lab profile: 5–120 seconds, 1–8 concurrent reads')
-    report = {'profile': 'native-demo-six-assembly-reads', 'seconds': args.seconds,
+    if not 0 <= args.warmup_seconds <= 120 or not 5 <= args.idle_seconds <= 30:
+        parser.error('Warmup must be 0–120 seconds; idle measurement 5–30 seconds')
+    if args.two_assets and args.profile != 'member':
+        parser.error('Two-assets routing requires the member read profile')
+    report = {'profile': 'native-demo-six-assembly-reads' if args.profile == 'member' else 'native-demo-admin-identity', 'seconds': args.seconds,
               'concurrency': args.concurrency, 'twoAssets': args.two_assets,
+              'warmupSeconds': args.warmup_seconds, 'idleSeconds': args.idle_seconds,
+              'sourceRevision': w.vm.run('git', '-C', w.SHELL.parent, 'rev-parse', 'HEAD').stdout.strip(),
+              'images': {name: entry['id'] for name, entry in w.image_lock().items()},
               'qualification': 'Read load/routing only; no business mutations or worker failover tested.'}
     with (w.vm.VM / 'lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         if not w.namespace_owned():
             raise RuntimeError('Owned namespace absent')
         for name in w.SERVICES:
-            deployment = w.kube_json('-n', w.NAMESPACE, 'get', 'deployment', name)
+            deployment = owned_deployment(name)
             if deployment['spec'].get('replicas') != 1 or deployment.get('status', {}).get('readyReplicas') != 1:
                 raise RuntimeError('Start one Ready replica of every backend before the check')
         assets = owned_assets()
@@ -84,23 +97,30 @@ def main():
                 scaled = True
                 w.kube('-n', w.NAMESPACE, 'scale', 'deployment/assets', '--current-replicas=1', '--replicas=2')
                 w.kube('-n', w.NAMESPACE, 'rollout', 'status', 'deployment/assets', '--timeout=180s', timeout=190)
-            before = asset_request_counts()
+            before = asset_request_counts() if args.profile == 'member' else {}
             expected = 2 if args.two_assets else 1
-            if len(before) != expected:
+            if args.profile == 'member' and len(before) != expected:
                 raise RuntimeError('Unexpected assets pod count')
-            login = session.start_session()
+            login = session.start_session('admin-demo-ava' if args.profile == 'admin-identity' else None)
             user_id, headers = login
             user = urllib.parse.quote(user_id, safe='')
             paths = ['/api/auth/me', '/api/activities/events?limit=5&userId=' + user,
                      '/api/notifications?limit=5&userId=' + user, '/api/assets?userId=' + user,
                      '/api/payment-methods?userId=' + user, '/api/activities/rates?userId=' + user]
+            if args.profile == 'admin-identity':
+                admin = importlib.import_module('check-admin-identity')
+                paths = ['/api/admin/' + route + '?adminUserId=' + user + '&lang=en' for route in admin.ROUTES]
+
+            def valid_body(path, body):
+                if args.profile == 'admin-identity':
+                    return admin.valid_admin_read(path.split('?')[0].rsplit('/', 1)[1], body, user_id)
+                return isinstance(body, (dict, list))
             # Warm every path before measuring the defined profile.
             for path in paths:
                 status, body = session.request(path, headers)
-                if status != 200 or not isinstance(body, (dict, list)):
+                if status != 200 or not valid_body(path, body):
                     raise RuntimeError('Read profile warmup failed: ' + path.split('?')[0])
-            start = time.monotonic()
-            deadline = start + args.seconds
+            deadline = time.monotonic() + args.warmup_seconds
 
             def worker(index):
                 rows = []
@@ -110,7 +130,7 @@ def main():
                     status = 0
                     try:
                         status, body = session.request(path, headers)
-                        valid = status == 200 and isinstance(body, (dict, list))
+                        valid = status == 200 and valid_body(path, body)
                     except (OSError, ValueError):
                         valid = False
                     rows.append({'path': path.split('?')[0], 'status': status, 'passed': valid,
@@ -118,12 +138,32 @@ def main():
                     index += 1
                 return rows
 
+            if args.warmup_seconds:
+                print('Warming the selected read profile for ' + str(args.warmup_seconds) + ' seconds.', flush=True)
+                with ThreadPoolExecutor(max_workers=args.concurrency) as executor:
+                    warmup = [row for batch in executor.map(worker, range(args.concurrency)) for row in batch]
+                if any(not row['passed'] for row in warmup):
+                    raise RuntimeError('Read profile warmup failed')
+            idle_before = resources.snapshot()
+            time.sleep(args.idle_seconds)
+            load_before = resources.snapshot()
+            report['idleResources'] = {'before': idle_before, 'after': load_before,
+                                      'deltas': resources.resource_deltas(idle_before, load_before),
+                                      'host': resources.host_delta(idle_before, load_before)}
+            start = time.monotonic()
+            deadline = start + args.seconds
             print('Running bounded native session read load: ' + str(args.concurrency) + ' clients / '
                   + str(args.seconds) + ' seconds / assets replicas ' + str(expected), flush=True)
             with ThreadPoolExecutor(max_workers=args.concurrency) as executor:
                 rows = [row for batch in executor.map(worker, range(args.concurrency)) for row in batch]
             elapsed = time.monotonic() - start
-            after = asset_request_counts()
+            load_after = resources.snapshot()
+            report['loadResources'] = {'before': load_before, 'after': load_after,
+                                      'deltas': resources.resource_deltas(load_before, load_after),
+                                      'host': resources.host_delta(load_before, load_after)}
+            report['containersStable'] = all(not row.get('replacedDuringRun')
+                for phase in ('idleResources', 'loadResources') for row in report[phase]['deltas'])
+            after = asset_request_counts() if args.profile == 'member' else {}
             report['assetsPods'] = {name: {'successfulReads': after[name]['count'] - before[name]['count'],
                                           'restartsAdded': after[name]['restarts'] - before[name]['restarts']}
                                     for name in before if name in after}
@@ -134,6 +174,9 @@ def main():
             report['requests'] = len(rows)
             report['errors'] = sum(not row['passed'] for row in rows)
             report['requestsPerSecond'] = round(len(rows) / elapsed, 2)
+            all_latency = sorted(row['milliseconds'] for row in rows)
+            report['latency'] = {'p50Ms': all_latency[math.ceil(len(all_latency) * .5) - 1],
+                                 'p95Ms': all_latency[math.ceil(len(all_latency) * .95) - 1]}
             report['routes'] = {}
             for path in sorted({row['path'] for row in rows}):
                 values = [row for row in rows if row['path'] == path]
@@ -141,7 +184,7 @@ def main():
                 report['routes'][path] = {'requests': len(values), 'errors': sum(not row['passed'] for row in values),
                     'p50Ms': latency[math.ceil(len(latency) * .5) - 1],
                     'p95Ms': latency[math.ceil(len(latency) * .95) - 1], 'maxMs': max(latency)}
-            report['passed'] = bool(rows) and report['errors'] == 0 and report['routingPassed']
+            report['passed'] = bool(rows) and report['errors'] == 0 and report['routingPassed'] and report['containersStable']
         except Exception as error:
             report['passed'] = False
             report['failure'] = type(error).__name__
@@ -166,7 +209,7 @@ def main():
                         w.kube('-n', w.NAMESPACE, 'rollout', 'status', 'deployment/assets', '--timeout=120s', timeout=130)
                         report['replicasRestored'] = True
                 finally:
-                    path = w.SHELL / 'build/reports/read-load.json'
+                    path = args.output or w.SHELL / 'build/reports/read-load.json'
                     path.parent.mkdir(parents=True, exist_ok=True)
                     path.write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))

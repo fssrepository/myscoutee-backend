@@ -31,6 +31,38 @@ seed_mongo = module('seed-mongo')
 mongo_replica = module('mongo_replica')
 
 
+class PerformanceEvidenceTest(unittest.TestCase):
+    def setUp(self):
+        self.measure = module('measure-stress')
+        self.before = {'containers': [{'id': 'first', 'pod': 'identity-pod', 'container': 'identity',
+            'at': 10, 'cpu': {'usage_usec': 1_000_000, 'throttled_usec': 100_000},
+            'cpuMax': '200000 100000', 'memoryBytes': 100 * 1024 ** 2}],
+            'host': {'at': 10, 'cpuTotal': 1000, 'cpuIdle': 200, 'logicalCpus': 8, 'qemuCpuNs': 2_000_000_000}}
+        self.after = json.loads(json.dumps(self.before))
+        self.after['containers'][0].update(at=20, cpu={'usage_usec': 16_000_000, 'throttled_usec': 800_000})
+        self.after['host'].update(at=20, cpuTotal=2000, cpuIdle=600, qemuCpuNs=12_000_000_000)
+
+    def test_cpu_units_distinguish_one_core_from_host_percentage(self):
+        row, = self.measure.resource_deltas(self.before, self.after)
+        self.assertEqual(1.5, row['cpuCores'])
+        self.assertEqual(.7, row['throttledSeconds'])
+        host = self.measure.host_delta(self.before, self.after)
+        self.assertEqual(60, host['busyPercent'])
+        self.assertEqual(1, host['qemuCpuCores'])
+
+    def test_container_replacement_or_removal_invalidates_a_comparable_sample(self):
+        self.after['containers'][0]['id'] = 'replacement'
+        self.assertTrue(all(row['replacedDuringRun'] for row in self.measure.resource_deltas(self.before, self.after)))
+        self.after['containers'] = []
+        row, = self.measure.resource_deltas(self.before, self.after)
+        self.assertTrue(row['replacedDuringRun'])
+
+    def test_counter_reset_is_not_reported_as_negative_cpu(self):
+        self.after['containers'][0]['cpu']['usage_usec'] = 0
+        with self.assertRaisesRegex(ValueError, 'counter interval'):
+            self.measure.resource_deltas(self.before, self.after)
+
+
 class MongoStatefulMigrationTest(unittest.TestCase):
     def row(self):
         return {'target': 'data-mongodb-0', 'claim': {'metadata': {'name': 'mongodb', 'uid': 'claim-uid'}},

@@ -27,6 +27,13 @@ ROUTES = {
 }
 
 
+def valid_admin_read(route, body, actor_id):
+    valid = isinstance(body, dict) and all(field in body for field in ROUTES[route])
+    if route == 'dashboard' and valid:
+        valid = isinstance(body['activeAdmin'], dict) and body['activeAdmin'].get('id') == actor_id
+    return valid
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--origin', choices=['http://localhost', 'http://127.0.0.1'],
@@ -50,9 +57,7 @@ def main():
             status, body = session.request(path, headers)
             valid = status == expected
             if expected == 200:
-                valid = valid and isinstance(body, dict) and all(field in body for field in fields)
-                if route == 'dashboard' and valid:
-                    valid = isinstance(body['activeAdmin'], dict) and body['activeAdmin'].get('id') == actor_id
+                valid = valid and valid_admin_read(route, body, actor_id)
             record(route + (' accepted' if expected == 200 else ' denied'), status, valid,
                    round((time.monotonic() - started) * 1000, 2))
 

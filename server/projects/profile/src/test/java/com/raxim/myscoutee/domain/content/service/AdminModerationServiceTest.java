@@ -104,6 +104,34 @@ class AdminModerationServiceTest {
     }
 
     @Test
+    void dashboardUsesTheCounterOwnerWithoutFetchingTheSameAdminProfileFirst() {
+        Users admin = new Users();
+        admin.setUserId("admin-demo-ava");
+        when(usersRepository.findByUserId(admin.getUserId())).thenReturn(Optional.of(admin));
+        org.mockito.Mockito.doReturn(true).when(userActivityCountersService).hasSupportCaseCounters(admin.getUserId());
+
+        var dashboard = service.dashboard(admin.getUserId());
+
+        assertThat(dashboard.activeAdmin().id()).isEqualTo(admin.getUserId());
+        verify(userActivityCountersService).hasSupportCaseCounters(admin.getUserId());
+        verify(userActivityCountersService, never()).refreshSupportCaseCountersForAdmins();
+        // Two unchanged identity reads and one workspace-scope read. No extra
+        // profile read merely to ask the counter owner whether counters exist.
+        verify(usersRepository, org.mockito.Mockito.times(3)).findByUserId(admin.getUserId());
+    }
+
+    @Test
+    void dashboardStillInitializesMissingCountersWhenTheAdminProfileIsAbsent() {
+        var dashboard = service.dashboard("admin-demo-ava");
+
+        assertThat(dashboard.activeAdmin().id()).isEqualTo("admin-demo-ava");
+        verify(userActivityCountersService).hasSupportCaseCounters("admin-demo-ava");
+        verify(userActivityCountersService).refreshSupportCaseCountersForAdmins();
+        // Includes the counter owner's real lookup of the absent profile.
+        verify(usersRepository, org.mockito.Mockito.times(4)).findByUserId("admin-demo-ava");
+    }
+
+    @Test
     void baseStatisticsExcludeIndependentWorkspaceActivityEvenWhenTaggedByAJob() {
         var member = new Users(); member.setUserId("private-member"); member.setWorkspaceGroupId("private-workspace");
         when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(member));

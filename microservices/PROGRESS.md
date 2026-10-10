@@ -2,7 +2,7 @@
 
 Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **130**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity step below passed on both deployments.
+**Last verified lab state:** Helm revision **133**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity step and the focused checks below passed on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
 
@@ -49,6 +49,61 @@ The new check's `--origin http://localhost` option requires the monolith's admin
 role gate to be enabled. No browser window or checklist automation was used.
 This verifies administrator identity reads and rejection behavior; it does not
 qualify community-free deployment, every moderation mutation or Firebase login.
+
+### Administrator identity performance and focused validation
+
+The exact parent `fad15dced` was rebuilt from a clean detached checkout for the
+baseline. The initial candidate is `d6413a84b`; the final candidate adds only
+removal of the dashboard's redundant profile lookup before asking the existing
+counter owner whether support counters exist. That owner already reads the
+profile and handles its absence. This saves one database read and one HTTP call
+for a stored administrator in the split deployment, without changing the
+counter initialization or authorization rules.
+
+Each variant ran three serial KVM rounds against the same retained DEMO data:
+four clients, seven validated admin GET routes, 30 seconds warmup, 10 seconds
+quiet, then 30 seconds measured load. The dev stack was stopped throughout.
+All **4,551 baseline**, **4,962 initial-candidate** and **5,198 final-candidate**
+requests succeeded; containers were stable and test sessions were revoked.
+
+Medians across the three rounds:
+
+| Measurement | Baseline | Final candidate | Change |
+| --- | ---: | ---: | ---: |
+| Requests/second | 53.94 | 57.28 | +6.2% |
+| Overall p95 response time | 114.62 ms | 109.31 ms | -4.6% |
+| Dashboard p95 response time | 95.16 ms | 104.01 ms | +9.3% |
+| QEMU CPU under load | 3.126 cores | 3.135 cores | +0.3% |
+| QEMU CPU time/request | 61.13 ms | 57.56 ms | -5.8% |
+| QEMU CPU during the short quiet interval | 0.852 cores | 0.749 cores | -12.1% |
+
+The initial candidate's dashboard median was **109.00 ms**; it remains in the
+evidence. Dashboard p95 by matched round was **148.17 / 95.16 / 78.11 ms** before
+and **135.61 / 104.01 / 75.45 ms** after the final change. JVM warming is still
+visible, so these results establish neither a universal speedup nor performance
+parity. The quiet samples are post-warmup intervals, not settled idle. CPU
+snapshots include the same inspection overhead in all variants; these are HTTP
+timings, not isolated Mongo query benchmarks.
+
+The final change passes **26 focused canonical JUnit tests**, including stored
+and absent administrator profiles, and **three CPU-evidence unit tests**. All
+eight assemblies pass packaging/ownership checks; the unchanged transport test
+task retains its **228 passing tests** and was up-to-date in this build. KVM
+revision **133** and the monolith each pass **23 admin checks and nine native
+session checks**. The monolith's existing dev fallback was temporarily disabled
+for role rejection checks, then its original environment was restored and
+verified. No browser automation was needed.
+
+The [retained evidence](../guides/qualification/evidence/MSC122_ADMIN_IDENTITY_PERFORMANCE_20261010.json)
+contains source identities, the exact final source patch, immutable image IDs,
+harness hashes, all rounds, route timings and per-container/host CPU results.
+Raw reports are under `build/reports/admin-performance/`.
+
+Per the user's validation cadence: use focused JUnit tests for small steps and
+verify completed backend batches on both KVM and monolith, one stack at a time.
+Reserve repeated load/stress measurements for a coherent batch or a concrete
+performance concern. Continue checking speed and CPU impact without rerunning
+the whole stress campaign after every edit.
 
 ## MSC-122 qualification — 2026-10-10
 
