@@ -17,9 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationFilter;
-import com.raxim.myscoutee.domain.operator.security.bootstrap.OperatorBootstrapAuthenticationService;
-import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.platform.security.bootstrap.OperatorBootstrapAuthenticationFilter;
+import com.raxim.myscoutee.domain.platform.security.bootstrap.OperatorBootstrapAuthenticationService;
+import com.raxim.myscoutee.domain.platform.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseAuthenticationProvider;
 import com.raxim.myscoutee.domain.accounts.security.firebase.FirebaseFilter;
 import com.raxim.myscoutee.common.config.mongo.DemoSessionRequestSupport;

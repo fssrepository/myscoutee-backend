@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.registry;
-import static com.raxim.myscoutee.domain.registry.api.RegistrySignatures.*;
-import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
+import static com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -12,9 +12,7 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
-import java.security.SignatureException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -40,8 +38,8 @@ public final class RegistryCrypto implements com.raxim.myscoutee.domain.registry
         this.deploymentPrivateKey = deploymentPrivateKey;
         this.deploymentPublicKey = deploymentPublicKey;
         this.deploymentPublicKeyDer = deploymentPublicKey.getEncoded().clone();
-        this.deploymentPublicKeyBase64 = RegistryProtocol.standardBase64(deploymentPublicKeyDer);
-        this.deploymentPublicKeyFingerprint = RegistryProtocol.publicKeyFingerprint(deploymentPublicKeyDer);
+        this.deploymentPublicKeyBase64 = CanonicalValues.standardBase64(deploymentPublicKeyDer);
+        this.deploymentPublicKeyFingerprint = CanonicalValues.publicKeyFingerprint(deploymentPublicKeyDer);
         byte[] checkSignature = sign(KEY_PAIR_CHECK);
         if (!verify(deploymentPublicKey, KEY_PAIR_CHECK, checkSignature)) {
             throw new IllegalArgumentException("Configured registry deployment private and public keys do not match.");
@@ -83,7 +81,7 @@ public final class RegistryCrypto implements com.raxim.myscoutee.domain.registry
     }
 
     public String signBase64(byte[] canonicalMessage) {
-        return RegistryProtocol.standardBase64(sign(canonicalMessage));
+        return CanonicalValues.standardBase64(sign(canonicalMessage));
     }
 
     public byte[] sign(byte[] canonicalMessage) {

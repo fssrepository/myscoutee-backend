@@ -1,5 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
-import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +46,7 @@ final class RegistryTestIdentity {
             Signature signature = Signature.getInstance("Ed25519");
             signature.initSign(privateKey);
             signature.update(message);
-            return RegistryProtocol.standardBase64(signature.sign());
+            return CanonicalValues.standardBase64(signature.sign());
         } catch (GeneralSecurityException exception) {
             throw new IllegalStateException("Unable to sign the test registry response.", exception);
         }

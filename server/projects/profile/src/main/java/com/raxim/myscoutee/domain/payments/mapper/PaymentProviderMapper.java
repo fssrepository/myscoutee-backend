@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.raxim.myscoutee.domain.payments.document.PaymentProvider;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.PaymentProviderDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.PaymentProviderDto;
 
 @Component
 public class PaymentProviderMapper {

@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -559,11 +560,11 @@ class OperatorGoRegistryRailQualificationTest {
         String qmauPeriod = YearMonth.now(qualificationClock)
                 .minusMonths(8L)
                 .toString();
-        String commitmentHash = RegistryProtocol.sha256(
-                RegistryProtocol.canonical(
+        String commitmentHash = CanonicalValues.sha256(
+                CanonicalValues.canonical(
                         "java-go-invalid-signature-qmau",
                         qmauPeriod));
-        String qmauPayloadHash = RegistryProtocol.sha256(
+        String qmauPayloadHash = CanonicalValues.sha256(
                 RegistryProtocol.qmauBatchPayload(
                         RegistryProtocol.QMAU_KIND,
                         qmauPeriod,
@@ -595,7 +596,7 @@ class OperatorGoRegistryRailQualificationTest {
                 .toString();
         List<RevenueCurrencyRow> currencies = List.of(
                 revenueCurrency(1_000L));
-        String revenuePayloadHash = RegistryProtocol.sha256(
+        String revenuePayloadHash = CanonicalValues.sha256(
                 RegistryProtocol.revenueBatchPayload(
                         RegistryProtocol.REVENUE_KIND,
                         revenuePeriod,
@@ -697,9 +698,9 @@ class OperatorGoRegistryRailQualificationTest {
         LocalState state = localStore.load().orElseThrow();
         var registration = state.registration().receipt();
         PublicKey registryPublicKey =
-                com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(
+                com.raxim.myscoutee.domain.registry.api.RegistryProtocol.parseRegistryPublicKey(
                         registration.registryPublicKey());
-        String fingerprint = RegistryProtocol.publicKeyFingerprint(
+        String fingerprint = CanonicalValues.publicKeyFingerprint(
                 registryPublicKey.getEncoded());
         String keyId = RegistryProtocol.registryKeyId(fingerprint);
         properties.setExpectedRegistryKeyFingerprint(fingerprint);
@@ -884,8 +885,8 @@ class OperatorGoRegistryRailQualificationTest {
                         MongoQualifiedMauEvidenceRepository
                                 .ACTION_MESSAGE,
                         1L),
-                RegistryProtocol.sha256(
-                        RegistryProtocol.canonical(
+                CanonicalValues.sha256(
+                        CanonicalValues.canonical(
                                 "java-go-qmau-evidence-v1",
                                 period.toString(),
                                 Long.toString(adjustment))));

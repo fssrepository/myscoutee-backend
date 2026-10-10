@@ -77,6 +77,10 @@ class DomainServiceBoundaryTest {
                             if ("events".equals(value) && semanticEventLabel(name, method)) return;
                             if ("chats".equals(value) && name.equals(DOMAIN + "administration/service/AdminMonitoringService") && method.equals("categoryFor")) return;
                             if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("describe")) return;
+                            // The common change-stream owner accepts collection names solely
+                            // to invalidate existing projections/schedules. These reviewed
+                            // subscriptions are not foreign document queries or mutations.
+                            if (changeStreamSubscription(name, method, value)) return;
                             assertThat(COLLECTIONS.get(domain).contains(value)).as("Raw foreign collection in %s.%s: %s", name, method, value)
                                     .isFalse();
                         }
@@ -110,6 +114,31 @@ class DomainServiceBoundaryTest {
         assertThat(checked).as("Scanned production classes in %s", domain).isGreaterThan(5);
     }
 
+    @org.junit.jupiter.api.Test
+    void deploymentPlatformDoesNotRequireProductNetworkContracts() throws Exception {
+        for (Resource resource : productionDomainClasses()) {
+            String name = className(resource);
+            if (!name.startsWith(DOMAIN + "platform/")) continue;
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).as("Deployment platform dependency in %s", name)
+                        .doesNotContain(DOMAIN + "operator/", DOMAIN + "registry/");
+            }
+        }
+    }
+
+    private boolean changeStreamSubscription(String name, String method, Object value) {
+        if (name.equals(DOMAIN + "administration/service/AdminStatsTelemetryWorkerService")
+                && method.equals("watchInputs")) {
+            return Set.of("users", "userAffinityEdges", "userRates", "activityMembers",
+                    "affinityRecomputeTasks", "notificationOutbox", "notificationRuleConfigs").contains(value);
+        }
+        return "notificationRuleConfigs".equals(value)
+                && ((name.equals(DOMAIN + "email/service/PromotionalEmailDeliveryProcessor")
+                        && method.equals("watchDeliveries"))
+                    || (name.equals(DOMAIN + "email/service/ScheduledMessageTaskService")
+                        && method.equals("watchScheduledTasks")));
+    }
+
     private boolean semanticUserLabel(String name, String method) {
         return switch (name.substring(DOMAIN.length())) {
             case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "usersCategory", "categoryFor").contains(method);
@@ -140,7 +169,7 @@ class DomainServiceBoundaryTest {
             case "administration/service/AdminMonitoringService" -> Set.of("<clinit>", "assetsCategory", "categoryFor", "nodeFor");
             case "administration/service/AdminStatsService" -> Set.of("applyTelemetryEvents", "applyDailyActivity", "timelineItems");
             case "affinity/service/AdminParamsService" -> Set.of("<clinit>", "fieldsFor", "applySection", "copySection");
-            case "operator/service/OperatorUpdateReleaseService" -> Set.of("releases");
+            case "platform/service/OperatorUpdateReleaseService" -> Set.of("releases");
             default -> Set.<String>of();
         };
         return methods.contains(method) || methods.stream().anyMatch(owner -> method.startsWith("lambda$" + owner + "$"));

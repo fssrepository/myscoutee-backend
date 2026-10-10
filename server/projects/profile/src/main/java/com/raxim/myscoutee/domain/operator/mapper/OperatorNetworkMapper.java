@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 import com.raxim.myscoutee.domain.operator.document.OperatorClaimSubmissionSnapshot;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionReceiptDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorActionResultDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementLinkDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementLocalizationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementPageDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorAnnouncementSnapshotDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementLinkDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementLocalizationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementPageDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorAnnouncementSnapshotDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorClaimMutationResultDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorClaimOverviewDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorClaimRequestDto;
@@ -24,7 +24,7 @@ import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeade
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardPageDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardRowDto;
 import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorLeaderboardSnapshotDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorNetworkDtos.OperatorUpdateManifestDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorUpdateDtos.OperatorUpdateManifestDto;
 import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ActionOutcome;
 import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.AnnouncementOutcome;
 import com.raxim.myscoutee.domain.registry.dto.RegistryNetworkValues.ClaimStatus;
@@ -39,7 +39,7 @@ import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardPage;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardRow;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.LeaderboardSnapshot;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.OperatorActionReceipt;
-import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.UpdateManifest;
+import com.raxim.myscoutee.domain.platform.api.ReleaseProtocol.UpdateManifest;
 
 @Component
 public class OperatorNetworkMapper {

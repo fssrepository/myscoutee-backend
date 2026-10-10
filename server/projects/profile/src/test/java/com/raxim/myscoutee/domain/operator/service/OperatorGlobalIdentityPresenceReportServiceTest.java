@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -120,10 +121,10 @@ class OperatorGlobalIdentityPresenceReportServiceTest {
         item.setRegistryScope("registry:test");
         item.setDeploymentId("dep_12345678");
         item.setIdempotencyKey("presence_12345678");
-        item.setPayloadHash(RegistryProtocol.sha256(
+        item.setPayloadHash(CanonicalValues.sha256(
                 "payload".getBytes(java.nio.charset.StandardCharsets.UTF_8)));
 
-        String firstRequestHash = RegistryProtocol.sha256(
+        String firstRequestHash = CanonicalValues.sha256(
                 "first".getBytes(java.nio.charset.StandardCharsets.UTF_8));
         item.setSignedRequestHashes(List.of(firstRequestHash));
         item.setLastAttempt(new SignedAttempt(
@@ -131,7 +132,7 @@ class OperatorGlobalIdentityPresenceReportServiceTest {
                 "nonce_12345678",
                 "signature"));
 
-        String legacyLastAttemptHash = RegistryProtocol.sha256(
+        String legacyLastAttemptHash = CanonicalValues.sha256(
                 RegistryProtocol.signedRequest(
                         "POST",
                         RegistryProtocol.GLOBAL_IDENTITY_PRESENCE_BATCH_PATH,
@@ -148,7 +149,7 @@ class OperatorGlobalIdentityPresenceReportServiceTest {
                         firstRequestHash,
                         legacyLastAttemptHash);
 
-        String retryRequestHash = RegistryProtocol.sha256(
+        String retryRequestHash = CanonicalValues.sha256(
                 "retry".getBytes(java.nio.charset.StandardCharsets.UTF_8));
         OperatorGlobalIdentityPresenceReportService
                 .rememberSignedRequestHash(item, retryRequestHash);

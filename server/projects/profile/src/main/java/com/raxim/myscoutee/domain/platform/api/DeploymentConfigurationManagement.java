@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.platform.api;
 
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.*;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.*;
 
 /** Validated deployment changes; persistence, encryption and activation stay with platform. */
 public interface DeploymentConfigurationManagement {

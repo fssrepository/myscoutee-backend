@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -318,9 +319,9 @@ class RegistryEnrollmentServiceTest {
         private final HttpServer server;
         private final KeyPair registryKeyPair = RegistryTestIdentity.generate();
         private final String registryPublicKey =
-                RegistryProtocol.standardBase64(registryKeyPair.getPublic().getEncoded());
+                CanonicalValues.standardBase64(registryKeyPair.getPublic().getEncoded());
         private final String registryFingerprint =
-                RegistryProtocol.publicKeyFingerprint(registryKeyPair.getPublic().getEncoded());
+                CanonicalValues.publicKeyFingerprint(registryKeyPair.getPublic().getEncoded());
         private final String registryKeyId = RegistryProtocol.registryKeyId(registryFingerprint);
         private final boolean failFirstBatch;
         private final boolean corruptBatchSignature;
@@ -366,14 +367,14 @@ class RegistryEnrollmentServiceTest {
                         RegistrationRequest.class);
                 registrationRequests.add(request);
                 require(REGISTRY_SCOPE.equals(request.registryScope()), "Registration scope was invalid.");
-                deploymentPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(request.publicKey());
-                String fingerprint = RegistryProtocol.publicKeyFingerprint(deploymentPublicKey.getEncoded());
-                String expectedPayloadHash = RegistryProtocol.sha256(RegistryProtocol.registrationPayload(
+                deploymentPublicKey = com.raxim.myscoutee.domain.registry.api.RegistryProtocol.parseRegistryPublicKey(request.publicKey());
+                String fingerprint = CanonicalValues.publicKeyFingerprint(deploymentPublicKey.getEncoded());
+                String expectedPayloadHash = CanonicalValues.sha256(RegistryProtocol.registrationPayload(
                         request.keyAlgorithm(),
                         request.publicKey(),
                         request.softwareVersion()));
                 require(expectedPayloadHash.equals(request.payloadHash()), "Registration payload hash was invalid.");
-                require(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                require(com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                                 deploymentPublicKey,
                                 RegistryProtocol.signedRequest(
                                         exchange.getRequestMethod(),
@@ -425,10 +426,10 @@ class RegistryEnrollmentServiceTest {
                 batchRequests.add(request);
                 require(REGISTRY_SCOPE.equals(request.registryScope()), "Batch scope was invalid.");
                 require(deploymentPublicKey != null, "Deployment was not registered before its batch.");
-                String commitmentHash = RegistryProtocol.sha256(RegistryProtocol.installationCommitment(
+                String commitmentHash = CanonicalValues.sha256(RegistryProtocol.installationCommitment(
                         request.deploymentId(),
                         request.idempotencyKey()));
-                String payloadHash = RegistryProtocol.sha256(RegistryProtocol.mauBatchPayload(
+                String payloadHash = CanonicalValues.sha256(RegistryProtocol.mauBatchPayload(
                         request.kind(),
                         request.period(),
                         request.rulesetVersion(),
@@ -436,7 +437,7 @@ class RegistryEnrollmentServiceTest {
                         request.commitmentHash()));
                 require(commitmentHash.equals(request.commitmentHash()), "Batch commitment hash was invalid.");
                 require(payloadHash.equals(request.payloadHash()), "Batch payload hash was invalid.");
-                require(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                require(com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                                 deploymentPublicKey,
                                 RegistryProtocol.signedRequest(
                                         exchange.getRequestMethod(),
@@ -456,7 +457,7 @@ class RegistryEnrollmentServiceTest {
                 }
 
                 long ledgerIndex = 1L;
-                String entryHash = RegistryProtocol.sha256(RegistryProtocol.ledgerEntry(
+                String entryHash = CanonicalValues.sha256(RegistryProtocol.ledgerEntry(
                         RegistryProtocol.PROTOCOL_VERSION,
                         REGISTRY_SCOPE,
                         ledgerIndex,
@@ -497,7 +498,7 @@ class RegistryEnrollmentServiceTest {
                         registryKeyPair.getPrivate(),
                         RegistryProtocol.mauReceipt(unsignedResponse));
                 if (corruptBatchSignature) {
-                    receiptSignature = RegistryProtocol.standardBase64(new byte[64]);
+                    receiptSignature = CanonicalValues.standardBase64(new byte[64]);
                 }
                 MauReceipt signedReceipt = new MauReceipt(
                         unsignedReceipt.ledgerIndex(),

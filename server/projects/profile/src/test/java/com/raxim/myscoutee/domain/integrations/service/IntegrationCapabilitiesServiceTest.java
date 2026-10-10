@@ -112,4 +112,33 @@ class IntegrationCapabilitiesServiceTest {
         verifyNoInteractions(groups, repository, access);
     }
 
+    @Test void operatorReportPermissionIsScopedAndRestoredEvenWhenTheOwnerFails() {
+        var profile = new Users(); profile.setUserId("operator");
+        var auth = authentication(profile);
+        auth.setDetails(new AuthenticatedIntegrationClient("operator", "key", "client").withAccess(
+                com.raxim.myscoutee.domain.integrations.dto.IntegrationAccess.Mode.READ));
+        when(roles.operator(profile)).thenReturn(true);
+        var previous = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        previous.setAuthentication(auth);
+        org.springframework.security.core.context.SecurityContextHolder.setContext(previous);
+        try {
+            assertThatThrownBy(() -> service.withOperatorReportRead(auth, () -> {
+                var checked = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+                assertThat(checked.getPrincipal()).isSameAs(auth.getPrincipal());
+                assertThat(checked.getDetails()).isSameAs(auth.getDetails());
+                assertThat(checked.getAuthorities()).extracting(org.springframework.security.core.GrantedAuthority::getAuthority)
+                        .contains(com.raxim.myscoutee.domain.operator.api.MeasurementReports.INTEGRATION_READ_AUTHORITY);
+                throw new IllegalStateException("owner failed");
+            })).isInstanceOf(IllegalStateException.class).hasMessage("owner failed");
+            assertThat(org.springframework.security.core.context.SecurityContextHolder.getContext()).isSameAs(previous);
+            when(roles.operator(profile)).thenReturn(false);
+            assertThatThrownBy(() -> service.withOperatorReportRead(auth, () -> { throw new AssertionError("unauthorized read"); }))
+                    .isInstanceOf(ResponseStatusException.class);
+            when(roles.operator(profile)).thenReturn(true);
+            auth.setDetails(new AuthenticatedIntegrationClient("operator", "key", "client"));
+            assertThatThrownBy(() -> service.withOperatorReportRead(auth, () -> { throw new AssertionError("write-only integration"); }))
+                    .isInstanceOf(ResponseStatusException.class);
+        } finally { org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
+    }
+
 }

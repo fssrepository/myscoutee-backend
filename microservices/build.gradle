@@ -34,6 +34,7 @@ project(':contracts') {
         include 'com/raxim/myscoutee/domain/*/api/**'
         include 'com/raxim/myscoutee/domain/*/dto/**'
         include 'com/raxim/myscoutee/common/dto/**'
+        include 'com/raxim/myscoutee/common/security/crypto/**'
         include 'com/raxim/myscoutee/common/security/http/HttpSecurityContribution.java'
         include 'com/raxim/myscoutee/common/measurement/EvidenceCursor.java'
         include 'com/raxim/myscoutee/common/measurement/MeasurementEvidence.java'
@@ -61,7 +62,7 @@ assemblies.each { serviceName, assembly ->
 
 tasks.register('assembleServices') {
     group = 'build'
-    description = 'Build six independent domain assemblies from canonical sources.'
+    description = 'Build the configured independent domain assemblies from canonical sources.'
     dependsOn assemblies.keySet().collect { ":${it}:bootJar" }
 }
 tasks.register('verifyAssemblies', Exec) {

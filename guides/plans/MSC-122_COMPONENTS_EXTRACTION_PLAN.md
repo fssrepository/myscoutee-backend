@@ -4,7 +4,9 @@ Status date: **2026-10-10**.
 Related task: [MSC-122](https://github.com/fssrepository/myscoutee-roadmap/issues/160).
 This document tracks the generalization of the frontend and its separation into
 three layers: **components/core, template/extended, and MyScoutee-only**.
-It does not replace the plan for the full template/backend/operator/registry scope of MSC-122.
+The complete backend/template continuation is tracked in
+[the template extraction plan](MSC-122_TEMPLATE_EXTRACTION_PLAN.md), including the
+required MyScoutee KVM gate before template implementation.
 
 ## 1. Current Work Point
 

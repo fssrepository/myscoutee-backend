@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.security.SecureRandom;
 import java.time.Clock;
@@ -589,7 +590,7 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
         List<RevenueCurrencyRow> currencies =
                 List.copyOf(item.getCurrencies());
         validateRevenueRows(currencies);
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.revenueBatchPayload(
                         item.getKind(),
                         item.getPeriod(),
@@ -699,24 +700,24 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
             throw new IllegalStateException(
                     "Registry revenue receipt fields do not match the submitted report.");
         }
-        RegistryProtocol.requireHash(receipt.entryHash(), "entry_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(receipt.entryHash(), "entry_hash");
+        CanonicalValues.requireHash(
                 receipt.previousEntryHash(),
                 "previous_entry_hash");
-        RegistryProtocol.requireHash(receipt.batchHash(), "batch_hash");
+        CanonicalValues.requireHash(receipt.batchHash(), "batch_hash");
         if (!RegistryProtocol.hashEquals(
                     item.getPayloadHash(),
                     receipt.batchHash())) {
             throw new IllegalStateException(
                     "Registry revenue receipt batch hash does not match the submitted payload.");
         }
-        Instant acceptedAt = RegistryProtocol.requireUtcTimestamp(
+        Instant acceptedAt = CanonicalValues.requireUtcTimestamp(
                 receipt.acceptedAt(),
                 "accepted_at");
         RegistryProtocol.requireCheckpointDate(receipt.checkpointDate());
         if (!RegistryProtocol.checkpointDateAt(acceptedAt).equals(
                     receipt.checkpointDate())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.revenueReceipt(response),
                         receipt.signature())) {
@@ -792,7 +793,7 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
                 : RegistryProtocol.requireRevenueBatchId(
                         latest.getAcceptedResponse().batchId());
         String periodText = period.toString();
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.revenueBatchPayload(
                         RegistryProtocol.REVENUE_KIND,
                         periodText,
@@ -876,7 +877,7 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
     private String aggregateHash(
             LocalDate period,
             List<RevenueCurrencyRow> currencies) {
-        return RegistryProtocol.sha256(
+        return CanonicalValues.sha256(
                 RegistryProtocol.revenueBatchPayload(
                         RegistryProtocol.REVENUE_KIND,
                         period.toString(),
@@ -891,8 +892,8 @@ public class OperatorRevenueReportService implements com.raxim.myscoutee.domain.
             String deploymentId,
             String period,
             long revision) {
-        String hash = RegistryProtocol.sha256(
-                RegistryProtocol.canonical(
+        String hash = CanonicalValues.sha256(
+                CanonicalValues.canonical(
                         "myscoutee-revenue-idempotency-v1",
                         deploymentId,
                         period,

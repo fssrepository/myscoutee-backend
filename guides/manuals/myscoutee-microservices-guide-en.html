@@ -116,23 +116,28 @@
     </svg>
     <p>The workload box contains all six backends and nine supporting Deployments. Host Docker builds images and runs monitoring; the guest uses containerd, so host <code>docker ps</code> does not list guest pods. Monitoring lives beside the VM, outside Kubernetes. Its application scrape targets need an explicit private network connection; simply installing Kubernetes does not provide that connection.</p>
     <h3>1.3 Application composition</h3>
-    <table><caption>Initial grouping from assemblies.json</caption><thead><tr><th>Service</th><th>Domains</th><th>Heap / limit</th></tr></thead><tbody>
-      <tr><td>identity</td><td>accounts, access, administration, platform, operator, registry, integrations</td><td>512 / 1024 MiB</td></tr>
-      <tr><td>community</td><td>groups, community, events, campaigns, content, help</td><td>512 / 1024 MiB</td></tr>
+    <table><caption>Current source grouping from assemblies.json</caption><thead><tr><th>Service</th><th>Domains</th><th>Heap / limit</th></tr></thead><tbody>
+      <tr><td>identity</td><td>accounts, access, administration, platform, integrations</td><td>512 / 1024 MiB</td></tr>
+      <tr><td>community</td><td>groups, community, events, campaigns, content</td><td>512 / 1024 MiB</td></tr>
       <tr><td>communication</td><td>chat, notifications, email, localization</td><td>384 / 768 MiB</td></tr>
       <tr><td>assets</td><td>assets, media</td><td>384 / 768 MiB</td></tr>
       <tr><td>payments</td><td>payments</td><td>384 / 768 MiB</td></tr>
       <tr><td>affinity</td><td>affinity</td><td>384 / 768 MiB</td></tr>
+      <tr><td>help</td><td>help</td><td>256 / 512 MiB</td></tr>
+      <tr><td>network</td><td>operator, registry</td><td>384 / 768 MiB</td></tr>
     </tbody></table>
-    <p>These are six backend deployments, not 21 domain JVMs. The mapping is configuration: splitting a group adds an assembly and reassigns its domains. Build project creation, precise Spring scans, Dockerfiles, Helm workloads and monitoring targets follow that map. For implemented boundaries, <code>transport/bindings.json</code> drives generated imports and Helm endpoint addresses from domain ownership, so a regrouped domain receives the matching network destination. A new network boundary still requires a reviewed transport adapter. Helm applies the listed memory limits. The frontend has one replica; the requested scaling experiment must use a working backend service.</p>
-    <svg viewBox="0 0 650 235" role="img" aria-label="Canonical source feeds the monolith and six independent service assemblies, with one shared MongoDB replica set in the VM." style="width:100%;height:auto">
+    <aside class="callout warning"><strong>MSC-122 source preparation — KVM verification pending (2026-10-10)</strong>
+      Generic operator bootstrap, configuration, TLS and update code now belongs to the platform domain. Release verification shares canonical crypto and release contracts without requiring Registry configuration. The table reflects the new source grouping: help has a dedicated seventh service/image and gateway route. Java operator/Registry have a separate eighth network assembly, with bounded eligibility, durable purge and signed report boundaries. These virtual-company capabilities are excluded from the template. The previously recorded lab qualification predates this change. Finish development, stop dev, test the MyScoutee backend on the retained KVM (including warmed-up CPU/load), then stop KVM and check the monolith. Never run both stacks together. Complete these checks before carrying these foundations into the standalone minimal backend template. See <code>guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md</code> for the complete scope and current gate.
+    </aside>
+    <p>The current source defines eight backend deployments for 21 domains. The mapping is configuration: splitting a group adds an assembly and reassigns its domains. Build project creation, precise Spring scans, Dockerfiles, Helm workloads and monitoring targets follow that map. For implemented boundaries, <code>transport/bindings.json</code> drives generated imports and Helm endpoint addresses from domain ownership, so a regrouped domain receives the matching network destination. A new network boundary still requires a reviewed transport adapter. Helm applies the listed memory limits. The frontend has one replica; the requested scaling experiment must use a working backend service.</p>
+    <svg viewBox="0 0 650 235" role="img" aria-label="Canonical source feeds the monolith and eight independent service assemblies, with one shared MongoDB replica set in the VM." style="width:100%;height:auto">
       <g font-family="DejaVu Sans,Arial,sans-serif" font-size="13" text-anchor="middle">
         <rect x="110" y="8" width="430" height="42" rx="6" fill="#17324d"/><text x="325" y="34" fill="white">Canonical domain source · projects/profile</text>
         <path d="M210 50V72H90V88M390 50V72H415V88" fill="none" stroke="#176b87" stroke-width="2"/>
         <rect x="10" y="88" width="160" height="45" rx="6" fill="#f3f6f8" stroke="#176b87"/><text x="90" y="116">Monolith build</text>
         <rect x="210" y="88" width="430" height="45" rx="6" fill="#f3f6f8" stroke="#176b87"/><text x="425" y="108">microservices/assemblies.json</text><text x="425" y="126" font-size="11">Selected source + shared bootstrap + explicit adapters</text>
         <path d="M425 133V153" stroke="#176b87" stroke-width="2"/>
-        <rect x="210" y="153" width="430" height="32" rx="6" fill="#e8f4f1" stroke="#0f766e"/><text x="425" y="174">6 independent JARs and runtime images</text>
+        <rect x="210" y="153" width="430" height="32" rx="6" fill="#e8f4f1" stroke="#0f766e"/><text x="425" y="174">8 independent JARs and runtime images</text>
         <path d="M425 185V201" stroke="#176b87" stroke-width="2"/>
         <rect x="210" y="201" width="430" height="30" rx="6" fill="#f3f6f8" stroke="#176b87"/><text x="425" y="221" font-size="12">Target: k3s VM · shared Mongo · REAL / DEMO</text>
       </g>
@@ -256,7 +261,7 @@ python3 microservices/tools/vm.py observe</code></pre>
     <p>Startup rejects conflicting subnets, lost resource identity, insufficient memory and a plan that would replace persistent disks. Failed provisioning retains state for diagnosis. Ubuntu AppArmor remains enforcing: explicit disk and backing-image paths belong in the domain definition.</p>
     <p>Guest SSH identity is obtained through the authenticated libvirt guest-agent channel and stored in the private known-hosts file. Guest access does not alter normal SSH configuration. Kubeconfig is copied to private lab state, never to the user's default Kubernetes configuration.</p>
     <p>A kubeconfig contains the API address and credentials used by Kubernetes clients. Treat it as private access material, just like the guest SSH key. Terraform state is also private operational state; it is not a disposable cache. Losing it breaks the safe association between declarations and existing resources.</p>
-    <p>The six application memory caps total 5120 MiB; their Java heaps total 2560 MiB. These are per-container upper bounds, not committed RAM. The 8192 MiB guest also needs room for native JVM memory within each cap, guest OS, k3s, data services and frontend/routing. Available memory is checked before replica/load runs. Host monitoring adds up to 512 MiB outside the guest, plus virtualization overhead. These budgets need measurement under load; a successful VM preflight does not prove that the completed application fits.</p>
+    <p>The eight source-defined application memory caps total 6400 MiB; their Java heaps total 3200 MiB. The historical six-service runtime evidence predates the help and network splits. These are per-container upper bounds, not committed RAM. The 8192 MiB guest also needs room for native JVM memory within each cap, guest OS, k3s, data services and frontend/routing. Available memory is checked before replica/load runs. Host monitoring adds up to 512 MiB outside the guest, plus virtualization overhead. These budgets need measurement under load; a successful VM preflight does not prove that the completed application fits.</p>
     <h3>4.4 A normal session</h3>
     <ol>
       <li>Install once with <code>setup-host.sh</code>, entering sudo credentials in your terminal. Builds and VM startup must respect the existing dev-owner rule.</li>

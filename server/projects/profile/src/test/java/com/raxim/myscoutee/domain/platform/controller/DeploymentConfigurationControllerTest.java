@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentSocialLinkDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentPrivacyContactDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentSocialLinkDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.domain.payments.service.PaymentSimulatorRegistrationClient;
 import com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration.GatewayConfiguration;
 import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;

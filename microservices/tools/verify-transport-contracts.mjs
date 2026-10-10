@@ -11,7 +11,11 @@ const require = createRequire(path.join(backend, 'frontend/package.json'));
 const Ajv2020 = require('ajv/dist/2020');
 const addFormats = require('ajv-formats');
 const schemasOnly = process.argv.includes('--schemas-only');
-if (process.argv.slice(2).some(value => value !== '--schemas-only')) throw new Error('Usage: verify-transport-contracts.mjs [--schemas-only]');
+const selected = process.argv.slice(2).filter(value => value.startsWith('--contract='));
+if (selected.length > 1 || process.argv.slice(2).some(value => value !== '--schemas-only' && !value.startsWith('--contract=')))
+  throw new Error('Usage: verify-transport-contracts.mjs [--schemas-only] [--contract=domain/name-v1]');
+const selectedContract = selected.length ? selected[0].slice('--contract='.length) : null;
+let matched = false;
 for (const [contract, subdirectory, requiredStatuses] of [
   ['localization/localization-v1', '', [200, 400, 401, 503]],
   ['groups/groups-media-v1', 'groups-media', [200, 400, 401, 403, 404, 503]],
@@ -131,6 +135,10 @@ for (const [contract, subdirectory, requiredStatuses] of [
   ['affinity/graph-science-v1', 'graph-science', [200, 400, 401, 403, 413, 415, 503]],
   ['affinity/affinity-parameters-v1', 'affinity-parameters', [200, 400, 401, 403, 413, 415, 503]],
   ['affinity/affinity-graph-v1', 'affinity-graph', [200, 400, 401, 403, 413, 415, 503]],
+  ['help/public-help-content-v1', 'public-help-content', [200, 400, 401, 403, 413, 415, 503]],
+  ['accounts/measurement-eligibility-v1', 'measurement-eligibility', [200, 400, 401, 403, 413, 415, 503]],
+  ['operator/global-identity-privacy-v1', 'global-identity-privacy', [200, 400, 401, 403, 413, 415, 503]],
+  ['operator/operator-reports-v1', 'operator-reports', [200, 400, 401, 403, 413, 415, 503]],
   ['help/help-administration-v1', 'help-administration', [200, 400, 401, 403, 413, 415, 503]],
   ['content/idea-administration-v1', 'idea-administration', [200, 400, 401, 403, 413, 415, 503]],
   ['notifications/notification-administration-v1', 'notification-administration', [200, 400, 401, 403, 413, 415, 503]],
@@ -198,6 +206,8 @@ for (const [contract, subdirectory, requiredStatuses] of [
   ['affinity/edge-directory-v1', 'edge-directory', [200, 400, 401, 403, 413, 415, 503]],
   ['events/community-memberships-v1', 'community-memberships', [200, 400, 401, 403, 404, 503]],
 ]) {
+  if (selectedContract !== null && contract !== selectedContract) continue;
+  matched = true;
   const spec = JSON.parse(fs.readFileSync(path.join(root, `transport/contracts/${contract}.openapi.json`), 'utf8'));
   const validator = new Ajv2020();
   addFormats(validator);
@@ -255,3 +265,4 @@ for (const [contract, subdirectory, requiredStatuses] of [
   }
   console.log(`Validated ${files.length} real HTTP responses against ${contract}.openapi.json; statuses: ${[...statuses].sort().join(', ')}.`);
 }
+if (!matched) throw new Error(`Unknown contract: ${selectedContract}`);

@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 
 import java.security.PublicKey;
@@ -192,7 +193,7 @@ public class RegistryEnrollmentService {
         String timestamp = now.toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
         String publicKey = deploymentCrypto.deploymentPublicKeyBase64();
-        String payloadHash = RegistryProtocol.sha256(RegistryProtocol.registrationPayload(
+        String payloadHash = CanonicalValues.sha256(RegistryProtocol.registrationPayload(
                 RegistryProtocol.KEY_ALGORITHM,
                 publicKey,
                 state.registrationSoftwareVersion()));
@@ -225,10 +226,10 @@ public class RegistryEnrollmentService {
             Instant now) {
         String timestamp = now.toString();
         String nonce = RegistryProtocol.randomToken("nonce_", secureRandom);
-        String commitmentHash = RegistryProtocol.sha256(RegistryProtocol.installationCommitment(
+        String commitmentHash = CanonicalValues.sha256(RegistryProtocol.installationCommitment(
                 state.deploymentId(),
                 state.installationIdempotencyKey()));
-        String payloadHash = RegistryProtocol.sha256(RegistryProtocol.mauBatchPayload(
+        String payloadHash = CanonicalValues.sha256(RegistryProtocol.mauBatchPayload(
                 RegistryProtocol.INSTALLATION_KIND,
                 state.installationPeriod(),
                 RegistryProtocol.INSTALLATION_RULESET,
@@ -270,8 +271,8 @@ public class RegistryEnrollmentService {
         requireProtocolVersion(response.protocolVersion());
         requireMatchingResponseScope(state, response.registryScope(), "registration response");
         RegistryProtocol.requireDeploymentId(response.deploymentId());
-        RegistryProtocol.requireUtcTimestamp(response.registeredAt(), "registered_at");
-        RegistryProtocol.requireHash(response.publicKeyFingerprint(), "public_key_fingerprint");
+        CanonicalValues.requireUtcTimestamp(response.registeredAt(), "registered_at");
+        CanonicalValues.requireHash(response.publicKeyFingerprint(), "public_key_fingerprint");
         if (!deploymentCrypto.deploymentPublicKeyFingerprint().equals(response.publicKeyFingerprint())) {
             throw new IllegalArgumentException(
                     "Registry registration receipt does not match the local deployment public key.");
@@ -280,8 +281,8 @@ public class RegistryEnrollmentService {
             throw new IllegalArgumentException("Registry registration duplicate flag is missing.");
         }
 
-        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parseRegistryPublicKey(response.registryPublicKey());
-        String registryFingerprint = RegistryProtocol.publicKeyFingerprint(registryPublicKey.getEncoded());
+        PublicKey registryPublicKey = com.raxim.myscoutee.domain.registry.api.RegistryProtocol.parseRegistryPublicKey(response.registryPublicKey());
+        String registryFingerprint = CanonicalValues.publicKeyFingerprint(registryPublicKey.getEncoded());
         String derivedRegistryKeyId = RegistryProtocol.registryKeyId(registryFingerprint);
         RegistryProtocol.requireRegistryKeyId(response.registryKeyId());
         if (!derivedRegistryKeyId.equals(response.registryKeyId())) {
@@ -289,7 +290,7 @@ public class RegistryEnrollmentService {
                     "Registry key ID does not match the supplied registry public key.");
         }
         enforceRegistryTrust(state, registryFingerprint);
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 registryPublicKey,
                 RegistryProtocol.registrationReceipt(response),
                 response.receiptSignature())) {
@@ -337,14 +338,14 @@ public class RegistryEnrollmentService {
                     "Registry receipt is not the requested non-accounting installation test.");
         }
         RegistryProtocol.requirePeriod(receipt.period());
-        RegistryProtocol.requireHash(receipt.batchHash(), "batch_hash");
-        RegistryProtocol.requireHash(receipt.entryHash(), "entry_hash");
-        RegistryProtocol.requireHash(receipt.previousEntryHash(), "previous_entry_hash");
+        CanonicalValues.requireHash(receipt.batchHash(), "batch_hash");
+        CanonicalValues.requireHash(receipt.entryHash(), "entry_hash");
+        CanonicalValues.requireHash(receipt.previousEntryHash(), "previous_entry_hash");
         if (!RegistryProtocol.hashEquals(expectedBatchHash, receipt.batchHash())) {
             throw new IllegalArgumentException("Registry receipt batch hash does not match the submitted payload.");
         }
 
-        Instant acceptedAt = RegistryProtocol.requireUtcTimestamp(receipt.acceptedAt(), "accepted_at");
+        Instant acceptedAt = CanonicalValues.requireUtcTimestamp(receipt.acceptedAt(), "accepted_at");
         RegistryProtocol.requireCheckpointDate(receipt.checkpointDate());
         if (!RegistryProtocol.checkpointDateAt(acceptedAt).equals(receipt.checkpointDate())) {
             throw new IllegalArgumentException(
@@ -356,7 +357,7 @@ public class RegistryEnrollmentService {
                     "Registry receipt signing key differs from the trusted registration key.");
         }
 
-        String expectedEntryHash = RegistryProtocol.sha256(RegistryProtocol.ledgerEntry(
+        String expectedEntryHash = CanonicalValues.sha256(RegistryProtocol.ledgerEntry(
                 RegistryProtocol.PROTOCOL_VERSION,
                 state.registryScope(),
                 ledgerIndex,
@@ -373,7 +374,7 @@ public class RegistryEnrollmentService {
         if (!RegistryProtocol.hashEquals(expectedEntryHash, receipt.entryHash())) {
             throw new IllegalArgumentException("Registry receipt ledger entry hash is invalid.");
         }
-        if (!com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+        if (!com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                 trustedRegistry.publicKey(),
                 RegistryProtocol.mauReceipt(response),
                 receipt.signature())) {
@@ -382,10 +383,10 @@ public class RegistryEnrollmentService {
     }
 
     private String installationBatchPayloadHash(LocalState state) {
-        String commitmentHash = RegistryProtocol.sha256(RegistryProtocol.installationCommitment(
+        String commitmentHash = CanonicalValues.sha256(RegistryProtocol.installationCommitment(
                 state.deploymentId(),
                 state.installationIdempotencyKey()));
-        return RegistryProtocol.sha256(RegistryProtocol.mauBatchPayload(
+        return CanonicalValues.sha256(RegistryProtocol.mauBatchPayload(
                 RegistryProtocol.INSTALLATION_KIND,
                 state.installationPeriod(),
                 RegistryProtocol.INSTALLATION_RULESET,
@@ -396,7 +397,7 @@ public class RegistryEnrollmentService {
     private void enforceRegistryTrust(LocalState state, String responseFingerprint) {
         String configuredFingerprint = safeText(properties.getExpectedRegistryKeyFingerprint());
         if (StringUtils.hasText(configuredFingerprint)) {
-            RegistryProtocol.requireHash(
+            CanonicalValues.requireHash(
                     configuredFingerprint,
                     "configured registry public-key fingerprint");
             if (!configuredFingerprint.equals(responseFingerprint)) {

@@ -132,6 +132,9 @@ class UserAffinityChangesHttpTest {
             "org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
     @Import({UserAffinityChangesServerConfiguration.class,ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean ScheduledMongoSessionRunner databases() {
+            return new ScheduledMongoSessionRunner("real", "demo");
+        }
         @Bean MongoTemplate mongo(){
             var mongo=mock(MongoTemplate.class);when(mongo.indexOps(AffinityRecomputeTask.class)).thenReturn(mock(IndexOperations.class));return mongo;
         }

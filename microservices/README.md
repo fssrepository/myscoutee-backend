@@ -18,6 +18,21 @@ Native DEMO login, reads through every assembly and logout pass through
 two-identity contact mutation/replay sample pass. The bounded stress result and
 qualification limits are recorded in [PROGRESS.md](PROGRESS.md).
 
+### MSC-122 preparation — 2026-10-10, KVM gate pending
+
+The current working tree moves generic bootstrap/configuration/TLS/update source
+into platform without a Registry dependency. Help and MyScoutee operator/Registry
+now have separate `help` and `network` assemblies and gateway routes. Source
+composition has eight processes; identity retains accounts/access/admin/platform/
+integrations. The virtual-company network is excluded from the template.
+
+Eight-service JAR/image packaging and ownership checks pass, with 228 transport
+tests and 61 infrastructure checks. The earlier canonical JUnit result and the
+historical KVM snapshot above predate the network split. The runtime order is: finish development, stop dev,
+qualify KVM (including warmed-up CPU/load and any necessary repairs), stop KVM,
+then qualify the monolith. Never run both stacks together.
+See [the complete template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
+
 ### Latest delegated qualification
 
 UK regional entry also passes: London, Edinburgh, Cardiff and Belfast resolve
@@ -212,12 +227,14 @@ Spring starters and initial memory budgets. It currently defines:
 
 | Service | Domains | Heap / proposed container limit |
 | --- | --- | --- |
-| identity | accounts, access, administration, platform, operator, registry, integrations | 512 / 1024 MiB |
-| community | groups, community, events, campaigns, content, help | 512 / 1024 MiB |
+| identity | accounts, access, administration, platform, integrations | 512 / 1024 MiB |
+| community | groups, community, events, campaigns, content | 512 / 1024 MiB |
 | communication | chat, notifications, email, localization | 384 / 768 MiB |
 | assets | assets, media | 384 / 768 MiB |
 | payments | payments | 384 / 768 MiB |
 | affinity | affinity | 384 / 768 MiB |
+| help | help | 256 / 512 MiB |
+| network | operator, registry | 384 / 768 MiB |
 
 The number of deployments is not fixed. Splitting a group means adding an entry
 and reassigning its domains, dependencies and memory budget. Settings generate

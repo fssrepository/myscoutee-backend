@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
-import com.raxim.myscoutee.domain.operator.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.DeploymentPublicConfigurationDto;
+import com.raxim.myscoutee.domain.platform.dto.OperatorConfigurationDtos.FirebasePublicConfigurationDto;
 import com.raxim.myscoutee.domain.payments.api.PaymentSimulatorConfiguration;
 import com.raxim.myscoutee.domain.platform.service.OperatorConfigurationService;
 import com.raxim.myscoutee.common.config.mongo.MongoSessionMode;

@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -336,7 +337,7 @@ class OperatorRevenueReportServiceTest {
                 80L,
                 4L,
                 1L);
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.revenueBatchPayload(
                         RegistryProtocol.REVENUE_KIND,
                         "2026-07-27",

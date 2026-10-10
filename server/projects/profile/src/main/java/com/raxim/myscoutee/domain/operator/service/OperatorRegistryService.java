@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import com.raxim.myscoutee.domain.operator.mapper.OperatorRegistryMapper;
 
@@ -1097,7 +1098,7 @@ public class OperatorRegistryService {
     }
 
     private String tokenHash(String token) {
-        return RegistryProtocol.sha256(safeText(token).getBytes(StandardCharsets.UTF_8));
+        return CanonicalValues.sha256(safeText(token).getBytes(StandardCharsets.UTF_8));
     }
 
     private String safeActor(String value) {

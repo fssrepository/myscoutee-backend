@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.security.SecureRandom;
 import java.time.Clock;
@@ -36,7 +37,6 @@ import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRe
 import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauCalculator.QualifiedMauDetailedSnapshot;
 import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
 import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.GlobalIdentityEvent;
@@ -421,7 +421,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                                     .compareTo(period) > 0)
                     .map(GlobalIdentityLinkState
                             ::getNetworkIdentityCommitment)
-                    .map(commitment -> RegistryProtocol.requireHash(
+                    .map(commitment -> CanonicalValues.requireHash(
                             commitment,
                             "network_identity_commitment"))
                     .toList();
@@ -581,7 +581,7 @@ public class OperatorGlobalIdentityPresenceReportService {
             String commitmentSetHash,
             List<String> commitments) {
         String now = clock.instant().toString();
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityPresenceChunkPayload(
                         submissionId,
                         qmau.getPeriod(),
@@ -660,7 +660,7 @@ public class OperatorGlobalIdentityPresenceReportService {
         String[] canonical = new String[values.length + 1];
         canonical[0] = domain;
         System.arraycopy(values, 0, canonical, 1, values.length);
-        return RegistryProtocol.sha256(RegistryProtocol.canonical(canonical))
+        return CanonicalValues.sha256(CanonicalValues.canonical(canonical))
                 .substring("sha256:".length());
     }
 
@@ -730,7 +730,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                 item.getPayloadHash());
         rememberSignedRequestHash(
                 item,
-                RegistryProtocol.sha256(signedRequest));
+                CanonicalValues.sha256(signedRequest));
         String signature = runtime.deploymentCrypto().signBase64(
                 signedRequest);
         item.setAttemptCount(value(item.getAttemptCount()) + 1);
@@ -827,14 +827,14 @@ public class OperatorGlobalIdentityPresenceReportService {
             throw new IllegalStateException(
                     "Global identity presence response changed the signed batch.");
         }
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 response.acceptedAt(),
                 "accepted_at");
-        String expectedReceiptHash = RegistryProtocol.sha256(
+        String expectedReceiptHash = CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityPresenceChunkReceipt(
                         response));
         if (!expectedReceiptHash.equals(response.receiptHash())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.globalIdentityPresenceChunkReceipt(
                                 response),
@@ -931,10 +931,10 @@ public class OperatorGlobalIdentityPresenceReportService {
             throw new IllegalStateException(
                     "Global identity snapshot is inconsistent with its signed event.");
         }
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 snapshot.aggregateCommitment(),
                 "aggregate_commitment");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 snapshot.generatedAt(),
                 "generated_at");
     }
@@ -1021,13 +1021,13 @@ public class OperatorGlobalIdentityPresenceReportService {
                     "Stored global identity presence item is invalid.");
         }
         RegistryProtocol.requirePeriod(item.getPeriod());
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 item.getQmauCommitmentHash(),
                 "qmau_commitment_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 item.getCommitmentSetHash(),
                 "commitment_set_hash");
-        RegistryProtocol.requireHash(item.getPayloadHash(), "payload_hash");
+        CanonicalValues.requireHash(item.getPayloadHash(), "payload_hash");
         RegistryProtocol.requireToken(
                 item.getIdempotencyKey(),
                 "idempotency_key");
@@ -1043,7 +1043,7 @@ public class OperatorGlobalIdentityPresenceReportService {
             throw new IllegalStateException(
                     "Stored global identity presence retry history is invalid.");
         }
-        String expectedPayloadHash = RegistryProtocol.sha256(
+        String expectedPayloadHash = CanonicalValues.sha256(
                 RegistryProtocol.globalIdentityPresenceChunkPayload(
                         item.getSubmissionId(),
                         item.getPeriod(),
@@ -1238,7 +1238,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                 throw new IllegalStateException(
                         "Global identity presence retry history is full.");
             }
-            hashes.add(RegistryProtocol.requireHash(
+            hashes.add(CanonicalValues.requireHash(
                     requestHash,
                     "signed_request_hash"));
         }
@@ -1278,7 +1278,7 @@ public class OperatorGlobalIdentityPresenceReportService {
         }
         Set<String> hashes = new HashSet<>();
         for (String requestHash : persisted) {
-            if (!hashes.add(RegistryProtocol.requireHash(
+            if (!hashes.add(CanonicalValues.requireHash(
                     requestHash,
                     "signed_request_hash"))) {
                 throw new IllegalStateException(
@@ -1287,7 +1287,7 @@ public class OperatorGlobalIdentityPresenceReportService {
         }
         SignedAttempt attempt = item.getLastAttempt();
         if (attempt != null) {
-            RegistryProtocol.requireUtcTimestamp(
+            CanonicalValues.requireUtcTimestamp(
                     attempt.getTimestamp(),
                     "request_timestamp");
             RegistryProtocol.requireToken(
@@ -1297,7 +1297,7 @@ public class OperatorGlobalIdentityPresenceReportService {
                 throw new IllegalStateException(
                         "Global identity presence signed attempt is incomplete.");
             }
-            hashes.add(RegistryProtocol.sha256(
+            hashes.add(CanonicalValues.sha256(
                     RegistryProtocol.signedRequest(
                             "POST",
                             RegistryProtocol

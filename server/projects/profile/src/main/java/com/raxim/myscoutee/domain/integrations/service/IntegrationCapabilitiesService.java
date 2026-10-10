@@ -111,6 +111,26 @@ public class IntegrationCapabilitiesService {
         return profile.getUserId();
     }
 
+    /** Scope the checked report permission to this call; the existing signer carries it across HTTP. */
+    public <T> T withOperatorReportRead(Authentication authentication, java.util.function.Supplier<T> read) {
+        requireRoleRead(authentication, "operator");
+        var previous = org.springframework.security.core.context.SecurityContextHolder.getContext();
+        var scoped = org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        var authorities = new ArrayList<org.springframework.security.core.GrantedAuthority>(authentication.getAuthorities());
+        authorities.add(new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                com.raxim.myscoutee.domain.operator.api.MeasurementReports.INTEGRATION_READ_AUTHORITY));
+        var checked = org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(
+                authentication.getPrincipal(), null, authorities);
+        checked.setDetails(authentication.getDetails());
+        scoped.setAuthentication(checked);
+        try {
+            org.springframework.security.core.context.SecurityContextHolder.setContext(scoped);
+            return read.get();
+        } finally {
+            org.springframework.security.core.context.SecurityContextHolder.setContext(previous);
+        }
+    }
+
     private WorkspaceProfile profile(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()
                 || !(authentication.getPrincipal() instanceof AccountIdentity principal)

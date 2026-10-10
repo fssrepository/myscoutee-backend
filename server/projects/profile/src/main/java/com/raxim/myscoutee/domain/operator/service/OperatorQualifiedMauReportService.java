@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.operator.service;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.security.SecureRandom;
 import java.time.Clock;
@@ -41,7 +42,6 @@ import com.raxim.myscoutee.domain.operator.repository.QualifiedMauReportOutboxRe
 import com.raxim.myscoutee.domain.operator.service.OperatorQualifiedMauCalculator.QualifiedMauSnapshot;
 import com.raxim.myscoutee.domain.registry.dto.RegistryRegisteredState.RegisteredRuntime;
 import com.raxim.myscoutee.domain.operator.service.OperatorRevenueRegistryRuntimeResolver.Resolution;
-import com.raxim.myscoutee.domain.registry.api.RegistryTransport;
 import com.raxim.myscoutee.domain.registry.api.RegistryHttpException;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol.BatchRequest;
@@ -404,7 +404,7 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
         String supersedes = previous == null
                 ? null
                 : previous.getAcceptedResponse().batchId();
-        String payloadHash = RegistryProtocol.sha256(
+        String payloadHash = CanonicalValues.sha256(
                 RegistryProtocol.qmauBatchPayload(
                         RegistryProtocol.QMAU_KIND,
                         snapshot.period(),
@@ -571,20 +571,20 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
             throw new IllegalStateException(
                     "Registry QMAU receipt changed the immutable snapshot.");
         }
-        RegistryProtocol.requireHash(receipt.batchHash(), "batch_hash");
-        RegistryProtocol.requireHash(receipt.entryHash(), "entry_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(receipt.batchHash(), "batch_hash");
+        CanonicalValues.requireHash(receipt.entryHash(), "entry_hash");
+        CanonicalValues.requireHash(
                 receipt.previousEntryHash(),
                 "previous_entry_hash");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 receipt.commitmentHash(),
                 "commitment_hash");
         RegistryProtocol.requirePeriod(receipt.period());
-        Instant acceptedAt = RegistryProtocol.requireUtcTimestamp(
+        Instant acceptedAt = CanonicalValues.requireUtcTimestamp(
                 receipt.acceptedAt(),
                 "accepted_at");
         RegistryProtocol.requireCheckpointDate(receipt.checkpointDate());
-        String expectedEntryHash = RegistryProtocol.sha256(
+        String expectedEntryHash = CanonicalValues.sha256(
                 RegistryProtocol.ledgerEntry(
                         RegistryProtocol.PROTOCOL_VERSION,
                         item.getRegistryScope(),
@@ -607,7 +607,7 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
                         receipt.entryHash())
                 || !RegistryProtocol.checkpointDateAt(acceptedAt).equals(
                         receipt.checkpointDate())
-                || !com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verifyBase64(
+                || !com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verifyBase64(
                         runtime.registryPublicKey(),
                         RegistryProtocol.qmauReceipt(response),
                         receipt.signature())) {
@@ -678,16 +678,16 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
         }
         validateActionCounts(item);
         RegistryProtocol.requirePeriod(item.getPeriod());
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 item.getWindowStart(),
                 "window_start");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 item.getWindowEnd(),
                 "window_end");
-        RegistryProtocol.requireHash(
+        CanonicalValues.requireHash(
                 item.getCommitmentHash(),
                 "commitment_hash");
-        RegistryProtocol.requireHash(item.getPayloadHash(), "payload_hash");
+        CanonicalValues.requireHash(item.getPayloadHash(), "payload_hash");
         if (item.getRevision() == 1L) {
             if (StringUtils.hasText(item.getSupersedesBatchId())) {
                 throw new IllegalStateException(
@@ -696,7 +696,7 @@ public class OperatorQualifiedMauReportService implements com.raxim.myscoutee.do
         } else {
             RegistryProtocol.requireBatchId(item.getSupersedesBatchId());
         }
-        String expectedPayloadHash = RegistryProtocol.sha256(
+        String expectedPayloadHash = CanonicalValues.sha256(
                 RegistryProtocol.qmauBatchPayload(
                         item.getKind(),
                         item.getPeriod(),

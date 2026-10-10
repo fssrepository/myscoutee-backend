@@ -10,12 +10,11 @@ import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterStateDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.PrivacyConsentSaveRequestDto;
 
-public interface HelpCenter extends HelpAdministration {
+public interface HelpCenter extends HelpAdministration, PublicHelpContent {
     HelpCenterStateDto activeState();
     HelpCenterStateDto activeState(String documentType);
     HelpCenterStateDto activeState(String documentType, String lang);
     HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage);
-    HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage, String contextKey, String baseGroupId);
     HelpCenterStateDto activeState(String documentType, String lang, String acceptLanguage, String contextKey);
     PrivacyConsentDto privacyConsent(String userId, String revisionId, Integer revisionVersion);
     PrivacyConsentDto savePrivacyConsent(PrivacyConsentSaveRequestDto request);

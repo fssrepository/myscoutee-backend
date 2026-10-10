@@ -364,7 +364,7 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts",
-        "operator"
+        "platform"
       ]
     },
     {
@@ -579,7 +579,8 @@
         "community",
         "events",
         "affinity",
-        "content"
+        "content",
+        "operator"
       ]
     },
     {
@@ -3066,6 +3067,66 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "integrations"
+      ]
+    },
+    {
+      "domain": "help",
+      "api": "PublicHelpContent",
+      "package": "help",
+      "configuration": "PublicHelpContent",
+      "propertyPrefix": "public-help-content",
+      "credential": "publicHelpContentToken",
+      "producerDomains": [
+        "content"
+      ]
+    },
+    {
+      "domain": "operator",
+      "api": "GlobalIdentityPrivacy",
+      "package": "operator",
+      "configuration": "GlobalIdentityPrivacy",
+      "propertyPrefix": "global-identity-privacy",
+      "credential": "globalIdentityPrivacyToken",
+      "credentialProperty": "command-token",
+      "producerDomains": [
+        "accounts"
+      ]
+    },
+    {
+      "domain": "accounts",
+      "api": "MeasurementEligibility",
+      "package": "accounts",
+      "configuration": "MeasurementEligibility",
+      "propertyPrefix": "measurement-eligibility",
+      "credential": "measurementEligibilityToken",
+      "producerDomains": [
+        "operator"
+      ]
+    },
+    {
+      "domain": "operator",
+      "api": "MeasurementReports",
+      "providedApis": [
+        "RevenueReports"
+      ],
+      "package": "operator",
+      "configuration": "OperatorReports",
+      "propertyPrefix": "operator-reports",
+      "credential": "operatorReportsToken",
+      "producerDomains": [
+        "integrations"
+      ],
+      "actorOperations": [
+        {
+          "audience": "operator:integration-reports",
+          "method": "POST",
+          "path": "/_internal/v1/operator/reports/measurements"
+        },
+        {
+          "audience": "operator:integration-reports",
+          "method": "POST",
+          "path": "/_internal/v1/operator/reports/revenue"
+        }
       ]
     }
   ],

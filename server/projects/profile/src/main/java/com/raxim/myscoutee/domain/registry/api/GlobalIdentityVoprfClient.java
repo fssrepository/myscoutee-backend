@@ -1,4 +1,5 @@
 package com.raxim.myscoutee.domain.registry.api;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -169,7 +170,7 @@ public final class GlobalIdentityVoprfClient {
                 throw new IllegalArgumentException(
                         "VOPRF output must contain 32 bytes.");
             }
-            return RegistryProtocol.sha256(RegistryProtocol.canonical(
+            return CanonicalValues.sha256(CanonicalValues.canonical(
                     "myscoutee-network-identity-commitment-v1",
                     Long.toString(keyVersion),
                     SUITE,

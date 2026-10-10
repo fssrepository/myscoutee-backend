@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raxim.myscoutee.domain.operator.api.OperatorBootstrapRequestSupport;
+import com.raxim.myscoutee.domain.platform.api.OperatorBootstrapRequestSupport;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebaseCredential;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
 import com.raxim.myscoutee.domain.accounts.security.firebase.exception.FirebaseTokenInvalidException;

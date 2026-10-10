@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.registry;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
 import com.raxim.myscoutee.domain.registry.dto.RegistryState.LocalState;
-import com.raxim.myscoutee.domain.registry.dto.RegistryState.RegistrationProtocolState;
 import com.raxim.myscoutee.domain.registry.dto.RegistryState.OperatorActionJournalEntry;
 import com.raxim.myscoutee.domain.registry.dto.RegistryState.OperatorClaimStatusEvidence;
 import com.raxim.myscoutee.domain.registry.dto.RegistryState.BindingArchiveRequest;
@@ -31,7 +31,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raxim.myscoutee.domain.registry.api.RegistryConfiguration;
 
 import tools.jackson.databind.ObjectMapper;
@@ -112,7 +111,7 @@ public final class RegistryLocalStore {
             String registrationSoftwareVersion,
             SecureRandom secureRandom,
             Instant now) {
-        String stableSoftwareVersion = RegistryProtocol.requireCanonical(
+        String stableSoftwareVersion = CanonicalValues.requireCanonical(
                 registrationSoftwareVersion,
                 "registration software_version");
         if (stableSoftwareVersion.length() > 128) {
@@ -122,7 +121,7 @@ public final class RegistryLocalStore {
                 STATE_SCHEMA_VERSION,
                 RegistryProtocol.PROTOCOL_VERSION,
                 RegistryProtocol.requireRegistryScope(registryScope),
-                RegistryProtocol.requireHash(
+                CanonicalValues.requireHash(
                         deploymentPublicKeyFingerprint,
                         "deployment public-key fingerprint"),
                 RegistryProtocol.randomToken("registration_", secureRandom),
@@ -605,13 +604,13 @@ public final class RegistryLocalStore {
                 request.registryScope());
         String registryKeyId = RegistryProtocol.requireRegistryKeyId(
                 request.registryKeyId());
-        String registryFingerprint = RegistryProtocol.requireHash(
+        String registryFingerprint = CanonicalValues.requireHash(
                 request.registryPublicKeyFingerprint(),
                 "archived registry public-key fingerprint");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 request.archivedAt(),
                 "binding archived_at");
-        RegistryProtocol.requireUtcTimestamp(
+        CanonicalValues.requireUtcTimestamp(
                 receipt.acceptedAt(),
                 "deployment deactivation accepted_at");
         if (!RegistryProtocol.OPERATOR_ACTION_DEACTIVATE_DEPLOYMENT.equals(
@@ -636,7 +635,7 @@ public final class RegistryLocalStore {
                 registryFingerprint,
                 deploymentId,
                 receipt.auditIndex(),
-                RegistryProtocol.requireHash(
+                CanonicalValues.requireHash(
                         receipt.auditHash(),
                         "deployment deactivation audit hash"),
                 receipt.acceptedAt(),
@@ -945,7 +944,7 @@ public final class RegistryLocalStore {
             String value,
             String label,
             int maxLength) {
-        String normalized = RegistryProtocol.requireCanonical(value, label);
+        String normalized = CanonicalValues.requireCanonical(value, label);
         if (normalized.length() > maxLength) {
             throw new IllegalArgumentException(
                     label + " exceeds " + maxLength + " characters.");
@@ -985,9 +984,9 @@ public final class RegistryLocalStore {
             throw new IllegalArgumentException("Registry local state protocol version is unsupported.");
         }
         RegistryProtocol.requireRegistryScope(state.registryScope());
-        RegistryProtocol.requireHash(state.publicKeyFingerprint(), "state public_key_fingerprint");
+        CanonicalValues.requireHash(state.publicKeyFingerprint(), "state public_key_fingerprint");
         RegistryProtocol.requireToken(state.registrationIdempotencyKey(), "state registration_idempotency_key");
-        RegistryProtocol.requireCanonical(
+        CanonicalValues.requireCanonical(
                 state.registrationSoftwareVersion(),
                 "state registration_software_version");
         if (state.registrationSoftwareVersion().length() > 128) {
@@ -995,9 +994,9 @@ public final class RegistryLocalStore {
         }
         RegistryProtocol.requireToken(state.installationIdempotencyKey(), "state installation_idempotency_key");
         RegistryProtocol.requirePeriod(state.installationPeriod());
-        RegistryProtocol.requireUtcTimestamp(state.updatedAt(), "state updated_at");
+        CanonicalValues.requireUtcTimestamp(state.updatedAt(), "state updated_at");
         if (state.trustedRegistryKeyFingerprint() != null) {
-            RegistryProtocol.requireHash(
+            CanonicalValues.requireHash(
                     state.trustedRegistryKeyFingerprint(),
                     "state trusted_registry_key_fingerprint");
         }

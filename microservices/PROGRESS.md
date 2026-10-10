@@ -6,6 +6,54 @@ Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolida
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
 
+## MSC-122 continuation — 2026-10-10, not a new qualified lab revision
+
+**Current continuation:** source now also separates operator/Registry into the
+`network` assembly (eight Java services total). New boundaries cover bounded
+measurement eligibility, the durable purge handoff and signed integration report
+reads; narrow existing profile ports are reused. Eight independent JAR builds
+and artifact ownership checks, 228 transport tests and 61 infrastructure checks
+pass. Eight runtime images are built and locked. Network OpenAPI validation
+covers 12 measurement-eligibility, 11 global-identity-privacy and 49 report
+responses. Logs: `/tmp/msc122-network-assemblies.log`,
+`/tmp/msc122-network-images.log`, `/tmp/msc122-network-infra.log`.
+
+Dev is stopped; libvirt is active following interactive sudo in the opened
+terminal. The separate `vm.py observe` terminal is open. After the user directed
+continuation, VM startup used the existing one-shot `--host-reserve-mib 1792`
+option; guest allocation/defaults are unchanged. Actual startup found 10,251 MiB
+available; cloud-init and k3s API readiness pass. Initial host memory-pressure
+averages are zero. Coordinated backend stop/rollout is in progress.
+
+The results below are the preceding seven-service checkpoint.
+
+Runtime order confirmed by the user: complete development → stop dev → KVM
+qualification/CPU diagnosis and repair → stop KVM → monolith qualification.
+The dev stack is stopped for this phase; do not automatically restart it while
+KVM qualification is pending. October-9 CPU evidence and its limitations are
+linked in the template plan.
+
+Generic operator deployment capabilities moved to platform; release verification
+uses the extracted canonical crypto/release contracts without Registry beans.
+Help has a dedicated seventh assembly/image and gateway destination. Landing
+content uses a narrow public-help read transport. At that seven-service checkpoint, Java network/Registry still shared identity;
+the subsequent source split above supersedes that grouping.
+Verification: 271 focused backend JUnit tests, 224 transport tests, 61
+infrastructure tests, seven independent JAR builds and artifact ownership checks
+pass. All OpenAPI schemas compile; the new public-help contract validates 24 real
+HTTP responses. The complete wire inventory stops at pre-existing missing
+`affinity/recompute-metrics-v1` response evidence and is not claimed complete.
+The affinity HTTP fixture now supplies its required canonical database-mode runner.
+
+Seven runtime images are built and locked in `deploy/images.lock.json` (including
+help `0.1.0-b1df9a7c82f9`). Logs: `/tmp/msc122-platform-junit.log`,
+`/tmp/msc122-assemblies.log`, `/tmp/msc122-images.log`. The dev stack was stopped
+for serial packaging and restarted afterwards. At that historical checkpoint, the lab rollout was pending because libvirt
+was stopped; the current memory gate is recorded above. No guest image
+import, new Helm revision, native-flow or persistence result is claimed.
+The previous revision-123 evidence remains historical. Full scope and the resume
+sequence are in [the template plan](../guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md).
+
 ## Administrative closeout — 2026-10-10
 
 MSC-121 is **Closed / Project Done**, including the October-9 idle/runtime

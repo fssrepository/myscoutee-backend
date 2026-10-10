@@ -1,5 +1,5 @@
 package com.raxim.myscoutee.domain.registry;
-import com.raxim.myscoutee.domain.registry.api.RegistryProtocol;
+import com.raxim.myscoutee.common.security.crypto.CanonicalValues;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -47,7 +47,7 @@ class RegistryCryptoTest {
         properties.setPublicKeyPath(publicKey);
         RegistryCrypto crypto = RegistryCrypto.load(properties);
 
-        byte[] canonical = RegistryProtocol.canonical(
+        byte[] canonical = CanonicalValues.canonical(
                 "myscoutee-registry-openssl-compatibility-v1",
                 "deployment");
         Path message = tempDirectory.resolve("message.bin");
@@ -88,8 +88,8 @@ class RegistryCryptoTest {
         assertThat(signWithOpenSsl.exitCode())
                 .withFailMessage(signWithOpenSsl.output())
                 .isZero();
-        assertThat(com.raxim.myscoutee.domain.registry.api.RegistrySignatures.verify(
-                com.raxim.myscoutee.domain.registry.api.RegistrySignatures.parsePublicKeyDer(Files.readAllBytes(publicKey), "test public key"),
+        assertThat(com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.verify(
+                com.raxim.myscoutee.common.security.crypto.Ed25519Signatures.parsePublicKeyDer(Files.readAllBytes(publicKey), "test public key"),
                 canonical,
                 Files.readAllBytes(openSslSignature))).isTrue();
     }

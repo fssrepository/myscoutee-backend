@@ -343,6 +343,16 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
 
 
 class WorkloadCredentialsTest(unittest.TestCase):
+    def test_current_assembly_consumers_have_authorized_producer_scopes(self):
+        # Exercise the real composition: synthetic bindings alone cannot detect
+        # a canonical service moving to another domain with a stale allowlist.
+        scoped = workloads.transport_credentials_by_service(workloads.SERVICES, workloads.SHELL.parent)
+        self.assertEqual(set(workloads.SERVICES), set(scoped))
+        role_key = 'MYSCOUTEE_REMOTE_ROLE_NOTIFICATIONS_COMMAND_TOKEN'
+        self.assertIn(role_key, scoped['identity'])
+        self.assertIn(role_key, scoped['communication'])
+        self.assertNotIn(role_key, scoped['network'])
+
     def test_constants_and_nested_dtos_do_not_grant_a_remote_capability(self):
         from transport_usage import uses_api
         api = 'com.raxim.myscoutee.domain.community.api.CaseFeedbackPreparation'
