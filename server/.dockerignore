@@ -25,6 +25,7 @@ projects/profile/build/*
 !projects/profile/build/libs/
 !projects/profile/build/libs/*.jar
 .gradle/
+.gradle-docker/
 **/.gradle/
 *.log
 docker/.qa-mobile-runtime/
