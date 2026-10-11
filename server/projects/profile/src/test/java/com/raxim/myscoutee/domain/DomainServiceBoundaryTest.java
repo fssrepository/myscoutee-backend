@@ -154,6 +154,16 @@ class DomainServiceBoundaryTest {
         }
     }
 
+    @org.junit.jupiter.api.Test
+    void sharedJobScopeDoesNotRequireProductOwnerTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "platform/service/JobGroupScopeService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "assets/",
+                    DOMAIN + "groups/", DOMAIN + "affinity/");
+        }
+    }
+
     private boolean changeStreamSubscription(String name, String method, Object value) {
         if (name.equals(DOMAIN + "administration/service/AdminStatsTelemetryWorkerService")
                 && method.equals("watchInputs")) {
@@ -186,7 +196,7 @@ class DomainServiceBoundaryTest {
             case "assets/service/AssetsService" -> Set.of("toAssetTicketDto");
             case "integrations/service/McpEventsService" -> Set.of("catalog");
             case "integrations/controller/IntegrationReadController" -> Set.of("listEvents");
-            case "chat/service/ChatService" -> Set.of("chatNavigationContext");
+            case "chat/service/ChatActivityPresentation" -> Set.of("chatNavigationContext");
             default -> Set.<String>of();
         };
         return methods.contains(method) || methods.stream().anyMatch(owner -> method.startsWith("lambda$" + owner + "$"));

@@ -135,7 +135,10 @@
       "package": "groups",
       "configuration": "GroupDirectory",
       "propertyPrefix": "group-directory",
-      "credential": "groupDirectoryToken"
+      "credential": "groupDirectoryToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory"
+      ]
     },
     {
       "domain": "events",
@@ -308,7 +311,8 @@
       "consumerApis": [
         "com.raxim.myscoutee.domain.platform.api.SchedulingParameters",
         "com.raxim.myscoutee.domain.platform.api.SchedulingPolicy",
-        "com.raxim.myscoutee.domain.platform.api.NotificationPolicy"
+        "com.raxim.myscoutee.domain.platform.api.NotificationPolicy",
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
       ]
     },
     {
@@ -317,7 +321,10 @@
       "package": "assets",
       "configuration": "AssetJobScopes",
       "propertyPrefix": "assets-job-scopes",
-      "credential": "assetJobScopesToken"
+      "credential": "assetJobScopesToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
     },
     {
       "domain": "events",
@@ -325,7 +332,10 @@
       "package": "events",
       "configuration": "EventJobScopes",
       "propertyPrefix": "events-job-scopes",
-      "credential": "eventJobScopesToken"
+      "credential": "eventJobScopesToken",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.JobTargetResolver"
+      ]
     },
     {
       "domain": "payments",

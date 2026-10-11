@@ -2,7 +2,7 @@
   "checkpoint": "Notification storage and account purge product contributions",
   "sourceBaseRevision": "1707a79daa50b337cd76e587b21dd0f31bd05ebc",
   "date": "2026-10-11",
-  "status": "Component checkpoint; combined KVM/monolith deployment verification is pending after the larger change block. Community omission is not yet complete.",
+  "status": "Component checkpoint now qualified in the combined Helm 138 and serial monolith batch; see MSC122_CORE_BOUNDARIES_20261011.json. Community omission is still incomplete.",
   "changes": [
     "Notification storage uses an optional synchronous owner observer; the existing MemberAttention owner and HTTP client keep the original predicate and counter update. Existing notifications are not filtered.",
     "Account purge retains its coordinator, stage order, persisted model, source IDs, lease, retries and core identity cleanup. Installed product owners contribute the existing operations through their native APIs or existing HTTP clients. No new owner query, RPC or retry loop.",
@@ -14,12 +14,12 @@
     "transportTests": 11,
     "infrastructureTests": 68,
     "assemblyOwnershipAudits": 8,
-    "finalPurgeGuard": "Verified by final focused JUnit; assembly build/audit preceded this guard addition. Final image/deployment validation remains pending.",
+    "finalPurgeGuard": "Included in final eight assemblies and runtime batch; native purge tests passed 8/8.",
     "initialTransportFailure": "Test fixture incorrectly used SimpleMeterRegistry as AutoCloseable; corrected to explicit close; focused rerun and all assemblies passed."
   },
   "performance": {
     "queryAndRpcCount": "Native owner operations and their order preserved; HTTP contribution tests assert one call per existing mutation and two for event discovery plus purge. Nonmatching notifications make no member-owner call.",
-    "runtimeCpuAndLatency": "Not measured for this component checkpoint. To be measured after the combined block; no performance parity claim."
+    "runtimeCpuAndLatency": "Recorded in MSC122_CORE_BOUNDARIES_20261011.json; short observations do not prove performance parity."
   },
   "sourceSha256": {
     "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/common/PurgeBoundaryHttpTest.java": "78444cb6a76c63a747e3062402677d9a8e99206d83477ad7ec820672896807c1",

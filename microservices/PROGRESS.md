@@ -2,9 +2,38 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **137**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **138**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## MSC-122 core dependency batch — 2026-10-11
+
+Notification storage now receives the existing community counter as an optional
+observer. Account purge accepts installed product cleanup operations while
+preserving its stage order, durable state and retry behavior. Chat activity
+presentation is separate from chat-list storage/access, retaining the same
+batched reads. Shared job scope resolution uses the existing owners through
+generic target/workspace contracts. No persisted model, query predicate,
+chat-membership rule or HTTP path changed.
+
+**150 canonical JUnit tests**, **22 transport tests** and all **eight assembly/image
+audits** passed. KVM Helm **138** and the serial monolith each passed **47 native
+session, profile-selection, chat and administrator checks**. Existing source hashes
+were frozen through qualification. No new stress run was needed for this block.
+
+The KVM low-load sample used **0.665 QEMU cores** (previously 0.679/0.685).
+Monolith used **0.167 backend**, **0.058 MongoDB** and **0.063 frontend-watcher cores**;
+the prior profile-selection samples were 0.137, 0.056 and 0.049 respectively.
+These observations include small increases and do not prove load-performance
+parity. All backends stayed ready without restarts; settled logs contain no new
+errors. The dev Mongo startup fault caused by retained root credentials is fixed
+using the existing credential in a separate ignored local override, without
+changing database users or data. The earlier 0.296 Mongo sample was affected by
+that startup failure and is not a valid settled comparison.
+
+[Batch evidence](../guides/qualification/evidence/MSC122_CORE_BOUNDARIES_20261011.json)
+records source hashes, timings, CPU and limits. Community omission and remaining
+core chat/profile/API dependencies are still open. Template work stays paused.
 
 ## MSC-122 shared scheduling values — 2026-10-11
 

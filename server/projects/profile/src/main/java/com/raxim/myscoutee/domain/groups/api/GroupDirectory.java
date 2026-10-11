@@ -2,7 +2,15 @@ package com.raxim.myscoutee.domain.groups.api;
 
 import java.util.Optional;
 
-public interface GroupDirectory {
+public interface GroupDirectory extends com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory {
+    @Override
+    default String jobGroupForWorkspace(String workspaceId) {
+        if (workspaceId == null || workspaceId.isBlank()) return null;
+        if (BaseGroups.isBaseId(workspaceId)) return workspaceId;
+        var group = findById(workspaceId).orElse(null);
+        return group == null ? null : group.baseId();
+    }
+
     java.util.Set<String> activeCommunityIds(java.util.Collection<String> ids);
     java.util.Map<String, String> workspaceBaseIds();
     Optional<? extends GroupView> findById(String id);

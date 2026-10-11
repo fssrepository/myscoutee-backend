@@ -122,7 +122,6 @@ class ChatServiceTest {
                 mongoTemplate,
                 profileDirectory(),
                 memberDirectory(),
-                new com.raxim.myscoutee.domain.events.service.EventResourceDirectoryService(activitySubEventResourcesRepository, activitySubEventStageRuntimeRepository),
                 homeUserProfileService,
                 userActivityCountersService,
                 chatStreamPublisher,
@@ -139,6 +138,12 @@ class ChatServiceTest {
         var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation",
+                new ChatActivityPresentation(profileDirectory(), memberDirectory(),
+                        new com.raxim.myscoutee.domain.events.service.EventResourceDirectoryService(
+                                activitySubEventResourcesRepository, activitySubEventStageRuntimeRepository),
+                        eventOwner, com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongoTemplate),
+                        new ChatMapper()));
     }
 
     @AfterEach
@@ -919,6 +924,68 @@ class ChatServiceTest {
         assertThat(result.items())
                 .extracting(item -> item.id())
                 .containsExactly("aa-new", "zz-old", "mm-mid");
+    }
+
+    @Test
+    void pageWithoutActivityPresentationKeepsEveryStoredChannelAndItsMembers() {
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation", null);
+        List<Chat> records = new ArrayList<>();
+        for (String channel : List.of("contact", "mainEvent", "optionalSubEvent", "groupSubEvent", "case", "campaign")) {
+            Chat record = chat(channel, "viewer", 3, "2026-10-11T10:00:00Z", channel);
+            record.setMemberIds(List.of("viewer", "other"));
+            records.add(record);
+        }
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        stubEmptyMenuCounters("viewer");
+        when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(6L);
+        when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(records);
+
+        var result = service.queryChatPage("viewer", "all", "date", "desc", null, null, 10, null, null, false, null);
+
+        assertThat(result.items()).extracting(item -> item.id())
+                .containsExactly("contact", "mainEvent", "optionalSubEvent", "groupSubEvent", "case", "campaign");
+        assertThat(result.items()).allSatisfy(item -> {
+            assertThat(item.memberIds()).containsExactly("viewer", "other");
+            assertThat(item.unread()).isEqualTo(3);
+        });
+        org.mockito.Mockito.verifyNoInteractions(activityMembersRepository, activitySubEventResourcesRepository,
+                activitySubEventStageRuntimeRepository);
+        verify(mongoTemplate, never()).find(any(Query.class), eq(ActivityEvent.class));
+    }
+
+    @Test
+    void configuredActivityPresentationFailureIsNotHiddenByReturningIncompleteData() {
+        Chat record = chat("main", "viewer", 0, "2026-10-11T10:00:00Z", "mainEvent");
+        ChatPagePresentation unavailable = (records, profiles) -> { throw new IllegalStateException("owner unavailable"); };
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "pagePresentation", unavailable);
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(record));
+
+        assertThatThrownBy(() -> service.queryChatPage("viewer", "all", "date", "desc", null, null, 10,
+                null, null, false, null)).isInstanceOf(IllegalStateException.class).hasMessage("owner unavailable");
+    }
+
+    @Test
+    void activityPresentationKeepsOneBatchedMembershipReadForTwentyChats() {
+        var profiles = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class);
+        var members = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.api.MemberDirectory.class);
+        var resources = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.api.EventResourceDirectory.class);
+        var events = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.events.api.EventOwnershipReads.class);
+        var assets = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads.class);
+        var presentation = new ChatActivityPresentation(profiles, members, resources, events, assets, new ChatMapper());
+        var records = new ArrayList<Chat>();
+        var ids = new java.util.LinkedHashSet<String>();
+        for (int i = 0; i < 20; i++) {
+            String id = "event-" + i; ids.add(id);
+            Chat record = chat(id, "viewer", 0, "2026-10-11T10:00:00Z", "mainEvent");
+            record.setOwnerId(id); records.add(record);
+        }
+
+        assertThat(presentation.present(records, Map.of())).hasSize(20);
+
+        verify(members).findByOwnerTypeAndOwnerIdIn("event", ids);
+        org.mockito.Mockito.verifyNoMoreInteractions(members);
+        org.mockito.Mockito.verifyNoInteractions(profiles, resources, events, assets);
     }
 
     @Test

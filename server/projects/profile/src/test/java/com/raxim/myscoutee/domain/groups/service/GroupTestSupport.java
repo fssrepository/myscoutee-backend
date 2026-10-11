@@ -12,10 +12,6 @@ import com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository;
 public final class GroupTestSupport {
     private GroupTestSupport() {}
     public static com.raxim.myscoutee.domain.platform.service.JobGroupScopeService jobScope(MongoTemplate mongo) {
-        var scope = new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService();
-        ReflectionTestUtils.setField(scope, "groupDirectory", directory(mongo));
-        ReflectionTestUtils.setField(scope, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo));
-        ReflectionTestUtils.setField(scope, "eventOwnership", com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(null, mongo));
         var users = Mockito.mock(com.raxim.myscoutee.domain.accounts.repository.UsersRepository.class, call ->
                 "findByUserIdIn".equals(call.getMethod().getName())
                         ? mongo.find(org.springframework.data.mongodb.core.query.Query.query(
@@ -24,8 +20,10 @@ public final class GroupTestSupport {
                         : Answers.RETURNS_DEFAULTS.answer(call));
         var profiles = new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(users);
         ReflectionTestUtils.setField(profiles, "mongo", mongo);
-        ReflectionTestUtils.setField(scope, "profiles", profiles);
-        return scope;
+        return new com.raxim.myscoutee.domain.platform.service.JobGroupScopeService(profiles,
+                Optional.of(directory(mongo)), java.util.List.of(
+                        com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo),
+                        com.raxim.myscoutee.domain.events.service.EventTestSupport.ownership(null, mongo)));
     }
     public static GroupDirectoryService directory(MongoTemplate mongo) {
         var repository = Mockito.mock(CommunityGroupsRepository.class, call ->

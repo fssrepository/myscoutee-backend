@@ -172,11 +172,11 @@ class JobAudienceHttpTest {
             doAnswer(c->{profileBatches.incrementAndGet();Collection<String> ids=c.getArgument(0);return ids.stream().map(JobAudienceHttpTest::profile).filter(Objects::nonNull).toList();}).when(p).findByUserIdIn(anyCollection());return p;
         }
         @Bean GroupDirectory groups(){
-            var groups=mock(GroupDirectory.class);
+            var groups=mock(GroupDirectory.class, org.mockito.Answers.CALLS_REAL_METHODS);
             when(groups.workspaceBaseIds()).thenAnswer(c->{workspaceReads.incrementAndGet();return new HashMap<>(Map.of(BaseGroups.WORK_BASE_ID,BaseGroups.WORK_BASE_ID,BaseGroups.COMMUNITY_BASE_ID,BaseGroups.COMMUNITY_BASE_ID,"private-"+MongoSessionModeContext.currentMode(),BaseGroups.WORK_BASE_ID));});
             doAnswer(c->{var group=mock(GroupView.class);when(group.baseId()).thenReturn(BaseGroups.WORK_BASE_ID);return Optional.of(group);}).when(groups).findById(anyString());return groups;
         }
-        @Bean ConfigurationCatalog configurations(){var configs=mock(ConfigurationCatalog.class);when(configs.find(anyString())).thenAnswer(c->{String id=c.getArgument(0);if("missing".equals(id))return null;var result=mock(ConfigurationCatalog.Settings.class);when(result.getKey()).thenReturn(id);return result;});return configs;}
+        @Bean ConfigurationCatalog configurations(){var configs=mock(ConfigurationCatalog.class, org.mockito.Answers.CALLS_REAL_METHODS);when(configs.find(anyString())).thenAnswer(c->{String id=c.getArgument(0);if("missing".equals(id))return null;var result=mock(ConfigurationCatalog.Settings.class);when(result.getKey()).thenReturn(id);return result;});return configs;}
         @Bean AssetJobScopes assets(){return id->"missing".equals(id)?null:new AssetJobScopeDto(BaseGroups.COMMUNITY_BASE_ID,"worker",null);}
         @Bean EventJobScopes events(){return id->"missing".equals(id)?null:new EventJobScopeDto(null,null,"worker");}
     }

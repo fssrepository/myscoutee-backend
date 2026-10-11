@@ -72,10 +72,10 @@ class EventSchedulerTest {
     @Mock private com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository groupsRepository;
     private EventJobQueries jobScope() {
         var mongo = org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class);
-        var scope = new JobGroupScopeService();
         var directory = new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(groupsRepository);
         org.springframework.test.util.ReflectionTestUtils.setField(directory, "mongo", mongo);
-        org.springframework.test.util.ReflectionTestUtils.setField(scope, "groupDirectory", directory);
+        var scope = new JobGroupScopeService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.ProfileDirectory.class),
+                java.util.Optional.of(directory), java.util.List.of());
         return new EventJobQueries(mongo, scope);
     }
     @Mock

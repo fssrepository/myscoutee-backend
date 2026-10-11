@@ -1,0 +1,333 @@
+{
+  "checkpoint": "MSC-122 notification, purge, chat presentation and job scope batch",
+  "date": "2026-10-11",
+  "status": "Focused native and transport tests, all eight assemblies, KVM and serial monolith checks passed. Community omission is still incomplete; template work remains paused.",
+  "sourceBaseRevision": "35e7bf54becd705ac6c57468c7439465ba993634",
+  "sourceSha256": {
+    "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/platform/JobAudienceHttpTest.java": "84ada01effc8efb40765e325c45f362a44af7eaf69f24c6425f1288bec1fcd38",
+    "microservices/deploy/images.lock.json": "ccb12806eb0724321af6cf93085169907b56888d411785619157af99cbb7fb87",
+    "microservices/transport/bindings.json": "49e143bc4ce1040a464921671c496aa8ed2b7629d94d2b7a7d702c0ccb369495",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/ConfigurationCatalog.java": "c581fbc2182f919d19efe0490b52592ba1c5c3a4851296eeaa3012cfcdb50444",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/assets/api/AssetJobScopes.java": "85cded0ef5f70465d9ab3d453e4db795fba3773a7e9a17845539e46284eba55b",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatActivityPresentation.java": "3bd8e60f71047c4269610751db704196ff8ba39283fcd979bdbdb3c33160ebc2",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatPagePresentation.java": "8f7578290a7653d5f450e2274b295b024c26b96fd3a8f27bb408e44339d0f2ca",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatRecordContext.java": "a98cf8c9c8b10b3baa444b81afc7d99960d52e9e6bba889fae29ecb81c8f5d21",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/chat/service/ChatService.java": "da98a648c9ea2f2eb9b95302adf1bc99a961022213de1cacf493331133d14c96",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/events/api/EventJobScopes.java": "a6169577fdf2ea53c2ab6061a399a4f7928bee89f41458bde6170a8243b9ae6a",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/groups/api/GroupDirectory.java": "5da944fb15f22298c8e9e14b52712e16dfc9bec5e872c5f37311895bb01fbfbe",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/JobTargetResolver.java": "d1d6a7be1858f73247ca9157b5653d369fa814248b097d4e7f63261d5c7e351d",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/JobWorkspaceDirectory.java": "6ca56f3b3a38b96b279b3e5b90a95bd35b0396400c485a7387f6e137fe762f0a",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeService.java": "c14e777ee7f5f92848362e4ccd2e8a6489c1e8e0ea4dca574a861db69ef69231",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java": "79ae62e04fda59a490d1407c00f0dd6f0e1e68a0d66a9390073e0188a65567d2",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java": "712d5f53c5d53996ff74fe5329d30f50c39bef535fb348fdd12637cc82ad683b",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/email/service/ScheduledMessageTaskServiceIntegrationTest.java": "f7bee22e6f2f062dbeb4dd520cea123510b6c851abd181057cb83ce23928e425",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventSchedulerTest.java": "b19bccc803fa492e6354eeb3ca8aafae1521071df0ce51b124a638aee1ffd90e",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/service/GroupTestSupport.java": "b8cd84683b93e8b35ac43e4756bb0d1656689d55cf28254d99a9c8a4302b29a3",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/platform/service/JobGroupScopeServiceTest.java": "b3df802a5ff7b3c099a2e11e9c8fdcdb1fd58913b0a2d8fd3054de27ccd72e1f"
+  },
+  "changes": [
+    "Notification storage uses the existing synchronous community counter as an optional observer; notifications are not filtered.",
+    "Account purge preserves existing stage order, durable IDs, retry and core cleanup. Product owners contribute their existing operations. Recorded unfinished event/asset work requires its owner before profile media deletion.",
+    "Chat activity metrics/navigation moved to ChatActivityPresentation. The same batched reads and rules remain in MyScoutee. Without presentation, selected chat records still map to chat DTOs; no channel is filtered or denied. Chat creation, membership and access rules are unchanged.",
+    "JobGroupScopeService consumes the existing owners through generic target/workspace contracts. Native and remote owners retain their current operations, query counts and scope memoization."
+  ],
+  "junit": {
+    "canonical": {
+      "com.raxim.myscoutee.domain.platform.service.JobGroupScopeServiceTest": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.events.service.EventSchedulerTest": {
+        "tests": 36,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.accounts.service.DeletedAccountPurgeServiceTest": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.notifications.service.NotificationOutboxServiceTest": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.DomainServiceBoundaryTest": {
+        "tests": 47,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.domain.chat.service.ChatServiceTest": {
+        "tests": 43,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "transport": {
+      "com.raxim.myscoutee.microservices.transport.common.PurgeBoundaryHttpTest": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.microservices.transport.notifications.NotificationCatalogHttpTest": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.microservices.transport.platform.JobAudienceHttpTest": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "com.raxim.myscoutee.microservices.transport.affinity.ConfigurationCatalogHttpTest": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "artifacts": {
+    "assembliesAudited": 8,
+    "helmRevision": 138,
+    "imageLockSha256": "ccb12806eb0724321af6cf93085169907b56888d411785619157af99cbb7fb87"
+  },
+  "runtime": {
+    "kvm": {
+      "assertions": 47,
+      "nativeLogin": "Passed in addition to the eight session report rows",
+      "checks": {
+        "profile-selection": {
+          "passed": 8,
+          "statusesAndElapsedMs": {
+            "native DEMO login": [200, null],
+            "native identity": [200, 115.73],
+            "native identity ignores caller-selected profile": [200, 120.63],
+            "communication selection": [200, 1208.54],
+            "communication selection ignores caller-selected profile": [200, 595.07],
+            "community selection": [200, 418.39],
+            "community selection ignores caller-selected profile": [200, 279.51],
+            "native session revoked": [200, null]
+          }
+        },
+        "campaign-chat": {
+          "passed": 7,
+          "statusesAndElapsedMs": {
+            "native Work profile login": [200, null],
+            "existing chat list": [200, 192.16],
+            "missing campaign": [404, 294.45],
+            "draft campaign": [404, 147.08],
+            "own campaign": [404, 164.91],
+            "campaign without positive rating": [403, 172.96],
+            "native session revoked": [200, null]
+          }
+        },
+        "admin-identity": {
+          "passed": 23,
+          "statusesAndElapsedMs": {
+            "dashboard accepted": [200, 336.5],
+            "help accepted": [200, 684.67],
+            "privacy accepted": [200, 166.73],
+            "terms accepted": [200, 156.25],
+            "explanation accepted": [200, 228.04],
+            "notifications accepted": [200, 203.8],
+            "params accepted": [200, 106.66],
+            "dashboard denied": [403, 66.58],
+            "help denied": [403, 67.5],
+            "privacy denied": [403, 54.75],
+            "terms denied": [403, 12.44],
+            "explanation denied": [403, 14.04],
+            "notifications denied": [403, 15.19],
+            "params denied": [403, 12.29],
+            "admin session revoked": [200, null],
+            "member session revoked": [200, null]
+          }
+        },
+        "session": {
+          "passed": 8,
+          "statusesAndElapsedMs": {
+            "/api/auth/me": [200, null],
+            "/api/auth/me/profile-ext": [200, null],
+            "/api/activities/events": [200, null],
+            "/api/notifications": [200, null],
+            "/api/assets": [200, null],
+            "/api/payment-methods": [200, null],
+            "/api/activities/rates": [200, null],
+            "/api/auth/me/logout": [200, null]
+          }
+        }
+      },
+      "resources": {
+        "startedAt": "2026-10-11T08:48:22.219542+00:00",
+        "host": {
+          "seconds": 31.545253968999532,
+          "logicalCpus": 12,
+          "busyPercent": 9.187042056952688,
+          "qemuCpuCores": 0.6646838545223162
+        },
+        "cpuCores": {
+          "affinity-8f644f4d9-55xpf": 0.01814031316174767,
+          "payments-5854d688f-c47fz": 0.016060177834096127,
+          "network-6dd4dd87f8-hbwt7": 0.008741618817178453,
+          "identity-688d86c47f-ktkqs": 0.015825460148662915,
+          "help-65455dfbb9-t6qsn": 0.007857625504748765,
+          "community-5d68b8b65-mzttv": 0.020433956902832312,
+          "communication-5fbb755f5d-7sknm": 0.029176320455935163,
+          "assets-667946fc7-pswhg": 0.010412412192572624,
+          "mongodb-0": 0.02709529214799705,
+          "mongodb-1": 0.021678476697905756,
+          "minio-6c7d8948f7-zfmtb": 0.005793454297055048,
+          "registry-6f857b4b6-t8dg7": 0.006699605702287826,
+          "payment-simulator-6b8c96f5c5-bv55k": 0.00017408425884236263,
+          "mcp-776779bc-8sgbq": 0.00015682000184157407,
+          "stun-779977cbdf-rrfnb": 0.00387089825178133,
+          "release-simulator-7f5b9f8f96-jtxbq": 0.0010428000401095307,
+          "frontend-66bf57f9c-mkck2": 0.0008711202134575663,
+          "redis-66d974cbf4-wprq8": 0.004448438536818346
+        },
+        "memoryMiB": {
+          "affinity-8f644f4d9-55xpf": 357.79,
+          "payments-5854d688f-c47fz": 230.17,
+          "network-6dd4dd87f8-hbwt7": 220.24,
+          "identity-688d86c47f-ktkqs": 374.62,
+          "help-65455dfbb9-t6qsn": 222.24,
+          "community-5d68b8b65-mzttv": 352.37,
+          "communication-5fbb755f5d-7sknm": 377.04,
+          "assets-667946fc7-pswhg": 241.88,
+          "mongodb-0": 421.15,
+          "mongodb-1": 368.35,
+          "minio-6c7d8948f7-zfmtb": 278.29,
+          "registry-6f857b4b6-t8dg7": 25.02,
+          "payment-simulator-6b8c96f5c5-bv55k": 14.06,
+          "mcp-776779bc-8sgbq": 11.03,
+          "stun-779977cbdf-rrfnb": 20.43,
+          "release-simulator-7f5b9f8f96-jtxbq": 37.14,
+          "frontend-66bf57f9c-mkck2": 15.99,
+          "redis-66d974cbf4-wprq8": 15.46
+        },
+        "throttledSecondsTotal": 0.0,
+        "readyPods": 18,
+        "podCount": 18,
+        "supportRestartNote": "Supporting pods retain historical restart counters; all eight new backends have zero restarts."
+      },
+      "logs": "Transient owner timeout/unavailable warnings occurred during simultaneous JVM startup. The settled three-minute logs for all eight owners contain no warnings/errors.",
+      "newBackendRestarts": 0
+    },
+    "monolith": {
+      "assertions": 47,
+      "nativeLogin": "Passed in addition to the eight session report rows",
+      "checks": {
+        "profile-selection": {
+          "passed": 8,
+          "statusesAndElapsedMs": {
+            "native DEMO login": [200, null],
+            "native identity": [200, 21.24],
+            "native identity ignores caller-selected profile": [200, 18.04],
+            "communication selection": [200, 110.23],
+            "communication selection ignores caller-selected profile": [200, 108.31],
+            "community selection": [200, 48.29],
+            "community selection ignores caller-selected profile": [200, 33.42],
+            "native session revoked": [200, null]
+          }
+        },
+        "campaign-chat": {
+          "passed": 7,
+          "statusesAndElapsedMs": {
+            "native Work profile login": [200, null],
+            "existing chat list": [200, 18.54],
+            "missing campaign": [404, 107.96],
+            "draft campaign": [404, 46.83],
+            "own campaign": [404, 9.75],
+            "campaign without positive rating": [403, 12.29],
+            "native session revoked": [200, null]
+          }
+        },
+        "admin-identity": {
+          "passed": 23,
+          "statusesAndElapsedMs": {
+            "dashboard accepted": [200, 90.48],
+            "help accepted": [200, 107.97],
+            "privacy accepted": [200, 104.24],
+            "terms accepted": [200, 66.56],
+            "explanation accepted": [200, 89.9],
+            "notifications accepted": [200, 32.86],
+            "params accepted": [200, 27.87],
+            "dashboard denied": [403, 7.17],
+            "help denied": [403, 9.18],
+            "privacy denied": [403, 12.19],
+            "terms denied": [403, 13.92],
+            "explanation denied": [403, 18.93],
+            "notifications denied": [403, 16.79],
+            "params denied": [403, 16.62],
+            "admin session revoked": [200, null],
+            "member session revoked": [200, null]
+          }
+        },
+        "session": {
+          "passed": 8,
+          "statusesAndElapsedMs": {
+            "/api/auth/me": [200, null],
+            "/api/auth/me/profile-ext": [200, null],
+            "/api/activities/events": [200, null],
+            "/api/notifications": [200, null],
+            "/api/assets": [200, null],
+            "/api/payment-methods": [200, null],
+            "/api/activities/rates": [200, null],
+            "/api/auth/me/logout": [200, null]
+          }
+        }
+      },
+      "resources": {
+        "kind": "Low-load observation, not a matched benchmark",
+        "startedAt": "2026-10-11T08:53:27.507321+00:00",
+        "seconds": 30.433009540000057,
+        "environmentRestored": true,
+        "hostBusyPercent": 7.640449438202246,
+        "containers": {
+          "myscoutee": {
+            "cpuCores": 0.16681876280843141,
+            "memoryMiB": 1702.86328125,
+            "throttledSeconds": 0.0
+          },
+          "mongodb": {
+            "cpuCores": 0.058034812419015085,
+            "memoryMiB": 901.40234375,
+            "throttledSeconds": 0.0
+          },
+          "frontend-sync": {
+            "cpuCores": 0.06293508361316001,
+            "memoryMiB": 3619.0703125,
+            "throttledSeconds": 0.0
+          }
+        },
+        "health": {
+          "myscoutee": "running healthy",
+          "mongodb": "running healthy",
+          "frontend-sync": "running healthy"
+        }
+      },
+      "logs": "No backend errors/exceptions in the settled observation. Mongo, backend and frontend watcher remain healthy.",
+      "environment": "Original dev environment fingerprint restored; private Mongo root override retained. KVM was fully stopped before dev startup."
+    }
+  },
+  "performance": {
+    "kind": "Short low-load observations, not a matched benchmark. No claim of throughput/latency parity or speedup.",
+    "queryCounts": "Moved presentation method bodies preserve existing queries; the 20-event-chat test asserts one batched membership lookup. Purge transport tests preserve existing owner calls and scopes.",
+    "previousCheckpoints": ["1707a79daa50b337cd76e587b21dd0f31bd05ebc", "a7a47ab3557396d5be84cd90850ba496ff7d426f"],
+    "comparison": "QEMU 0.665 cores versus prior 0.679/0.685. Monolith backend 0.167 versus prior 0.137 (+0.030); Mongo 0.058 versus prior 0.056 (+0.002); frontend watcher 0.063 versus prior 0.049 (+0.014). These different short windows are not matched load evidence. The intervening Mongo 0.296 sample preceded discovery of a retained-root-credential startup fault; that fault is fixed by the ignored dev-only override in 35e7bf54b."
+  },
+  "remaining": [
+    "Optional community composition and remaining core chat/profile/API couplings.",
+    "No live account deletion or new chat messages were performed by these read/rejection checks; focused native tests cover purge retry/stage order and chat construction."
+  ]
+}
