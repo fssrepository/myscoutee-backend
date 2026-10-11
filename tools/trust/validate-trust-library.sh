@@ -112,10 +112,17 @@ if (( kernel_lines > 140 )); then
   failed=1
 fi
 
-agents_lines="$(wc -l < AGENTS.md)"
-if (( agents_lines > 45 )); then
-  printf 'AGENTS.md exceeds the 45-line mode-gate budget: %s\n' \
-    "${agents_lines}" >&2
+# The compact trust entrypoint has a budget; independent repository safety and
+# workflow instructions in AGENTS.md are not part of that loading gate.
+mode_gate_lines="$(awk '
+  /^## Trust mode gate$/ { in_gate = 1 }
+  in_gate && /^## / && $0 != "## Trust mode gate" { exit }
+  in_gate { count++ }
+  END { print count + 0 }
+' AGENTS.md)"
+if (( mode_gate_lines == 0 || mode_gate_lines > 45 )); then
+  printf 'AGENTS.md trust mode gate must contain 1–45 lines: %s\n' \
+    "${mode_gate_lines}" >&2
   failed=1
 fi
 
@@ -167,8 +174,8 @@ references=(
   server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/controller/OperatorRegistryController.java
   server/projects/profile/src/main/java/com/raxim/myscoutee/domain/operator/service/OperatorRegistryService.java
   server/projects/profile/src/main/java/com/raxim/myscoutee/domain/registry/RegistryOperatorNetworkService.java
-  guides/plans/PROJECT_CONTEXT.md
-  guides/plans/PRODUCTION_QUALIFICATION.md
+  guides/plans/roadmap/PROJECT_CONTEXT.md
+  guides/plans/roadmap/PRODUCTION_QUALIFICATION.md
   e2e/README.md
 )
 

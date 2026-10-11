@@ -5,7 +5,7 @@ the trust library.
 
 ## Cross-system product, trust, and deployment
 
-- `guides/plans/PROJECT_CONTEXT.md` — current deployment decisions and scope
+- `guides/plans/roadmap/PROJECT_CONTEXT.md` — current deployment decisions and scope
   boundaries in the parent repository.
 - `guides/plans/OPERATOR_NETWORK_ROADMAP.md` — permanent architecture
   boundaries and phased operator/network behavior.
@@ -20,7 +20,7 @@ verification. Use the parent summaries and report the missing boundary.
 
 ## Production and operations
 
-- `guides/plans/PRODUCTION_QUALIFICATION.md` — immutable candidate evidence,
+- `guides/plans/roadmap/PRODUCTION_QUALIFICATION.md` — immutable candidate evidence,
   compatibility records, drills, load/security evidence, release decision.
 - `packaging/README.md` — production build/package/install/update/TLS/backup
   contracts.
