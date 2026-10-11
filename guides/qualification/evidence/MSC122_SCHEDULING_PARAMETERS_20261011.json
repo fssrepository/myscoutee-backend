@@ -2671,6 +2671,7 @@
       }
     },
     "recentBackendErrorLines": 0,
-    "originalEnvironmentRestored": true
+    "originalEnvironmentRestored": true,
+    "subsequentStartupFinding": "After the successful HTTP checks, the retained dev MongoDB initializer exhausted authentication retries and stopped MongoDB. The stored root credential differed from docker-dev.env. The follow-up adds an ignored root-only local override to Compose and reuses the existing credential without account/data changes. Initialization then finishes with rs0 ready and MongoDB healthy. The earlier Mongo CPU sample included that faulty startup and must not be used as a settled comparison."
   }
 }

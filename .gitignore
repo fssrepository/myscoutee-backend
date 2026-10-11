@@ -40,6 +40,7 @@ packaging/dist/
 .sass-cache
 .e2e-artifacts/
 .trust-mode.local
+server/.env.mongo-root.local
 connect.lock
 coverage
 libpeerconnection.log

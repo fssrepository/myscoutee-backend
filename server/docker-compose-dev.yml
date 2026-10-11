@@ -114,6 +114,10 @@ services:
     env_file:
       # Committed development-only credentials. Production uses .env.secrets.
       - docker-dev.env
+      # Retained dev volumes may have a different root account; never rotate it on startup.
+      - path: .env.mongo-root.local
+        required: false
+        format: raw
     environment:
       CHAT_CALL_STUN_URLS: "${CHAT_CALL_STUN_URLS:-}"
       CHAT_CALL_STUN_PORT: "${CHAT_CALL_STUN_PORT:-3478}"
