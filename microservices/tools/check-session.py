@@ -59,6 +59,8 @@ def main():
     parser.add_argument('--user-id', help='Existing canonical DEMO actor; defaults to the first public demo actor')
     parser.add_argument('--origin', choices=['http://localhost', 'http://127.0.0.1'],
                         help='Use the already-running local monolith instead of the owned KVM ingress')
+    parser.add_argument('--public-documents', action='store_true',
+                        help='Also verify public document reads after logout and rejection of protected requests')
     args = parser.parse_args()
     if args.origin:
         ORIGIN = args.origin
@@ -88,6 +90,19 @@ def main():
         status, revoked = end_session(user_id, headers)
         results.append({'path': '/api/auth/me/logout', 'status': status, 'passed': revoked})
         print(('PASS' if revoked else 'FAIL') + ': native logout of this check session', flush=True)
+        if args.public_documents and revoked:
+            for label, request_headers in [('anonymous', {}), ('revoked-session', headers)]:
+                for document in ['help', 'privacy', 'terms', 'explanation']:
+                    route = '/api/' + document + '/active?lang=en&contextKey=profile.editor'
+                    status, value = request(route, request_headers)
+                    valid = status == 200 and isinstance(value, dict) and 'activeRevision' in value
+                    results.append({'path': route, 'context': label, 'status': status, 'passed': valid})
+                    print(('PASS' if valid else 'FAIL') + ': ' + label + ' ' + document + ' HTTP ' + str(status), flush=True)
+            for route, payload in [('/api/auth/me', None), ('/api/privacy/consents', {'userId': user_id})]:
+                status, _ = request(route, headers, payload)
+                valid = status == 401
+                results.append({'path': route, 'context': 'revoked-session', 'status': status, 'passed': valid})
+                print(('PASS' if valid else 'FAIL') + ': revoked-session protected request ' + route + ' HTTP ' + str(status), flush=True)
         path = w.SHELL / ('build/reports/monolith-session-smoke.json' if args.origin else 'build/reports/session-smoke.json')
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(results, indent=2) + '\n')
