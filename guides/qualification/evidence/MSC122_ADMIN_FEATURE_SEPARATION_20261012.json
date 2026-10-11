@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-12",
-  "status": "SOURCE_JUNIT_PASSED_RUNTIME_PENDING",
+  "status": "NATIVE_SOURCE_JUNIT_ASSEMBLIES_KVM_MONOLITH_PASSED",
   "baselineSourceRevision": "5d71945a232ece49882f071562695a84f3f922d5",
   "scope": "Make omitted report, feedback and support feature dependencies selectable before template packaging. Native full-app behavior remains installed.",
   "changes": [
@@ -408,12 +408,421 @@
     ]
   },
   "performance": {
-    "status": "RUNTIME_NOT_YET_MEASURED",
-    "queryEvidence": "Extraction bodies preserve queries and writes. Tests assert one batched actor lookup for telemetry, one support count read per workspace, unchanged submission boundary calls, two attention count calls, and no reads of omitted moderation data. Functional tests do not prove CPU/latency parity."
+    "status": "KVM_MATCHED_READ_LOAD_PASSED",
+    "evidence": "MSC122_ADMIN_FEATURE_PERFORMANCE_20261012.json",
+    "queryEvidence": "Extraction bodies preserve queries and writes. Tests assert one batched actor lookup for telemetry, one support count read per workspace, unchanged submission boundary calls, two attention count calls, and no reads of omitted moderation data. Functional tests do not prove CPU/latency parity.",
+    "conclusion": "No slowdown observed in the bounded administrator read profile; +3.93% throughput, -3.81% p50, -7.98% p95, -0.84% VM CPU under load. This is not an all-flow performance claim."
   },
   "runtime": {
-    "kvm": "NOT_RUN_FOR_THIS_BATCH",
-    "monolith": "NOT_RUN_FOR_THIS_BATCH",
+    "kvm": {
+      "status": "PASSED",
+      "imageBuildRevision": "8d7497800",
+      "sourceCheckpoint": "dc97521d4",
+      "helmRevision": 150,
+      "checks": {
+        "sessionAndPublicDocuments": 19,
+        "adminIdentityAndApi": 25,
+        "supportInfrastructureAndTransportScopes": 18
+      },
+      "health": {
+        "allPodsReadyAt": "2026-10-11T23:02:43Z",
+        "pods": 18,
+        "restartCount": 0,
+        "services": {
+          "identity": {
+            "afterReadyErrorLines": 0
+          },
+          "community": {
+            "afterReadyErrorLines": 0
+          },
+          "communication": {
+            "afterReadyErrorLines": 0
+          },
+          "assets": {
+            "afterReadyErrorLines": 0
+          },
+          "payments": {
+            "afterReadyErrorLines": 0
+          },
+          "affinity": {
+            "afterReadyErrorLines": 0
+          },
+          "help": {
+            "afterReadyErrorLines": 0
+          },
+          "network": {
+            "afterReadyErrorLines": 0
+          }
+        },
+        "startupExceptions": "7 NotificationJobs configuredGroupIds calls before communication availability; no new error after all pods became Ready."
+      }
+    },
+    "monolith": {
+      "status": "PASSED",
+      "sourceCheckpoint": "dc97521d4",
+      "runtimeBuildRevision": "8d7497800",
+      "project": "msc122-monolith",
+      "serialAfterKvmShutdown": true,
+      "apiImage": "sha256:017da62ef4b5556445cdcde03f82887109fe35ad6deea0087c7ba167738655a1",
+      "mongoImage": "sha256:cfcadae33267dd3ec9af978dac7d5ed153c6c2c776c1cafc474996640ebb76c8",
+      "checks": [
+        {
+          "suite": "monolith-session-smoke",
+          "checks": 18,
+          "results": [
+            {
+              "assembly": "identity",
+              "path": "/api/auth/me",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "id",
+                "name",
+                "age",
+                "birthday",
+                "city",
+                "height",
+                "physique",
+                "languages",
+                "horoscope",
+                "initials",
+                "gender",
+                "statusText",
+                "hostTier",
+                "traitLabel",
+                "completion",
+                "profileFormVersion",
+                "headline",
+                "about",
+                "affinity",
+                "locationCoordinates",
+                "partitionKey",
+                "images",
+                "profileDetails",
+                "impressions",
+                "profileStatus",
+                "previousProfileStatus",
+                "deletedAtIso",
+                "admin",
+                "operator",
+                "activities",
+                "notificationPreferences",
+                "filterCount",
+                "filterPreferences",
+                "counterOverrides"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "identity",
+              "path": "/api/auth/me/profile-ext",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "profileExt",
+                "filterCount",
+                "filterPreferences",
+                "counterOverrides",
+                "workspace",
+                "accountProfile"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "community",
+              "path": "/api/activities/events",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "records",
+                "total",
+                "nextCursor",
+                "sortKeys"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "communication",
+              "path": "/api/notifications",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "records",
+                "total",
+                "nextCursor",
+                "unreadCount",
+                "muted"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "assets",
+              "path": "/api/assets",
+              "status": 200,
+              "passed": true,
+              "responseShape": "list",
+              "code": null
+            },
+            {
+              "assembly": "payments",
+              "path": "/api/payment-methods",
+              "status": 200,
+              "passed": true,
+              "responseShape": [
+                "items",
+                "total",
+                "nextCursor",
+                "canAdd",
+                "pendingRegistration",
+                "currentProvider"
+              ],
+              "code": null
+            },
+            {
+              "assembly": "affinity",
+              "path": "/api/activities/rates",
+              "status": 200,
+              "passed": true,
+              "responseShape": "list",
+              "code": null
+            },
+            {
+              "path": "/api/auth/me/logout",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/help/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+              "context": "anonymous",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/help/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/privacy/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/terms/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/explanation/active?lang=en&contextKey=profile.editor",
+              "context": "revoked-session",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "path": "/api/auth/me",
+              "context": "revoked-session",
+              "status": 401,
+              "passed": true
+            },
+            {
+              "path": "/api/privacy/consents",
+              "context": "revoked-session",
+              "status": 401,
+              "passed": true
+            }
+          ]
+        },
+        {
+          "suite": "monolith-admin-identity",
+          "checks": 25,
+          "results": [
+            {
+              "check": "dashboard accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 456.05
+            },
+            {
+              "check": "help accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 141.99
+            },
+            {
+              "check": "privacy accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 81.66
+            },
+            {
+              "check": "terms accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 80.5
+            },
+            {
+              "check": "explanation accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 135.18
+            },
+            {
+              "check": "notifications accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 188.75
+            },
+            {
+              "check": "params accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 280.26
+            },
+            {
+              "check": "dashboard denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 63.83
+            },
+            {
+              "check": "help denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 37.73
+            },
+            {
+              "check": "privacy denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 35.41
+            },
+            {
+              "check": "terms denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 34.74
+            },
+            {
+              "check": "explanation denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 41.28
+            },
+            {
+              "check": "notifications denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 29.04
+            },
+            {
+              "check": "params denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 33.06
+            },
+            {
+              "check": "administrator API settings accepted",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": 99.44
+            },
+            {
+              "check": "admin session revoked",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": null
+            },
+            {
+              "check": "dashboard denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 32.96
+            },
+            {
+              "check": "help denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 26.13
+            },
+            {
+              "check": "privacy denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 35.46
+            },
+            {
+              "check": "terms denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 30.15
+            },
+            {
+              "check": "explanation denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 33.35
+            },
+            {
+              "check": "notifications denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 27.47
+            },
+            {
+              "check": "params denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 24.61
+            },
+            {
+              "check": "administrator API settings denied",
+              "status": 403,
+              "passed": true,
+              "elapsedMs": 37.5
+            },
+            {
+              "check": "member session revoked",
+              "status": 200,
+              "passed": true,
+              "elapsedMs": null
+            }
+          ]
+        }
+      ],
+      "applicationErrors": 0,
+      "resources": {
+        "seconds": 25.089962092999485,
+        "cpuCores": 0.07317535965956143,
+        "memoryMiB": 834.2421875,
+        "cpuMax": "max 100000",
+        "throttledSeconds": 0.0,
+        "note": "Short idle observation after functional checks; not a matched monolith load benchmark."
+      },
+      "priorIdleCpuCores": 0.055084580667225866,
+      "idleComparisonLimit": "Idle increased by 0.0181 of one core; these are short post-check observations, not matched load.",
+      "startupRepair": "Compose default Mongo image was stale (2026-10-07) and lacked replica-entrypoint. Rebuilt current versioned Dockerfile to an explicit task tag; no product code change needed."
+    },
     "assemblyPackaging": {
       "status": "PASSED",
       "services": 8,
@@ -426,8 +835,8 @@
   },
   "limits": [
     "Native four outstanding manual QA campaigns have not been run.",
-    "No new runtime deployment or image is claimed by this source checkpoint.",
-    "Template Java/services remain unchanged until source runtime qualification."
+    "Template Java/services remain unchanged until source runtime qualification.",
+    "The matched KVM read profile and focused runtime checks do not replace the four pending manual QA campaigns or every mutation flow."
   ],
   "logs": [
     "/tmp/msc122-admin-feature-batch-junit.log",
