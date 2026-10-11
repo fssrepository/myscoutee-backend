@@ -1,9 +1,10 @@
 package com.raxim.myscoutee.domain.integrations.controller;
 
+import static com.raxim.myscoutee.domain.integrations.controller.IntegrationReadSupport.*;
+
 import com.raxim.myscoutee.domain.affinity.api.RatingPageReads;
 import com.raxim.myscoutee.domain.assets.api.Assets;
 import com.raxim.myscoutee.domain.campaigns.api.Campaigns;
-import com.raxim.myscoutee.domain.chat.api.ChatQueries;
 import com.raxim.myscoutee.domain.community.api.Announcements;
 import com.raxim.myscoutee.domain.community.api.Cases;
 import com.raxim.myscoutee.domain.community.api.ScheduledCases;
@@ -17,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.raxim.myscoutee.domain.notifications.api.NotificationReads;
 
 /** Read/Full-pack reads. Actor identity never comes from query parameters or model arguments. */
 @RestController
@@ -26,8 +26,6 @@ public class IntegrationReadController {
     private final IntegrationCapabilitiesService access;
     private final EventOperations events;
     private final IntegrationGroups groups;
-    private final ChatQueries chats;
-    private final NotificationReads notifications;
     private final RatingPageReads ratings;
     private final Assets assets;
     private final Campaigns campaigns;
@@ -35,12 +33,10 @@ public class IntegrationReadController {
     private final Cases cases;
     private final Announcements announcements;
     private final ScheduledCases tasks;
-    public IntegrationReadController(IntegrationCapabilitiesService access, EventOperations events, IntegrationGroups groups, ChatQueries chats, NotificationReads notifications, RatingPageReads ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
+    public IntegrationReadController(IntegrationCapabilitiesService access, EventOperations events, IntegrationGroups groups, RatingPageReads ratings, Assets assets, Campaigns campaigns, ServiceOfferings services, Cases cases, Announcements announcements, ScheduledCases tasks) {
         this.access = access;
         this.events = events;
         this.groups = groups;
-        this.chats = chats;
-        this.notifications = notifications;
         this.ratings = ratings;
         this.assets = assets;
         this.campaigns = campaigns;
@@ -74,33 +70,6 @@ public class IntegrationReadController {
     public Object groupDetails(Authentication authentication, @PathVariable String id) {
         String actor = access.requireRead(authentication, null);
         return groups.detail(groups.actor(actor), id);
-    }
-
-    @GetMapping("/chats")
-    public Object listChats(Authentication authentication, @RequestParam(required = false) String context, @RequestParam(defaultValue = "20") int limit, @RequestParam(required = false) String cursor) {
-        String actor = access.requireRead(authentication, null);
-        pageLimit(limit);
-        return chats.queryChatPage(actor, context, "recent", null, null, cursor, limit, null, null, false, null);
-    }
-
-    @GetMapping("/chats/{id}")
-    public Object chatDetails(Authentication authentication, @PathVariable String id) {
-        String actor = access.requireRead(authentication, null);
-        return found(chats.queryChatById(id, actor));
-    }
-
-    @GetMapping("/chats/{id}/messages")
-    public Object chatMessages(Authentication authentication, @PathVariable String id, @RequestParam(defaultValue = "20") int limit, @RequestParam(required = false) String cursor) {
-        String actor = access.requireRead(authentication, null);
-        pageLimit(limit);
-        return chats.queryMessagesPage(id, actor, limit, cursor, null, false);
-    }
-
-    @GetMapping("/notifications")
-    public Object listNotifications(Authentication authentication, @RequestParam(required = false) String bucket, @RequestParam(defaultValue = "20") int limit, @RequestParam(required = false) String cursor) {
-        String actor = access.requireRead(authentication, null);
-        pageLimit(limit);
-        return notifications.queryPage(actor, bucket, limit, cursor, null);
     }
 
     @GetMapping("/ratings")
@@ -189,11 +158,4 @@ public class IntegrationReadController {
         return tasks.page(tasks.actor(actor), limit, cursor, status);
     }
 
-    private static void pageLimit(int limit) {
-        if (limit < 1 || limit > 100) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "limit must be between 1 and 100.");
-    }
-    private static <T> T found(T value) {
-        if (value == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return value;
-    }
 }

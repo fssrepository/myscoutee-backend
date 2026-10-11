@@ -2,9 +2,39 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **139**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **140**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+
+## MSC-122 profile status and personal API boundaries — 2026-10-11
+
+Profile status propagation now uses the account-owned `ProfileStatusObserver`;
+the installed native/remote affinity owner still receives exactly its existing
+status signal. Durable markers, scoped support messages and retry order remain
+unchanged. MCP workspace selection/name reads and product API operation discovery
+are separate from personal authorization. Four existing integration chat and
+notification read routes now have their own controller, with the same URLs,
+permission checks, pagination bounds and read-only message calls. No model or
+Mongo query changed.
+
+Validation: **194 focused JUnit tests**, **11 HTTP transport tests**, all eight
+service artifacts/images and ownership audits pass. KVM Helm **140** and the
+serial monolith each pass **51 runtime assertions**, including MCP settings and
+metadata. The normal dev environment was restored; KVM is stopped. The general
+API settings GET is excluded from this read-only probe because its existing
+affiliate summary may create a link.
+
+Settled KVM CPU measured **0.690 cores** (previous **0.708**; initial post-check
+sample **0.830**). Monolith backend CPU measured **0.113 cores** (previous
+**0.103**). No sampled throttling, replacement or settled log errors. These short
+low-load samples do not establish throughput/latency parity. Exact source
+hashes, checks and both directions of CPU change are recorded in
+[the evidence](../guides/qualification/evidence/MSC122_PROFILE_STATUS_API_BOUNDARIES_20261011.json).
+
+Chat resource/access dependencies, remaining profile/API product dependencies
+and actual community-free composition are still open. Template work remains
+paused until those source boundaries are ready.
 
 ## MSC-122 account read and support counter batch — 2026-10-11
 

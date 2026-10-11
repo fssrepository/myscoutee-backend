@@ -76,7 +76,7 @@ class DomainServiceBoundaryTest {
                             if ("assets".equals(value) && semanticAssetLabel(name, method)) return;
                             if ("events".equals(value) && semanticEventLabel(name, method)) return;
                             if ("chats".equals(value) && name.equals(DOMAIN + "administration/service/AdminMonitoringService") && method.equals("categoryFor")) return;
-                            if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("describe")) return;
+                            if ("chatMessages".equals(value) && name.equals(DOMAIN + "integrations/service/IntegrationCapabilitiesService") && method.equals("<clinit>")) return;
                             // The common change-stream owner accepts collection names solely
                             // to invalidate existing projections/schedules. These reviewed
                             // subscriptions are not foreign document queries or mutations.
@@ -183,6 +183,20 @@ class DomainServiceBoundaryTest {
                 assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
                         DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/",
                         "HomeUserProfileService");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void profileStatusAndPersonalMcpDoNotRequireProductOwnerTypes() throws Exception {
+        for (String type : List.of("accounts/service/ProfileStatusWork", "integrations/service/McpAuthorizationService",
+                "integrations/service/IntegrationCapabilitiesService",
+                "integrations/controller/IntegrationCommunicationReadController")) {
+            var resource = new org.springframework.core.io.ClassPathResource(DOMAIN + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/",
+                        "AccountWorkspaces");
             }
         }
     }

@@ -90,7 +90,8 @@ class AdminModerationServiceTest {
                 adminTelemetryService,
                 notificationOutboxService);
         var statusWork = new com.raxim.myscoutee.domain.accounts.service.ProfileStatusWork(usersRepository,
-                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null);
+                org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class),
+                java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null);
         org.springframework.test.util.ReflectionTestUtils.setField(statusWork, "supportMessages", chatService);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "profileModeration",
                 new com.raxim.myscoutee.domain.accounts.service.ProfileModerationService(usersRepository, statusWork));

@@ -282,6 +282,9 @@
       ],
       "providedApis": [
         "AffinityStatusChanges"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.ProfileStatusObserver"
       ]
     },
     {

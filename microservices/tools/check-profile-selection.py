@@ -58,6 +58,12 @@ def main():
                     return sorted(str(row.get('id')) for row in items if isinstance(row, dict)) if isinstance(items, list) else None
                 same = ids(original) is not None and ids(original) == ids(selected)
             record(name + ' ignores caller-selected profile', status == 200 and same, status, elapsed)
+        for name, path, fields in [
+                ('MCP client settings', '/api/integrations/mcp/settings', ('resource', 'maxClients', 'clients', 'accessMode')),
+                ('MCP metadata', '/api/mcp/oauth/metadata', ('issuer', 'authorization_endpoint', 'token_endpoint'))]:
+            status, value, elapsed = read(path, headers)
+            record(name, status == 200 and isinstance(value, dict) and all(field in value for field in fields),
+                   status, elapsed)
         chat_id = next((row.get('id') for row in chat_records if isinstance(row, dict) and row.get('id')), None)
         if chat_id is None:
             record('existing chat required for header counter check', False)
