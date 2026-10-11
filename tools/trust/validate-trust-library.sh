@@ -151,15 +151,15 @@ done < <(rg --no-heading --with-filename -o '\]\([^)]*\.md(?:#[^)]*)?\)' \
   AGENTS.md .agents/trust -g '*.md' || true)
 
 references=(
-  frontend/src/app/shared/core/base/services/operator-registry.service.ts
-  frontend/src/app/shared/core/http/services/operator-registry.service.ts
-  frontend/src/app/shared/core/local/source/services/operator-registry.service.ts
-  frontend/src/app/shared/ui/context/stores/operator-registry.store.ts
-  frontend/src/app/shared/core/base/services/route-delay.service.ts
-  frontend/src/app/shared/core/local/seed/services/demo-bootstrap.service.ts
-  frontend/src/app/shared/ui/components/core/smart-list/smart-list.component.ts
-  frontend/src/app/shared/ui/components/core/smart-list/smart-list.types.ts
-  frontend/src/app/shared/ui/scheduler/ui-task-scheduler.ts
+  frontend/src/app/shared/core/base/services/operator/operator-registry.service.ts
+  frontend/src/app/shared/core/http/services/operator/operator-registry.service.ts
+  frontend/src/app/shared/core/local/source/services/operator/operator-registry.service.ts
+  frontend/src/app/shared/ui/context/stores/operator/operator-registry.store.ts
+  frontend/src/app/shared/core/base/services/platform/route-delay.service.ts
+  frontend/src/app/shared/core/local/seed/services/platform/demo-bootstrap.service.ts
+  frontend/components/src/lib/ui/components/core/smart-list/smart-list.component.ts
+  frontend/components/src/lib/ui/components/core/smart-list/smart-list.types.ts
+  frontend/components/src/lib/ui/scheduler/ui-task-scheduler.ts
   frontend/src/app/shared/ui/components/notification-center-popup/notification-center-popup.component.ts
   frontend/src/app/asset/components/asset-popup/asset-popup.component.ts
   frontend/src/app/asset/components/asset-availability-popup/asset-availability-popup.component.ts

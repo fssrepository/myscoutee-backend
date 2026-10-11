@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const mode = process.argv[2];
 if (!['--check', '--write'].includes(mode)) throw Error('Use --check or --write');
 const result = await build({
-  entryPoints: [path.join(root, 'frontend/src/app/shared/core/local/seed/builders/user-seed.builder.ts')],
+  entryPoints: [path.join(root, 'frontend/src/app/shared/core/local/seed/builders/accounts/user-seed.builder.ts')],
   bundle: true, write: false, platform: 'node', format: 'esm', logLevel: 'silent'
 });
 const { SeedUserBuilder } = await import(`data:text/javascript;base64,${Buffer.from(result.outputFiles[0].text).toString('base64')}`);

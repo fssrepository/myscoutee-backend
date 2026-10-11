@@ -29,8 +29,8 @@ research supports the story framing, not MyScoutee performance claims.
   and [home.component.ts](../../../../../frontend/src/app/home/components/home/home.component.ts):
   current interface categories include Friends in Common, Inside Network and
   Outside Network. They support context wording, not endorsement or trust claims.
-- [activity-invite-candidates.repository.ts](../../../../../frontend/src/app/shared/core/local/source/repositories/activity-invite-candidates.repository.ts)
-  and [activity-members-seed.repository.ts](../../../../../frontend/src/app/shared/core/local/seed/repositories/activity-members-seed.repository.ts):
+- [activity-invite-candidates.repository.ts](../../../../../frontend/src/app/shared/core/local/source/repositories/events/activity-invite-candidates.repository.ts)
+  and [activity-members-seed.repository.ts](../../../../../frontend/src/app/shared/core/local/seed/repositories/events/activity-members-seed.repository.ts):
   retain meeting time/context for known contacts and invite candidates. The film
   may show “met at an event” context without inventing a reputation system.
 - Original brand asset:

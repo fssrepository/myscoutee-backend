@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { ChatCallMls, decodeCallBytes, encodeCallBytes } from '../../../../../../frontend/src/app/shared/core/base/services/chat-call-mls.ts';
+import { ChatCallMls, decodeCallBytes, encodeCallBytes } from '../../../../../../frontend/src/app/shared/core/base/services/chat/chat-call-mls.ts';
 
 // Execute the exact browser WASM crypto engine with its in-memory keystore; no browser control.
 globalThis.window = { crypto: globalThis.crypto };

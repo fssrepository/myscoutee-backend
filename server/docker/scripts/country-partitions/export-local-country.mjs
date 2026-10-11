@@ -13,7 +13,7 @@ const minLatitude=Math.min(...points.map(p=>p[1])), maxLatitude=Math.max(...poin
 const minLongitude=Math.min(...points.map(p=>p[0])), maxLongitude=Math.max(...points.map(p=>p[0]));
 const value={partitionKey:country.partitionKey,countryCode:country.countryCode,countryName:country.countryName,
  bounds:{minLatitude,maxLatitude,minLongitude,maxLongitude},geometry:country.geometry};
-const target=new URL(`frontend/src/app/shared/core/local/source/repositories/country-${code.toLowerCase()}.generated.ts`,root);
+const target=new URL(`frontend/src/app/shared/core/local/source/repositories/platform/country-${code.toLowerCase()}.generated.ts`,root);
 const exportName=country.countryName.toUpperCase().replace(/[^A-Z0-9]+/g,'_')+'_PARTITION';
-await writeFile(target,"// Generated from canonical countryPartitions.json (OpenStreetMap relation "+country.osmId+").\n// Regenerate: node server/docker/scripts/country-partitions/export-local-country.mjs "+code+"\nimport type { CountryPartition } from '../entity/country-partition.entity';\n\nexport const "+exportName+": CountryPartition = "+JSON.stringify(value)+";\n");
+await writeFile(target,"// Generated from canonical countryPartitions.json (OpenStreetMap relation "+country.osmId+").\n// Regenerate: node server/docker/scripts/country-partitions/export-local-country.mjs "+code+"\nimport type { CountryPartition } from '../../entity/platform/country-partition.entity';\n\nexport const "+exportName+": CountryPartition = "+JSON.stringify(value)+";\n");
 console.log(fileURLToPath(target));
