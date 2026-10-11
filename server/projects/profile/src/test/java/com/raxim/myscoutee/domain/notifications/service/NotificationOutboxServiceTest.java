@@ -26,6 +26,68 @@ import com.raxim.myscoutee.domain.platform.api.DeploymentBranding.ResolvedDeploy
 @org.junit.jupiter.api.Tag("standard")
 class NotificationOutboxServiceTest {
     @Test
+    void startsWithoutGroupOwnerAndRetainsRecipientAccountAndWorkspacePayload() {
+        var repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(call -> call.getArgument(0));
+        var accounts = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.AccountNotifications.class);
+        when(accounts.recipients(List.of("profile"))).thenReturn(List.of(
+                new com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient(
+                        "profile", "account", "workspace", true, List.of())));
+        var scopes = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.JobAudience.class);
+        when(scopes.usersByGroup(List.of("profile"))).thenReturn(Map.of("workspace", List.of("profile")));
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            context.registerBean(NotificationOutboxRepository.class, () -> repository);
+            context.registerBean(com.raxim.myscoutee.domain.accounts.api.AccountNotifications.class, () -> accounts);
+            context.registerBean(com.raxim.myscoutee.domain.platform.api.JobAudience.class, () -> scopes);
+            context.registerBean(com.raxim.myscoutee.domain.platform.api.NotificationPolicy.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.NotificationPolicy.class));
+            context.registerBean(com.raxim.myscoutee.domain.platform.api.AuthenticationMode.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.AuthenticationMode.class));
+            context.registerBean(com.raxim.myscoutee.domain.chat.api.ChatPresence.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.domain.chat.api.ChatPresence.class));
+            context.registerBean(com.raxim.myscoutee.common.redis.RedisStreamRetentionService.class,
+                    () -> org.mockito.Mockito.mock(com.raxim.myscoutee.common.redis.RedisStreamRetentionService.class));
+            context.register(NotificationOutboxService.class);
+            context.refresh();
+            var item = context.getBean(NotificationOutboxService.class)
+                    .enqueue(intent(List.of("profile"), Map.of())).orElseThrow();
+            assertThat(item.getRecipientUserIds()).containsExactly("account");
+            assertThat(item.getPayload()).containsEntry("workspaceGroupId", "workspace")
+                    .doesNotContainKey("workspaceGroupName");
+            assertThat(item.getPayload().get("url")).contains("workspaceGroupId=workspace");
+        }
+        verify(accounts).recipients(List.of("profile"));
+    }
+
+    @Test
+    void workspaceLabelKeepsOneExistingOwnerReadAndPropagatesFailure() {
+        var repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
+        when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(call -> call.getArgument(0));
+        var service = new NotificationOutboxService(repository);
+        var accounts = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.accounts.api.AccountNotifications.class);
+        when(accounts.recipients(List.of("profile"))).thenReturn(List.of(
+                new com.raxim.myscoutee.domain.accounts.api.AccountNotifications.Recipient(
+                        "profile", "account", "workspace", true, List.of())));
+        var scopes = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.JobAudience.class);
+        when(scopes.usersByGroup(List.of("profile"))).thenReturn(Map.of("workspace", List.of("profile")));
+        var groups = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.api.GroupDirectory.class,
+                org.mockito.Answers.CALLS_REAL_METHODS);
+        when(groups.name("workspace")).thenReturn(Optional.of(
+                new com.raxim.myscoutee.domain.groups.api.GroupDirectory.GroupName("Workspace name")));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "jobGroupScope", scopes);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "accounts", accounts);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "workspaceNames", groups);
+        assertThat(service.enqueue(intent(List.of("profile"), Map.of())).orElseThrow().getPayload())
+                .containsEntry("workspaceGroupName", "Workspace name");
+        verify(groups).name("workspace");
+        when(groups.name("workspace")).thenThrow(new IllegalStateException("workspace owner unavailable"));
+        org.mockito.Mockito.clearInvocations(repository);
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.enqueue(intent(List.of("profile"), Map.of())))
+                .hasMessage("workspace owner unavailable");
+        verify(repository, never()).save(any());
+    }
+
+    @Test
     void mixedRecipientsCreateSeparateDurableItemsAndRestoreCallerScope() {
         var repository = org.mockito.Mockito.mock(NotificationOutboxRepository.class);
         when(repository.save(any(NotificationOutboxItem.class))).thenAnswer(invocation -> invocation.getArgument(0));

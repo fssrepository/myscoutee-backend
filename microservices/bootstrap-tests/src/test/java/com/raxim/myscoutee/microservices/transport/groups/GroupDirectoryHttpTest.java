@@ -69,6 +69,16 @@ class GroupDirectoryHttpTest {
         if (meters != null) meters.close();
     }
     static final List<String> IDS=List.of("community-active","community-deleted","community-review","work", "unknown", BaseGroups.COMMUNITY_BASE_ID, BaseGroups.WORK_BASE_ID);
+    @Test void workspaceNameUsesTheExistingSingleOwnerLookup() {
+        var repository = server.getBean(CommunityGroupsRepository.class);
+        org.mockito.Mockito.clearInvocations(repository);
+        var names = new java.util.ArrayList<String>();
+        remote.withWorkspaceName("work", names::add);
+        assertEquals(1, names.size());
+        verify(repository).findById("work");
+        org.mockito.Mockito.verifyNoMoreInteractions(repository);
+    }
+
     @Test void allCanonicalDirectoryOperationsPreserveDerivedPolicyAndModes() throws Exception {
         var local=server.getBean(GroupDirectoryService.class);
         for (var mode:List.of(MongoSessionMode.REAL,MongoSessionMode.DEMO,MongoSessionMode.REAL)) {

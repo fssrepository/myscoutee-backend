@@ -1,5 +1,7 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
+import static com.raxim.myscoutee.domain.accounts.service.AccountCounterMapper.*;
+
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
@@ -110,7 +112,7 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
 public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
-        com.raxim.myscoutee.domain.accounts.api.ProfileReadState,
+        ProfileReadCache,
         com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards,
         com.raxim.myscoutee.domain.accounts.api.LocationEligibility {
     @org.springframework.beans.factory.annotation.Autowired
@@ -224,7 +226,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository;
     @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.community.api.CaseParticipants caseParticipants;
+    private ProfileMenuCountersService menuCounters;
     private final UsersRepository usersRepository;
     private final SelectedProfileService selectedProfile;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
@@ -406,11 +408,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 menuCounters);
     }
 
-    public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
-        String resolvedUserId = resolveSelectedUserId(requestedUserId);
-        Users user = findUser(resolvedUserId);
-        return user == null ? emptyMenuCounters() : buildMenuCounters(user);
-    }
+
 
     // Initial avatar persistence changes the selector's location-required badge too.
     @CacheEvict(value = "demo_users", allEntries = true, condition = "#latitude != null || #longitude != null")
@@ -1351,8 +1349,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     @Override public UserDto present(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) {
         return toUserDto((Users) profile);
     }
-    @org.springframework.beans.factory.annotation.Autowired
-    private com.raxim.myscoutee.domain.groups.api.GroupAdministration groupAdministration;
+
 
     public UserDto toUserDto(Users user) {
         return toUserDto(user, true);
@@ -2217,56 +2214,13 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 List.of());
     }
 
-    private UserMenuCountersDto buildMenuCounters(Users user) {
-        Users account = StringUtils.hasText(user.getAccountUserId()) ? findUser(user.getAccountUserId()) : user;
-        return buildMenuCounters(user, account);
-    }
 
-    private UserMenuCountersDto buildMenuCounters(Users user, Users account) {
-        Users.UserActivitiesRecord activities = user.getActivities();
-        Users.UserActivitiesRecord accountActivities = account == null ? null : account.getActivities();
-        return new UserMenuCountersDto(
-                activities == null ? 0 : normalizeCount(activities.game()),
-                activities == null ? 0 : normalizeCount(activities.chats()),
-                activities == null ? 0 : normalizeCount(activities.invitations()),
-                activities == null ? 0 : normalizeCount(activities.events()),
-                activities == null ? 0 : normalizeCount(activities.hosting()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.cars()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.accommodation()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.supplies()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.tickets()),
-                accountActivities == null ? 0 : normalizeCount(accountActivities.contacts()),
-                activities == null ? 0 : normalizeCount(activities.feedback()),
-                toUserChatCountersDto(activities == null ? null : activities.chat()),
-                toUserEventCountersDto(activities == null ? null : activities.event()),
-                toUserAssetCountersDto(accountActivities == null ? null : accountActivities.asset()),
-                toUserEventFeedbackCountersDto(activities == null ? null : activities.eventFeedback()),
-                activities == null ? 0 : normalizeCount(activities.adminJobs()),
-                activities == null ? 0 : normalizeCount(activities.adminMetrics()),
-                normalizeCount(user.getPaymentRefundsPending()),
-                normalizeCount(account == null ? null : account.getContactRequestsPending()),
-                activities == null ? 0 : normalizeCount(activities.notifications()), communityCaseCount(user));
-    }
 
-    private int communityCaseCount(Users user) {
-        if (caseParticipants == null || user.getWorkspaceGroupId() == null) return 0;
-        boolean community = com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID.equals(user.getWorkspaceGroupId())
-                || communityGroupsRepository.findById(user.getWorkspaceGroupId()).map(g -> "community".equals(g.effectiveType())).orElse(false);
-        if (!community) return 0;
-        String account = StringUtils.hasText(user.getAccountUserId()) ? user.getAccountUserId() : user.getUserId();
-        var managed = groupAdministration.managedGroups(account);
-        return caseParticipants.visibleCount(com.raxim.myscoutee.domain.groups.api.BaseGroups.COMMUNITY_BASE_ID, account, managed);
-    }
 
-    private UserMenuCountersDto emptyMenuCounters() {
-        return new UserMenuCountersDto(
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                new UserChatCountersDto(0, 0, 0, 0, 0, 0),
-                new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0),
-                new UserAssetCountersDto(0, 0, 0, 0),
-                new UserEventFeedbackCountersDto(0, 0, 0, 0),
-                0, 0, 0, 0);
-    }
+
+
+
+
 
     private String adminDisplayName(String email) {
         String normalizedEmail = safeText(email);
@@ -3043,62 +2997,15 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 normalizeCount(activities.notifications()));
     }
 
-    private UserEventCountersDto toUserEventCountersDto(Users.UserEventCountersRecord event) {
-        return new UserEventCountersDto(
-                event == null ? 0 : normalizeCount(event.all()),
-                event == null ? 0 : normalizeCount(event.active()),
-                event == null ? 0 : normalizeCount(event.pending()),
-                event == null ? 0 : normalizeCount(event.invitations()),
-                event == null ? 0 : normalizeCount(event.hosting()),
-                event == null ? 0 : normalizeCount(event.drafts()),
-                event == null ? 0 : normalizeCount(event.trash()),
-                event == null ? 0 : normalizeCount(event.watchlist()));
-    }
 
-    private UserChatCountersDto toUserChatCountersDto(Users.UserChatCountersRecord chat) {
-        return new UserChatCountersDto(
-                chat == null ? 0 : normalizeCount(chat.all()),
-                chat == null ? 0 : normalizeCount(chat.event()),
-                chat == null ? 0 : normalizeCount(chat.subEvent()),
-                chat == null ? 0 : normalizeCount(chat.group()),
-                chat == null ? 0 : normalizeCount(chat.service()),
-                chat == null ? 0 : normalizeCount(chat.appSupport()),
-                toUserSupportCaseCountersDto(chat == null ? null : chat.supportCases()),
-                chat == null ? 0 : normalizeCount(chat.groupSupport()),
-                chat == null ? 0 : normalizeCount(chat.contacts()),
-                chat == null ? 0 : normalizeCount(chat.campaign()),
-                chat == null ? 0 : normalizeCount(chat.cases()));
-    }
 
-    private UserSupportCaseCountersDto toUserSupportCaseCountersDto(
-            Users.UserSupportCaseCountersRecord supportCases) {
-        return new UserSupportCaseCountersDto(
-                supportCases == null ? 0 : normalizeCount(supportCases.pending()),
-                supportCases == null ? 0 : normalizeCount(supportCases.warned()),
-                supportCases == null ? 0 : normalizeCount(supportCases.picked()),
-                supportCases == null ? 0 : normalizeCount(supportCases.solved()),
-                supportCases == null ? 0 : normalizeCount(supportCases.blocked()),
-                supportCases == null ? 0 : normalizeCount(supportCases.all()));
-    }
 
-    private UserAssetCountersDto toUserAssetCountersDto(Users.UserAssetCountersRecord asset) {
-        return new UserAssetCountersDto(
-                asset == null ? 0 : normalizeCount(asset.cars()),
-                asset == null ? 0 : normalizeCount(asset.accommodation()),
-                asset == null ? 0 : normalizeCount(asset.supplies()),
-                asset == null ? 0 : normalizeCount(asset.tickets()),
-                asset == null ? 0 : normalizeCount(asset.carsPending()),
-                asset == null ? 0 : normalizeCount(asset.accommodationPending()),
-                asset == null ? 0 : normalizeCount(asset.suppliesPending()));
-    }
 
-    private UserEventFeedbackCountersDto toUserEventFeedbackCountersDto(Users.UserEventFeedbackCountersRecord feedback) {
-        return new UserEventFeedbackCountersDto(
-                feedback == null ? 0 : normalizeCount(feedback.ownEvents()),
-                feedback == null ? 0 : normalizeCount(feedback.pending()),
-                feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
-                feedback == null ? 0 : normalizeCount(feedback.removed()));
-    }
+
+
+
+
+
 
     private Users.UserEventCountersRecord toUserEventCountersRecord(UserEventCountersDto event) {
         return new Users.UserEventCountersRecord(
@@ -3874,4 +3781,16 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     @Override public UserDto presentGameCard(com.raxim.myscoutee.domain.accounts.api.WorkspaceProfile profile) { return toGameCardUserDto((Users) profile); }
+
+    public UserMenuCountersDto queryMenuCounters(String requestedUserId) {
+        return menuCounters.queryMenuCounters(requestedUserId);
+    }
+
+    private UserMenuCountersDto buildMenuCounters(Users user) {
+        return menuCounters.buildMenuCounters(user);
+    }
+
+    private UserMenuCountersDto buildMenuCounters(Users user, Users account) {
+        return menuCounters.buildMenuCounters(user, account);
+    }
 }

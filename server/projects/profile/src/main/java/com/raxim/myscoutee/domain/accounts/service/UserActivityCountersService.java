@@ -41,7 +41,6 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 
 @Service
 public class UserActivityCountersService implements com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.ActivityCounters {
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.chat.api.ChatDirectory chatDirectory;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.content.api.ContentStatistics contentStatistics;
     private final OrganizerFollowingService organizerFollowingService;
 
@@ -67,9 +66,6 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
     }
 
     private static final String OWNER_TYPE_EVENT = "event";
-    private static final List<String> DEMO_ADMIN_IDS = List.of("admin-demo-ava", "admin-demo-noel");
-    private static final List<String> SUPPORT_CASE_STATUSES = List.of(
-            "pending", "warned", "picked", "solved", "blocked");
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_SECONDS = 2L * 60L * 60L;
     private static final String FEEDBACK_COUNTER_PROJECTOR = "event-feedback-counter";
 
@@ -199,27 +195,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         return new UserEventCountersDto(0, 0, 0, 0, 0, 0, 0, 0);
     }
 
-    public void refreshSupportCaseCountersForAdmins() {
-        Map<String, Users> adminsById = new LinkedHashMap<>();
-        for (Users admin : usersRepository.findByHostTier("Admin")) {
-            String userId = normalizeId(admin == null ? null : admin.getUserId());
-            if (StringUtils.hasText(userId)) {
-                adminsById.put(userId, admin);
-            }
-        }
-        for (Users admin : usersRepository.findByUserIdIn(DEMO_ADMIN_IDS)) {
-            String userId = normalizeId(admin == null ? null : admin.getUserId());
-            if (StringUtils.hasText(userId)) {
-                adminsById.put(userId, admin);
-            }
-        }
-        Map<String, SupportCaseCounters> byBase = new LinkedHashMap<>();
-        for (Users admin : adminsById.values()) {
-            String base = admin.getWorkspaceGroupId();
-            SupportCaseCounters counters = byBase.computeIfAbsent(base, this::resolveSupportCaseCounters);
-            updateSupportCaseCounters(admin.getUserId(), counters);
-        }
-    }
+
 
     public void refreshAssetCountersForUser(String userId) {
         String normalizedUserId = normalizeId(userId);
@@ -300,11 +276,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         return updated;
     }
 
-    private SupportCaseCounters resolveSupportCaseCounters(String baseGroupId) {
-        var counts = chatDirectory.supportCaseCounts(baseGroupId);
-        int pending = counts.getOrDefault("pending", 0), warned = counts.getOrDefault("warned", 0), picked = counts.getOrDefault("picked", 0), solved = counts.getOrDefault("solved", 0), blocked = counts.getOrDefault("blocked", 0);
-        return new SupportCaseCounters(pending, warned, picked, solved, blocked, pending + warned + picked + solved + blocked);
-    }
+
 
     private EventCounters resolveEventCounters(String userId) {
         Instant now = Instant.now();
@@ -665,20 +637,7 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
             java.util.List.of(new org.bson.Document("$set",new org.bson.Document("activities.feedback",new org.bson.Document("$add",terms)))));
     }
 
-    private void updateSupportCaseCounters(String userId, SupportCaseCounters counters) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId) || counters == null) {
-            return;
-        }
-        Update update = new Update()
-                .set("activities.chat.supportCases.pending", count(counters.pending()))
-                .set("activities.chat.supportCases.warned", count(counters.warned()))
-                .set("activities.chat.supportCases.picked", count(counters.picked()))
-                .set("activities.chat.supportCases.solved", count(counters.solved()))
-                .set("activities.chat.supportCases.blocked", count(counters.blocked()))
-                .set("activities.chat.supportCases.all", count(counters.all()));
-        updateUserActivityFields(normalizedUserId, update);
-    }
+
 
     private void updateUserActivityFields(String userId, Update update) {
         mongoTemplate.updateFirst(
@@ -1036,22 +995,10 @@ public class UserActivityCountersService implements com.raxim.myscoutee.domain.a
         }
     }
 
-    private record SupportCaseCounters(
-            int pending,
-            int warned,
-            int picked,
-            int solved,
-            int blocked,
-            int all) {
-    }
+
 
     private record FeedbackEligibilityKey(String userId, String eventId) {
     }
 
-    @Override public boolean hasSupportCaseCounters(String userId) {
-        Users user = userId == null ? null : usersRepository.findByUserId(userId).orElse(null);
-        var activities = user == null ? null : user.getActivities();
-        var chat = activities == null ? null : activities.chat();
-        return chat != null && chat.supportCases() != null;
-    }
+
 }

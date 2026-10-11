@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.content.service;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
-import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 import com.raxim.myscoutee.domain.affinity.api.AffinityStatusChanges;
@@ -53,7 +53,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     private final ChatDirectory chatsRepository;
     private final ChatReview chatMessagesRepository;
     private final SupportMessages chatService;
-    private final ActivityCounters userActivityCountersService;
+    private final SupportCaseCounters supportCaseCounters;
     private final AffinityStatusChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
     private final NotificationDelivery notificationOutboxService;
@@ -67,7 +67,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
             ChatDirectory chatsRepository,
             ChatReview chatMessagesRepository,
             SupportMessages chatService,
-            ActivityCounters userActivityCountersService,
+            SupportCaseCounters supportCaseCounters,
             AffinityStatusChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
             NotificationDelivery notificationOutboxService) {
@@ -79,7 +79,7 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
         this.chatsRepository = chatsRepository;
         this.chatMessagesRepository = chatMessagesRepository;
         this.chatService = chatService;
-        this.userActivityCountersService = userActivityCountersService;
+        this.supportCaseCounters = supportCaseCounters;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
         this.notificationOutboxService = notificationOutboxService;
@@ -99,8 +99,8 @@ public class AdminModerationService implements com.raxim.myscoutee.domain.conten
     }
 
     private void ensureStoredSupportCaseCounters(String adminUserId) {
-        if (!userActivityCountersService.hasSupportCaseCounters(normalize(adminUserId))) {
-            userActivityCountersService.refreshSupportCaseCountersForAdmins();
+        if (!supportCaseCounters.hasSupportCaseCounters(normalize(adminUserId))) {
+            supportCaseCounters.refreshSupportCaseCountersForAdmins();
         }
     }
 

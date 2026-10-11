@@ -39,12 +39,15 @@ def main():
     record('native DEMO login', True)
     wrong = urllib.parse.quote('msc122-not-the-authenticated-profile', safe='')
     try:
+        chat_records = []
         for name, path in [('native identity', '/api/auth/me'),
                            ('communication selection', '/api/activities/chats'),
                            ('community selection', '/api/activities/events?limit=5')]:
             separator = '&' if '?' in path else '?'
             status, original, elapsed = read(path + separator + 'userId=' + urllib.parse.quote(user, safe=''), headers)
             record(name, status == 200 and isinstance(original, (dict, list)), status, elapsed)
+            if name == 'communication selection' and status == 200 and isinstance(original, list):
+                chat_records = original
             status, selected, elapsed = read(path + separator + 'userId=' + wrong, headers)
             if name == 'native identity':
                 same = isinstance(selected, dict) and selected.get('id') == user
@@ -55,6 +58,17 @@ def main():
                     return sorted(str(row.get('id')) for row in items if isinstance(row, dict)) if isinstance(items, list) else None
                 same = ids(original) is not None and ids(original) == ids(selected)
             record(name + ' ignores caller-selected profile', status == 200 and same, status, elapsed)
+        chat_id = next((row.get('id') for row in chat_records if isinstance(row, dict) and row.get('id')), None)
+        if chat_id is None:
+            record('existing chat required for header counter check', False)
+        else:
+            path = '/api/activities/chats/' + urllib.parse.quote(chat_id, safe='') + '/header-sync?userId='
+            for label, requested in [('chat header counters', urllib.parse.quote(user, safe='')),
+                                     ('chat header counters ignore caller-selected profile', wrong)]:
+                status, value, elapsed = read(path + requested, headers)
+                record(label, status == 200 and isinstance(value, dict)
+                       and isinstance(value.get('chats'), int) and isinstance(value.get('chatCounters'), dict),
+                       status, elapsed)
     finally:
         status, revoked = session.end_session(user, headers)
         record('native session revoked', revoked, status)

@@ -2,9 +2,38 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **138**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **139**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## MSC-122 account read and support counter batch — 2026-10-11
+
+Support inbox counters now live in the existing account chat-counter service,
+independent of event/feed counters. The selected-profile menu counter read and
+shared DTO mapping are separate from profile discovery. The existing community
+calculation and cache invalidation remain installed in MyScoutee. Notification
+workspace names use the same native/remote group lookup through a narrow optional
+contract. Stored models, query predicates, HTTP routes and authorization are
+unchanged; no extra owner lookup or network hop was added.
+
+**298 distinct focused canonical JUnit tests**, **25 transport tests** and all
+**eight assembly/image audits** passed. KVM Helm **139** and the serial monolith
+each passed **49 native checks**, including chat header counters and rejection of
+a caller-selected different profile. Component Spring tests also prove support
+counters, menu reads and notification delivery without product-owner beans.
+
+QEMU CPU was **0.815 cores** initially and **0.708** in a second settled sample,
+versus 0.665 previously. Identity used 0.0156 cores (previously 0.0158), communication
+0.0305 (0.0292). Monolith used **0.103 backend**, **0.052 MongoDB** and **0.066
+frontend-watcher cores** (previously 0.167, 0.058, 0.063). These short observations
+include increases and decreases; they do not prove load-performance parity.
+Settled logs contain no new errors; all backends stayed ready without restarts.
+
+[Evidence](../guides/qualification/evidence/MSC122_ACCOUNT_READ_BOUNDARIES_20261011.json)
+records the frozen source hashes, staged tests, route timings and both CPU samples.
+The original dev environment is restored, Mongo remains healthy and KVM is off.
+Core chat/profile/API dependency closure and community-free composition remain
+open. Template implementation stays paused until that source gate is complete.
 
 ## MSC-122 core dependency batch — 2026-10-11
 

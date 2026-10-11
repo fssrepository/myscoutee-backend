@@ -137,7 +137,8 @@
       "propertyPrefix": "group-directory",
       "credential": "groupDirectoryToken",
       "consumerApis": [
-        "com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory"
+        "com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory",
+        "com.raxim.myscoutee.domain.platform.api.WorkspaceNames"
       ]
     },
     {
@@ -1348,7 +1349,8 @@
       ],
       "providedApis": [
         "ServiceFeedbackCounters",
-        "FeedCounts"
+        "FeedCounts",
+        "SupportCaseCounters"
       ]
     },
     {

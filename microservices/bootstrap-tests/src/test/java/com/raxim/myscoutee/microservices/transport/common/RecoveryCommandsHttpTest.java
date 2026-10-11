@@ -66,6 +66,28 @@ class RecoveryCommandsHttpTest {
         verify(owner).applyFeedbackReceipt(change);
         assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode());
     }
+    @Test void supportCountersUseTheirOwnOwnerAndKeepExistingHttpAndScope() {
+        var support = server.getBean(com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters.class);
+        when(support.hasSupportCaseCounters("support-admin")).thenAnswer(call -> {
+            assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode());
+            assertEquals("workspace", JobGroupContext.groupId());
+            return true;
+        });
+        doAnswer(call -> {
+            assertEquals(MongoSessionMode.DEMO, MongoSessionModeContext.currentMode());
+            assertEquals("workspace", JobGroupContext.groupId());
+            return null;
+        }).when(support).refreshSupportCaseCountersForAdmins();
+        MongoSessionModeContext.set(MongoSessionMode.DEMO);
+        try (var remote = new RemoteActivityCounters(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics)) {
+            assertTrue(JobGroupContext.call("workspace", () -> remote.hasSupportCaseCounters("support-admin")));
+            JobGroupContext.call("workspace", () -> { remote.refreshSupportCaseCountersForAdmins(); return null; });
+        }
+        verify(support).hasSupportCaseCounters("support-admin");
+        verify(support).refreshSupportCaseCountersForAdmins();
+        assertFalse(JobGroupContext.isActive());
+    }
+
     @Test void attachmentRevisionAndAvailabilitySurviveHttp() {
         var projection = new AttachmentLifecycle.Projection("event", "event", 17, false, "trashed");
         try (var remote = new RemoteAttachmentLifecycle(origin, TOKEN, true, CONNECT, REQUEST, mapper, metrics)) {
@@ -123,6 +145,7 @@ class RecoveryCommandsHttpTest {
     @Import({ActivityCountersServerConfiguration.class, AttachmentLifecycleServerConfiguration.class,
             ScheduledMessagesServerConfiguration.class, NotificationJobsServerConfiguration.class, EventChangesServerConfiguration.class, CheckoutMembershipsServerConfiguration.class, ServiceSecurityConfiguration.class})
     static class Fixture {
+        @Bean com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters supportCounters() { return mock(com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters.class); }
         @Bean ActivityCounters counters() { return mock(ActivityCounters.class); }
         @Bean ServiceFeedbackCounters feedback() { return mock(ServiceFeedbackCounters.class); }
         @Bean FeedCounts feeds() { return mock(FeedCounts.class); }

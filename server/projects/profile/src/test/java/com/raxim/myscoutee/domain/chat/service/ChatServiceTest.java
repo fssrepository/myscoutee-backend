@@ -1,8 +1,8 @@
 package com.raxim.myscoutee.domain.chat.service;
 import com.raxim.myscoutee.domain.community.dto.CaseDetails;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
-import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
+import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
+import com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters;
 import com.raxim.myscoutee.domain.administration.service.AdminMenuCounterService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 
@@ -92,11 +92,11 @@ class ChatServiceTest {
     @Mock
     private ActivitySubEventStageRuntimeRepository activitySubEventStageRuntimeRepository;
     @Mock
-    private HomeUserProfileService homeUserProfileService;
+    private ProfileReadState homeUserProfileService;
     @Mock
     private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
     @Mock
-    private UserActivityCountersService userActivityCountersService;
+    private SupportCaseCounters supportCaseCounters;
     @Mock
     private ChatStreamPublisher chatStreamPublisher;
     @Mock
@@ -123,7 +123,7 @@ class ChatServiceTest {
                 profileDirectory(),
                 memberDirectory(),
                 homeUserProfileService,
-                userActivityCountersService,
+                supportCaseCounters,
                 chatStreamPublisher,
                 chatPushNotificationService,
                 userNotificationService,
@@ -1248,7 +1248,7 @@ class ChatServiceTest {
         verify(userCounterBulkOperations).updateOne(any(Query.class), updates.capture());
         assertThat(updates.getValue().getUpdateObject().get("$inc", Document.class))
                 .containsKey("activities.chat.all").containsEntry("activities.chat.groupSupport", 1).doesNotContainKey("activities.chat.appSupport");
-        verify(userActivityCountersService, never()).refreshSupportCaseCountersForAdmins();
+        verify(supportCaseCounters, never()).refreshSupportCaseCountersForAdmins();
     }
 
     @Test

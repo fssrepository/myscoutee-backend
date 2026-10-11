@@ -10,7 +10,7 @@ import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 /** Bounded existing bulk upserts; validate the complete input before sending the first batch. No retries. */
-public final class RemoteActivityCounters extends RemoteReadTransport implements ActivityCounters, com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.FeedCounts {
+public final class RemoteActivityCounters extends RemoteReadTransport implements ActivityCounters, com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters, com.raxim.myscoutee.domain.accounts.api.ServiceFeedbackCounters, com.raxim.myscoutee.domain.accounts.api.FeedCounts {
     private final ObjectMapper mapper;
     public RemoteActivityCounters(URI origin, String token, boolean allowHttp, Duration connectTimeout,
             Duration requestTimeout, ObjectMapper mapper, MeterRegistry metrics) {

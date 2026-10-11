@@ -164,6 +164,29 @@ class DomainServiceBoundaryTest {
         }
     }
 
+    @org.junit.jupiter.api.Test
+    void accountChatCountersDoNotRequireProductOwners() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "accounts/service/AccountChatCounterService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                    DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void storedProfileCountersDoNotRequireProductOrDiscoveryOwners() throws Exception {
+        for (String type : List.of("ProfileMenuCountersService", "ProfileReadStateService", "AccountCounterMapper")) {
+            var resource = new org.springframework.core.io.ClassPathResource(
+                    DOMAIN + "accounts/service/" + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "groups/", DOMAIN + "assets/", DOMAIN + "content/", DOMAIN + "affinity/",
+                        "HomeUserProfileService");
+            }
+        }
+    }
+
     private boolean changeStreamSubscription(String name, String method, Object value) {
         if (name.equals(DOMAIN + "administration/service/AdminStatsTelemetryWorkerService")
                 && method.equals("watchInputs")) {

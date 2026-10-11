@@ -181,6 +181,8 @@ class HomeUserProfileServiceTest {
                 assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "profileStatusWork",
                 new ProfileStatusWork(usersRepository, org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), affinityRecomputeTaskService, null));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "menuCounters",
+                new ProfileMenuCountersService(usersRepository, new SelectedProfileService(usersRepository), java.util.Optional.empty()));
         service.setNotificationCatalog(notificationCatalog);
         lenient().when(notificationCatalog.countUnread("active"))
                 .thenReturn(17L);

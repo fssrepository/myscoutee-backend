@@ -1,8 +1,6 @@
 package com.raxim.myscoutee.domain.accounts.api;
 public interface ActivityCounters {
     int applyFeedbackReceipt(FeedbackCounterChanges.Change change);
-    boolean hasSupportCaseCounters(String userId);
-    void refreshSupportCaseCountersForAdmins();
     void refreshFeedCountersForUser(String userId);
     void refreshEventCountersForSourceIds(java.util.Collection<String> sourceIds);
     void refreshAssetCountersForUser(String userId);

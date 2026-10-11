@@ -76,6 +76,8 @@ class ActivitiesMembersServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private com.raxim.myscoutee.domain.accounts.api.ProfileReadState profileReadState;
+    @Mock
     private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
     @Mock
     private AssetsService assetsService;
@@ -116,7 +118,7 @@ class ActivitiesMembersServiceTest {
                 new com.raxim.myscoutee.domain.accounts.service.ProfileDirectoryService(usersRepository),
                 selectedProfile,
                 homeUserProfileService,
-                homeUserProfileService,
+                profileReadState,
                 assetsService,
                 activitiesResourcesService,
                 eventParticipationTicketService,
@@ -260,7 +262,7 @@ class ActivitiesMembersServiceTest {
         when(accessControlService.canDisqualifyEventMember("event-1", "admin", "target")).thenReturn(true);
         when(activityMembersRepository.findManagementOrderedByOwner("event", "event-1"))
                 .thenReturn(List.of(member));
-        when(homeUserProfileService.queryMenuCounters("admin")).thenReturn(counters);
+        when(profileReadState.queryMenuCounters("admin")).thenReturn(counters);
 
         var result = service.applyActionWithContext(new ActivityMemberActionRequestDto(
                 new ActivityMemberOwnerRefDto("event", "event-1"),
@@ -275,7 +277,7 @@ class ActivitiesMembersServiceTest {
                 .extracting(ActivityMemberEntryDto::status)
                 .isEqualTo("disqualified");
         assertThat(result.counterOverrides()).isSameAs(counters);
-        verify(homeUserProfileService).queryMenuCounters("admin");
+        verify(profileReadState).queryMenuCounters("admin");
     }
 
     @Test

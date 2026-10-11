@@ -9,7 +9,7 @@ import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
-import com.raxim.myscoutee.domain.accounts.api.ActivityCounters;
+import com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 
@@ -137,7 +137,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     private final ProfileSummaries profileDirectory;
     private final MemberDirectory memberDirectory;
     private final ProfileReadState profilePresentation;
-    private final ActivityCounters activityCounters;
+    private final SupportCaseCounters supportCaseCounters;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
     private final NotificationInbox userNotificationService;
@@ -157,7 +157,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             ProfileSummaries profileDirectory,
             MemberDirectory memberDirectory,
             ProfileReadState profilePresentation,
-            ActivityCounters activityCounters,
+            SupportCaseCounters supportCaseCounters,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
             NotificationInbox userNotificationService,
@@ -172,7 +172,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         this.profileDirectory = profileDirectory;
         this.memberDirectory = memberDirectory;
         this.profilePresentation = profilePresentation;
-        this.activityCounters = activityCounters;
+        this.supportCaseCounters = supportCaseCounters;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatPushNotificationService = chatPushNotificationService;
         this.userNotificationService = userNotificationService;
@@ -939,7 +939,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
             updatedDocuments.add(next);
         }
         chatsRepository.saveAll(updatedDocuments);
-        activityCounters.refreshSupportCaseCountersForAdmins();
+        supportCaseCounters.refreshSupportCaseCountersForAdmins();
         adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
 
         Chat viewerChat = findOwnerChat(updatedDocuments, userId);
@@ -1306,7 +1306,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
         List<Chat> chatDocuments = normalizedTargetUserId.equals(normalizedAdminUserId)
                 ? List.of(adminChat) : List.of(targetChat, adminChat);
         chatsRepository.saveAll(chatDocuments);
-        if (!groupModeration) activityCounters.refreshSupportCaseCountersForAdmins();
+        if (!groupModeration) supportCaseCounters.refreshSupportCaseCountersForAdmins();
 
         ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
         message.setSender(resolvedAdminName);

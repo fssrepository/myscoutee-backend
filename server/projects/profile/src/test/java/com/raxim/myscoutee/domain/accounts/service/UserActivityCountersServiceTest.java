@@ -81,9 +81,6 @@ class UserActivityCountersServiceTest {
                 eventParticipationTicketService,
                 mongoTemplate, org.mockito.Mockito.mock(OrganizerFollowingService.class));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "contentStatistics", new com.raxim.myscoutee.domain.content.service.ContentStatisticsService(mongoTemplate));
-        var chatOwner = new com.raxim.myscoutee.domain.chat.service.ChatDirectoryService(null);
-        org.springframework.test.util.ReflectionTestUtils.setField(chatOwner, "mongo", mongoTemplate);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "chatDirectory", chatOwner);
     }
 
     @Test
