@@ -10,11 +10,16 @@ ENV CI=true \
 WORKDIR /frontend
 
 COPY --from=frontend-source package.json package-lock.json ./
+COPY --from=frontend-source components/package.json ./components/package.json
 RUN --mount=type=cache,id=myscoutee-e2e-npm,target=/root/.npm \
     npm ci --no-audit --no-fund
 
 COPY --from=frontend-source angular.json tsconfig*.json ./
 COPY --from=frontend-source src/ ./src/
+COPY --from=frontend-source scripts/ ./scripts/
+COPY --from=frontend-source components/src/ ./components/src/
+COPY --from=frontend-source components/styles/ ./components/styles/
+COPY --from=frontend-source components/ng-package.json components/tsconfig.lib.json ./components/
 RUN npm run build:e2e
 
 FROM golang:1.26-bookworm AS runtime-status-builder
