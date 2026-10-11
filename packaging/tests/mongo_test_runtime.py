@@ -2,6 +2,7 @@
 
 Set MYSCOUTEE_TEST_MONGO_TARGET=kvm for the existing owned lab. This helper
 never starts a container, VM or database and never reads credentials on the host.
+MYSCOUTEE_TEST_MONGO_CONTAINER selects an existing monolith Mongo container.
 """
 import os
 from pathlib import Path
@@ -20,7 +21,8 @@ def run_mongo(script, *, demo=False):
     )
     target = os.environ.get('MYSCOUTEE_TEST_MONGO_TARGET', 'monolith')
     if target == 'monolith':
-        subprocess.run(['docker', 'exec', '-i', 'mongodb', 'mongosh', '--quiet',
+        container = os.environ.get('MYSCOUTEE_TEST_MONGO_CONTAINER', 'mongodb')
+        subprocess.run(['docker', 'exec', '-i', container, 'mongosh', '--quiet',
                         '--file', '/dev/stdin'], input=prefix + script, text=True, check=True)
     elif target == 'kvm':
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'microservices/tools'))
