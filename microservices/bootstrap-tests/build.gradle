@@ -13,6 +13,7 @@ sourceSets.test.java {
     srcDir rootProject.backendJava
     include 'com/raxim/myscoutee/microservices/**'
     include 'com/raxim/myscoutee/common/config/JsonConfig.java'
+    include 'com/raxim/myscoutee/common/config/PlatformParametersService.java'
     include 'com/raxim/myscoutee/common/util/JsonUtil.java'
     include 'com/raxim/myscoutee/domain/email/config/EmailProperties.java'
     include 'com/raxim/myscoutee/domain/groups/service/GroupMediaVisibilityService.java'

@@ -126,6 +126,15 @@ class DomainServiceBoundaryTest {
         }
     }
 
+    @org.junit.jupiter.api.Test
+    void schedulingValueReaderDoesNotRequireAffinityTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                "com/raxim/myscoutee/common/config/PlatformParametersService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "affinity/");
+        }
+    }
+
     private boolean changeStreamSubscription(String name, String method, Object value) {
         if (name.equals(DOMAIN + "administration/service/AdminStatsTelemetryWorkerService")
                 && method.equals("watchInputs")) {

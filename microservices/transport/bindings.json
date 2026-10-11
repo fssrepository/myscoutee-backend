@@ -306,6 +306,7 @@
       "propertyPrefix": "configuration-catalog",
       "credential": "configurationCatalogToken",
       "consumerApis": [
+        "com.raxim.myscoutee.domain.platform.api.SchedulingParameters",
         "com.raxim.myscoutee.domain.platform.api.SchedulingPolicy",
         "com.raxim.myscoutee.domain.platform.api.NotificationPolicy"
       ]

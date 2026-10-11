@@ -35,9 +35,10 @@ excluding event/matchmaking/payment models; do not remove fields from retained
 models merely because the initial screen does not display them. Do not substitute mock login, in-memory
 chat or a disconnected sample list for the existing persisted flows.
 
-Keep the existing group/workspace structure where identity, session scoping and
-chat authorization require it; begin with one minimal seeded group rather than
-inventing a replacement profile model. The shell includes an avatar menu with a
+Retain account/workspace fields required by the selected native models, but omit
+the community/group domain from the initial template. Personal chat already uses
+its own participants and approved contact pairs; do not seed a product group just
+to satisfy an unrelated dependency. The shell includes an avatar menu with a
 small profile and image editor, top-level guide/notification access and minimal
 settings required by these retained flows. Consent is foundational: retain
 versioned documents, persisted acceptance, enforcement and its user-facing flow,
@@ -88,7 +89,8 @@ Concrete dependency findings from the current shell review:
 
 - `GroupWorkspaceFilter` selects/restores the authenticated workspace principal;
   `CommunityGroupProfilesService` checks group access and membership. Group/profile
-  separation is an authorization boundary, not merely a menu. Keep it initially.
+  separation is an authorization boundary, not merely a menu. Preserve it in
+  MyScoutee; its product workspace selection is excluded from the standalone template.
 - `settings-popups.component.ts` resolves the account behind a workspace before
   loading/saving consent. `AccountConsentService` persists document revision,
   version and optional-section approvals. Preserve account-level consent rather
@@ -279,6 +281,28 @@ community, payment or Registry implementation/seed has been copied. The initial
 is in progress. The template is not runnable yet, and no installation is claimed.
 
 ## Remaining complete-template work
+
+**Ordering correction, 2026-10-11:** the administrator, campaign-contact and
+selected-profile checkpoints do not complete the previously estimated MyScoutee
+preparation. Template work advanced before that source review was finished. Its
+tested component checkpoints are retained, and further template implementation
+waits while the remaining source boundaries below are addressed in MyScoutee.
+
+- Scheduling configuration: remove affinity types from the shared value reader
+  while retaining the same MyScoutee catalog, scope, defaults and transport calls.
+  In progress; focused tests pass, KVM and monolith qualification pending.
+- Composition acceptance: omitting `community` from the configured assembly must
+  leave the retained identity, API/MCP, chat and notification flows working. The
+  current all-domain coverage requirement and mandatory foreign bindings still
+  prevent this. Packaging separately is not proof of optional composition.
+- Chat: separate event/resource/community additions from conversation storage and
+  membership. Existing conversations must not be hidden or blocked simply because
+  community is absent; no new membership rules or model are authorized.
+- Account purge: separate product cleanup from the existing durable purge worker
+  without skipping required MyScoutee cleanup or changing retry/order semantics.
+- Recheck the retained account/access/media and API/MCP dependency closure before
+  resuming the template. Full application QA and production update/network
+  qualification remain separate from these source extraction checks.
 
 1. The serial MyScoutee KVM → monolith gate above is complete for this extraction
    boundary. Preserve its evidence and retain the separately listed unqualified

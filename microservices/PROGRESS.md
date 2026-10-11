@@ -2,9 +2,35 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **136**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **137**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## MSC-122 shared scheduling values — 2026-10-11
+
+The existing shared parameter reader now consumes `platform.SchedulingParameters`.
+MyScoutee's native and remote `affinity.ConfigurationCatalog` both implement that
+contract. Value selection, limits, defaults, persisted configuration, HTTP routes
+and query count are unchanged; there is no added adapter or network hop.
+
+**72 focused canonical JUnit tests**, **11 transport tests**, **68 infrastructure
+tests** and all eight assembly/image audits passed. KVM Helm **137** and the
+monolith each passed **32 native session/admin assertions**. KVM was stopped before
+monolith startup, and the original dev environment was restored and verified.
+
+The settled KVM sample used **0.679 QEMU CPU cores**, following an initial
+**0.959-core** sample. Monolith used **0.106 backend**, **0.296 MongoDB** and
+**0.055 frontend-watcher cores**. The earlier profile-selection checkpoint's MongoDB
+sample was 0.056 cores: this sample is higher. These low-load observations are not
+matched benchmarks and do not establish general performance parity or speedup.
+Recent backend logs contained no errors. Initial KVM notification-owner startup
+errors and an interrupted, discarded measurement attempt are recorded in
+[the evidence](../guides/qualification/evidence/MSC122_SCHEDULING_PARAMETERS_20261011.json).
+
+**Still open:** community omission from composition, remaining chat and account
+cleanup dependencies. Template implementation is paused at its tested component
+commits until those MyScoutee boundaries are complete. This checkpoint is not
+completion of the originally estimated 3–5-hour MyScoutee cleanup.
 
 ## MSC-122 account selection and administrator profile view — 2026-10-11
 

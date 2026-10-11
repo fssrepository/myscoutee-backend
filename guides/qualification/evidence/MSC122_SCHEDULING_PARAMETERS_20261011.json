@@ -1,0 +1,2676 @@
+{
+  "checkpoint": "MyScoutee scheduling parameters without affinity type coupling",
+  "date": "2026-10-11",
+  "parentRevision": "a7a47ab3557396d5be84cd90850ba496ff7d426f",
+  "status": "Focused component, KVM and serial monolith checks passed. The whole optional-domain composition is NOT complete.",
+  "changes": [
+    "The shared parameter reader consumes platform SchedulingParameters; MyScoutee ConfigurationCatalog extends that contract.",
+    "The same native or remote catalog bean supplies the values. No intermediate adapter, new query, network hop, cache, persistence change, clamp or default change.",
+    "Existing configuration HTTP paths, JSON and REAL/DEMO routing are preserved."
+  ],
+  "canonicalJUnit": {
+    "com.raxim.myscoutee.common.config.PlatformParametersServiceTest": {
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.439"
+    },
+    "com.raxim.myscoutee.domain.accounts.service.DeletedAccountPurgeServiceTest": {
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.059"
+    },
+    "com.raxim.myscoutee.domain.accounts.service.DeletedAccountWarningWorkerTest": {
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.202"
+    },
+    "com.raxim.myscoutee.domain.notifications.service.NotificationOutboxServiceTest": {
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.21"
+    },
+    "com.raxim.myscoutee.domain.DomainServiceBoundaryTest": {
+      "tests": "44",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.371"
+    }
+  },
+  "transportJUnit": {
+    "com.raxim.myscoutee.microservices.transport.platform.JobAudienceHttpTest": {
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.478"
+    },
+    "com.raxim.myscoutee.microservices.transport.affinity.ConfigurationCatalogHttpTest": {
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.811"
+    }
+  },
+  "infraTests": 68,
+  "assemblyAudit": "Eight JARs and images passed; identities recorded in microservices/deploy/images.lock.json.",
+  "kvm": {
+    "helmRevision": 137,
+    "adminChecks": [
+      {
+        "check": "dashboard accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 609.08
+      },
+      {
+        "check": "help accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 603.67
+      },
+      {
+        "check": "privacy accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 205.4
+      },
+      {
+        "check": "terms accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 188.88
+      },
+      {
+        "check": "explanation accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 306.09
+      },
+      {
+        "check": "notifications accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 273.83
+      },
+      {
+        "check": "params accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 349.56
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 131.62
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 113.91
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 63.9
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 90.54
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 95.24
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 56.99
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 88.73
+      },
+      {
+        "check": "admin session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 80.85
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 68.99
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 62.74
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 29.24
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 60.66
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 11.7
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 62.17
+      },
+      {
+        "check": "member session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      }
+    ],
+    "sessionChecks": [
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "id",
+          "name",
+          "age",
+          "birthday",
+          "city",
+          "height",
+          "physique",
+          "languages",
+          "horoscope",
+          "initials",
+          "gender",
+          "statusText",
+          "hostTier",
+          "traitLabel",
+          "completion",
+          "profileFormVersion",
+          "headline",
+          "about",
+          "affinity",
+          "locationCoordinates",
+          "partitionKey",
+          "images",
+          "profileDetails",
+          "impressions",
+          "profileStatus",
+          "previousProfileStatus",
+          "deletedAtIso",
+          "admin",
+          "operator",
+          "activities",
+          "notificationPreferences",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me/profile-ext",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "profileExt",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides",
+          "workspace",
+          "accountProfile"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "community",
+        "path": "/api/activities/events",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "sortKeys"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "communication",
+        "path": "/api/notifications",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "unreadCount",
+          "muted"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "assets",
+        "path": "/api/assets",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "assembly": "payments",
+        "path": "/api/payment-methods",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "items",
+          "total",
+          "nextCursor",
+          "canAdd",
+          "pendingRegistration",
+          "currentProvider"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "affinity",
+        "path": "/api/activities/rates",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "path": "/api/auth/me/logout",
+        "status": 200,
+        "passed": true
+      }
+    ],
+    "startupErrors": "Three initial identity scheduled calls could not reach NotificationJobs while communication was still starting; latest identity/communication/affinity log sample contains zero ERROR entries.",
+    "firstCpuSample": {
+      "kind": "Settled low-load runtime observation; not a matched stress comparison",
+      "sourceParent": "a7a47ab3557396d5be84cd90850ba496ff7d426f",
+      "sourceStatus": "working tree with scheduling parameter contract change",
+      "before": {
+        "at": 1791705304.9802105,
+        "containers": [
+          {
+            "pod": "affinity-75657dbc8-rlxkm",
+            "container": "affinity",
+            "id": "97412a0c211bb45006ef6cfe7ac306882c0ac3b52692c86396b204dc79365de3",
+            "at": 1791705303.6732874,
+            "cpu": {
+              "usage_usec": 16452327,
+              "user_usec": 14843680,
+              "system_usec": 1608646,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 259,
+              "nr_throttled": 48,
+              "throttled_usec": 567534,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 307326976
+          },
+          {
+            "pod": "mongodb-0",
+            "container": "mongodb",
+            "id": "ee371a243f94503b3d967511c5f2664d77db9774890edfa551a56cc160389245",
+            "at": 1791705303.7418578,
+            "cpu": {
+              "usage_usec": 3240671,
+              "user_usec": 2291069,
+              "system_usec": 949601,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 679,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 291909632
+          },
+          {
+            "pod": "mongodb-1",
+            "container": "mongodb",
+            "id": "653e284385cced4868eecc477e4071dc1187397d8450a26f1e3115ba8f1bd224",
+            "at": 1791705303.8152888,
+            "cpu": {
+              "usage_usec": 2766256,
+              "user_usec": 1928301,
+              "system_usec": 837954,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 645,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 372191232
+          },
+          {
+            "pod": "registry-6f857b4b6-t8dg7",
+            "container": "registry",
+            "id": "53b0ef5c6468bb7fff45fdc3e6d0769aeb69d15e7a87f91303c15f353a6d36ad",
+            "at": 1791705303.8894017,
+            "cpu": {
+              "usage_usec": 973431,
+              "user_usec": 838732,
+              "system_usec": 134698,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 89,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 25935872
+          },
+          {
+            "pod": "minio-6c7d8948f7-zfmtb",
+            "container": "minio",
+            "id": "4f2033f391694f3f68de792197d4a3d3f32358dda9808762f72502def170139a",
+            "at": 1791705303.9562337,
+            "cpu": {
+              "usage_usec": 4834031,
+              "user_usec": 2888911,
+              "system_usec": 1945119,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 211,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "100000 100000",
+            "memoryBytes": 387768320
+          },
+          {
+            "pod": "identity-5b6598b554-dk6nh",
+            "container": "identity",
+            "id": "88c315695b0ea810e2eb0585cbd845ea57f8a9490dfdc60eb9798fe13fe99d19",
+            "at": 1791705304.0309184,
+            "cpu": {
+              "usage_usec": 31406988,
+              "user_usec": 28718435,
+              "system_usec": 2688552,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 752,
+              "nr_throttled": 8,
+              "throttled_usec": 76079,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 401477632
+          },
+          {
+            "pod": "stun-779977cbdf-rrfnb",
+            "container": "stun",
+            "id": "73a346776573556eea1c69bfd4bb2cfb0be6cad02d35fafd29ec0015c65c61aa",
+            "at": 1791705304.1019661,
+            "cpu": {
+              "usage_usec": 944547,
+              "user_usec": 658786,
+              "system_usec": 285761,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 124,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 21307392
+          },
+          {
+            "pod": "frontend-66bf57f9c-mkck2",
+            "container": "frontend",
+            "id": "b243ae252cfe70ec856c9487d5c3f3f453e2558a8d5a388e4300fdbff9e87955",
+            "at": 1791705304.1948574,
+            "cpu": {
+              "usage_usec": 123753,
+              "user_usec": 58188,
+              "system_usec": 65564,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 63,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 15581184
+          },
+          {
+            "pod": "network-6cc4b896d6-wsmp6",
+            "container": "network",
+            "id": "99ea08f1890ae8e9b0f85a52b13297f0ef7099debc2d889ed07c66eb20c2f19e",
+            "at": 1791705304.2756734,
+            "cpu": {
+              "usage_usec": 17230436,
+              "user_usec": 15684320,
+              "system_usec": 1546115,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 506,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 262598656
+          },
+          {
+            "pod": "payments-65d9564f95-mwf7z",
+            "container": "payments",
+            "id": "5e97949cc00b6ea850c2fb17c2cd54550afcb43780d1c87514a09eb536697837",
+            "at": 1791705304.3779416,
+            "cpu": {
+              "usage_usec": 19641806,
+              "user_usec": 18008455,
+              "system_usec": 1633351,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 551,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 258371584
+          },
+          {
+            "pod": "payment-simulator-6b8c96f5c5-bv55k",
+            "container": "payment-simulator",
+            "id": "a6a733e485b57da7ac48a6bcbc90980367872ece7cc58b2255756971c23aed7f",
+            "at": 1791705304.4479697,
+            "cpu": {
+              "usage_usec": 67679,
+              "user_usec": 38945,
+              "system_usec": 28733,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 21,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 14974976
+          },
+          {
+            "pod": "release-simulator-7f5b9f8f96-jtxbq",
+            "container": "release-simulator",
+            "id": "db5f23d59036bbf43228eab20b08de6b18a65c90281d2009ecbddc4227a9a389",
+            "at": 1791705304.5216563,
+            "cpu": {
+              "usage_usec": 524150,
+              "user_usec": 444054,
+              "system_usec": 80095,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 81,
+              "nr_throttled": 1,
+              "throttled_usec": 5780,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 39006208
+          },
+          {
+            "pod": "assets-556cc6678d-6w5pc",
+            "container": "assets",
+            "id": "64a4a2a11fafc0590f3567c62b1d6ee074cba038335ae7c03ed6785d38925e84",
+            "at": 1791705304.6091235,
+            "cpu": {
+              "usage_usec": 20456060,
+              "user_usec": 18692985,
+              "system_usec": 1763075,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 560,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 279031808
+          },
+          {
+            "pod": "help-7f7db8bbf6-6xstj",
+            "container": "help",
+            "id": "4071358ecd42010ab0613c36580466f636e9df7b44be0d39254c7638f5887dde",
+            "at": 1791705304.6946883,
+            "cpu": {
+              "usage_usec": 17636077,
+              "user_usec": 16045862,
+              "system_usec": 1590215,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 508,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 241029120
+          },
+          {
+            "pod": "community-8589cfb764-6vln9",
+            "container": "community",
+            "id": "ec39880b37e12d4b97df0ec31584ec5eec83cced0709ce19f12f7c25e06405aa",
+            "at": 1791705304.7767086,
+            "cpu": {
+              "usage_usec": 28577260,
+              "user_usec": 26253526,
+              "system_usec": 2323733,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 704,
+              "nr_throttled": 4,
+              "throttled_usec": 67512,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 366534656
+          },
+          {
+            "pod": "communication-58bfff85f6-jj865",
+            "container": "communication",
+            "id": "ea84f00c6afa531337d6b91ab369212d2fd6a64c601751ea59f7621cbec04953",
+            "at": 1791705304.8463867,
+            "cpu": {
+              "usage_usec": 30033748,
+              "user_usec": 27438843,
+              "system_usec": 2594905,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 685,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 442167296
+          },
+          {
+            "pod": "mcp-776779bc-8sgbq",
+            "container": "mcp",
+            "id": "512fac4e6ef068a6eab13878a7c22931b28cb1802710c2e877fdb3917b9ca909",
+            "at": 1791705304.9113681,
+            "cpu": {
+              "usage_usec": 38443,
+              "user_usec": 15376,
+              "system_usec": 23067,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 14,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 11268096
+          },
+          {
+            "pod": "redis-66d974cbf4-wprq8",
+            "container": "redis",
+            "id": "70c4fbcef364dab8526798e589ea3629928f2ab16ea5e667328a9e7088d7a950",
+            "at": 1791705304.980092,
+            "cpu": {
+              "usage_usec": 285378,
+              "user_usec": 180544,
+              "system_usec": 104833,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 397,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 16588800
+          }
+        ],
+        "host": {
+          "at": 8236.504458134,
+          "cpuTotal": 9760773,
+          "cpuIdle": 8222881,
+          "logicalCpus": 12,
+          "qemuCpuNs": 256913855000
+        }
+      },
+      "after": {
+        "at": 1791705336.914743,
+        "containers": [
+          {
+            "pod": "affinity-75657dbc8-rlxkm",
+            "container": "affinity",
+            "id": "97412a0c211bb45006ef6cfe7ac306882c0ac3b52692c86396b204dc79365de3",
+            "at": 1791705335.5489383,
+            "cpu": {
+              "usage_usec": 20619358,
+              "user_usec": 18712007,
+              "system_usec": 1907350,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 454,
+              "nr_throttled": 52,
+              "throttled_usec": 602844,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 336924672
+          },
+          {
+            "pod": "mongodb-0",
+            "container": "mongodb",
+            "id": "ee371a243f94503b3d967511c5f2664d77db9774890edfa551a56cc160389245",
+            "at": 1791705335.6614945,
+            "cpu": {
+              "usage_usec": 4361045,
+              "user_usec": 3149572,
+              "system_usec": 1211472,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 977,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 308432896
+          },
+          {
+            "pod": "mongodb-1",
+            "container": "mongodb",
+            "id": "653e284385cced4868eecc477e4071dc1187397d8450a26f1e3115ba8f1bd224",
+            "at": 1791705335.7283626,
+            "cpu": {
+              "usage_usec": 3443065,
+              "user_usec": 2425667,
+              "system_usec": 1017397,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 913,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 373141504
+          },
+          {
+            "pod": "registry-6f857b4b6-t8dg7",
+            "container": "registry",
+            "id": "53b0ef5c6468bb7fff45fdc3e6d0769aeb69d15e7a87f91303c15f353a6d36ad",
+            "at": 1791705335.81167,
+            "cpu": {
+              "usage_usec": 1219433,
+              "user_usec": 1050147,
+              "system_usec": 169285,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 103,
+              "nr_throttled": 3,
+              "throttled_usec": 127436,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 25972736
+          },
+          {
+            "pod": "minio-6c7d8948f7-zfmtb",
+            "container": "minio",
+            "id": "4f2033f391694f3f68de792197d4a3d3f32358dda9808762f72502def170139a",
+            "at": 1791705335.906305,
+            "cpu": {
+              "usage_usec": 4864589,
+              "user_usec": 2901841,
+              "system_usec": 1962748,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 257,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "100000 100000",
+            "memoryBytes": 387768320
+          },
+          {
+            "pod": "identity-5b6598b554-dk6nh",
+            "container": "identity",
+            "id": "88c315695b0ea810e2eb0585cbd845ea57f8a9490dfdc60eb9798fe13fe99d19",
+            "at": 1791705335.9909134,
+            "cpu": {
+              "usage_usec": 34714881,
+              "user_usec": 31708364,
+              "system_usec": 3006516,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1004,
+              "nr_throttled": 9,
+              "throttled_usec": 82887,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 419930112
+          },
+          {
+            "pod": "stun-779977cbdf-rrfnb",
+            "container": "stun",
+            "id": "73a346776573556eea1c69bfd4bb2cfb0be6cad02d35fafd29ec0015c65c61aa",
+            "at": 1791705336.084294,
+            "cpu": {
+              "usage_usec": 1068413,
+              "user_usec": 743006,
+              "system_usec": 325406,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 153,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 21303296
+          },
+          {
+            "pod": "frontend-66bf57f9c-mkck2",
+            "container": "frontend",
+            "id": "b243ae252cfe70ec856c9487d5c3f3f453e2558a8d5a388e4300fdbff9e87955",
+            "at": 1791705336.1578977,
+            "cpu": {
+              "usage_usec": 143112,
+              "user_usec": 63931,
+              "system_usec": 79181,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 83,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 15683584
+          },
+          {
+            "pod": "network-6cc4b896d6-wsmp6",
+            "container": "network",
+            "id": "99ea08f1890ae8e9b0f85a52b13297f0ef7099debc2d889ed07c66eb20c2f19e",
+            "at": 1791705336.232591,
+            "cpu": {
+              "usage_usec": 17706475,
+              "user_usec": 16121163,
+              "system_usec": 1585311,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 607,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 264142848
+          },
+          {
+            "pod": "payments-65d9564f95-mwf7z",
+            "container": "payments",
+            "id": "5e97949cc00b6ea850c2fb17c2cd54550afcb43780d1c87514a09eb536697837",
+            "at": 1791705336.3041544,
+            "cpu": {
+              "usage_usec": 20553275,
+              "user_usec": 18835844,
+              "system_usec": 1717431,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 669,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 264933376
+          },
+          {
+            "pod": "payment-simulator-6b8c96f5c5-bv55k",
+            "container": "payment-simulator",
+            "id": "a6a733e485b57da7ac48a6bcbc90980367872ece7cc58b2255756971c23aed7f",
+            "at": 1791705336.3891656,
+            "cpu": {
+              "usage_usec": 70280,
+              "user_usec": 40845,
+              "system_usec": 29435,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 25,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 14995456
+          },
+          {
+            "pod": "release-simulator-7f5b9f8f96-jtxbq",
+            "container": "release-simulator",
+            "id": "db5f23d59036bbf43228eab20b08de6b18a65c90281d2009ecbddc4227a9a389",
+            "at": 1791705336.4595182,
+            "cpu": {
+              "usage_usec": 544789,
+              "user_usec": 462084,
+              "system_usec": 82704,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 97,
+              "nr_throttled": 1,
+              "throttled_usec": 5780,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 39006208
+          },
+          {
+            "pod": "assets-556cc6678d-6w5pc",
+            "container": "assets",
+            "id": "64a4a2a11fafc0590f3567c62b1d6ee074cba038335ae7c03ed6785d38925e84",
+            "at": 1791705336.5317671,
+            "cpu": {
+              "usage_usec": 20758514,
+              "user_usec": 18962553,
+              "system_usec": 1795961,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 666,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 279658496
+          },
+          {
+            "pod": "help-7f7db8bbf6-6xstj",
+            "container": "help",
+            "id": "4071358ecd42010ab0613c36580466f636e9df7b44be0d39254c7638f5887dde",
+            "at": 1791705336.6178153,
+            "cpu": {
+              "usage_usec": 17904662,
+              "user_usec": 16292303,
+              "system_usec": 1612359,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 601,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 241795072
+          },
+          {
+            "pod": "community-8589cfb764-6vln9",
+            "container": "community",
+            "id": "ec39880b37e12d4b97df0ec31584ec5eec83cced0709ce19f12f7c25e06405aa",
+            "at": 1791705336.6971366,
+            "cpu": {
+              "usage_usec": 32258673,
+              "user_usec": 29608703,
+              "system_usec": 2649969,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 913,
+              "nr_throttled": 6,
+              "throttled_usec": 104361,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 382582784
+          },
+          {
+            "pod": "communication-58bfff85f6-jj865",
+            "container": "communication",
+            "id": "ea84f00c6afa531337d6b91ab369212d2fd6a64c601751ea59f7621cbec04953",
+            "at": 1791705336.7721953,
+            "cpu": {
+              "usage_usec": 33099700,
+              "user_usec": 30265707,
+              "system_usec": 2833993,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 880,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 450416640
+          },
+          {
+            "pod": "mcp-776779bc-8sgbq",
+            "container": "mcp",
+            "id": "512fac4e6ef068a6eab13878a7c22931b28cb1802710c2e877fdb3917b9ca909",
+            "at": 1791705336.838162,
+            "cpu": {
+              "usage_usec": 40371,
+              "user_usec": 15700,
+              "system_usec": 24671,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 18,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 11288576
+          },
+          {
+            "pod": "redis-66d974cbf4-wprq8",
+            "container": "redis",
+            "id": "70c4fbcef364dab8526798e589ea3629928f2ab16ea5e667328a9e7088d7a950",
+            "at": 1791705336.9146235,
+            "cpu": {
+              "usage_usec": 389099,
+              "user_usec": 251574,
+              "system_usec": 137525,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 572,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 16351232
+          }
+        ],
+        "host": {
+          "at": 8268.433374431,
+          "cpuTotal": 9798479,
+          "cpuIdle": 8252205,
+          "logicalCpus": 12,
+          "qemuCpuNs": 287539460000
+        }
+      },
+      "host": {
+        "seconds": 31.928916296999887,
+        "logicalCpus": 12,
+        "busyPercent": 22.22988383811595,
+        "qemuCpuCores": 0.9591808477031728
+      },
+      "deltas": [
+        {
+          "pod": "affinity-75657dbc8-rlxkm",
+          "container": "affinity",
+          "seconds": 31.875650882720947,
+          "cpuCores": 0.1307277148733879,
+          "throttledSeconds": 0.03531,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 321.31640625
+        },
+        {
+          "pod": "mongodb-0",
+          "container": "mongodb",
+          "seconds": 31.919636726379395,
+          "cpuCores": 0.03509983555276767,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 294.14453125
+        },
+        {
+          "pod": "mongodb-1",
+          "container": "mongodb",
+          "seconds": 31.913073778152466,
+          "cpuCores": 0.02120789130827442,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 355.85546875
+        },
+        {
+          "pod": "registry-6f857b4b6-t8dg7",
+          "container": "registry",
+          "seconds": 31.922268390655518,
+          "cpuCores": 0.007706281928010204,
+          "throttledSeconds": 0.127436,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 24.76953125
+        },
+        {
+          "pod": "minio-6c7d8948f7-zfmtb",
+          "container": "minio",
+          "seconds": 31.950071334838867,
+          "cpuCores": 0.0009564297894596269,
+          "throttledSeconds": 0.0,
+          "cpuMax": "100000 100000",
+          "memoryMiB": 369.8046875
+        },
+        {
+          "pod": "identity-5b6598b554-dk6nh",
+          "container": "identity",
+          "seconds": 31.95999503135681,
+          "cpuCores": 0.1035010486314074,
+          "throttledSeconds": 0.006808,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 400.4765625
+        },
+        {
+          "pod": "stun-779977cbdf-rrfnb",
+          "container": "stun",
+          "seconds": 31.982327938079834,
+          "cpuCores": 0.003872951344874388,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 20.31640625
+        },
+        {
+          "pod": "frontend-66bf57f9c-mkck2",
+          "container": "frontend",
+          "seconds": 31.963040351867676,
+          "cpuCores": 0.0006056682902153521,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.95703125
+        },
+        {
+          "pod": "network-6cc4b896d6-wsmp6",
+          "container": "network",
+          "seconds": 31.95691752433777,
+          "cpuCores": 0.01489627401132972,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 251.90625
+        },
+        {
+          "pod": "payments-65d9564f95-mwf7z",
+          "container": "payments",
+          "seconds": 31.926212787628174,
+          "cpuCores": 0.02854923651806287,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 252.66015625
+        },
+        {
+          "pod": "payment-simulator-6b8c96f5c5-bv55k",
+          "container": "payment-simulator",
+          "seconds": 31.941195964813232,
+          "cpuCores": 8.143088952790903e-05,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.30078125
+        },
+        {
+          "pod": "release-simulator-7f5b9f8f96-jtxbq",
+          "container": "release-simulator",
+          "seconds": 31.937861919403076,
+          "cpuCores": 0.0006462235966854524,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 37.19921875
+        },
+        {
+          "pod": "assets-556cc6678d-6w5pc",
+          "container": "assets",
+          "seconds": 31.922643661499023,
+          "cpuCores": 0.009474591240223033,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 266.703125
+        },
+        {
+          "pod": "help-7f7db8bbf6-6xstj",
+          "container": "help",
+          "seconds": 31.923126935958862,
+          "cpuCores": 0.00841349284294141,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 230.59375
+        },
+        {
+          "pod": "community-8589cfb764-6vln9",
+          "container": "community",
+          "seconds": 31.920428037643433,
+          "cpuCores": 0.11533094091528308,
+          "throttledSeconds": 0.036849,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 364.859375
+        },
+        {
+          "pod": "communication-58bfff85f6-jj865",
+          "container": "communication",
+          "seconds": 31.925808668136597,
+          "cpuCores": 0.09603365201708919,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 429.55078125
+        },
+        {
+          "pod": "mcp-776779bc-8sgbq",
+          "container": "mcp",
+          "seconds": 31.926793813705444,
+          "cpuCores": 6.0388149566473334e-05,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 10.765625
+        },
+        {
+          "pod": "redis-66d974cbf4-wprq8",
+          "container": "redis",
+          "seconds": 31.934531450271606,
+          "cpuCores": 0.0032479261567220467,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 15.59375
+        }
+      ]
+    },
+    "settledCpuSample": {
+      "kind": "Second low-load observation after native session warmup; not a matched stress comparison",
+      "host": {
+        "seconds": 31.59805427200081,
+        "logicalCpus": 12,
+        "busyPercent": 15.097000824972717,
+        "qemuCpuCores": 0.6785210828312944
+      },
+      "deltas": [
+        {
+          "pod": "affinity-75657dbc8-rlxkm",
+          "container": "affinity",
+          "seconds": 31.811574935913086,
+          "cpuCores": 0.024730400855188562,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 352.1796875
+        },
+        {
+          "pod": "mongodb-0",
+          "container": "mongodb",
+          "seconds": 31.809377908706665,
+          "cpuCores": 0.027746754511612702,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 311.03515625
+        },
+        {
+          "pod": "mongodb-1",
+          "container": "mongodb",
+          "seconds": 31.78517460823059,
+          "cpuCores": 0.022659494839254366,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 358.7578125
+        },
+        {
+          "pod": "registry-6f857b4b6-t8dg7",
+          "container": "registry",
+          "seconds": 31.76663565635681,
+          "cpuCores": 0.005186605272977018,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 24.72265625
+        },
+        {
+          "pod": "minio-6c7d8948f7-zfmtb",
+          "container": "minio",
+          "seconds": 31.756401300430298,
+          "cpuCores": 0.0010931339376773032,
+          "throttledSeconds": 0.0,
+          "cpuMax": "100000 100000",
+          "memoryMiB": 323.37109375
+        },
+        {
+          "pod": "identity-5b6598b554-dk6nh",
+          "container": "identity",
+          "seconds": 31.729700326919556,
+          "cpuCores": 0.01924597439333226,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 422.80859375
+        },
+        {
+          "pod": "stun-779977cbdf-rrfnb",
+          "container": "stun",
+          "seconds": 31.72680401802063,
+          "cpuCores": 0.004570362647231633,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 20.3203125
+        },
+        {
+          "pod": "frontend-66bf57f9c-mkck2",
+          "container": "frontend",
+          "seconds": 31.729370832443237,
+          "cpuCores": 0.0008202809988714756,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 15.33984375
+        },
+        {
+          "pod": "network-6cc4b896d6-wsmp6",
+          "container": "network",
+          "seconds": 31.69446110725403,
+          "cpuCores": 0.008840061960727704,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 254.546875
+        },
+        {
+          "pod": "payments-65d9564f95-mwf7z",
+          "container": "payments",
+          "seconds": 31.680710315704346,
+          "cpuCores": 0.01700356446026307,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 264.45703125
+        },
+        {
+          "pod": "payment-simulator-6b8c96f5c5-bv55k",
+          "container": "payment-simulator",
+          "seconds": 31.66651463508606,
+          "cpuCores": 0.00017940086130304757,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.5078125
+        },
+        {
+          "pod": "release-simulator-7f5b9f8f96-jtxbq",
+          "container": "release-simulator",
+          "seconds": 31.669071197509766,
+          "cpuCores": 0.001050993879562127,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 37.1953125
+        },
+        {
+          "pod": "assets-556cc6678d-6w5pc",
+          "container": "assets",
+          "seconds": 31.65714740753174,
+          "cpuCores": 0.009384452622200532,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 276.84765625
+        },
+        {
+          "pod": "help-7f7db8bbf6-6xstj",
+          "container": "help",
+          "seconds": 31.603195190429688,
+          "cpuCores": 0.01195031064815776,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 232.55078125
+        },
+        {
+          "pod": "community-8589cfb764-6vln9",
+          "container": "community",
+          "seconds": 31.58777618408203,
+          "cpuCores": 0.02052154593670514,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 379.46875
+        },
+        {
+          "pod": "communication-58bfff85f6-jj865",
+          "container": "communication",
+          "seconds": 31.60333514213562,
+          "cpuCores": 0.03829842624382615,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 444.359375
+        },
+        {
+          "pod": "mcp-776779bc-8sgbq",
+          "container": "mcp",
+          "seconds": 31.599241018295288,
+          "cpuCores": 0.0001249397097137299,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 10.8203125
+        },
+        {
+          "pod": "redis-66d974cbf4-wprq8",
+          "container": "redis",
+          "seconds": 31.59279465675354,
+          "cpuCores": 0.004282685386652767,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 15.60546875
+        }
+      ],
+      "before": {
+        "at": 1791705416.9747462,
+        "containers": [
+          {
+            "pod": "affinity-75657dbc8-rlxkm",
+            "container": "affinity",
+            "id": "97412a0c211bb45006ef6cfe7ac306882c0ac3b52692c86396b204dc79365de3",
+            "at": 1791705415.6159534,
+            "cpu": {
+              "usage_usec": 24192769,
+              "user_usec": 21958897,
+              "system_usec": 2233872,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 950,
+              "nr_throttled": 52,
+              "throttled_usec": 602844,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 368234496
+          },
+          {
+            "pod": "mongodb-0",
+            "container": "mongodb",
+            "id": "ee371a243f94503b3d967511c5f2664d77db9774890edfa551a56cc160389245",
+            "at": 1791705415.6783042,
+            "cpu": {
+              "usage_usec": 7005622,
+              "user_usec": 5288130,
+              "system_usec": 1717492,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1745,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 326131712
+          },
+          {
+            "pod": "mongodb-1",
+            "container": "mongodb",
+            "id": "653e284385cced4868eecc477e4071dc1187397d8450a26f1e3115ba8f1bd224",
+            "at": 1791705415.7635655,
+            "cpu": {
+              "usage_usec": 5310772,
+              "user_usec": 3858748,
+              "system_usec": 1452024,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1637,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 376156160
+          },
+          {
+            "pod": "registry-6f857b4b6-t8dg7",
+            "container": "registry",
+            "id": "53b0ef5c6468bb7fff45fdc3e6d0769aeb69d15e7a87f91303c15f353a6d36ad",
+            "at": 1791705415.8546307,
+            "cpu": {
+              "usage_usec": 1735776,
+              "user_usec": 1529270,
+              "system_usec": 206506,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 139,
+              "nr_throttled": 6,
+              "throttled_usec": 249395,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 26316800
+          },
+          {
+            "pod": "minio-6c7d8948f7-zfmtb",
+            "container": "minio",
+            "id": "4f2033f391694f3f68de792197d4a3d3f32358dda9808762f72502def170139a",
+            "at": 1791705415.9298341,
+            "cpu": {
+              "usage_usec": 5070735,
+              "user_usec": 3004073,
+              "system_usec": 2066661,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 396,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "100000 100000",
+            "memoryBytes": 339079168
+          },
+          {
+            "pod": "identity-5b6598b554-dk6nh",
+            "container": "identity",
+            "id": "88c315695b0ea810e2eb0585cbd845ea57f8a9490dfdc60eb9798fe13fe99d19",
+            "at": 1791705416.0257127,
+            "cpu": {
+              "usage_usec": 39564283,
+              "user_usec": 36119925,
+              "system_usec": 3444358,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1620,
+              "nr_throttled": 9,
+              "throttled_usec": 82887,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 442761216
+          },
+          {
+            "pod": "stun-779977cbdf-rrfnb",
+            "container": "stun",
+            "id": "73a346776573556eea1c69bfd4bb2cfb0be6cad02d35fafd29ec0015c65c61aa",
+            "at": 1791705416.101068,
+            "cpu": {
+              "usage_usec": 1396626,
+              "user_usec": 963280,
+              "system_usec": 433346,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 229,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 21303296
+          },
+          {
+            "pod": "frontend-66bf57f9c-mkck2",
+            "container": "frontend",
+            "id": "b243ae252cfe70ec856c9487d5c3f3f453e2558a8d5a388e4300fdbff9e87955",
+            "at": 1791705416.165545,
+            "cpu": {
+              "usage_usec": 213230,
+              "user_usec": 77530,
+              "system_usec": 135700,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 158,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 16015360
+          },
+          {
+            "pod": "network-6cc4b896d6-wsmp6",
+            "container": "network",
+            "id": "99ea08f1890ae8e9b0f85a52b13297f0ef7099debc2d889ed07c66eb20c2f19e",
+            "at": 1791705416.269202,
+            "cpu": {
+              "usage_usec": 18563750,
+              "user_usec": 16902093,
+              "system_usec": 1661656,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 872,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 265752576
+          },
+          {
+            "pod": "payments-65d9564f95-mwf7z",
+            "container": "payments",
+            "id": "5e97949cc00b6ea850c2fb17c2cd54550afcb43780d1c87514a09eb536697837",
+            "at": 1791705416.3497288,
+            "cpu": {
+              "usage_usec": 22142030,
+              "user_usec": 20270991,
+              "system_usec": 1871039,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 980,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 275976192
+          },
+          {
+            "pod": "payment-simulator-6b8c96f5c5-bv55k",
+            "container": "payment-simulator",
+            "id": "a6a733e485b57da7ac48a6bcbc90980367872ece7cc58b2255756971c23aed7f",
+            "at": 1791705416.42614,
+            "cpu": {
+              "usage_usec": 82058,
+              "user_usec": 46761,
+              "system_usec": 35297,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 41,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 15151104
+          },
+          {
+            "pod": "release-simulator-7f5b9f8f96-jtxbq",
+            "container": "release-simulator",
+            "id": "db5f23d59036bbf43228eab20b08de6b18a65c90281d2009ecbddc4227a9a389",
+            "at": 1791705416.4935734,
+            "cpu": {
+              "usage_usec": 606448,
+              "user_usec": 513857,
+              "system_usec": 92591,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 150,
+              "nr_throttled": 1,
+              "throttled_usec": 5780,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 39006208
+          },
+          {
+            "pod": "assets-556cc6678d-6w5pc",
+            "container": "assets",
+            "id": "64a4a2a11fafc0590f3567c62b1d6ee074cba038335ae7c03ed6785d38925e84",
+            "at": 1791705416.5726888,
+            "cpu": {
+              "usage_usec": 22158866,
+              "user_usec": 20244956,
+              "system_usec": 1913910,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 998,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 289845248
+          },
+          {
+            "pod": "help-7f7db8bbf6-6xstj",
+            "container": "help",
+            "id": "4071358ecd42010ab0613c36580466f636e9df7b44be0d39254c7638f5887dde",
+            "at": 1791705416.6859667,
+            "cpu": {
+              "usage_usec": 18709666,
+              "user_usec": 17002004,
+              "system_usec": 1707662,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 840,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 243499008
+          },
+          {
+            "pod": "community-8589cfb764-6vln9",
+            "container": "community",
+            "id": "ec39880b37e12d4b97df0ec31584ec5eec83cced0709ce19f12f7c25e06405aa",
+            "at": 1791705416.7683783,
+            "cpu": {
+              "usage_usec": 35565901,
+              "user_usec": 32574911,
+              "system_usec": 2990989,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1451,
+              "nr_throttled": 6,
+              "throttled_usec": 104361,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 394657792
+          },
+          {
+            "pod": "communication-58bfff85f6-jj865",
+            "container": "communication",
+            "id": "ea84f00c6afa531337d6b91ab369212d2fd6a64c601751ea59f7621cbec04953",
+            "at": 1791705416.8357835,
+            "cpu": {
+              "usage_usec": 36686360,
+              "user_usec": 33524463,
+              "system_usec": 3161896,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1364,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 463323136
+          },
+          {
+            "pod": "mcp-776779bc-8sgbq",
+            "container": "mcp",
+            "id": "512fac4e6ef068a6eab13878a7c22931b28cb1802710c2e877fdb3917b9ca909",
+            "at": 1791705416.900765,
+            "cpu": {
+              "usage_usec": 47568,
+              "user_usec": 19575,
+              "system_usec": 27992,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 28,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 11296768
+          },
+          {
+            "pod": "redis-66d974cbf4-wprq8",
+            "container": "redis",
+            "id": "70c4fbcef364dab8526798e589ea3629928f2ab16ea5e667328a9e7088d7a950",
+            "at": 1791705416.9746864,
+            "cpu": {
+              "usage_usec": 710010,
+              "user_usec": 457229,
+              "system_usec": 252780,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1093,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 16359424
+          }
+        ],
+        "host": {
+          "at": 8348.481060814,
+          "cpuTotal": 9892875,
+          "cpuIdle": 8334414,
+          "logicalCpus": 12,
+          "qemuCpuNs": 348039665000
+        }
+      },
+      "after": {
+        "at": 1791705448.5675957,
+        "containers": [
+          {
+            "pod": "affinity-75657dbc8-rlxkm",
+            "container": "affinity",
+            "id": "97412a0c211bb45006ef6cfe7ac306882c0ac3b52692c86396b204dc79365de3",
+            "at": 1791705447.4275284,
+            "cpu": {
+              "usage_usec": 24979482,
+              "user_usec": 22667008,
+              "system_usec": 2312474,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1137,
+              "nr_throttled": 52,
+              "throttled_usec": 602844,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 369287168
+          },
+          {
+            "pod": "mongodb-0",
+            "container": "mongodb",
+            "id": "ee371a243f94503b3d967511c5f2664d77db9774890edfa551a56cc160389245",
+            "at": 1791705447.487682,
+            "cpu": {
+              "usage_usec": 7888229,
+              "user_usec": 5986673,
+              "system_usec": 1901555,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 2052,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 326144000
+          },
+          {
+            "pod": "mongodb-1",
+            "container": "mongodb",
+            "id": "653e284385cced4868eecc477e4071dc1187397d8450a26f1e3115ba8f1bd224",
+            "at": 1791705447.5487401,
+            "cpu": {
+              "usage_usec": 6031008,
+              "user_usec": 4412795,
+              "system_usec": 1618213,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1929,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "300000 100000",
+            "memoryBytes": 376184832
+          },
+          {
+            "pod": "registry-6f857b4b6-t8dg7",
+            "container": "registry",
+            "id": "53b0ef5c6468bb7fff45fdc3e6d0769aeb69d15e7a87f91303c15f353a6d36ad",
+            "at": 1791705447.6212664,
+            "cpu": {
+              "usage_usec": 1900537,
+              "user_usec": 1683206,
+              "system_usec": 217331,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 153,
+              "nr_throttled": 7,
+              "throttled_usec": 249395,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 25923584
+          },
+          {
+            "pod": "minio-6c7d8948f7-zfmtb",
+            "container": "minio",
+            "id": "4f2033f391694f3f68de792197d4a3d3f32358dda9808762f72502def170139a",
+            "at": 1791705447.6862354,
+            "cpu": {
+              "usage_usec": 5105449,
+              "user_usec": 3023060,
+              "system_usec": 2082389,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 443,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "100000 100000",
+            "memoryBytes": 339079168
+          },
+          {
+            "pod": "identity-5b6598b554-dk6nh",
+            "container": "identity",
+            "id": "88c315695b0ea810e2eb0585cbd845ea57f8a9490dfdc60eb9798fe13fe99d19",
+            "at": 1791705447.755413,
+            "cpu": {
+              "usage_usec": 40174952,
+              "user_usec": 36666355,
+              "system_usec": 3508596,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1839,
+              "nr_throttled": 9,
+              "throttled_usec": 82887,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 443346944
+          },
+          {
+            "pod": "stun-779977cbdf-rrfnb",
+            "container": "stun",
+            "id": "73a346776573556eea1c69bfd4bb2cfb0be6cad02d35fafd29ec0015c65c61aa",
+            "at": 1791705447.827872,
+            "cpu": {
+              "usage_usec": 1541629,
+              "user_usec": 1052529,
+              "system_usec": 489100,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 267,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 21307392
+          },
+          {
+            "pod": "frontend-66bf57f9c-mkck2",
+            "container": "frontend",
+            "id": "b243ae252cfe70ec856c9487d5c3f3f453e2558a8d5a388e4300fdbff9e87955",
+            "at": 1791705447.8949158,
+            "cpu": {
+              "usage_usec": 239257,
+              "user_usec": 87241,
+              "system_usec": 152016,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 180,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 16084992
+          },
+          {
+            "pod": "network-6cc4b896d6-wsmp6",
+            "container": "network",
+            "id": "99ea08f1890ae8e9b0f85a52b13297f0ef7099debc2d889ed07c66eb20c2f19e",
+            "at": 1791705447.963663,
+            "cpu": {
+              "usage_usec": 18843931,
+              "user_usec": 17144756,
+              "system_usec": 1699175,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 974,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 266911744
+          },
+          {
+            "pod": "payments-65d9564f95-mwf7z",
+            "container": "payments",
+            "id": "5e97949cc00b6ea850c2fb17c2cd54550afcb43780d1c87514a09eb536697837",
+            "at": 1791705448.0304391,
+            "cpu": {
+              "usage_usec": 22680715,
+              "user_usec": 20758882,
+              "system_usec": 1921832,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1105,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 277303296
+          },
+          {
+            "pod": "payment-simulator-6b8c96f5c5-bv55k",
+            "container": "payment-simulator",
+            "id": "a6a733e485b57da7ac48a6bcbc90980367872ece7cc58b2255756971c23aed7f",
+            "at": 1791705448.0926547,
+            "cpu": {
+              "usage_usec": 87739,
+              "user_usec": 50026,
+              "system_usec": 37713,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 49,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 15212544
+          },
+          {
+            "pod": "release-simulator-7f5b9f8f96-jtxbq",
+            "container": "release-simulator",
+            "id": "db5f23d59036bbf43228eab20b08de6b18a65c90281d2009ecbddc4227a9a389",
+            "at": 1791705448.1626446,
+            "cpu": {
+              "usage_usec": 639732,
+              "user_usec": 541424,
+              "system_usec": 98308,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 167,
+              "nr_throttled": 1,
+              "throttled_usec": 5780,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 39002112
+          },
+          {
+            "pod": "assets-556cc6678d-6w5pc",
+            "container": "assets",
+            "id": "64a4a2a11fafc0590f3567c62b1d6ee074cba038335ae7c03ed6785d38925e84",
+            "at": 1791705448.2298362,
+            "cpu": {
+              "usage_usec": 22455951,
+              "user_usec": 20507897,
+              "system_usec": 1948053,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1108,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 290295808
+          },
+          {
+            "pod": "help-7f7db8bbf6-6xstj",
+            "container": "help",
+            "id": "4071358ecd42010ab0613c36580466f636e9df7b44be0d39254c7638f5887dde",
+            "at": 1791705448.289162,
+            "cpu": {
+              "usage_usec": 19087334,
+              "user_usec": 17343851,
+              "system_usec": 1743483,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 927,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 243847168
+          },
+          {
+            "pod": "community-8589cfb764-6vln9",
+            "container": "community",
+            "id": "ec39880b37e12d4b97df0ec31584ec5eec83cced0709ce19f12f7c25e06405aa",
+            "at": 1791705448.3561544,
+            "cpu": {
+              "usage_usec": 36214131,
+              "user_usec": 33133584,
+              "system_usec": 3080546,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1652,
+              "nr_throttled": 6,
+              "throttled_usec": 104361,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 397901824
+          },
+          {
+            "pod": "communication-58bfff85f6-jj865",
+            "container": "communication",
+            "id": "ea84f00c6afa531337d6b91ab369212d2fd6a64c601751ea59f7621cbec04953",
+            "at": 1791705448.4391186,
+            "cpu": {
+              "usage_usec": 37896718,
+              "user_usec": 34621271,
+              "system_usec": 3275446,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1569,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 465944576
+          },
+          {
+            "pod": "mcp-776779bc-8sgbq",
+            "container": "mcp",
+            "id": "512fac4e6ef068a6eab13878a7c22931b28cb1802710c2e877fdb3917b9ca909",
+            "at": 1791705448.500006,
+            "cpu": {
+              "usage_usec": 51516,
+              "user_usec": 20665,
+              "system_usec": 30851,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 32,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "50000 100000",
+            "memoryBytes": 11345920
+          },
+          {
+            "pod": "redis-66d974cbf4-wprq8",
+            "container": "redis",
+            "id": "70c4fbcef364dab8526798e589ea3629928f2ab16ea5e667328a9e7088d7a950",
+            "at": 1791705448.567481,
+            "cpu": {
+              "usage_usec": 845312,
+              "user_usec": 549503,
+              "system_usec": 295809,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 1309,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "cpuMax": "200000 100000",
+            "memoryBytes": 16363520
+          }
+        ],
+        "host": {
+          "at": 8380.079115086,
+          "cpuTotal": 9930452,
+          "cpuIdle": 8366318,
+          "logicalCpus": 12,
+          "qemuCpuNs": 369479611000
+        }
+      }
+    },
+    "pods": [
+      {
+        "pod": "affinity-75657dbc8-rlxkm",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "assets-556cc6678d-6w5pc",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "communication-58bfff85f6-jj865",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "community-8589cfb764-6vln9",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "frontend-66bf57f9c-mkck2",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 5
+          }
+        ]
+      },
+      {
+        "pod": "help-7f7db8bbf6-6xstj",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "identity-5b6598b554-dk6nh",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "mcp-776779bc-8sgbq",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 10
+          }
+        ]
+      },
+      {
+        "pod": "minio-6c7d8948f7-zfmtb",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 18
+          }
+        ]
+      },
+      {
+        "pod": "mongodb-0",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 10
+          }
+        ]
+      },
+      {
+        "pod": "mongodb-1",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 10
+          }
+        ]
+      },
+      {
+        "pod": "network-6cc4b896d6-wsmp6",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "payment-simulator-6b8c96f5c5-bv55k",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 10
+          }
+        ]
+      },
+      {
+        "pod": "payments-65d9564f95-mwf7z",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 1
+          }
+        ]
+      },
+      {
+        "pod": "redis-66d974cbf4-wprq8",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 18
+          }
+        ]
+      },
+      {
+        "pod": "registry-6f857b4b6-t8dg7",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 10
+          }
+        ]
+      },
+      {
+        "pod": "release-simulator-7f5b9f8f96-jtxbq",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 7
+          }
+        ]
+      },
+      {
+        "pod": "stun-779977cbdf-rrfnb",
+        "containers": [
+          {
+            "ready": true,
+            "restarts": 18
+          }
+        ]
+      }
+    ],
+    "measurementCorrection": "An earlier unfinished CPU observation was invalidated by premature VM shutdown. No value from it is used. The VM was restarted and the recorded samples completed before shutdown."
+  },
+  "limitations": [
+    "Low-load samples are not matched stress measurements or proof of general performance parity. The first 0.959-core sample settled to 0.679 cores.",
+    "Community omission, remaining chat/account purge coupling and full optional composition are still pending.",
+    "Template selection was paused at tested component commits while MyScoutee separation is completed."
+  ],
+  "sourceSha256": {
+    "guides/plans/MSC-122_TEMPLATE_EXTRACTION_PLAN.md": "6457877489a71463bd55e25588a26862ca1e869907739a9a1ccf52b9e2b1c80f",
+    "microservices/bootstrap-tests/build.gradle": "bf97532f53159d1c8ef8c9539587fd988d18726fa2b312b8c2a1d792a016717d",
+    "microservices/bootstrap-tests/src/test/java/com/raxim/myscoutee/microservices/transport/affinity/ConfigurationCatalogHttpTest.java": "b0eb835fe0768c7b0445dd7176ccee62e7390ab4bc97e3aed636a6b62a4ab3c8",
+    "microservices/deploy/images.lock.json": "f0750b30e549cc1272bce2839eaed3104515d1a421def71ff8016495674d4862",
+    "microservices/transport/bindings.json": "04ca39a271effbbb2976f5382cf0433d4c04db288dcb0e4dedcef27b1dc9ef8e",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/common/config/PlatformParametersService.java": "939c31c9f8590263a8755a9ff26341d3a0a198fdc4e83ffab9aec67274d3ffd9",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/affinity/api/ConfigurationCatalog.java": "697185de398a1a606bee5d38a905108015faac87352e0c357f3e213a76e6ddb2",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/platform/api/SchedulingParameters.java": "048b4555a512529d777d00bd24c87e864af7f79f8ededf50dd7c6fc8e5eaead5",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/common/config/PlatformParametersServiceTest.java": "a80d5c24238ccc4ad7449729b1d8046251211b8f7367787c281070be7ece16eb",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/DomainServiceBoundaryTest.java": "bf11424fa36abf08257a4b07f91fed40fe2ee5e46e8ffa4d8e7318eec45480a2"
+  },
+  "monolith": {
+    "adminChecks": [
+      {
+        "check": "dashboard accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 125.18
+      },
+      {
+        "check": "help accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 116.52
+      },
+      {
+        "check": "privacy accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 52.43
+      },
+      {
+        "check": "terms accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 60.26
+      },
+      {
+        "check": "explanation accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 87.7
+      },
+      {
+        "check": "notifications accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 86.89
+      },
+      {
+        "check": "params accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 95.47
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 24.35
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 21.81
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 14.08
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 15.04
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 8.72
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 11.91
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 14.06
+      },
+      {
+        "check": "admin session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 12.33
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 10.2
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 11.75
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 8.19
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 10.74
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 10.65
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 8.78
+      },
+      {
+        "check": "member session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      }
+    ],
+    "sessionChecks": [
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "id",
+          "name",
+          "age",
+          "birthday",
+          "city",
+          "height",
+          "physique",
+          "languages",
+          "horoscope",
+          "initials",
+          "gender",
+          "statusText",
+          "hostTier",
+          "traitLabel",
+          "completion",
+          "profileFormVersion",
+          "headline",
+          "about",
+          "affinity",
+          "locationCoordinates",
+          "partitionKey",
+          "images",
+          "profileDetails",
+          "impressions",
+          "profileStatus",
+          "previousProfileStatus",
+          "deletedAtIso",
+          "admin",
+          "operator",
+          "activities",
+          "notificationPreferences",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me/profile-ext",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "profileExt",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides",
+          "workspace",
+          "accountProfile"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "community",
+        "path": "/api/activities/events",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "sortKeys"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "communication",
+        "path": "/api/notifications",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "unreadCount",
+          "muted"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "assets",
+        "path": "/api/assets",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "assembly": "payments",
+        "path": "/api/payment-methods",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "items",
+          "total",
+          "nextCursor",
+          "canAdd",
+          "pendingRegistration",
+          "currentProvider"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "affinity",
+        "path": "/api/activities/rates",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "path": "/api/auth/me/logout",
+        "status": 200,
+        "passed": true
+      }
+    ],
+    "nativeSessionLoginPassed": true,
+    "resources": {
+      "kind": "Low-load observation, not a matched benchmark",
+      "durationSeconds": 30.0998215675354,
+      "environmentRestored": true,
+      "hostBusyPercent": 13.682199938203983,
+      "before": {
+        "at": 1791705892.5643373,
+        "host": [
+          1352204,
+          13311,
+          304066,
+          8744809,
+          35680,
+          0,
+          6162,
+          0,
+          242525,
+          0
+        ],
+        "containers": {
+          "myscoutee": {
+            "cpu": {
+              "usage_usec": 80699810,
+              "user_usec": 76510023,
+              "system_usec": 4189786,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 0,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "memoryBytes": 1846202368
+          },
+          "mongodb": {
+            "cpu": {
+              "usage_usec": 17826706,
+              "user_usec": 14571456,
+              "system_usec": 3255250,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 0,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "memoryBytes": 250183680
+          },
+          "frontend-sync": {
+            "cpu": {
+              "usage_usec": 178824924,
+              "user_usec": 159652235,
+              "system_usec": 19172688,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 0,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "memoryBytes": 4222857216
+          }
+        }
+      },
+      "after": {
+        "at": 1791705922.6641588,
+        "host": [
+          1355867,
+          13311,
+          305258,
+          8775479,
+          35740,
+          0,
+          6178,
+          0,
+          242525,
+          0
+        ],
+        "containers": {
+          "myscoutee": {
+            "cpu": {
+              "usage_usec": 83884150,
+              "user_usec": 78418020,
+              "system_usec": 5466130,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 0,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "memoryBytes": 1848565760
+          },
+          "mongodb": {
+            "cpu": {
+              "usage_usec": 26728181,
+              "user_usec": 21872081,
+              "system_usec": 4856099,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 0,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "memoryBytes": 251379712
+          },
+          "frontend-sync": {
+            "cpu": {
+              "usage_usec": 180465821,
+              "user_usec": 160660992,
+              "system_usec": 19804828,
+              "core_sched.force_idle_usec": 0,
+              "nr_periods": 0,
+              "nr_throttled": 0,
+              "throttled_usec": 0,
+              "nr_bursts": 0,
+              "burst_usec": 0
+            },
+            "memoryBytes": 3574284288
+          }
+        }
+      },
+      "cpuCores": {
+        "myscoutee": 0.10579265371574549,
+        "mongodb": 0.2957318195401136,
+        "frontend-sync": 0.054515173663680895
+      }
+    },
+    "recentBackendErrorLines": 0,
+    "originalEnvironmentRestored": true
+  }
+}
