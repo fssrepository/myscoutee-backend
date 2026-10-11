@@ -320,7 +320,7 @@ def monitoring_snapshot():
 def observe_snapshot():
     """Collect first, then repaint once; slow SSH must not blank the screen."""
     global _vm_observation
-    lines = ['MyScoutee MSC-121 | ' + time.strftime('%Y-%m-%d %H:%M:%S %Z'),
+    lines = ['MyScoutee | ' + time.strftime('%Y-%m-%d %H:%M:%S %Z'),
              'App :18080  |  Grafana :13000  |  Prometheus :19090  (localhost)',
              '']
     memory = dict(line.split(':', 1) for line in Path('/proc/meminfo').read_text().splitlines())
