@@ -3,7 +3,7 @@ import { createHttpClient } from './http.mjs';
 
 // Opt-in runner authentication for a production-style DEMO deployment. The
 // collection requests/assertions remain unchanged; only owned sessions are used.
-export function nativeDemoSessions(baseUrl) {
+export function nativeDemoSessions(baseUrl, { apiPrefix = '/api' } = {}) {
   const raw = createHttpClient({ baseUrl });
   const sessions = new Map();
   async function login(userId) {
@@ -13,7 +13,7 @@ export function nativeDemoSessions(baseUrl) {
           'X-App-Session-Kind': 'demo', 'X-Demo-User-Id': userId,
           'X-App-Session-Id': `session:${randomUUID()}`
         };
-        const result = await raw.post('/api/auth/session/login', {
+        const result = await raw.post(`${apiPrefix}/auth/session/login`, {
           headers, json: { provider: 'demo', attemptId: `attempt:${randomUUID()}` }
         });
         if (result.data?.accepted !== true) throw new Error(`Native DEMO login rejected: ${result.data?.outcome}`);
@@ -25,7 +25,7 @@ export function nativeDemoSessions(baseUrl) {
   }
   return {
     async prepare(adminUserId, preferredUserId) {
-      const result = await raw.get('/api/auth/demo-users');
+      const result = await raw.get(`${apiPrefix}/auth/demo-users`);
       const actor = preferredUserId ?? result.data.find(user => !user.deletedAtIso && user.profileStatus !== 'deleted')?.id;
       if (!actor) throw new Error('No native DEMO actor available');
       await login(actor);
@@ -47,7 +47,7 @@ export function nativeDemoSessions(baseUrl) {
         let headers;
         try { headers = await pending; } catch { continue; }
         try {
-          const result = await raw.post('/api/auth/me/logout', { headers, json: { userId } });
+          const result = await raw.post(`${apiPrefix}/auth/me/logout`, { headers, json: { userId } });
           if (result.data?.submitted !== true) throw new Error('Owned session logout not submitted');
         } catch (error) { errors.push(error); }
       }
