@@ -180,8 +180,10 @@ wait_for_initial_build_output() {
       wait "${build_pid}"
     fi
 
+    # Angular can announce completion before its output files reach disk.
     if grep -q 'Application bundle generation complete\.' "${BUILD_LOG_FILE}" \
-      && grep -q 'Watch mode enabled\. Watching for file changes' "${BUILD_LOG_FILE}"; then
+      && grep -q 'Watch mode enabled\. Watching for file changes' "${BUILD_LOG_FILE}" \
+      && [[ -f "${BUILD_OUTPUT_DIR}/index.html" ]]; then
       break
     fi
 
