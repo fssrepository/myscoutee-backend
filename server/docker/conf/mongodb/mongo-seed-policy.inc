@@ -351,6 +351,17 @@ ensure_collection_indexes() {
   local collection_name="$2"
 
   case "${collection_name}" in
+    accountDeletionWarnings)
+      mongosh \
+        --host "${mongo_host}" \
+        --port "${mongo_port}" \
+        --username "${mongo_username}" \
+        --password "${mongo_password}" \
+        --authenticationDatabase "${target_db}" \
+        --quiet \
+        "${target_db}" \
+        --eval "db.getCollection('accountDeletionWarnings').createIndex({ userId: 1 }, { name: 'account_warning_user' });" >/dev/null
+      ;;
     integrationTokens|mcpOAuthClients|mcpAuthorizations|mcpEventSubscriptions|integrationWebhookDeliveries)
       mongosh \
         --host "${mongo_host}" \
@@ -1069,6 +1080,7 @@ ensure_runtime_indexes() {
 
   # One invocation creates all integration indexes; no seed data.
   ensure_collection_indexes "${target_db}" "integrationTokens"
+  ensure_collection_indexes "${target_db}" "accountDeletionWarnings"
   ensure_collection_indexes "${target_db}" "operatorRegistryEndpoints"
   ensure_collection_indexes "${target_db}" "paymentProviders"
   ensure_collection_indexes "${target_db}" "communityProviders"

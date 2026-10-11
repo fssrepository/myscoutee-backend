@@ -514,6 +514,7 @@ public class DeletedAccountPurgeService {
         deleteDocumentsByAnyField("userPageFilterPreferences", List.of("userId"), userId);
         integrationPrivacy.purgeParticipantData(userId);
         deleteDocumentsByAnyField("privacyConsents", List.of("userId"), userId);
+        deleteDocumentsByAnyField("accountDeletionWarnings", List.of("userId"), userId);
         runProductCleanup(Action.CONTENT_FEEDBACK, context);
         runProductCleanup(Action.CONTENT_REPORTS, context);
         deleteDocumentsByAnyField("userSessionActions", List.of("userId", "createdUser", "updatedUser"), userId);

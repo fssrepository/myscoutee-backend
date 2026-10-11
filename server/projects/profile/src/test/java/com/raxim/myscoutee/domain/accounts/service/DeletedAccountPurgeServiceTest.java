@@ -274,6 +274,9 @@ class DeletedAccountPurgeServiceTest {
         order.verify(chat).purgeUserChatActivity("minimal-user");
         order.verify(users).delete(user);
         verify(mongo).remove(any(org.springframework.data.mongodb.core.query.Query.class), eq("privacyConsents"));
+        verify(mongo).remove(argThat((org.springframework.data.mongodb.core.query.Query query) ->
+                query.getQueryObject().equals(new org.bson.Document("$or", List.of(
+                        new org.bson.Document("userId", "minimal-user"))))), eq("accountDeletionWarnings"));
         verify(mongo).remove(any(org.springframework.data.mongodb.core.query.Query.class), eq("userNotifications"));
         verify(jobs, atLeastOnce()).save(argThat(job -> AccountPurgeJob.STATUS_COMPLETED.equals(job.getStatus())));
     }

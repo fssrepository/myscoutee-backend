@@ -158,3 +158,11 @@ old index replacement, independent scopes, custom/inactive/colliding/newer
 revisions and retained unrelated data. `migration-chain-test.py` verifies that
 the complete ordered chain ends with v5, including installations with earlier
 migration receipts. Both use isolated databases on the existing test runtime.
+
+## 014 — account deletion-warning cleanup index
+
+Ensure `accountDeletionWarnings.userId` (`account_warning_user`) for the existing
+account purge worker. All warning records remain unchanged during migration;
+the worker deletes only the permanently removed account's records. The same
+index is declared for fresh databases and retained dev/seed imports. Existing
+retry and stale-claim index definitions are unchanged.

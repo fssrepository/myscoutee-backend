@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-11",
+  "status": "Focused tests and real Mongo index/ownership check PASS; source KVM and monolith runtime checks PENDING",
+  "sourceBaseRevision": "f67099b27de856c93c638759551e7dfa53cf8898",
+  "files": {
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java": "680a5e01ffc19d44865bf6a0bdbef6b3c4372bb413c16b64f2c527e5b3e2dc18",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeServiceTest.java": "706bd68fbba29882abf0f38680309366cfc5a5133e369fc2eb3d223b87f20c9f",
+    "server/docker/conf/mongodb/db_init.js": "0088d14b5968ab50a8e60d40f9493cac02096570b78e36c1886b21a0ae0a0c3c",
+    "server/docker/conf/mongodb/mongo-seed-policy.inc": "6fb1d484a31099f6b86c01aa2fcf0ede0496f3efc361321e0015779ec31a20e9",
+    "packaging/migrations/014-account-warning-purge-index.js": "4ff485b8709075c1b77b60c7d8617c464fb315ae2ccda3a235f67957a0a884ad"
+  },
+  "change": "The existing permanent-account purge removes accountDeletionWarnings by userId. The new Mongo-owned userId index supports this bounded lookup; existing retry/stale-claim definitions remain unchanged. No grace period, warning window or chat behavior changed.",
+  "validation": {
+    "standardJUnit": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "command": "tools/run-backend-junit.sh standard --tests '*DeletedAccountPurgeServiceTest'"
+    },
+    "mongoMigration": {
+      "environment": "Mongo 8.0.4, isolated temporary database in template E2E Mongo, deleted after check",
+      "appliedTwice": true,
+      "retainedRecords": 202,
+      "lookupBefore": {
+        "documentsExamined": 202,
+        "keysExamined": 0
+      },
+      "lookupAfter": {
+        "documentsExamined": 2,
+        "keysExamined": 2
+      },
+      "removedTargetRecords": 2,
+      "otherOwnersPreserved": 200
+    },
+    "templatePersistenceRegression": {
+      "tests": 1,
+      "result": "PASS",
+      "covers": "actual purge, retry after reconstruction, selected-user warning cleanup, other-user preservation"
+    }
+  },
+  "performance": "The added query runs only in permanent account purge. Indexed lookup examined exactly two matching records in this dataset. This is not matched throughput/CPU parity evidence.",
+  "remaining": [
+    "Repackage identity and verify the source change on KVM, then the source monolith, serially.",
+    "Template KVM and installed upgrade remain separate pending gates."
+  ]
+}

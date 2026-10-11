@@ -34,6 +34,7 @@ const requiredCollections = [
   'helpCenterGuideFields',
   'helpCenterAudit',
   'privacyConsents',
+  'accountDeletionWarnings',
   'userExperienceProfiles',
   'navigatorContacts',
   'countryPartitions',
@@ -69,6 +70,8 @@ Array.from(new Set(configuredDatabases)).forEach(databaseName => {
       portalDb.createCollection(collectionName);
     }
   });
+
+  portalDb.accountDeletionWarnings.createIndex({ userId: 1 }, { name: 'account_warning_user' });
 
   portalDb.countryPartitions.createIndex(
     { partitionKey: 1 },
