@@ -216,6 +216,7 @@ services:
     environment:
       MYSCOUTEE_RUNTIME_UID: "${UID:-1000}"
       MYSCOUTEE_RUNTIME_GID: "${GID:-1000}"
+      MYSCOUTEE_RUNTIME_DIRECTORIES: "configuration registry-demo-keys registry-demo-state release-simulator"
     volumes:
       - ./data:/workspace/data
       - ./docker/scripts/prepare_dev_runtime_directories.sh:/prepare-runtime-directories.sh:ro
