@@ -33,19 +33,19 @@ public class FacebookDataDeletionService {
     private final RuntimeConfiguration configProperties;
     private final EmailLinks emailProperties;
     private final UsersRepository usersRepository;
-    private final HomeUserProfileService homeUserProfileService;
+    private final AccountLifecycleService lifecycle;
     private final ObjectMapper objectMapper;
 
     public FacebookDataDeletionService(
             RuntimeConfiguration configProperties,
             EmailLinks emailProperties,
             UsersRepository usersRepository,
-            HomeUserProfileService homeUserProfileService,
+            AccountLifecycleService lifecycle,
             ObjectMapper objectMapper) {
         this.configProperties = configProperties;
         this.emailProperties = emailProperties;
         this.usersRepository = usersRepository;
-        this.homeUserProfileService = homeUserProfileService;
+        this.lifecycle = lifecycle;
         this.objectMapper = objectMapper;
     }
 
@@ -56,7 +56,7 @@ public class FacebookDataDeletionService {
         Optional<Users> userByFacebookId = usersRepository.findFirstByFacebookId(facebookUserId);
         Users user = userByFacebookId == null ? null : userByFacebookId.orElse(null);
         if (user != null && StringUtils.hasText(user.getId())) {
-            homeUserProfileService.scheduleUserDeletionByUserId(user.getId(), "facebook-data-deletion");
+            lifecycle.scheduleUserDeletionByUserId(user.getId(), "facebook-data-deletion");
         }
         return new FacebookDataDeletionResponseDto(statusUrl(confirmationCode), confirmationCode);
     }

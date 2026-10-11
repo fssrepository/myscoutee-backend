@@ -64,6 +64,11 @@ def main():
             status, value, elapsed = read(path, headers)
             record(name, status == 200 and isinstance(value, dict) and all(field in value for field in fields),
                    status, elapsed)
+        status, value, elapsed = read('/api/auth/eligibility?latitude=47.5&longitude=19.0', headers)
+        record('account region eligibility', status == 200 and isinstance(value, dict)
+               and isinstance(value.get('eligible'), bool), status, elapsed)
+        status, _, elapsed = read('/api/auth/eligibility?latitude=91&longitude=19.0', headers)
+        record('invalid coordinates rejected before lookup', status == 400, status, elapsed)
         chat_id = next((row.get('id') for row in chat_records if isinstance(row, dict) and row.get('id')), None)
         if chat_id is None:
             record('existing chat required for header counter check', False)

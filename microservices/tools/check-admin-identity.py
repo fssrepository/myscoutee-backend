@@ -61,11 +61,23 @@ def main():
             record(route + (' accepted' if expected == 200 else ' denied'), status, valid,
                    round((time.monotonic() - started) * 1000, 2))
 
+    def api_settings(headers, expected):
+        started = time.monotonic()
+        status, body = session.request('/api/admin/client-api/settings', headers)
+        valid = status == expected
+        if expected == 200:
+            valid = valid and isinstance(body, dict) and body.get('baseUrl') == '/api/admin-client/v1' \
+                and isinstance(body.get('tokens'), list) and isinstance(body.get('mcp'), dict) \
+                and isinstance(body.get('accessRevision'), int)
+        record('administrator API settings' + (' accepted' if expected == 200 else ' denied'),
+               status, valid, round((time.monotonic() - started) * 1000, 2))
+
     try:
         admin, headers = session.start_session('admin-demo-ava')
         try:
             reads(admin, headers, 200)
             reads('msc122-missing-admin-profile', headers, 403)
+            api_settings(headers, 200)
         finally:
             status, revoked = session.end_session(admin, headers)
             record('admin session revoked', status, revoked)
@@ -73,6 +85,7 @@ def main():
         member, headers = session.start_session()
         try:
             reads(admin, headers, 403)
+            api_settings(headers, 403)
         finally:
             status, revoked = session.end_session(member, headers)
             record('member session revoked', status, revoked)

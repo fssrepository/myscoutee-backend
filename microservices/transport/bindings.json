@@ -2398,6 +2398,9 @@
     {
       "domain": "payments",
       "api": "Affiliates",
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.integrations.api.IntegrationAccountSummaries"
+      ],
       "package": "payments",
       "configuration": "Affiliates",
       "propertyPrefix": "affiliates",

@@ -2,10 +2,39 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **141**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **142**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
 
+
+## MSC-122 account operations and API settings — 2026-10-11
+
+Account logout/deletion initiation and location/region operations are independent
+of the product profile reader. The existing operations, owner reads, targeted
+writes, purge counters, audit order and post-response demo cache eviction are
+preserved. Facebook deletion uses the same account lifecycle owner. Shared status
+interpretation does not change persisted fields. API/MCP settings accept an
+optional business-summary owner; full MyScoutee still uses its existing affiliate
+calls, while administrator settings still skip them.
+
+**173 focused canonical JUnit tests**, all eight service artifacts/images and
+ownership audits passed. KVM Helm **142** and the serial monolith each passed
+**55 runtime assertions**, now including region eligibility, invalid-coordinate
+rejection and administrator API settings allow/deny. The original dev environment
+is restored and healthy; KVM is stopped. Unchanged transport suites were not
+repeated for the inherited API alias.
+
+KVM used **0.667 CPU cores** versus **0.807** previously. Monolith backend used
+**0.1465** versus **0.1207**; Mongo used **0.0587** versus **0.0596**. Both increases
+and decreases are recorded, with no sampled throttling/replacement or settled
+backend errors. These are low-load observations, not proof of load-performance
+parity. [Evidence](../guides/qualification/evidence/MSC122_ACCOUNT_OPERATIONS_20261011.json)
+contains exact source hashes, source-method comparisons and runtime timings.
+
+The shared source preparations for resuming template composition are qualified.
+The template keeps its already selected small profile DTO/mapper; the full
+product profile presentation remains in MyScoutee. Standalone template startup,
+minimal seed, frontend and deployment remain the next implementation work.
 
 ## MSC-122 generic chat and product conversations — 2026-10-11
 

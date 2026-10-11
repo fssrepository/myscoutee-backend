@@ -115,6 +115,19 @@ class DomainServiceBoundaryTest {
     }
 
     @org.junit.jupiter.api.Test
+    void accountLifecycleLocationAndApiSettingsDoNotRequireProductOwners() throws Exception {
+        for (String type : List.of("accounts/service/AccountLifecycleService", "accounts/service/AccountLocationService",
+                "accounts/service/ProfileStatusValues", "integrations/service/IntegrationSettingsService")) {
+            var resource = new org.springframework.core.io.ClassPathResource(DOMAIN + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).as(type).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "campaigns/", DOMAIN + "assets/", DOMAIN + "groups/", DOMAIN + "affinity/", DOMAIN + "payments/",
+                        DOMAIN + "accounts/service/HomeUserProfileService");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
     void genericChatDoesNotRequireProductServiceContracts() throws Exception {
         for (String type : List.of("chat/service/ChatService", "chat/service/ChatWebSocketSessionRegistry",
                 "chat/service/ChatRecordContext", "chat/mapper/ChatMessageMapper", "access/security/ChatPolicyFacts")) {

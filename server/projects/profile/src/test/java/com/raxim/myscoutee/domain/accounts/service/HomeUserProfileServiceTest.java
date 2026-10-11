@@ -169,20 +169,25 @@ class HomeUserProfileServiceTest {
                 new com.raxim.myscoutee.domain.events.service.FeedbackDirectoryService(eventFeedbackAnswersRepository),
                 new com.raxim.myscoutee.domain.content.service.UserFeedbackService(userFeedbackSubmissionsRepository),
                 new com.raxim.myscoutee.domain.content.service.CommunityReportService(userReportSubmissionsRepository, adminTelemetryService),
-                userSessionActionsRepository,
                 scheduledMessageTaskService,
-                countryPartitionService,
-                regionSecurityProperties,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
                 adminTelemetryService,
                 adminMenuCounterService,
                 accessControlService,
                 assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "profileStatusWork",
-                new ProfileStatusWork(usersRepository, org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class), java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "menuCounters",
-                new ProfileMenuCountersService(usersRepository, new SelectedProfileService(usersRepository), java.util.Optional.empty()));
+        var counters = new ProfileMenuCountersService(usersRepository, new SelectedProfileService(usersRepository), java.util.Optional.empty());
+        var lifecycle = new AccountLifecycleService(usersRepository, userSessionActionsRepository,
+                new SelectedProfileService(usersRepository),
+                new ProfileStatusWork(usersRepository, org.mockito.Mockito.mock(org.springframework.data.mongodb.core.MongoTemplate.class),
+                        java.util.List.of(affinityRecomputeTaskService::enqueueAdminStatusChanged), null),
+                accessControlService, adminTelemetryService, new ProfileReadStateService(counters, java.util.List.of(service)),
+                org.mockito.Mockito.mock(com.raxim.myscoutee.domain.platform.api.JobAudience.class), java.util.Optional.empty());
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "lifecycle", lifecycle);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "locations", new AccountLocationService(
+                usersRepository, new SelectedProfileService(usersRepository), accessControlService,
+                countryPartitionService, regionSecurityProperties, new ProfileReadStateService(counters, java.util.List.of(service))));
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "menuCounters", counters);
         service.setNotificationCatalog(notificationCatalog);
         lenient().when(notificationCatalog.countUnread("active"))
                 .thenReturn(17L);

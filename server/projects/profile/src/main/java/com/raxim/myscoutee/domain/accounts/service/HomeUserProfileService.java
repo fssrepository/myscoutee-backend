@@ -1,6 +1,9 @@
 package com.raxim.myscoutee.domain.accounts.service;
 
 import static com.raxim.myscoutee.domain.accounts.service.AccountCounterMapper.*;
+import static com.raxim.myscoutee.domain.accounts.service.ProfileStatusValues.*;
+import static com.raxim.myscoutee.domain.accounts.service.AccountLocationService.toLocationCoordinatesDto;
+import static com.raxim.myscoutee.domain.accounts.service.AccountLocationService.toLocationCoordinatesRecord;
 
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
@@ -15,9 +18,6 @@ import com.raxim.myscoutee.domain.content.api.ContentRegistration;
 import com.raxim.myscoutee.domain.email.api.UserActivityScheduling;
 import com.raxim.myscoutee.domain.payments.api.AffiliateRegistrations;
 import com.raxim.myscoutee.domain.payments.api.PaymentMethods;
-import com.raxim.myscoutee.domain.platform.api.CountryDirectory;
-import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
-import com.raxim.myscoutee.domain.platform.api.JobAudience;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -48,7 +48,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.accounts.security.firebase.DevelopmentIdentityEmail;
 import com.raxim.myscoutee.domain.accounts.security.firebase.dto.FirebasePrincipal;
-import com.raxim.myscoutee.domain.access.api.RegionSecurity;
 import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
 import com.raxim.myscoutee.domain.events.api.EventHomeReads.Event;
 import static com.raxim.myscoutee.domain.events.api.EventOwnership.Event.STATUS_ACTIVE;
@@ -59,9 +58,7 @@ import com.raxim.myscoutee.domain.accounts.document.UserExperienceProfile;
 import com.raxim.myscoutee.domain.affinity.api.EdgeView;
 import com.raxim.myscoutee.domain.accounts.document.UserFriendship;
 import com.raxim.myscoutee.domain.affinity.api.RatingView;
-import com.raxim.myscoutee.domain.accounts.document.UserSessionAction;
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.notifications.api.NotificationJobs;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserActivitiesDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserAssetCountersDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserByIdResponseDto;
@@ -105,7 +102,6 @@ import com.raxim.myscoutee.domain.affinity.api.EdgeDirectory;
 import com.raxim.myscoutee.domain.accounts.repository.UserFriendshipsRepository;
 import com.raxim.myscoutee.domain.affinity.api.RatingDirectory;
 import com.raxim.myscoutee.domain.content.api.UserReports;
-import com.raxim.myscoutee.domain.accounts.repository.UserSessionActionsRepository;
 import com.raxim.myscoutee.domain.notifications.api.NotificationCatalog;
 import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
@@ -113,19 +109,12 @@ import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 @Service
 public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
         ProfileReadCache,
-        com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards,
-        com.raxim.myscoutee.domain.accounts.api.LocationEligibility {
-    @org.springframework.beans.factory.annotation.Autowired
-    private JobAudience jobGroupScope;
+        com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards {
 
     private static final List<String> HOME_GAME_PROFILE_STATUSES = List.of("public", "friends only");
     private static final Set<String> INSIDE_NETWORK_GAME_PROFILE_STATUSES = Set.of("public", "friends only");
-    private static final String PROFILE_STATUS_ONBOARDING = "onboarding";
     private static final Set<String> HARD_HIDDEN_PROFILE_STATUSES = Set.of("blocked", "inactive", "deleted", PROFILE_STATUS_ONBOARDING);
     private static final long EVENT_FEEDBACK_UNLOCK_DELAY_MS = 2L * 60L * 60L * 1000L;
-    private static final String DEFAULT_SEED_PARTITION_KEY = "country:hu";
-    private static final String SEED_USER_IMAGE_HOST = "randomuser.me/";
-    private static final String INELIGIBLE_REGION_MESSAGE = "Login is currently unavailable from your country or region for security reasons. Please come back later.";
     private static final String OWNER_TYPE_EVENT = "event";
     private static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
     private static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
@@ -231,7 +220,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final SelectedProfileService selectedProfile;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
-    @org.springframework.beans.factory.annotation.Autowired private ProfileStatusWork profileStatusWork;
+    @org.springframework.beans.factory.annotation.Autowired private AccountLifecycleService lifecycle;
+    @org.springframework.beans.factory.annotation.Autowired private AccountLocationService locations;
     private final EdgeDirectory userAffinityEdgesRepository;
     private final UserFriendshipsRepository userFriendshipsRepository;
     private final RatingDirectory userRatesRepository;
@@ -241,10 +231,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final FeedbackDirectory eventFeedbackAnswersRepository;
     private final UserFeedback userFeedbackSubmissionsRepository;
     private final UserReports userReportSubmissionsRepository;
-    private final UserSessionActionsRepository userSessionActionsRepository;
     private final UserActivityScheduling scheduledMessageTaskService;
-    private final CountryDirectory countryPartitionService;
-    private final RegionSecurity regionSecurityProperties;
     private final UserAffinityScores absoluteAffinityService;
     private final UserAffinityChanges affinityRecomputeTaskService;
     private final OperationalTelemetry adminTelemetryService;
@@ -252,7 +239,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     private final AccessPermissions accessControlService;
     private final TicketReads assetsService;
     private final AffiliateRegistrations affiliateService;
-    private NotificationJobs notificationRuleRegistryService;
     private com.raxim.myscoutee.domain.notifications.api.RoleNotifications roleNotifications;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -302,10 +288,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             FeedbackDirectory eventFeedbackAnswersRepository,
             UserFeedback userFeedbackSubmissionsRepository,
             UserReports userReportSubmissionsRepository,
-            UserSessionActionsRepository userSessionActionsRepository,
             UserActivityScheduling scheduledMessageTaskService,
-            CountryDirectory countryPartitionService,
-            RegionSecurity regionSecurityProperties,
             UserAffinityScores absoluteAffinityService,
             UserAffinityChanges affinityRecomputeTaskService,
             OperationalTelemetry adminTelemetryService,
@@ -328,10 +311,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.eventFeedbackAnswersRepository = eventFeedbackAnswersRepository;
         this.userFeedbackSubmissionsRepository = userFeedbackSubmissionsRepository;
         this.userReportSubmissionsRepository = userReportSubmissionsRepository;
-        this.userSessionActionsRepository = userSessionActionsRepository;
         this.scheduledMessageTaskService = scheduledMessageTaskService;
-        this.countryPartitionService = countryPartitionService;
-        this.regionSecurityProperties = regionSecurityProperties;
         this.absoluteAffinityService = absoluteAffinityService;
         this.affinityRecomputeTaskService = affinityRecomputeTaskService;
         this.adminTelemetryService = adminTelemetryService;
@@ -339,11 +319,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         this.accessControlService = accessControlService;
         this.assetsService = assetsService;
         this.affiliateService = affiliateService;
-    }
-
-    @Autowired(required = false)
-    void setNotificationRuleRegistryService(NotificationJobs notificationRuleRegistryService) {
-        this.notificationRuleRegistryService = notificationRuleRegistryService;
     }
 
     @Autowired(required = false)
@@ -413,54 +388,8 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     // Initial avatar persistence changes the selector's location-required badge too.
     @CacheEvict(value = "demo_users", allEntries = true, condition = "#latitude != null || #longitude != null")
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId, Double latitude, Double longitude) {
-        if (latitude != null || longitude != null) {
-            if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)
-                    || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid location coordinates.");
-            }
-            Users selected = resolveCurrentUser(requestedUserId);
-            if (selected == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found.");
-            if (!accessControlService.canCurrentActorEditProfile(selected.getUserId())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to edit this profile.");
-            }
-            var coordinates = new LocationCoordinatesDto(latitude, longitude);
-            Users account = StringUtils.hasText(selected.getAccountUserId())
-                    ? usersRepository.findByUserId(selected.getAccountUserId()).orElseThrow(
-                            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found.")) : selected;
-            String resolvedPartition = countryPartitionService.resolvePartitionKey(coordinates, account.getPartitionKey());
-            if (regionSecurityProperties.isEnabled() && !StringUtils.hasText(resolvedPartition)) {
-                // Discard an unsupported pending sample, not the already admitted profile load.
-                if (account.getLocationCoordinates() != null) return loadProfileExtById(requestedUserId);
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-            }
-            // Resolve the point once for the account and group profile, before either field update.
-            String accountPartition = resolveStoredPartitionKey(resolvedPartition, account.getPartitionKey(), account);
-            String selectedPartition = account == selected ? accountPartition
-                    : resolveStoredPartitionKey(resolvedPartition, selected.getPartitionKey(), selected);
-            persistLoadedLocation(account, coordinates, accountPartition);
-            if (account != selected) persistLoadedLocation(selected, coordinates, selectedPartition);
-        }
+        locations.updateLoadedLocation(requestedUserId, latitude, longitude);
         return loadProfileExtById(requestedUserId);
-    }
-
-    private void persistLoadedLocation(Users user, LocationCoordinatesDto coordinates, String partition) {
-        var record = toLocationCoordinatesRecord(coordinates);
-        usersRepository.updateLocation(user.getUserId(), record, partition);
-        user.setLocationCoordinates(record);
-        user.setPartitionKey(partition);
-        evictUserReadCaches(user.getUserId());
-    }
-
-    private String validatedLocationPartition(Users current, LocationCoordinatesDto coordinates) {
-        String resolved = countryPartitionService.resolvePartitionKey(coordinates, current == null ? null : current.getPartitionKey());
-        String stored = current == null ? null : current.getPartitionKey();
-        boolean retainsStored = StringUtils.hasText(stored)
-                && sameLocation(coordinates, current.getLocationCoordinates());
-        if (regionSecurityProperties.isEnabled() && coordinates != null
-                && !StringUtils.hasText(resolved) && !retainsStored) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INELIGIBLE_REGION_MESSAGE);
-        }
-        return resolveStoredPartitionKey(resolved, stored, current);
     }
 
     public ProfileExtByIdResponseDto loadProfileExtById(String requestedUserId) {
@@ -638,22 +567,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     public UserLocationEligibilityResponseDto queryLocationEligibility(Double latitude, Double longitude) {
-        if (!regionSecurityProperties.isEnabled()) {
-            return new UserLocationEligibilityResponseDto(true, null, null, false, false);
-        }
-
-        if (latitude == null || longitude == null || !Double.isFinite(latitude) || !Double.isFinite(longitude)) {
-            return new UserLocationEligibilityResponseDto(false, null, null, true, true);
-        }
-
-        LocationCoordinatesDto coordinates = new LocationCoordinatesDto(latitude, longitude);
-        String partitionKey = countryPartitionService.resolvePartitionKey(coordinates);
-        return new UserLocationEligibilityResponseDto(
-                StringUtils.hasText(partitionKey),
-                partitionKey,
-                StringUtils.hasText(partitionKey) ? null : INELIGIBLE_REGION_MESSAGE,
-                true,
-                false);
+        return locations.queryLocationEligibility(latitude, longitude);
     }
 
     public UserGameFilterPreferencesDto resolveFilterPreferences(String requestedUserId) {
@@ -731,7 +645,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             persistUserFilterPreferences(normalizedUserId, buildDefaultFilterPreferences(saved));
         }
         if (wasTrackedForAccountPurge != shouldTrackForAccountPurge) {
-            adjustAccountPurgePendingCount(saved.getUserId(), shouldTrackForAccountPurge ? 1 : -1);
+            lifecycle.adjustAccountPurgePendingCount(saved.getUserId(), shouldTrackForAccountPurge ? 1 : -1);
         }
         Users resolved = syncCurrentUserEmail(syncComputedUserPartition(saved));
         evictUserReadCaches(normalizedUserId);
@@ -864,55 +778,15 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     public UserSubmitActionResponseDto logout(UserLogoutRequestDto request) {
-        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
-        if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserSubmitActionResponseDto(false, "Unable to logout.");
-        }
-        recordSessionAction(resolvedUserId, "logout", "session");
-        return new UserSubmitActionResponseDto(true, null);
+        return lifecycle.logout(request);
     }
 
-    @CacheEvict(value = "demo_users", allEntries = true)
     public UserSubmitActionResponseDto deleteUser(UserDeleteRequestDto request) {
-        String resolvedUserId = resolveSelectedUserId(request == null ? null : request.userId());
-        if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
-        }
-        if (!accessControlService.canCurrentActorDeleteProfile(resolvedUserId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to delete this profile.");
-        }
-        return scheduleUserDeletionByUserId(resolvedUserId, "status:D");
+        return lifecycle.deleteUser(request);
     }
 
-    @CacheEvict(value = "demo_users", allEntries = true)
     public UserSubmitActionResponseDto scheduleUserDeletionByUserId(String userId, String source) {
-        String resolvedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(resolvedUserId)) {
-            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
-        }
-
-        Users user = usersRepository.findByUserId(resolvedUserId)
-                .or(() -> usersRepository.findById(resolvedUserId))
-                .orElse(null);
-        if (user == null) {
-            return new UserSubmitActionResponseDto(false, "Unable to delete user.");
-        }
-
-        String previousProfileStatus = resolveProfileStatus(user);
-        boolean newlyTrackedForPurge = !Boolean.TRUE.equals(user.getAccountPurgePendingCounterTracked());
-        user.setStatus("D");
-        user.setProfileStatus("deleted");
-        user.setPreviousProfileStatus("deleted".equals(previousProfileStatus) ? user.getPreviousProfileStatus() : previousProfileStatus);
-        user.setDeletedAtIso(Instant.now().toString());
-        user.setAccountPurgePendingCounterTracked(true);
-        profileStatusWork.save(user);
-        if (newlyTrackedForPurge) {
-            adjustAccountPurgePendingCount(user.getUserId(), 1);
-        }
-        evictUserReadCaches(resolvedUserId);
-        recordSessionAction(resolvedUserId, "delete", StringUtils.hasText(source) ? source : "status:D");
-        adminTelemetryService.record("profile.deleted", "profiles", resolvedUserId, resolvedUserId);
-        return new UserSubmitActionResponseDto(true, null);
+        return lifecycle.scheduleUserDeletionByUserId(userId, source);
     }
 
     public List<Users> queryGameStackUserRecords(String activeUserId) {
@@ -2250,7 +2124,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     private Users mergeUserDocument(Users current, UserDto user) {
         LocationCoordinatesDto requestedLocation = user.locationCoordinates();
-        String locationPartition = validatedLocationPartition(current, requestedLocation);
+        String locationPartition = locations.validatedLocationPartition(current, requestedLocation);
 
         Users document = current == null ? new Users() : current;
         document.setMongoId(current != null && StringUtils.hasText(current.getMongoId()) ? current.getMongoId() : new ObjectId().toHexString());
@@ -2329,14 +2203,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return user != null
                 && StringUtils.hasText(safeText(user.getDeletedAtIso()))
                 && ("deleted".equals(profileStatus) || PROFILE_STATUS_ONBOARDING.equals(profileStatus));
-    }
-
-    private void adjustAccountPurgePendingCount(String userId, int delta) {
-        if (delta == 0 || notificationRuleRegistryService == null) {
-            return;
-        }
-        JobGroupContext.run(jobGroupScope.forUser(userId), () -> notificationRuleRegistryService.adjustPendingCount(
-                NotificationJobs.RULE_ACCOUNT_PURGE, delta, "admin.jobs.table.affected"));
     }
 
     private void saveUserExperienceProfile(String userId, List<ExperienceEntryDto> entries) {
@@ -2477,7 +2343,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return user;
         }
 
-        String resolvedPartitionKey = resolveStoredPartitionKey(
+        String resolvedPartitionKey = locations.resolveStoredPartitionKey(
                 toLocationCoordinatesDto(user.getLocationCoordinates()),
                 null,
                 user);
@@ -2487,39 +2353,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
         user.setPartitionKey(resolvedPartitionKey);
         return usersRepository.save(user);
-    }
-
-    private String resolveStoredPartitionKey(
-            LocationCoordinatesDto coordinates,
-            String currentPartitionKey,
-            Users partitionOwner) {
-        String resolvedPartitionKey = countryPartitionService.resolvePartitionKey(coordinates);
-        return resolveStoredPartitionKey(resolvedPartitionKey, currentPartitionKey, partitionOwner);
-    }
-
-    private String resolveStoredPartitionKey(
-            String resolvedPartitionKey,
-            String currentPartitionKey,
-            Users partitionOwner) {
-        if (StringUtils.hasText(resolvedPartitionKey)) {
-            return resolvedPartitionKey;
-        }
-
-        String normalizedCurrentPartitionKey = safeText(currentPartitionKey);
-        if (StringUtils.hasText(normalizedCurrentPartitionKey)) {
-            return normalizedCurrentPartitionKey;
-        }
-
-        return isSeedLikeHungaryUser(partitionOwner) ? DEFAULT_SEED_PARTITION_KEY : null;
-    }
-
-    private boolean sameLocation(
-            LocationCoordinatesDto requested,
-            Users.LocationCoordinatesRecord stored) {
-        return requested != null
-                && stored != null
-                && Objects.equals(requested.latitude(), stored.latitude())
-                && Objects.equals(requested.longitude(), stored.longitude());
     }
 
     private String resolveStoredEmail(String userId, String fallbackEmail) {
@@ -2549,19 +2382,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             return "";
         }
         return safeText(firebasePrincipal.getEmail());
-    }
-
-    private boolean isSeedLikeHungaryUser(Users user) {
-        if (user == null) {
-            return false;
-        }
-
-        return normalizeStrings(user.getImages()).stream()
-                .anyMatch(this::isSeedImageUrl);
-    }
-
-    private boolean isSeedImageUrl(String value) {
-        return safeText(value).contains(SEED_USER_IMAGE_HOST);
     }
 
     private Event resolvePreferredEventRecord(String eventId) {
@@ -2826,50 +2646,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
         return Integer.toHexString(Objects.hash(totals.outgoing(), totals.incoming(), totals.all()));
     }
 
-    private void recordSessionAction(String userId, String action, String metadata) {
-        String normalizedUserId = normalizeId(userId);
-        if (!StringUtils.hasText(normalizedUserId)) {
-            return;
-        }
-        String nowIso = Instant.now().toString();
-        UserSessionAction document = new UserSessionAction();
-        document.setId(new ObjectId().toHexString());
-        document.setSyncKey(UUID.randomUUID().toString());
-        document.setUserId(normalizedUserId);
-        document.setAction(safeText(action));
-        document.setMetadata(safeText(metadata));
-        document.setCreatedDate(nowIso);
-        document.setCreatedUser(normalizedUserId);
-        document.setUpdatedDate(nowIso);
-        document.setUpdatedUser(normalizedUserId);
-        userSessionActionsRepository.save(document);
-    }
-
-    private String resolveProfileStatus(Users user) {
-        return resolveProfileStatus(user == null ? null : user.getStatus(), user == null ? null : user.getProfileStatus());
-    }
-
-    private String resolveProfileStatus(String status, String fallbackProfileStatus) {
-        String normalizedProfileStatus = safeText(fallbackProfileStatus);
-        if ("blocked".equals(normalizedProfileStatus)) {
-            return "blocked";
-        }
-        if (PROFILE_STATUS_ONBOARDING.equals(normalizedProfileStatus)) {
-            return PROFILE_STATUS_ONBOARDING;
-        }
-        return switch (safeText(status)) {
-            case "D" -> "deleted";
-            case "B" -> "blocked";
-            case "I" -> "inactive";
-            case "F" -> "friends only";
-            case "H" -> "host only";
-            case "A" -> "public";
-            default -> {
-                yield StringUtils.hasText(normalizedProfileStatus) ? normalizedProfileStatus : "public";
-            }
-        };
-    }
-
     private String resolveStatusCode(String profileStatus, String fallbackStatus) {
         return switch (safeText(profileStatus)) {
             case "deleted" -> "D";
@@ -3062,20 +2838,6 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
                 feedback == null ? 0 : normalizeCount(feedback.pending()),
                 feedback == null ? 0 : normalizeCount(feedback.feedbacked()),
                 feedback == null ? 0 : normalizeCount(feedback.removed()));
-    }
-
-    private LocationCoordinatesDto toLocationCoordinatesDto(Users.LocationCoordinatesRecord record) {
-        if (record == null) {
-            return null;
-        }
-        return new LocationCoordinatesDto(record.latitude(), record.longitude());
-    }
-
-    private Users.LocationCoordinatesRecord toLocationCoordinatesRecord(LocationCoordinatesDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        return new Users.LocationCoordinatesRecord(dto.latitude(), dto.longitude());
     }
 
     private List<ProfileDetailGroupDto> toProfileDetailsDto(List<Users.ProfileDetailGroupRecord> records) {
