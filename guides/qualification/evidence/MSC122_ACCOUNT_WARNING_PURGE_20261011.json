@@ -1,6 +1,6 @@
 {
   "date": "2026-10-11",
-  "status": "Focused tests and real Mongo index/ownership check PASS; source KVM and monolith runtime checks PENDING",
+  "status": "PASS: focused tests, real Mongo ownership/index checks and serial source KVM/monolith runtime checks",
   "sourceBaseRevision": "f67099b27de856c93c638759551e7dfa53cf8898",
   "files": {
     "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/DeletedAccountPurgeService.java": "680a5e01ffc19d44865bf6a0bdbef6b3c4372bb413c16b64f2c527e5b3e2dc18",
@@ -36,11 +36,294 @@
       "tests": 1,
       "result": "PASS",
       "covers": "actual purge, retry after reconstruction, selected-user warning cleanup, other-user preservation"
+    },
+    "kvmRuntime": {
+      "status": "PASS",
+      "sourceRevision": "215ee5eac3aeb0fdf8469bf7c26fcfae47e42584",
+      "identityImage": "sha256:a245e62d23ab6223499ea1f0bce2c729011fa863266592f4213eb141e31d1d1f",
+      "frontendRevision": "90289af09c6fe6bb6821a28c554b564bb2a903af",
+      "helmRevision": 146,
+      "readyPods": 18,
+      "assertions": 63,
+      "checks": [
+        {
+          "command": [
+            "python3",
+            "microservices/tools/check-public.py"
+          ],
+          "exitCode": 0,
+          "wallSeconds": 2.9
+        },
+        {
+          "command": [
+            "python3",
+            "microservices/tools/check-session.py",
+            "--public-documents"
+          ],
+          "exitCode": 0,
+          "wallSeconds": 3.45
+        },
+        {
+          "command": [
+            "python3",
+            "microservices/tools/check-admin-identity.py"
+          ],
+          "exitCode": 0,
+          "wallSeconds": 3.3
+        }
+      ],
+      "index": [
+        {
+          "database": "msc121_real",
+          "before": 0,
+          "after": 0,
+          "index": "account_warning_user",
+          "key": {
+            "userId": 1
+          },
+          "queryPlan": {
+            "isCached": false,
+            "stage": "FETCH",
+            "inputStage": {
+              "stage": "IXSCAN",
+              "keyPattern": {
+                "userId": 1
+              },
+              "indexName": "account_warning_user",
+              "isMultiKey": false,
+              "multiKeyPaths": {
+                "userId": []
+              },
+              "isUnique": false,
+              "isSparse": false,
+              "isPartial": false,
+              "indexVersion": 2,
+              "direction": "forward",
+              "indexBounds": {
+                "userId": [
+                  "[\"msc122-nonexistent-qualification-user\", \"msc122-nonexistent-qualification-user\"]"
+                ]
+              }
+            }
+          },
+          "documentsExamined": 0,
+          "keysExamined": 0
+        },
+        {
+          "database": "msc121_demo",
+          "before": 0,
+          "after": 0,
+          "index": "account_warning_user",
+          "key": {
+            "userId": 1
+          },
+          "queryPlan": {
+            "isCached": false,
+            "stage": "FETCH",
+            "inputStage": {
+              "stage": "IXSCAN",
+              "keyPattern": {
+                "userId": 1
+              },
+              "indexName": "account_warning_user",
+              "isMultiKey": false,
+              "multiKeyPaths": {
+                "userId": []
+              },
+              "isUnique": false,
+              "isSparse": false,
+              "isPartial": false,
+              "indexVersion": 2,
+              "direction": "forward",
+              "indexBounds": {
+                "userId": [
+                  "[\"msc122-nonexistent-qualification-user\", \"msc122-nonexistent-qualification-user\"]"
+                ]
+              }
+            }
+          },
+          "documentsExamined": 0,
+          "keysExamined": 0
+        }
+      ],
+      "monitoring": {
+        "prometheus": {
+          "status": 200
+        },
+        "grafana": {
+          "status": 200
+        },
+        "targets": [
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          },
+          {
+            "job": "prometheus",
+            "instance": "127.0.0.1:19090",
+            "up": true
+          },
+          {
+            "job": "myscoutee",
+            "instance": "192.168.173.10:30081",
+            "up": true
+          }
+        ]
+      },
+      "settledCpu": {
+        "host": {
+          "seconds": 27.16802374600229,
+          "logicalCpus": 12,
+          "busyPercent": 17.494275228206657,
+          "qemuCpuCores": 0.7004318082871273
+        },
+        "identity": {
+          "pod": "identity-6bd6657d6c-krqdd",
+          "container": "identity",
+          "seconds": 27.639978647232056,
+          "cpuCores": 0.0480624105016461,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 376.77734375
+        }
+      },
+      "recentBackendErrorLines": 0,
+      "shutdown": "All workloads and host monitoring stopped; VM shut off; autostart disabled"
+    },
+    "monolithRuntime": {
+      "status": "PASS",
+      "sourceRevision": "76c2d373e",
+      "image": "sha256:3b83a12ee55d9c4c0ab432998fbd9a6a84cb7ec43f79173db1e3868afd3fac20",
+      "environment": "Canonical server/docker-compose.e2e.yml, isolated msc122-monolith project/container names/fresh volumes, no dev fallback identity, AUTH_MAX_ACTIVE_SESSIONS=2",
+      "tls": "Verified canonical self-signed certificate for 127.0.0.1; existing smoke helper transport set to HTTPS without disabling verification",
+      "assertions": 43,
+      "checks": [
+        {
+          "check": "check-session",
+          "exitCode": 0,
+          "elapsedSeconds": 1.67091068100126
+        },
+        {
+          "check": "check-admin-identity",
+          "exitCode": 0,
+          "elapsedSeconds": 0.9573457490041619
+        }
+      ],
+      "index": {
+        "database": "e2e_db",
+        "records": 0,
+        "indexes": [
+          {
+            "v": 2,
+            "key": {
+              "_id": 1
+            },
+            "name": "_id_"
+          },
+          {
+            "v": 2,
+            "key": {
+              "userId": 1
+            },
+            "name": "account_warning_user"
+          },
+          {
+            "v": 2,
+            "key": {
+              "status": 1,
+              "nextAttemptAtIso": 1,
+              "_id": 1
+            },
+            "name": "account_warning_retry_due"
+          },
+          {
+            "v": 2,
+            "key": {
+              "status": 1,
+              "startedAtIso": 1
+            },
+            "name": "account_warning_stale_claim"
+          }
+        ],
+        "explain": {
+          "isCached": false,
+          "stage": "FETCH",
+          "inputStage": {
+            "stage": "IXSCAN",
+            "keyPattern": {
+              "userId": 1
+            },
+            "indexName": "account_warning_user",
+            "isMultiKey": false,
+            "multiKeyPaths": {
+              "userId": []
+            },
+            "isUnique": false,
+            "isSparse": false,
+            "isPartial": false,
+            "indexVersion": 2,
+            "direction": "forward",
+            "indexBounds": {
+              "userId": [
+                "[\"msc122-owned-missing-user\", \"msc122-owned-missing-user\"]"
+              ]
+            }
+          }
+        }
+      },
+      "settledCpu": {
+        "seconds": 25.053708011997514,
+        "cpuCores": 0.055084580667225866,
+        "memoryMiB": 870.88671875,
+        "cpuMax": "max 100000",
+        "errorLines": 0
+      },
+      "limits": "Focused route/session/role and index checks; no expired-account purge was triggered against the runtime.",
+      "shutdown": "Isolated project containers and disposable volumes removed after checks; original stopped dev containers preserved."
+    },
+    "packagingCorrection": {
+      "problem": "The native Mongo E2E Dockerfile copied three canonical files that the named mongo-seed context .dockerignore excluded. A clean build failed before startup.",
+      "change": "Allow mongo-seed-policy.inc, replica-entrypoint and replica-health in server/docker/conf/mongodb/.dockerignore. No Java or database behavior changed.",
+      "evidence": "Canonical Mongo image rebuilt successfully; fresh replica initialization, seed import, healthy startup and account_warning_user index verified in runtime.",
+      "templateImpact": "Template has no corresponding context .dockerignore and its previous canonical image build passed; no speculative template edit.",
+      "earlierFailure": "Initial API image download hit a Gradle distribution network timeout. Retried via Docker host networking; successful build without cache replacement."
     }
   },
   "performance": "The added query runs only in permanent account purge. Indexed lookup examined exactly two matching records in this dataset. This is not matched throughput/CPU parity evidence.",
   "remaining": [
-    "Repackage identity and verify the source change on KVM, then the source monolith, serially.",
-    "Template KVM and installed upgrade remain separate pending gates."
-  ]
+    "Template KVM and installed upgrade remain separate pending gates.",
+    "These focused runtime checks do not prove matched throughput/CPU parity or direct expired-account purge execution on KVM/monolith; mutation ownership is covered by the focused JUnit/Mongo/template persistence evidence above."
+  ],
+  "updatedAt": "2026-10-12"
 }
