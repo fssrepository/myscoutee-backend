@@ -414,7 +414,14 @@
   "runtime": {
     "kvm": "NOT_RUN_FOR_THIS_BATCH",
     "monolith": "NOT_RUN_FOR_THIS_BATCH",
-    "assemblyPackaging": "PENDING",
+    "assemblyPackaging": {
+      "status": "PASSED",
+      "services": 8,
+      "transportTestSuites": 52,
+      "transportTests": 239,
+      "transportFailures": 0,
+      "log": "/tmp/msc122-admin-feature-assemblies.log"
+    },
     "templateRemoval": "PENDING"
   },
   "limits": [
@@ -426,5 +433,11 @@
     "/tmp/msc122-admin-feature-batch-junit.log",
     "/tmp/msc122-admin-classification-junit.log",
     "/tmp/msc122-admin-chat-persistence.log"
-  ]
+  ],
+  "sourceCheckpoint": "dc97521d4",
+  "wireContracts": {
+    "administrativeActors": "13 actual HTTP responses validated; all required statuses present",
+    "administrativeAccess": "Request/response schemas compile; retained operation behavior still requires runtime evidence",
+    "wholeInventory": "Incomplete: existing affinity/recompute-metrics-v1 has no real HTTP evidence files; this unrelated inventory gap is not claimed passed."
+  }
 }
