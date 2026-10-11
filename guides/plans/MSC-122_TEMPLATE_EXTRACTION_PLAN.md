@@ -1,6 +1,6 @@
 # MSC-122 — complete minimal backend template
 
-Updated: 2026-10-10. Task: [MSC-122](https://github.com/fssrepository/myscoutee-roadmap/issues/160).
+Updated: 2026-10-11. Task: [MSC-122](https://github.com/fssrepository/myscoutee-roadmap/issues/160).
 
 ## Delivery boundary and order
 
@@ -250,6 +250,20 @@ provider Firebase login, full image editing, signed update installation,
 interruption/rollback and template installation remain separate qualification
 scopes. The existing content/help grouping is unchanged. Documentation records
 only exercised behavior, not every optional screen or future template flow.
+
+## Latest narrow extraction checkpoint — 2026-10-11
+
+Administrator identity is already separated from content moderation. Campaign
+organizer-contact eligibility now belongs to campaigns through its existing
+catalog API; chat retains conversation creation and no longer injects affinity's
+`RatingDirectory`. The stored models and eligibility predicates are unchanged.
+KVM Helm 134 and the monolith pass the focused checks recorded in
+[PROGRESS](../../microservices/PROGRESS.md#msc-122-campaign-organizer-contact--2026-10-11).
+The communication image and live credential inventory confirm the removed client.
+
+This does not make community optional yet: event/member, case and announcement
+references still require review. No template application sources, frontend
+submodule contents, models or seed data were copied in this checkpoint.
 
 ## Remaining complete-template work
 

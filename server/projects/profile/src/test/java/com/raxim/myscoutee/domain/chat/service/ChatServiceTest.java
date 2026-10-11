@@ -154,7 +154,8 @@ class ChatServiceTest {
         when(mongoTemplate.findById("campaign", com.raxim.myscoutee.domain.campaigns.document.Campaign.class)).thenReturn(campaign);
         var request = new ChatServiceEnsureRequestDto("campaign", null, null, null, "forged-target", "Fake title", "", "campaign", null);
         assertThatThrownBy(() -> service.ensureServiceChat(request, "viewer"))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class,
+                        failure -> assertThat(failure.getStatusCode().value()).isEqualTo(403));
         verify(mongoTemplate, never()).bulkOps(any(), eq(Chat.class));
         when(mongoTemplate.exists(any(Query.class), eq(com.raxim.myscoutee.domain.affinity.document.UserRate.class))).thenReturn(true);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
@@ -165,6 +166,22 @@ class ChatServiceTest {
         assertThat(chat.eventId()).isEmpty();
         verify(bulkOperations, times(2)).upsert(any(Query.class), any(Update.class));
         verify(chatPushNotificationService, never()).notifyRecipients(anyList(), any());
+    }
+
+    @Test
+    void unavailableCampaignRemainsNotFoundWithoutWritingChatCopies() {
+        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        Users viewer = user("viewer", "Viewer", "V"); viewer.setWorkspaceGroupId("other");
+        when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
+        var campaign = new com.raxim.myscoutee.domain.campaigns.document.Campaign("campaign", "work", "organizer",
+                "Idea", "Description", "business", "technology", List.of(), List.of(), "published", "now", "now", 1L);
+        when(mongoTemplate.findById("campaign", com.raxim.myscoutee.domain.campaigns.document.Campaign.class)).thenReturn(campaign);
+        var request = new ChatServiceEnsureRequestDto("campaign", null, null, null, "forged-target", "Fake title", "", "campaign", null);
+        assertThatThrownBy(() -> service.ensureServiceChat(request, "viewer"))
+                .isInstanceOfSatisfying(org.springframework.web.server.ResponseStatusException.class,
+                        failure -> assertThat(failure.getStatusCode().value()).isEqualTo(404));
+        verify(mongoTemplate, never()).exists(any(Query.class), eq(com.raxim.myscoutee.domain.affinity.document.UserRate.class));
+        verify(mongoTemplate, never()).bulkOps(any(), eq(Chat.class));
     }
 
     @Test
@@ -1375,9 +1392,8 @@ class ChatServiceTest {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "assetOwnership", com.raxim.myscoutee.domain.assets.service.AssetTestSupport.ownership(null, mongo));
         var ratings = new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.repository.UserRatesRepository.class));
         org.springframework.test.util.ReflectionTestUtils.setField(ratings, "mongo", mongo);
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "ratings", ratings);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
-                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo, ratings));
         var caseRepository = org.mockito.Mockito.mock(com.raxim.myscoutee.domain.community.repository.ServiceCasesRepository.class, call ->
                 "findById".equals(call.getMethod().getName())
                         ? java.util.Optional.ofNullable(mongo.findById(call.getArgument(0), com.raxim.myscoutee.domain.community.document.ServiceCase.class))

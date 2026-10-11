@@ -139,7 +139,7 @@ class MediaPolicyFactsTest {
 
     private static MediaPolicyFacts campaignAware(MediaPolicyFacts service, org.springframework.data.mongodb.core.MongoTemplate mongo) {
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
-                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.api.RatingDirectory.class)));
         return service;
     }
 }

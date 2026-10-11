@@ -960,7 +960,7 @@ class UserRatesServiceTest {
         org.springframework.test.util.ReflectionTestUtils.setField(friendships, "mongo", mongo);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "friendships", friendships);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "campaignCatalog",
-                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo));
+                new com.raxim.myscoutee.domain.campaigns.service.CampaignCatalogService(mongo, org.mockito.Mockito.mock(com.raxim.myscoutee.domain.affinity.api.RatingDirectory.class)));
         return service;
     }
 }

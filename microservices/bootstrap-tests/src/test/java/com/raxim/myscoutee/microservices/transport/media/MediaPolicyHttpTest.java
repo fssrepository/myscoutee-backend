@@ -303,7 +303,7 @@ class MediaPolicyHttpTest {
             }
             throw new AssertionError("Canonical media URL query was absent.");
         }
-        @Bean CampaignCatalogService campaignOwner(MongoTemplate mongo) { return new CampaignCatalogService(mongo); }
+        @Bean CampaignCatalogService campaignOwner(MongoTemplate mongo) { return new CampaignCatalogService(mongo, mock(com.raxim.myscoutee.domain.affinity.api.RatingDirectory.class)); }
         @Bean EventMediaVisibilityService eventOwner(MongoTemplate mongo) { return new EventMediaVisibilityService(mongo); }
         @Bean ContentMediaVisibilityService contentOwner(MongoTemplate mongo) { return new ContentMediaVisibilityService(mongo); }
         @Bean ChatMediaVisibilityService chatOwner(MongoTemplate mongo) { return new ChatMediaVisibilityService(mongo); }

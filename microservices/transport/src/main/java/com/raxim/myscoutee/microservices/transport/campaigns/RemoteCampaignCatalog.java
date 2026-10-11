@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.util.*;
 import com.raxim.myscoutee.domain.campaigns.api.CampaignCatalog;
 import com.raxim.myscoutee.domain.campaigns.dto.CampaignSummaryDto;
+import com.raxim.myscoutee.domain.campaigns.dto.CampaignOrganizerContactDto;
 import com.raxim.myscoutee.microservices.transport.common.RemoteReadTransport;
 import io.micrometer.core.instrument.MeterRegistry;
 import tools.jackson.core.type.TypeReference;
@@ -32,6 +33,18 @@ public final class RemoteCampaignCatalog extends RemoteReadTransport implements 
         var query = new CampaignCatalogProtocol.OwnedQuery(ownerUserId, id);
         return exchange(CampaignCatalogProtocol.OWNED, body(query, CampaignCatalogProtocol.valid(query)),
                 new TypeReference<CampaignCatalogProtocol.Decision>() {}, "campaigns.owned", 16384, result -> result.value() != null).value();
+    }
+    @Override public CampaignOrganizerContactDto organizerContact(
+            String id, String viewerId, String workspaceGroupId) {
+        var query = new CampaignCatalogProtocol.OrganizerContactQuery(id, viewerId, workspaceGroupId);
+        return exchange(CampaignCatalogProtocol.ORGANIZER_CONTACT, body(query, CampaignCatalogProtocol.valid(query)),
+                new TypeReference<CampaignCatalogProtocol.OrganizerContactResult>() {}, "campaigns.organizer-contact",
+                CampaignCatalogProtocol.MAX_RESPONSE_BYTES,
+                result -> Boolean.TRUE.equals(result.resolved()) && (result.value() == null
+                        || result.value().campaign() != null && Objects.equals(id, result.value().campaign().id())
+                        && Objects.equals(workspaceGroupId, result.value().campaign().workspaceGroupId())
+                        && "published".equals(result.value().campaign().status())
+                        && !Objects.equals(viewerId, result.value().campaign().ownerUserId()))).value();
     }
     private byte[] body(Object query, boolean valid) {
         if (!valid) throw new IllegalArgumentException("Invalid campaign query");

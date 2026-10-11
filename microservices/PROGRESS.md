@@ -1,10 +1,49 @@
 # MSC-121 — numbered delivery progress
 
-Updated: 2026-10-10. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
+Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **133**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity step and the focused checks below passed on both deployments.
+**Last verified lab state:** Helm revision **134**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity and campaign-contact steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## MSC-122 campaign organizer contact — 2026-10-11
+
+`CampaignCatalogService` now owns the existing campaign availability and positive
+rating checks used before contacting a campaign organizer. `ChatService` consumes
+that result through the existing `CampaignCatalog` API and retains chat creation.
+The campaign/workspace/status/owner rules and public 404/403 responses are preserved.
+No persisted model, query predicate, index, chat-list filter or personal-chat rule
+changed. For an eligible profile the same profile read, campaign read and rating
+existence query remain; the rating read is now requested by campaigns.
+
+The existing typed catalog transport gained one bounded read operation. Service
+credentials, REAL/DEMO routing and fail-closed transport handling are reused.
+Communication no longer imports `RatingDirectoryClientConfiguration` or receives
+its credential; the live KVM Secret confirms removal. This is one dependency
+removed, not a claim that community/events can already be omitted from the template.
+
+Validation: **76 focused canonical JUnit tests** pass. The **232-test** transport
+run passed 228 existing tests and three of four new tests; a malformed test request
+was corrected, then all four new tests passed on the focused rerun. **17 actual
+HTTP responses** validate against the updated OpenAPI contract. All **eight** JAR
+ownership audits pass. Helm **134** starts all backends without restarts. KVM and
+monolith each pass **seven** native session/chat-list/campaign rejection checks.
+Four additional KVM owner reads cover a positive rating, no rating, wrong workspace
+and REAL/DEMO isolation. These runtime probes do not create chat messages; positive
+chat construction remains covered by the focused ChatService unit test.
+
+Response timings and short CPU observations are recorded in
+[the evidence](../guides/qualification/evidence/MSC122_CAMPAIGN_CHAT_20261011.json).
+They are not a matched before/after benchmark; no speed or CPU parity claim follows.
+No new stress run was needed for this batch. Two startup-only EventScheduler calls
+ran before the notification owner was available; the later 60-second log sample
+contains no errors in community, communication or affinity.
+
+Restarting dev exposed a frontend startup race: Angular logged completion before
+its output directory existed, and initial nginx synchronization exited. The
+existing wait now also requires the generated `index.html`. Only the stopped
+frontend watcher was restarted. Its normal build/sync completes, both dev health
+checks pass, and the landing HTML and current JavaScript bundle return HTTP 200.
 
 ## MSC-122 administrator identity — 2026-10-10
 

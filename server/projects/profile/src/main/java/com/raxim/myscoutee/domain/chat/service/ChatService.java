@@ -119,7 +119,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.events.api.EventOwnershipReads eventOwnership;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.assets.api.AssetOwnershipReads assetOwnership;
 
-    @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.affinity.api.RatingDirectory ratings;
     @org.springframework.beans.factory.annotation.Autowired
     private GroupDirectory groupDirectory;
     @org.springframework.beans.factory.annotation.Autowired
@@ -673,13 +672,14 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.EventCon
     }
 
     private ChatDto ensureCampaignChat(ChatServiceEnsureRequestDto request, String userId) {
-        var campaign = campaignCatalog.find(normalizeId(request.campaignId()));
         ProfileSummary actor = findUser(userId);
-        if (campaign == null || actor == null || !Objects.equals(actor.getWorkspaceGroupId(), campaign.workspaceGroupId())
-                || !"published".equals(campaign.status()) || userId.equals(campaign.ownerUserId()))
+        var contact = actor == null ? null : campaignCatalog.organizerContact(
+                normalizeId(request.campaignId()), userId, actor.getWorkspaceGroupId());
+        if (contact == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campaign unavailable.");
-        if (!ratings.hasPositiveCampaignRating(campaign.id(), userId, campaign.ownerUserId()))
+        if (!contact.positivelyRated())
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Rate the campaign before asking its organizer.");
+        var campaign = contact.campaign();
         String chatId = "c-campaign-" + campaign.id() + "-" + userId;
         List<Chat> copies = syncResourceChat(chatId, "campaign", campaign.id(), campaign.title(),
                 List.of(userId, campaign.ownerUserId()));
