@@ -93,3 +93,21 @@ Migration011 refreshes package-owned fields for `home.game` and
 `activities.rates`, including the granular-rating steps and ordering. It leaves
 other screens, custom field IDs, help revisions and user data unchanged. The
 shared release seed sync installs matching EN/HU messages and bundle versions.
+
+## 012 — integration indexes
+
+Move all eleven MCP grant, subscription and webhook indexes from the Java
+startup initializer to Mongo initialization and the existing ordered migration
+chain. Add the four already model-declared API-token/client-registration indexes.
+Keep names, key order, uniqueness and TTL settings; no credential, grant,
+subscription or delivery document is rewritten. Existing duplicate token hashes
+stop index creation rather than deleting or rewriting credentials.
+
+Fresh installations use `db_init.js`; seed initialization uses the existing
+`ensure_runtime_indexes` policy even when these collections have no seed JSON.
+Retained packaged installations run migration012 before starting the API.
+Retained lab databases also require this migration before replacing the Java
+image; a Java restart no longer creates integration indexes.
+`integration-indexes-test.py` checks all three definitions, idempotency, empty
+databases, retained data, duplicate rejection and an indexed key lookup on
+disposable databases in the existing monolith or KVM Mongo runtime.

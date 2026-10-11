@@ -3,59 +3,59 @@
   "images": {
     "identity": {
       "source": "myscoutee-service-identity:msc121",
-      "id": "sha256:076114f536270687c0d2d53a4779dc8c24f6f57e294dde178ffa5d398fa97fa3",
-      "contentFingerprint": "sha256:5e5d1e327e0d921d460312bb0cbaf2ef02694ce8b21891db7e7759f09dee74c7",
+      "id": "sha256:d9a5cb3f6f1273fd26b9cd27bbf65c096848b333175f2d67396779c24c5251dc",
+      "contentFingerprint": "sha256:a5544df58d9199b342791dc21898bf056e654d6b55d05207fc3dfc95b4fad13d",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-identity:0.1.0-076114f53627"
+      "reference": "docker.io/library/myscoutee-service-identity:0.1.0-d9a5cb3f6f12"
     },
     "community": {
       "source": "myscoutee-service-community:msc121",
-      "id": "sha256:3a7e2df11467070ad7e6de3fdd2bc244573a5da5446079be3812948fd1555f2f",
-      "contentFingerprint": "sha256:9751573f8f3ee0ae18cdd8fa35af72ecef95c5c8a0ba033a686bae7812fb11f0",
+      "id": "sha256:f37b9c14bd72ec3818d8880002962473e7acc4a6c88d4f2a93262ea468b11966",
+      "contentFingerprint": "sha256:2a3af9dde7c15580abb61c5751d88b639ab23faedd2257a2ec2258c817f8fed0",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-community:0.1.0-3a7e2df11467"
+      "reference": "docker.io/library/myscoutee-service-community:0.1.0-f37b9c14bd72"
     },
     "communication": {
       "source": "myscoutee-service-communication:msc121",
-      "id": "sha256:208d99ba0d843cd800a01d37a1ab315707a6f7ee4ae4eb4946bc1dc900431947",
-      "contentFingerprint": "sha256:0a87890412c732925fff6d37d5315b8a22b1c94e027238d2748a682c0949d5ec",
+      "id": "sha256:a3a3547f89fcc36bcb19ab0e6e66acc0b3e7d0b54237c8c5617fd8cd544f03a5",
+      "contentFingerprint": "sha256:e903976216d903ce4cc66b287443e7c9ae7c7f3e0809992399e65fb784fde36a",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-communication:0.1.0-208d99ba0d84"
+      "reference": "docker.io/library/myscoutee-service-communication:0.1.0-a3a3547f89fc"
     },
     "assets": {
       "source": "myscoutee-service-assets:msc121",
-      "id": "sha256:35879240f613b9b665514a06c2383e0a2904d666e4d2c5ade19d21922b0213d9",
-      "contentFingerprint": "sha256:6f51e85c967063dda902eb41c3f42e2f13cb36785344d15adf9b96231453b910",
+      "id": "sha256:cbbd8f16394908bb3bf58afdc3686682e6bee9dea3ca2469a8fa3fa37449663f",
+      "contentFingerprint": "sha256:df0a9194ad1b0cf984366565aaceaabe54c3f42e19a4cd8111df42a7fd94088f",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-assets:0.1.0-35879240f613"
+      "reference": "docker.io/library/myscoutee-service-assets:0.1.0-cbbd8f163949"
     },
     "payments": {
       "source": "myscoutee-service-payments:msc121",
-      "id": "sha256:27b8ca34065b95079eb4a66c2f677422f38a000569966f3311693638f4f17d33",
-      "contentFingerprint": "sha256:a1a33d02806141e69b670b7f5079492c26b80cc21b88f53bb3ec4ec6afd25b07",
+      "id": "sha256:9ede687fcc34c7e76c77560f5f289e681723d4cc3962d2a9469b5b1bc4b57589",
+      "contentFingerprint": "sha256:0130830bd66ae16f4bc4025930231fb828848aa328f61343ce449a920d7e2083",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-payments:0.1.0-27b8ca34065b"
+      "reference": "docker.io/library/myscoutee-service-payments:0.1.0-9ede687fcc34"
     },
     "affinity": {
       "source": "myscoutee-service-affinity:msc121",
-      "id": "sha256:62ff6ead84160c29fbd6cabccaa3eafb2571adb8ee8be927af0d42d9347780de",
-      "contentFingerprint": "sha256:2ffe326ffd4e6159784156fffe75c012fae5f39118179258f9c83ec562233c8d",
+      "id": "sha256:81a907be4738e7d80eec973dd0740c752bd8413a0909355febb8b813f5bf7eee",
+      "contentFingerprint": "sha256:584a0a7aa1b73f304677df05252aad20a2170552c1a29756810c359e0e277e0e",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-affinity:0.1.0-62ff6ead8416"
+      "reference": "docker.io/library/myscoutee-service-affinity:0.1.0-81a907be4738"
     },
     "help": {
       "source": "myscoutee-service-help:msc121",
-      "id": "sha256:626418a7e6d7069ebeced9ba6bf1b2c99b7a9494cd5b4dd04bd743823972d831",
-      "contentFingerprint": "sha256:a6dc8cd2cd1df53b977b149f7acc3b021510c4f5c94df391bf1c5bf4890c8ba9",
+      "id": "sha256:1f7ff30a97f6eb1f9bde5df64e96ce16f60b9e641076cd67801f4e1582a8e9f9",
+      "contentFingerprint": "sha256:317b6d23dd2365c5901976e0b9e259b2bf181fe05ddb7e23506af0fe872ced5f",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-help:0.1.0-626418a7e6d7"
+      "reference": "docker.io/library/myscoutee-service-help:0.1.0-1f7ff30a97f6"
     },
     "network": {
       "source": "myscoutee-service-network:msc121",
-      "id": "sha256:1820c4a4bf91cd06b789071667f4c98c8135468094908c75112eb1c9fc2d1953",
-      "contentFingerprint": "sha256:34b72a7d3519248897d5db9d890aba22055b1c419540a9e898d8682dc558e98e",
+      "id": "sha256:633dc4b28f77ad13228f4e13e755d857e5da88aac953bfb8edeb493297114cd1",
+      "contentFingerprint": "sha256:c8703c8c3452f47d51e6880695d1158c3643af07c1a3aa371f3cdd9dba1e94e2",
       "sourceDigests": [],
-      "reference": "docker.io/library/myscoutee-service-network:0.1.0-1820c4a4bf91"
+      "reference": "docker.io/library/myscoutee-service-network:0.1.0-633dc4b28f77"
     },
     "frontend": {
       "source": "myscoutee-service-frontend:msc121",
