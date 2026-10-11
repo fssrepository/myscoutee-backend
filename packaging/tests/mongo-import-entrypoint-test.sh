@@ -12,6 +12,21 @@ MONGO_APP_DATABASE=entrypoint_contract_test \
     "${REPO_ROOT}/server/docker/conf/mongodb/mongo_import.sh" > "${TEST_ROOT}/result"
 grep -Fxq entrypoint-continued "${TEST_ROOT}/result"
 
+# Every deployment must carry the project policy beside the shared engine.
+# Missing packaging input must fail before any database command can run.
+cp "${REPO_ROOT}/server/docker/conf/mongodb/mongo_import.sh" "${TEST_ROOT}/mongo_import.sh"
+if MONGO_IMPORT_SINGLE_FILE="${TEST_ROOT}/absent.json" \
+    bash "${TEST_ROOT}/mongo_import.sh" > "${TEST_ROOT}/missing-policy" 2>&1; then
+  echo "Importer accepted a missing project policy." >&2
+  exit 1
+fi
+grep -Fq 'mongo-seed-policy.inc' "${TEST_ROOT}/missing-policy"
+cp "${REPO_ROOT}/server/docker/conf/mongodb/mongo-seed-policy.inc" "${TEST_ROOT}/"
+MONGO_IMPORT_SINGLE_FILE="${TEST_ROOT}/absent.json" \
+  bash -c 'cd /; . "$1"; printf "entrypoint-continued\n"' _ \
+    "${TEST_ROOT}/mongo_import.sh" > "${TEST_ROOT}/relocated"
+grep -Fxq entrypoint-continued "${TEST_ROOT}/relocated"
+
 # Exercise the multi-database dispatch without touching real seed directories.
 # The functions are replaced only in this test copy; dispatch remains verbatim.
 python3 - "${REPO_ROOT}/server/docker/conf/mongodb/mongo_import.sh" "${TEST_ROOT}/dispatch.sh" <<'PY'

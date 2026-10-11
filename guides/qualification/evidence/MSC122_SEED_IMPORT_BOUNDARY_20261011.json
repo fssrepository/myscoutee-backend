@@ -1,0 +1,376 @@
+{
+  "recordedAt": "2026-10-11T11:46:29.840347+00:00",
+  "sourceBaseRevision": "094af314889106cd193a4058110312c40dee9ebc",
+  "scope": "Separate the existing seed import engine from project-owned collection policies; preserve all MyScoutee import/index/migration operations. Template reuses the engine with its selected policy.",
+  "unchangedMovedFunctions": [
+    "clear_collection",
+    "collection_should_replace_on_import",
+    "target_collection_name",
+    "deployment_configuration_exists",
+    "migrate_deployment_configuration_v3",
+    "migrate_deployment_configuration_v4",
+    "migrate_deployment_configuration_v5",
+    "migrate_deployment_exchange_rate_source",
+    "import_exchange_rate_seed",
+    "import_deployment_configuration_seed",
+    "ensure_collection_versions",
+    "ensure_collection_indexes",
+    "ensure_runtime_indexes"
+  ],
+  "beforeAfterCommandTraces": [
+    {
+      "repository": "myscoutee-backend",
+      "database": "demo_db",
+      "replace": "false",
+      "existingConfiguration": false,
+      "emptySeeds": false,
+      "collections": 59,
+      "traceSha256": "9400492c361530e4cb67e1ddf00122b80de78d52a0ce827e31bc14b92e50cc67",
+      "databaseCommands": 58
+    },
+    {
+      "repository": "myscoutee-backend",
+      "database": "demo_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": false,
+      "collections": 59,
+      "traceSha256": "d744d79062005290cc2bd0e25ef1778cc585fc5ec7823a94a87e4048fe92fa2f",
+      "databaseCommands": 57
+    },
+    {
+      "repository": "myscoutee-backend",
+      "database": "production_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": false,
+      "collections": 59,
+      "traceSha256": "44125c4ecd3d9f72f4c4ceeadea186f19b745177e80fe254dad56165b45d6752",
+      "databaseCommands": 20
+    },
+    {
+      "repository": "myscoutee-backend",
+      "database": "demo_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": true,
+      "collections": 59,
+      "traceSha256": "0285c4db57f2ce321844cb79a928a39ca0ff577ce33511d1a93f8f0ecfd9b430",
+      "databaseCommands": 0
+    },
+    {
+      "repository": "myscoutee-backend",
+      "database": "production_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": true,
+      "collections": 59,
+      "traceSha256": "eca1859c3fff40a1a57588192ee1f4f2e121b609b4b771ef02bfd360ee3f853d",
+      "databaseCommands": 0
+    },
+    {
+      "repository": "myscoutee-template",
+      "database": "demo_db",
+      "replace": "false",
+      "existingConfiguration": false,
+      "emptySeeds": false,
+      "collections": 14,
+      "traceSha256": "e02fb4ef749c97007bef4481ba71c9b3227ee49bfb72035c7cdd5d553d4c94b7",
+      "databaseCommands": 14
+    },
+    {
+      "repository": "myscoutee-template",
+      "database": "demo_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": false,
+      "collections": 14,
+      "traceSha256": "e3eefe1aa44ea79cd0068af1079d45e1998fee57fa82b774286f16747a1511f1",
+      "databaseCommands": 13
+    },
+    {
+      "repository": "myscoutee-template",
+      "database": "production_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": false,
+      "collections": 14,
+      "traceSha256": "56a2ea531e15827800bec50daf9ae6364622436e16c569674c88a47e088eb6dc",
+      "databaseCommands": 6
+    },
+    {
+      "repository": "myscoutee-template",
+      "database": "demo_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": true,
+      "collections": 14,
+      "traceSha256": "f165273f8ba3aa0261053186ff1f372e14ecca345816b0d32f0f748087896f60",
+      "databaseCommands": 0
+    },
+    {
+      "repository": "myscoutee-template",
+      "database": "production_db",
+      "replace": "true",
+      "existingConfiguration": true,
+      "emptySeeds": true,
+      "collections": 14,
+      "traceSha256": "cc5dedf663f916ff0cb5c14cbd72b3f2b517ab30e82f86a587faa9dfcddd08d0",
+      "databaseCommands": 0
+    }
+  ],
+  "checks": {
+    "seedBootstrapSafetyTests": 9,
+    "mongoEntrypointContinuationAndRelocation": "passed; missing policy fails",
+    "debianStaging": "passed; engine/policy byte-identical; production identity and E2E data absent",
+    "kvmBundle": "passed; actual seed_bundle selection/transfer/policy loading, without live reimport or receipt mutation",
+    "seedWatcher": "passed",
+    "i18nRuntimeSeedSync": "passed",
+    "monolith": [
+      "owner-version migration",
+      "exchange-rate configuration migration",
+      "immutable FX default import",
+      "9 login/read/logout assertions"
+    ],
+    "kvm": [
+      "owner-version migration",
+      "exchange-rate configuration migration",
+      "immutable FX default import",
+      "9 login/read/logout assertions"
+    ]
+  },
+  "testRepair": "Existing FX default test expected one row; current native seed already has three. Verify all seeded identities/bases and preserve all defaults on repeated import. No seed or payment behavior changed.",
+  "resources": {
+    "kind": "Low-load observations, not matched speed/throughput measurements. No Java/query/application changes in this batch.",
+    "monolith": {
+      "kind": "Low-load observation, not a matched benchmark",
+      "startedAt": "2026-10-11T11:40:56.204510+00:00",
+      "seconds": 30.436348397000984,
+      "environmentRestored": true,
+      "hostBusyPercent": 8.098503567561565,
+      "containers": {
+        "myscoutee": {
+          "cpuCores": 0.09808308674420854,
+          "memoryMiB": 1738.07421875,
+          "throttledSeconds": 0.0
+        },
+        "mongodb": {
+          "cpuCores": 0.051449667337698714,
+          "memoryMiB": 918.56640625,
+          "throttledSeconds": 0.0
+        },
+        "frontend-sync": {
+          "cpuCores": 0.06519681579790058,
+          "memoryMiB": 3252.296875,
+          "throttledSeconds": 0.0
+        }
+      },
+      "health": {
+        "myscoutee": "running healthy",
+        "mongodb": "running healthy",
+        "frontend-sync": "running healthy"
+      }
+    },
+    "kvm": {
+      "kind": "Low-load observation, not a matched benchmark",
+      "startedAt": "2026-10-11T11:44:54.267216+00:00",
+      "host": {
+        "seconds": 31.93098593800096,
+        "logicalCpus": 12,
+        "busyPercent": 15.732632807939284,
+        "qemuCpuCores": 0.7309615194882775
+      },
+      "deltas": [
+        {
+          "pod": "affinity-7744cf47bb-dc2tv",
+          "container": "affinity",
+          "seconds": 32.32743549346924,
+          "cpuCores": 0.10308943314335134,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 330.15625
+        },
+        {
+          "pod": "mongodb-0",
+          "container": "mongodb",
+          "seconds": 32.34186840057373,
+          "cpuCores": 0.03434371775442312,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 426.80859375
+        },
+        {
+          "pod": "mongodb-1",
+          "container": "mongodb",
+          "seconds": 32.34185767173767,
+          "cpuCores": 0.0243592377406462,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 385.2734375
+        },
+        {
+          "pod": "payment-simulator-6b8c96f5c5-bv55k",
+          "container": "payment-simulator",
+          "seconds": 32.363274574279785,
+          "cpuCores": 0.00011744794215047653,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.68359375
+        },
+        {
+          "pod": "registry-6f857b4b6-t8dg7",
+          "container": "registry",
+          "seconds": 32.28494930267334,
+          "cpuCores": 0.005551162503611547,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 24.8359375
+        },
+        {
+          "pod": "minio-6c7d8948f7-zfmtb",
+          "container": "minio",
+          "seconds": 32.335068225860596,
+          "cpuCores": 0.004016908178227388,
+          "throttledSeconds": 0.0,
+          "cpuMax": "100000 100000",
+          "memoryMiB": 318.00390625
+        },
+        {
+          "pod": "network-55c9b48c6f-gv7ft",
+          "container": "network",
+          "seconds": 32.31200909614563,
+          "cpuCores": 0.01130285643685231,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 244.11328125
+        },
+        {
+          "pod": "release-simulator-7f5b9f8f96-jtxbq",
+          "container": "release-simulator",
+          "seconds": 32.32104516029358,
+          "cpuCores": 0.0010348365850832589,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 37.07421875
+        },
+        {
+          "pod": "mcp-776779bc-8sgbq",
+          "container": "mcp",
+          "seconds": 32.36630868911743,
+          "cpuCores": 0.00015896159334752655,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 10.7890625
+        },
+        {
+          "pod": "community-b44fddd69-ljtns",
+          "container": "community",
+          "seconds": 32.37980341911316,
+          "cpuCores": 0.03410218356508612,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 427.109375
+        },
+        {
+          "pod": "help-6fb8c4b486-zq87p",
+          "container": "help",
+          "seconds": 32.34890270233154,
+          "cpuCores": 0.008986950892125516,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 237.05078125
+        },
+        {
+          "pod": "identity-7c9fc8bc7b-jfjmp",
+          "container": "identity",
+          "seconds": 32.28037643432617,
+          "cpuCores": 0.044608463687826214,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 420.57421875
+        },
+        {
+          "pod": "stun-779977cbdf-rrfnb",
+          "container": "stun",
+          "seconds": 32.22757148742676,
+          "cpuCores": 0.003829391862435178,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 20.3125
+        },
+        {
+          "pod": "payments-86b4b99974-bs7xm",
+          "container": "payments",
+          "seconds": 32.207358598709106,
+          "cpuCores": 0.01203519993146958,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 283.625
+        },
+        {
+          "pod": "assets-69c47dcc5b-vmfps",
+          "container": "assets",
+          "seconds": 32.13366889953613,
+          "cpuCores": 0.012473490072146291,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 287.49609375
+        },
+        {
+          "pod": "communication-65bd87bc6b-rwmzb",
+          "container": "communication",
+          "seconds": 32.058934688568115,
+          "cpuCores": 0.026520251164277663,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 427.41796875
+        },
+        {
+          "pod": "frontend-66bf57f9c-mkck2",
+          "container": "frontend",
+          "seconds": 31.983952283859253,
+          "cpuCores": 0.0008981691738733966,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 15.1015625
+        },
+        {
+          "pod": "redis-66d974cbf4-wprq8",
+          "container": "redis",
+          "seconds": 31.934070587158203,
+          "cpuCores": 0.004078653225385468,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 15.6171875
+        }
+      ]
+    },
+    "comparisonToPriorSourceBatch": {
+      "baselineEvidence": "MSC122_ACCOUNT_OPERATIONS_20261011.json",
+      "baselineSourceRevision": "cfa26b923c515cc683ee329b38416d3e8f578d2a",
+      "baselineMonolithBackendCpuCores": 0.14649005604613488,
+      "currentMonolithBackendCpuCores": 0.09808308674420854,
+      "baselineKvmApplicationCpuCores": 0.667265,
+      "currentKvmApplicationCpuCores": 0.25311882889313503,
+      "limit": "Different low-load samples; do not interpret the differences as a performance improvement/regression."
+    }
+  },
+  "notRun": [
+    "New E2E Mongo image build",
+    "Full DEB install/update qualification",
+    "Template full application startup",
+    "Matched load benchmark (no application hot-path change)"
+  ],
+  "sourceSha256": {
+    "microservices/tools/seed-mongo.py": "e4a3f20dbf3d418b62ed99aacfac2fab136ff7d27a428635f4d1564c85dd8f13",
+    "microservices/tools/test_infra.py": "b5b63a83b4dd2d638a867446a89b668ec6e1e80a1f6b3f7355463e488d12be3e",
+    "packaging/tests/exchange-rate-configuration-test.py": "6bbfdbbadde43fe4d5b7bd65005e8fc9e0f5975ae7e0a7d23926d26a3346cee1",
+    "packaging/tests/mongo-import-entrypoint-test.sh": "ff9f895521629ec858d46fc15fcb67fdb370dfc4d4b703d1cccacd376ed25763",
+    "packaging/tests/mongo_test_runtime.py": "58e7f379f0d22772b2b0339bdc3231c85d3da93be64a2fd9571f88df800784aa",
+    "packaging/tests/owner-version-import-test.py": "636656e7b57cac585c6c2a99ea78092b63e04d1454824d33969d32cad673da33",
+    "server/docker/conf/mongodb/mongo-seed-policy.inc": "6220b6dd4426d2a948e851f352938109b8f38989b89ce546ce829728353640cc",
+    "server/docker/conf/mongodb/mongo_import.sh": "d05eb9c538b66f8506d173ea29c1efc4fc7a16ed93b33cb9a38dc752ead8e008",
+    "server/docker/images/mongodb/e2e/Dockerfile": "90452859905d379063a1919e81cee81ef9d8605b2e0209aad8334d410342d808",
+    "tools/seeds/README.md": "5985d701daeda5bbea066c4cd4d409666d2febc4d52dbea643f847ec1dfb89a2"
+  }
+}

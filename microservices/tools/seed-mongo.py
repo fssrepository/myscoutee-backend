@@ -22,6 +22,7 @@ import mongo_replica
 
 DATABASES = {'msc121_real': 'myscoutee_db', 'msc121_demo': 'demo_db'}
 STATE_DB = 'msc121_bootstrap'
+IMPORT_FILES = ('mongo_import.sh', 'mongo-seed-policy.inc')
 
 
 def seed_bundle(backend):
@@ -34,7 +35,7 @@ def seed_bundle(backend):
     if not rules.get('myscoutee_db') or rules['myscoutee_db'] == '*' or rules.get('demo_db') != '*':
         raise RuntimeError('Review changed canonical production/DEMO seed policy before lab bootstrap.')
     allowlist = ';'.join(database + ':' + rules[directory] for database, directory in DATABASES.items())
-    files = {'mongo_import.sh': source / 'mongo_import.sh'}
+    files = {name: source / name for name in IMPORT_FILES}
     for directory in DATABASES.values():
         for path in sorted((source / directory).glob('*.json')):
             if not re.fullmatch(r'[A-Za-z0-9_]+\.json', path.name):
@@ -48,11 +49,11 @@ def seed_bundle(backend):
     return files, allowlist, bundle_fingerprint(files, allowlist)
 
 
-def bundle_fingerprint(files, allowlist, importer=None):
+def bundle_fingerprint(files, allowlist, policy=None):
     digest = hashlib.sha256(json.dumps({'databases': DATABASES, 'allowlist': allowlist}, sort_keys=True).encode())
     for name, path in files.items():
         digest.update(name.encode() + b'\0')
-        digest.update(importer if name == 'mongo_import.sh' and importer is not None else path.read_bytes())
+        digest.update(policy if name == 'mongo-seed-policy.inc' and policy is not None else path.read_bytes())
     return digest.hexdigest()
 
 
@@ -65,8 +66,8 @@ def catalog_baseline_fingerprint(files, allowlist, catalog):
     rules = dict(item.split(':', 1) for item in allowlist.split(';'))
     previous_rules = ';'.join(db + ':' + (rule if rule == '*' else
         ','.join(item for item in rule.split(',') if item != catalog)) for db, rule in rules.items())
-    importer = files['mongo_import.sh'].read_text()
-    lines = importer.splitlines(keepends=True)
+    policy = files['mongo-seed-policy.inc'].read_text()
+    lines = policy.splitlines(keepends=True)
     indices = [index for index, line in enumerate(lines) if line.startswith('allowed_collections_by_db=')]
     if len(indices) != 1 or lines[indices[0]].count(',' + catalog + ',') != 2:
         raise RuntimeError('Canonical importer allowlist shape changed; review a separate migration.')
@@ -205,7 +206,7 @@ print(JSON.stringify({fingerprint:state.fingerprint,missing}));
         if before['fingerprint'] == fingerprint:
             raise RuntimeError('Completed catalog data changed; refusing automatic repair.')
         databases = {name: DATABASES[name] for name in before['missing']}
-        selected = {'mongo_import.sh': files['mongo_import.sh']}
+        selected = {name: files[name] for name in IMPORT_FILES}
         selected.update({source + '/' + catalog + '.json': files[source + '/' + catalog + '.json']
                          for source in databases.values()})
         narrow_allowlist = ';'.join(name + ':' + catalog for name in databases)

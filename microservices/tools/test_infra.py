@@ -295,7 +295,11 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
     def catalog_files(self, directory):
         path = Path(directory) / 'landingSlides.json'
         path.write_text('[{"_id":"slide-1","title":"Canonical slide"}]')
-        return {'mongo_import.sh': Path(directory) / 'mongo_import.sh',
+        importer = Path(directory) / 'mongo_import.sh'
+        importer.write_text('# shared import engine\n')
+        policy = Path(directory) / 'mongo-seed-policy.inc'
+        policy.write_text('# project policy\n')
+        return {'mongo_import.sh': importer, 'mongo-seed-policy.inc': policy,
                 'myscoutee_db/landingSlides.json': path, 'demo_db/landingSlides.json': path}
 
     def test_catalog_migration_imports_only_missing_catalog_and_database(self):
@@ -310,6 +314,7 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
                                    'new', 'owned', 'landingSlides', 'old')
             importer.assert_called_once_with(
                 {'mongo_import.sh': files['mongo_import.sh'],
+                 'mongo-seed-policy.inc': files['mongo-seed-policy.inc'],
                  'myscoutee_db/landingSlides.json': files['myscoutee_db/landingSlides.json']},
                 'msc121_real:landingSlides', 'new', {'msc121_real': 'myscoutee_db'}, catalog='landingSlides')
 
@@ -344,7 +349,7 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
              patch.object(seed_mongo, 'mongo') as mongo, \
              patch.object(seed_mongo, 'import_files') as importer:
             files = self.catalog_files(directory)
-            files['mongo_import.sh'].write_text(
+            files['mongo-seed-policy.inc'].write_text(
                 'allowed_collections_by_db="myscoutee_db:appSettings,landingSlides,other;production_db:appSettings,landingSlides,other"\n')
             allowlist = 'msc121_real:appSettings,landingSlides,other;msc121_demo:*'
             before = seed_mongo.catalog_baseline_fingerprint(files, allowlist, 'landingSlides')
@@ -353,6 +358,20 @@ class SeedBootstrapSafetyTest(unittest.TestCase):
                 seed_mongo.add_catalog(files, allowlist, 'new', 'owned', 'landingSlides', before)
             mongo.assert_not_called()
             importer.assert_not_called()
+
+    def test_engine_and_policy_changes_invalidate_catalog_migration(self):
+        for filename in seed_mongo.IMPORT_FILES:
+            with self.subTest(filename=filename), tempfile.TemporaryDirectory() as directory, \
+                 patch.object(seed_mongo, 'mongo') as mongo:
+                files = self.catalog_files(directory)
+                files['mongo-seed-policy.inc'].write_text(
+                    'allowed_collections_by_db="myscoutee_db:appSettings,landingSlides,other;production_db:appSettings,landingSlides,other"\n')
+                allowlist = 'msc121_real:appSettings,landingSlides,other;msc121_demo:*'
+                before = seed_mongo.catalog_baseline_fingerprint(files, allowlist, 'landingSlides')
+                files[filename].write_text(files[filename].read_text() + '# changed\n')
+                with self.assertRaisesRegex(RuntimeError, 'Source changes exceed'):
+                    seed_mongo.add_catalog(files, allowlist, 'new', 'owned', 'landingSlides', before)
+                mongo.assert_not_called()
 
     def test_live_backends_prevent_any_seed_mutation(self):
         with tempfile.TemporaryDirectory() as directory, \

@@ -24,3 +24,15 @@ node tools/seeds/normalize-chat-seed.mjs --write
 Runtime database import/bootstrap code stays with the server. Packaging-time
 seed synchronization stays under `packaging/scripts` because it is part of
 artifact construction.
+
+The common runtime engine is `server/docker/conf/mongodb/mongo_import.sh`.
+Its adjacent `mongo-seed-policy.inc` owns the project's collection allow-list,
+special import handlers, indexes and migrations. Keep these two files together
+in DEB, E2E and KVM seed bundles; the `.inc` suffix prevents Mongo's entrypoint
+from executing the policy independently. `db_init.js` remains the project-owned
+fresh database schema. A new project can reuse the engine byte-for-byte and
+select its own policy and schema without importing MyScoutee product collections.
+
+KVM seed fingerprints include both files. A changed importer or policy must not
+silently authorize reimporting an existing database or updating its bootstrap
+receipt. The existing explicit bootstrap/migration guards still apply.

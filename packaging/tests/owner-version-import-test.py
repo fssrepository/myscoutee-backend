@@ -3,6 +3,7 @@
 import subprocess
 import tempfile
 from pathlib import Path
+from mongo_test_runtime import run_mongo
 
 root = Path(__file__).resolve().parents[2]
 importer = root / "server/docker/conf/mongodb/mongo_import.sh"
@@ -53,6 +54,4 @@ try {
   print('PASS owner seed versions: imported owners writable, existing versions/content retained, stale writes rejected, repeat idempotent, unrelated collections untouched.');
 } finally { testDb.dropDatabase(); }
 '''.replace('COMMANDS', commands.replace('db.getCollection(', 'testDb.getCollection('))
-subprocess.run(['docker', 'exec', '-i', 'mongodb', 'sh', '-c',
-    'exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" '
-    '--authenticationDatabase admin --file /dev/stdin'], input=script, text=True, check=True)
+run_mongo(script)
