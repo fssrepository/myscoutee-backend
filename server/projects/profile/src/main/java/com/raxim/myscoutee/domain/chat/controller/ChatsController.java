@@ -21,7 +21,6 @@ import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMembersPageResponseDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatPageResponseDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatPostMessageRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatDto;
-import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatServiceEnsureRequestDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatSupportCaseMutationRequestDto;
 import com.raxim.myscoutee.domain.access.api.AccessPolicyKeys;
 import com.raxim.myscoutee.domain.access.api.RequiresPolicy;
@@ -96,13 +95,6 @@ public class ChatsController {
     public ChatDto addContactChatMembers(@PathVariable String chatId, @RequestBody ContactChatMembersRequest request,
             @RequestParam(value = "userId", required = false) String userId) {
         return chatService.addContactChatMembers(chatId, userId, request == null ? null : request.userIds());
-    }
-
-    @PostMapping("/service")
-    public ChatDto ensureServiceChat(
-            @RequestBody ChatServiceEnsureRequestDto request,
-            @RequestParam(value = "userId", required = false) String userId) {
-        return chatService.ensureServiceChat(request, userId);
     }
 
     @GetMapping("/{chatId}/shared-messages")

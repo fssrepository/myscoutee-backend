@@ -23,7 +23,7 @@ import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReactionDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatMessageReplyDto;
 import com.raxim.myscoutee.domain.chat.dto.ChatDtos.ChatReadAvatarDto;
 import com.raxim.myscoutee.domain.accounts.api.ProfileSummaries;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.SystemChatMessages;
 import com.raxim.myscoutee.domain.chat.service.ChatStreamEvent;
 
 @Component
@@ -376,8 +376,8 @@ public class ChatMessageMapper {
 
     private String presentationText(ChatMessage message) {
         if (message != null
-                && ChatService.RANDOM_ROOM_WELCOME_MESSAGE_ID.equals(safeText(message.getId()))) {
-            return ChatService.RANDOM_ROOM_WELCOME_MESSAGE;
+                && SystemChatMessages.RANDOM_ROOM_WELCOME_MESSAGE_ID.equals(safeText(message.getId()))) {
+            return SystemChatMessages.RANDOM_ROOM_WELCOME_MESSAGE;
         }
         return message == null ? "" : safeText(message.getText());
     }

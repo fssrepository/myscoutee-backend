@@ -115,6 +115,18 @@ class DomainServiceBoundaryTest {
     }
 
     @org.junit.jupiter.api.Test
+    void genericChatDoesNotRequireProductServiceContracts() throws Exception {
+        for (String type : List.of("chat/service/ChatService", "chat/service/ChatWebSocketSessionRegistry",
+                "chat/service/ChatRecordContext", "chat/mapper/ChatMessageMapper", "access/security/ChatPolicyFacts")) {
+            var resource = new org.springframework.core.io.ClassPathResource(DOMAIN + type + ".class");
+            for (String constant : utf8Constants(resource)) {
+                assertThat(constant).as(type).doesNotContain(DOMAIN + "events/", DOMAIN + "community/",
+                        DOMAIN + "campaigns/", DOMAIN + "assets/", DOMAIN + "groups/api/GroupDirectory");
+            }
+        }
+    }
+
+    @org.junit.jupiter.api.Test
     void deploymentPlatformDoesNotRequireProductNetworkContracts() throws Exception {
         for (Resource resource : productionDomainClasses()) {
             String name = className(resource);

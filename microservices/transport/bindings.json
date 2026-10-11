@@ -138,7 +138,8 @@
       "credential": "groupDirectoryToken",
       "consumerApis": [
         "com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory",
-        "com.raxim.myscoutee.domain.platform.api.WorkspaceNames"
+        "com.raxim.myscoutee.domain.platform.api.WorkspaceNames",
+        "com.raxim.myscoutee.domain.chat.api.SupportWorkspaceDirectory"
       ]
     },
     {

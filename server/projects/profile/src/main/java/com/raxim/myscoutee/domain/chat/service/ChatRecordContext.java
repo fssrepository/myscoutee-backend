@@ -3,9 +3,6 @@ package com.raxim.myscoutee.domain.chat.service;
 import java.util.*;
 import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.chat.document.Chat;
-import com.raxim.myscoutee.domain.assets.api.AssetCatalog;
-import com.raxim.myscoutee.domain.events.api.EventOwnership.Event;
-import com.raxim.myscoutee.domain.events.api.EventOwnership.SubEvent;
 
 /** Existing channel/owner parsing shared by chat operations and their presentation. */
 final class ChatRecordContext {
@@ -23,9 +20,6 @@ final class ChatRecordContext {
     static final String MEMBER_STATUS_ACCEPTED = "accepted";
     static final String MEMBER_STATUS_PENDING = "pending";
     static final String RUNTIME_STATUS_DELETED = "D";
-    static final String ASSET_TYPE_TRANSPORT = AssetCatalog.TYPE_TRANSPORT;
-    static final String ASSET_TYPE_ACCOMMODATION = AssetCatalog.TYPE_ACCOMMODATION;
-    static final String ASSET_TYPE_SUPPLIES = AssetCatalog.TYPE_SUPPLIES;
 
     static int normalizeCount(Integer value) {
         return Math.max(0, value == null ? 0 : value);
@@ -139,20 +133,12 @@ final class ChatRecordContext {
         return parts;
     }
 
-    static int countValue(Integer value) {
-        return normalizeCount(value);
+    static int safePageTotal(long total) {
+        return total >= Integer.MAX_VALUE ? Integer.MAX_VALUE : Math.max(0, (int) total);
     }
 
-    static SubEvent findChatContextSubEvent(Event event, String subEventId) {
-        String normalizedSubEventId = normalizeId(subEventId);
-        if (event == null || !StringUtils.hasText(normalizedSubEventId)) {
-            return null;
-        }
-        return (event.getSubEvents() == null ? List.<SubEvent>of() : event.getSubEvents()).stream()
-                .filter(Objects::nonNull)
-                .filter(item -> normalizedSubEventId.equals(normalizeId(item.id())))
-                .findFirst()
-                .orElse(null);
+    static int countValue(Integer value) {
+        return normalizeCount(value);
     }
 
     record ChatOwnerParts(

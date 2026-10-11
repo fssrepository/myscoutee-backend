@@ -79,6 +79,20 @@ class GroupDirectoryHttpTest {
         org.mockito.Mockito.verifyNoMoreInteractions(repository);
     }
 
+    @Test void supportWorkspaceRetainsTheExistingSingleLookupAndAbsentGroupDistinction() {
+        var repository = server.getBean(CommunityGroupsRepository.class);
+        for (String id : List.of("work", "missing", BaseGroups.WORK_BASE_ID)) {
+            var expected = server.getBean(GroupDirectoryService.class).supportWorkspace(id);
+            clearInvocations(repository);
+            assertEquals(expected, remote.supportWorkspace(id));
+            verify(repository).findById(id);
+            verifyNoMoreInteractions(repository);
+        }
+        assertFalse(remote.supportWorkspace("missing").present());
+        assertEquals(BaseGroups.WORK_BASE_ID, remote.supportWorkspace(BaseGroups.WORK_BASE_ID).baseId());
+        assertEquals(503, assertThrows(RemoteReadException.class, () -> remote.supportWorkspace("fail")).status());
+    }
+
     @Test void allCanonicalDirectoryOperationsPreserveDerivedPolicyAndModes() throws Exception {
         var local=server.getBean(GroupDirectoryService.class);
         for (var mode:List.of(MongoSessionMode.REAL,MongoSessionMode.DEMO,MongoSessionMode.REAL)) {

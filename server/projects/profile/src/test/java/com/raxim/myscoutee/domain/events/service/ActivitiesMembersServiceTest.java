@@ -5,7 +5,7 @@ import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
 import com.raxim.myscoutee.domain.assets.service.AssetsService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.EventConversations;
 import com.raxim.myscoutee.domain.payments.service.EventCheckoutBasketService;
 import com.raxim.myscoutee.domain.payments.service.PaymentService;
 
@@ -96,7 +96,7 @@ class ActivitiesMembersServiceTest {
     @Mock
     private AdminTelemetryService adminTelemetryService;
     @Mock
-    private ChatService chatService;
+    private EventConversations chatService;
     @Mock
     private EventSlotReadModelService eventSlotReadModelService;
     @Mock

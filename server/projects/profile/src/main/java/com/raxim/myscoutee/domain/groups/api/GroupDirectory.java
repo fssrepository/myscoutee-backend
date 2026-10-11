@@ -3,7 +3,15 @@ package com.raxim.myscoutee.domain.groups.api;
 import java.util.Optional;
 
 public interface GroupDirectory extends com.raxim.myscoutee.domain.platform.api.JobWorkspaceDirectory,
-        com.raxim.myscoutee.domain.platform.api.WorkspaceNames {
+        com.raxim.myscoutee.domain.platform.api.WorkspaceNames,
+        com.raxim.myscoutee.domain.chat.api.SupportWorkspaceDirectory {
+    @Override
+    default Workspace supportWorkspace(String workspaceId) {
+        var group = findById(workspaceId).orElse(null);
+        return new Workspace(BaseGroups.isBaseId(workspaceId) ? workspaceId : group == null ? null : group.baseId(),
+                group == null ? null : group.name(), group != null);
+    }
+
     @Override
     default void withWorkspaceName(String workspaceId, java.util.function.Consumer<String> consumer) {
         name(workspaceId).ifPresent(group -> consumer.accept(group.name()));

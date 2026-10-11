@@ -2,10 +2,37 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **140**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **141**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
 
+
+## MSC-122 generic chat and product conversations — 2026-10-11
+
+Product conversation creation now lives separately from generic chat storage and
+messaging. Existing event/case contracts and the service-chat HTTP route remain
+unchanged. Case participant checks, resource member pagination and the WebSocket
+case audience are installed providers; full MyScoutee keeps the same predicates,
+queries, batching and error propagation. Personal chat starts without those
+providers and stored channels are not hidden. Support workspace metadata uses
+the existing single native/remote group lookup.
+
+**406 focused canonical JUnit tests**, **15 HTTP transport tests** and all eight
+service artifacts/images and ownership audits passed. KVM Helm **141** and the
+serial monolith each passed **51 runtime assertions**. The original dev
+configuration is restored and healthy; KVM is stopped.
+
+KVM CPU was **0.995 cores** just after probes and **0.807** in the follow-up,
+versus **0.690** previously. Communication settled at **0.0447** versus **0.0374**;
+monolith backend CPU was **0.1207** versus **0.1128**. These low-load observations
+include increases and do not prove performance parity. Settled backend logs have
+no new errors and no backend CPU throttling; the supporting registry had 0.0147
+seconds of throttling. Initial owner-unavailable startup messages are recorded.
+[Evidence](../guides/qualification/evidence/MSC122_CHAT_BOUNDARIES_20261011.json)
+contains source hashes, checks, timings and resource samples.
+
+Personal profile/API product dependencies and actual minimal composition remain
+open. Template work remains paused.
 
 ## MSC-122 profile status and personal API boundaries — 2026-10-11
 

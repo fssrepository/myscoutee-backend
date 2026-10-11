@@ -1,6 +1,7 @@
 package com.raxim.myscoutee.domain.chat.service;
 
 import static com.raxim.myscoutee.domain.chat.service.ChatRecordContext.*;
+import static com.raxim.myscoutee.domain.chat.service.ChatActivityContext.*;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
