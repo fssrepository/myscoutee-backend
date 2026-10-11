@@ -2,6 +2,16 @@
 
 Updated: 2026-10-11. Task: [MSC-122](https://github.com/fssrepository/myscoutee-roadmap/issues/160).
 
+**Current execution plan:** the English, numbered implementation checklist now
+lives in the template repository at
+[`guides/plans/MSC-122_TEMPLATE_IMPLEMENTATION_PLAN.md`](../../../myscoutee-template/guides/plans/MSC-122_TEMPLATE_IMPLEMENTATION_PLAN.md).
+That checklist owns current template status and completion gates. This document
+retains the source-separation decisions and historical qualification context.
+The required source preparation is qualified through `cfa26b923`, following
+`d11e45546`; template composition has resumed. The initial template release is
+**1.0.0**. Full local/HTTP, dev/prod, E2E, stress, KVM, packaging, signed updates,
+GitHub release/GHCR and Pages workflows are required in their minimal form.
+
 ## Delivery boundary and order
 
 `myscoutee-template` is a standalone, complete minimal counterpart of
@@ -194,7 +204,7 @@ signing domain strings and helper request schema are retained. In particular,
 the legacy `myscoutee-registry-update-manifest-v1` signing discriminator remains
 unchanged so existing signatures remain verifiable.
 
-## Verification / current gate
+## Historical verification gate — Helm 129
 
 The eight-service KVM gate is complete at Helm revision **129**. The serial
 monolith gate and final focused JUnit batch also pass. No complete-template
@@ -253,7 +263,7 @@ interruption/rollback and template installation remain separate qualification
 scopes. The existing content/help grouping is unchanged. Documentation records
 only exercised behavior, not every optional screen or future template flow.
 
-## Latest narrow extraction checkpoint — 2026-10-11
+## Historical narrow extraction checkpoints — 2026-10-11
 
 Administrator identity is already separated from content moderation. Campaign
 organizer-contact eligibility now belongs to campaigns through its existing
@@ -280,54 +290,33 @@ community, payment or Registry implementation/seed has been copied. The initial
 26 account/session/consent tests pass; deployment/Firebase configuration selection
 is in progress. The template is not runnable yet, and no installation is claimed.
 
-## Remaining complete-template work
+## Source preparation complete; template implementation active
 
-**Ordering correction, 2026-10-11:** the administrator, campaign-contact and
-selected-profile checkpoints do not complete the previously estimated MyScoutee
-preparation. Template work advanced before that source review was finished. Its
-tested component checkpoints are retained, and further template implementation
-waits while the remaining source boundaries below are addressed in MyScoutee.
+The later source batches qualified scheduling, durable optional cleanup, account
+read/status boundaries, generic chat, account lifecycle/location and API summary
+ownership. The final two source checkpoints are:
 
-- Scheduling configuration: remove affinity types from the shared value reader
-  while retaining the same MyScoutee catalog, scope, defaults and transport calls.
-  In progress; focused tests pass, KVM and monolith qualification pending.
-- Composition acceptance: omitting `community` from the configured assembly must
-  leave the retained identity, API/MCP, chat and notification flows working. The
-  current all-domain coverage requirement and mandatory foreign bindings still
-  prevent this. Packaging separately is not proof of optional composition.
-- Chat: separate event/resource/community additions from conversation storage and
-  membership. Existing conversations must not be hidden or blocked simply because
-  community is absent; no new membership rules or model are authorized.
-- Account purge: separate product cleanup from the existing durable purge worker
-  without skipping required MyScoutee cleanup or changing retry/order semantics.
-- Recheck the retained account/access/media and API/MCP dependency closure before
-  resuming the template. Full application QA and production update/network
-  qualification remain separate from these source extraction checks.
+- `d11e45546`: 406 native JUnit checks, 15 transport checks, eight service builds
+  and 51 focused runtime assertions per deployment; KVM Helm 141 and monolith.
+  [Chat evidence](../qualification/evidence/MSC122_CHAT_BOUNDARIES_20261011.json).
+- `cfa26b923`: 173 native JUnit checks, eight service builds and 55 focused runtime
+  assertions per deployment; KVM Helm 142 and monolith.
+  [Account operations evidence](../qualification/evidence/MSC122_ACCOUNT_OPERATIONS_20261011.json).
 
-1. The serial MyScoutee KVM → monolith gate above is complete for this extraction
-   boundary. Preserve its evidence and retain the separately listed unqualified
-   production/update/network scopes.
-2. Inventory remaining product dependencies in accounts/access/platform/admin,
-   communication/media and integrations/MCP. Separate required extension ports
-   at their current owners; retain login/session/demo, consent/guide, generic
-   operator settings/jobs, communication and API/MCP. Exclude matchmaking,
-   assets/events/campaign rules, payments/network accounting, Registry enrollment
-and product moderation. A missing implementation must not be hidden by a
-stub or permissive fallback.
-3. Build the frontend shell in its local submodule using the actual shared
-   components and the extracted application services. Keep the requested member
-   member SmartList and basic chat, login/demo entry and Template
-   branding. Do not substitute a fake in-memory login or duplicate guide engine.
-4. Carry the canonical development/build/packaging/host-helper/release workflows
-   into the standalone project, with project-owned names, paths and credentials.
-   Preserve independent semantic versions/tags and signed release trust. Derive
-   KVM ownership from that project's configuration; never adopt MyScoutee's VM,
-   volumes or production state.
-5. Verify a fresh minimal project through install, startup, restart and upgrade
-   on its own KVM, then document Debian/Netcup setup and generate its getting
-   started PDF with the established manual builder. Publish no release until
-   these outcomes are proven.
+The earlier instruction to keep template work waiting for these source batches
+is closed. These results do not claim that the complete MyScoutee application can
+run with arbitrary owner declarations removed. The standalone template composes
+selected implementations and may retain its already-tested smaller profile DTO
+and mapper. Broad product-profile/discovery generalization is not a prerequisite.
 
-The earlier frontend-only attempt was reverted. This document and the new
-backend preparation supersede that attempt; its temporary build logs are not
-current template evidence.
+Follow the template's [numbered implementation plan](../../../myscoutee-template/guides/plans/MSC-122_TEMPLATE_IMPLEMENTATION_PLAN.md)
+for the remaining work. It covers the complete minimal framework, including
+frontend local/HTTP, dev/prod/E2E, functional and stress tests, microservices/KVM,
+DEB/Netcup, backup/restore, signed updates, GitHub releases/images/Pages and the
+single generated guide PDF. Source selection and a passing component suite do
+not mark any unexercised runtime, installation or publication gate complete.
+
+The earlier frontend-only attempt was reverted. Its temporary logs are not
+current template evidence. Preserve the selected, tested template checkpoints
+and continue from the numbered plan rather than restarting or cloning the full
+product.
