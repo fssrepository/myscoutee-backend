@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-10-11T23:41:03.697763+00:00",
+  "baseRevision": "37f5f708ef88a7c2d5685355511f6fff87659596",
+  "scope": "Move existing microservice project name, version and shared configuration import selection to assemblies.json so a minimal template can reuse the build without the payment exception handler. Native values and imported handlers are unchanged.",
+  "verification": {
+    "command": "microservices/gradlew --no-daemon --max-workers=1 -Dorg.gradle.jvmargs=-Xmx1024m -PbackendRevision=37f5f708e verifyAssemblies",
+    "status": "PASS",
+    "seconds": 49,
+    "assemblyOwnershipPass": 8,
+    "bootstrapTests": "Existing 239-test/52-suite input set unchanged; Gradle reused the up-to-date passing result. Not counted as newly executed tests.",
+    "artifactChecks": "Each configured shared handler is present in generated AssemblyConfiguration; all previous ownership and transport-import checks pass."
+  },
+  "runtimeBoundary": "No business query or API implementation changed. KVM/monolith runtime qualification for the next coherent shell configuration batch is still pending; preceding admin-feature qualification remains at 37f5f708e."
+}

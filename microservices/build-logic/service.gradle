@@ -20,6 +20,7 @@ def transportConfigurations = bindings.collect { binding ->
     owner || consumer ? "${binding.package}.${binding.configuration}${owner ? 'Server' : 'Client'}Configuration" : null
 }.findAll { it != null }
 def explicitImports = transportConfigurations.collect { 'com.raxim.myscoutee.microservices.transport.' + it }
+explicitImports += rootProject.assemblyConfiguration.sharedConfigurationImports
 if (domains.contains('accounts')) {
     explicitImports += 'com.raxim.myscoutee.microservices.transport.security.ActorDelegationBrokerServerConfiguration'
     explicitImports += 'com.raxim.myscoutee.common.config.WebSecurityConfig'
@@ -124,7 +125,7 @@ management.metrics.distribution.percentiles-histogram.http.server.requests=true
 """
         def metadata = new File(resources, 'META-INF/myscoutee-assembly.properties')
         metadata.parentFile.mkdirs()
-        metadata.text = "assembly=${project.name}\nissue=MSC-121\nbackend.revision=${inputs.properties.backendRevision}\ndomains=${domains.join(',')}\n"
+        metadata.text = "assembly=${project.name}\nissue=${rootProject.assemblyConfiguration.issue}\nbackend.revision=${inputs.properties.backendRevision}\ndomains=${domains.join(',')}\n"
     }
 }
 tasks.named('compileJava') { dependsOn 'generateAssembly' }

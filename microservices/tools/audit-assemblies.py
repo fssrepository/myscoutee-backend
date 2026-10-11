@@ -69,6 +69,8 @@ def audit_jar(name, assembly):
         assert f"domains={','.join(assembly['domains'])}\n" in metadata
         # Verify imports in the executable configuration, not only packaged adapter classes.
         configuration_bytes = jar.read('BOOT-INF/classes/com/raxim/myscoutee/microservices/bootstrap/AssemblyConfiguration.class')
+        for shared_import in json.loads((SHELL / 'assemblies.json').read_text())['sharedConfigurationImports']:
+            assert shared_import.replace('.', '/').encode() in configuration_bytes, f'{name}: missing configured shared import {shared_import}'
         for binding in json.loads((SHELL / 'transport/bindings.json').read_text())['bindings']:
             domain, contract = binding['domain'], binding['api']
             transport, prefix = binding['package'], binding['configuration']

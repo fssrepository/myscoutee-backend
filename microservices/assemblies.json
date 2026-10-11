@@ -1,6 +1,11 @@
 {
   "schemaVersion": 1,
   "issue": "MSC-121",
+  "projectName": "myscoutee-microservices",
+  "version": "msc121",
+  "sharedConfigurationImports": [
+    "com.raxim.myscoutee.common.controller.PaymentProviderChangedExceptionHandler"
+  ],
   "services": {
     "identity": {
       "domains": [
