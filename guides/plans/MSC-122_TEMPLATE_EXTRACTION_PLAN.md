@@ -265,6 +265,19 @@ This does not make community optional yet: event/member, case and announcement
 references still require review. No template application sources, frontend
 submodule contents, models or seed data were copied in this checkpoint.
 
+The next account-selection boundary also passes KVM Helm **136** and monolith:
+existing selection logic now has its own account service, and the redundant
+`AdministratorCandidate` type no longer makes normal profile views depend on
+administration. See the [source and runtime evidence](../qualification/evidence/MSC122_PROFILE_SELECTION_20261011.json).
+
+Template implementation has now started through explicit file selection recorded
+in `myscoutee-template/tools/upstream-sources.json`: native account/session/consent
+models and services, required narrow read interfaces and an independent Gradle
+build. `Users.affiliateRegistration` is omitted as requested. No events,
+community, payment or Registry implementation/seed has been copied. The initial
+26 account/session/consent tests pass; deployment/Firebase configuration selection
+is in progress. The template is not runnable yet, and no installation is claimed.
+
 ## Remaining complete-template work
 
 1. The serial MyScoutee KVM → monolith gate above is complete for this extraction

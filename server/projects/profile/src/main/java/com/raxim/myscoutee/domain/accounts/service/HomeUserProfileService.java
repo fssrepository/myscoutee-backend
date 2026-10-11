@@ -109,7 +109,7 @@ import com.raxim.myscoutee.domain.accounts.repository.UsersRepository;
 import com.raxim.myscoutee.domain.access.api.AccessPermissions;
 
 @Service
-public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.SelectedProfile, com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
+public class HomeUserProfileService implements com.raxim.myscoutee.domain.accounts.api.ProfilePresentation, com.raxim.myscoutee.domain.accounts.api.RatingProfiles,
         com.raxim.myscoutee.domain.accounts.api.ProfileReadState,
         com.raxim.myscoutee.domain.accounts.api.RatingSession, com.raxim.myscoutee.domain.accounts.api.FeedbackSession, com.raxim.myscoutee.domain.accounts.api.ProfileCards,
         com.raxim.myscoutee.domain.accounts.api.LocationEligibility {
@@ -226,6 +226,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     @org.springframework.beans.factory.annotation.Autowired
     private com.raxim.myscoutee.domain.community.api.CaseParticipants caseParticipants;
     private final UsersRepository usersRepository;
+    private final SelectedProfileService selectedProfile;
     private final UserFilterPreferencesRepository userFilterPreferencesRepository;
     private final UserExperienceProfilesRepository userExperienceProfilesRepository;
     @org.springframework.beans.factory.annotation.Autowired private ProfileStatusWork profileStatusWork;
@@ -287,6 +288,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
 
     public HomeUserProfileService(
             UsersRepository usersRepository,
+            SelectedProfileService selectedProfile,
             UserFilterPreferencesRepository userFilterPreferencesRepository,
             UserExperienceProfilesRepository userExperienceProfilesRepository,
             EdgeDirectory userAffinityEdgesRepository,
@@ -312,6 +314,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
             com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroupsRepository) {
         this.communityGroupsRepository = communityGroupsRepository;
         this.usersRepository = usersRepository;
+        this.selectedProfile = selectedProfile;
         this.userFilterPreferencesRepository = userFilterPreferencesRepository;
         this.userExperienceProfilesRepository = userExperienceProfilesRepository;
         this.userAffinityEdgesRepository = userAffinityEdgesRepository;
@@ -1473,56 +1476,15 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     public Users resolveCurrentUser(String requestedUserId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof FirebasePrincipal firebasePrincipal) {
-            Users principalUser = firebasePrincipal.getUser();
-            String principalUserId = principalUser != null
-                    ? normalizeId(principalUser.getId())
-                    : normalizeId(firebasePrincipal.getUserId());
-            if (StringUtils.hasText(principalUserId)) {
-                Users refreshedPrincipalUser = findUser(principalUserId);
-                if (refreshedPrincipalUser != null) {
-                    return refreshedPrincipalUser;
-                }
-            }
-            if (isUsableUserDocument(principalUser)) {
-                return principalUser;
-            }
-            // An authenticated identity must never fall back to a different
-            // account selected through request data when its profile is missing.
-            return null;
-        }
-
-        if (authentication != null
-                && authentication.getPrincipal() instanceof com.raxim.myscoutee.domain.accounts.api.AuthenticatedActor actor) {
-            if (!authentication.isAuthenticated()) return null;
-            var identity = actor.getProfileIdentity();
-            if (identity == null || !java.util.Objects.equals(actor.getUserId(), identity.userId())) return null;
-            Users user = findUser(normalizeId(actor.getUserId()));
-            // The signed selection is a constraint, not permission to switch to a
-            // requested profile or to keep a profile after its ownership changes.
-            return user != null
-                    && java.util.Objects.equals(identity.accountUserId(), user.getAccountUserId())
-                    && java.util.Objects.equals(identity.workspaceGroupId(), user.getWorkspaceGroupId()) ? user : null;
-        }
-
-        String normalizedRequestedUserId = normalizeId(requestedUserId);
-        if (StringUtils.hasText(normalizedRequestedUserId)) {
-            return findUser(normalizedRequestedUserId);
-        }
-
-        return null;
+        return selectedProfile.resolveCurrentUser(requestedUserId);
     }
 
     public String resolveSelectedUserId(String requestedUserId) {
-        Users currentUser = resolveCurrentUser(requestedUserId);
-        return currentUser == null ? null : normalizeId(currentUser.getId());
+        return selectedProfile.resolveSelectedUserId(requestedUserId);
     }
 
-    @Override public com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto resolveSelectedIdentity(String requestedUserId) {
-        Users currentUser = resolveCurrentUser(requestedUserId);
-        return currentUser == null ? null : new com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto(
-                normalizeId(currentUser.getId()), currentUser.getAccountUserId(), currentUser.getWorkspaceGroupId());
+    public com.raxim.myscoutee.domain.accounts.dto.ProfileIdentityDto resolveSelectedIdentity(String requestedUserId) {
+        return selectedProfile.resolveSelectedIdentity(requestedUserId);
     }
 
     private Users findUser(String userId) {
@@ -1821,14 +1783,7 @@ public class HomeUserProfileService implements com.raxim.myscoutee.domain.accoun
     }
 
     private boolean isUsableUserDocument(Users user) {
-        if (user == null || !StringUtils.hasText(normalizeId(user.getId()))) {
-            return false;
-        }
-        return PROFILE_STATUS_ONBOARDING.equals(resolveProfileStatus(user))
-                || StringUtils.hasText(user.getName())
-                || user.getAge() != null
-                || user.getLocationCoordinates() != null
-                || !normalizeStrings(user.getImages()).isEmpty();
+        return SelectedProfileService.isUsableUserDocument(user);
     }
 
     private boolean isSelectableDemoUserDocument(Users user) {

@@ -157,6 +157,7 @@ class HomeUserProfileServiceTest {
                 .thenReturn(new AssetTicketsPageDto(List.of(), 0));
         service = new HomeUserProfileService(
                 usersRepository,
+                new SelectedProfileService(usersRepository),
                 userFilterPreferencesRepository,
                 userExperienceProfilesRepository,
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),

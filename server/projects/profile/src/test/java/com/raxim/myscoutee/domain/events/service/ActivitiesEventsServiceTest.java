@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.CurrentProfile;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AbsoluteAffinityService;
@@ -116,7 +116,7 @@ class ActivitiesEventsServiceTest {
     @Mock
     private UserAffinityEdgesRepository userAffinityEdgesRepository;
     @Mock
-    private HomeUserProfileService homeUserProfileService;
+    private CurrentProfile homeUserProfileService;
     @Mock
     private ActivitiesMembersService activitiesMembersService;
     @Mock

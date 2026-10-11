@@ -60,6 +60,8 @@ class ActivitiesEventFeedbackServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
+    @Mock
     private ActivityEventsRepository activityEventsRepository;
     @Mock
     private ActivityMingleRoundsRepository mingleRoundsRepository;
@@ -87,7 +89,7 @@ class ActivitiesEventFeedbackServiceTest {
     @BeforeEach
     void setUp() {
         service = new ActivitiesEventFeedbackService(
-                homeUserProfileService,
+                selectedProfile,
                 homeUserProfileService,
                 activityEventsRepository,
                 mingleRoundsRepository,
@@ -165,7 +167,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void mingleRejectsSubmittedFeedbackForAnotherTableBeforeSaving() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(feedbackUser("viewer")));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
@@ -184,7 +186,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void mingleSharedTableFeedbackUsesExistingAnswerPersistenceAndReload() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(feedbackUser("viewer")));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(finishedFeedbackEvent("Mingle")));
@@ -255,7 +257,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void submitRejectsDeniedUserBeforeSavingFeedback() {
-        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
+        when(selectedProfile.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorSubmitEventFeedback("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.submit(new EventFeedbackSubmitRequestDto(
@@ -517,7 +519,7 @@ class ActivitiesEventFeedbackServiceTest {
         AtomicReference<EventFeedbackState> persistedState = new AtomicReference<>();
         AtomicReference<List<EventFeedbackAnswer>> persistedAnswers = new AtomicReference<>(List.of());
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(source));
@@ -606,7 +608,7 @@ class ActivitiesEventFeedbackServiceTest {
         existingState.setEventId("event-1");
         existingState.setSubmittedAtIso("2026-07-23T17:00:00Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.resolveFeedbackSession("viewer")).thenReturn(com.raxim.myscoutee.domain.accounts.dto.FeedbackSessionDto.from(viewer));
         when(accessControlService.canCurrentActorSubmitEventFeedback("viewer", "event-1")).thenReturn(true);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(source));
@@ -657,7 +659,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void saveNoteRejectsDeniedUserBeforeSavingState() {
-        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
+        when(selectedProfile.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorSaveEventFeedbackNote("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.saveNote(new EventFeedbackNoteRequestDto("u1", "event-1", "Needs better timing.")))
@@ -668,7 +670,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void removeRejectsDeniedUserBeforeSavingState() {
-        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
+        when(selectedProfile.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorRemoveEventFeedback("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.markRemoved(new EventFeedbackToggleRequestDto("u1", "event-1"), true))
@@ -679,7 +681,7 @@ class ActivitiesEventFeedbackServiceTest {
 
     @Test
     void restoreRejectsDeniedUserBeforeSavingState() {
-        when(homeUserProfileService.resolveSelectedUserId("u1")).thenReturn("u1");
+        when(selectedProfile.resolveSelectedUserId("u1")).thenReturn("u1");
         when(accessControlService.canCurrentActorRestoreEventFeedback("u1", "event-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.markRemoved(new EventFeedbackToggleRequestDto("u1", "event-1"), false))

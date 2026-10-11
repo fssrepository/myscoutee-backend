@@ -2,9 +2,47 @@
 
 Updated: 2026-10-11. The 23 backend and 9 frontend backup commits were consolidated into task-scoped commits; the rebuilt GitHub Pages bundle is committed under MSC-121. Canonical backend changes belong to MSC-120; the service shell, transport and deployment belong to MSC-121. The additional frontend-local DEMO-selection wait is tracked under MSC-120.
 
-**Last verified lab state:** Helm revision **134**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity and campaign-contact steps passed their focused checks on both deployments.
+**Last verified lab state:** Helm revision **136**; eight backend and eight supporting Deployments Ready, plus Mongo StatefulSet **2/2 Ready**. The 8192-MiB / 4-vCPU guest retains its data volumes and has no host-boot autostart. KVM is stopped; the existing dev/monolith stack is running with its original configuration restored. The administrator-identity, campaign-contact and account-selection steps passed their focused checks on both deployments.
 
 The requested source batch through **milestone 20** is implemented. Native browser/workspace checks, live contact-worker loss and the same stress profiles used for the monolith now pass. The shared two-member Mongo replica set is configured and its idempotent rerun passes. Frontend-local DEMO navigation and timing verification passed; the final 28-page guide/PDF is regenerated. The user additionally requested a new-current-code monolith E2E/performance run after these items, a review of open MSC-115+ tasks, and a separate task for tomorrow’s reusable UI/template extraction.
+
+## MSC-122 account selection and administrator profile view — 2026-10-11
+
+`SelectedProfileService` now owns the existing native/Firebase/delegated profile
+selection using only `UsersRepository`. `HomeUserProfileService` delegates to it;
+its other profile/product behavior is unchanged. Signed account/workspace checks,
+authenticated-user precedence and the repository lookup are preserved. There is
+no new query, transport route or chat/membership filter.
+
+The redundant three-getter `AdministratorCandidate` interface is removed.
+`ProfileSummary` no longer depends on administration; administrator classification
+reads the existing `ProfileSummary` instead. The actual administrator predicates
+and persisted member model are unchanged.
+
+Verification was staged: **299 existing canonical tests**, **eight selection
+tests**, **232 transport tests** and all eight assemblies first passed. After the
+final interface correction, **17 focused canonical tests**, **seven actor
+delegation transport tests**, **nine media-policy transport tests** and all eight
+final assemblies/images passed. KVM Helm **136** and the monolith each passed
+**40 native session, profile-selection and admin-access checks**. Both positive
+admin reads and member/missing-profile rejection were verified. No browser was
+operated. The monolith's original dev environment was restored and verified after
+temporarily disabling its development admin-gate bypass.
+
+The 32-second KVM low-load sample used **0.685 QEMU CPU cores**; identity used
+0.029, community 0.026 and communication 0.058 cores. All 18 pods were Ready;
+the eight new backend pods had zero restarts, while retained supporting pods had
+historical restart counters. Affected-service recent logs contained no errors. After KVM was
+stopped, a 30-second monolith observation used **0.137 backend CPU cores**, Mongo
+0.056 and the settled frontend watcher 0.049. Recent backend logs contained no
+errors. These are observations, not matched before/after load results; individual
+functional request timings include warming and cannot establish a speedup.
+
+[Retained evidence](../guides/qualification/evidence/MSC122_PROFILE_SELECTION_20261011.json)
+contains final source hashes, image identities, route results/timings and CPU
+samples. The template now has selected account/session/consent foundations and
+its own Gradle build; its initial **26 tests** pass. It remains unfinished and is
+not yet a runnable or install-qualified template.
 
 ## MSC-122 campaign organizer contact — 2026-10-11
 

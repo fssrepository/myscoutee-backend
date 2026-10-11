@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.raxim.myscoutee.domain.notifications.dto.NotificationDtos.UserNotificationPreferenceRequestDto;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.notifications.service.UserNotificationService;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,7 +21,7 @@ class UserNotificationsControllerTest {
     @Mock
     private UserNotificationService userNotificationService;
     @Mock
-    private HomeUserProfileService homeUserProfileService;
+    private SelectedProfile homeUserProfileService;
 
     private UserNotificationsController controller;
 

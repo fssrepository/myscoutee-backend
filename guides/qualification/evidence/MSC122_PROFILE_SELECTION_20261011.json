@@ -1,0 +1,1113 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "MSC-122 account selection and administrator profile view",
+  "date": "2026-10-11",
+  "sourceBaseRevision": "ab4f624073457e6f21ace9eb34368cf68e7a4070",
+  "sourceSha256": {
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfilePresentation.java": "168105e0ed01079ce7aac56976df800747b710e11396c76ea46517cf4eb7731b",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/api/ProfileSummary.java": "091a9c638580178ab58eeef64a9b606cebf0a6b538ee4c6fed770f8192c30c63",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileService.java": "dc7cd766faa2b17352d9ee43945bbfa0ee586cc5b0b7674221f59050eba0b302",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdministratorCandidate.java": null,
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/administration/api/AdministratorClassification.java": "346e1280bf5f5233472d346a9fc3ef4f530bdb62a09579b410a4c9b9e1a3331e",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/HomeUserProfileServiceTest.java": "8878744496f3173abd7c87e2630fe368a87a556dbfcce482d6ba4803e9573fb9",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/campaigns/service/CampaignsServiceTest.java": "82c80070cbca82bda1fef90ddc3f5cea2e816606c9f69551a85275e4f062a05c",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/chat/service/ChatServiceTest.java": "162fbb767f452398f920edecd82a880007aa87a7d31063b8bff84be23fa75dd7",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventFeedbackServiceTest.java": "d925018720d3dfc30420912cbfb1eb5ebd8719eae1656fa5950386480176300e",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesEventsServiceTest.java": "3fe99b9b7dea63a9a58d1a01f7b2f1a111d970241b346f1c22901b8af00b511d",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesInviteCandidatesServiceTest.java": "4dee09cb9a7e33228af96a420e2257845919a2262f0d00549051cfca300575e9",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/ActivitiesMembersServiceTest.java": "37c44143c78825eeccf381fbf45273e8ea348296012a456d58e2ca921c7f4f41",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/events/service/EventWatchServiceTest.java": "554b4b7219935451d17101e902c55ed4e8ca13cca7540f0ebd99a0f57abe8425",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/groups/document/CommunityGroupInviteClaimTest.java": "0f92977c934d5f98635d9e9ff6d28cd94e262f2d2052d8b3f6829e31236931a6",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/integrations/service/IntegrationParticipantInviteServiceTest.java": "c376d30e3918a404170ba8c870a01f480dbce5a9f583f47acdd7456a969d1b02",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/notifications/controller/UserNotificationsControllerTest.java": "549509f2dfcd082b341119bcc6fd77eaff34602a12a73fbba1767aad1e263d2b",
+    "microservices/tools/check-profile-selection.py": "231fa8bf2c75f9d6421c9ac48c345aa497b79fab771fe4245edd959e9e6e4d2b",
+    "server/projects/profile/src/main/java/com/raxim/myscoutee/domain/accounts/service/SelectedProfileService.java": "f90fb2354373bc7c6575c455cd3be10422df18d76b0460fddfe1efde9d93abd4",
+    "server/projects/profile/src/test/java/com/raxim/myscoutee/domain/accounts/service/SelectedProfileServiceTest.java": "df8a49c5cfbd6428b4f3dd686fedc63ab00f588f701d9b77a2ed1d8c36556df3"
+  },
+  "behavior": {
+    "accountSelection": "Existing Firebase/native/delegated profile selection moved from HomeUserProfileService to SelectedProfileService; HomeUserProfileService delegates. Authenticated users cannot select another profile through request data.",
+    "administratorView": "ProfileSummary no longer extends the redundant AdministratorCandidate interface; AdministratorClassification reads the same fields through ProfileSummary. Classification predicates are unchanged.",
+    "ioImpact": "Same repository calls and predicates; no added database queries, HTTP routes, cache or membership filtering."
+  },
+  "tests": {
+    "canonicalBeforeFinalTypeCorrection": {
+      "existingTests": 299,
+      "selectedProfileTests": 8,
+      "failures": 0
+    },
+    "finalCanonicalFocused": {
+      "AdminMenuCounterServiceTest": 2,
+      "MediaPolicyFactsTest": 7,
+      "SelectedProfileServiceTest": 8,
+      "failures": 0
+    },
+    "transportBeforeFinalTypeCorrection": {
+      "passed": 232
+    },
+    "finalTransportFocused": {
+      "ActorDelegationBrokerHttpTest": 7,
+      "MediaPolicyHttpTest": 9,
+      "failures": 0
+    },
+    "assemblyAudit": "All eight final JARs and images passed"
+  },
+  "kvm": {
+    "helmRevision": 136,
+    "profileSelection": [
+      {
+        "check": "native DEMO login",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": null
+      },
+      {
+        "check": "native identity",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 218.38
+      },
+      {
+        "check": "native identity ignores caller-selected profile",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 99.65
+      },
+      {
+        "check": "communication selection",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 587.31
+      },
+      {
+        "check": "communication selection ignores caller-selected profile",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 254.49
+      },
+      {
+        "check": "community selection",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 329.13
+      },
+      {
+        "check": "community selection ignores caller-selected profile",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 190.13
+      },
+      {
+        "check": "native session revoked",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": null
+      }
+    ],
+    "session": [
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "id",
+          "name",
+          "age",
+          "birthday",
+          "city",
+          "height",
+          "physique",
+          "languages",
+          "horoscope",
+          "initials",
+          "gender",
+          "statusText",
+          "hostTier",
+          "traitLabel",
+          "completion",
+          "profileFormVersion",
+          "headline",
+          "about",
+          "affinity",
+          "locationCoordinates",
+          "partitionKey",
+          "images",
+          "profileDetails",
+          "impressions",
+          "profileStatus",
+          "previousProfileStatus",
+          "deletedAtIso",
+          "admin",
+          "operator",
+          "activities",
+          "notificationPreferences",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me/profile-ext",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "profileExt",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides",
+          "workspace",
+          "accountProfile"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "community",
+        "path": "/api/activities/events",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "sortKeys"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "communication",
+        "path": "/api/notifications",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "unreadCount",
+          "muted"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "assets",
+        "path": "/api/assets",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "assembly": "payments",
+        "path": "/api/payment-methods",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "items",
+          "total",
+          "nextCursor",
+          "canAdd",
+          "pendingRegistration",
+          "currentProvider"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "affinity",
+        "path": "/api/activities/rates",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "path": "/api/auth/me/logout",
+        "status": 200,
+        "passed": true
+      }
+    ],
+    "sessionLoginPassed": true,
+    "administrator": [
+      {
+        "check": "dashboard accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 246.0
+      },
+      {
+        "check": "help accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 485.91
+      },
+      {
+        "check": "privacy accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 147.38
+      },
+      {
+        "check": "terms accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 122.03
+      },
+      {
+        "check": "explanation accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 150.08
+      },
+      {
+        "check": "notifications accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 161.72
+      },
+      {
+        "check": "params accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 96.42
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 94.23
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 115.73
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 49.62
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 94.18
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 104.85
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 95.33
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 103.81
+      },
+      {
+        "check": "admin session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 23.68
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 99.59
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 51.23
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 53.29
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 19.62
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 53.6
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 14.86
+      },
+      {
+        "check": "member session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      }
+    ],
+    "pods": [
+      {
+        "name": "affinity-5b689b47d4-b2jsb",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "assets-79567bbdd4-m952h",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "communication-7464596ccc-4qcth",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "community-bb9c965bd-jk7xg",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "frontend-66bf57f9c-mkck2",
+        "ready": true,
+        "restarts": 3
+      },
+      {
+        "name": "help-786d487565-2nm78",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "identity-8d4cf6c97-jdlgl",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "mcp-776779bc-8sgbq",
+        "ready": true,
+        "restarts": 8
+      },
+      {
+        "name": "minio-6c7d8948f7-zfmtb",
+        "ready": true,
+        "restarts": 16
+      },
+      {
+        "name": "mongodb-0",
+        "ready": true,
+        "restarts": 8
+      },
+      {
+        "name": "mongodb-1",
+        "ready": true,
+        "restarts": 8
+      },
+      {
+        "name": "network-84f67556f5-tkjf5",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "payment-simulator-6b8c96f5c5-bv55k",
+        "ready": true,
+        "restarts": 8
+      },
+      {
+        "name": "payments-76b946f45f-hcq7w",
+        "ready": true,
+        "restarts": 0
+      },
+      {
+        "name": "redis-66d974cbf4-wprq8",
+        "ready": true,
+        "restarts": 16
+      },
+      {
+        "name": "registry-6f857b4b6-t8dg7",
+        "ready": true,
+        "restarts": 8
+      },
+      {
+        "name": "release-simulator-7f5b9f8f96-jtxbq",
+        "ready": true,
+        "restarts": 5
+      },
+      {
+        "name": "stun-779977cbdf-rrfnb",
+        "ready": true,
+        "restarts": 16
+      }
+    ],
+    "resources": {
+      "kind": "low-load observation, not matched stress comparison",
+      "host": {
+        "seconds": 31.965150015999825,
+        "logicalCpus": 12,
+        "busyPercent": 17.879901636743433,
+        "qemuCpuCores": 0.6846898259212012
+      },
+      "containers": [
+        {
+          "pod": "affinity-5b689b47d4-b2jsb",
+          "container": "affinity",
+          "seconds": 32.09550595283508,
+          "cpuCores": 0.03789153540022554,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 289.078125
+        },
+        {
+          "pod": "payments-76b946f45f-hcq7w",
+          "container": "payments",
+          "seconds": 32.09254169464111,
+          "cpuCores": 0.017338981913449306,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 223.17578125
+        },
+        {
+          "pod": "network-84f67556f5-tkjf5",
+          "container": "network",
+          "seconds": 32.164063453674316,
+          "cpuCores": 0.009731606221049256,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 212.28515625
+        },
+        {
+          "pod": "identity-8d4cf6c97-jdlgl",
+          "container": "identity",
+          "seconds": 32.166738510131836,
+          "cpuCores": 0.029032878160956344,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 374.734375
+        },
+        {
+          "pod": "help-786d487565-2nm78",
+          "container": "help",
+          "seconds": 32.17264652252197,
+          "cpuCores": 0.00941507873118097,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 220.68359375
+        },
+        {
+          "pod": "community-bb9c965bd-jk7xg",
+          "container": "community",
+          "seconds": 32.162407875061035,
+          "cpuCores": 0.02612382142729746,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 334.4921875
+        },
+        {
+          "pod": "communication-7464596ccc-4qcth",
+          "container": "communication",
+          "seconds": 32.11264491081238,
+          "cpuCores": 0.05838908645512021,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 364.09375
+        },
+        {
+          "pod": "assets-79567bbdd4-m952h",
+          "container": "assets",
+          "seconds": 32.030102014541626,
+          "cpuCores": 0.006553085591319924,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 232.484375
+        },
+        {
+          "pod": "mongodb-0",
+          "container": "mongodb",
+          "seconds": 32.07352375984192,
+          "cpuCores": 0.027162403686082977,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 428.0
+        },
+        {
+          "pod": "mongodb-1",
+          "container": "mongodb",
+          "seconds": 32.08185791969299,
+          "cpuCores": 0.018427673405943985,
+          "throttledSeconds": 0.0,
+          "cpuMax": "300000 100000",
+          "memoryMiB": 380.94140625
+        },
+        {
+          "pod": "payment-simulator-6b8c96f5c5-bv55k",
+          "container": "payment-simulator",
+          "seconds": 32.058221101760864,
+          "cpuCores": 0.00011631961699194772,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 14.828125
+        },
+        {
+          "pod": "minio-6c7d8948f7-zfmtb",
+          "container": "minio",
+          "seconds": 32.02029275894165,
+          "cpuCores": 0.0010447124969105272,
+          "throttledSeconds": 0.0,
+          "cpuMax": "100000 100000",
+          "memoryMiB": 272.84375
+        },
+        {
+          "pod": "registry-6f857b4b6-t8dg7",
+          "container": "registry",
+          "seconds": 32.0182044506073,
+          "cpuCores": 0.007095369771607882,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 24.90625
+        },
+        {
+          "pod": "release-simulator-7f5b9f8f96-jtxbq",
+          "container": "release-simulator",
+          "seconds": 32.0363085269928,
+          "cpuCores": 0.0008148878944028116,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 37.01171875
+        },
+        {
+          "pod": "frontend-66bf57f9c-mkck2",
+          "container": "frontend",
+          "seconds": 32.017866373062134,
+          "cpuCores": 0.0005079976226549679,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 16.75390625
+        },
+        {
+          "pod": "redis-66d974cbf4-wprq8",
+          "container": "redis",
+          "seconds": 32.03214502334595,
+          "cpuCores": 0.0031244239162584136,
+          "throttledSeconds": 0.0,
+          "cpuMax": "200000 100000",
+          "memoryMiB": 15.6015625
+        },
+        {
+          "pod": "mcp-776779bc-8sgbq",
+          "container": "mcp",
+          "seconds": 32.01689410209656,
+          "cpuCores": 7.977038596734956e-05,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 11.08203125
+        },
+        {
+          "pod": "stun-779977cbdf-rrfnb",
+          "container": "stun",
+          "seconds": 31.97710609436035,
+          "cpuCores": 0.004894314061384129,
+          "throttledSeconds": 0.0,
+          "cpuMax": "50000 100000",
+          "memoryMiB": 20.6484375
+        }
+      ]
+    },
+    "affectedServicesLaterLogErrors": 0
+  },
+  "monolith": {
+    "profileSelection": [
+      {
+        "check": "native DEMO login",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": null
+      },
+      {
+        "check": "native identity",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 112.4
+      },
+      {
+        "check": "native identity ignores caller-selected profile",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 27.04
+      },
+      {
+        "check": "communication selection",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 180.36
+      },
+      {
+        "check": "communication selection ignores caller-selected profile",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 116.49
+      },
+      {
+        "check": "community selection",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 186.91
+      },
+      {
+        "check": "community selection ignores caller-selected profile",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": 118.57
+      },
+      {
+        "check": "native session revoked",
+        "passed": true,
+        "status": 200,
+        "elapsedMs": null
+      }
+    ],
+    "session": [
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "id",
+          "name",
+          "age",
+          "birthday",
+          "city",
+          "height",
+          "physique",
+          "languages",
+          "horoscope",
+          "initials",
+          "gender",
+          "statusText",
+          "hostTier",
+          "traitLabel",
+          "completion",
+          "profileFormVersion",
+          "headline",
+          "about",
+          "affinity",
+          "locationCoordinates",
+          "partitionKey",
+          "images",
+          "profileDetails",
+          "impressions",
+          "profileStatus",
+          "previousProfileStatus",
+          "deletedAtIso",
+          "admin",
+          "operator",
+          "activities",
+          "notificationPreferences",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "identity",
+        "path": "/api/auth/me/profile-ext",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "profileExt",
+          "filterCount",
+          "filterPreferences",
+          "counterOverrides",
+          "workspace",
+          "accountProfile"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "community",
+        "path": "/api/activities/events",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "sortKeys"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "communication",
+        "path": "/api/notifications",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "records",
+          "total",
+          "nextCursor",
+          "unreadCount",
+          "muted"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "assets",
+        "path": "/api/assets",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "assembly": "payments",
+        "path": "/api/payment-methods",
+        "status": 200,
+        "passed": true,
+        "responseShape": [
+          "items",
+          "total",
+          "nextCursor",
+          "canAdd",
+          "pendingRegistration",
+          "currentProvider"
+        ],
+        "code": null
+      },
+      {
+        "assembly": "affinity",
+        "path": "/api/activities/rates",
+        "status": 200,
+        "passed": true,
+        "responseShape": "list",
+        "code": null
+      },
+      {
+        "path": "/api/auth/me/logout",
+        "status": 200,
+        "passed": true
+      }
+    ],
+    "sessionLoginPassed": true,
+    "administrator": [
+      {
+        "check": "dashboard accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 144.79
+      },
+      {
+        "check": "help accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 134.75
+      },
+      {
+        "check": "privacy accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 65.17
+      },
+      {
+        "check": "terms accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 134.24
+      },
+      {
+        "check": "explanation accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 105.87
+      },
+      {
+        "check": "notifications accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 63.94
+      },
+      {
+        "check": "params accepted",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": 64.43
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 39.21
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 13.15
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 15.3
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 19.6
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 20.61
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 18.89
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 16.57
+      },
+      {
+        "check": "admin session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      },
+      {
+        "check": "dashboard denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 20.01
+      },
+      {
+        "check": "help denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 15.48
+      },
+      {
+        "check": "privacy denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 13.95
+      },
+      {
+        "check": "terms denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 12.27
+      },
+      {
+        "check": "explanation denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 11.82
+      },
+      {
+        "check": "notifications denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 11.87
+      },
+      {
+        "check": "params denied",
+        "status": 403,
+        "passed": true,
+        "elapsedMs": 11.69
+      },
+      {
+        "check": "member session revoked",
+        "status": 200,
+        "passed": true,
+        "elapsedMs": null
+      }
+    ],
+    "resources": {
+      "myscoutee": {
+        "seconds": 30.120844400999886,
+        "cpuCores": 0.13688354632790878,
+        "throttledSeconds": 0.0,
+        "memoryMiB": 1843.4609375
+      },
+      "mongodb": {
+        "seconds": 30.120832776000498,
+        "cpuCores": 0.05572425611476965,
+        "throttledSeconds": 0.0,
+        "memoryMiB": 759.16015625
+      },
+      "frontend-sync": {
+        "seconds": 30.121001417000116,
+        "cpuCores": 0.04930071810832565,
+        "throttledSeconds": 0.0,
+        "memoryMiB": 3732.23046875
+      }
+    },
+    "laterLogErrors": 0,
+    "adminRejectionGate": "Temporarily set MEMBER_USER empty through Compose override, recreating only the stopped backend. Restored original environment and verified its complete environment fingerprint and health afterward."
+  },
+  "images": {
+    "identity": {
+      "source": "myscoutee-service-identity:msc121",
+      "id": "sha256:1b39c30bf43cf4a2cf60b6d6ac1af5f996092dd91bc22b93663e25fe4b84f77b",
+      "contentFingerprint": "sha256:f2a8613cd31a131d28c5cbf9a3c96a54528b6f9fbcdee6b7412a451d911d8b49",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-identity:0.1.0-1b39c30bf43c"
+    },
+    "community": {
+      "source": "myscoutee-service-community:msc121",
+      "id": "sha256:7c30038cef313efce422d1d69d2024f96ef3c817c99bbf89e60e12ad7193bceb",
+      "contentFingerprint": "sha256:fa5aca013d4d6d9cddd55495c867990200905ef84f5ab879bc5253264d425f2d",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-community:0.1.0-7c30038cef31"
+    },
+    "communication": {
+      "source": "myscoutee-service-communication:msc121",
+      "id": "sha256:8664a8b9e8199a7e8f9a71f79fffe6002e229f0f4bba58f3027999f1a5b58586",
+      "contentFingerprint": "sha256:fd779a4b376d05640d3bcaae3e51bd46abfb9d39253c414179e763aa7e3ef9dd",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-communication:0.1.0-8664a8b9e819"
+    },
+    "assets": {
+      "source": "myscoutee-service-assets:msc121",
+      "id": "sha256:65bdc955fcfed48e6bb32ed19f683ba01461b61dcbde51f029a74f80269f6376",
+      "contentFingerprint": "sha256:82c116b2907ab8e3610e6b9e9eee0915da287294fd3b3118ac02bdfb63349e5f",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-assets:0.1.0-65bdc955fcfe"
+    },
+    "payments": {
+      "source": "myscoutee-service-payments:msc121",
+      "id": "sha256:5dafd96f4464cd418b7d331253c05468fda46eedcc07aef5e8433349685f9cc2",
+      "contentFingerprint": "sha256:4ee5a7c6c515ae4a7b9ce620aed5f19f388759b194ad472d5de135092ee019da",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-payments:0.1.0-5dafd96f4464"
+    },
+    "affinity": {
+      "source": "myscoutee-service-affinity:msc121",
+      "id": "sha256:c344a41c88ebeec7afa9782621aeb41ef56beb699d8a7f7a4a18fc29bb4a7f1d",
+      "contentFingerprint": "sha256:b16824e2f90cc03c5da44125ed94c5a19ef2977e22e446e04e8e4e1ed7392f52",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-affinity:0.1.0-c344a41c88eb"
+    },
+    "help": {
+      "source": "myscoutee-service-help:msc121",
+      "id": "sha256:5d8a4d60b94f295c9513b017bad2f1efffa14965b9211ec1848e820fbc0654d8",
+      "contentFingerprint": "sha256:68dd9e43c31e71e699043b36ba7d2a796e0b7821b9109360250d17bcc3c84554",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-help:0.1.0-5d8a4d60b94f"
+    },
+    "network": {
+      "source": "myscoutee-service-network:msc121",
+      "id": "sha256:0d0531b35920e6cb4ad9ff91c517c21e2eebbb3d0b2f6bf76b4f006b339ac1bc",
+      "contentFingerprint": "sha256:b452a8765413bd375af37735cdd94bfeb97539802a9aeeb311da4106a13e6fa2",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-network:0.1.0-0d0531b35920"
+    },
+    "frontend": {
+      "source": "myscoutee-service-frontend:msc121",
+      "id": "sha256:b2fa9d4569cefa27ab530703ed61873eddf85a8ba55b97fbcc2d449e6f551b77",
+      "contentFingerprint": "sha256:f40fb91b8ac7681785fa49ead1f898259eda1f67794eba3c24a841237bedf6a7",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-frontend:0.1.0-b2fa9d4569ce"
+    },
+    "mongodb": {
+      "source": "mongo:8.0.4",
+      "id": "sha256:6fe2220a3a52775d0ddfc59d6ca8140c80e5169c5c374f048b8a76f2f11820e7",
+      "contentFingerprint": "sha256:9966eceb6b87df6119961641623028e5cdd1a6517f25bf74b99f0f8cec7e57a8",
+      "sourceDigests": [
+        "mongo@sha256:aaad67f2dca93148e5343c03210bcfc89a0107516a4756bfa018acd6579e5b18"
+      ],
+      "reference": "docker.io/library/myscoutee-service-mongodb:0.1.0-6fe2220a3a52"
+    },
+    "redis": {
+      "source": "redis:8.6.1-alpine",
+      "id": "sha256:47ee395bd02d37907b34c2d503d6a5e8de1d2704cbe9b4db54c75d9757410311",
+      "contentFingerprint": "sha256:670b4c814a7ff6abfae317c2806defb675a3e6d28b49ed79479fddd26078e513",
+      "sourceDigests": [
+        "redis@sha256:2afba59292f25f5d1af200496db41bea2c6c816b059f57ae74703a50a03a27d0"
+      ],
+      "reference": "docker.io/library/myscoutee-service-redis:0.1.0-47ee395bd02d"
+    },
+    "minio": {
+      "source": "myscoutee-service-minio:msc121",
+      "id": "sha256:e282ff5e83be6f651d6289d92dc093bdacb9b11c4f0b8ac5194de0b794dfae90",
+      "contentFingerprint": "sha256:21e5d06ffcc59dce87c54e91493d9f6a0ac7d9df77ba9e2f41f5984dffbcc942",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-minio:0.1.0-e282ff5e83be"
+    },
+    "stun": {
+      "source": "coturn/coturn:4.18.0-r0-alpine",
+      "id": "sha256:e3edb90547874dadcea80c7bd47bb4160f37caf2e606500583405dc2939b19da",
+      "contentFingerprint": "sha256:aea569c6ca246b27e3f59c644cef098d88e7d48d3361d2072a24c932efd1235e",
+      "sourceDigests": [
+        "coturn/coturn@sha256:c29135c08565810d37053f384584392b7c24b69570fc81a721b878d6fe63e04e"
+      ],
+      "reference": "docker.io/library/myscoutee-service-stun:0.1.0-e3edb9054787"
+    },
+    "mcp": {
+      "source": "myscoutee-service-mcp:msc121",
+      "id": "sha256:f5905ec2665e1dcdfbe7fa3f2ed10fffad6e5b1fa8cd0465fb9f333b2da6534b",
+      "contentFingerprint": "sha256:07ea9b53ba1f6ee705585378730d3fb250ca7d621e99265add38544a18d274f8",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-mcp:0.1.0-f5905ec2665e"
+    },
+    "registry": {
+      "source": "myscoutee-service-registry:msc121",
+      "id": "sha256:40ffd2e25fcc13c9cdd5a4c839c374a8ab6b65c6520c1f4ad33619965fd61dc1",
+      "contentFingerprint": "sha256:8af7e4c189ec2805fd1775615e7ad9ce039a9e1625a4577c2b8987675259730b",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-registry:0.1.0-40ffd2e25fcc"
+    },
+    "payment-simulator": {
+      "source": "myscoutee-service-payment-simulator:msc121",
+      "id": "sha256:d99be2a8d4667a00c3486c22001689611ad7fd5b2611e7f86616b97217c77ca4",
+      "contentFingerprint": "sha256:e3e443602eacbf675cbc28f9544efe3f18d29163b1514ea9aca46a534289a165",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-payment-simulator:0.1.0-d99be2a8d466"
+    },
+    "release-simulator": {
+      "source": "myscoutee-service-release-simulator:msc121",
+      "id": "sha256:1dfc0ebea8fa3d2f3ed17fc5cdc6bac9cfeaf1731da99cdb6dcf279ed8ae261c",
+      "contentFingerprint": "sha256:a192750f9b08c0ff74037dc89d39f3d9c2dc1908bf2fc7ed7fbc7aa766405b67",
+      "sourceDigests": [],
+      "reference": "docker.io/library/myscoutee-service-release-simulator:0.1.0-1dfc0ebea8fa"
+    }
+  },
+  "limits": [
+    "Response timings are individual functional-check requests with JVM warming, not a matched performance benchmark.",
+    "CPU samples are bounded low-load observations, not proof of performance parity or speedup. No repeated stress campaign was run for this small extraction.",
+    "These checks verify the existing full MyScoutee deployments; they do not qualify the unfinished template."
+  ],
+  "finalRuntime": {
+    "kvm": "stopped, data retained, no autostart",
+    "monolith": "healthy",
+    "frontendWatcher": "healthy",
+    "originalDevEnvironmentRestored": true
+  }
+}

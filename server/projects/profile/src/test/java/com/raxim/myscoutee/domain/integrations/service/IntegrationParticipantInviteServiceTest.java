@@ -1,7 +1,7 @@
 package com.raxim.myscoutee.domain.integrations.service;
 
 import com.raxim.myscoutee.domain.accounts.document.Users;
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.events.document.ActivityEvent;
 import com.raxim.myscoutee.domain.events.document.ActivityMingleSession;
 import com.raxim.myscoutee.domain.events.service.ActivitiesEventsService;
@@ -38,7 +38,7 @@ class IntegrationParticipantInviteServiceTest {
     @Mock AccessControlService access;
     @Mock ActivitiesMembersService members;
     @Mock IntegrationPublicEndpointResolver endpoint;
-    @Mock HomeUserProfileService profiles;
+    @Mock SelectedProfile profiles;
     @Mock AffiliateService affiliates;
     @Mock ActivitiesEventsService eventActions;
     @Mock CommunityGroupsService groups;

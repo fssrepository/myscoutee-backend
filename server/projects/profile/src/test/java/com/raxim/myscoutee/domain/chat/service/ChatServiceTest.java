@@ -94,6 +94,8 @@ class ChatServiceTest {
     @Mock
     private HomeUserProfileService homeUserProfileService;
     @Mock
+    private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
+    @Mock
     private UserActivityCountersService userActivityCountersService;
     @Mock
     private ChatStreamPublisher chatStreamPublisher;
@@ -133,7 +135,7 @@ class ChatServiceTest {
                 new ChatMessageMapper(profileDirectory())), mongoTemplate);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "accountDevices", new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "chatCounters", new com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService(mongoTemplate));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", homeUserProfileService);
+        org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", selectedProfile);
         var eventOwner = new com.raxim.myscoutee.domain.events.service.EventOwnershipService(null);
         org.springframework.test.util.ReflectionTestUtils.setField(eventOwner, "mongo", mongoTemplate);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "eventOwnership", eventOwner);
@@ -146,7 +148,7 @@ class ChatServiceTest {
 
     @Test
     void campaignQuestionRequiresAPersistedRatingInTheCampaignWorkspace() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         Users viewer = user("viewer", "Viewer", "V"); viewer.setWorkspaceGroupId("myscoutee-work");
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
         var campaign = new com.raxim.myscoutee.domain.campaigns.document.Campaign("campaign", "myscoutee-work", "organizer",
@@ -170,7 +172,7 @@ class ChatServiceTest {
 
     @Test
     void unavailableCampaignRemainsNotFoundWithoutWritingChatCopies() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         Users viewer = user("viewer", "Viewer", "V"); viewer.setWorkspaceGroupId("other");
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(viewer));
         var campaign = new com.raxim.myscoutee.domain.campaigns.document.Campaign("campaign", "work", "organizer",
@@ -199,7 +201,7 @@ class ChatServiceTest {
 
     @Test
     void retriedShareReturnsThePersistedMessageWithoutAnotherUnreadIncrement() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(true);
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
         when(usersRepository.findByUserId("viewer")).thenReturn(Optional.of(user("viewer", "Viewer", "V")));
@@ -216,7 +218,7 @@ class ChatServiceTest {
 
     @Test
     void contactChatRejectsPeopleOutsideTheCallersContactsWithoutWriting() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         assertThatThrownBy(() -> service.ensureContactChat("viewer", "stranger"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(mongoTemplate, never()).upsert(any(Query.class), any(Update.class), eq(Chat.class));
@@ -224,7 +226,7 @@ class ChatServiceTest {
 
     @Test
     void contactInvitationRejectsCrossWorkspaceTargetsEvenWhenSavedAsContacts() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var contacts = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile();
         var contact = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile.NavigatorContactRecord();
         contact.setUserId("target"); contacts.setContacts(List.of(contact));
@@ -240,7 +242,7 @@ class ChatServiceTest {
 
     @Test
     void savedContactCannotOpenDirectChatWithoutAcceptedPermission() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var contacts = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile();
         var contact = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile.NavigatorContactRecord();
         contact.setUserId("target"); contacts.setContacts(List.of(contact));
@@ -254,7 +256,7 @@ class ChatServiceTest {
 
     @Test
     void contactMemberCommandCannotAddPeopleToSupportChats() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         for (String channel : List.of("appSupport", "groupSupport")) {
             when(chatsRepository.findByChatId(channel)).thenReturn(List.of(chat(channel, "viewer", 0,
                     "2026-09-25T10:00:00Z", channel)));
@@ -268,7 +270,7 @@ class ChatServiceTest {
 
     @Test
     void contactInvitationCannotWriteIntoAnotherAccountsConversation() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         Chat foreign = chat("foreign", "other", 7, "2026-09-25T10:00:00Z", "contact");
         foreign.setMemberIds(List.of("other", "peer"));
         when(chatsRepository.findByChatId("foreign")).thenReturn(List.of(foreign));
@@ -284,7 +286,7 @@ class ChatServiceTest {
 
     @Test
     void existingContactChatRejectsAnInviteOutsideTheActorsOwnContacts() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
                 "2026-09-25T10:00:00Z", "contact")));
         assertThatThrownBy(() -> service.addContactChatMembers("contact", "viewer", List.of("stranger")))
@@ -295,7 +297,7 @@ class ChatServiceTest {
 
     @Test
     void contactInvitationRequiresEverySavedTargetToHaveApprovedBeforeAnyWrite() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("contact")).thenReturn(List.of(chat("contact", "viewer", 0,
                 "2026-09-25T10:00:00Z", "contact")));
         var contacts = new com.raxim.myscoutee.domain.accounts.document.NavigatorContactsProfile();
@@ -325,7 +327,7 @@ class ChatServiceTest {
     @Test
     void contactInviteReturnsAllMembersAndPreservesExistingUnreadState() {
         when(mongoTemplate.count(any(Query.class), eq(ContactChatAccess.class))).thenReturn(1L);
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         var current = chat("contact", "viewer", 7, "2026-09-25T10:00:00Z", "contact");
         var other = chat("contact", "sender", 3, current.getDateIso(), "contact");
         when(chatsRepository.findByChatId("contact")).thenReturn(List.of(current, other));
@@ -367,7 +369,7 @@ class ChatServiceTest {
     @Test
     void sharedMessagesUseAuthenticatedChatAccessWithoutReadingTheConversation() {
         when(usersRepository.findByUserIdIn(anyCollection())).thenReturn(List.of(user("viewer", "Viewer", "VU")));
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 7)));
         when(chatMessagesRepository.findActiveSharesBySender("chat-1", "viewer", "event"))
                 .thenReturn(List.of(message("old-share", "viewer", "viewer", "2026-05-26T08:00:01Z")));
@@ -381,7 +383,7 @@ class ChatServiceTest {
 
     @Test
     void sharedMessagesRejectActorsOutsideTheChat() {
-        when(homeUserProfileService.resolveSelectedUserId("outsider")).thenReturn("outsider");
+        when(selectedProfile.resolveSelectedUserId("outsider")).thenReturn("outsider");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(chat("chat-1", "viewer", 0)));
         assertThatThrownBy(() -> service.querySharedMessages("chat-1", "outsider", "event"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
@@ -398,7 +400,7 @@ class ChatServiceTest {
                 message("m2", "sender", "viewer", "2026-05-26T08:00:02Z"),
                 message("m3", "sender", "viewer", "2026-05-26T08:00:03Z"));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(3L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class))).thenReturn(messages);
@@ -426,7 +428,7 @@ class ChatServiceTest {
         viewerChat.setContextStartAtIso("2026-08-30T06:00:00Z");
         viewerChat.setContextEndAtIso("2026-08-30T07:30:00Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(homeUserProfileService.queryMenuCounters("viewer")).thenReturn(new UserMenuCountersDto(
                 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 new UserChatCountersDto(3, 0, 0, 3, 0, 0),
@@ -518,7 +520,7 @@ class ChatServiceTest {
         previousOwnerChat.setContextStartAtIso(event.getStartAtIso());
         previousOwnerChat.setContextEndAtIso(event.getEndAtIso());
 
-        when(homeUserProfileService.resolveSelectedUserId(requesterUserId)).thenReturn(requesterUserId);
+        when(selectedProfile.resolveSelectedUserId(requesterUserId)).thenReturn(requesterUserId);
         when(mongoTemplate.findOne(any(Query.class), eq(ActivityEvent.class))).thenReturn(event);
         when(mongoTemplate.findOne(any(Query.class), eq(Asset.class))).thenReturn(asset);
         when(usersRepository.findByUserId(currentOwnerUserId))
@@ -707,7 +709,7 @@ class ChatServiceTest {
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
@@ -744,7 +746,7 @@ class ChatServiceTest {
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage target = message("target", "sender", "someone-else", "2026-05-26T08:00:02Z");
         ChatMessage previous = message("previous", "sender", "someone-else", "2026-05-26T08:00:01Z");
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.findByChatIdAndMessageId("chat-1", "target")).thenReturn(Optional.of(target));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(2L);
@@ -772,7 +774,7 @@ class ChatServiceTest {
         Chat senderChat = chat("chat-1", "sender", 0);
         ChatMessage unreadMessage = message("m1", "sender", "someone-else", "2026-05-26T08:00:01Z");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(16L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
@@ -804,7 +806,7 @@ class ChatServiceTest {
         deletedMessage.setReadBy(List.of());
         deletedMessage.refreshMessageSearchFields();
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat, senderChat));
         when(chatMessagesRepository.countByChatId("chat-1")).thenReturn(1L);
         when(chatMessagesRepository.findByChatIdOrderBySentAtIsoDesc(anyString(), any(Pageable.class)))
@@ -825,7 +827,7 @@ class ChatServiceTest {
         Chat viewerChat = chat("chat-1", "viewer", 0);
         Chat otherOwnerChat = chat("chat-1", "sender", 0);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(otherOwnerChat, viewerChat));
         when(mongoTemplate.count(any(Query.class), eq(Users.class))).thenReturn(2L);
         when(mongoTemplate.find(any(Query.class), eq(Users.class)))
@@ -854,7 +856,7 @@ class ChatServiceTest {
         pendingMember.setUserId("sender");
         pendingMember.setStatus("pending");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(chatsRepository.findByChatId("chat-1")).thenReturn(List.of(viewerChat));
         when(mongoTemplate.count(any(Query.class), eq(ActivityMember.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(ActivityMember.class)))
@@ -875,7 +877,7 @@ class ChatServiceTest {
     void queryChatsReadsOwnerCopiesWithoutRepairingMemberCopies() {
         Chat viewerChat = chat("chat-1", "viewer", 0);
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(viewerChat));
@@ -896,7 +898,7 @@ class ChatServiceTest {
         Chat newChat = chat("aa-new", "viewer", 0, "2026-03-01T14:03:00");
         Chat midChat = chat("mm-mid", "viewer", 0, "2026-02-28T17:48:00");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(3L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(newChat, oldChat, midChat));
@@ -926,7 +928,7 @@ class ChatServiceTest {
         Chat groupChat = chat("chat-group", "viewer", 0, "2026-03-01T09:48:00", "groupSubEvent");
         Chat serviceChat = chat("chat-service", "viewer", 0, "2026-03-01T10:48:00", "serviceEvent");
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(4L, 1L, 1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(
@@ -984,7 +986,7 @@ class ChatServiceTest {
 
     @Test
     void groupSupportFilterQueriesOnlyTheSelectedProfilesGroupSupportChannel() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         service.queryChatPage("viewer", "groupSupport", "date", "desc", null, null, 10, null, null, false, null);
         ArgumentCaptor<Query> query = ArgumentCaptor.forClass(Query.class);
@@ -1011,7 +1013,7 @@ class ChatServiceTest {
         event.setPendingMembers(2);
         event.setSubEvents(List.of(subEvent("stage-1", "Qualifiers")));
 
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         stubEmptyMenuCounters("viewer");
         when(mongoTemplate.count(any(Query.class), eq(Chat.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Chat.class))).thenReturn(List.of(groupChat));
@@ -1056,7 +1058,7 @@ class ChatServiceTest {
 
     @Test
     void sendMessageRejectsDeniedChatBeforeWrite() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorCreateChatMessage("viewer", "chat-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.sendMessage("chat-1", "viewer", "hello"))
@@ -1196,7 +1198,7 @@ class ChatServiceTest {
 
     @Test
     void editMessageRejectsDeniedChatBeforeLoadingMessage() {
-        when(homeUserProfileService.resolveSelectedUserId("viewer")).thenReturn("viewer");
+        when(selectedProfile.resolveSelectedUserId("viewer")).thenReturn("viewer");
         when(accessControlService.canCurrentActorEditChatMessage("viewer", "chat-1")).thenReturn(false);
 
         assertThatThrownBy(() -> service.editMessage("chat-1", "viewer", "m1", "updated"))
@@ -1208,7 +1210,7 @@ class ChatServiceTest {
 
     @Test
     void updateSupportCaseRejectsDeniedChatBeforeSavingState() {
-        when(homeUserProfileService.resolveSelectedUserId("admin")).thenReturn("admin");
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, "admin", "admin", "chat-support")).thenReturn(false);
 
         assertThatThrownBy(() -> service.updateSupportCase("chat-support", "admin", "pick"))

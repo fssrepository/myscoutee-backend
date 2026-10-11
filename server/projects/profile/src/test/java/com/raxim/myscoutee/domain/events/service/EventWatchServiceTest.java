@@ -1,6 +1,6 @@
 package com.raxim.myscoutee.domain.events.service;
 
-import com.raxim.myscoutee.domain.accounts.service.HomeUserProfileService;
+import com.raxim.myscoutee.domain.accounts.api.SelectedProfile;
 import com.raxim.myscoutee.domain.accounts.service.UserActivityCountersService;
 import com.raxim.myscoutee.domain.events.service.EventJobQueries;
 
@@ -91,7 +91,7 @@ class EventWatchServiceTest {
     private Fixture fixture() {
         EventWatchSubscriptionsRepository subscriptions = mock(EventWatchSubscriptionsRepository.class);
         ActivityEventsRepository events = mock(ActivityEventsRepository.class);
-        HomeUserProfileService profiles = mock(HomeUserProfileService.class);
+        SelectedProfile profiles = mock(SelectedProfile.class);
         UserActivityCountersService counters = mock(UserActivityCountersService.class);
         NotificationOutboxService outbox = mock(NotificationOutboxService.class);
         return new Fixture(
@@ -106,7 +106,7 @@ class EventWatchServiceTest {
             EventWatchService service,
             EventWatchSubscriptionsRepository eventWatchSubscriptionsRepository,
             ActivityEventsRepository activityEventsRepository,
-            HomeUserProfileService homeUserProfileService,
+            SelectedProfile homeUserProfileService,
             NotificationOutboxService notificationOutboxService) {
     }
 }
