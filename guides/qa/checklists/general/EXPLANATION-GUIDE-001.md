@@ -15,6 +15,18 @@ The context and step inventory in
 the source of truth. For an explicitly limited follow-up, repeat only the changed
 surfaces and shared behavior affected by that change.
 
+## Template regression and fix propagation — MSC-122
+
+Run the applicable guide checks on the template's selected member/admin/operator
+contexts, in EN/HU, desktop/mobile and local/HTTP modes. Use its own guide seed
+inventory, not all source contexts. Preserve this case's guide-only boundary:
+no business mutations. Carry shared guide-engine, anchor, translation and
+launcher-placement fixes into the template and retest the affected surfaces.
+
+Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 ## Expanded Work/Community scope — 2026-10-06
 
 Status: **REOPENED / NOT RUN** for the newly added/changed surfaces. The September PASS covers only its recorded inventory. Follow [MSC-115](../MSC-115_WORK_COMMUNITY_PAIR_QA.md) for actors, reachable content and latest acceptance rules. The canonical `help-center-guide-versions.json` records each revised context and its current version. Run EN/HU, desktop/mobile, local/HTTP, visible-target highlighting, popup transitions and empty/populated states for these contexts and their affected shared components. Do not execute business mutations during the guide-only portion.

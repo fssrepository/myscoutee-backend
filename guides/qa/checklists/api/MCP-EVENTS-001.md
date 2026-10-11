@@ -4,6 +4,19 @@ MSC-116 / MSC-119 stable checklist. **NOT RUN.** Source implementation/build res
 mark these cases PASS. Use the existing fixture and launcher when execution is
 authorized; never operate the user's browser as part of documentation work.
 
+## Template regression and fix propagation — MSC-122
+
+Verify the template's retained OAuth, role-scoped event discovery, subscription,
+callback verification/delivery/retry and revocation paths using its actual
+catalog. Source event/asset/group resources are omitted and must not become
+invented template fixtures. Real external HTTPS callback checks remain pending
+until exercised in the template; local settings or source success cannot prove
+them.
+
+Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 ## Setup
 
 Use two unrelated accounts, two clients for one account, a base profile and a

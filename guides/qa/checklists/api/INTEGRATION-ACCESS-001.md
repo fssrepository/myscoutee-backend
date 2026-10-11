@@ -17,6 +17,18 @@ this extension. Tests are scheduled separately; creating this checklist is not a
 PASS. Use the versioned fixture/browser launcher when a fixture-backed run is
 started; no fixture or browser action is part of writing this guide.
 
+## Template regression and fix propagation — MSC-122
+
+Repeat applicable API/MCP consent, client/key settings, permissions, masking,
+revocation and account-isolation checks in the template using its actual tool
+catalog and selected member/admin roles. Check local settings and real HTTP
+protocol behavior separately. Affiliate and other omitted product operations
+are N/A; the source's larger tool catalog is not a template requirement.
+
+Follow the [shared template regression requirements](../README.md#template-regression-and-fix-propagation--msc-122).
+Record template impact, propagated revisions and its own targeted result for
+each defect; source PASS alone does not close the template follow-up.
+
 ## Preparation
 
 Use ordinary issuing profiles in Dating, Work and Community; include a second
