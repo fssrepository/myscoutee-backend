@@ -95,6 +95,7 @@ Thumbs.db
 
 # local target deploy configs
 /packaging/client-tools/*.env
+/packaging/tests/__pycache__/
 /server/docker/.qa-mobile-runtime/
 
 # Guide QA screenshots are temporary local diagnostics, not versioned evidence.

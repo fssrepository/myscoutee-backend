@@ -320,3 +320,21 @@ The earlier frontend-only attempt was reverted. Its temporary logs are not
 current template evidence. Preserve the selected, tested template checkpoints
 and continue from the numbered plan rather than restarting or cloning the full
 product.
+
+## Shared infrastructure selection
+
+The template plan also requires source-first separation of reusable packaging,
+tools and runtime behavior from product configuration. The first infrastructure
+batch extracts `mongo-seed-policy.inc` from the native Mongo importer. Thirteen
+existing policy/index/migration functions are unchanged, and ten before/after
+command traces match for MyScoutee and the selected template policy. The template
+copies the 187-line import engine unchanged; its policy excludes payment,
+Registry, affinity and community collections.
+
+DEB staging and the KVM bundle retain both files; E2E's Dockerfile includes the
+policy explicitly. Focused tests on isolated test data passed on both the
+existing monolith and KVM, as did the nine login/read/logout assertions per
+deployment. No existing application data was reimported. See the
+[seed import evidence](../qualification/evidence/MSC122_SEED_IMPORT_BOUNDARY_20261011.json).
+This closes only the seed import separation; the numbered plan still tracks
+release image selection, the remaining tools and full template deployment.
