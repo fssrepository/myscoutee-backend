@@ -6,6 +6,33 @@ Source review: 2026-10-09. This is an audit, not a claim that every listed flow 
 
 The local service starts hydration, IndexedDB access and response projection immediately. The existing 1,500 ms emulation runs concurrently for that service call. Independent service calls each retain their own delay. When one user operation needs several projections, keep those necessary operations inside one aggregate service call and apply the delay once at that boundary. A direct repository operation stays within its owning service request. Successful publication waits for both: `max(actual work, 1,500 ms)`, not their sum. The existing 3,000 ms indicator window and CSS animation remain unchanged. Slow real work must still finish; neither timeout values nor an animation may fabricate success. HTTP adapters keep their actual request timing. CSS animation does not imply that all SVG properties run independently on another thread; measure rendering separately from service sequencing.
 
+## Open user-reported follow-up — 2026-10-11
+
+1. **CM-LOCAL-001 — Content moderation settings popup and SmartList loading feedback.**
+   Status: **OPEN; reported, not yet reproduced on the current revision**. The
+   user observed frontend-local content moderation opening the gear/settings
+   popup late, as if it awaited a request before showing the surface. The
+   SmartList loading indicator was also not visible. The observed build may
+   predate the current fixes; establish its version and reproduce with the
+   current local adapter before changing code. Determine whether the wait is
+   native local route emulation, IndexedDB/projection work, an unintended HTTP
+   request or rendering time rather than inferring HTTP from the delay alone.
+
+   Required behavior: show the settings popup immediately; if data must load,
+   show the existing route-delay loading ring in its body until that request
+   finishes. Show the existing SmartList loading/progress indicator during
+   list loading. Preserve the established 1,500 ms local request emulation,
+   3,000 ms indicator configuration and concurrent-work rules above; reuse
+   the existing loading components without adding another delay or duplicate
+   data request. Verify empty, loading, success and error transitions, and
+   record response-time/main-thread CPU evidence with the tested revision.
+
+   Scope: the original MyScoutee **content moderation** screen, distinct from
+   the template's chat-report **Reports** popup. Do not copy this product
+   moderation screen into the template. If the cause is in shared components
+   or another retained owner, record and test the corresponding template impact.
+   Queued during MSC-122 at the user's request; not a completed QA result.
+
 ## Confirmed findings
 
 1. **Fixed: avatar/profile.** `LocalUsersService.loadProfileExtById` previously waited for readiness, then 1,500 ms, then workspace/profile processing and persistence. That entire read now runs concurrently with the existing delay. Session/workspace ownership and the existing inner-page avatar ring remain intact.
