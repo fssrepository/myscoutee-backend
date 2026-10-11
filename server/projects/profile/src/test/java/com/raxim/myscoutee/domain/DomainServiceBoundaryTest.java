@@ -135,6 +135,25 @@ class DomainServiceBoundaryTest {
         }
     }
 
+    @org.junit.jupiter.api.Test
+    void notificationStorageDoesNotRequireCommunityTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "notifications/repository/UserNotificationPageRepository.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "community/", DOMAIN + "groups/");
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void accountPurgeCoordinatorDoesNotRequireOptionalProductTypes() throws Exception {
+        var resource = new org.springframework.core.io.ClassPathResource(
+                DOMAIN + "accounts/service/DeletedAccountPurgeService.class");
+        for (String constant : utf8Constants(resource)) {
+            assertThat(constant).doesNotContain(DOMAIN + "events/", DOMAIN + "assets/",
+                    DOMAIN + "content/", DOMAIN + "affinity/", DOMAIN + "payments/");
+        }
+    }
+
     private boolean changeStreamSubscription(String name, String method, Object value) {
         if (name.equals(DOMAIN + "administration/service/AdminStatsTelemetryWorkerService")
                 && method.equals("watchInputs")) {

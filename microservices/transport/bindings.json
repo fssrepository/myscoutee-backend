@@ -1132,6 +1132,9 @@
         "chat",
         "payments",
         "affinity"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1366,6 +1369,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1390,6 +1396,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1426,6 +1435,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1450,6 +1462,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1462,6 +1477,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "accounts"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions"
       ]
     },
     {
@@ -1639,6 +1657,9 @@
       "credentialProperty": "command-token",
       "producerDomains": [
         "notifications"
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.notifications.api.NotificationUnreadObserver"
       ]
     },
     {

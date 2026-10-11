@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 
@@ -37,7 +39,7 @@ class UserNotificationPageRepositoryTest {
     @BeforeEach
     void setUp() {
         repository = new UserNotificationPageRepository(mongoTemplate,
-                new com.raxim.myscoutee.domain.events.service.MemberAttentionService(mongoTemplate));
+                List.of(new com.raxim.myscoutee.domain.events.service.MemberAttentionService(mongoTemplate)));
     }
 
     @Test
@@ -55,6 +57,72 @@ class UserNotificationPageRepositoryTest {
         assertThat(query.getValue().getQueryObject().getString("ownerId")).isEqualTo("group");
         assertThat(update.getValue().getUpdateObject().get("$inc", Document.class).getInteger("communityUpdates")).isEqualTo(1);
         verify(mongoTemplate, org.mockito.Mockito.never()).count(any(Query.class), eq(UserNotification.class));
+    }
+
+    @Test
+    void inboxStartsWithoutCommunityAndStillInsertsReadsAndListsItsNotifications() {
+        try (var context = new org.springframework.context.annotation.AnnotationConfigApplicationContext()) {
+            context.registerBean(MongoTemplate.class, () -> mongoTemplate);
+            context.register(UserNotificationPageRepository.class);
+            context.refresh();
+            var inbox = context.getBean(UserNotificationPageRepository.class);
+            UserNotification item = notification("existing-community-item", "2026-10-11T10:00:00Z");
+            item.setSourceType("community");
+            item.setPayload(java.util.Map.of("communityAttention", "members"));
+            when(mongoTemplate.insert(item)).thenReturn(item);
+            when(mongoTemplate.count(any(Query.class), eq(UserNotification.class))).thenReturn(1L);
+            when(mongoTemplate.find(any(Query.class), eq(UserNotification.class))).thenReturn(List.of(item));
+            when(mongoTemplate.findAndModify(any(Query.class), any(Update.class),
+                    any(FindAndModifyOptions.class), eq(UserNotification.class))).thenReturn(item);
+
+            assertThat(inbox.insertIfAbsent(item)).isTrue();
+            assertThat(inbox.findPage("viewer-1", false, 20, null).records()).containsExactly(item);
+            assertThat(inbox.markRead(item.getId(), "viewer-1", "2026-10-11T11:00:00Z")).contains(item);
+            verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq("activityMembers"));
+        }
+    }
+
+    @Test
+    void communityFirstReadDecrementsTheExistingCounterOnceWithItsLowerBound() {
+        UserNotification item = notification("community-change", "2026-10-11T10:00:00Z");
+        item.setSourceType("community"); item.setSourceId("group");
+        item.setPayload(java.util.Map.of("communityAttention", "members"));
+        when(mongoTemplate.findAndModify(any(Query.class), any(Update.class),
+                any(FindAndModifyOptions.class), eq(UserNotification.class))).thenReturn(item, null);
+
+        assertThat(repository.markRead(item.getId(), "viewer-1", "2026-10-11T11:00:00Z")).contains(item);
+        assertThat(repository.markRead(item.getId(), "viewer-1", "2026-10-11T11:00:00Z")).isEmpty();
+
+        var query = ArgumentCaptor.forClass(Query.class);
+        var update = ArgumentCaptor.forClass(Update.class);
+        verify(mongoTemplate).updateFirst(query.capture(), update.capture(), eq("activityMembers"));
+        assertThat(query.getValue().getQueryObject()).containsEntry("ownerType", "community")
+                .containsEntry("ownerId", "group").containsEntry("userId", "viewer-1")
+                .containsEntry("communityUpdates", new Document("$gte", 1));
+        assertThat(update.getValue().getUpdateObject().get("$inc", Document.class))
+                .containsEntry("communityUpdates", -1);
+    }
+
+    @Test
+    void ordinaryNotificationAndOtherCommunityAttentionDoNotTouchMemberships() {
+        for (String type : List.of("chat", "community")) {
+            UserNotification item = notification(type, "2026-10-11T10:00:00Z");
+            item.setSourceType(type);
+            item.setPayload(java.util.Map.of("communityAttention", "other"));
+            assertThat(repository.insertIfAbsent(item)).isTrue();
+        }
+        verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), eq("activityMembers"));
+    }
+
+    @Test
+    void configuredOwnerFailureStillPropagatesToTheDeliveryWorker() {
+        UserNotification item = notification("community-change", "2026-10-11T10:00:00Z");
+        item.setSourceType("community"); item.setSourceId("group");
+        item.setPayload(java.util.Map.of("communityAttention", "members"));
+        when(mongoTemplate.updateFirst(any(Query.class), any(Update.class), eq("activityMembers")))
+                .thenThrow(new IllegalStateException("owner unavailable"));
+        assertThatThrownBy(() -> repository.insertIfAbsent(item))
+                .isInstanceOf(IllegalStateException.class).hasMessage("owner unavailable");
     }
 
     @Test

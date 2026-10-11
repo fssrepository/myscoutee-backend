@@ -29,6 +29,9 @@ import com.raxim.myscoutee.microservices.transport.assets.AssetPrivacyServerConf
 import com.raxim.myscoutee.domain.assets.api.AssetPrivacy;
 import com.raxim.myscoutee.microservices.transport.events.EventPrivacyServerConfiguration;
 import com.raxim.myscoutee.domain.events.api.EventPrivacy;
+import com.raxim.myscoutee.domain.accounts.api.AccountPurgeActions;
+import com.raxim.myscoutee.domain.events.api.MemberAttention;
+import com.raxim.myscoutee.microservices.transport.events.MemberAttentionServerConfiguration;
 import com.raxim.myscoutee.microservices.transport.media.MediaCleanupServerConfiguration;
 import com.raxim.myscoutee.domain.media.api.MediaCleanup;
 import org.junit.jupiter.api.*;
@@ -54,6 +57,10 @@ class PurgeBoundaryHttpTest {
     private record Operation(String path, String method, Map<String,Object> fields) {}
     private record Boundary(String slug, int maximumBytes, List<Operation> operations) {}
     private static final List<Boundary> boundaries = List.of(
+            new Boundary("member-attention", 2097152, List.of(
+                    new Operation("/_internal/v1/events/member-attention/increment", "incrementCommunityUpdates",
+                            Map.of("communityId", "community", "userId", "user", "delta", 1))
+            )),
             new Boundary("affinity-privacy", 2097152, List.of(
                     new Operation("/_internal/v1/affinity/affinity-privacy/purge-ratings", "purgeRatings", Map.of("userId", "user")),
                     new Operation("/_internal/v1/affinity/affinity-privacy/purge-edges", "purgeEdges", Map.of("userId", "user")),
@@ -165,6 +172,71 @@ class PurgeBoundaryHttpTest {
             assertEquals(before + 1, calls.size());
         }
     }
+
+    @Test void productPurgeContributionsReuseExistingHttpOperationsWithoutExtraCalls() {
+        var context = mock(AccountPurgeActions.Context.class);
+        when(context.userId()).thenReturn("user");
+        when(context.ownedEventIds()).thenReturn(List.of("source"));
+        when(context.ownedAssetIds()).thenReturn(List.of("asset"));
+        when(context.discoveredAssetIds()).thenReturn(List.of("asset"));
+        var meters = new io.micrometer.core.instrument.simple.SimpleMeterRegistry();
+        try (var events = new com.raxim.myscoutee.microservices.transport.events.RemoteEventPrivacy(
+                        origin, TOKEN + "event-privacy", true, Duration.ofSeconds(1), Duration.ofSeconds(3), mapper, meters);
+                var assets = new com.raxim.myscoutee.microservices.transport.assets.RemoteAssetPrivacy(
+                        origin, TOKEN + "asset-privacy", true, Duration.ofSeconds(1), Duration.ofSeconds(3), mapper, meters);
+                var content = new com.raxim.myscoutee.microservices.transport.content.RemoteContentPrivacy(
+                        origin, TOKEN + "content-privacy", true, Duration.ofSeconds(1), Duration.ofSeconds(3), mapper, meters);
+                var affinity = new com.raxim.myscoutee.microservices.transport.affinity.RemoteAffinityPrivacy(
+                        origin, TOKEN + "affinity-privacy", true, Duration.ofSeconds(1), Duration.ofSeconds(3), mapper, meters);
+                var payments = new com.raxim.myscoutee.microservices.transport.payments.RemotePaymentPrivacy(
+                        origin, TOKEN + "payment-privacy", true, Duration.ofSeconds(1), Duration.ofSeconds(3), mapper, meters)) {
+            for (var mode : MongoSessionMode.values()) {
+                MongoSessionModeContext.set(mode);
+                JobGroupContext.run("workspace", () -> {
+                    for (AccountPurgeActions contributor : List.<AccountPurgeActions>of(events, assets, content, affinity, payments)) {
+                        for (var entry : contributor.accountPurgeActions().entrySet()) {
+                            int before = calls.size();
+                            entry.getValue().accept(context);
+                            int expected = entry.getKey() == AccountPurgeActions.Action.OWNED_EVENTS ? 2 : 1;
+                            assertEquals(before + expected, calls.size(), entry.getKey().name());
+                            for (Invocation call : calls.subList(before, calls.size())) {
+                                assertEquals(mode, call.mode()); assertTrue(call.scoped());
+                                assertEquals("workspace", call.group());
+                            }
+                        }
+                    }
+                });
+            }
+            verify(context, times(MongoSessionMode.values().length)).rememberOwnedEventIds(List.of("source"));
+            assertFalse(JobGroupContext.isActive());
+            failOwner = true;
+            int before = calls.size();
+            assertThrows(RemoteReadTransport.RemoteReadException.class, () -> events.accountPurgeActions()
+                    .get(AccountPurgeActions.Action.OWNED_EVENTS).accept(context));
+            assertEquals(before + 1, calls.size());
+        } finally { MongoSessionModeContext.clear(); meters.close(); }
+    }
+
+    @Test void notificationObserverMakesOnlyTheOriginalMatchingMemberUpdate() {
+        var meters = new io.micrometer.core.instrument.simple.SimpleMeterRegistry();
+        try (var remote = new com.raxim.myscoutee.microservices.transport.events.RemoteMemberAttention(
+                        origin, TOKEN + "member-attention", true, Duration.ofSeconds(1), Duration.ofSeconds(3), mapper, meters)) {
+            for (var mode : MongoSessionMode.values()) {
+                MongoSessionModeContext.set(mode);
+                JobGroupContext.run("workspace", () -> {
+                    int before = calls.size();
+                    remote.onUnreadChange("chat", "chat", "user", Map.of(), 1);
+                    remote.onUnreadChange("community", "community", "user", Map.of("communityAttention", "other"), 1);
+                    assertEquals(before, calls.size());
+                    remote.onUnreadChange("community", "community", "user", Map.of("communityAttention", "members"), 1);
+                    remote.onUnreadChange("community", "community", "user", Map.of("communityAttention", "members"), -1);
+                    assertEquals(before + 2, calls.size());
+                    assertEquals(new Invocation("incrementCommunityUpdates", mode, true, "workspace"), calls.getLast());
+                });
+            }
+            assertFalse(JobGroupContext.isActive());
+        } finally { MongoSessionModeContext.clear(); meters.close(); }
+    }
     private static HttpResponse<String> request(Boundary boundary, Operation operation, String body, String token,
             String mode, String method, String contentType) throws Exception {
         var builder = HttpRequest.newBuilder(origin.resolve(operation.path())).timeout(Duration.ofSeconds(5))
@@ -188,8 +260,9 @@ class PurgeBoundaryHttpTest {
     @SpringBootConfiguration
     @EnableAutoConfiguration(excludeName = {"org.springframework.boot.mongodb.autoconfigure.MongoAutoConfiguration", "org.springframework.boot.data.mongodb.autoconfigure.DataMongoAutoConfiguration",
             "org.springframework.boot.data.mongodb.autoconfigure.DataMongoRepositoriesAutoConfiguration", "org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration"})
-    @Import({com.raxim.myscoutee.common.config.JsonConfig.class, ServiceSecurityConfiguration.class, AffinityPrivacyServerConfiguration.class, ChatPrivacyServerConfiguration.class, ContentPrivacyServerConfiguration.class, EmailPrivacyServerConfiguration.class, HelpPrivacyServerConfiguration.class, PaymentPrivacyServerConfiguration.class, NotificationPrivacyServerConfiguration.class, AssetPrivacyServerConfiguration.class, EventPrivacyServerConfiguration.class, MediaCleanupServerConfiguration.class})
+    @Import({com.raxim.myscoutee.common.config.JsonConfig.class, ServiceSecurityConfiguration.class, MemberAttentionServerConfiguration.class, AffinityPrivacyServerConfiguration.class, ChatPrivacyServerConfiguration.class, ContentPrivacyServerConfiguration.class, EmailPrivacyServerConfiguration.class, HelpPrivacyServerConfiguration.class, PaymentPrivacyServerConfiguration.class, NotificationPrivacyServerConfiguration.class, AssetPrivacyServerConfiguration.class, EventPrivacyServerConfiguration.class, MediaCleanupServerConfiguration.class})
     static class Fixture {
+        @Bean MemberAttention memberAttention() { return owner(MemberAttention.class); }
         @Bean AffinityPrivacy affinityPrivacy() { return owner(AffinityPrivacy.class); }
         @Bean ChatPrivacy chatPrivacy() { return owner(ChatPrivacy.class); }
         @Bean ContentPrivacy contentPrivacy() { return owner(ContentPrivacy.class); }

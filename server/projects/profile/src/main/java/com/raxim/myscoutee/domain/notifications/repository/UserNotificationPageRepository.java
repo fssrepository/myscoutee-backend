@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import com.mongodb.client.result.UpdateResult;
+import com.raxim.myscoutee.domain.notifications.api.NotificationUnreadObserver;
 import com.raxim.myscoutee.domain.notifications.document.UserNotification;
 
 @Repository
@@ -22,12 +23,12 @@ public class UserNotificationPageRepository {
             Sort.Order.desc("_id"));
 
     private final MongoTemplate mongoTemplate;
-    private final com.raxim.myscoutee.domain.events.api.MemberAttention memberAttention;
+    private final List<NotificationUnreadObserver> unreadObservers;
 
     public UserNotificationPageRepository(MongoTemplate mongoTemplate,
-            com.raxim.myscoutee.domain.events.api.MemberAttention memberAttention) {
+            List<NotificationUnreadObserver> unreadObservers) {
         this.mongoTemplate = mongoTemplate;
-        this.memberAttention = memberAttention;
+        this.unreadObservers = List.copyOf(unreadObservers);
     }
 
     public UserNotificationSlice findPage(
@@ -101,10 +102,12 @@ public class UserNotificationPageRepository {
     }
 
     /** The same insert/read success boundary as the existing unread counter. */
-    private void incrementCommunityUpdates(UserNotification notification, int delta) {
-        if (notification == null || !"community".equals(notification.getSourceType())
-                || !"members".equals(notification.getPayload().get("communityAttention"))) return;
-        memberAttention.incrementCommunityUpdates(notification.getSourceId(), notification.getRecipientUserId(), delta);
+    private void notifyUnreadChange(UserNotification notification, int delta) {
+        if (notification == null) return;
+        for (NotificationUnreadObserver observer : unreadObservers) {
+            observer.onUnreadChange(notification.getSourceType(), notification.getSourceId(),
+                    notification.getRecipientUserId(), notification.getPayload(), delta);
+        }
     }
 
     public boolean insertIfAbsent(UserNotification notification) {
@@ -113,7 +116,7 @@ public class UserNotificationPageRepository {
         }
         try {
             mongoTemplate.insert(notification);
-            incrementCommunityUpdates(notification, 1);
+            notifyUnreadChange(notification, 1);
             return true;
         } catch (DuplicateKeyException ignored) {
             return false;
@@ -178,7 +181,7 @@ public class UserNotificationPageRepository {
                         .inc("revision", 1L),
                 FindAndModifyOptions.options().returnNew(true),
                 UserNotification.class);
-        incrementCommunityUpdates(updated, -1);
+        notifyUnreadChange(updated, -1);
         return Optional.ofNullable(updated);
     }
 
