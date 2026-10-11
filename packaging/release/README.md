@@ -15,7 +15,10 @@ sign production release artifacts:
 - `sign-release-artifacts.sh` validates and signs release artifacts with an
   approved, pre-existing private key;
 - `sign-update-manifest.py` signs the complete standalone update manifest for
-  the `myscoutee-update.json` GitHub release asset.
+  the `myscoutee-update.json` GitHub release asset. Its adjacent
+  `update-compatibility-policy.json` owns product-specific installed-worker
+  requirements; missing or malformed policy stops signing. The MyScoutee policy
+  retains the existing 1.3.0 seven-image restriction unchanged.
 
 They are deliberately outside `packaging/scripts`. Everything under
 `packaging/scripts` is runtime material copied into the Debian package, while

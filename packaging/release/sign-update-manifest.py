@@ -15,12 +15,16 @@ import subprocess
 import tempfile
 
 
-def validate_compatibility(document):
+COMPATIBILITY_POLICY = Path(__file__).with_name('update-compatibility-policy.json')
+VERSION_PATTERN = re.compile(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.(0|[1-9][0-9]*))?')
+
+
+def validate_compatibility(document, policy_path=COMPATIBILITY_POLICY):
     """The catalog governs the installed worker, not the signed SSH installer."""
     values = []
     for field in ('release_version', 'minimum_compatible_version', 'maximum_compatible_version'):
         value = document.get(field, '')
-        if not isinstance(value, str) or not re.fullmatch(r'(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.(0|[1-9][0-9]*))?', value):
+        if not isinstance(value, str) or not VERSION_PATTERN.fullmatch(value):
             raise ValueError(f'Invalid {field}')
         values.append(value.replace('-', '~'))
     version, minimum, maximum = values
@@ -28,10 +32,23 @@ def validate_compatibility(document):
         return subprocess.run(['dpkg', '--compare-versions', a, operation, b], check=False).returncode == 0
     if compare(minimum, 'gt', maximum):
         raise ValueError('The update compatibility range is inverted')
-    # Old workers require exactly six images. The MCP release contains seven.
-    # Do not sign a catalog promising an in-app transition they cannot perform.
-    if compare(version, 'ge', '1.3.0~qa.1') and compare(minimum, 'lt', '1.3.0~qa.1'):
-        raise ValueError('Seven-image releases require an installed 1.3.0 worker. Upgrade older hosts with the existing signed client installer first.')
+    # Product history belongs to the versioned policy; the signer enforces it.
+    # Missing or malformed policy must never silently disable compatibility checks.
+    policy = json.loads(Path(policy_path).read_text())
+    if (not isinstance(policy, dict) or set(policy) != {'schemaVersion', 'requirements'}
+            or type(policy['schemaVersion']) is not int or policy['schemaVersion'] != 1
+            or not isinstance(policy['requirements'], list)):
+        raise ValueError('Invalid update compatibility policy')
+    for rule in policy['requirements']:
+        if (not isinstance(rule, dict)
+                or set(rule) != {'releaseAtLeast', 'installedAtLeast', 'reason'}
+                or not isinstance(rule['reason'], str) or not rule['reason'].strip()
+                or any(not isinstance(rule[key], str) or not VERSION_PATTERN.fullmatch(rule[key])
+                       for key in ('releaseAtLeast', 'installedAtLeast'))):
+            raise ValueError('Invalid update compatibility requirement')
+        if (compare(version, 'ge', rule['releaseAtLeast'].replace('-', '~'))
+                and compare(minimum, 'lt', rule['installedAtLeast'].replace('-', '~'))):
+            raise ValueError(rule['reason'])
 
 
 def main():
@@ -52,7 +69,7 @@ def main():
         parser.error('Expected update manifest v1 without an automatic data backup')
     try:
         validate_compatibility(document)
-    except ValueError as error:
+    except (ValueError, OSError) as error:
         parser.error(str(error))
     os.umask(0o077)
     with tempfile.TemporaryDirectory(prefix='myscoutee-update-sign-') as directory:
