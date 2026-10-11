@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Exercise the real help migration in a disposable DB on an existing QA Mongo."""
 import json
-import subprocess
 import sys
 from pathlib import Path
+from mongo_test_runtime import run_mongo
 
 root = Path(__file__).resolve().parents[1]
 source = (root / 'migrations/008-default-help-v3.js').read_text()
-seeds = json.loads((root.parent / 'server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json').read_text())
-script = 'const packagedHelpSeeds=' + json.dumps(seeds) + ';\n' + r'''
+seeds = json.loads((root / 'migrations/seeds/008-default-help-v3/helpCenterRevisions.json').read_text())
+current = json.loads((root.parent / 'server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json').read_text())
+current = [row for row in current if row.get('documentType') == 'help']
+script = 'const packagedHelpSeeds=' + json.dumps(seeds) + ';\nconst currentHelpSeeds=' + json.dumps(current) + ';\n' + r'''
 const testDb = db.getSiblingDB('qa_help_upgrade_' + new ObjectId().toHexString());
 function check(value, message) { if (!value) throw Error(message); }
 function migrate(db) {
@@ -24,7 +26,7 @@ function baseline() {
     testDb.helpCenterRevisions.insertOne({_id: 'private-policy', documentType: 'privacy', active: true, text: 'retain'});
 }
 try {
-    testDb.helpCenterRevisions.createIndex({documentType: 1, lang: 1, contextKey: 1, version: -1}, {unique: true});
+    testDb.helpCenterRevisions.createIndex({baseGroupId: 1, documentType: 1, lang: 1, contextKey: 1, version: -1}, {unique: true});
     testDb.users.insertOne({_id: 'retained-user', name: 'retain'});
     baseline(); migrate(testDb);
     check(testDb.helpCenterRevisions.countDocuments({documentType: 'help', version: 3, active: true}) === 2, 'HU/EN v3 not activated');
@@ -56,12 +58,19 @@ try {
 
     testDb.helpCenterRevisions.deleteMany({}); migrate(testDb);
     check(testDb.helpCenterRevisions.countDocuments({version: 3, active: true}) === 2, 'fresh help missing');
-    print('PASS help migration: HU/EN upgrade, fresh state, repeat, interrupted retry, custom/disabled help, version conflict, retained privacy/users');
+
+    // Current imports intentionally supersede v3 with v5. Running an old step
+    // for the first time must preserve every current default and group selection.
+    testDb.helpCenterRevisions.deleteMany({});
+    testDb.helpCenterRevisions.insertMany(currentHelpSeeds);
+    const currentBefore = EJSON.stringify(testDb.helpCenterRevisions.find().sort({_id: 1}).toArray());
+    migrate(testDb);
+    check(EJSON.stringify(testDb.helpCenterRevisions.find().sort({_id: 1}).toArray()) === currentBefore,
+        'current v5 or inactive historical/group revisions changed');
+    print('PASS help migration: HU/EN upgrade, fresh state, repeat, interrupted retry, custom/disabled help, version conflict, retained privacy/users and unchanged current v5/group help');
 } finally { testDb.dropDatabase(); }
 '''.replace('SOURCE', source)
 if '--print-script' in sys.argv:
     print(script)
 else:
-    subprocess.run(['docker', 'exec', '-i', 'mongodb', 'sh', '-c',
-        'exec mongosh --quiet --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" '
-        '--authenticationDatabase admin production_db --file /dev/stdin'], input=script, text=True, check=True)
+    run_mongo(script)

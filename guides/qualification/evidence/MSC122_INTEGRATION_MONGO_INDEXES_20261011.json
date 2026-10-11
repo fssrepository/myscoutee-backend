@@ -676,5 +676,6 @@
     "No template/KVM-template/VMware/browser/MCP-server round-trip or release installation qualification is claimed.",
     "No stress throughput or general latency-parity claim.",
     "Live user deletion was not triggered; privacy behavior is covered by isolated embedded MongoDB."
-  ]
+  ],
+  "followUp": "The historical help input and missing forward v5 update are fixed and tested in MSC122_HELP_V5_UPGRADE_20261011.json. The failure recorded above describes the earlier checkpoint; it is not the current migration-chain status."
 }

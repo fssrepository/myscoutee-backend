@@ -4,8 +4,10 @@ from pathlib import Path
 import json
 root=Path(__file__).resolve().parents[1]
 sources={p.name:p.read_text() for p in (root/'migrations').glob('*.js')}
+inputs={str(p.relative_to(root/'migrations')):p.read_text() for p in (root/'migrations/seeds').glob('*/*.json')}
 runner=(root/'scripts/run-data-migrations.js').read_text()
 print('const sources='+json.dumps(sources)+';')
+print('const inputs='+json.dumps(inputs)+';')
 print('const runner='+json.dumps(runner)+';')
 print('const helpSeeds='+json.dumps(json.loads((root.parent/'server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json').read_text()))+';')
 print('const guideFields='+json.dumps(json.loads((root.parent/'server/docker/conf/mongodb/myscoutee_db/helpCenterGuideFields.json').read_text()))+';')
@@ -21,22 +23,62 @@ process.env.MYSCOUTEE_MIGRATION_DIRECTORY=root+'/migrations';
 process.env.MYSCOUTEE_MIGRATION_SEED_DIRECTORY=root+'/seeds';
 function run(database){
  for(const [name,source] of Object.entries(sources))fs.writeFileSync(root+'/migrations/'+name,source);
+ for(const [name,source] of Object.entries(inputs)){
+  fs.mkdirSync(require('path').dirname(root+'/migrations/'+name),{recursive:true});
+  fs.writeFileSync(root+'/migrations/'+name,source);
+ }
  db=database;load(root+'/runner.js');
 }
 function check(ok,msg){if(!ok)throw Error(msg);}
+try{
 for(const schema of [3,4,5]){
  const d=db.getSiblingDB('qa_chain_'+new ObjectId().toHexString());
  try{
   d.deploymentConfigurations.insertOne({_id:'deployment-configuration',schemaVersion:schema,version:7,payment:{credentialEnvelope:'retain'},...(schema===5?{integration:{publicBaseUrl:'custom'}}:{})});
   run(d);check(d.schemaMigrations.countDocuments({})===Object.keys(sources).length,'missing migration receipts');
   check(d.deploymentConfigurations.findOne().schemaVersion===5,'schema not migrated');
+  check(d.helpCenterRevisions.countDocuments({documentType:'help',version:5,active:true})===6,'current HU/EN v5 help missing after upgrade');
+  check(d.helpCenterRevisions.countDocuments({documentType:'help',version:{$lt:5},active:true})===0,'obsolete help still active after upgrade');
+  check(process.env.MYSCOUTEE_MIGRATION_SEED_DIRECTORY===root+'/seeds','release seed directory not restored');
+  check(d.schemaMigrations.findOne({_id:'008-default-help-v3'}).seedSha256.length===64,'pinned input checksum missing');
+  check(d.schemaMigrations.findOne({_id:'013-default-help-v5'}).seedSha256.length===64,'v5 input checksum missing');
   const before=EJSON.stringify(d.deploymentConfigurations.findOne());
   run(d);check(EJSON.stringify(d.deploymentConfigurations.findOne())===before,'repeat changed data');
   const id=Object.keys(sources).sort()[1];sources[id]+='\n// tampered';let rejected=false;
   try{run(d);}catch(e){rejected=true;}check(rejected,'applied migration modification accepted');sources[id]=sources[id].replace('\n// tampered','');
-  print('PASS ordered migration chain from schema'+schema+': repeat and checksum guard');
+  const input=Object.keys(inputs)[0],original=inputs[input];inputs[input]+='\n';rejected=false;
+  try{run(d);}catch(e){rejected=e.message.includes('Applied migration seeds changed:');}
+  check(rejected,'applied seed modification accepted');inputs[input]=original;
+  // Receipts written by released runners have no seed checksum and remain valid.
+  d.schemaMigrations.updateOne({_id:'008-default-help-v3'},{$unset:{seedSha256:''}});
+  const legacy=EJSON.stringify(d.schemaMigrations.findOne({_id:'008-default-help-v3'}));
+  run(d);check(EJSON.stringify(d.schemaMigrations.findOne({_id:'008-default-help-v3'}))===legacy,'legacy receipt rewritten');
+  print('PASS ordered migration chain from schema'+schema+': original inputs, repeat, source/input checksums and legacy receipts');
  }finally{d.dropDatabase();}
 }
+const retainedDb=db.getSiblingDB('qa_chain_retained_'+new ObjectId().toHexString());
+try{
+ retainedDb.deploymentConfigurations.insertOne({_id:'deployment-configuration',schemaVersion:5,version:9,payment:{credentialEnvelope:'retain'}});
+ retainedDb.helpCenterRevisions.insertMany(helpSeeds.filter(row=>row.documentType==='help'&&row.version===3)
+  .map(row=>({...row,active:true})));
+ for(const [name,source] of Object.entries(sources).filter(([name])=>name!=='013-default-help-v5.js')){
+  retainedDb.schemaMigrations.insertOne({_id:name.replace(/\.js$/,''),sha256:require('crypto').createHash('sha256').update(source).digest('hex'),appliedAt:new Date('2026-10-01T00:00:00Z')});
+ }
+ const receiptsBefore=EJSON.stringify(retainedDb.schemaMigrations.find().sort({_id:1}).toArray());
+ run(retainedDb);
+ check(retainedDb.helpCenterRevisions.countDocuments({documentType:'help',version:5,active:true})===6,'recorded old chain did not advance help to v5');
+ check(retainedDb.helpCenterRevisions.countDocuments({documentType:'help',version:3,active:true})===0,'recorded old chain left v3 active');
+ check(EJSON.stringify(retainedDb.schemaMigrations.find({_id:{$ne:'013-default-help-v5'}}).sort({_id:1}).toArray())===receiptsBefore,'old receipts changed during v5 upgrade');
+ print('PASS already-recorded migrations remain unchanged; missing v5 step runs');
+}finally{retainedDb.dropDatabase();}
+const currentDb=db.getSiblingDB('qa_chain_current_'+new ObjectId().toHexString());
+try{
+ currentDb.helpCenterRevisions.insertMany(helpSeeds.filter(row=>row.documentType==='help'));
+ const helpBefore=EJSON.stringify(currentDb.helpCenterRevisions.find().sort({_id:1}).toArray());
+ run(currentDb);
+ check(EJSON.stringify(currentDb.helpCenterRevisions.find({documentType:'help'}).sort({_id:1}).toArray())===helpBefore,'full chain changed currently seeded v5 help');
+ print('PASS complete chain preserves already-seeded current v5 help');
+}finally{currentDb.dropDatabase();}
 const d=db.getSiblingDB('qa_chain_failure_'+new ObjectId().toHexString());
 try{
  d.deploymentConfigurations.insertOne({_id:'deployment-configuration',schemaVersion:4,version:0,payment:{}});
@@ -44,5 +86,17 @@ try{
  let failed=false;try{run(d);}catch(e){failed=true;}check(failed&&d.schemaMigrations.countDocuments({})===1,'failure did not stop chain');
  sources[id]=original;run(d);check(d.schemaMigrations.countDocuments({})===Object.keys(sources).length,'retry did not resume missing steps');
  print('PASS failed step not recorded; retry resumes and completes');
-}finally{d.dropDatabase();fs.rmSync(root,{recursive:true});}
+}finally{d.dropDatabase();}
+const inputDb=db.getSiblingDB('qa_chain_input_'+new ObjectId().toHexString());
+const input='seeds/008-default-help-v3/helpCenterRevisions.json',original=inputs[input];
+try{
+ inputs[input]='[]';let failed=false;
+ try{run(inputDb);}catch(e){failed=e.message.includes('Missing canonical help v3 seed:');}
+ check(failed&&!inputDb.schemaMigrations.findOne({_id:'008-default-help-v3'}),'invalid input recorded as applied');
+ check(process.env.MYSCOUTEE_MIGRATION_SEED_DIRECTORY===root+'/seeds','failed input left seed directory changed');
+ inputs[input]=original;run(inputDb);
+ check(inputDb.schemaMigrations.countDocuments({})===Object.keys(sources).length,'input retry incomplete');
+ print('PASS failed historical input restores release seed directory; retry completes');
+}finally{inputs[input]=original;inputDb.dropDatabase();}
+}finally{fs.rmSync(root,{recursive:true});}
 ''')

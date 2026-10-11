@@ -295,6 +295,16 @@ EXTRACTED="${TEST_ROOT}/extracted"
 CONTROL_EXTRACTED="${TEST_ROOT}/control"
 dpkg-deb -x "${DEB_PATH}" "${EXTRACTED}"
 dpkg-deb -e "${DEB_PATH}" "${CONTROL_EXTRACTED}"
+
+for migration_input in \
+  008-default-help-v3.js \
+  013-default-help-v5.js \
+  seeds/008-default-help-v3/helpCenterRevisions.json \
+  seeds/013-default-help-v5/helpCenterRevisions.json; do
+  cmp "${REPO_ROOT}/packaging/migrations/${migration_input}" \
+    "${EXTRACTED}/opt/myscoutee/packaging/migrations/${migration_input}" \
+    || fail "packaged help migration input differs: ${migration_input}"
+done
 [[ -x "${EXTRACTED}/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh" ]] \
   || fail "portable managed-image fingerprint helper is not executable"
 CLIENT_TOOLS_ARCHIVE="${TEST_ROOT}/dist/myscoutee-client-tools_1.0.0.tar.gz"

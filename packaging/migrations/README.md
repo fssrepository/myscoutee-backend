@@ -30,6 +30,14 @@ released migration. A source schema newer than this release understands is
 rejected before mutation. Source schemas3/4/5, repeated execution, changed-script
 rejection and interruption/resume have real-Mongo regression coverage.
 
+Historical inputs that must not follow later catalog edits live in
+`seeds/<migration-id>/*.json`. The same runner selects that directory for the
+individual migration and restores the release seed directory afterward, even
+on failure. New receipts also record the sorted input-file SHA-256; changing or
+removing recorded inputs is rejected. Legacy receipts remain valid and are not
+rewritten. DEB and container-only updates carry these inputs with the migration
+directory.
+
 After the chain completes, `sync-release-system-seeds.js` runs on **every**
 release/startup, including when all migration steps were already recorded.
 Package-owned country partitions and i18n documents are replaced by exact `_id`;
@@ -57,7 +65,7 @@ hydration. This step participates in the same packaged ordered migration chain.
 
 ## 008 — common help v3 (1.3.0)
 
-Load the new HU/EN common help from the packaged seeds on retained databases.
+Load the original HU/EN common help from the migration's pinned seed on retained databases.
 Activate it when the installation still uses an unchanged packaged default;
 deactivate that older default after insertion. Preserve custom content and
 deliberately inactive selections. Add the new revision inactive when a custom
@@ -66,6 +74,14 @@ that the packaged revision needs an explicit import. Privacy, Terms, explanation
 guides and user data are untouched. Interrupted insertion/deactivation retries
 are idempotent. `default-help-migration-test.py` exercises these cases in a
 temporary database on the existing QA Mongo container.
+
+The four original v1/v3 rows are preserved from release-source commit
+`c02e54982` (`server/docker/conf/mongodb/myscoutee_db/helpCenterRevisions.json`).
+Later release seeds deliberately mark v3 inactive when publishing newer help;
+using them as migration008 input made an older installation's ordered upgrade
+fail with `Missing canonical help v3 seed`. The released migration script and
+its checksum remain unchanged. This snapshot is only migration input; it does
+not replace the current help seed or an operator's active/custom selection.
 
 ## 009 — stored demo profile details (1.3.0)
 
@@ -111,3 +127,34 @@ image; a Java restart no longer creates integration indexes.
 `integration-indexes-test.py` checks all three definitions, idempotency, empty
 databases, retained data, duplicate rejection and an indexed key lookup on
 disposable databases in the existing monolith or KVM Mongo runtime.
+
+## 013 — common help v5
+
+Complete the missed retained-installation update for the existing MSC-119 help:
+EN/HU common, Work and Community v5 revisions. The UI/local/Mongo seeds already
+contain this content; this migration brings older installed databases forward.
+Activate v5 only for an empty scope or an unchanged older packaged default,
+independently per group and language. Preserve customized content, explicit
+inactive selections, an operator-owned version5 and any newer active revision.
+Existing v5 content remains unchanged. An interrupted insertion/deactivation
+can be retried. Privacy, Terms, explanation guides, consents and users are not
+updated by this step.
+
+The twelve canonical help rows from source `399f450ab` are pinned in
+`seeds/013-default-help-v5/helpCenterRevisions.json`; all three canonical seed
+sets agree. Older rows provide comparison values for detecting operator edits.
+The live/current seed files are unchanged. Migration008 retains its original
+input so the oldest supported upgrade reaches this new step; stopping at v3
+does not satisfy the v5 upgrade.
+
+For retained pre-group databases, the step uses the canonical Mongo policy's
+group-aware unique and active indexes, creating the replacement unique index
+before dropping the obsolete unscoped unique index. Help is loaded once and
+changes use one ordered bulk write. This runs during upgrade, before the API,
+and introduces no application request or background-work overhead.
+
+`default-help-v5-migration-test.py` tests v1/v3/v4 upgrades, current v5, retry,
+old index replacement, independent scopes, custom/inactive/colliding/newer
+revisions and retained unrelated data. `migration-chain-test.py` verifies that
+the complete ordered chain ends with v5, including installations with earlier
+migration receipts. Both use isolated databases on the existing test runtime.
