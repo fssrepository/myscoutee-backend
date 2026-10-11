@@ -1,0 +1,430 @@
+{
+  "updated": "2026-10-12",
+  "status": "SOURCE_JUNIT_PASSED_RUNTIME_PENDING",
+  "baselineSourceRevision": "5d71945a232ece49882f071562695a84f3f922d5",
+  "scope": "Make omitted report, feedback and support feature dependencies selectable before template packaging. Native full-app behavior remains installed.",
+  "changes": [
+    "Separate native report/feedback submission routes and owner from mandatory profile service.",
+    "Separate moderation HTTP controller from other admin capabilities.",
+    "Reuse administrator identity and stateless classification without imposing administrator authority on ordinary group-role classification.",
+    "Move telemetry batch scoping to administration, preserving one distinct-profile batch lookup.",
+    "Separate support creation/case mutation from generic chat, reusing its persistence, stream and counter helpers.",
+    "Separate support-case counters from ordinary single/bulk unread updates.",
+    "Account status work starts without support; undelivered intent keeps its work marker.",
+    "Select admin moderation attention through the existing Optional feature pattern; native numeric fields unchanged, absent feature fields omitted from JSON."
+  ],
+  "methodExtraction": [
+    {
+      "method": "submitFeedback",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "submitReport",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolvePreferredEventRecord",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolveAcceptedReportMember",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "isReportableEventOrganizer",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolveActivityMemberEntryId",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "normalizeMemberStatus",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "preferredEventRecordsBySourceId",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "shouldPreferEventRecord",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "reportSyncKey",
+      "source": "accounts/service/HomeUserProfileService.java",
+      "destination": "accounts/service/ModerationSubmissionService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "baseProfileEvents",
+      "source": "content/service/AdminModerationService.java",
+      "destination": "administration/service/AdminTelemetryScopeService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "refreshSupportCaseCountersForAdmins",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "resolveSupportCaseCounters",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "updateSupportCaseCounters",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "hasSupportCaseCounters",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "updateUserActivityFields",
+      "source": "accounts/service/AccountChatCounterService.java",
+      "destination": "accounts/service/AccountSupportCaseCounterService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "sendAdminSupportMessage",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 2,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "updateSupportCase",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "supportChatDocument",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "toSupportCaseRecord",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "normalizeSupportCaseAction",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "nextSupportCaseState",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "assignedSupportCaseState",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    },
+    {
+      "method": "applySupportCaseState",
+      "source": "chat/service/ChatService.java",
+      "destination": "chat/service/SupportConversationService.java",
+      "overloads": 1,
+      "sameBodyAfterOwnerQualification": true
+    }
+  ],
+  "junit": {
+    "coherentBatch": [
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminGraphScienceServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.controller.ContentModerationControllerTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.IdeaPostsServiceTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminAffinityGraphControllerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.ModerationSubmissionServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.ProfileStatusWorkTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.dto.AdminStatsRevenueIsolationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.AccountChatCounterServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.payments.controller.AdminPaymentSimulatorControllerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdministrativeActorServiceTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.HomeUserProfileServiceTest",
+        "tests": 60,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.access.security.BoundaryPolicyAnnotationTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminMonitoringServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.ContentModerationWorkerTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminStatsTelemetryWorkerServiceTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.integrations.service.AdminClientServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminStatsServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.repository.ContentModerationRepositoryTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.ContentModerationServiceTest",
+        "tests": 16,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminParamsServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminTelemetryScopeServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.AdminProfileCounterServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.content.service.AdminModerationServiceTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphServiceTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphLayoutWorkerServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.integrations.config.AdminClientAuthenticationFilterTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.accounts.service.AccountSupportCaseCounterServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminMenuCounterServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.notifications.service.AdminNotificationServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.DomainServiceBoundaryTest",
+        "tests": 52,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.chat.service.ChatServiceTest",
+        "tests": 44,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminAudienceServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      }
+    ],
+    "classificationFollowup": [
+      {
+        "suite": "com.raxim.myscoutee.domain.content.controller.ContentModerationControllerTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.administration.service.AdminMenuCounterServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0
+      },
+      {
+        "suite": "com.raxim.myscoutee.domain.DomainServiceBoundaryTest",
+        "tests": 52,
+        "failures": 0,
+        "errors": 0
+      }
+    ],
+    "embeddedChatPersistence": [
+      {
+        "suite": "com.raxim.myscoutee.domain.chat.service.ChatOwnershipPersistenceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      }
+    ]
+  },
+  "performance": {
+    "status": "RUNTIME_NOT_YET_MEASURED",
+    "queryEvidence": "Extraction bodies preserve queries and writes. Tests assert one batched actor lookup for telemetry, one support count read per workspace, unchanged submission boundary calls, two attention count calls, and no reads of omitted moderation data. Functional tests do not prove CPU/latency parity."
+  },
+  "runtime": {
+    "kvm": "NOT_RUN_FOR_THIS_BATCH",
+    "monolith": "NOT_RUN_FOR_THIS_BATCH",
+    "assemblyPackaging": "PENDING",
+    "templateRemoval": "PENDING"
+  },
+  "limits": [
+    "Native four outstanding manual QA campaigns have not been run.",
+    "No new runtime deployment or image is claimed by this source checkpoint.",
+    "Template Java/services remain unchanged until source runtime qualification."
+  ],
+  "logs": [
+    "/tmp/msc122-admin-feature-batch-junit.log",
+    "/tmp/msc122-admin-classification-junit.log",
+    "/tmp/msc122-admin-chat-persistence.log"
+  ]
+}

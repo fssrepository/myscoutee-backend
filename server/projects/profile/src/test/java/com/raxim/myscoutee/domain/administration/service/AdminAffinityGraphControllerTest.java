@@ -25,7 +25,6 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGrap
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphNeighborhoodDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphTileDto;
 import com.raxim.myscoutee.domain.affinity.service.AdminAffinityGraphService;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
 import com.raxim.myscoutee.domain.administration.service.AdminMonitoringService;
 import com.raxim.myscoutee.domain.affinity.service.AdminParamsService;
 import com.raxim.myscoutee.domain.administration.service.AdminStatsService;
@@ -37,8 +36,6 @@ import com.raxim.myscoutee.domain.notifications.service.AdminNotificationService
 @ExtendWith(MockitoExtension.class)
 @org.junit.jupiter.api.Tag("standard")
 class AdminAffinityGraphControllerTest {
-    @Mock
-    private AdminModerationService adminModerationService;
     @Mock
     private HelpCenterService helpCenterService;
     @Mock
@@ -62,7 +59,6 @@ class AdminAffinityGraphControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders
                 .standaloneSetup(new AdminController(
-                        adminModerationService,
                         helpCenterService,
                         ideaPostsService,
                         adminNotificationService,

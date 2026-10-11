@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.content.controller;
 import com.raxim.myscoutee.domain.groups.api.BaseGroups;
 
 import com.raxim.myscoutee.domain.assets.api.AssetModerationDetails;
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.content.service.ContentModerationService;
 import com.raxim.myscoutee.domain.groups.api.Groups;
 
@@ -20,16 +20,21 @@ import com.raxim.myscoutee.domain.content.mapper.PhotoFeedMapper;
 @RestController
 @RequestMapping({"/admin/content-moderation", "/groups/{groupId}/content-moderation"})
 public class ContentModerationController {
-    private final AdminModerationService admins;
+    private final AdministrativeActors admins;
+    private final com.raxim.myscoutee.domain.accounts.api.ProfileSummaries profiles;
+    private final com.raxim.myscoutee.domain.administration.api.AdministratorClassification classification;
     private final ContentModerationService moderation;
     private final MongoTemplate mongo;
     private final AssetModerationDetails assets;
     private final EventModeration events;
     private final Groups groups;
-    public ContentModerationController(AdminModerationService admins, ContentModerationService moderation,
+    public ContentModerationController(AdministrativeActors admins,
+            com.raxim.myscoutee.domain.accounts.api.ProfileSummaries profiles,
+            com.raxim.myscoutee.domain.administration.api.AdministratorClassification classification,
+            ContentModerationService moderation,
             MongoTemplate mongo, AssetModerationDetails assets, EventModeration events, Groups groups) {
         this.admins = admins; this.moderation = moderation; this.mongo = mongo; this.assets = assets; this.events = events;
-        this.groups = groups;
+        this.groups = groups; this.profiles = profiles; this.classification = classification;
     }
     @GetMapping public Page page(@PathVariable(required=false) String groupId, @RequestParam String adminUserId, @RequestParam(defaultValue="all") String category,
             @RequestParam(defaultValue="under-review") String status, @RequestParam(required=false) String cursor,
@@ -66,7 +71,7 @@ public class ContentModerationController {
     private com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminUserDto actor(String requestedId, String groupId) {
         if (groupId == null) return admins.resolveAdminActor(requestedId);
         if (com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(groupId)
-                && admins.isBaseAdminProfile(requestedId)) return admins.resolveAdminActor(requestedId);
+                && profiles.findByUserId(requestedId).map(classification::isBaseAdminProfile).orElse(false)) return admins.resolveAdminActor(requestedId);
         var account = groups.actor(requestedId);
         groups.requireAdmin(account, groupId);
         var profile = groups.select(account, groupId).profile();

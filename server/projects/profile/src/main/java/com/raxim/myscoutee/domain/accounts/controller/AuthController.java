@@ -19,13 +19,11 @@ import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.DemoUserListItemDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileExtDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.ProfileExtByIdResponseDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserDto;
-import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFeedbackSubmitRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserFilterPreferencesRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserLocationEligibilityResponseDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserLogoutRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeLongPollRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserRealtimeLongPollResponseDto;
-import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserReportUserSubmitRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginRequestDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSessionLoginResponseDto;
 import com.raxim.myscoutee.domain.accounts.dto.AuthDtos.UserSubmitActionResponseDto;
@@ -141,15 +139,7 @@ public class AuthController {
                 response.counterOverrides(), context.workspace(), context.accountProfile());
     }
 
-    @PostMapping("/me/feedback")
-    public UserSubmitActionResponseDto submitFeedback(@RequestBody UserFeedbackSubmitRequestDto request) {
-        return homeUserProfileService.submitFeedback(request);
-    }
 
-    @PostMapping("/me/report-user")
-    public UserSubmitActionResponseDto submitReport(@RequestBody UserReportUserSubmitRequestDto request) {
-        return homeUserProfileService.submitReport(request);
-    }
 
     @PostMapping("/me/logout")
     public UserSubmitActionResponseDto logout(

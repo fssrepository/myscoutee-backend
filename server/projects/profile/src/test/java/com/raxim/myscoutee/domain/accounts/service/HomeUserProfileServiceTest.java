@@ -141,6 +141,7 @@ class HomeUserProfileServiceTest {
     private AffiliateService affiliateService;
 
     private HomeUserProfileService service;
+    private ModerationSubmissionService submissions;
     private final AbsoluteAffinityService absoluteAffinityService = new AbsoluteAffinityService(null, null, null);
 
     @BeforeEach
@@ -163,12 +164,9 @@ class HomeUserProfileServiceTest {
                 new com.raxim.myscoutee.domain.affinity.service.EdgeDirectoryService(userAffinityEdgesRepository),
                 userFriendshipsRepository,
                 new com.raxim.myscoutee.domain.affinity.service.RatingDirectoryService(userRatesRepository),
-                new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
                 new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
                 new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
                 new com.raxim.myscoutee.domain.events.service.FeedbackDirectoryService(eventFeedbackAnswersRepository),
-                new com.raxim.myscoutee.domain.content.service.UserFeedbackService(userFeedbackSubmissionsRepository),
-                new com.raxim.myscoutee.domain.content.service.CommunityReportService(userReportSubmissionsRepository, adminTelemetryService),
                 scheduledMessageTaskService,
                 absoluteAffinityService,
                 affinityRecomputeTaskService,
@@ -176,6 +174,13 @@ class HomeUserProfileServiceTest {
                 adminMenuCounterService,
                 accessControlService,
                 assetsService, affiliateService, new com.raxim.myscoutee.domain.groups.service.GroupDirectoryService(org.mockito.Mockito.mock(com.raxim.myscoutee.domain.groups.repository.CommunityGroupsRepository.class)));
+        submissions = new ModerationSubmissionService(new SelectedProfileService(usersRepository),
+                new com.raxim.myscoutee.domain.chat.service.ChatReviewService(chatsRepository, chatMessagesRepository),
+                new com.raxim.myscoutee.domain.events.service.EventOwnershipService(activityEventsRepository),
+                new com.raxim.myscoutee.domain.events.service.MemberDirectoryService(activityMembersRepository),
+                new com.raxim.myscoutee.domain.content.service.UserFeedbackService(userFeedbackSubmissionsRepository),
+                new com.raxim.myscoutee.domain.content.service.CommunityReportService(userReportSubmissionsRepository, adminTelemetryService),
+                adminTelemetryService);
         var counters = new ProfileMenuCountersService(usersRepository, new SelectedProfileService(usersRepository), java.util.Optional.empty());
         var lifecycle = new AccountLifecycleService(usersRepository, userSessionActionsRepository,
                 new SelectedProfileService(usersRepository),
@@ -436,7 +441,7 @@ class HomeUserProfileServiceTest {
         event.setTitle("Open event");
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
 
-        var response = service.submitReport(reportRequest("reporter", "organizer", "event-1"));
+        var response = submissions.submitReport(reportRequest("reporter", "organizer", "event-1"));
 
         assertThat(response.submitted()).isTrue();
         ArgumentCaptor<UserReportSubmission> reportCaptor = ArgumentCaptor.forClass(UserReportSubmission.class);
@@ -457,7 +462,7 @@ class HomeUserProfileServiceTest {
         event.setStatus(ActivityEvent.STATUS_ACTIVE);
         when(activityEventsRepository.findBySourceId("event-1")).thenReturn(List.of(event));
 
-        var response = service.submitReport(reportRequest("reporter", "other-member", "event-1"));
+        var response = submissions.submitReport(reportRequest("reporter", "other-member", "event-1"));
 
         assertThat(response.submitted()).isFalse();
         assertThat(response.message()).contains("event organizer or a member you shared an event with");
@@ -484,7 +489,7 @@ class HomeUserProfileServiceTest {
         when(activityMembersRepository.findByOwnerTypeAndOwnerIdAndUserId(
                 "event", "event-1", "other-member")).thenReturn(Optional.of(target));
 
-        var response = service.submitReport(reportRequest("reporter", "other-member", "event-1"));
+        var response = submissions.submitReport(reportRequest("reporter", "other-member", "event-1"));
 
         assertThat(response.submitted()).isFalse();
         verify(userReportSubmissionsRepository, never()).save(any());

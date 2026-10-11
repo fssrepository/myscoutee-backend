@@ -8,5 +8,10 @@ public interface AdministratorClassification {
                 || "admin workspace".equalsIgnoreCase(text(user.getStatusText()))
                 || java.util.List.of("admin-demo-ava", "admin-demo-noel").contains(text(user.getUserId()));
     }
+    default boolean isBaseAdminProfile(com.raxim.myscoutee.domain.accounts.api.ProfileSummary user) {
+        return user != null
+                && com.raxim.myscoutee.domain.groups.api.BaseGroups.isBaseId(user.getWorkspaceGroupId())
+                && "Admin".equalsIgnoreCase(user.getHostTier());
+    }
     private static String text(String value) { return value == null ? "" : value.trim(); }
 }

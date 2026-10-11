@@ -17,7 +17,7 @@ import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
  * observers complete before support messages and the guarded work-marker removal. */
 @Service
 public class ProfileStatusWork {
-    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
     @org.springframework.context.annotation.Lazy
     private com.raxim.myscoutee.domain.chat.api.SupportMessages supportMessages;
     private final UsersRepository users;
@@ -64,6 +64,9 @@ public class ProfileStatusWork {
             JobGroupContext.run(user.getWorkspaceGroupId(), () -> {
                 for (var observer : observers) observer.onProfileStatusChanged(user.getUserId());
             });
+            if (!user.getProfileSupportWork().isEmpty() && supportMessages == null) {
+                throw new IllegalStateException("Support work requires its delivery owner");
+            }
             for (var message : user.getProfileSupportWork()) {
                 JobGroupContext.run(user.getWorkspaceGroupId(), () -> supportMessages.sendAdminSupportMessage(
                         user.getUserId(), message.adminUserId(), message.adminName(), message.adminInitials(),

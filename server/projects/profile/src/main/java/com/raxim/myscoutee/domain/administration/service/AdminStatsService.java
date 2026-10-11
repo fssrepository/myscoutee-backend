@@ -3,7 +3,7 @@ package com.raxim.myscoutee.domain.administration.service;
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
 import com.raxim.myscoutee.domain.affinity.api.GraphScience;
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 import com.raxim.myscoutee.domain.platform.api.JobGroupContext;
 
 import java.time.Instant;
@@ -44,22 +44,24 @@ public class AdminStatsService {
 
     private final AdminStatsRepository adminStatsRepository;
     private final ProfileStatistics profileStatistics;
-    private final AdministrativeAccess adminModerationService;
+    private final AdministrativeActors adminActors;
+    private final AdminTelemetryScopeService telemetryScope;
     private final GraphScience adminGraphScienceService;
 
     public AdminStatsService(
             AdminStatsRepository adminStatsRepository,
             ProfileStatistics profileStatistics,
-            AdministrativeAccess adminModerationService,
+            AdministrativeActors adminActors, AdminTelemetryScopeService telemetryScope,
             GraphScience adminGraphScienceService) {
         this.adminStatsRepository = adminStatsRepository;
         this.profileStatistics = profileStatistics;
-        this.adminModerationService = adminModerationService;
+        this.adminActors = adminActors;
+        this.telemetryScope = telemetryScope;
         this.adminGraphScienceService = adminGraphScienceService;
     }
 
     public AdminStatsDashboardDto dashboard(String adminUserId) {
-        String groupId = adminModerationService.baseGroupId(adminUserId);
+        String groupId = adminActors.baseGroupId(adminUserId);
         return toDto(groupId == null ? adminStatsRepository.globalSnapshotOrDefault() : adminStatsRepository.snapshotOrDefault(groupId));
     }
 
@@ -77,7 +79,7 @@ public class AdminStatsService {
     public void applyTelemetryEvents(List<AdminTelemetryEvent> events, String lastStreamId, boolean refreshDerived) {
         if ((events == null || events.isEmpty()) && !StringUtils.hasText(safeText(lastStreamId))) return;
         List<AdminTelemetryEvent> batch = events == null ? List.of() : events;
-        var scoped = adminModerationService.baseProfileEvents(batch);
+        var scoped = telemetryScope.baseProfileEvents(batch);
         if (JobGroupContext.isActive()) {
             String key = JobGroupContext.groupId() == null ? "global" : JobGroupContext.groupId();
             applyTelemetryEvents(scoped.getOrDefault(key, List.of()), lastStreamId, adminStatsRepository.ensureSnapshot(JobGroupContext.groupId()), refreshDerived);

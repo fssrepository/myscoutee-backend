@@ -2,7 +2,7 @@ package com.raxim.myscoutee.domain.administration.service;
 
 import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
 
-import com.raxim.myscoutee.domain.content.service.AdminModerationService;
+import com.raxim.myscoutee.domain.administration.api.AdministrativeActors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -68,10 +68,11 @@ class AdminMonitoringServiceTest {
         AdminMonitoringRepository repository = mock(AdminMonitoringRepository.class);
         when(repository.ensureGlobalSnapshot()).thenReturn(snapshot);
         when(repository.globalSnapshotOrDefault()).thenReturn(snapshot);
-        var admin = mock(AdminModerationService.class);
-        when(admin.baseProfileEvents(org.mockito.ArgumentMatchers.anyList()))
+        var admin = mock(AdministrativeActors.class);
+        var scope = mock(AdminTelemetryScopeService.class);
+        when(scope.baseProfileEvents(org.mockito.ArgumentMatchers.anyList()))
                 .thenAnswer(invocation -> Map.of("global", invocation.getArgument(0)));
-        return new AdminMonitoringService(repository, admin);
+        return new AdminMonitoringService(repository, admin, scope);
     }
 
     private AdminTelemetryEvent event(String eventKey, Long amount) {

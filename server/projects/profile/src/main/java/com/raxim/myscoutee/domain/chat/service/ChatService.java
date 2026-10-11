@@ -2,13 +2,9 @@ package com.raxim.myscoutee.domain.chat.service;
 
 import static com.raxim.myscoutee.domain.chat.service.ChatRecordContext.*;
 
-import com.raxim.myscoutee.domain.chat.api.SupportWorkspaceDirectory;
-
-
 import com.raxim.myscoutee.domain.groups.api.WorkspaceContext;
 
 import com.raxim.myscoutee.domain.accounts.api.ProfileReadState;
-import com.raxim.myscoutee.domain.accounts.api.SupportCaseCounters;
 import com.raxim.myscoutee.domain.administration.api.AdministratorClassification;
 import com.raxim.myscoutee.domain.administration.api.OperationalTelemetry;
 
@@ -94,23 +90,20 @@ import com.raxim.myscoutee.domain.chat.mapper.ChatMessageMapper;
 import com.raxim.myscoutee.domain.notifications.api.NotificationInbox;
 
 @Service
-public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportMessages, com.raxim.myscoutee.domain.chat.api.ChatQueries {
+public class ChatService implements com.raxim.myscoutee.domain.chat.api.ChatQueries {
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.AccountDevices accountDevices;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.ChatCounters chatCounters;
     @org.springframework.beans.factory.annotation.Autowired private com.raxim.myscoutee.domain.accounts.api.SelectedProfile selectedProfile;
 
-    @org.springframework.beans.factory.annotation.Autowired(required = false)
-    private SupportWorkspaceDirectory supportWorkspaces;
     private static final Logger LOGGER = LoggerFactory.getLogger(ChatService.class);
     private static final DateTimeFormatter CHAT_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.US)
             .withZone(ZoneId.systemDefault());
-    private static final String SUPPORT_CASE_STATUS_PENDING = "pending";
-    private static final String SUPPORT_CASE_STATUS_WARNED = "warned";
-    private static final String SUPPORT_CASE_STATUS_PICKED = "picked";
-    private static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
-    private static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
+    static final String SUPPORT_CASE_STATUS_PENDING = "pending";
+    static final String SUPPORT_CASE_STATUS_WARNED = "warned";
+    static final String SUPPORT_CASE_STATUS_PICKED = "picked";
+    static final String SUPPORT_CASE_STATUS_SOLVED = "solved";
+    static final String SUPPORT_CASE_STATUS_BLOCKED = "blocked";
     private static final String SUPPORT_CASE_FILTER_ALL = "all";
-
 
     private static final int DEFAULT_CHAT_MESSAGES_PAGE_SIZE = 20;
     private static final int MAX_CHAT_MESSAGES_PAGE_SIZE = 100;
@@ -122,7 +115,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     private ChatMemberPages memberPages;
     private final ProfileReadState profilePresentation;
-    private final SupportCaseCounters supportCaseCounters;
     private final ChatStreamPublisher chatStreamPublisher;
     private final ChatPushNotificationService chatPushNotificationService;
     private final NotificationInbox userNotificationService;
@@ -143,7 +135,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
             MongoTemplate mongoTemplate,
             ProfileSummaries profileDirectory,
             ProfileReadState profilePresentation,
-            SupportCaseCounters supportCaseCounters,
             ChatStreamPublisher chatStreamPublisher,
             ChatPushNotificationService chatPushNotificationService,
             NotificationInbox userNotificationService,
@@ -157,7 +148,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         this.mongoTemplate = mongoTemplate;
         this.profileDirectory = profileDirectory;
         this.profilePresentation = profilePresentation;
-        this.supportCaseCounters = supportCaseCounters;
         this.chatStreamPublisher = chatStreamPublisher;
         this.chatPushNotificationService = chatPushNotificationService;
         this.userNotificationService = userNotificationService;
@@ -469,42 +459,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
                 counters.chat());
     }
 
-    public ChatDto updateSupportCase(String chatId, String requestedUserId, String actionValue) {
-        String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
-        String normalizedChatId = normalizeId(chatId);
-        if (!StringUtils.hasText(normalizedChatId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chat id is required.");
-        }
-        if (!accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, userId, userId, normalizedChatId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Authenticated user is not allowed to manage this support chat.");
-        }
-        ProfileSummary actor = findUser(userId);
-        String action = normalizeSupportCaseAction(actionValue);
-        if (!StringUtils.hasText(action)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
-        }
-
-        List<Chat> chatDocuments = ensureOwnerCopies(chatsRepository.findByChatId(normalizedChatId));
-        if (chatDocuments.isEmpty() || chatDocuments.stream().noneMatch(this::isSupportCaseChat)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case not found.");
-        }
-
-        SupportCaseState state = nextSupportCaseState(action, userId, actor);
-        List<Chat> updatedDocuments = new ArrayList<>();
-        for (Chat existing : chatDocuments) {
-            Chat next = copyChat(existing);
-            applySupportCaseState(next, state);
-            updatedDocuments.add(next);
-        }
-        chatsRepository.saveAll(updatedDocuments);
-        supportCaseCounters.refreshSupportCaseCountersForAdmins();
-        adminTelemetryService.record("admin.support.case." + action, "support", normalizedChatId, userId);
-
-        Chat viewerChat = findOwnerChat(updatedDocuments, userId);
-        Chat responseChat = viewerChat == null ? updatedDocuments.get(0) : viewerChat;
-        return toChatDto(responseChat, chatMemberUsers(List.of(responseChat)));
-    }
-
     public List<ChatMessageDto> querySharedMessages(String chatId, String requestedUserId, String kind) {
         String userId = resolveChatActor(chatId, requireResolvedUserId(requestedUserId));
         ChatDocumentsSnapshot snapshot = requireChat(chatId, userId);
@@ -748,126 +702,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         return persistChatMessage(accessSnapshot, userId, message);
     }
 
-    public ChatMessageDto sendAdminSupportMessage(
-            String targetUserId,
-            String adminUserId,
-            String adminName,
-            String adminInitials,
-            String text,
-            String supportStatus) {
-        return sendAdminSupportMessage(targetUserId, adminUserId, adminName, adminInitials, text, supportStatus, null);
-    }
-
-    public ChatMessageDto sendAdminSupportMessage(String targetUserId, String adminUserId, String adminName,
-            String adminInitials, String text, String supportStatus, String stableMessageId) {
-        String normalizedTargetUserId = normalizeId(targetUserId);
-        String normalizedAdminUserId = normalizeId(adminUserId);
-        String normalizedText = normalizeText(text);
-        if (!StringUtils.hasText(normalizedTargetUserId)
-                || !StringUtils.hasText(normalizedAdminUserId)
-                || !StringUtils.hasText(normalizedText)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Support target, admin and message are required.");
-        }
-        ProfileSummary targetUser = findUser(normalizedTargetUserId);
-        if (targetUser == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support target was not found.");
-        }
-        ProfileSummary adminUser = findUser(normalizedAdminUserId);
-        String workspaceGroupId = normalizeId(targetUser.getWorkspaceGroupId());
-        var targetWorkspace = StringUtils.hasText(workspaceGroupId) && supportWorkspaces != null
-                ? supportWorkspaces.supportWorkspace(workspaceGroupId) : null;
-        boolean appModeration = isAdminUser(adminUser);
-        if (appModeration) {
-            String targetBase = normalizeId(targetWorkspace == null ? null : targetWorkspace.baseId());
-            if (!targetBase.equals(normalizeId(adminUser.getWorkspaceGroupId())))
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support case unavailable in this base group.");
-        }
-        boolean groupModeration = StringUtils.hasText(workspaceGroupId) && !appModeration;
-        if (groupModeration && (adminUser == null || !workspaceGroupId.equals(normalizeId(adminUser.getWorkspaceGroupId())))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Moderator and recipient must belong to the same workspace.");
-        }
-        String chatId = (groupModeration ? "c-moderation-group-" : "c-support-admin-") + normalizedTargetUserId;
-        if (stableMessageId != null) {
-            var delivered = chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElse(null);
-            if (delivered != null) return chatMessageMapper.toDto(delivered, normalizedAdminUserId);
-        }
-        var group = groupModeration && targetWorkspace != null && targetWorkspace.present() ? targetWorkspace : null;
-        String chatTitle = groupModeration ? (group == null ? workspaceGroupId : group.name()) : "MyScoutee Support";
-        String resolvedAdminName = firstNonBlank(adminName, resolveUserName(adminUser, normalizedAdminUserId));
-        String resolvedAdminInitials = firstNonBlank(adminInitials, resolveUserInitials(adminUser, normalizedAdminUserId));
-        String nowIso = Instant.now().toString();
-        SupportCaseState supportCaseState = new SupportCaseState(
-                normalizeSupportCaseStatus(supportStatus),
-                normalizedAdminUserId,
-                resolvedAdminName,
-                resolvedAdminInitials,
-                nowIso);
-        Map<String, Chat> existingByOwnerUserId = new LinkedHashMap<>();
-        for (Chat existing : chatsRepository.findByChatId(chatId)) {
-            if (existing != null && StringUtils.hasText(normalizeId(existing.getOwnerUserId()))) {
-                existingByOwnerUserId.put(normalizeId(existing.getOwnerUserId()), existing);
-            }
-        }
-        Chat targetChat = supportChatDocument(
-                existingByOwnerUserId.get(normalizedTargetUserId),
-                normalizedTargetUserId,
-                chatId,
-                resolvedAdminInitials,
-                chatTitle,
-                List.of(normalizedTargetUserId, normalizedAdminUserId),
-                supportCaseState);
-        Chat adminChat = supportChatDocument(
-                existingByOwnerUserId.get(normalizedAdminUserId),
-                normalizedAdminUserId,
-                chatId,
-                resolveUserInitials(targetUser, normalizedTargetUserId),
-                chatTitle + " · " + resolveUserName(targetUser, normalizedTargetUserId),
-                List.of(normalizedTargetUserId, normalizedAdminUserId),
-                supportCaseState);
-        if (!groupModeration) {
-            targetChat.setSupportBaseGroupId(adminUser == null ? null : adminUser.getWorkspaceGroupId());
-            adminChat.setSupportBaseGroupId(targetChat.getSupportBaseGroupId());
-        }
-        if (groupModeration) {
-            for (Chat chat : List.of(targetChat, adminChat)) {
-                chat.setChannelType(CHAT_CHANNEL_GROUP_SUPPORT);
-                chat.setOwnerId(null);
-                chat.setSupportCase(null);
-            }
-        }
-        List<Chat> chatDocuments = normalizedTargetUserId.equals(normalizedAdminUserId)
-                ? List.of(adminChat) : List.of(targetChat, adminChat);
-        chatsRepository.saveAll(chatDocuments);
-        if (!groupModeration) supportCaseCounters.refreshSupportCaseCountersForAdmins();
-
-        ChatMessage message = buildMessage(adminUser, normalizedAdminUserId, normalizedText, null, null, List.of());
-        message.setSender(resolvedAdminName);
-        ChatAvatarRecord senderAvatar = message.getSenderAvatar();
-        if (senderAvatar != null) {
-            senderAvatar.setInitials(resolvedAdminInitials);
-        }
-        if (stableMessageId != null) {
-            message.setId(stableMessageId);
-            message.setChatId(chatId);
-            message.setMongoId(ChatMessage.buildMongoId(chatId, stableMessageId));
-            message.refreshMessageSearchFields();
-            try { chatMessagesRepository.insert(message); }
-            catch (DuplicateKeyException duplicate) {
-                return chatMessageMapper.toDto(chatMessagesRepository.findByChatIdAndMessageId(chatId, stableMessageId).orElseThrow(), normalizedAdminUserId);
-            }
-            var updated = updateChatSummaries(chatDocuments, message, normalizedAdminUserId, true);
-            var streamEvent = chatMessageMapper.toStreamEvent(chatId, message);
-            observeChatEventPublish(publishChatEventAsync(streamEvent), streamEvent);
-            chatPushNotificationService.notifyRecipients(updated, streamEvent);
-            return chatMessageMapper.toDto(message, normalizedAdminUserId);
-        }
-        return persistChatMessage(
-                new ChatDocumentsSnapshot(chatId, adminChat, chatDocuments),
-                normalizedAdminUserId,
-                message);
-    }
-
-    private ChatMessageDto persistChatMessage(
+    ChatMessageDto persistChatMessage(
             ChatDocumentsSnapshot accessSnapshot,
             String userId,
             ChatMessage message) {
@@ -889,33 +724,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         chatPushNotificationService.notifyRecipients(updatedDocuments, streamEvent);
         adminTelemetryService.record("chat.message.sent", "chats", accessSnapshot.chatId(), userId);
         return chatMessageMapper.toDto(message, userId);
-    }
-
-    private Chat supportChatDocument(
-            Chat existing,
-            String ownerUserId,
-            String chatId,
-            String avatar,
-            String title,
-            List<String> memberIds,
-            SupportCaseState supportCaseState) {
-        Chat chat = existing == null ? new Chat() : copyChat(existing);
-        if (existing == null) {
-            chat.setMongoId(buildMongoId(ownerUserId, chatId));
-            chat.setChatId(chatId);
-            chat.setOwnerUserId(ownerUserId);
-            chat.setUnread(0);
-            chat.setLastMessage("");
-            chat.setLastSenderId("");
-            chat.setDateIso(supportCaseState.updatedAtIso());
-        }
-        chat.setAvatar(avatar);
-        chat.setTitle(title);
-        chat.setMemberIds(memberIds);
-        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
-        chat.setOwnerId(chatId);
-        applySupportCaseState(chat, supportCaseState);
-        return chat;
     }
 
     public ChatMessageDto editMessage(String chatId, String requestedUserId, String messageId, String text) {
@@ -1393,7 +1201,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         }
     }
 
-    private List<Chat> updateChatSummaries(
+    List<Chat> updateChatSummaries(
             List<Chat> chatDocuments,
             ChatMessage message,
             String lastSenderId,
@@ -1563,7 +1371,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
                 .anyMatch(normalizedViewerUserId::equals);
     }
 
-
     ChatDto toChatDto(Chat chat) {
         return chatMapper.toDto(chat);
     }
@@ -1571,7 +1378,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
     ChatDto toChatDto(Chat chat, Map<String, ProfileSummary> usersById) {
         return chatMapper.toDto(chat, usersById);
     }
-
 
     private List<ChatDto> chatDtosWithMetrics(List<Chat> records) {
         List<Chat> safeRecords = records == null ? List.of() : records;
@@ -1604,8 +1410,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         return usersById;
     }
 
-
-    private ChatMessage buildMessage(
+    ChatMessage buildMessage(
             ProfileSummary sender,
             String senderUserId,
             String text,
@@ -1683,11 +1488,11 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         chatStreamPublisher.publish(streamEvent);
     }
 
-    private CompletableFuture<Boolean> publishChatEventAsync(ChatStreamEvent streamEvent) {
+    CompletableFuture<Boolean> publishChatEventAsync(ChatStreamEvent streamEvent) {
         return CompletableFuture.supplyAsync(() -> chatStreamPublisher.publish(streamEvent), chatWriteExecutor);
     }
 
-    private void observeChatEventPublish(CompletableFuture<Boolean> redisPublish, ChatStreamEvent streamEvent) {
+    void observeChatEventPublish(CompletableFuture<Boolean> redisPublish, ChatStreamEvent streamEvent) {
         if (redisPublish == null) {
             return;
         }
@@ -2057,7 +1862,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
                 ? profile.getAccountUserId() : profileId;
     }
 
-    private String resolveChatActor(String chatId, String profileId) {
+    String resolveChatActor(String chatId, String profileId) {
         return accessControlService.resolveChatActorUserId(chatId, profileId);
     }
 
@@ -2082,7 +1887,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         return "";
     }
 
-    private String resolveUserName(ProfileSummary user, String fallbackUserId) {
+    String resolveUserName(ProfileSummary user, String fallbackUserId) {
         if (user != null && StringUtils.hasText(user.getName())) {
             return user.getName().trim();
         }
@@ -2161,7 +1966,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         return reactions == null ? List.of() : reactions;
     }
 
-
     private int normalizeLongCount(long value) {
         if (value <= 0L) {
             return 0;
@@ -2187,10 +1991,9 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         }
     }
 
-    private String normalizeText(String value) {
+    String normalizeText(String value) {
         return value == null ? "" : value.trim();
     }
-
 
     private String normalizeChatContextFilter(String value) {
         String normalized = safeText(value);
@@ -2246,7 +2049,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
                 : item.supportCase().status()));
     }
 
-    private boolean isSupportCaseChat(Chat chat) {
+    boolean isSupportCaseChat(Chat chat) {
         if (chat == null) {
             return false;
         }
@@ -2255,23 +2058,8 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
                 || normalizeId(chat.getChatId()).startsWith("c-support-admin-");
     }
 
-    private boolean isAdminUser(ProfileSummary user) {
+    boolean isAdminUser(ProfileSummary user) {
         return adminMenuCounterService.isAdminUser(user);
-    }
-
-    private SupportCaseRecord toSupportCaseRecord(SupportCaseState state) {
-        SupportCaseRecord supportCase = new SupportCaseRecord();
-        supportCase.setStatus(normalizeSupportCaseStatus(state == null ? null : state.status()));
-        supportCase.setUpdatedAtIso(state == null ? "" : safeText(state.updatedAtIso()));
-        String assigneeUserId = normalizeId(state == null ? null : state.assigneeUserId());
-        if (StringUtils.hasText(assigneeUserId)) {
-            SupportCaseAssigneeRecord assignee = new SupportCaseAssigneeRecord();
-            assignee.setUserId(assigneeUserId);
-            assignee.setName(state == null ? "" : safeText(state.assigneeName()));
-            assignee.setInitials(state == null ? "" : safeText(state.assigneeInitials()));
-            supportCase.setAssignee(assignee);
-        }
-        return supportCase;
     }
 
     private SupportCaseRecord copySupportCase(SupportCaseRecord source) {
@@ -2297,7 +2085,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         return safeText(supportCase == null ? null : supportCase.getStatus());
     }
 
-    private String normalizeSupportCaseStatus(String value) {
+    String normalizeSupportCaseStatus(String value) {
         String normalized = safeText(value).toLowerCase(Locale.ROOT);
         return switch (normalized) {
             case SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
@@ -2311,42 +2099,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
             case SUPPORT_CASE_STATUS_PENDING, SUPPORT_CASE_STATUS_WARNED, SUPPORT_CASE_STATUS_PICKED, SUPPORT_CASE_STATUS_SOLVED, SUPPORT_CASE_STATUS_BLOCKED -> normalized;
             default -> SUPPORT_CASE_FILTER_ALL;
         };
-    }
-
-    private String normalizeSupportCaseAction(String value) {
-        String normalized = safeText(value).toLowerCase(Locale.ROOT);
-        return switch (normalized) {
-            case "pick", "unpick", "solve", "block", "reopen" -> normalized;
-            default -> "";
-        };
-    }
-
-    private SupportCaseState nextSupportCaseState(String action, String actorUserId, ProfileSummary actor) {
-        String nowIso = Instant.now().toString();
-        return switch (action) {
-            case "pick" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_PICKED, actorUserId, actor, nowIso);
-            case "solve" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_SOLVED, actorUserId, actor, nowIso);
-            case "block" -> assignedSupportCaseState(SUPPORT_CASE_STATUS_BLOCKED, actorUserId, actor, nowIso);
-            case "unpick", "reopen" -> new SupportCaseState(SUPPORT_CASE_STATUS_PENDING, "", "", "", nowIso);
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported support case action.");
-        };
-    }
-
-    private SupportCaseState assignedSupportCaseState(String status, String actorUserId, ProfileSummary actor, String nowIso) {
-        return new SupportCaseState(
-                status,
-                normalizeId(actorUserId),
-                resolveUserName(actor, actorUserId),
-                resolveUserInitials(actor, actorUserId),
-                nowIso);
-    }
-
-    private void applySupportCaseState(Chat chat, SupportCaseState state) {
-        chat.setChannelType(CHAT_CHANNEL_APP_SUPPORT);
-        if (!StringUtils.hasText(normalizeId(chat.getOwnerId()))) {
-            chat.setOwnerId(normalizeId(chat.getChatId()));
-        }
-        chat.setSupportCase(toSupportCaseRecord(state));
     }
 
     private String normalizeChatQuerySort(String sortValue, String secondaryFilterValue) {
@@ -2504,7 +2256,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         }
     }
 
-
     private String rangeStartIsoFromMillis(long value) {
         return value == Long.MIN_VALUE ? null : Instant.ofEpochMilli(value).toString();
     }
@@ -2548,7 +2299,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
         }
     }
 
-
     String buildMongoId(String ownerUserId, String chatId) {
         String stableKey = normalizeId(ownerUserId) + "|" + normalizeId(chatId);
         return "chat-owner-copy:" + UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8));
@@ -2556,7 +2306,6 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
 
     private record InitialSystemMessageResult(ChatMessageDto message, boolean inserted) {
     }
-
 
     private record ChatReadUpdate(
             Chat viewerChat,
@@ -2567,14 +2316,7 @@ public class ChatService implements com.raxim.myscoutee.domain.chat.api.SupportM
             boolean changed) {
     }
 
-    private record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {
+    record ChatDocumentsSnapshot(String chatId, Chat viewerChat, List<Chat> chatDocuments) {
     }
 
-    private record SupportCaseState(
-            String status,
-            String assigneeUserId,
-            String assigneeName,
-            String assigneeInitials,
-            String updatedAtIso) {
-    }
 }

@@ -1,10 +1,9 @@
 package com.raxim.myscoutee.domain.content.service;
 
-import com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService;
-import com.raxim.myscoutee.domain.administration.api.AdminTelemetryEvent;
+import com.raxim.myscoutee.domain.accounts.service.AccountSupportCaseCounterService;
 import com.raxim.myscoutee.domain.administration.service.AdminTelemetryService;
 import com.raxim.myscoutee.domain.affinity.service.AffinityRecomputeTaskService;
-import com.raxim.myscoutee.domain.chat.service.ChatService;
+import com.raxim.myscoutee.domain.chat.api.SupportMessages;
 import com.raxim.myscoutee.domain.platform.service.AppSettingsService;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,9 +57,9 @@ class AdminModerationServiceTest {
     @Mock
     private ChatMessagesRepository chatMessagesRepository;
     @Mock
-    private ChatService chatService;
+    private SupportMessages chatService;
     @Mock
-    private AccountChatCounterService supportCaseCounters;
+    private AccountSupportCaseCounterService supportCaseCounters;
     @Mock
     private AffinityRecomputeTaskService affinityRecomputeTaskService;
     @Mock
@@ -132,15 +131,7 @@ class AdminModerationServiceTest {
         verify(usersRepository, org.mockito.Mockito.times(4)).findByUserId("admin-demo-ava");
     }
 
-    @Test
-    void baseStatisticsExcludeIndependentWorkspaceActivityEvenWhenTaggedByAJob() {
-        var member = new Users(); member.setUserId("private-member"); member.setWorkspaceGroupId("private-workspace");
-        when(usersRepository.findByUserIdIn(any())).thenReturn(List.of(member));
-        var tags = java.util.Map.of("baseGroupId", "myscoutee-work");
-        var activity = new AdminTelemetryEvent("event.synced", "events", "event", member.getUserId(), 1L, "2026-10-05T00:00:00Z", tags);
-        var job = new AdminTelemetryEvent("jobs.run.completed", "jobs", "job", "worker", 1L, "2026-10-05T00:00:00Z", tags);
-        assertThat(service.baseProfileEvents(List.of(activity, job)).get("myscoutee-work")).containsExactly(job);
-    }
+
 
     @Test
     void warningWithoutReportIdUsesTheTargetWorkspaceAndSendsSupportMessage() {

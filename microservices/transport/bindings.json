@@ -2656,8 +2656,7 @@
       "credential": "administrativeAccessToken",
       "credentialProperty": "command-token",
       "producerDomains": [
-        "administration",
-        "help"
+        "administration"
       ],
       "actorOperations": [
         {
@@ -2669,11 +2668,6 @@
           "audience": "content:administrative-access",
           "method": "POST",
           "path": "/_internal/v1/content/administrative-access/dashboard_2"
-        },
-        {
-          "audience": "content:administrative-access",
-          "method": "POST",
-          "path": "/_internal/v1/content/administrative-access/resolveadminactor_1"
         },
         {
           "audience": "content:administrative-access",
@@ -2699,16 +2693,6 @@
           "audience": "content:administrative-access",
           "method": "POST",
           "path": "/_internal/v1/content/administrative-access/resolvefeedback_1"
-        },
-        {
-          "audience": "content:administrative-access",
-          "method": "POST",
-          "path": "/_internal/v1/content/administrative-access/isbaseadminprofile_1"
-        },
-        {
-          "audience": "content:administrative-access",
-          "method": "POST",
-          "path": "/_internal/v1/content/administrative-access/basegroupid_1"
         }
       ]
     },

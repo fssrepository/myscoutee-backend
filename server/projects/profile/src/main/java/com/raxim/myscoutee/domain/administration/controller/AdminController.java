@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminActionRequestDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphForestsDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphMetaDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphNeighborhoodDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminAffinityGraphTileDto;
-import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminDashboardDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminMonitoringStateDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationCenterStateDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminNotificationRuleDto;
@@ -26,7 +24,6 @@ import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsHistor
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsRevertRequestDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsSaveRequestDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminParamsStateDto;
-import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminReviewResolveRequestDto;
 import com.raxim.myscoutee.domain.administration.dto.AdminDtos.AdminStatsDashboardDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterAdminActionRequestDto;
 import com.raxim.myscoutee.domain.help.dto.HelpCenterDtos.HelpCenterRevisionSaveRequestDto;
@@ -36,7 +33,6 @@ import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostAdminPageDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostDto;
 import com.raxim.myscoutee.domain.content.dto.IdeaPostDtos.IdeaPostSaveRequestDto;
 import com.raxim.myscoutee.domain.affinity.api.AffinityGraph;
-import com.raxim.myscoutee.domain.content.api.AdministrativeAccess;
 import com.raxim.myscoutee.domain.administration.service.AdminMonitoringService;
 import com.raxim.myscoutee.domain.affinity.api.AffinityParameters;
 import com.raxim.myscoutee.domain.administration.service.AdminStatsService;
@@ -50,7 +46,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-    private final AdministrativeAccess adminModerationService;
     private final HelpAdministration helpCenterService;
     private final IdeaAdministration ideaPostsService;
     private final NotificationAdministration adminNotificationService;
@@ -61,7 +56,6 @@ public class AdminController {
     private final RecomputeMetrics affinityRecomputeMetricsService;
 
     public AdminController(
-            AdministrativeAccess adminModerationService,
             HelpAdministration helpCenterService,
             IdeaAdministration ideaPostsService,
             NotificationAdministration adminNotificationService,
@@ -70,7 +64,6 @@ public class AdminController {
             AdminMonitoringService adminMonitoringService,
             AffinityGraph adminAffinityGraphService,
             RecomputeMetrics affinityRecomputeMetricsService) {
-        this.adminModerationService = adminModerationService;
         this.helpCenterService = helpCenterService;
         this.ideaPostsService = ideaPostsService;
         this.adminNotificationService = adminNotificationService;
@@ -79,14 +72,6 @@ public class AdminController {
         this.adminMonitoringService = adminMonitoringService;
         this.adminAffinityGraphService = adminAffinityGraphService;
         this.affinityRecomputeMetricsService = affinityRecomputeMetricsService;
-    }
-
-    @GetMapping("/dashboard")
-    public AdminDashboardDto dashboard(
-            @RequestParam(value = "adminUserId", required = false) String adminUserId,
-            @RequestParam(value = "reportsStatus", required = false) String reportsStatus,
-            @RequestParam(value = "feedbackStatus", required = false) String feedbackStatus) {
-        return adminModerationService.dashboard(adminUserId, reportsStatus, feedbackStatus);
     }
 
     @GetMapping("/stats")
@@ -182,35 +167,6 @@ public class AdminController {
             @PathVariable String sectionKey,
             @RequestBody(required = false) AdminParamsRevertRequestDto request) {
         return adminParamsService.revert(sectionKey, request);
-    }
-
-    @PostMapping("/users/{userId}/warn")
-    public AdminDashboardDto warn(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
-        return adminModerationService.warn(userId, request);
-    }
-
-    @PostMapping("/users/{userId}/block")
-    public AdminDashboardDto block(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
-        return adminModerationService.block(userId, request);
-    }
-
-    @PostMapping("/users/{userId}/unblock")
-    public AdminDashboardDto unblock(@PathVariable String userId, @RequestBody(required = false) AdminActionRequestDto request) {
-        return adminModerationService.unblock(userId, request);
-    }
-
-    @PostMapping("/reports/{reportId}/resolve")
-    public AdminDashboardDto resolveReport(
-            @PathVariable String reportId,
-            @RequestBody(required = false) AdminReviewResolveRequestDto request) {
-        return adminModerationService.resolveReport(reportId, request);
-    }
-
-    @PostMapping("/feedback/{feedbackId}/resolve")
-    public AdminDashboardDto resolveFeedback(
-            @PathVariable String feedbackId,
-            @RequestBody(required = false) AdminReviewResolveRequestDto request) {
-        return adminModerationService.resolveFeedback(feedbackId, request);
     }
 
     @GetMapping("/notifications")

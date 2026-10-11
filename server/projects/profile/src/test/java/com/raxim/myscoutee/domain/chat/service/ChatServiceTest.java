@@ -111,6 +111,7 @@ class ChatServiceTest {
     private AccessControlService accessControlService;
 
     private ChatService service;
+    private SupportConversationService support;
     private ResourceConversationService resources;
 
     @BeforeEach
@@ -123,7 +124,6 @@ class ChatServiceTest {
                 mongoTemplate,
                 profileDirectory(),
                 homeUserProfileService,
-                supportCaseCounters,
                 chatStreamPublisher,
                 chatPushNotificationService,
                 userNotificationService,
@@ -132,6 +132,9 @@ class ChatServiceTest {
                 accessControlService,
                 new ChatMapper(),
                 new ChatMessageMapper(profileDirectory()));
+        support = new SupportConversationService(service, chatsRepository, chatMessagesRepository,
+                supportCaseCounters, new ChatMessageMapper(profileDirectory()), chatPushNotificationService,
+                accessControlService, adminTelemetryService);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "accountDevices", new com.raxim.myscoutee.domain.accounts.service.AccountDeviceService(usersRepository));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "chatCounters", new com.raxim.myscoutee.domain.accounts.service.AccountChatCounterService(mongoTemplate));
         org.springframework.test.util.ReflectionTestUtils.setField(service, "selectedProfile", selectedProfile);
@@ -159,7 +162,6 @@ class ChatServiceTest {
             context.registerBean(MongoTemplate.class, () -> mongoTemplate);
             context.registerBean(com.raxim.myscoutee.domain.accounts.api.ProfileSummaries.class, this::profileDirectory);
             context.registerBean(ProfileReadState.class, () -> homeUserProfileService);
-            context.registerBean(SupportCaseCounters.class, () -> supportCaseCounters);
             context.registerBean(ChatStreamPublisher.class, () -> chatStreamPublisher);
             context.registerBean(ChatPushNotificationService.class, () -> chatPushNotificationService);
             context.registerBean(com.raxim.myscoutee.domain.notifications.api.NotificationInbox.class,
@@ -1194,7 +1196,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
-        service.sendAdminSupportMessage("target", "admin", "Admin User", "AU", "Warning", "warned");
+        support.sendAdminSupportMessage("target", "admin", "Admin User", "AU", "Warning", "warned");
         ArgumentCaptor<List<Chat>> documents = ArgumentCaptor.forClass(List.class);
         verify(chatsRepository).saveAll(documents.capture());
         assertThat(documents.getValue()).allSatisfy(chat -> {
@@ -1203,7 +1205,7 @@ class ChatServiceTest {
             assertThat(chat.getSupportBaseGroupId()).isEqualTo("myscoutee-work");
         });
         admin.setWorkspaceGroupId(null);
-        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "admin", "Admin", "AU", "Warning", "warned"))
+        assertThatThrownBy(() -> support.sendAdminSupportMessage("target", "admin", "Admin", "AU", "Warning", "warned"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
 
@@ -1222,7 +1224,7 @@ class ChatServiceTest {
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class))
                 .thenReturn(userCounterBulkOperations);
 
-        var result = service.sendAdminSupportMessage(
+        var result = support.sendAdminSupportMessage(
                 "target",
                 "admin",
                 "Admin User",
@@ -1274,7 +1276,7 @@ class ChatServiceTest {
         when(chatMessagesRepository.save(any(ChatMessage.class))).thenAnswer(call -> call.getArgument(0));
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Chat.class)).thenReturn(bulkOperations);
         when(mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, Users.class)).thenReturn(userCounterBulkOperations);
-        service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Please replace this image.", "warned");
+        support.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Please replace this image.", "warned");
         ArgumentCaptor<List<Chat>> definitions = ArgumentCaptor.forClass(List.class);
         verify(chatsRepository).saveAll(definitions.capture());
         assertThat(definitions.getValue()).allSatisfy(chat -> {
@@ -1302,7 +1304,7 @@ class ChatServiceTest {
         target.setWorkspaceGroupId("A"); moderator.setWorkspaceGroupId("B");
         when(usersRepository.findByUserId("target")).thenReturn(Optional.of(target));
         when(usersRepository.findByUserId("moderator")).thenReturn(Optional.of(moderator));
-        assertThatThrownBy(() -> service.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Warning", "warned"))
+        assertThatThrownBy(() -> support.sendAdminSupportMessage("target", "moderator", "Moderator", "MO", "Warning", "warned"))
                 .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         verify(chatsRepository, never()).saveAll(anyList());
         verify(chatMessagesRepository, never()).save(any(ChatMessage.class));
@@ -1325,7 +1327,7 @@ class ChatServiceTest {
         when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.can(AccessPolicyKeys.CHAT_SUPPORT_MANAGE, "admin", "admin", "chat-support")).thenReturn(false);
 
-        assertThatThrownBy(() -> service.updateSupportCase("chat-support", "admin", "pick"))
+        assertThatThrownBy(() -> support.updateSupportCase("chat-support", "admin", "pick"))
                 .hasMessageContaining("support chat");
 
         verify(chatsRepository, never()).findByChatId(anyString());
@@ -1518,7 +1520,7 @@ class ChatServiceTest {
                 memberDirectory(), eventOwner, assetOwner, groups, cases, announcements, campaigns);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "accessRestrictions",
                 List.of(new CaseChatAccessRestriction(cases, profileDirectory())));
-        org.springframework.test.util.ReflectionTestUtils.setField(service, "supportWorkspaces", groups);
+        org.springframework.test.util.ReflectionTestUtils.setField(support, "supportWorkspaces", groups);
         org.springframework.test.util.ReflectionTestUtils.setField(service, "memberPages",
                 new ResourceChatMemberPages(memberDirectory(), profileDirectory(), new ChatMapper()));
     }

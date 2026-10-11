@@ -25,11 +25,7 @@ public final class AdministrativeAccessEndpoint {
         return read(request, AdministrativeAccessProtocol.Dashboard2.class, AdministrativeAccessProtocol::valid, command ->
                 com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> owner.dashboard(command.adminUserId(), command.reportsStatus(), command.feedbackStatus())));
     }
-    @PostMapping(value = AdministrativeAccessProtocol.RESOLVEADMINACTOR_1, produces = "application/json")
-    public ResponseEntity<?> resolveadminactor_1(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AdministrativeAccessProtocol.ResolveAdminActor1.class, AdministrativeAccessProtocol::valid, command ->
-                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> owner.resolveAdminActor(command.adminUserId())));
-    }
+
     @PostMapping(value = AdministrativeAccessProtocol.WARN_1, produces = "application/json")
     public ResponseEntity<?> warn_1(HttpServletRequest request) throws java.io.IOException {
         return read(request, AdministrativeAccessProtocol.Warn1.class, AdministrativeAccessProtocol::valid, command ->
@@ -55,21 +51,9 @@ public final class AdministrativeAccessEndpoint {
         return read(request, AdministrativeAccessProtocol.ResolveFeedback1.class, AdministrativeAccessProtocol::valid, command ->
                 com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> owner.resolveFeedback(command.feedbackId(), command.request())));
     }
-    @PostMapping(value = AdministrativeAccessProtocol.ISBASEADMINPROFILE_1, produces = "application/json")
-    public ResponseEntity<?> isbaseadminprofile_1(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AdministrativeAccessProtocol.IsBaseAdminProfile1.class, AdministrativeAccessProtocol::valid, command ->
-                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> new AdministrativeAccessProtocol.IsBaseAdminProfile1Result(owner.isBaseAdminProfile(command.userId()))));
-    }
-    @PostMapping(value = AdministrativeAccessProtocol.BASEGROUPID_1, produces = "application/json")
-    public ResponseEntity<?> basegroupid_1(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AdministrativeAccessProtocol.BaseGroupId1.class, AdministrativeAccessProtocol::valid, command ->
-                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> new AdministrativeAccessProtocol.BaseGroupId1Result(true, owner.baseGroupId(command.adminUserId()))));
-    }
-    @PostMapping(value = AdministrativeAccessProtocol.BASEPROFILEEVENTS_1, produces = "application/json")
-    public ResponseEntity<?> baseprofileevents_1(HttpServletRequest request) throws java.io.IOException {
-        return read(request, AdministrativeAccessProtocol.BaseProfileEvents1.class, AdministrativeAccessProtocol::valid, command ->
-                com.raxim.myscoutee.domain.platform.api.JobGroupContext.call(command.scope().active(), command.scope().groupId(), () -> owner.baseProfileEvents(command.batch())));
-    }
+
+
+
     private AdministrativeAccessProtocol.Receipt receipt(Runnable action) { action.run(); return new AdministrativeAccessProtocol.Receipt(true); }
     private <T> ResponseEntity<?> read(HttpServletRequest request, Class<T> type, Predicate<T> valid, Function<T, Object> action)
             throws java.io.IOException {
