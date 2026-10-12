@@ -69,3 +69,41 @@ test('the surviving coordinator removes a departed member and rotates group keys
     await assert.rejects(bob.validateMembers([bob.clientId, alice.clientId]));
   } finally { await Promise.all([alice, bob, carol].map(client => client.destroy())); }
 });
+
+
+test('a rejected commit stays unmerged and leaves the crypto engine usable', async () => {
+  let rejected = true;
+  const commits = [], callId = crypto.randomUUID();
+  const alice = await ChatCallMls.create(callId, async bundle => {
+    if (rejected) throw new Error('Signaling unavailable');
+    commits.push(bundle);
+  });
+  const bob = await ChatCallMls.create(callId, async () => {});
+  try {
+    await alice.reconcile([member(alice)]);
+    await assert.rejects(alice.reconcile([member(alice), member(bob)]));
+    assert.deepEqual(await alice.memberIds(), [alice.clientId]);
+    rejected = false;
+    await alice.reconcile([member(alice), member(bob)]);
+    await bob.accept(commits.shift());
+    assert.equal((await bob.decrypt(await alice.encrypt({afterRejection:true}))).plaintext, '{"afterRejection":true}');
+  } finally { await Promise.all([alice.destroy(), bob.destroy()]); }
+});
+
+test('leaving during an in-flight membership commit releases the crypto engine without a WASM trap', async () => {
+  const sending = Promise.withResolvers(), commit = Promise.withResolvers();
+  const alice = await ChatCallMls.create(crypto.randomUUID(), async () => {
+    sending.resolve();await commit.promise;
+  });
+  const bob = await ChatCallMls.create(crypto.randomUUID(), async () => {});
+  await alice.reconcile([member(alice)]);
+  const reconcile = alice.reconcile([member(alice), member(bob)]);
+  const rejected = assert.rejects(reconcile);
+  await sending.promise;
+  const destroyed = alice.destroy();
+  commit.reject(new Error('Call ended'));
+  await rejected;await destroyed;await bob.destroy();
+  const next = await ChatCallMls.create(crypto.randomUUID(), async () => {});
+  try { await next.reconcile([member(next)]);assert.deepEqual(await next.memberIds(),[next.clientId]); }
+  finally { await next.destroy(); }
+});
