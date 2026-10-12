@@ -32,7 +32,7 @@ Usage:
 Options:
   --expected-version X.Y.Z       Require the installed Debian package version.
   --timeout-seconds N            Bound readiness and smoke checks (default: 300).
-  --leave-running-on-failure     Do not stop myscoutee.service after a failure.
+  --leave-running-on-failure     Do not stop the application service after a failure.
   -h, --help                     Show this help.
 
 This is an explicit host qualification command. Debian postinst never invokes it.

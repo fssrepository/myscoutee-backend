@@ -523,12 +523,12 @@ if command -v docker >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; th
 fi
 
 if ! command -v docker >/dev/null 2>&1; then
-  echo "Docker is required. Install the local deb with apt so dependencies are installed: apt install ./myscoutee_1.0.0_amd64.deb" >&2
+  echo "Docker is required. Install the local deb with apt so dependencies are installed: apt install ./${PACKAGE_NAME}_<version>_amd64.deb" >&2
   exit 1
 fi
 
 if ! docker compose version >/dev/null 2>&1; then
-  echo "Docker Compose v2 is required. Install the local deb with apt so dependencies are installed: apt install ./myscoutee_1.0.0_amd64.deb" >&2
+  echo "Docker Compose v2 is required. Install the local deb with apt so dependencies are installed: apt install ./${PACKAGE_NAME}_<version>_amd64.deb" >&2
   exit 1
 fi
 

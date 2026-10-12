@@ -158,7 +158,10 @@ ensure_firebase_service_account() {
     return 0
   fi
 
-  service_account_path="${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json"
+  # The selected Compose model owns this path. Installed packages use /etc,
+  # while a source checkout may use projects/profile/secrets or an override.
+  service_account_path="$(run_compose config --no-env-resolution --format json \
+    | jq -er '.secrets["firebase-service-account"].file | select(type=="string" and length>0)')"
   if [[ -d "${service_account_path}" ]]; then
     echo "Firebase is enabled, but ${service_account_path} is a directory." >&2
     echo "Replace it with the Firebase Admin SDK service account JSON file." >&2
