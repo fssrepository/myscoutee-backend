@@ -12,7 +12,7 @@ read_version() {
 }
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.3.0}"
+VERSION="${VERSION:-1.4.0}"
 ARCHITECTURE="${DEB_ARCHITECTURE:-amd64}"
 DEBIAN_VERSION="${VERSION/-/\~}"
 if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \

@@ -57,7 +57,7 @@ Options:
 Environment:
   MYSCOUTEE_SERVER_DIR       Defaults to <repo>/server.
   MYSCOUTEE_FRONTEND_DIR     Defaults to <repo>/frontend.
-  MYSCOUTEE_VERSION          Defaults to server/.env MYSCOUTEE_VERSION, then 1.3.0.
+  MYSCOUTEE_VERSION          Defaults to server/.env MYSCOUTEE_VERSION, then 1.4.0.
   NGINX_BASE_IMAGE           Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-base.
   NGINX_PRODUCTION_IMAGE     Defaults to myscoutee-nginx:${MYSCOUTEE_VERSION}-prod.
   MYSCOUTEE_PRODUCTION_IMAGE Defaults to myscoutee-api:${MYSCOUTEE_VERSION}-prod.
@@ -125,7 +125,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 VERSION="${MYSCOUTEE_VERSION:-$(read_version)}"
-VERSION="${VERSION:-1.3.0}"
+VERSION="${VERSION:-1.4.0}"
 
 export MYSCOUTEE_VERSION="${VERSION}"
 export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"

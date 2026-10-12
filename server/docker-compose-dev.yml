@@ -13,7 +13,7 @@ services:
       - myscoutee
 
   mcp:
-    image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.6.0-dev}
+    image: ${MCP_DEV_IMAGE:-myscoutee-mcp:1.4.0-dev}
     build:
       context: ../../myscoutee-mcp
       dockerfile: Dockerfile
@@ -57,13 +57,13 @@ services:
   nginx:
     container_name: nginx
     hostname: nginx
-    image: ${NGINX_IMAGE:-myscoutee-nginx:1.3.0-dev}
+    image: ${NGINX_IMAGE:-myscoutee-nginx:1.4.0-dev}
     pull_policy: build
     build:
       context: docker
       dockerfile: images/nginx/dev/Dockerfile
       args:
-        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.3.0-base}
+        NGINX_BASE_IMAGE: ${NGINX_BASE_IMAGE:-myscoutee-nginx:1.4.0-base}
         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     environment:
       MYSCOUTEE_RUNTIME_STATUS_TOKEN_FILE: /run/myscoutee-runtime-status/token
@@ -175,7 +175,7 @@ services:
     networks:
       - myscoutee
   minio:
-    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.3.0-dev}
+    image: ${MINIO_DEV_IMAGE:-myscoutee-minio:1.4.0-dev}
     pull_policy: build
     build:
       context: .
@@ -206,7 +206,7 @@ services:
       start_period: 20s
   runtime-directories:
     # Runs once before the unprivileged API; contains no application process.
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.3.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.4.0-dev}
     user: "0:0"
     network_mode: none
     restart: "no"
@@ -222,7 +222,7 @@ services:
     extends:
       file: docker-compose.replicaset.yml
       service: profilemanagement
-    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.3.0-dev}
+    image: ${MYSCOUTEE_DEV_IMAGE:-myscoutee-api:1.4.0-dev}
     pull_policy: build
     build:
       context: .
@@ -338,7 +338,7 @@ services:
       release-simulator:
         condition: service_healthy
   frontend-sync:
-    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.3.0-dev}
+    image: ${FRONTEND_SYNC_IMAGE:-myscoutee-frontend-sync:1.4.0-dev}
     pull_policy: build
     build:
       context: .
@@ -353,7 +353,7 @@ services:
       bash -c "rm -f /workspace/nginx-html/.frontend-ready;
       exec bash /scripts/frontend_auto_watch.sh"
     environment:
-      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.3.0}"
+      MYSCOUTEE_VERSION: "${MYSCOUTEE_VERSION:-1.4.0}"
       FRONTEND_ROOT: /workspace/frontend
       FRONTEND_SOURCE_DIR: /workspace/frontend/dev
       FRONTEND_BUILD_CONFIGURATION: dev
@@ -381,12 +381,12 @@ services:
       retries: 90
   registry:
     container_name: registry
-    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:1.3.0-dev}
+    image: ${LOCAL_REGISTRY_IMAGE:-myscoutee-registry:1.4.0-dev}
     pull_policy: build
     build:
       context: ../../myscoutee-registry
       args:
-        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.3.0}
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.4.0}
       dockerfile: Dockerfile
     restart: "no"
     command: ["start-demo"]
@@ -422,7 +422,7 @@ services:
   release-simulator:
     container_name: release-simulator
     hostname: release-simulator
-    image: myscoutee-release-simulator:1.3.0-dev
+    image: myscoutee-release-simulator:1.4.0-dev
     build:
       context: docker/images/release-simulator
     user: "${UID:-1000}:${GID:-1000}"
@@ -456,7 +456,7 @@ services:
   payment-simulator:
     container_name: payment-simulator
     hostname: payment-simulator
-    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.3.0-dev}
+    image: ${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:1.4.0-dev}
     pull_policy: build
     build:
       context: ../../myscoutee-payment-simulator
