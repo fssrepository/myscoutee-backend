@@ -69,7 +69,9 @@ def main():
                                     'fssrepository/myscoutee', 'qa')
     record['purpose'] = 'QA only; not a production vendor trust root'
     public_key = output / 'release-public.pem'
-    public_key.rename(output / 'qa-release-public.pem')
+    # Retain the historical QA filename as well as the shared bundle's public key.
+    import shutil
+    shutil.copyfile(public_key, output / 'qa-release-public.pem')
     record['upload'].remove('release-public.pem')
     (output / 'QA-RELEASE.json').write_text(json.dumps(record, indent=2) + '\n')
     print(json.dumps(record, indent=2))
