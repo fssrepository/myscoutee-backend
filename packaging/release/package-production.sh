@@ -31,23 +31,11 @@ CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/myscoutee-client-tools_${VERSION}.tar.gz"
 IMAGE_FINGERPRINT_HELPER="${REPO_ROOT}/packaging/scripts/image-content-fingerprint.sh"
 
 export MYSCOUTEE_VERSION="${VERSION}"
-export NGINX_BASE_IMAGE="${NGINX_BASE_IMAGE:-myscoutee-nginx:${VERSION}-base}"
-export NGINX_PRODUCTION_IMAGE="${NGINX_PRODUCTION_IMAGE:-myscoutee-nginx:${VERSION}-prod}"
-export MYSCOUTEE_PRODUCTION_IMAGE="${MYSCOUTEE_PRODUCTION_IMAGE:-myscoutee-api:${VERSION}-prod}"
-export MINIO_PRODUCTION_IMAGE="${MINIO_PRODUCTION_IMAGE:-myscoutee-minio:${VERSION}-prod}"
-export REGISTRY_DEMO_IMAGE="${REGISTRY_DEMO_IMAGE:-myscoutee-registry:${VERSION}-prod}"
-export PAYMENT_SIMULATOR_IMAGE="${PAYMENT_SIMULATOR_IMAGE:-myscoutee-payment-simulator:${VERSION}-prod}"
-export MCP_IMAGE="${MCP_IMAGE:-myscoutee-mcp:${VERSION}-prod}"
-if [[ "${NGINX_BASE_IMAGE}" != "myscoutee-nginx:${VERSION}-base" \
-  || "${NGINX_PRODUCTION_IMAGE}" != "myscoutee-nginx:${VERSION}-prod" \
-  || "${MYSCOUTEE_PRODUCTION_IMAGE}" != "myscoutee-api:${VERSION}-prod" \
-  || "${MINIO_PRODUCTION_IMAGE}" != "myscoutee-minio:${VERSION}-prod" \
-  || "${REGISTRY_DEMO_IMAGE}" != "myscoutee-registry:${VERSION}-prod" \
-  || "${PAYMENT_SIMULATOR_IMAGE}" != "myscoutee-payment-simulator:${VERSION}-prod" \
-  || "${MCP_IMAGE}" != "myscoutee-mcp:${VERSION}-prod" ]]; then
-  echo "Release packages require the canonical version-derived managed image tags." >&2
-  exit 1
-fi
+source "${REPO_ROOT}/packaging/scripts/release-project.sh"
+release_project_load "${REPO_ROOT}/packaging/scripts" "$(id -u)" || {
+  echo 'Invalid release project policy.' >&2; exit 1;
+}
+release_project_export_images "${VERSION}" true
 
 if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
@@ -209,7 +197,11 @@ done < <(
 )
 # Only deployment-host runtime scripts are installed. Everything in
 # packaging/release and repository developer helpers stays source-only.
-cp -a "${REPO_ROOT}/packaging/scripts" "${STAGING_DIR}/opt/myscoutee/packaging/"
+install -d "${STAGING_DIR}/opt/myscoutee/packaging/scripts"
+while IFS= read -r runtime_script_path; do
+  cp -a "${runtime_script_path}" "${STAGING_DIR}/opt/myscoutee/packaging/scripts/"
+done < <(find "${REPO_ROOT}/packaging/scripts" -maxdepth 1 -type f \
+  \( -name '*.sh' -o -name '*.py' -o -name '*.js' -o -name '*.jq' -o -name '*.json' \) | sort)
 cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}/opt/myscoutee/packaging/"
 cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
 install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
@@ -226,16 +218,12 @@ install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.timer" "${ST
 install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}/opt/myscoutee/packaging/update/README"
 printf '%s\n' "${VERSION}" > "${STAGING_DIR}/opt/myscoutee/packaging/VERSION"
 
-sed \
-  -e "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
-  -e "s/^NGINX_BASE_IMAGE=.*/NGINX_BASE_IMAGE=myscoutee-nginx:${VERSION}-base/" \
-  -e "s/^NGINX_PRODUCTION_IMAGE=.*/NGINX_PRODUCTION_IMAGE=myscoutee-nginx:${VERSION}-prod/" \
-  -e "s/^MYSCOUTEE_PRODUCTION_IMAGE=.*/MYSCOUTEE_PRODUCTION_IMAGE=myscoutee-api:${VERSION}-prod/" \
-  -e "s/^MINIO_PRODUCTION_IMAGE=.*/MINIO_PRODUCTION_IMAGE=myscoutee-minio:${VERSION}-prod/" \
-  -e "s/^REGISTRY_DEMO_IMAGE=.*/REGISTRY_DEMO_IMAGE=myscoutee-registry:${VERSION}-prod/" \
-  -e "s/^PAYMENT_SIMULATOR_IMAGE=.*/PAYMENT_SIMULATOR_IMAGE=myscoutee-payment-simulator:${VERSION}-prod/" \
-  -e "s/^MCP_IMAGE=.*/MCP_IMAGE=myscoutee-mcp:${VERSION}-prod/" \
-  -i "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+sed -i "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
+  "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+while IFS=$'\t' read -r name reference; do
+  sed -i "s/^${name}=.*/${name}=${reference}/" \
+    "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+done < <(release_project_images "${VERSION}" | jq -r '.[] | [.environment,.reference] | @tsv')
 
 save_image() {
   local image_name="$1"
@@ -282,92 +270,22 @@ image_content_fingerprint() {
 }
 
 if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
-  save_image "${NGINX_BASE_IMAGE}" "myscoutee-nginx-${VERSION}-base"
-  save_image "${NGINX_PRODUCTION_IMAGE}" "myscoutee-nginx-${VERSION}-prod"
-  save_image "${MYSCOUTEE_PRODUCTION_IMAGE}" "myscoutee-api-${VERSION}-prod"
-  save_image "${MINIO_PRODUCTION_IMAGE}" "myscoutee-minio-${VERSION}-prod"
-  save_image "${REGISTRY_DEMO_IMAGE}" "myscoutee-registry-${VERSION}-prod"
-  save_image "${PAYMENT_SIMULATOR_IMAGE}" "myscoutee-payment-simulator-${VERSION}-prod"
-  save_image "${MCP_IMAGE}" "myscoutee-mcp-${VERSION}-prod"
-  jq -n \
-    --arg releaseVersion "${VERSION}" \
-    --arg nginxBaseReference "${NGINX_BASE_IMAGE}" \
-    --arg nginxBaseId "$(image_id "${NGINX_BASE_IMAGE}")" \
-    --arg nginxBaseFingerprint "$(image_content_fingerprint "${NGINX_BASE_IMAGE}")" \
-    --arg nginxReference "${NGINX_PRODUCTION_IMAGE}" \
-    --arg nginxId "$(image_id "${NGINX_PRODUCTION_IMAGE}")" \
-    --arg nginxFingerprint "$(image_content_fingerprint "${NGINX_PRODUCTION_IMAGE}")" \
-    --arg apiReference "${MYSCOUTEE_PRODUCTION_IMAGE}" \
-    --arg apiId "$(image_id "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
-    --arg apiFingerprint "$(image_content_fingerprint "${MYSCOUTEE_PRODUCTION_IMAGE}")" \
-    --arg minioReference "${MINIO_PRODUCTION_IMAGE}" \
-    --arg minioId "$(image_id "${MINIO_PRODUCTION_IMAGE}")" \
-    --arg minioFingerprint "$(image_content_fingerprint "${MINIO_PRODUCTION_IMAGE}")" \
-    --arg registryDemoReference "${REGISTRY_DEMO_IMAGE}" \
-    --arg registryDemoId "$(image_id "${REGISTRY_DEMO_IMAGE}")" \
-    --arg registryDemoFingerprint "$(image_content_fingerprint "${REGISTRY_DEMO_IMAGE}")" \
-    --arg paymentSimulatorReference "${PAYMENT_SIMULATOR_IMAGE}" \
-    --arg mcpReference "${MCP_IMAGE}" \
-    --arg paymentSimulatorId "$(image_id "${PAYMENT_SIMULATOR_IMAGE}")" \
-    --arg mcpId "$(image_id "${MCP_IMAGE}")" \
-    --arg paymentSimulatorFingerprint "$(image_content_fingerprint "${PAYMENT_SIMULATOR_IMAGE}")" \
-    --arg mcpFingerprint "$(image_content_fingerprint "${MCP_IMAGE}")" \
-    '{
-      schemaVersion: 1,
-      releaseVersion: $releaseVersion,
-      bundled: true,
-      images: [
-        {
-          service: "nginx-base",
-          container: null,
-          reference: $nginxBaseReference,
-          imageId: $nginxBaseId,
-          contentFingerprint: $nginxBaseFingerprint
-        },
-        {
-          service: "nginx",
-          container: "nginx",
-          reference: $nginxReference,
-          imageId: $nginxId,
-          contentFingerprint: $nginxFingerprint
-        },
-        {
-          service: "profilemanagement",
-          container: "myscoutee",
-          reference: $apiReference,
-          imageId: $apiId,
-          contentFingerprint: $apiFingerprint
-        },
-        {
-          service: "minio",
-          container: "minio",
-          reference: $minioReference,
-          imageId: $minioId,
-          contentFingerprint: $minioFingerprint
-        },
-        {
-          service: "registry-demo",
-          container: "registry-demo",
-          reference: $registryDemoReference,
-          imageId: $registryDemoId,
-          contentFingerprint: $registryDemoFingerprint
-        },
-        {
-          service: "payment-simulator",
-          container: "payment-simulator",
-          reference: $paymentSimulatorReference,
-          imageId: $paymentSimulatorId,
-          contentFingerprint: $paymentSimulatorFingerprint
-        },
-        {
-          service: "mcp",
-          container: "mcp",
-          reference: $mcpReference,
-          imageId: $mcpId,
-          contentFingerprint: $mcpFingerprint
-        }
-      ]
-    }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+  image_rows="$(release_project_images "${VERSION}")"
+  manifest_rows="${DIST_DIR}/.image-manifest-rows.jsonl"
+  : > "${manifest_rows}"
+  while IFS= read -r image_row; do
+    reference="$(jq -r '.reference' <<< "${image_row}")"
+    save_image "${reference}" "${reference/:/-}"
+    jq --arg imageId "$(image_id "${reference}")" \
+      --arg fingerprint "$(image_content_fingerprint "${reference}")" \
+      -c '{service,container,reference,imageId:$imageId,contentFingerprint:$fingerprint}' \
+      <<< "${image_row}" >> "${manifest_rows}"
+  done < <(jq -c '.[]' <<< "${image_rows}")
+  jq -s --arg releaseVersion "${VERSION}" \
+    '{schemaVersion:1,releaseVersion:$releaseVersion,bundled:true,images:.}' \
+    "${manifest_rows}" > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+  rm -- "${manifest_rows}"
+  release_project_validate_manifest "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json" "${VERSION}"
 elif [[ "${ALLOW_UNBUNDLED_IMAGES_FOR_TESTS:-false}" == "true" ]]; then
   jq -n \
     --arg releaseVersion "${VERSION}" \

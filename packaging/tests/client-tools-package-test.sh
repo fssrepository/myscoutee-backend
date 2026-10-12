@@ -21,6 +21,9 @@ tar -xOzf "${archive}" ./prepare-debian13-minimal.sh \
 for helper in install-temporary-frontend.sh install-temporary-image.sh; do
   tar -xOzf "${archive}" "./${helper}" | cmp - "${REPO_ROOT}/packaging/client-tools/${helper}"
 done
+for helper in release-project.sh release-project.json; do
+  tar -xOzf "${archive}" "./${helper}" | cmp - "${REPO_ROOT}/packaging/scripts/${helper}"
+done
 if tar -tzf "${archive}" | grep -Fxq './install.env'; then
   echo "Local credentials must not be packaged" >&2
   exit 1

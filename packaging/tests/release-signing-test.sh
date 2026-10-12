@@ -74,6 +74,9 @@ make_client_tools() {
     printf '%s\n' '#!/bin/sh' 'exit 0' > "${client_root}/remote-transport.sh"
   fi
   cp "${VERIFIER}" "${client_root}/verify-release.sh"
+  for helper in release-project.sh release-project.json; do
+    install -m 0644 "${REPO_ROOT}/packaging/scripts/${helper}" "${client_root}/${helper}"
+  done
   chmod 0755 "${client_root}/verify-release.sh"
   printf '%s\n' 'process.exit(0);' > "${client_root}/verify-deployment/run.mjs"
   if [[ "${include_secret}" == "true" ]]; then

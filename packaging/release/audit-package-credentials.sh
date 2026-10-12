@@ -227,9 +227,15 @@ audit_mongo_seed_privacy() {
     echo "Production community providers must contain only unconfigured built-in catalog definitions." >&2
     exit 1
   fi
-  if grep -RIEiq \
-      -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' \
-      "${production_seed}"; then
+  # Product-owned public pages have been intentional defaults since MSC-115.
+  # Remove only those exact JSON string values; suffixes and other URLs remain
+  # subject to the deployment-specific social-link rejection below.
+  if find "${production_seed}" -maxdepth 1 -type f -name '*.json' -print0 \
+      | xargs -0 cat \
+      | sed -e 's#"https://www\.instagram\.com/myscoutee"#""#g' \
+            -e 's#"https://www\.facebook\.com/myscoutee"#""#g' \
+            -e 's#"https://www\.youtube\.com/@myscoutee"#""#g' \
+      | grep -Ei -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' >/dev/null; then
     echo "A deployment-specific social-page URL was embedded in the production Mongo seed." >&2
     exit 1
   fi

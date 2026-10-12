@@ -28,6 +28,14 @@ fi
   exit 2
 }
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# In a checkout the trusted policy has its canonical scripts owner; the signed
+# client-tools archive carries the same two files next to this verifier.
+POLICY_DIRECTORY="${SCRIPT_DIR}/../scripts"
+if [[ -f "${SCRIPT_DIR}/release-project.sh" ]]; then POLICY_DIRECTORY="${SCRIPT_DIR}"; fi
+source "${POLICY_DIRECTORY}/release-project.sh"
+release_project_load "${POLICY_DIRECTORY}" "$(id -u)" || fail "invalid client project policy"
+
 ARTIFACT_PATH="$1"
 MANIFEST_PATH="$2"
 PUBLIC_KEY_PATH="$3"
@@ -110,7 +118,7 @@ MANIFEST_KEY_ID="$(jq -r '.signingKeyId' "${MANIFEST_PATH}")"
 
 DEBIAN_FILENAME="$(jq -r '.artifacts[0].filename' "${MANIFEST_PATH}")"
 CLIENT_TOOLS_FILENAME="$(jq -r '.artifacts[1].filename' "${MANIFEST_PATH}")"
-[[ "${CLIENT_TOOLS_FILENAME}" == "myscoutee-client-tools_${RELEASE_VERSION}.tar.gz" ]] \
+[[ "${CLIENT_TOOLS_FILENAME}" == "${RELEASE_PROJECT_NAME}-client-tools_${RELEASE_VERSION}.tar.gz" ]] \
   || fail "release manifest has a non-canonical client-tools filename"
 
 verify_metadata_signature() {
@@ -171,14 +179,14 @@ case "${ARTIFACT_BASENAME}" in
     PACKAGE_NAME="$(dpkg-deb -f "${ARTIFACT_PATH}" Package)"
     PACKAGE_VERSION="$(dpkg-deb -f "${ARTIFACT_PATH}" Version)"
     PACKAGE_ARCHITECTURE="$(dpkg-deb -f "${ARTIFACT_PATH}" Architecture)"
-    [[ "${PACKAGE_NAME}" == "myscoutee" ]] \
-      || fail "Debian artifact package name is not myscoutee"
+    [[ "${PACKAGE_NAME}" == "${RELEASE_PROJECT_NAME}" ]] \
+      || fail "Debian artifact package name is not ${RELEASE_PROJECT_NAME}"
     [[ "${PACKAGE_VERSION}" == "${RELEASE_VERSION/-/\~}" ]] \
       || fail "Debian artifact version does not match the release manifest"
     [[ "${PACKAGE_ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] \
       || fail "Debian artifact architecture is invalid"
     [[ "${DEBIAN_FILENAME}" == \
-      "myscoutee_${RELEASE_VERSION}_${PACKAGE_ARCHITECTURE}.deb" ]] \
+      "${RELEASE_PROJECT_NAME}_${RELEASE_VERSION}_${PACKAGE_ARCHITECTURE}.deb" ]] \
       || fail "release manifest has a non-canonical Debian filename"
     ;;
   "${CLIENT_TOOLS_FILENAME}")

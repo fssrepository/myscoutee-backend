@@ -20,6 +20,13 @@ release_project_load "$temporary" "$(id -u)"
 [[ "$RELEASE_PROJECT_NAME" == sample-template && "$RELEASE_PROJECT_ROOT" == /opt/sample-template ]]
 images="$(release_project_images 1.0.0)"
 [[ "$(jq length <<< "$images")" == 5 ]]
+release_project_export_images 1.0.0 true
+[[ "$NGINX_BASE_IMAGE" == sample-template-nginx:1.0.0-base ]]
+[[ "$MCP_IMAGE" == sample-template-mcp:1.0.0-prod ]]
+if (NGINX_BASE_IMAGE=foreign:tag; release_project_export_images 1.0.0 true); then
+  echo 'Accepted a release image override' >&2; exit 1
+fi
+(NGINX_BASE_IMAGE=local:test; release_project_export_images 1.0.0 false; [[ "$NGINX_BASE_IMAGE" == local:test ]])
 jq -n --argjson images "$images" '{schemaVersion:1, releaseVersion:"1.0.0", bundled:true,
   images:[$images[] | {service,container,reference,
     imageId:("sha256:" + ("a" * 64)), contentFingerprint:("sha256:" + ("b" * 64))}]}' > "${temporary}/manifest.json"

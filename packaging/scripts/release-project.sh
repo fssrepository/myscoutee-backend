@@ -61,3 +61,18 @@ release_project_validate_manifest() {
       and (.contentFingerprint | type == "string" and test("^sha256:[0-9a-f]{64}$")))
   ' "$manifest" >/dev/null
 }
+
+# Build commands may use an explicit local image override. A release package
+# must use only the exact version-derived references in its installed policy.
+release_project_export_images() {
+  local version="$1" strict="${2:-false}" inventory name reference current
+  inventory="$(release_project_images "$version")" || return 1
+  while IFS=$'\t' read -r name reference; do
+    current="${!name-}"
+    if [[ "$strict" == true && -n "$current" && "$current" != "$reference" ]]; then
+      echo "Release packages require the canonical version-derived image for ${name}." >&2
+      return 1
+    fi
+    export "${name}=${current:-$reference}"
+  done < <(jq -r '.[] | [.environment,.reference] | @tsv' <<< "$inventory")
+}

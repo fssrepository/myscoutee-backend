@@ -10,6 +10,10 @@ if [[ ! "${VERSION}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.
   echo "MYSCOUTEE_VERSION must be a SemVer core or QA prerelease." >&2
   exit 1
 fi
+source "${REPO_ROOT}/packaging/scripts/release-project.sh"
+release_project_load "${REPO_ROOT}/packaging/scripts" "$(id -u)" || {
+  echo 'Invalid release project policy.' >&2; exit 1;
+}
 install -d "${DIST_DIR}"
 WORK_DIR="$(mktemp -d "${DIST_DIR}/.client-tools.XXXXXX")"
 trap 'rm -rf -- "${WORK_DIR}"' EXIT
@@ -20,12 +24,15 @@ for helper in README.md install.env.example install.sh prepare-debian13-minimal.
   install -m 0644 "${REPO_ROOT}/packaging/client-tools/${helper}" "${WORK_DIR}/payload/${helper}"
 done
 cp -a "${REPO_ROOT}/packaging/verify-deployment/." "${WORK_DIR}/payload/verify-deployment/"
+for helper in release-project.sh release-project.json; do
+  install -m 0644 "${REPO_ROOT}/packaging/scripts/${helper}" "${WORK_DIR}/payload/${helper}"
+done
 printf '%s\n' "${VERSION}" > "${WORK_DIR}/payload/VERSION"
 find "${WORK_DIR}/payload" -type d -exec chmod 0755 {} +
 find "${WORK_DIR}/payload" -type f -exec chmod 0644 {} +
 find "${WORK_DIR}/payload" -type f -name '*.sh' -exec chmod 0755 {} +
 chmod 0755 "${WORK_DIR}/payload/verify-deployment/run.mjs"
-archive="myscoutee-client-tools_${VERSION}.tar.gz"
+archive="${RELEASE_PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
 tar --sort=name --mtime="@${SOURCE_DATE_EPOCH:-0}" --owner=0 --group=0 --numeric-owner \
   -C "${WORK_DIR}/payload" -cf - . | gzip -n > "${WORK_DIR}/${archive}"
 chmod 0644 "${WORK_DIR}/${archive}"
