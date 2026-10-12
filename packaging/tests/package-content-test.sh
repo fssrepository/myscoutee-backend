@@ -400,6 +400,9 @@ for forbidden_seed in \
   [[ ! -e "${PACKAGED_PRODUCTION_SEED}/${forbidden_seed}.json" ]] \
     || fail "private/runtime production seed was embedded: ${forbidden_seed}"
 done
+jq -e 'type == "array" and length > 0 and all(.[]; .screenKey and .id)' \
+  "${PACKAGED_PRODUCTION_SEED}/helpCenterGuideFields.json" >/dev/null \
+  || fail "guide migrations require the packaged production field catalog"
 jq -e '
   type == "array"
   and all(.[];
