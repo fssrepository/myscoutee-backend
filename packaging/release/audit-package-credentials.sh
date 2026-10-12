@@ -10,6 +10,10 @@ fi
 STAGING_DIR="$(cd -- "${STAGING_DIR}" && pwd -P)"
 AUDIT_TMP="$(mktemp -d /tmp/myscoutee-package-credential-audit.XXXXXX)"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/../scripts/release-project.sh"
+release_project_load "${SCRIPT_DIR}/../scripts" "$(id -u)" || {
+  echo 'Invalid release project policy.' >&2; exit 1;
+}
 NESTED_ARCHIVE_AUDIT="${SCRIPT_DIR}/audit-nested-archive.py"
 PRIVATE_KEY_AUDIT="${SCRIPT_DIR}/private_key_material.py"
 
@@ -65,7 +69,7 @@ if [[ -n "${forbidden_file}" ]]; then
   exit 1
 fi
 
-secret_template="${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.secrets.env"
+secret_template="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.secrets.env"
 if [[ ! -f "${secret_template}" ]]; then
   echo "Package credential template is missing." >&2
   exit 1
@@ -152,11 +156,11 @@ audit_mongo_seed_privacy() {
   local seed_root production_seed demo_seed packaged_env seed_rule
   local actual_collections expected_collections
 
-  seed_root="${STAGING_DIR}/opt/myscoutee/server/docker/conf/mongodb"
+  seed_root="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf/mongodb"
   [[ -d "${seed_root}" ]] || return 0
   production_seed="${seed_root}/myscoutee_db"
   demo_seed="${seed_root}/demo_db"
-  packaged_env="${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+  packaged_env="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env"
 
   if [[ -d "${seed_root}/e2e_db" ]]; then
     echo "E2E Mongo fixtures must not be embedded in the production package." >&2
@@ -450,7 +454,7 @@ audit_image_archive() {
 while IFS= read -r image_archive; do
   audit_image_archive "${image_archive}"
 done < <(
-  find "${STAGING_DIR}/opt/myscoutee/images" \
+  find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/images" \
     -maxdepth 1 -type f -name '*.tar' -print 2>/dev/null \
     | sort
 )

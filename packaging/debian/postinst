@@ -15,6 +15,46 @@ case "${1:-}" in
     ;;
 esac
 
+# dpkg supplies this identity for configure and every upgrade. Paths cannot be
+# selected by an API request or mutable deployment configuration.
+PACKAGE_NAME="${DPKG_MAINTSCRIPT_PACKAGE:?dpkg package identity is required}"
+[[ "$PACKAGE_NAME" =~ ^[a-z][a-z0-9-]{1,63}$ ]] || exit 1
+PACKAGE_ROOT="/opt/${PACKAGE_NAME}"
+PACKAGE_ETC="/etc/${PACKAGE_NAME}"
+PACKAGE_STATE="/var/lib/${PACKAGE_NAME}"
+PACKAGE_LOG="/var/log/${PACKAGE_NAME}"
+PACKAGE_CACHE="/var/cache/${PACKAGE_NAME}-update"
+readonly PACKAGE_NAME PACKAGE_ROOT PACKAGE_ETC PACKAGE_STATE PACKAGE_LOG PACKAGE_CACHE
+
+# Trusted package data, never an application request or deployment override.
+INSTALL_POLICY=${PACKAGE_ROOT}/packaging/templates/install-policy.json
+[[ -f "$INSTALL_POLICY" && ! -L "$INSTALL_POLICY" && "$(stat -c %u "$INSTALL_POLICY")" == 0 ]] || {
+  echo 'The installed lifecycle policy is missing or unsafe.' >&2; exit 1;
+}
+(( (8#$(stat -c %a "$INSTALL_POLICY") & 8#022) == 0 )) || exit 1
+jq -e --arg package "$PACKAGE_NAME" '
+  def key: type == "string" and test("^[A-Z][A-Z0-9_]+$");
+  def text: type == "string" and (test("[[:cntrl:]]") | not);
+  def directory: type == "string" and test("^/(etc|var/lib)/[a-z][a-z0-9-]+(/[a-z0-9-]+)+$")
+    and (startswith("/etc/" + $package + "/") or startswith("/var/lib/" + $package + "/"));
+  def secret: type == "object" and (keys|sort) == ["encoding","key","prefix"]
+    and (.key|key) and (.encoding=="hex" or .encoding=="uuid")
+    and (.prefix|type=="string" and test("^[a-zA-Z0-9_]*$"));
+  type == "object" and .schemaVersion == 1
+  and (keys|sort) == ["ensureSecrets","environmentDefaults","freshSecrets","installationMessage",
+    "migrateOwnership","mongoSeedFallback","ownedDirectories","replicaSetDefaults","requiredMongoCollections","schemaVersion"]
+  and (.ownedDirectories|type=="array" and all(.[];
+    (keys|sort)==["gid","mode","path","uid"] and (.path|directory)
+    and (.mode|type=="string" and test("^0[0-7]{3}$")) and .uid==10001 and .gid==10001))
+  and (.migrateOwnership|type=="array" and all(.[];directory))
+  and (.environmentDefaults|type=="object" and all(to_entries[];(.key|key) and (.value|text)))
+  and (.freshSecrets|type=="array" and all(.[];secret))
+  and (.ensureSecrets|type=="array" and all(.[];secret))
+  and (.requiredMongoCollections|type=="array" and all(.[];type=="string" and test("^[A-Za-z][A-Za-z0-9_]*$")))
+  and (.mongoSeedFallback|text) and (.replicaSetDefaults|type=="string")
+  and (.installationMessage|type=="string")
+' "$INSTALL_POLICY" >/dev/null || { echo 'Invalid installed lifecycle policy.' >&2; exit 1; }
+
 MYSCOUTEE_API_UID=10001
 MYSCOUTEE_API_GID=10001
 
@@ -22,9 +62,9 @@ printf '[myscoutee-update-phase] CONFIGURING_PACKAGE\n'
 
 # The host reader uses the same numeric ownership as the application. Register
 # a real non-login system identity rather than relying on an unknown numeric user.
-systemd-sysusers /usr/lib/sysusers.d/myscoutee.conf
-if [[ "$(id -u myscoutee-runtime)" != "${MYSCOUTEE_API_UID}" \
-   || "$(id -g myscoutee-runtime)" != "${MYSCOUTEE_API_GID}" ]]; then
+systemd-sysusers /usr/lib/sysusers.d/${PACKAGE_NAME}.conf
+if [[ "$(id -u ${PACKAGE_NAME}-runtime)" != "${MYSCOUTEE_API_UID}" \
+   || "$(id -g ${PACKAGE_NAME}-runtime)" != "${MYSCOUTEE_API_GID}" ]]; then
   echo "MyScoutee runtime UID/GID10001 is already reserved by another account." >&2
   exit 1
 fi
@@ -44,76 +84,74 @@ install_numeric_owned_directory() {
   chmod "${mode}" -- "$@"
 }
 
-install -d -m 0755 /etc/myscoutee
+install -d -m 0755 ${PACKAGE_ETC}
 install_numeric_owned_directory \
-  0750 0 "${MYSCOUTEE_API_GID}" /etc/myscoutee/configuration
-install_numeric_owned_directory \
-  0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /etc/myscoutee/registry
-install -d -m 0755 /opt/myscoutee/server
-install -d -m 0755 /opt/myscoutee/server/docker/conf/nginx/keys
-install -d -m 0755 /opt/myscoutee/server/projects/profile/secrets
-install -d -m 0755 /var/lib/myscoutee/data
-install_numeric_owned_directory \
-  0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/registry
-install -d -m 0700 /var/lib/myscoutee/update
-install -d -m 0700 /var/lib/myscoutee/update/inbox
+  0750 0 "${MYSCOUTEE_API_GID}" ${PACKAGE_ETC}/configuration
+install -d -m 0755 ${PACKAGE_ROOT}/server
+install -d -m 0755 ${PACKAGE_ROOT}/server/docker/conf/nginx/keys
+install -d -m 0755 ${PACKAGE_ROOT}/server/projects/profile/secrets
+install -d -m 0755 ${PACKAGE_STATE}/data
+install -d -m 0700 ${PACKAGE_STATE}/update
+install -d -m 0700 ${PACKAGE_STATE}/update/inbox
 install_numeric_owned_directory \
   0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" \
-  /var/lib/myscoutee/update/inbox/requests \
-  /var/lib/myscoutee/update/inbox/staging
-install -d -m 0700 /var/lib/myscoutee/update/archive
-install -d -m 0700 /var/lib/myscoutee/update/archive/processing
-install -d -m 0700 /var/lib/myscoutee/update/archive/completed
-install -d -m 0700 /var/lib/myscoutee/update/archive/failed
-install -d -m 0700 /var/lib/myscoutee/update/archive/rejected
-install_numeric_owned_directory 0750 0 "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/update/runtime
+  ${PACKAGE_STATE}/update/inbox/requests \
+  ${PACKAGE_STATE}/update/inbox/staging
+install -d -m 0700 ${PACKAGE_STATE}/update/archive
+install -d -m 0700 ${PACKAGE_STATE}/update/archive/processing
+install -d -m 0700 ${PACKAGE_STATE}/update/archive/completed
+install -d -m 0700 ${PACKAGE_STATE}/update/archive/failed
+install -d -m 0700 ${PACKAGE_STATE}/update/archive/rejected
+install_numeric_owned_directory 0750 0 "${MYSCOUTEE_API_GID}" ${PACKAGE_STATE}/update/runtime
 install_numeric_owned_directory \
   0750 0 "${MYSCOUTEE_API_GID}" \
-  /var/lib/myscoutee/update/runtime/jobs \
-  /etc/myscoutee/update
-install -d -m 0700 /var/cache/myscoutee-update
-install -d -m 0700 /var/cache/myscoutee-update/jobs
-install -d -m 0755 /var/log/myscoutee
-install -d -m 0700 /var/log/myscoutee/update
-install -d -m 0700 /var/lib/myscoutee/tls
-install -d -m 0700 /var/lib/myscoutee/tls/inbox
+  ${PACKAGE_STATE}/update/runtime/jobs \
+  ${PACKAGE_ETC}/update
+install -d -m 0700 ${PACKAGE_CACHE}
+install -d -m 0700 ${PACKAGE_CACHE}/jobs
+install -d -m 0755 ${PACKAGE_LOG}
+install -d -m 0700 ${PACKAGE_LOG}/update
+install -d -m 0700 ${PACKAGE_STATE}/tls
+install -d -m 0700 ${PACKAGE_STATE}/tls/inbox
 install_numeric_owned_directory \
   0700 "${MYSCOUTEE_API_UID}" "${MYSCOUTEE_API_GID}" \
-  /var/lib/myscoutee/tls/inbox/requests
-install -d -m 0700 /var/lib/myscoutee/tls/archive
-install -d -m 0700 /var/lib/myscoutee/tls/archive/processing
+  ${PACKAGE_STATE}/tls/inbox/requests
+install -d -m 0700 ${PACKAGE_STATE}/tls/archive
+install -d -m 0700 ${PACKAGE_STATE}/tls/archive/processing
 install_numeric_owned_directory \
-  0750 0 "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime
+  0750 0 "${MYSCOUTEE_API_GID}" ${PACKAGE_STATE}/tls/runtime
 install_numeric_owned_directory \
-  2750 0 "${MYSCOUTEE_API_GID}" /var/lib/myscoutee/tls/runtime/jobs
-install -d -m 0755 /var/lib/myscoutee/data/certbot/conf
-install -d -m 0755 /var/lib/myscoutee/data/certbot/www
-install -d -m 0755 /var/backups/myscoutee
+  2750 0 "${MYSCOUTEE_API_GID}" ${PACKAGE_STATE}/tls/runtime/jobs
+install -d -m 0755 ${PACKAGE_STATE}/data/certbot/conf
+install -d -m 0755 ${PACKAGE_STATE}/data/certbot/www
+install -d -m 0755 /var/backups/${PACKAGE_NAME}
 install -m 0644 \
-  /opt/myscoutee/packaging/update/README \
-  /etc/myscoutee/update/README
+  ${PACKAGE_ROOT}/packaging/update/README \
+  ${PACKAGE_ETC}/update/README
 
+MYSCOUTEE_OPERATOR_CONFIGURATION_KEY_DIR="${PACKAGE_ETC}/configuration" \
 MYSCOUTEE_CONFIGURATION_OWNER_UID=0 \
 MYSCOUTEE_CONFIGURATION_OWNER_GID="${MYSCOUTEE_API_GID}" \
-  /opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh
+  ${PACKAGE_ROOT}/packaging/scripts/ensure-operator-configuration-key.sh
 
-# Migrate preserved registry identity/state to the unprivileged production API
-# user. Symlinks are not followed.
-chown -R --no-dereference \
-  "+${MYSCOUTEE_API_UID}:+${MYSCOUTEE_API_GID}" \
-  /etc/myscoutee/registry \
-  /var/lib/myscoutee/registry
-if [[ -f /etc/myscoutee/update/release-public-key.pem \
-  && ! -L /etc/myscoutee/update/release-public-key.pem ]]; then
+# Additional product directories and ownership migrations are package inputs.
+while IFS=$'\t' read -r path mode owner_uid owner_gid; do
+  install_numeric_owned_directory "$mode" "$owner_uid" "$owner_gid" "$path"
+done < <(jq -r '.ownedDirectories[] | [.path,.mode,.uid,.gid] | @tsv' "$INSTALL_POLICY")
+while IFS= read -r path; do
+  chown -R --no-dereference "+${MYSCOUTEE_API_UID}:+${MYSCOUTEE_API_GID}" "$path"
+done < <(jq -r '.migrateOwnership[]' "$INSTALL_POLICY")
+if [[ -f ${PACKAGE_ETC}/update/release-public-key.pem \
+  && ! -L ${PACKAGE_ETC}/update/release-public-key.pem ]]; then
   chown "+0:+${MYSCOUTEE_API_GID}" -- \
-    /etc/myscoutee/update/release-public-key.pem
-  chmod 0640 /etc/myscoutee/update/release-public-key.pem
+    ${PACKAGE_ETC}/update/release-public-key.pem
+  chmod 0640 ${PACKAGE_ETC}/update/release-public-key.pem
 fi
-if [[ -f /etc/myscoutee/firebase-service-account.json \
-  && ! -L /etc/myscoutee/firebase-service-account.json ]]; then
+if [[ -f ${PACKAGE_ETC}/firebase-service-account.json \
+  && ! -L ${PACKAGE_ETC}/firebase-service-account.json ]]; then
   chown "+0:+${MYSCOUTEE_API_GID}" -- \
-    /etc/myscoutee/firebase-service-account.json
-  chmod 0640 /etc/myscoutee/firebase-service-account.json
+    ${PACKAGE_ETC}/firebase-service-account.json
+  chmod 0640 ${PACKAGE_ETC}/firebase-service-account.json
 fi
 
 generate_secret() {
@@ -202,35 +240,27 @@ ensure_bootstrap_tls_pair() {
   rmdir -- "${temporary_directory}"
 }
 
+generate_policy_secret() {
+  local encoding="$1" prefix="$2"
+  case "$encoding" in
+    hex) printf '%s%s' "$prefix" "$(generate_secret)" ;;
+    uuid) printf '%s%s' "$prefix" "$(generate_guid)" ;;
+    *) echo 'Unsupported package secret encoding.' >&2; return 1 ;;
+  esac
+}
+
 install_generated_secrets_file() {
-  local target template tmp
-  local mongo_root_password mongo_app_password minio_root_password
-  local simulator_api_key simulator_webhook_secret simulator_barion_pos_key
-
-  target="/etc/myscoutee/myscoutee.secrets.env"
-  template="/opt/myscoutee/packaging/templates/myscoutee.secrets.env"
-
-  mongo_root_password="$(generate_secret)"
-  mongo_app_password="$(generate_secret)"
-  minio_root_password="$(generate_secret)"
-  simulator_api_key="sk_test_$(generate_secret)"
-  simulator_webhook_secret="whsec_$(generate_secret)"
-  simulator_barion_pos_key="$(generate_guid)"
-
+  local target template tmp key encoding prefix
+  target="${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env"
+  template="${PACKAGE_ROOT}/packaging/templates/${PACKAGE_NAME}.secrets.env"
   tmp="$(mktemp "${target}.XXXXXX")"
-  chmod 0600 "${tmp}"
-
-  sed \
-    -e "s/^MONGO_INITDB_ROOT_PASSWORD=.*/MONGO_INITDB_ROOT_PASSWORD=${mongo_root_password}/" \
-    -e "s/^MONGO_APP_PASSWORD=.*/MONGO_APP_PASSWORD=${mongo_app_password}/" \
-    -e "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${minio_root_password}/" \
-    -e "s/^PAYMENT_SIMULATOR_API_KEY=.*/PAYMENT_SIMULATOR_API_KEY=${simulator_api_key}/" \
-    -e "s/^PAYMENT_SIMULATOR_WEBHOOK_SECRET=.*/PAYMENT_SIMULATOR_WEBHOOK_SECRET=${simulator_webhook_secret}/" \
-    -e "s/^PAYMENT_SIMULATOR_BARION_POS_KEY=.*/PAYMENT_SIMULATOR_BARION_POS_KEY=${simulator_barion_pos_key}/" \
-    "${template}" > "${tmp}"
-
-  install -m 0600 "${tmp}" "${target}"
-  rm -f "${tmp}"
+  chmod 0600 "$tmp"
+  cat "$template" > "$tmp"
+  while IFS=$'\t' read -r key encoding prefix; do
+    upsert_env_value "$tmp" "$key" "$(generate_policy_secret "$encoding" "$prefix")"
+  done < <(jq -r '.freshSecrets[] | [.key,.encoding,.prefix] | @tsv' "$INSTALL_POLICY")
+  install -m 0600 "$tmp" "$target"
+  rm -f "$tmp"
 }
 
 generate_guid() {
@@ -269,7 +299,7 @@ config_value() {
   local fallback="$2"
   local value
 
-  value="$(read_env_file_value "${key}" /etc/myscoutee/myscoutee.env || true)"
+  value="$(read_env_file_value "${key}" ${PACKAGE_ETC}/${PACKAGE_NAME}.env || true)"
   if [[ -n "${value}" ]]; then
     printf '%s' "${value}"
     return 0
@@ -316,19 +346,18 @@ ensure_generated_secret() {
 ensure_mongo_seed_allow_list() {
   local file current updated required_collections collection
 
-  file="/etc/myscoutee/myscoutee.env"
-  required_collections="landingSlides,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations,exchangeRates"
+  file="${PACKAGE_ETC}/${PACKAGE_NAME}.env"
+  required_collections="$(jq -r '.requiredMongoCollections | join(",")' "$INSTALL_POLICY")"
   current="$(read_env_file_value MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB "${file}" || true)"
 
   if [[ -z "${current}" ]]; then
-    upsert_env_value "${file}" MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB "demo_db:*;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,${required_collections},affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions"
+    upsert_env_value "${file}" MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB "$(jq -r .mongoSeedFallback "$INSTALL_POLICY")"
     return 0
   fi
 
-  for collection in \
-    landingSlides emailTemplates emailCampaignRules notificationTemplates \
-    scheduledMessageTasks operatorRegistryEndpoints paymentProviders \
-    deploymentConfigurations exchangeRates; do
+  local -a required_collection_names=()
+  mapfile -t required_collection_names < <(jq -r '.requiredMongoCollections[]' "$INSTALL_POLICY")
+  for collection in "${required_collection_names[@]}"; do
     if [[ "${current}" != *"${collection}"* ]]; then
       updated="${current/notificationRuleConfigs/notificationRuleConfigs,${required_collections}}"
       if [[ "${updated}" == "${current}" ]]; then
@@ -343,15 +372,15 @@ ensure_mongo_seed_allow_list() {
 normalize_packaged_image_values() {
   local env_file packaged_version
 
-  env_file="/etc/myscoutee/myscoutee.env"
-  packaged_version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION 2>/dev/null || true)"
+  env_file="${PACKAGE_ETC}/${PACKAGE_NAME}.env"
+  packaged_version="$(sed -n '1p' ${PACKAGE_ROOT}/packaging/VERSION 2>/dev/null || true)"
   if [[ ! "${packaged_version}" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-qa\.[1-9][0-9]*)?$ ]] \
     || ! dpkg --validate-version "${packaged_version}" >/dev/null 2>&1; then
     echo "The installed package version marker is missing or invalid." >&2
     exit 1
   fi
-  source /opt/myscoutee/packaging/scripts/release-project.sh
-  release_project_load /opt/myscoutee/packaging/scripts 0 || {
+  source ${PACKAGE_ROOT}/packaging/scripts/release-project.sh
+  release_project_load ${PACKAGE_ROOT}/packaging/scripts 0 || {
     echo "The installed project policy is missing or invalid." >&2; exit 1;
   }
   local name reference
@@ -405,12 +434,12 @@ verify_packaged_image_manifest() {
   local actual_fingerprint
   local -a images=()
 
-  fingerprint_helper="/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh"
-  manifest="/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
-  version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION)"
-  source /opt/myscoutee/packaging/scripts/release-project.sh
+  fingerprint_helper="${PACKAGE_ROOT}/packaging/scripts/image-content-fingerprint.sh"
+  manifest="${PACKAGE_ROOT}/packaging/IMAGE-MANIFEST.json"
+  version="$(sed -n '1p' ${PACKAGE_ROOT}/packaging/VERSION)"
+  source ${PACKAGE_ROOT}/packaging/scripts/release-project.sh
   if [[ ! -f "${fingerprint_helper}" || -L "${fingerprint_helper}" ]] \
-    || ! release_project_load /opt/myscoutee/packaging/scripts 0 \
+    || ! release_project_load ${PACKAGE_ROOT}/packaging/scripts 0 \
     || ! release_project_validate_manifest "${manifest}" "${version}"; then
     echo "The package bundled-image manifest is missing or invalid." >&2
     exit 1
@@ -431,124 +460,63 @@ verify_packaged_image_manifest() {
   done
 }
 
-if [[ ! -f /etc/myscoutee/myscoutee.env ]]; then
-  install -m 0644 /opt/myscoutee/packaging/templates/myscoutee.env /etc/myscoutee/myscoutee.env
+if [[ ! -f ${PACKAGE_ETC}/${PACKAGE_NAME}.env ]]; then
+  install -m 0644 ${PACKAGE_ROOT}/packaging/templates/${PACKAGE_NAME}.env ${PACKAGE_ETC}/${PACKAGE_NAME}.env
 fi
 
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_ENABLED false
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_OUTBOUND_ALLOWED false
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_OPERATOR_REGISTRATION_CONFIRMED false
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_BASE_URL ""
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_SCOPE ""
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_PRIVATE_KEY_PATH /etc/myscoutee/registry/deployment-private-key.pem
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_PUBLIC_KEY_PATH /etc/myscoutee/registry/deployment-public-key.der
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_STATE_DIR /var/lib/myscoutee/registry
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_KEY_DIR_HOST /etc/myscoutee/registry
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_STATE_DIR_HOST /var/lib/myscoutee/registry
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_CONNECT_TIMEOUT 5s
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_REQUEST_TIMEOUT 15s
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_RETRY_DELAY 15m
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_MAX_RESPONSE_BYTES 1048576
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_EXPECTED_KEY_FINGERPRINT ""
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_TRUST_ON_FIRST_USE false
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_ALLOW_INSECURE_HTTP false
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS ""
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_BASE_URL http://registry:8080
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_SCOPE demo:myscoutee
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_PRIVATE_KEY_PATH /var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_PUBLIC_KEY_PATH /var/lib/myscoutee/registry-demo/keys/deployment-public-key.der
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_STATE_DIR /var/lib/myscoutee/registry-demo/state
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_ALLOW_INSECURE_HTTP true
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS registry
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_VOLUME_NAME myscoutee-registry-demo-data-v1
-ensure_env_default /etc/myscoutee/myscoutee.env REGISTRY_DEMO_CLIENT_VOLUME_NAME myscoutee-registry-demo-client-data-v1
-ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_PUBLIC_BASE_URL https://localhost
-ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_APPLICATION_BASE_URL https://localhost
-ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT merchant@myscoutee.invalid
-ensure_env_default /etc/myscoutee/myscoutee.env PAYMENT_SIMULATOR_VOLUME_NAME myscoutee-payment-simulator-data-v1
-ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_MASTER_KEY_PATH /etc/myscoutee/configuration/deployment-master-key
-ensure_env_default /etc/myscoutee/myscoutee.env OPERATOR_CONFIGURATION_KEY_DIR_HOST /etc/myscoutee/configuration
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_ENABLED false
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_CACHE_DIR /var/cache/myscoutee-update
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_AUDIT_DIR /var/log/myscoutee/update
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY /etc/myscoutee/update/release-public-key.pem
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES 4294967296
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES 536870912
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_MIN_FREE_BYTES 536870912
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_HEALTH_TIMEOUT_SECONDS 300
-ensure_env_default /etc/myscoutee/myscoutee.env MYSCOUTEE_UPDATE_CACHE_RETENTION_JOBS 2
-ensure_env_default /etc/myscoutee/myscoutee.env FIREBASE_ENABLED false
+while IFS=$'\t' read -r key value; do
+  ensure_env_default ${PACKAGE_ETC}/${PACKAGE_NAME}.env "$key" "$value"
+done < <(jq -r '.environmentDefaults | to_entries[] | [.key,.value] | @tsv' "$INSTALL_POLICY")
 
 ensure_mongo_seed_allow_list
 
 normalize_packaged_image_values
 
 firebase_enabled="$(config_value FIREBASE_ENABLED false)"
-if [[ -L /etc/myscoutee/firebase-service-account.json ]]; then
+if [[ -L ${PACKAGE_ETC}/firebase-service-account.json ]]; then
   echo "Firebase service-account path must not be a symbolic link." >&2
   exit 1
-elif [[ ! -f /etc/myscoutee/firebase-service-account.json ]]; then
+elif [[ ! -f ${PACKAGE_ETC}/firebase-service-account.json ]]; then
   if [[ "${firebase_enabled,,}" == "true" ]]; then
-    echo "Firebase is enabled, but /etc/myscoutee/firebase-service-account.json is missing." >&2
+    echo "Firebase is enabled, but ${PACKAGE_ETC}/firebase-service-account.json is missing." >&2
     exit 1
   fi
-  printf '{}\n' > /etc/myscoutee/firebase-service-account.json
+  printf '{}\n' > ${PACKAGE_ETC}/firebase-service-account.json
 fi
 chown "+0:+${MYSCOUTEE_API_GID}" -- \
-  /etc/myscoutee/firebase-service-account.json
-chmod 0640 /etc/myscoutee/firebase-service-account.json
+  ${PACKAGE_ETC}/firebase-service-account.json
+chmod 0640 ${PACKAGE_ETC}/firebase-service-account.json
 
-if ! grep -q '^[[:space:]]*MONGO_REPLICA_SET_ENABLED=' /etc/myscoutee/myscoutee.env; then
-  cat >> /etc/myscoutee/myscoutee.env <<'EOF'
-
-# Replica sets and change streams are the default, including one-node installs.
-# The existing override remains available; systemd also applies
-# docker-compose.replicaset.yml and the affinity recompute worker uses
-# change-stream wakeups with startup/reconnect reconciliation.
-MONGO_REPLICA_SET_ENABLED=true
-MONGO_REPLICA_SET_NAME=rs0
-MONGO_REPLICA_SET_HOST=mongodb:27017
-MONGO_REPLICA_SET_INIT_RETRIES=60
-MONGO_REPLICA_SET_INIT_DELAY_SECONDS=2
-AFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED=
-AFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED=false
-EOF
+if ! grep -q '^[[:space:]]*MONGO_REPLICA_SET_ENABLED=' ${PACKAGE_ETC}/${PACKAGE_NAME}.env; then
+  jq -r .replicaSetDefaults "$INSTALL_POLICY" >> ${PACKAGE_ETC}/${PACKAGE_NAME}.env
 fi
 
-if [[ ! -f /etc/myscoutee/myscoutee.secrets.env ]]; then
+if [[ ! -f ${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env ]]; then
   install_generated_secrets_file
 fi
 
-ensure_generated_secret \
-  /etc/myscoutee/myscoutee.secrets.env \
-  PAYMENT_SIMULATOR_API_KEY \
-  "sk_test_$(generate_secret)"
-ensure_generated_secret \
-  /etc/myscoutee/myscoutee.secrets.env \
-  PAYMENT_SIMULATOR_WEBHOOK_SECRET \
-  "whsec_$(generate_secret)"
-ensure_generated_secret \
-  /etc/myscoutee/myscoutee.secrets.env \
-  PAYMENT_SIMULATOR_BARION_POS_KEY \
-  "$(generate_guid)"
-chmod 0600 /etc/myscoutee/myscoutee.secrets.env
+while IFS=$'\t' read -r key encoding prefix; do
+  ensure_generated_secret ${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env "$key" \
+    "$(generate_policy_secret "$encoding" "$prefix")"
+done < <(jq -r '.ensureSecrets[] | [.key,.encoding,.prefix] | @tsv' "$INSTALL_POLICY")
+chmod 0600 ${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env
 
-MYSCOUTEE_BOOTSTRAP_ENV_FILE=/etc/myscoutee/myscoutee.env \
-MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=/etc/myscoutee/myscoutee.secrets.env \
+MYSCOUTEE_BOOTSTRAP_ENV_FILE=${PACKAGE_ETC}/${PACKAGE_NAME}.env \
+MYSCOUTEE_BOOTSTRAP_SECRETS_FILE=${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env \
 MYSCOUTEE_BOOTSTRAP_OWNER_UID=0 \
 MYSCOUTEE_BOOTSTRAP_OWNER_GID=0 \
-  /opt/myscoutee/packaging/scripts/ensure-operator-bootstrap.sh
+  ${PACKAGE_ROOT}/packaging/scripts/ensure-operator-bootstrap.sh
 
-ln -sfn /etc/myscoutee/myscoutee.env /opt/myscoutee/server/.env
-ln -sfn /etc/myscoutee/myscoutee.secrets.env /opt/myscoutee/server/.env.secrets
+ln -sfn ${PACKAGE_ETC}/${PACKAGE_NAME}.env ${PACKAGE_ROOT}/server/.env
+ln -sfn ${PACKAGE_ETC}/${PACKAGE_NAME}.secrets.env ${PACKAGE_ROOT}/server/.env.secrets
 
-if [[ ! -e /opt/myscoutee/server/data ]]; then
-  ln -sfn /var/lib/myscoutee/data /opt/myscoutee/server/data
+if [[ ! -e ${PACKAGE_ROOT}/server/data ]]; then
+  ln -sfn ${PACKAGE_STATE}/data ${PACKAGE_ROOT}/server/data
 fi
 
 ensure_bootstrap_tls_pair \
-  /opt/myscoutee/server/docker/conf/nginx/keys/nginx.crt \
-  /opt/myscoutee/server/docker/conf/nginx/keys/nginx-nopass.key
+  ${PACKAGE_ROOT}/server/docker/conf/nginx/keys/nginx.crt \
+  ${PACKAGE_ROOT}/server/docker/conf/nginx/keys/nginx-nopass.key
 
 if command -v docker >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
   systemctl enable --now docker
@@ -570,8 +538,8 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 printf '[myscoutee-update-phase] LOADING_IMAGES\n'
-if compgen -G "/opt/myscoutee/images/*.tar" >/dev/null; then
-  for image_archive in /opt/myscoutee/images/*.tar; do
+if compgen -G "${PACKAGE_ROOT}/images/*.tar" >/dev/null; then
+  for image_archive in ${PACKAGE_ROOT}/images/*.tar; do
     echo "Loading bundled Docker image: ${image_archive}"
     docker load -i "${image_archive}" >/dev/null
   done
@@ -585,45 +553,21 @@ ensure_service_images
 # next service start consumes this marker and cleanly rebuilds demo_db plus the
 # package-owned demo MinIO prefixes. Production data and user uploads are never
 # reset by this lifecycle.
-printf '%s\n' "$(sed -n '1p' /opt/myscoutee/packaging/VERSION)" \
-  > /var/lib/myscoutee/demo-reset-required
-chmod 0600 /var/lib/myscoutee/demo-reset-required
+printf '%s\n' "$(sed -n '1p' ${PACKAGE_ROOT}/packaging/VERSION)" \
+  > ${PACKAGE_STATE}/demo-reset-required
+chmod 0600 ${PACKAGE_STATE}/demo-reset-required
 
 if command -v systemctl >/dev/null 2>&1; then
   systemctl daemon-reload || true
-  if systemctl is-active --quiet myscoutee.service; then
-    /opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh
+  if systemctl is-active --quiet ${PACKAGE_NAME}.service; then
+    ${PACKAGE_ROOT}/packaging/scripts/sync-i18n-seeds.sh
   fi
-  systemctl enable myscoutee.service >/dev/null 2>&1 || true
-  systemctl enable --now myscoutee-update-status.socket
-  systemctl try-restart myscoutee-update-status.service
-  systemctl enable --now myscoutee-update.path >/dev/null 2>&1 || true
-  systemctl enable --now myscoutee-tls.path >/dev/null 2>&1 || true
-  systemctl enable --now myscoutee-tls-renew.timer >/dev/null 2>&1 || true
+  systemctl enable ${PACKAGE_NAME}.service >/dev/null 2>&1 || true
+  systemctl enable --now ${PACKAGE_NAME}-update-status.socket
+  systemctl try-restart ${PACKAGE_NAME}-update-status.service
+  systemctl enable --now ${PACKAGE_NAME}-update.path >/dev/null 2>&1 || true
+  systemctl enable --now ${PACKAGE_NAME}-tls.path >/dev/null 2>&1 || true
+  systemctl enable --now ${PACKAGE_NAME}-tls-renew.timer >/dev/null 2>&1 || true
 fi
 
-cat <<'MESSAGE'
-MyScoutee is installed.
-
-Before first start:
-  1. Save the shown-once deployment-local Operator credential printed above,
-     or review the OPERATOR_USER identity you supplied before installation
-  2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)
-  3. Run: systemctl start myscoutee
-
-No production administrator email is packaged. After the initial Operator
-login, configure Firebase and the deployment's administrator emails in the
-Operator Configuration screen.
-
-The bootstrap password is never deliberately persisted or printed again. Its
-generated subject and SHA-256 hash are kept in the root-only secrets file. The
-shown-once terminal output may be retained by package-manager or automation
-logs, so protect those logs. The password itself is not single-use: this local
-credential remains available for ongoing Operator login until it is explicitly
-replaced or disabled, and configuring Firebase does not automatically replace
-it.
-
-Registry participation is not selected during installation. The authenticated
-operator workflow inspects a chosen registry, requests explicit confirmation,
-and only then initializes the local node identity and registers it.
-MESSAGE
+jq -r .installationMessage "$INSTALL_POLICY"

@@ -8,7 +8,7 @@ cp "$root/packaging/scripts/release-project.sh" "$work/opt/packaging/scripts/"
 cp "$root/packaging/scripts/release-project.json" "$work/opt/packaging/scripts/"
 for function_name in upsert_env_value normalize_packaged_image_values verify_packaged_image_manifest; do
   sed -n "/^${function_name}() {$/,/^}$/p" "$root/packaging/debian/postinst"
-done | sed "s|/opt/myscoutee|$work/opt|g; s|/etc/myscoutee|$work/etc|g" > "$work/functions.sh"
+done | sed "s|\${PACKAGE_ROOT}|$work/opt|g; s|\${PACKAGE_ETC}|$work/etc|g; s|\${PACKAGE_NAME}|myscoutee|g" > "$work/functions.sh"
 source "$work/functions.sh"
 # Model installed file ownership only for the isolated policy; all remaining
 # stat calls use the real filesystem. No host path or Docker process is touched.

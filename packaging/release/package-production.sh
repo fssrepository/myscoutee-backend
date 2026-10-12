@@ -24,18 +24,17 @@ if [[ ! "${ARCHITECTURE}" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]]; then
   echo "DEB_ARCHITECTURE is invalid." >&2
   exit 1
 fi
-PACKAGE_NAME="myscoutee_${VERSION}_${ARCHITECTURE}"
-DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
-DEB_PARTIAL_PATH="${DIST_DIR}/${PACKAGE_NAME}.partial.deb"
-CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/myscoutee-client-tools_${VERSION}.tar.gz"
-IMAGE_FINGERPRINT_HELPER="${REPO_ROOT}/packaging/scripts/image-content-fingerprint.sh"
-
 export MYSCOUTEE_VERSION="${VERSION}"
 source "${REPO_ROOT}/packaging/scripts/release-project.sh"
 release_project_load "${REPO_ROOT}/packaging/scripts" "$(id -u)" || {
   echo 'Invalid release project policy.' >&2; exit 1;
 }
 release_project_export_images "${VERSION}" true
+PACKAGE_NAME="${RELEASE_PROJECT_NAME}_${VERSION}_${ARCHITECTURE}"
+DEB_PATH="${DIST_DIR}/${PACKAGE_NAME}.deb"
+DEB_PARTIAL_PATH="${DIST_DIR}/${PACKAGE_NAME}.partial.deb"
+CLIENT_TOOLS_ARCHIVE="${DIST_DIR}/${RELEASE_PROJECT_NAME}-client-tools_${VERSION}.tar.gz"
+IMAGE_FINGERPRINT_HELPER="${REPO_ROOT}/packaging/scripts/image-content-fingerprint.sh"
 
 if [[ "${BUILD_ARTIFACTS:-true}" == "true" ]]; then
   bash "${SCRIPT_DIR}/build-production.sh"
@@ -43,37 +42,40 @@ fi
 
 rm -rf "${STAGING_DIR}" "${DEB_PARTIAL_PATH}"
 install -d "${STAGING_DIR}/DEBIAN"
-install -d "${STAGING_DIR}/opt/myscoutee/server/docker/conf"
-install -d "${STAGING_DIR}/opt/myscoutee/server/docker/scripts"
-install -d "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets"
-install -d "${STAGING_DIR}/opt/myscoutee/packaging"
-install -d "${STAGING_DIR}/opt/myscoutee/packaging/update"
-install -d "${STAGING_DIR}/opt/myscoutee/images"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/scripts"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/projects/profile/secrets"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/update"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/images"
 install -d "${STAGING_DIR}/lib/systemd/system"
-install -d "${STAGING_DIR}/usr/share/myscoutee"
+install -d "${STAGING_DIR}/usr/share/${RELEASE_PROJECT_NAME}"
 
 sed \
   -e "s/^Version:.*/Version: ${DEBIAN_VERSION}/" \
   -e "s/^Architecture:.*/Architecture: ${ARCHITECTURE}/" \
   "${REPO_ROOT}/packaging/debian/control" > "${STAGING_DIR}/DEBIAN/control"
+[[ "$(sed -n 's/^Package: //p' "${STAGING_DIR}/DEBIAN/control")" == "$RELEASE_PROJECT_NAME" ]] || {
+  echo 'Debian control identity does not match the release project.' >&2; exit 1;
+}
 install -m 0755 "${REPO_ROOT}/packaging/debian/postinst" "${STAGING_DIR}/DEBIAN/postinst"
 install -m 0755 "${REPO_ROOT}/packaging/debian/prerm" "${STAGING_DIR}/DEBIAN/prerm"
 install -m 0755 "${REPO_ROOT}/packaging/debian/postrm" "${STAGING_DIR}/DEBIAN/postrm"
 
 sed 's/docker-compose.production-replicaset.yml/docker-compose.replicaset.yml/g' \
-  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" > "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
-chmod 0644 "${STAGING_DIR}/opt/myscoutee/server/docker-compose-prod.yml"
-install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose.replicaset.yml"
-install -m 0644 "${SERVER_DIR}/docker-compose-stun.yml" "${STAGING_DIR}/opt/myscoutee/server/docker-compose-stun.yml"
-install -m 0644 "${SERVER_DIR}/projects/profile/secrets/README.md" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/README.md"
-install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json.example" "${STAGING_DIR}/opt/myscoutee/server/projects/profile/secrets/firebase-service-account.json.example"
+  "${REPO_ROOT}/packaging/compose/docker-compose.production.yml" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml"
+chmod 0644 "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-prod.yml"
+install -m 0644 "${REPO_ROOT}/packaging/compose/docker-compose.production-replicaset.yml" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose.replicaset.yml"
+install -m 0644 "${SERVER_DIR}/docker-compose-stun.yml" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker-compose-stun.yml"
+install -m 0644 "${SERVER_DIR}/projects/profile/secrets/README.md" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/projects/profile/secrets/README.md"
+install -m 0644 "${SERVER_DIR}/projects/profile/secrets/firebase-service-account.json.example" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/projects/profile/secrets/firebase-service-account.json.example"
 # Credentials are deployment input, never package content. The operator
 # provisions the real service-account file after installation through the
 # protected deployment configuration path.
 
 stage_mongo_configuration() {
   local source_root="${SERVER_DIR}/docker/conf/mongodb"
-  local target_root="${STAGING_DIR}/opt/myscoutee/server/docker/conf/mongodb"
+  local target_root="${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/conf/mongodb"
   local demo_source="${source_root}/demo_db"
   local demo_target="${target_root}/demo_db"
   local production_source="${source_root}/myscoutee_db"
@@ -143,7 +145,7 @@ stage_mongo_configuration() {
   # from the .deb even though a developer checkout may contain fixtures.
   seed_rule="$(
     sed -n 's/^MONGO_IMPORT_ALLOWED_COLLECTIONS_BY_DB=//p' \
-      "${REPO_ROOT}/packaging/templates/myscoutee.env" \
+      "${REPO_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env" \
       | tr ';' '\n' \
       | sed -n 's/^production_db://p' \
       | tail -n 1
@@ -184,7 +186,7 @@ python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py"
 node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
 while IFS= read -r runtime_script_path; do
-  cp -a "${runtime_script_path}" "${STAGING_DIR}/opt/myscoutee/server/docker/scripts/"
+  cp -a "${runtime_script_path}" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker/scripts/"
 done < <(
   find "${SERVER_DIR}/docker/scripts" \
     -mindepth 1 \
@@ -198,32 +200,32 @@ done < <(
 )
 # Only deployment-host runtime scripts are installed. Everything in
 # packaging/release and repository developer helpers stays source-only.
-install -d "${STAGING_DIR}/opt/myscoutee/packaging/scripts"
+install -d "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts"
 while IFS= read -r runtime_script_path; do
-  cp -a "${runtime_script_path}" "${STAGING_DIR}/opt/myscoutee/packaging/scripts/"
+  cp -a "${runtime_script_path}" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts/"
 done < <(find "${REPO_ROOT}/packaging/scripts" -maxdepth 1 -type f \
   \( -name '*.sh' -o -name '*.py' -o -name '*.js' -o -name '*.jq' -o -name '*.json' \) | sort)
-cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}/opt/myscoutee/packaging/"
-cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}/opt/myscoutee/packaging/"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee.service" "${STAGING_DIR}/lib/systemd/system/myscoutee.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.path"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.socket" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.socket"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-update-status.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-update-status.service"
+cp -a "${REPO_ROOT}/packaging/migrations" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/"
+cp -a "${REPO_ROOT}/packaging/templates" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update.path" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update.path"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update-status.socket" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update-status.socket"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-update-status.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-update-status.service"
 install -d "${STAGING_DIR}/usr/lib/sysusers.d"
-install -m 0644 "${REPO_ROOT}/packaging/sysusers/myscoutee.conf" "${STAGING_DIR}/usr/lib/sysusers.d/myscoutee.conf"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.path" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.path"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.service"
-install -m 0644 "${REPO_ROOT}/packaging/systemd/myscoutee-tls-renew.timer" "${STAGING_DIR}/lib/systemd/system/myscoutee-tls-renew.timer"
-install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}/opt/myscoutee/packaging/update/README"
-printf '%s\n' "${VERSION}" > "${STAGING_DIR}/opt/myscoutee/packaging/VERSION"
+install -m 0644 "${REPO_ROOT}/packaging/sysusers/${RELEASE_PROJECT_NAME}.conf" "${STAGING_DIR}/usr/lib/sysusers.d/${RELEASE_PROJECT_NAME}.conf"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls.path" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls.path"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls-renew.service" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls-renew.service"
+install -m 0644 "${REPO_ROOT}/packaging/systemd/${RELEASE_PROJECT_NAME}-tls-renew.timer" "${STAGING_DIR}/lib/systemd/system/${RELEASE_PROJECT_NAME}-tls-renew.timer"
+install -m 0644 "${REPO_ROOT}/packaging/templates/update-release-key.README" "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/update/README"
+printf '%s\n' "${VERSION}" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/VERSION"
 
 sed -i "s/^MYSCOUTEE_VERSION=.*/MYSCOUTEE_VERSION=${VERSION}/" \
-  "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+  "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env"
 while IFS=$'\t' read -r name reference; do
   sed -i "s/^${name}=.*/${name}=${reference}/" \
-    "${STAGING_DIR}/opt/myscoutee/packaging/templates/myscoutee.env"
+    "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/templates/${RELEASE_PROJECT_NAME}.env"
 done < <(release_project_images "${VERSION}" | jq -r '.[] | [.environment,.reference] | @tsv')
 
 save_image() {
@@ -243,7 +245,7 @@ save_image() {
     exit 1
   fi
 
-  docker save -o "${STAGING_DIR}/opt/myscoutee/images/${archive_name}.tar" "${image_name}"
+  docker save -o "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/images/${archive_name}.tar" "${image_name}"
 }
 
 image_id() {
@@ -284,9 +286,9 @@ if [[ "${PACKAGE_IMAGES:-true}" == "true" ]]; then
   done < <(jq -c '.[]' <<< "${image_rows}")
   jq -s --arg releaseVersion "${VERSION}" \
     '{schemaVersion:1,releaseVersion:$releaseVersion,bundled:true,images:.}' \
-    "${manifest_rows}" > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+    "${manifest_rows}" > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json"
   rm -- "${manifest_rows}"
-  release_project_validate_manifest "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json" "${VERSION}"
+  release_project_validate_manifest "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json" "${VERSION}"
 elif [[ "${ALLOW_UNBUNDLED_IMAGES_FOR_TESTS:-false}" == "true" ]]; then
   jq -n \
     --arg releaseVersion "${VERSION}" \
@@ -295,7 +297,7 @@ elif [[ "${ALLOW_UNBUNDLED_IMAGES_FOR_TESTS:-false}" == "true" ]]; then
       releaseVersion: $releaseVersion,
       bundled: false,
       images: []
-    }' > "${STAGING_DIR}/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
+    }' > "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json"
 else
   echo "Release packages must bundle their managed images." >&2
   echo "Set ALLOW_UNBUNDLED_IMAGES_FOR_TESTS=true only for package-content tests." >&2
@@ -318,9 +320,9 @@ chmod 0755 \
   "${STAGING_DIR}/DEBIAN/postinst" \
   "${STAGING_DIR}/DEBIAN/prerm" \
   "${STAGING_DIR}/DEBIAN/postrm"
-find "${STAGING_DIR}/opt/myscoutee/packaging/scripts" \
+find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/packaging/scripts" \
   -type f \( -name "*.sh" -o -name "*.py" \) -exec chmod 0755 {} +
-find "${STAGING_DIR}/opt/myscoutee/server/docker" \
+find "${STAGING_DIR}${RELEASE_PROJECT_ROOT}/server/docker" \
   -type f -name "*.sh" -exec chmod 0755 {} +
 # The same standalone builder is used for helper-only releases and full DEBs.
 MYSCOUTEE_VERSION="${VERSION}" MYSCOUTEE_DIST_DIR="${DIST_DIR}" \
@@ -328,7 +330,7 @@ MYSCOUTEE_VERSION="${VERSION}" MYSCOUTEE_DIST_DIR="${DIST_DIR}" \
 
 install -m 0644 \
   "${CLIENT_TOOLS_ARCHIVE}" \
-  "${STAGING_DIR}/usr/share/myscoutee/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
+  "${STAGING_DIR}/usr/share/${RELEASE_PROJECT_NAME}/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
 
 bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
 

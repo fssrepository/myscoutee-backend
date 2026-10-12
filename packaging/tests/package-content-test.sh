@@ -109,11 +109,27 @@ assert_admin_job_seed_defaults() {
       "account-purge",
       "content-auto-approve",
       "account-deletion-warning",
-      "payment-exchange-rates"
+      "payment-exchange-rates",
+      "event-mingle-advance",
+      "event-watchlist",
+      "event-cancellation",
+      "affiliate-revenue",
+      "integration-encounters",
+      "integration-webhooks",
+      "promotional-email-planning",
+      "promotional-email-delivery",
+      "admin-telemetry"
     ] as $expected
+    | ($expected - ["event-random-groups"]) as $groupExpected
     | type == "array"
-    and length == ($expected | length)
-    and ((map(.ruleKey) | sort) == ($expected | sort))
+    and ([.[] | ._id] | length == (unique | length))
+    and ([.[] | [(.baseGroupId // ""), .ruleKey]] | length == (unique | length))
+    and ((map(.baseGroupId // "") | unique | sort)
+      == ["", "myscoutee-community", "myscoutee-work"])
+    and ((map(select((.baseGroupId // "") == "") | .ruleKey) | sort) == ($expected | sort))
+    and ((map(select(.baseGroupId == "myscoutee-work") | .ruleKey) | sort) == ($groupExpected | sort))
+    and ((map(select(.baseGroupId == "myscoutee-community") | .ruleKey) | sort)
+      == (($groupExpected + ["community-scheduled-cases", "community-voting-close"]) | sort))
     and all(.[];
       .enabled == true
       and .triggerKind == "scheduled_process"
@@ -366,11 +382,11 @@ grep -Fxq \
   "${EXTRACTED}/lib/systemd/system/myscoutee.service" \
   || fail "production service does not synchronize the authoritative backend bundle before start"
 grep -Fq \
-  'systemctl is-active --quiet myscoutee.service' \
+  'systemctl is-active --quiet ${PACKAGE_NAME}.service' \
   "${CONTROL_EXTRACTED}/postinst" \
   || fail "an active deployment upgrade does not detect the running service"
 grep -Fq \
-  '/opt/myscoutee/packaging/scripts/sync-i18n-seeds.sh' \
+  '${PACKAGE_ROOT}/packaging/scripts/sync-i18n-seeds.sh' \
   "${CONTROL_EXTRACTED}/postinst" \
   || fail "an active deployment upgrade does not synchronize the backend bundle"
 assert_admin_job_seed_defaults "${PACKAGED_PRODUCTION_SEED}/notificationRuleConfigs.json"
@@ -438,9 +454,13 @@ jq -e '
 jq -e 'length == 2 and all(.[]; .configured == false)' \
   "${PACKAGED_PRODUCTION_SEED}/communityProviders.json" >/dev/null \
   || fail "production built-in community catalog is missing or preconfigured"
-if grep -RIEiq \
-    -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' \
-    "${PACKAGED_PRODUCTION_SEED}"; then
+# Apply the same exact public product-page exceptions as the release auditor.
+if find "${PACKAGED_PRODUCTION_SEED}" -maxdepth 1 -type f -name '*.json' -print0 \
+    | xargs -0 cat \
+    | sed -e 's#"https://www\.instagram\.com/myscoutee"#""#g' \
+          -e 's#"https://www\.facebook\.com/myscoutee"#""#g' \
+          -e 's#"https://www\.youtube\.com/@myscoutee"#""#g' \
+    | grep -Ei -- 'https?://([^/"[:space:]]+\.)?(facebook\.com|instagram\.com|linkedin\.com|x\.com|twitter\.com|tiktok\.com|youtube\.com|discord\.(com|gg)|discourse\.[^/"[:space:]]+)/[^/"[:space:]][^"[:space:]]*' >/dev/null; then
   fail "a deployment-specific social-page URL was embedded in the production seed"
 fi
 consumer_email_pattern='[[:alnum:]._%+-]+@(gmail\.com|googlemail\.com|outlook\.com|hotmail\.com|live\.com|yahoo\.[[:alpha:].]+|icloud\.com|me\.com|proton(mail)?\.com)'
@@ -585,7 +605,7 @@ if MYSCOUTEE_OPERATOR_CONFIGURATION_KEY_DIR="${INVALID_KEY_DIR}" \
   fail "operator configuration helper accepted an embedded newline"
 fi
 grep -Fq \
-  '/opt/myscoutee/packaging/scripts/ensure-operator-configuration-key.sh' \
+  '${PACKAGE_ROOT}/packaging/scripts/ensure-operator-configuration-key.sh' \
   "${REPO_ROOT}/packaging/debian/postinst" \
   || fail "postinst does not run the persistent key initializer"
 for collection in \
@@ -631,7 +651,9 @@ for generated_internal_key in \
   )"
   [[ -z "${generated_value}" ]] \
     || fail "${generated_internal_key} must be generated during installation"
-  grep -Fq "${generated_internal_key}" "${CONTROL_EXTRACTED}/postinst" \
+  jq -e --arg key "${generated_internal_key}" \
+    'any(.freshSecrets[]; .key == $key) and any(.ensureSecrets[]; .key == $key)' \
+    "${EXTRACTED}/opt/myscoutee/packaging/templates/install-policy.json" >/dev/null \
     || fail "postinst does not provision ${generated_internal_key}"
 done
 if grep -RIl \

@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "ownedDirectories": [
+    {
+      "path": "/etc/myscoutee/registry",
+      "mode": "0700",
+      "uid": 10001,
+      "gid": 10001
+    },
+    {
+      "path": "/var/lib/myscoutee/registry",
+      "mode": "0700",
+      "uid": 10001,
+      "gid": 10001
+    }
+  ],
+  "migrateOwnership": [
+    "/etc/myscoutee/registry",
+    "/var/lib/myscoutee/registry"
+  ],
+  "environmentDefaults": {
+    "REGISTRY_ENABLED": "false",
+    "REGISTRY_OUTBOUND_ALLOWED": "false",
+    "REGISTRY_OPERATOR_REGISTRATION_CONFIRMED": "false",
+    "REGISTRY_BASE_URL": "",
+    "REGISTRY_SCOPE": "",
+    "REGISTRY_PRIVATE_KEY_PATH": "/etc/myscoutee/registry/deployment-private-key.pem",
+    "REGISTRY_PUBLIC_KEY_PATH": "/etc/myscoutee/registry/deployment-public-key.der",
+    "REGISTRY_STATE_DIR": "/var/lib/myscoutee/registry",
+    "REGISTRY_KEY_DIR_HOST": "/etc/myscoutee/registry",
+    "REGISTRY_STATE_DIR_HOST": "/var/lib/myscoutee/registry",
+    "REGISTRY_CONNECT_TIMEOUT": "5s",
+    "REGISTRY_REQUEST_TIMEOUT": "15s",
+    "REGISTRY_RETRY_DELAY": "15m",
+    "REGISTRY_MAX_RESPONSE_BYTES": "1048576",
+    "REGISTRY_EXPECTED_KEY_FINGERPRINT": "",
+    "REGISTRY_TRUST_ON_FIRST_USE": "false",
+    "REGISTRY_ALLOW_INSECURE_HTTP": "false",
+    "REGISTRY_INSECURE_HTTP_ALLOWED_HOSTS": "",
+    "REGISTRY_DEMO_BASE_URL": "http://registry:8080",
+    "REGISTRY_DEMO_SCOPE": "demo:myscoutee",
+    "REGISTRY_DEMO_PRIVATE_KEY_PATH": "/var/lib/myscoutee/registry-demo/keys/deployment-private-key.pem",
+    "REGISTRY_DEMO_PUBLIC_KEY_PATH": "/var/lib/myscoutee/registry-demo/keys/deployment-public-key.der",
+    "REGISTRY_DEMO_STATE_DIR": "/var/lib/myscoutee/registry-demo/state",
+    "REGISTRY_DEMO_ALLOW_INSECURE_HTTP": "true",
+    "REGISTRY_DEMO_INSECURE_HTTP_ALLOWED_HOSTS": "registry",
+    "REGISTRY_DEMO_VOLUME_NAME": "myscoutee-registry-demo-data-v1",
+    "REGISTRY_DEMO_CLIENT_VOLUME_NAME": "myscoutee-registry-demo-client-data-v1",
+    "PAYMENT_SIMULATOR_PUBLIC_BASE_URL": "https://localhost",
+    "PAYMENT_SIMULATOR_APPLICATION_BASE_URL": "https://localhost",
+    "PAYMENT_SIMULATOR_BARION_MERCHANT_ACCOUNT": "merchant@myscoutee.invalid",
+    "PAYMENT_SIMULATOR_VOLUME_NAME": "myscoutee-payment-simulator-data-v1",
+    "OPERATOR_CONFIGURATION_MASTER_KEY_PATH": "/etc/myscoutee/configuration/deployment-master-key",
+    "OPERATOR_CONFIGURATION_KEY_DIR_HOST": "/etc/myscoutee/configuration",
+    "MYSCOUTEE_UPDATE_ENABLED": "false",
+    "MYSCOUTEE_UPDATE_CACHE_DIR": "/var/cache/myscoutee-update",
+    "MYSCOUTEE_UPDATE_AUDIT_DIR": "/var/log/myscoutee/update",
+    "MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY": "/etc/myscoutee/update/release-public-key.pem",
+    "MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES": "4294967296",
+    "MYSCOUTEE_UPDATE_STAGING_SAFETY_RESERVE_BYTES": "536870912",
+    "MYSCOUTEE_UPDATE_MIN_FREE_BYTES": "536870912",
+    "MYSCOUTEE_UPDATE_HEALTH_TIMEOUT_SECONDS": "300",
+    "MYSCOUTEE_UPDATE_CACHE_RETENTION_JOBS": "2",
+    "FIREBASE_ENABLED": "false"
+  },
+  "freshSecrets": [
+    {
+      "key": "MONGO_INITDB_ROOT_PASSWORD",
+      "encoding": "hex",
+      "prefix": ""
+    },
+    {
+      "key": "MONGO_APP_PASSWORD",
+      "encoding": "hex",
+      "prefix": ""
+    },
+    {
+      "key": "MINIO_ROOT_PASSWORD",
+      "encoding": "hex",
+      "prefix": ""
+    },
+    {
+      "key": "PAYMENT_SIMULATOR_API_KEY",
+      "encoding": "hex",
+      "prefix": "sk_test_"
+    },
+    {
+      "key": "PAYMENT_SIMULATOR_WEBHOOK_SECRET",
+      "encoding": "hex",
+      "prefix": "whsec_"
+    },
+    {
+      "key": "PAYMENT_SIMULATOR_BARION_POS_KEY",
+      "encoding": "uuid",
+      "prefix": ""
+    }
+  ],
+  "ensureSecrets": [
+    {
+      "key": "PAYMENT_SIMULATOR_API_KEY",
+      "encoding": "hex",
+      "prefix": "sk_test_"
+    },
+    {
+      "key": "PAYMENT_SIMULATOR_WEBHOOK_SECRET",
+      "encoding": "hex",
+      "prefix": "whsec_"
+    },
+    {
+      "key": "PAYMENT_SIMULATOR_BARION_POS_KEY",
+      "encoding": "uuid",
+      "prefix": ""
+    }
+  ],
+  "requiredMongoCollections": [
+    "landingSlides",
+    "emailTemplates",
+    "emailCampaignRules",
+    "notificationTemplates",
+    "scheduledMessageTasks",
+    "operatorRegistryEndpoints",
+    "paymentProviders",
+    "deploymentConfigurations",
+    "exchangeRates"
+  ],
+  "mongoSeedFallback": "demo_db:*;production_db:countryPartitions,i18n_bundles,i18n_messages,ideaPosts,helpCenterRevisions,appSettings,notificationRuleConfigs,landingSlides,emailTemplates,emailCampaignRules,notificationTemplates,scheduledMessageTasks,operatorRegistryEndpoints,paymentProviders,deploymentConfigurations,exchangeRates,affinityConfigs,adminStats,adminMonitoring,accessPolicyDefinitions",
+  "replicaSetDefaults": "\n# Replica sets and change streams are the default, including one-node installs.\n# The existing override remains available; systemd also applies\n# docker-compose.replicaset.yml and the affinity recompute worker uses\n# change-stream wakeups with startup/reconnect reconciliation.\nMONGO_REPLICA_SET_ENABLED=true\nMONGO_REPLICA_SET_NAME=rs0\nMONGO_REPLICA_SET_HOST=mongodb:27017\nMONGO_REPLICA_SET_INIT_RETRIES=60\nMONGO_REPLICA_SET_INIT_DELAY_SECONDS=2\nAFFINITY_RECOMPUTE_CHANGE_STREAM_ENABLED=\nAFFINITY_RECOMPUTE_CHANGE_STREAM_FALLBACK_POLL_ENABLED=false",
+  "installationMessage": "MyScoutee is installed.\n\nBefore first start:\n  1. Save the shown-once deployment-local Operator credential printed above,\n     or review the OPERATOR_USER identity you supplied before installation\n  2. Review /etc/myscoutee/myscoutee.secrets.env (Mongo and MinIO passwords are generated on first install)\n  3. Run: systemctl start myscoutee\n\nNo production administrator email is packaged. After the initial Operator\nlogin, configure Firebase and the deployment's administrator emails in the\nOperator Configuration screen.\n\nThe bootstrap password is never deliberately persisted or printed again. Its\ngenerated subject and SHA-256 hash are kept in the root-only secrets file. The\nshown-once terminal output may be retained by package-manager or automation\nlogs, so protect those logs. The password itself is not single-use: this local\ncredential remains available for ongoing Operator login until it is explicitly\nreplaced or disabled, and configuring Firebase does not automatically replace\nit.\n\nRegistry participation is not selected during installation. The authenticated\noperator workflow inspects a chosen registry, requests explicit confirmation,\nand only then initializes the local node identity and registers it."
+}
