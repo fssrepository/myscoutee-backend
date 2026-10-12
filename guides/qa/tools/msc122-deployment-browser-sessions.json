@@ -8,8 +8,8 @@
   },
   "checkpoints": {
     "MSC122-NATIVE-VMWARE": {
-      "entryUrl": "https://192.168.153.129/entry",
-      "targetUrl": "https://192.168.153.129/entry",
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {
@@ -77,8 +77,8 @@
       ]
     },
     "MSC122-TEMPLATE-VMWARE": {
-      "entryUrl": "https://192.168.153.129/entry",
-      "targetUrl": "https://192.168.153.129/entry",
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
       "preserveOtherSessions": true,
       "geolocationPermission": "prompt",
       "layout": {

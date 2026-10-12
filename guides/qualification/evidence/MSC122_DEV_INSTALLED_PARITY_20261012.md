@@ -59,6 +59,60 @@ The installed VMware package still has the original defect. No improved response
 time or completed installation is claimed until the corrected artifact is
 installed and its actual data, indexes and browser results are checked.
 
+### Retained catalog and configuration batch in progress
+
+All 23 production inputs were classified. The existing repeatable sync owns
+country partitions, i18n messages/bundles, notification jobs, exchange rates and
+system community roots/providers. Configuration migrations/import preserve
+deployment and app settings. Admin monitoring/statistics and scheduling state
+are runtime-owned. Access-policy/payment-provider inputs currently match; empty
+operator Registry input must not clear operator-selected endpoints.
+
+New immutable migration016 supplies the uncovered catalog paths: missing
+affinity keys, group email rules/templates, notification templates, packaged
+articles/slides and current help/guide revisions/metadata. See the exact
+[ownership table](../../../packaging/migrations/README.md#016--complete-the-140-retained-catalog-upgrade).
+The template carries the same script with only its selected help/guide inputs.
+Focused real-Mongo tests passed in disposable databases for complete inputs,
+repeat execution, existing operator semantic identities, custom/inactive/newer
+revisions, interrupted upgrades and unchanged user/consent/configuration controls.
+The complete historical migration-chain replay and actual package replay are
+separate gates; neither is implied by those focused results.
+
+Additional reviewed environment differences:
+
+| Input | Classification / action |
+| --- | --- |
+| Source DEV/PROD `/etc/timezone` bind | Removed in both projects, matching installed production. Ubuntu26.04 has a directory at this path; `TZ` and `/etc/localtime` remain the existing timezone owners |
+| Template PROD email URL fallback | Restored native `https://localhost`; DEV retains its intentional HTTP development fallback |
+| VMware browser origin | Versioned campaign launcher configuration now uses the documented `https://localhost/entry`; guest address remains transport configuration |
+| Source vs installed native API variables | Installed TLS/update host controls are intentionally installed-only; blank member override and operator identity/bootstrap values are environment inputs; Firebase bootstrap differs explicitly rather than silently copying DEV authentication into production |
+| E2E variables | Isolated physical E2E seeds/database, fixture authentication, external-service simulators, test timing and no host source mounts remain deliberate test settings |
+| DEV-only variables | Compiler/DevTools/debug ownership, fixture gateway credentials, explicit local webhook allowances and test purge timing remain development settings |
+| KVM variables | Existing runtime manifest maps isolated DBs, internal service transports, local public URL, STUN and simulator endpoints; it reads the same Mongo initializer. Runtime qualification still pending |
+
+Both repositories' environment render checks pass for DEV, source PROD, E2E
+and installed PROD, including nondefault variable probes. This does not yet
+prove live E2E/KVM behavior or the complete installed browser journey.
+
+The full chain test exposed another installed configuration defect before
+migration015 completed: Mongo's actual soft open-file limit was **1024**, inherited
+from the guest Docker default. Mongo logged WiredTiger `Too many open files`
+and a fatal assertion, then Docker restarted it; the interrupted test exited137.
+There was no OOM event. The two interrupted test databases are
+`qa_chain_6acc780ffa5ed8f47b544ca8` and `qa_chain_6acc78868088ccab84544ca8`;
+they are disposable test-owned state, not application databases.
+
+The shared Compose replica configuration now sets soft/hard `nofile=64000`,
+inherited by DEV, E2E, source PROD and installed PROD in both projects. This is
+the [MongoDB recommended open-file limit](https://www.mongodb.com/docs/manual/reference/ulimit/).
+Installed qualification now checks the actual `mongod` process limit. KVM's
+existing k3s service declares `LimitNOFILE=1048576`; verify the actual Mongo
+process there during the serial KVM run. Do not patch the live process limit
+or installed Compose file by hand: apply the corrected package before rerunning
+the full chain test. The two interruptions are failed tests, not successful
+migration-chain evidence.
+
 ## Comparison inventory
 
 | Input boundary | Development source | Installed delivery and expected difference | Result before installation |

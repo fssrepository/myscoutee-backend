@@ -85,7 +85,6 @@ services:
       #- ./docker/scripts:/scripts
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -128,7 +127,6 @@ services:
       - ./docker/conf/mongodb/:/docker-entrypoint-initdb.d
       - ./data/mongodb/demo-data-v8-0:/data/db
       - ./docker/scripts:/scripts
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -157,7 +155,6 @@ services:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
       - ./docker/conf/mongodb:/docker-entrypoint-initdb.d:ro
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -170,7 +167,6 @@ services:
     environment:
       TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     volumes:
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -194,7 +190,6 @@ services:
     volumes:
       - ./data/minio:/data
       - ./docker/conf/minio:/seed:ro
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -312,7 +307,6 @@ services:
     volumes:
       - runtime-status-credentials:/run/myscoutee-runtime-status:ro
       - ./:/workspace
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee
@@ -370,7 +364,6 @@ services:
       - ./docker/conf/nginx/app/myscoutee:/workspace/nginx-html
       - ./docker/scripts/sync_frontend_assets.sh:/scripts/sync_frontend_assets.sh:ro
       - ./docker/scripts/frontend_auto_watch.sh:/scripts/frontend_auto_watch.sh:ro
-      - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     networks:
       - myscoutee

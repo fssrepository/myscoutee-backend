@@ -166,3 +166,40 @@ account purge worker. All warning records remain unchanged during migration;
 the worker deletes only the permanently removed account's records. The same
 index is declared for fresh databases and retained dev/seed imports. Existing
 retry and stale-claim index definitions are unchanged.
+
+## 016 — complete the 1.4.0 retained catalog upgrade
+
+Read the immutable production inputs under `seeds/016-release-catalog-parity`.
+This completes missing delivery paths found by comparing every packaged Mongo
+JSON with the retained VMware database; it is not a direct database repair.
+
+| Collection | Upgrade operation | Retained control |
+| --- | --- | --- |
+| affinityConfigs | Insert missing configuration keys | Any existing version/active choice for that key wins |
+| emailCampaignRules | Insert missing group/rule keys | Existing IDs, group/rule identities and enabled/disabled values win |
+| emailTemplates, notificationTemplates | Insert missing group/template keys | Existing IDs, semantic identities, content and enabled/disabled values win |
+| ideaPosts | Insert missing packaged article IDs/content-key/language pairs | Custom content, publication/trash state and unrelated articles survive |
+| landingSlides | Insert missing packaged IDs/workspace/slide identities | Existing slide values survive |
+| helpCenterRevisions | Add missing selected revisions in each group/document/language/context scope | Reuse migration013's unchanged-default/custom/inactive/newer/collision policy; existing operator text and choices win |
+| helpCenterGuideFields | Replace exact package-owned metadata IDs | Unrelated custom field IDs survive, as in migrations010/011 |
+
+The chain records this operation once, including its input checksum. It does not
+reinsert operator-deleted editable content on every subsequent startup. Existing
+inactive or trashed records are never reactivated. For an empty help scope the
+packaged active revision is installed, following the established migration013
+policy. An unchanged older active default advances to the packaged revision;
+custom or deliberately inactive scopes receive new defaults inactive. Version
+collisions retain the operator revision. Insert the new default before retiring
+the old one, so interrupted upgrades can be retried.
+
+Users, consents, deployment configuration, runtime activity and uploads are not
+targets. New group catalogs retain the existing storage contracts. The minimal
+template uses the same script with an empty native-catalog selection and only
+its selected help/guide inputs. It does not acquire the omitted native domains.
+
+`release-catalog-parity-test.mjs --print-script` exercises fresh/repeat upgrades,
+semantic identity collisions, inactive/custom/newer selections, older defaults,
+interruption and retained controls on an isolated database in the existing
+Mongo service. The package preflight also compares pinned inputs with the current
+selected production seeds. A later catalog change needs its own reviewed upgrade
+and updated current-release check; do not edit these recorded migration inputs.
