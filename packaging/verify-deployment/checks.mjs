@@ -397,7 +397,8 @@ export function buildChecks(ctx) {
       );
       expectString(configuration.homeLabel, 'public configuration.homeLabel');
       expectString(configuration.logoUrl, 'public configuration.logoUrl', { allowEmpty: true });
-      expectString(configuration.themePreset, 'public configuration.themePreset');
+      assert(typeof configuration.firebaseMessagingConfigured === 'boolean',
+        'public configuration.firebaseMessagingConfigured should be boolean');
       expectInteger(configuration.revision, 'public configuration.revision', { min: 0 });
       expectArray(configuration.socialLinks, 'public configuration.socialLinks');
       const privacyContact = expectObject(
