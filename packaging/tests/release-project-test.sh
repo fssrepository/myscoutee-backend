@@ -6,18 +6,20 @@ temporary="$(mktemp -d)"
 trap 'rm -rf -- "$temporary"' EXIT
 install -m 0644 "${root}/packaging/scripts/release-project.json" "${temporary}/release-project.json"
 release_project_load "$temporary" "$(id -u)"
+[[ "$RELEASE_PROJECT_UID:$RELEASE_PROJECT_GID" == 10001:10001 ]]
 [[ "$(release_project_images 1.0.2 | jq length)" == 6 ]]
 [[ "$(release_project_images 1.3.0-qa.1 | jq length)" == 7 ]]
 
 # A different product selects five existing framework images from its own
 # installed policy. No Registry/payment image is required or accepted.
-jq '.packageName = "sample-template" | .images |= map(
+jq '.packageName = "sample-template" | .runtimeIdentity = {uid:10002,gid:10002} | .images |= map(
   select(.service != "registry-demo" and .service != "payment-simulator")
   | .repository |= sub("^myscoutee-"; "sample-template-")
   | .sinceVersion = "1.0.0")' "${temporary}/release-project.json" > "${temporary}/selected.json"
 install -m 0644 "${temporary}/selected.json" "${temporary}/release-project.json"
 release_project_load "$temporary" "$(id -u)"
 [[ "$RELEASE_PROJECT_NAME" == sample-template && "$RELEASE_PROJECT_ROOT" == /opt/sample-template ]]
+[[ "$RELEASE_PROJECT_UID:$RELEASE_PROJECT_GID" == 10002:10002 ]]
 images="$(release_project_images 1.0.0)"
 [[ "$(jq length <<< "$images")" == 5 ]]
 release_project_export_images 1.0.0 true
@@ -50,6 +52,10 @@ for mutation in \
   '.images += [.images[0]]' \
   '.images[0].repository = "foreign/path:tag"' \
   '.images[0].sinceVersion = "latest"' \
+  '.runtimeIdentity.uid = 0' \
+  '.runtimeIdentity.gid = 10002.5' \
+  '.runtimeIdentity.uid = "10002"' \
+  '.runtimeIdentity.other = 1' \
   '.unknown = true'; do
   jq "$mutation" "${temporary}/selected.json" > "${temporary}/release-project.json"
   if release_project_load "$temporary" "$(id -u)"; then

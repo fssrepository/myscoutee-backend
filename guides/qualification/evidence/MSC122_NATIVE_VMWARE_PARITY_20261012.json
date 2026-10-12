@@ -1094,10 +1094,16 @@
     "chatList": "Opened through avatar menu; HTTP 200; selected account has no list items; messaging/video not proven"
   },
   "pending": [
-    "Normal non-demo registration/profile/Event/Asset image journey",
     "Template 1.4.0 install and browser qualification",
     "E2E live fixture/database checks",
     "Serial KVM and monolith runtime checks",
     "Release and rollback qualification"
+  ],
+  "userWaivedChecks": [
+    {
+      "check": "Normal non-demo email-verification registration",
+      "status": "SKIPPED",
+      "reason": "User explicitly waived it on 2026-10-12 because it cannot currently be verified. Dependent new-account profile/Event/Asset image checks are not claimed."
+    }
   ]
 }

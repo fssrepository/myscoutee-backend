@@ -9,8 +9,10 @@ not merely the Debian builder's own file allow-list. No Netcup access is allowed
 The corrected native 1.4.0 package was installed through the supported installer
 on local VMware. The complete read-only database/index audit, retained-data
 controls, historical migration chain and 13 external HTTP checks now pass.
-Template installation, live E2E/KVM/monolith checks and the normal-account image
-journey remain open. This is not a completed release or full-flow verdict.
+Template installation and live E2E/KVM/monolith checks remain open. The user
+explicitly waived the email-verification registration check on 2026-10-12; it is
+SKIPPED by request, not a verified PASS. Its dependent new-account image journey
+is not claimed by the demo checks. This is not a completed release or full-flow verdict.
 
 ### Corrected artifact replay
 
@@ -218,9 +220,10 @@ as one coherent batch.
 ## Remaining evidence boundary
 
 Native input/payload, actual install, retained controls, visible guide/demo login
-and external HTTP checks have passed for the artifact above. Complete the normal
-registered-account image journey and deployment qualification before closing the
-native VMware gate. Then install the template with independent data/media state.
+and external HTTP checks have passed for the artifact above. The user waived
+the email-verification registration check; do not block template installation
+on that unavailable path or report its dependent new-account journey as passed.
+Install the template with independent data/media state.
 Shut down the VM before live E2E, and validate KVM/monolith serially. Record each
 boundary separately; the native result does not qualify the template.
 
@@ -255,3 +258,33 @@ User instruction: the next native and template releases are both **1.4.0**.
 The four remaining source QA tasks are separate; a fixes-only follow-up would
 be 1.4.1. Earlier1.0.0/template and1.3.1-qa.1/native artifacts remain historical
 qualification candidates and must not be published as the final release.
+
+The two exact interrupted `qa_chain_*` test databases listed above were removed
+after checking their test-only sentinel and migration receipts. No application
+database was changed by this cleanup. The qualified native VMware state is
+preserved in snapshot `msc122-native-1.4.0-parity-20261012` before switching
+stacks.
+
+## Template runtime identity correction
+
+The first template 1.4.0 DEB (`27cc742a5c7fad1eb5f93e8aa18fa19995fea5fe355aca520c8d45937d9d265b`)
+failed before initialization: it requested UID/GID 10001 under a different
+account name while MyScoutee already owned those IDs. It is a rejected candidate.
+No template application database was initialized. The qualified native snapshot
+is the retry baseline; do not repair the failed installation by changing accounts
+or application data manually.
+
+The existing package-owned release policy now specifies runtime UID/GID. Native
+MyScoutee remains 10001; template uses 10002. Production image build, Debian
+ownership, configuration-key access, update/TLS workers and restore consume that
+policy. The installer rejects a foreign ID before sysusers can allocate a different
+account. Isolated KVM service images retain their existing 10001 container identity;
+they do not share Debian host-owned directories. Dev compilers retain the host
+identity. This does not change application roles, database queries or port bindings.
+
+Focused checks passed: native/minimal install policy, release policy rejection
+cases, numeric ownership and retained-account/repeat-install tests in both projects,
+update worker, both TLS workers, template backup/restore orchestration, and both
+four-environment Compose audits. The rebuilt template image must additionally
+match the policy in the complete artifact audit. VMware installation and browser
+flows remain pending at this source checkpoint.

@@ -447,7 +447,7 @@ restore_registry_identity() {
   fi
   if [[ "${EUID}" -eq 0 ]]; then
     chown -R --no-dereference \
-      "+${MYSCOUTEE_API_UID:-10001}:+${MYSCOUTEE_API_GID:-10001}" \
+      "+${MYSCOUTEE_API_UID:-$RELEASE_PROJECT_UID}:+${MYSCOUTEE_API_GID:-$RELEASE_PROJECT_GID}" \
       "${REGISTRY_KEY_DIR}" "${REGISTRY_STATE_DIR}"
   fi
 

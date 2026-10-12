@@ -72,6 +72,13 @@ belong in a separate evidence document; this file is the reusable procedure.
    after fresh install, demo reset, E2E reset and retained upgrade. Check names,
    ordered keys, uniqueness, partial filters, collation, sparse/TTL settings and
    explicitly obsolete constraints. Source equality alone cannot pass this gate.
+   The existing input auditor can emit the read-only installed Mongo check:
+   `python3 packaging/tests/deployment-input-parity-test.py --print-mongo-audit`.
+   Run that emitted script with authenticated `mongosh` in the already-running
+   installed Mongo container. It reads every packaged demo/production JSON and
+   all selected indexes, reports counts/missing IDs/differing field names, and
+   never writes records or indexes. Review operator/runtime differences under
+   step 9; a successful script exit alone is not a parity verdict.
 
 8. **Check the disposable reset lifecycle.** Verify Mongo's final daemon is
    ready, the target is exactly `demo_db`, REAL differs, complete canonical
@@ -159,3 +166,9 @@ The 2026-10-12 source comparison and installed findings are tracked in
 The template's [numbered implementation plan](../../../myscoutee-template/guides/plans/MSC-122_TEMPLATE_IMPLEMENTATION_PLAN.md)
 remains the implementation owner. This checklist does not mark that plan or
 deployment qualification complete.
+
+For Debian host ownership, verify `release-project.json.runtimeIdentity`, sysusers,
+the production API image user, configuration/update/TLS file groups and restore
+ownership together. Install on a host retaining the other project's account and
+repeat configuration. Co-installation does not imply concurrent runtime support;
+shared listening ports still require serial stack switching.

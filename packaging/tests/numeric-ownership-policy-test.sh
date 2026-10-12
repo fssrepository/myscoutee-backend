@@ -54,6 +54,9 @@ done < <(
   } | LC_ALL=C sort
 )
 
+source "${REPO_ROOT}/packaging/scripts/release-project.sh"
+release_project_load "${REPO_ROOT}/packaging/scripts" "$(id -u)"
+export TEST_RUNTIME_UID="$RELEASE_PROJECT_UID" TEST_RUNTIME_GID="$RELEASE_PROJECT_GID"
 FAKE_BIN="${TEST_ROOT}/bin"
 COMMAND_LOG="${TEST_ROOT}/commands.log"
 mkdir -p "${FAKE_BIN}"
@@ -76,7 +79,7 @@ case "${command_name}" in
     done
     ;;
   chown)
-    [[ "${1:-}" == '+10001:+10001' ]] || exit 92
+    [[ "${1:-}" == "+${TEST_RUNTIME_UID}:+${TEST_RUNTIME_GID}" ]] || exit 92
     ;;
 esac
 STUB
@@ -99,13 +102,13 @@ for helper_source in \
     bash -c '
       source "${NUMERIC_OWNERSHIP_HELPER}"
       install_numeric_owned_directory \
-        0700 10001 10001 /tmp/myscoutee-numeric-owner-fixture
+        0700 "$TEST_RUNTIME_UID" "$TEST_RUNTIME_GID" /tmp/myscoutee-numeric-owner-fixture
     '
 done
 
 [[ "$(grep -Fxc $'install\t-d -m 0700 -- /tmp/myscoutee-numeric-owner-fixture' "${COMMAND_LOG}")" == "3" ]] \
   || fail "numeric directory helpers did not separate creation from ownership"
-[[ "$(grep -Fxc $'chown\t+10001:+10001 -- /tmp/myscoutee-numeric-owner-fixture' "${COMMAND_LOG}")" == "3" ]] \
+[[ "$(grep -Fxc $'chown\t'"+${TEST_RUNTIME_UID}:+${TEST_RUNTIME_GID} -- /tmp/myscoutee-numeric-owner-fixture" "${COMMAND_LOG}")" == "3" ]] \
   || fail "numeric directory helpers did not force explicit numeric chown"
 [[ "$(grep -Fxc $'chmod\t0700 -- /tmp/myscoutee-numeric-owner-fixture' "${COMMAND_LOG}")" == "3" ]] \
   || fail "numeric directory helpers did not restore the requested mode"
@@ -117,14 +120,39 @@ printf 'root:x:0:0:root:/root:/bin/sh\n' > "${IDENTITY_ROOT}/etc/passwd"
 printf 'root:x:0:\n' > "${IDENTITY_ROOT}/etc/group"
 : > "${IDENTITY_ROOT}/etc/shadow"
 : > "${IDENTITY_ROOT}/etc/gshadow"
-systemd-sysusers --root="${IDENTITY_ROOT}" "${REPO_ROOT}/packaging/sysusers/myscoutee.conf"
-grep -Fq 'myscoutee-runtime:x:10001:10001:MyScoutee runtime:/nonexistent:/usr/sbin/nologin' "${IDENTITY_ROOT}/etc/passwd" \
+# A second package's existing account must survive installation and replay.
+printf 'retained-runtime:x:10003:10003:Retained:/nonexistent:/usr/sbin/nologin\n' >> "${IDENTITY_ROOT}/etc/passwd"
+printf 'retained-runtime:x:10003:\n' >> "${IDENTITY_ROOT}/etc/group"
+if [[ "$RELEASE_PROJECT_NAME" != myscoutee ]]; then
+  printf 'myscoutee-runtime:x:10001:10001:MyScoutee runtime:/nonexistent:/usr/sbin/nologin\n' >> "${IDENTITY_ROOT}/etc/passwd"
+  printf 'myscoutee-runtime:x:10001:\n' >> "${IDENTITY_ROOT}/etc/group"
+fi
+cp "${IDENTITY_ROOT}/etc/passwd" "${TEST_ROOT}/before-passwd"
+systemd-sysusers --root="${IDENTITY_ROOT}" "${REPO_ROOT}/packaging/sysusers/${RELEASE_PROJECT_NAME}.conf"
+grep -Fq "${RELEASE_PROJECT_NAME}-runtime:x:${TEST_RUNTIME_UID}:${TEST_RUNTIME_GID}:" "${IDENTITY_ROOT}/etc/passwd" \
   || fail "the runtime reader account does not match the container UID/GID"
-grep -Fxq 'myscoutee-runtime:x:10001:' "${IDENTITY_ROOT}/etc/group" \
+grep -Fxq "${RELEASE_PROJECT_NAME}-runtime:x:${TEST_RUNTIME_GID}:" "${IDENTITY_ROOT}/etc/group" \
   || fail "the runtime reader group does not match the container GID"
+while IFS= read -r retained; do
+  grep -Fxq "$retained" "${IDENTITY_ROOT}/etc/passwd" || fail "another account changed"
+done < "${TEST_ROOT}/before-passwd"
 cp "${IDENTITY_ROOT}/etc/passwd" "${TEST_ROOT}/retained-passwd"
-systemd-sysusers --root="${IDENTITY_ROOT}" "${REPO_ROOT}/packaging/sysusers/myscoutee.conf"
+systemd-sysusers --root="${IDENTITY_ROOT}" "${REPO_ROOT}/packaging/sysusers/${RELEASE_PROJECT_NAME}.conf"
 cmp "${TEST_ROOT}/retained-passwd" "${IDENTITY_ROOT}/etc/passwd" \
   || fail "reconfiguration changed the runtime identity"
 
-echo "Numeric ownership policy tests passed."
+# Run the actual installer collision guard with an isolated account lookup.
+sed -n '/^for entry in "passwd:/,/^done$/p' "${REPO_ROOT}/packaging/debian/postinst" > "${TEST_ROOT}/guard.sh"
+[[ -s "${TEST_ROOT}/guard.sh" ]] || fail "missing pre-allocation guard"
+cat > "${FAKE_BIN}/getent" <<'STUB'
+#!/bin/sh
+printf '%s:x:%s:fixture\n' "$TEST_ACCOUNT_NAME" "$2"
+STUB
+chmod 0755 "${FAKE_BIN}/getent"
+export MYSCOUTEE_API_UID="$TEST_RUNTIME_UID" MYSCOUTEE_API_GID="$TEST_RUNTIME_GID" PACKAGE_NAME="$RELEASE_PROJECT_NAME"
+PATH="${FAKE_BIN}:$PATH" TEST_ACCOUNT_NAME="${RELEASE_PROJECT_NAME}-runtime" bash "${TEST_ROOT}/guard.sh"
+if PATH="${FAKE_BIN}:$PATH" TEST_ACCOUNT_NAME=foreign-runtime bash "${TEST_ROOT}/guard.sh" 2>"${TEST_ROOT}/rejection"; then
+  fail "installer accepted a foreign account before sysusers"
+fi
+grep -Fq 'reserved by another account' "${TEST_ROOT}/rejection" || fail "wrong collision failure"
+echo "Numeric ownership policy tests passed: helpers, retained accounts, repeat install and foreign-ID rejection."
