@@ -20,7 +20,8 @@ trap 'rm -rf -- "${WORK_DIR}"' EXIT
 install -d "${WORK_DIR}/payload/verify-deployment"
 selection="${REPO_ROOT}/packaging/client-tools/manifest.json"
 jq -e 'type == "array" and length > 0 and length == (unique | length)
-  and all(.[]; type == "string" and test("^[A-Za-z0-9][A-Za-z0-9._-]*$"))
+  and all(.[]; type == "string" and
+    (. == "README.md" or . == "install.env.example" or test("^[A-Za-z0-9][A-Za-z0-9_-]*\\.sh$")))
   and (index("install.sh") != null) and (index("verify-release.sh") != null)
   and (index("remote-transport.sh") != null)' "$selection" >/dev/null || {
   echo 'Invalid client-tools selection.' >&2; exit 1;
