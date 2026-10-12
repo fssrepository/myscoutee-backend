@@ -4,14 +4,57 @@ Date: 2026-10-12. Scope: native MyScoutee and the minimal template. The referenc
 is the working development implementation and its classified environment inputs,
 not merely the Debian builder's own file allow-list. No Netcup access is allowed.
 
-## Current verdict: FAIL — installed parity is not established
+## Current verdict: native installed input checks PASS; campaign IN PROGRESS
 
-The earlier source/payload checks below passed only their stated static boundary.
-They did not cover the complete resulting database after reset and retained
-upgrade. Do not interpret them as successful DEV/E2E/installed parity.
+The corrected native 1.4.0 package was installed through the supported installer
+on local VMware. The complete read-only database/index audit, retained-data
+controls, historical migration chain and 13 external HTTP checks now pass.
+Template installation, live E2E/KVM/monolith checks and the normal-account image
+journey remain open. This is not a completed release or full-flow verdict.
+
+### Corrected artifact replay
+
+- Source: `15858a4cb`; package: `myscoutee_1.4.0_amd64.deb`.
+- SHA-256: `0ad71a60dddb5c2c28dba63ad36d04c0affc484abb33235f5432ceaff434922e`.
+- Complete actual DEB audit: 179 payload files and four control files match the
+  verified stage, including bytes, mode and ownership. Existing image inputs
+  also pass the complete payload comparison.
+- All 49 demo and 23 production JSON inputs were checked after installation:
+  no required seed IDs are missing. Both databases have all 199 canonical
+  indexes with matching ordered keys and declared options, including collation.
+  Runtime-owned and retained operator field differences remain classified.
+- All 18 retained production collection counts and SHA-256 controls are
+  unchanged across the same-version reinstall, including real users, consents,
+  deployment settings, chats, activities, payments and integrations.
+- All nine services are healthy. Mongo's actual soft/hard open-file limit is
+  64000. Mongo and the application have zero restarts since this installation.
+- Full historical migration-chain tests pass from schema3, schema4 and schema5,
+  including repeats, immutable source/input checksums, legacy receipts,
+  retained/current help, interrupted steps and invalid-input retries. The two
+  earlier open-file-limit failures remain historical failures below.
+- All 13 external HTTP checks pass with certificate validation and expected
+  version 1.4.0. They do not replace browser or registered-account checks.
+- Visible managed Chrome: the entry guide renders; the demo selector displays
+  all 53 accounts and images; clicking Casey Bridge signs in and reaches
+  `/game`. The avatar-menu chat list opens with HTTP 200 (no chats for that
+  selected account; sending messages/video remains a separate check).
+- Same 53-member request: warmup 0.4874 s, then 0.2932 / 0.2311 / 0.2748 s,
+  compared with the earlier 5.270 / 5.435 / 4.680 s. This proves the selector
+  request improvement, not a whole-application performance claim. A current
+  idle sample records API 3.60% and Mongo 3.50% CPU; there is no matched CPU
+  baseline for this batch, so CPU parity is not claimed.
+
+Durable counts, hashes, index results, timings and test summaries:
+[Native VMware parity evidence](MSC122_NATIVE_VMWARE_PARITY_20261012.json).
+Temporary visual captures: `/tmp/msc122-native-installed-guide.png`,
+`/tmp/msc122-native-demo-selector-after.png`, `/tmp/msc122-native-login-after.png`
+and `/tmp/msc122-native-chat-after.png`.
+
 Continue with the reusable [environment parity checklist](../ENVIRONMENT_PARITY_CHECKLIST.md).
-No direct database repair is permitted: corrections must be delivered through
-the versioned installation/upgrade path, then verified against its result.
+No installed application data or indexes were repaired manually; the versioned
+package supplied the fixes and all post-install audits were read-only.
+
+## Historical failures before the corrected replay
 
 Read-only diagnosis of the native 1.4.0 VMware candidate on 2026-10-12 found:
 
@@ -31,7 +74,7 @@ Native source revision: `2751ea861`; installed artifact was built from
 this temporary file is diagnostic evidence, not a durable release artifact.
 No installed database documents or indexes were manually changed by this audit.
 
-### Reset correction in source; installation replay still pending
+### Reset correction (subsequently replayed by the corrected package)
 
 The package reset now invokes the existing `db_init.js` after import. Its new
 reset selector accepts only literal `demo_db`, rejects a matching REAL database,
@@ -55,11 +98,10 @@ Focused checks passed for native and template:
   populated empty baselines and external avatars are rejected. This source
   regression does not replace a real package reset/import.
 
-The installed VMware package still has the original defect. No improved response
-time or completed installation is claimed until the corrected artifact is
-installed and its actual data, indexes and browser results are checked.
+At this earlier checkpoint the installed package still had the defect. The
+corrected-artifact replay and measured result are recorded above.
 
-### Retained catalog and configuration batch in progress
+### Retained catalog and configuration corrections
 
 All 23 production inputs were classified. The existing repeatable sync owns
 country partitions, i18n messages/bundles, notification jobs, exchange rates and
@@ -77,7 +119,7 @@ Focused real-Mongo tests passed in disposable databases for complete inputs,
 repeat execution, existing operator semantic identities, custom/inactive/newer
 revisions, interrupted upgrades and unchanged user/consent/configuration controls.
 The complete historical migration-chain replay and actual package replay are
-separate gates; neither is implied by those focused results.
+separate gates; both later passed for the exact native artifact recorded above.
 
 Additional reviewed environment differences:
 
@@ -175,12 +217,12 @@ as one coherent batch.
 
 ## Remaining evidence boundary
 
-Input parity is not installed runtime qualification. After the complete batch
-passes, install the corrected native candidate on the preserved local VMware
-guest, open its visible browser entry and check health, retained application
-flows, response times and CPU. Only then stop it and install the template with
-its own fresh database/media state. Keep the runtime serial. Record completed
-artifact and installed checks separately; do not mark pending checks passed.
+Native input/payload, actual install, retained controls, visible guide/demo login
+and external HTTP checks have passed for the artifact above. Complete the normal
+registered-account image journey and deployment qualification before closing the
+native VMware gate. Then install the template with independent data/media state.
+Shut down the VM before live E2E, and validate KVM/monolith serially. Record each
+boundary separately; the native result does not qualify the template.
 
 The user authorized an intermediate native GitHub release, followed by another
 after the remaining manual QA. The user uploads all DEBs. Other assets may be
@@ -199,8 +241,8 @@ initialization now also includes the existing importer/runtime definitions.
 The live disposable-DB regression passed on VMware: all199 definitions,
 repeat execution, retained operator data, group inserts, duplicate rejection and
 an indexed scoped lookup examining exactly one document. Log:
-`/tmp/msc122-native-runtime-index-parity.log`. Installed startup is still pending
-with this correction; the previous candidate is not a successful deployment.
+`/tmp/msc122-native-runtime-index-parity.log`. The earlier candidate was not a successful deployment. Corrected installed
+startup and the complete post-reset index audit are recorded above.
 
 Environment checks render DEV, source PROD, standalone E2E and installed PROD
 independently, using nondefault configuration probes. Corrections route DEV STUN
