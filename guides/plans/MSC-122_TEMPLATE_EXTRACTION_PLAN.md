@@ -348,3 +348,8 @@ host or resource under any circumstances. See implementation-plan step 27.
 The user deferred VMware deployment until morning on 2026-10-12. Continue KVM,
 packaging/release preparation and independent automated checks without waiting
 for a reply. VMware qualification remains unverified until that deployment.
+
+The user explicitly authorized continuing steps 28–31 without the deferred VMware
+check, wherever feasible: signed releases, GitHub/GHCR/Pages, documentation and
+final verification. Record actual external blockers rather than waiting for the
+user overnight; do not mark the deferred VMware check as passed.
