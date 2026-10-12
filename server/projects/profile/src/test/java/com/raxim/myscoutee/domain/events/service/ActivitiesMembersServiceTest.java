@@ -3080,22 +3080,36 @@ class ActivitiesMembersServiceTest {
     }
 
     @Test
+    void requestInvitesKeepAuthenticatedProfileWhenRequestNamesAnotherInviter() {
+        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("viewer");
+        when(accessControlService.canInviteEventMembers("event-1", "viewer")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.inviteEventMembers(new ActivityMembersInviteRequestDto(
+                new ActivityMemberOwnerRefDto("event", "event-1"), List.of("target"), "admin")))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(error -> assertThat(((ResponseStatusException) error).getStatusCode().value()).isEqualTo(403));
+
+        verify(accessControlService).canInviteEventMembers("event-1", "viewer");
+        verify(accessControlService, never()).canInviteEventMembers("event-1", "admin");
+        verifyNoInteractions(activityMembersRepository);
+    }
+
+    @Test
     void inviteUsersReturnsEmptyWhenPolicyDenies() {
-        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(false);
 
         List<String> result = service.inviteUsers("event-1", "admin", List.of("target"), event("event-1", "host", "admin"));
 
         assertThat(result).isEmpty();
+        verifyNoInteractions(selectedProfile);
         verify(activityMembersRepository, never()).saveAll(anyList());
     }
 
     @Test
-    void inviteUsersUsesPolicyAndSavesPendingInvites() {
+    void scheduledInvitesUseStoredInviterWithoutRequestProfileAndSavePendingInvites() {
         ActivityEvent event = event("event-1", "host", "admin");
         event.setLocation("Bratislava");
 
-        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1")).thenReturn(List.of());
         when(activityMembersRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -3105,6 +3119,8 @@ class ActivitiesMembersServiceTest {
         List<String> result = service.inviteUsers("event-1", "admin", List.of("target"), event);
 
         assertThat(result).containsExactly("target");
+        verifyNoInteractions(selectedProfile);
+        verify(accessControlService).canInviteEventMembers("event-1", "admin");
         @SuppressWarnings("unchecked")
         ArgumentCaptor<List<ActivityMember>> savedCaptor = ArgumentCaptor.forClass(List.class);
         verify(activityMembersRepository).saveAll(savedCaptor.capture());
@@ -3127,7 +3143,6 @@ class ActivitiesMembersServiceTest {
         ActivityMember accepted =
                 member("accepted-sync", "event-1", "accepted-user", "Member", "accepted");
 
-        when(selectedProfile.resolveSelectedUserId("admin")).thenReturn("admin");
         when(accessControlService.canInviteEventMembers("event-1", "admin")).thenReturn(true);
         when(activityMembersRepository.findByOwnerTypeAndOwnerId("event", "event-1"))
                 .thenReturn(List.of(accepted));
