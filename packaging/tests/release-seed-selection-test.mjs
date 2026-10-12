@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 const source = fs.readFileSync(new URL('../scripts/sync-release-system-seeds.js', import.meta.url), 'utf8');
 const native = JSON.parse(fs.readFileSync(new URL('../scripts/release-system-seeds.json', import.meta.url), 'utf8'));
-const minimal = native.filter(row => row.collection !== 'exchangeRates');
+const minimal = native.filter(row => ['notificationRuleConfigs', 'countryPartitions', 'i18n_messages', 'i18n_bundles'].includes(row.collection));
 function run(selection) {
   const reads = [], writes = [];
   vm.runInNewContext(source, {
@@ -32,6 +32,11 @@ for (const selection of [native, minimal]) {
   }
 }
 assert(!run(minimal).reads.some(path => path.includes('exchangeRates')));
+assert(!run(minimal).reads.some(path => path.includes('community')));
+for (const name of ['communityGroups', 'communityProviders']) {
+  assert.equal(native.find(row => row.collection === name)?.replace, false,
+    'upgrades may insert missing system defaults but must retain operator changes');
+}
 for (const selection of [[], [...native,native[0]], [{collection:'../users',replace:true}], [{collection:'users',replace:'true'}]]) {
   assert.throws(()=>run(selection), /Invalid release system seed selection/);
 }

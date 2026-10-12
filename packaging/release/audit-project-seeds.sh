@@ -2,6 +2,14 @@
 # Product-specific seed contents; package identity and credential checks are shared.
 audit_project_seeds() {
   local production_seed="$1"
+  if ! jq -e 'type == "array" and length == 2
+      and (map(._id) | sort) == ["myscoutee-community", "myscoutee-work"]
+      and all(.[]; .ownerUserId == "system" and .visibility == "public"
+        and .policy == {workspace: true, enabled: false, requiredFields: []})' \
+      "${production_seed}/communityGroups.json" >/dev/null; then
+    echo "Production community groups must contain only the two public system workspaces." >&2
+    exit 1
+  fi
   if [[ -f "${production_seed}/communityProviders.json" ]] && ! jq -e '
       type == "array" and length == 2
       and (map(._id) | sort) == ["discord", "discourse"]

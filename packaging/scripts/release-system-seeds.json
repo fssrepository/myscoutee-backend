@@ -18,5 +18,13 @@
   {
     "collection": "i18n_bundles",
     "replace": true
+  },
+  {
+    "collection": "communityGroups",
+    "replace": false
+  },
+  {
+    "collection": "communityProviders",
+    "replace": false
   }
 ]

@@ -184,6 +184,8 @@ stage_mongo_configuration() {
 python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py"
 node "${REPO_ROOT}/frontend/scripts/audit-i18n-mongo-seed.js"
 stage_mongo_configuration
+python3 "${REPO_ROOT}/tools/seeds/check-system-seed-parity.py" \
+  --packaged-root "${STAGING_DIR}${RELEASE_PROJECT_ROOT}"
 # Host runtime scripts are project-selected build inputs. Dev/E2E helpers can
 # remain in the source tree without becoming installed host commands.
 runtime_manifest="${REPO_ROOT}/packaging/release/runtime-scripts.json"
@@ -331,6 +333,12 @@ install -m 0644 \
   "${STAGING_DIR}/usr/share/${RELEASE_PROJECT_NAME}/$(basename "${CLIENT_TOOLS_ARCHIVE}")"
 
 bash "${SCRIPT_DIR}/audit-package-credentials.sh" "${STAGING_DIR}"
+input_checks=()
+if [[ "${PACKAGE_IMAGES:-true}" == true ]]; then
+  input_checks+=(--images)
+fi
+python3 "${REPO_ROOT}/packaging/tests/deployment-input-parity-test.py" \
+  "${STAGING_DIR}" "${input_checks[@]}"
 
 dpkg-deb --root-owner-group --build \
   "${STAGING_DIR}" \

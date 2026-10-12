@@ -187,8 +187,8 @@ grep -Eq '^[[:space:]]+context: projects/profile/build/libs$' "${PRODUCTION_COMP
   || fail "production API build context is not restricted to the compiled JAR directory"
 grep -Eq '^[[:space:]]+dockerfile: \.\./\.\./\.\./\.\./docker/images/profilemanagement/prod/Dockerfile$' "${PRODUCTION_COMPOSE}" \
   || fail "production API Dockerfile is not resolved from the restricted JAR context"
-grep -Eq '^COPY --chown=myscoutee:myscoutee \*\.jar /app/spring-boot-application\.jar$' "${PRODUCTION_API_DOCKERFILE}" \
-  || fail "production API image does not copy exclusively from the restricted JAR context"
+grep -Fqx 'COPY --chown=myscoutee:myscoutee profile-${MYSCOUTEE_VERSION}.jar /app/spring-boot-application.jar' "${PRODUCTION_API_DOCKERFILE}" \
+  || fail "production API image does not select the exact release JAR from the restricted build context"
 
 for pattern in \
   'conf/nginx/keys/' \

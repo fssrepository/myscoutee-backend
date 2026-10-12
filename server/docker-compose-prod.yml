@@ -207,12 +207,13 @@ services:
     pull_policy: build
     restart: unless-stopped
     build:
-       # Deliberately expose only the compiled JAR to BuildKit. Runtime Mongo,
-       # registry, key, and secret directories must never enter this context.
-       context: projects/profile/build/libs
-       dockerfile: ../../../../docker/images/profilemanagement/prod/Dockerfile
-       args:
-         TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
+      # Deliberately expose only compiled JARs to BuildKit; select the release
+      # version explicitly. Runtime data and secrets never enter this context.
+      context: projects/profile/build/libs
+      dockerfile: ../../../../docker/images/profilemanagement/prod/Dockerfile
+      args:
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.3.0}
+        TZ: ${CONTAINER_TIMEZONE:-Europe/Brussels}
     container_name: myscoutee
     hostname: myscoutee
     env_file:
