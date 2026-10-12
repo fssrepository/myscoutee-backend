@@ -43,9 +43,10 @@ for forbidden in install.env secrets.json ../outside.sh; do
   jq -n --arg forbidden "$forbidden" '["install.sh","verify-release.sh","remote-transport.sh",$forbidden]' \
     > "$fixture/packaging/client-tools/manifest.json"
   if MYSCOUTEE_VERSION=1.0.0 MYSCOUTEE_DIST_DIR="$fixture/dist" \
-      bash "$fixture/packaging/release/package-client-tools.sh" >/dev/null 2>&1; then
+      bash "$fixture/packaging/release/package-client-tools.sh" >"$fixture/rejected.log" 2>&1; then
     echo "Archive accepted forbidden manifest input: $forbidden" >&2; exit 1
   fi
+  grep -Fxq 'Invalid client-tools selection.' "$fixture/rejected.log"
   [[ ! -e "$fixture/dist/myscoutee-client-tools_1.0.0.tar.gz" ]]
 done
 echo "Client-tools-only packaging passed: reproducible archive; DEB unchanged; no application build."

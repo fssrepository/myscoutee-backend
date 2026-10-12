@@ -350,20 +350,14 @@ normalize_packaged_image_values() {
     echo "The installed package version marker is missing or invalid." >&2
     exit 1
   fi
-  upsert_env_value "${env_file}" NGINX_BASE_IMAGE \
-    "myscoutee-nginx:${packaged_version}-base"
-  upsert_env_value "${env_file}" NGINX_PRODUCTION_IMAGE \
-    "myscoutee-nginx:${packaged_version}-prod"
-  upsert_env_value "${env_file}" MYSCOUTEE_PRODUCTION_IMAGE \
-    "myscoutee-api:${packaged_version}-prod"
-  upsert_env_value "${env_file}" MINIO_PRODUCTION_IMAGE \
-    "myscoutee-minio:${packaged_version}-prod"
-  upsert_env_value "${env_file}" REGISTRY_DEMO_IMAGE \
-    "myscoutee-registry:${packaged_version}-prod"
-  upsert_env_value "${env_file}" PAYMENT_SIMULATOR_IMAGE \
-    "myscoutee-payment-simulator:${packaged_version}-prod"
-  upsert_env_value "${env_file}" MCP_IMAGE \
-    "myscoutee-mcp:${packaged_version}-prod"
+  source /opt/myscoutee/packaging/scripts/release-project.sh
+  release_project_load /opt/myscoutee/packaging/scripts 0 || {
+    echo "The installed project policy is missing or invalid." >&2; exit 1;
+  }
+  local name reference
+  while IFS=$'\t' read -r name reference; do
+    upsert_env_value "${env_file}" "${name}" "${reference}"
+  done < <(release_project_images "${packaged_version}" | jq -r '.[] | [.environment,.reference] | @tsv')
   upsert_env_value "${env_file}" MYSCOUTEE_VERSION "${packaged_version}"
 }
 
@@ -414,20 +408,10 @@ verify_packaged_image_manifest() {
   fingerprint_helper="/opt/myscoutee/packaging/scripts/image-content-fingerprint.sh"
   manifest="/opt/myscoutee/packaging/IMAGE-MANIFEST.json"
   version="$(sed -n '1p' /opt/myscoutee/packaging/VERSION)"
+  source /opt/myscoutee/packaging/scripts/release-project.sh
   if [[ ! -f "${fingerprint_helper}" || -L "${fingerprint_helper}" ]] \
-    || [[ ! -f "${manifest}" || -L "${manifest}" ]] \
-    || ! jq -e --arg version "${version}" '
-      .schemaVersion == 1
-      and .releaseVersion == $version
-      and .bundled == true
-      and (.images | type == "array" and length == 7)
-      and ([.images[].service] | sort
-        == ["mcp", "minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"])
-      and all(.images[];
-        (.reference | type == "string")
-        and (.imageId | test("^sha256:[0-9a-f]{64}$"))
-        and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$")))
-    ' "${manifest}" >/dev/null; then
+    || ! release_project_load /opt/myscoutee/packaging/scripts 0 \
+    || ! release_project_validate_manifest "${manifest}" "${version}"; then
     echo "The package bundled-image manifest is missing or invalid." >&2
     exit 1
   fi
