@@ -137,5 +137,6 @@
       "pattern": "~^/api/(?:admin|admin-client/v1|auth|deployment/configuration|game-cards|integrations|mcp/oauth|navigator/contacts|operator)(?:/|$)",
       "service": "identity"
     }
-  ]
+  ],
+  "configurationKeyPath": "/etc/myscoutee/configuration/deployment-master-key"
 }

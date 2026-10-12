@@ -13,8 +13,175 @@
       "method": "Same synthetic credentials, image lock, DNS and public certificate; semantic YAML comparison includes all runtime configuration, routes, secrets, labels and checksums.",
       "baselineSha256": "f92e5fc1594a0d7d6a1db363805b42a86ea0a29bcf7541aa8aaf1a8a57de2daa"
     },
-    "existingStateComparison": "PASS: libvirt names, bridge, domain memory and MAC unchanged; no VM/disk/resource adoption or deletion."
+    "existingStateComparison": "PASS: libvirt names, bridge, domain memory and MAC unchanged; no VM/disk/resource adoption or deletion.",
+    "releaseSimulatorRepository": {
+      "checks": 3,
+      "result": "PASS",
+      "cases": [
+        "native default",
+        "template repository",
+        "malformed repository rejection"
+      ],
+      "preservedCatalog": "Existing index.json is not rewritten by startup."
+    }
   },
   "ownership": "Root host package inventory remains shared at its existing path. VM and user tool state are project-specific. All UUID, plan deletion/replacement, foreign-resource and no-autostart guards remain in force.",
-  "runtimeBoundary": "PENDING at source checkpoint: native KVM and monolith, then selected template deployment. No latency/CPU parity claim from configuration rendering."
+  "runtimeBoundary": "Native configured-lab KVM and monolith checks passed serially, including a fresh pass after the separately discovered auto-inviter correction. Template KVM remains pending. No matched latency/CPU parity claim.",
+  "runtimeQualification": {
+    "sourceRevision": "e610f3321",
+    "kvm": {
+      "functionalChecks": {
+        "session": "PASS, 19 checks",
+        "adminIdentity": "PASS, 25 checks",
+        "support": "PASS"
+      },
+      "readyPods": 18,
+      "restarts": 0,
+      "prometheusTargetsUp": 9,
+      "hostReserveMiB": 1920,
+      "reserveReason": "Explicit existing CLI override for this run; configured default remains 2048 MiB.",
+      "resourceObservation": "15-second QEMU sample 0.7642 CPU cores; bounded observation, not a matched performance comparison.",
+      "recentLogInspection": "Classified: startup owner-unavailable/timeouts explicitly retried by MongoChangeStreamService; shutdown Mongo/Redis cancellation; genuine background auto-inviter profile-selection defect fixed in 3829e886d. Fresh KVM and monolith logs had no matching errors during the bounded checks.",
+      "stop": "VM shut off, monitoring/tunnel stopped; data retained and no autostart."
+    },
+    "monolith": {
+      "composeProject": "msc122-monolith",
+      "checks": [
+        {
+          "check": "check-session",
+          "exitCode": 0,
+          "elapsedSeconds": 1.409003214997938
+        },
+        {
+          "check": "check-admin-identity",
+          "exitCode": 0,
+          "elapsedSeconds": 1.0058652119914768
+        }
+      ],
+      "runtime": {
+        "containers": [
+          "msc122-monolith-nginx",
+          "msc122-monolith-profilemanagement",
+          "msc122-monolith-minio",
+          "msc122-monolith-mongodb",
+          "msc122-monolith-stun",
+          "msc122-monolith-payment-simulator",
+          "msc122-monolith-mcp",
+          "msc122-monolith-redis",
+          "msc122-monolith-registry"
+        ],
+        "resources": [
+          {
+            "BlockIO": "13.5MB / 16.4kB",
+            "CPUPerc": "2.40%",
+            "Container": "msc122-monolith-nginx",
+            "ID": "6ae259e037b6",
+            "MemPerc": "0.29%",
+            "MemUsage": "45.52MiB / 15.27GiB",
+            "Name": "msc122-monolith-nginx",
+            "NetIO": "1.57MB / 1.63MB",
+            "PIDs": "18"
+          },
+          {
+            "BlockIO": "60.3MB / 4.1kB",
+            "CPUPerc": "5.99%",
+            "Container": "msc122-monolith-profilemanagement",
+            "ID": "b6728c454c70",
+            "MemPerc": "5.17%",
+            "MemUsage": "808MiB / 15.27GiB",
+            "Name": "msc122-monolith-profilemanagement",
+            "NetIO": "1.42GB / 27.7MB",
+            "PIDs": "87"
+          },
+          {
+            "BlockIO": "194MB / 44.8MB",
+            "CPUPerc": "0.00%",
+            "Container": "msc122-monolith-minio",
+            "ID": "813de8b77e23",
+            "MemPerc": "2.00%",
+            "MemUsage": "312.1MiB / 15.27GiB",
+            "Name": "msc122-monolith-minio",
+            "NetIO": "22.8kB / 2.96kB",
+            "PIDs": "19"
+          },
+          {
+            "BlockIO": "335MB / 157MB",
+            "CPUPerc": "4.17%",
+            "Container": "msc122-monolith-mongodb",
+            "ID": "476a5e6622d2",
+            "MemPerc": "3.08%",
+            "MemUsage": "481.4MiB / 15.27GiB",
+            "Name": "msc122-monolith-mongodb",
+            "NetIO": "26.2MB / 1.42GB",
+            "PIDs": "96"
+          },
+          {
+            "BlockIO": "16.1MB / 0B",
+            "CPUPerc": "0.03%",
+            "Container": "msc122-monolith-stun",
+            "ID": "9335bd737d34",
+            "MemPerc": "30.78%",
+            "MemUsage": "19.7MiB / 64MiB",
+            "Name": "msc122-monolith-stun",
+            "NetIO": "20.1kB / 2.96kB",
+            "PIDs": "10"
+          },
+          {
+            "BlockIO": "12.4MB / 41kB",
+            "CPUPerc": "0.00%",
+            "Container": "msc122-monolith-payment-simulator",
+            "ID": "f2ceb484d04d",
+            "MemPerc": "0.10%",
+            "MemUsage": "15.09MiB / 15.27GiB",
+            "Name": "msc122-monolith-payment-simulator",
+            "NetIO": "19.8kB / 1.47kB",
+            "PIDs": "9"
+          },
+          {
+            "BlockIO": "8.76MB / 0B",
+            "CPUPerc": "0.00%",
+            "Container": "msc122-monolith-mcp",
+            "ID": "589f173711b7",
+            "MemPerc": "8.74%",
+            "MemUsage": "11.19MiB / 128MiB",
+            "Name": "msc122-monolith-mcp",
+            "NetIO": "18.5kB / 126B",
+            "PIDs": "8"
+          },
+          {
+            "BlockIO": "27.3MB / 0B",
+            "CPUPerc": "0.20%",
+            "Container": "msc122-monolith-redis",
+            "ID": "21f6d01574a7",
+            "MemPerc": "0.20%",
+            "MemUsage": "30.87MiB / 15.27GiB",
+            "Name": "msc122-monolith-redis",
+            "NetIO": "51.2kB / 101kB",
+            "PIDs": "6"
+          },
+          {
+            "BlockIO": "14.1MB / 8.84MB",
+            "CPUPerc": "7.45%",
+            "Container": "msc122-monolith-registry",
+            "ID": "0d36a99c879c",
+            "MemPerc": "0.16%",
+            "MemUsage": "25.61MiB / 15.27GiB",
+            "Name": "msc122-monolith-registry",
+            "NetIO": "17.8kB / 126B",
+            "PIDs": "16"
+          }
+        ],
+        "recentErrorLines": []
+      },
+      "stop": "All nine owned project containers stopped before template frontend-local startup."
+    },
+    "followup": {
+      "sourceRevision": "3829e886d",
+      "evidence": "MSC122_SCHEDULED_INVITER_20261012.json",
+      "kvm": "18 Ready pods, zero restarts; focused session/admin checks PASS; invalid invitation request HTTP 403",
+      "monolith": "9 healthy containers, zero restarts; same focused checks PASS",
+      "performance": "116 focused JUnit tests; no added query or HTTP request. Bounded CPU/response measurements are recorded, without claiming matched-load parity.",
+      "projectConfigurationTests": 5
+    }
+  }
 }

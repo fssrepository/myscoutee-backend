@@ -42,5 +42,5 @@
     ]
   },
   "performance": "Owner count query is unchanged. The template cross-assembly consumer adds one bounded HTTP request. Runtime latency/CPU impact is not yet measured for this new operation.",
-  "runtimeBoundary": "PENDING: qualify this coherent source/shell batch on KVM and monolith serially. Prior runtime evidence at 37f5f708e does not cover these new sources."
+  "runtimeBoundary": "Native KVM and monolith session/admin checks passed in the configured-lab batch at e610f3321. See MSC122_LAB_CONFIGURATION_20261012.json. Template four-assembly unread transport runtime and measured cross-assembly latency/CPU remain pending."
 }

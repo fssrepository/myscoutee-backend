@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Read-only container CPU/quota snapshot; run as root inside the owned guest."""
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -11,10 +12,14 @@ def cri(*args):
         capture_output=True, text=True, timeout=10).stdout)
 
 
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--namespace', required=True)
+args = parser.parse_args()
+
 rows = []
 for container in cri('ps', '-o', 'json')['containers']:
     labels = container.get('labels', {})
-    if labels.get('io.kubernetes.pod.namespace') != 'myscoutee-msc121':
+    if labels.get('io.kubernetes.pod.namespace') != args.namespace:
         continue
     info = cri('inspect', container['id'])['info']
     pid = info['pid']

@@ -133,7 +133,7 @@ spec:
         {{- if has "platform" $service.domains }}
         # subPath exposes a regular file; the canonical crypto owner rejects symlinks.
         - name: deployment-configuration
-          mountPath: /etc/myscoutee/configuration/deployment-master-key
+          mountPath: {{ $.Values.configurationKeyPath | quote }}
           subPath: deployment-master-key
           readOnly: true
         # Only the public certificate is exposed, never the simulator's TLS volume.

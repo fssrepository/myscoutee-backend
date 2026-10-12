@@ -14,7 +14,7 @@ import workloads as w
 
 def snapshot():
     code = (w.SHELL / 'infra/guest/resource-snapshot.py').read_text()
-    result = json.loads(w.vm.ssh('sudo python3 -c ' + shlex.quote(code)).stdout)
+    result = json.loads(w.vm.ssh('sudo python3 -c ' + shlex.quote(code) + ' --namespace ' + shlex.quote(w.NAMESPACE)).stdout)
     counters = [int(value) for value in Path('/proc/stat').read_text().splitlines()[0].split()[1:9]]
     qemu = w.vm.virsh('domstats', w.vm.NAME, '--cpu-total').stdout
     result['host'] = {'at': time.monotonic(), 'cpuTotal': sum(counters),

@@ -320,6 +320,7 @@ def chart_values(backends_enabled=True):
         'publicBaseUrl': 'http://localhost:' + str(CONFIG['localPort']),
         'stunNodePort': CONFIG['stunNodePort'],
         'databases': CONFIG['databases'],
+        'configurationKeyPath': CONFIG['configurationKeyPath'],
         'runtime': {
             **runtime_environment(),
             'MONGODB_DATABASE': CONFIG['databases']['real'],
@@ -328,6 +329,7 @@ def chart_values(backends_enabled=True):
             'MYSCOUTEE_DELEGATION_ALLOW_INSECURE_HTTP': 'true',
             **transport_runtime},
         'shared': {
+            'mediaService': next(name for name, service in SERVICES.items() if 'media' in service['domains']),
             'publicUpstreamRoutes': '\n        '.join(route['pattern'] + ' ' + route['service'] + '.' + NAMESPACE + '.svc.cluster.local:8080;' for route in CONFIG['publicRoutes']),
             'metricsUpstreamRoutes': '\n'.join('/metrics/' + name + ' ' + name + '.' + NAMESPACE + '.svc.cluster.local:8081;' for name in SERVICES),
             'runtimeStatusLocation': (backend / 'server/docker/conf/nginx/conf/http/runtime-status.conf').read_text(),
