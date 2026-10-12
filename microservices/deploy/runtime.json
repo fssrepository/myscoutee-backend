@@ -87,6 +87,10 @@
   },
   "publicRoutes": [
     {
+      "pattern": "~^/api/admin/notifications/ws$",
+      "service": "communication"
+    },
+    {
       "pattern": "~^/api/activities/events/checkout/slots(?:/|$)",
       "service": "community"
     },

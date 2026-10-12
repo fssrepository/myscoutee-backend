@@ -71,6 +71,10 @@ def audit_jar(name, assembly):
         configuration_bytes = jar.read('BOOT-INF/classes/com/raxim/myscoutee/microservices/bootstrap/AssemblyConfiguration.class')
         websocket_config = 'com/raxim/myscoutee/common/config/ChatWebSocketConfig'
         owns_chat = 'chat' in assembly['domains']
+        socket_transport = 'com/raxim/myscoutee/microservices/bootstrap/ChatWebSocketTransportConfiguration'
+        needs_socket_transport = owns_chat and 'accounts' not in assembly['domains']
+        assert (socket_transport.encode() in configuration_bytes) == needs_socket_transport, f'{name}: incorrect socket authorization binding'
+        assert (f'BOOT-INF/classes/{socket_transport}.class' in jar.namelist()) == needs_socket_transport, f'{name}: incorrect socket transport ownership'
         assert (websocket_config.encode() in configuration_bytes) == owns_chat, f'{name}: incorrect chat WebSocket configuration import'
         assert (f'BOOT-INF/classes/{websocket_config}.class' in jar.namelist()) == owns_chat, f'{name}: incorrect chat WebSocket configuration ownership'
         for shared_import in json.loads((SHELL / 'assemblies.json').read_text())['sharedConfigurationImports']:

@@ -6,6 +6,15 @@ This shell builds independently packaged services from the canonical source in
 `server/projects/profile`. It contains no copy of that business source and has
 no dependency on the monolith's executable JAR or compiled output.
 
+The chat assembly includes the canonical WebSocket configuration. Its transport
+decorator renews the 30-second actor delegation through the original authenticated
+session when a frame arrives within five seconds of expiry. Frames between
+renewals reuse the verified grant; there is no periodic renewal thread or
+authentication request per frame. Renewal cannot change actor, role or REAL/DEMO
+mode, and revoked sessions close before business handling. The monolith does not
+install this decorator. Public chat and native admin-notification sockets retain
+the production one-hour proxy timeout, independently of ordinary HTTP timeouts.
+
 **Verified lab snapshot (2026-10-09):** Helm revision 101; all six independent
 backends and nine support deployments are Ready. All 21 domains are included.
 The VM is 8 GiB / 4 vCPU with host-boot autostart disabled. The source-batch

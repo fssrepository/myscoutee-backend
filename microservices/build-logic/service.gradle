@@ -38,6 +38,7 @@ if (domains.contains('accounts')) {
 }
 if (assembly.starters.contains('data-redis')) explicitImports += 'com.raxim.myscoutee.common.redis.RedisStreamRetentionService'
 if (domains.contains('chat')) explicitImports += 'com.raxim.myscoutee.common.config.ChatWebSocketConfig'
+if (domains.contains('chat') && !domains.contains('accounts')) explicitImports += 'com.raxim.myscoutee.microservices.bootstrap.ChatWebSocketTransportConfiguration'
 
 def sharedPaths = [
     'common/runtime/**', 'common/util/**', 'common/converter/**', 'common/mongo/**',
@@ -61,6 +62,7 @@ sourceSets.main.java {
     domains.each { domain -> include "${packageRoot}domain/${domain}/**" }
     sharedPaths.each { path -> include "${packageRoot}${path}" }
     include "${packageRoot}microservices/**"
+    if (!domains.contains('chat') || domains.contains('accounts')) exclude "${packageRoot}microservices/bootstrap/ChatWebSocketTransportConfiguration.java"
     exclude "${packageRoot}domain/*/api/**"
     exclude { element -> element.path ==~ 'com/raxim/myscoutee/domain/[^/]+/dto/.*' && !element.path.endsWith('/CaseAppointmentDtos.java') }
     if (!domains.contains('accounts')) exclude "${packageRoot}common/util/ClosableCallback.java"

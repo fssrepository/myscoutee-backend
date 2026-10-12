@@ -19,6 +19,17 @@ public class ChatWebSocketConfig implements WebSocketConfigurer {
     private final AdminNotificationWebSocketHandler adminNotificationWebSocketHandler;
     private final ChatHandshakeInterceptor chatHandshakeInterceptor;
     private final String[] allowedOrigins;
+    private org.springframework.web.socket.server.HandshakeInterceptor transportInterceptor;
+    private org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory transportDecorator;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void transportInterceptor(@org.springframework.beans.factory.annotation.Qualifier("chatTransportHandshakeInterceptor")
+            org.springframework.web.socket.server.HandshakeInterceptor value) { transportInterceptor = value; }
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    void transportDecorator(@org.springframework.beans.factory.annotation.Qualifier("chatTransportHandlerDecorator")
+            org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory value) { transportDecorator = value; }
+
 
     public ChatWebSocketConfig(
             ChatWebSocketHandler chatWebSocketHandler,
@@ -35,12 +46,15 @@ public class ChatWebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(chatWebSocketHandler, "/activities/chats/ws")
+        register(registry, chatWebSocketHandler, "/activities/chats/ws");
+        register(registry, adminNotificationWebSocketHandler, "/admin/notifications/ws");
+    }
+
+    private void register(WebSocketHandlerRegistry registry, org.springframework.web.socket.WebSocketHandler handler, String path) {
+        var registration = registry.addHandler(transportDecorator == null ? handler : transportDecorator.decorate(handler), path)
                 .addInterceptors(chatHandshakeInterceptor)
                 .setAllowedOriginPatterns(allowedOriginPatterns());
-        registry.addHandler(adminNotificationWebSocketHandler, "/admin/notifications/ws")
-                .addInterceptors(chatHandshakeInterceptor)
-                .setAllowedOriginPatterns(allowedOriginPatterns());
+        if (transportInterceptor != null) registration.addInterceptors(transportInterceptor);
     }
 
     private String[] allowedOriginPatterns() {
