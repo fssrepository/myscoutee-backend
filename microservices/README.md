@@ -342,6 +342,17 @@ no-op and allows the same interrupted import to resume. Changed seed/namespace
 identity is rejected; updating existing application data requires a separate
 explicit migration. Temporary import files are removed after the attempt.
 
+For an explicitly requested refresh of disposable lab test data, the same
+bootstrap owner also supports `--reset-lab --from-fingerprint <recorded hash>`.
+Stop the owned backends with `workloads.py backends-stop` first. This action
+verifies namespace, database names, previous seed fingerprint and Mongo image,
+then uses the existing Mongo backup/receipt before replacing both configured
+lab databases with the current canonical seed. The backup stays private under
+the lab VM state directory. It does not reset an installed/production deployment
+and is never invoked by startup. Restart with `workloads.py up` after verification.
+An interrupted reset resumes with the same command; repeating a completed reset
+to the same seed leaves data and indexes unchanged.
+
 Verified import: REAL has zero synthetic users, DEMO has 125 users; each has 26
 articles, 14,992 translation messages and 50 policy definitions. Repeating the
 bootstrap leaves its completion record unchanged. Wrong fingerprint and foreign
