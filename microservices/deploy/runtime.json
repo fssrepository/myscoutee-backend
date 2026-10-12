@@ -82,7 +82,8 @@
     "PAYMENT_BARION_API_BASE_URL": "http://payment-simulator:18082",
     "PAYMENT_BARION_TEST_GATEWAY_ENABLED": "true",
     "CHAT_CALL_STUN_URLS": "stun:@VM_IP@:@STUN_NODE_PORT@",
-    "CHAT_CALL_STUN_HEALTH_HOST": "stun"
+    "CHAT_CALL_STUN_HEALTH_HOST": "stun",
+    "WEBSOCKET_ALLOWED_ORIGIN_PATTERNS": "@PUBLIC_BASE_URL@,@LOOPBACK_BASE_URL@"
   },
   "publicRoutes": [
     {

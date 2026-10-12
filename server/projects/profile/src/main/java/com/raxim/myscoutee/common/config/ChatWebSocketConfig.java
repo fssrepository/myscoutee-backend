@@ -5,7 +5,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.raxim.myscoutee.domain.platform.config.ConfigProperties;
+import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import com.raxim.myscoutee.domain.chat.websocket.ChatHandshakeInterceptor;
 import com.raxim.myscoutee.domain.chat.websocket.ChatWebSocketHandler;
 import com.raxim.myscoutee.domain.notifications.websocket.AdminNotificationWebSocketHandler;
@@ -16,17 +18,19 @@ public class ChatWebSocketConfig implements WebSocketConfigurer {
     private final ChatWebSocketHandler chatWebSocketHandler;
     private final AdminNotificationWebSocketHandler adminNotificationWebSocketHandler;
     private final ChatHandshakeInterceptor chatHandshakeInterceptor;
-    private final ConfigProperties configProperties;
+    private final String[] allowedOrigins;
 
     public ChatWebSocketConfig(
             ChatWebSocketHandler chatWebSocketHandler,
             AdminNotificationWebSocketHandler adminNotificationWebSocketHandler,
             ChatHandshakeInterceptor chatHandshakeInterceptor,
-            ConfigProperties configProperties) {
+            @Value("${config.websocket-allowed-origin-patterns:http://localhost,http://localhost:4200,https://localhost,https://localhost:4200}")
+            String allowedOriginPatterns) {
         this.chatWebSocketHandler = chatWebSocketHandler;
         this.adminNotificationWebSocketHandler = adminNotificationWebSocketHandler;
         this.chatHandshakeInterceptor = chatHandshakeInterceptor;
-        this.configProperties = configProperties;
+        this.allowedOrigins = Arrays.stream(allowedOriginPatterns.split("[,;]"))
+                .map(String::trim).filter(StringUtils::hasText).distinct().toArray(String[]::new);
     }
 
     @Override
@@ -40,6 +44,6 @@ public class ChatWebSocketConfig implements WebSocketConfigurer {
     }
 
     private String[] allowedOriginPatterns() {
-        return configProperties.getWebsocketAllowedOriginPatternList().toArray(String[]::new);
+        return allowedOrigins;
     }
 }

@@ -69,6 +69,10 @@ def audit_jar(name, assembly):
         assert f"domains={','.join(assembly['domains'])}\n" in metadata
         # Verify imports in the executable configuration, not only packaged adapter classes.
         configuration_bytes = jar.read('BOOT-INF/classes/com/raxim/myscoutee/microservices/bootstrap/AssemblyConfiguration.class')
+        websocket_config = 'com/raxim/myscoutee/common/config/ChatWebSocketConfig'
+        owns_chat = 'chat' in assembly['domains']
+        assert (websocket_config.encode() in configuration_bytes) == owns_chat, f'{name}: incorrect chat WebSocket configuration import'
+        assert (f'BOOT-INF/classes/{websocket_config}.class' in jar.namelist()) == owns_chat, f'{name}: incorrect chat WebSocket configuration ownership'
         for shared_import in json.loads((SHELL / 'assemblies.json').read_text())['sharedConfigurationImports']:
             assert shared_import.replace('.', '/').encode() in configuration_bytes, f'{name}: missing configured shared import {shared_import}'
         for binding in json.loads((SHELL / 'transport/bindings.json').read_text())['bindings']:
