@@ -28,7 +28,8 @@
           "sessionKind": "anonymous",
           "fakeMediaStream": true
         }
-      ]
+      ],
+      "hostResolverRules": "MAP localhost 192.168.153.129"
     },
     "MSC122-NATIVE-MONOLITH": {
       "entryUrl": "https://localhost/entry",
@@ -97,7 +98,8 @@
           "sessionKind": "anonymous",
           "fakeMediaStream": true
         }
-      ]
+      ],
+      "hostResolverRules": "MAP localhost 192.168.153.129"
     },
     "MSC122-TEMPLATE-MONOLITH": {
       "entryUrl": "https://localhost/entry",
