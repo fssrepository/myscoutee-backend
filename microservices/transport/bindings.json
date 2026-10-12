@@ -1083,6 +1083,10 @@
           "method": "POST",
           "path": "/_internal/v1/access/permissions/requires-authenticated-actor"
         }
+      ],
+      "consumerApis": [
+        "com.raxim.myscoutee.domain.access.api.RequiresPolicy",
+        "com.raxim.myscoutee.domain.access.api.RequiresPolicies"
       ]
     },
     {
