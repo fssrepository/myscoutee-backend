@@ -5,14 +5,7 @@ import java.util.Map;
 import org.springframework.util.StringUtils;
 
 public interface DeploymentBranding {
-    String DEFAULT_PRODUCT_NAME = "MyScoutee";
-    String DEFAULT_LOGO_URL = "/assets/logo/heart.webp";
-
     ResolvedDeploymentBranding resolve();
-
-    static ResolvedDeploymentBranding fallback() {
-        return new ResolvedDeploymentBranding(DEFAULT_PRODUCT_NAME, DEFAULT_LOGO_URL, 0L);
-    }
 
     private static String safeText(String value) {
         return value == null ? "" : value.trim();

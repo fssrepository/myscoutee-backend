@@ -319,7 +319,7 @@ public class PromotionalEmailPlannerService {
 
     private ResolvedDeploymentBranding deploymentBranding() {
         return deploymentBrandingResolver == null
-                ? com.raxim.myscoutee.domain.platform.api.DeploymentBranding.fallback()
+                ? new ResolvedDeploymentBranding("", "", 0L)
                 : deploymentBrandingResolver.resolve();
     }
 

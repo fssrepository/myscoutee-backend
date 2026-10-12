@@ -146,6 +146,29 @@
           "fakeMediaStream": true
         }
       ]
+    },
+    "MSC122-TEMPLATE-DEV": {
+      "entryUrl": "https://localhost/entry",
+      "targetUrl": "https://localhost/entry",
+      "preserveOtherSessions": true,
+      "geolocationPermission": "prompt",
+      "layout": {
+        "columns": 2
+      },
+      "sessions": [
+        {
+          "actor": "template-dev",
+          "expectedName": "Template dev entry",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        },
+        {
+          "actor": "template-dev-peer",
+          "expectedName": "Template dev entry peer",
+          "sessionKind": "anonymous",
+          "fakeMediaStream": true
+        }
+      ]
     }
   }
 }

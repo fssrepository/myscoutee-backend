@@ -99,8 +99,6 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
     private static final String STAGE_STATUS_ERROR = "E";
     private static final String MEMBER_STATUS_ACCEPTED = "accepted";
     private static final String MEMBER_STATUS_DISQUALIFIED = "disqualified";
-    private static final String APP_BADGE_URL = "/assets/logo/heart.webp";
-    private static final String APP_FALLBACK_ICON_URL = "/assets/logo/heart.webp";
     private static final String DEFAULT_CLICK_URL = "/game";
 
     private final com.raxim.myscoutee.domain.groups.api.GroupDirectory communityGroups;
@@ -1492,7 +1490,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                     "You advanced from " + stageTitle + " to " + nextStageTitle + ".",
                     DEFAULT_CLICK_URL,
                     TOURNAMENT_ROOM_IMAGE_URL,
-                    APP_BADGE_URL,
+                    null,
                     "event-stage-advanced-" + eventId + "-"
                             + normalizeId(completedStage == null ? null : completedStage.id())
                             + (resultRevision > 1 ? "-r" + resultRevision : ""),
@@ -1532,7 +1530,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                 "You did not advance from " + stageTitle + " to " + nextStageTitle + ".",
                 DEFAULT_CLICK_URL,
                 TOURNAMENT_ROOM_IMAGE_URL,
-                APP_BADGE_URL,
+                null,
                 "event-stage-not-advanced-" + eventId + "-"
                         + normalizeId(completedStage == null ? null : completedStage.id())
                         + (resultRevision > 1 ? "-r" + resultRevision : ""),
@@ -2658,7 +2656,7 @@ public class EventScheduler implements com.raxim.myscoutee.domain.events.api.Ran
                     firstNonBlank(
                             room.getImageUrl(),
                             tournamentRoom ? TOURNAMENT_ROOM_IMAGE_URL : RANDOM_ROOM_IMAGE_URL),
-                    APP_BADGE_URL,
+                    null,
                     "event-random-room-" + roomEventId,
                     payload,
                     MARKER_UPDATED_BY));
