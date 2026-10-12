@@ -16,7 +16,7 @@ GitHub release/GHCR and Pages workflows are required in their minimal form.
 
 `myscoutee-template` is a standalone, complete minimal counterpart of
 `myscoutee-backend`: backend, frontend shell, local development, service assembly,
-release/version tags, Debian package, Netcup installation, KVM lab, and a getting
+release/version tags, Debian package, local VMware installation, KVM lab, and a getting
 started guide/PDF. It is not a component demonstration or a frontend-only starter.
 Reuse the existing owners and operational workflows. Select the models required by the minimal flows and retain those models unchanged,
 including their seed/local/backend contracts, so later MyScoutee upgrades remain
@@ -312,7 +312,7 @@ and mapper. Broad product-profile/discovery generalization is not a prerequisite
 Follow the template's [numbered implementation plan](../../../myscoutee-template/guides/plans/MSC-122_TEMPLATE_IMPLEMENTATION_PLAN.md)
 for the remaining work. It covers the complete minimal framework, including
 frontend local/HTTP, dev/prod/E2E, functional and stress tests, microservices/KVM,
-DEB/Netcup, backup/restore, signed updates, GitHub releases/images/Pages and the
+DEB/local VMware, backup/restore, signed updates, GitHub releases/images/Pages and the
 single generated guide PDF. Source selection and a passing component suite do
 not mark any unexercised runtime, installation or publication gate complete.
 
@@ -338,3 +338,9 @@ deployment. No existing application data was reimported. See the
 [seed import evidence](../qualification/evidence/MSC122_SEED_IMPORT_BOUNDARY_20261011.json).
 This closes only the seed import separation; the numbered plan still tracks
 release image selection, the remaining tools and full template deployment.
+
+### Installation boundary — 2026-10-12
+
+Installation qualification is restricted to a local VMware Debian VM. Netcup is
+strictly out of scope: do not connect to, inspect, deploy to or modify any Netcup
+host or resource under any circumstances. See implementation-plan step 27.
