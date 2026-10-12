@@ -344,3 +344,7 @@ release image selection, the remaining tools and full template deployment.
 Installation qualification is restricted to a local VMware Debian VM. Netcup is
 strictly out of scope: do not connect to, inspect, deploy to or modify any Netcup
 host or resource under any circumstances. See implementation-plan step 27.
+
+The user deferred VMware deployment until morning on 2026-10-12. Continue KVM,
+packaging/release preparation and independent automated checks without waiting
+for a reply. VMware qualification remains unverified until that deployment.
