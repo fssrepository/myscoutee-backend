@@ -231,6 +231,8 @@ services:
     build:
       context: .
       dockerfile: docker/images/profilemanagement/e2e/Dockerfile
+      args:
+        MYSCOUTEE_VERSION: ${MYSCOUTEE_VERSION:-1.3.0}
     container_name: myscoutee
     hostname: profilemanagement
     environment:

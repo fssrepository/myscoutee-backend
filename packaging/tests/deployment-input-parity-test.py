@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -125,12 +126,76 @@ def audit_deb(deb, stage):
         equal_files(files(stage / 'DEBIAN'), files(Path(directory)), 'actual DEB control files')
 
 
+def audit_environments():
+    # Render each actual composition independently. E2E must never inherit DEV
+    # services, credentials, source mounts or databases by layering the files.
+    probe = dict(os.environ, MYSCOUTEE_VERSION='8.7.6', CHAT_CALL_STUN_PORT='34789',
+                 CHAT_CALL_STUN_URLS='stun:fixture.invalid:34789',
+                 MYSCOUTEE_UPDATE_TLS_CA_CERTIFICATE='/fixture/ca.pem')
+    project = json.loads((ROOT / 'packaging/scripts/release-project.json').read_text())
+    definitions = {
+        'dev': ROOT / 'server/docker-compose-dev.yml',
+        'prod': ROOT / 'server/docker-compose-prod.yml',
+        'e2e': ROOT / 'server/docker-compose.e2e.yml',
+        'installed': ROOT / 'packaging/compose/docker-compose.production.yml'
+    }
+    for mode, source in definitions.items():
+        command = ['docker', 'compose', '-f', str(source)]
+        if mode == 'installed':
+            command += ['--env-file', str(ROOT / 'packaging/templates' / (project['packageName'] + '.env'))]
+        result = subprocess.run(command + ['config', '--no-env-resolution', '--format', 'json'],
+                                env=probe, text=True, capture_output=True, check=True)
+        services = json.loads(result.stdout)['services']
+        api = services['profilemanagement']
+        environment = api['environment']
+        assert 'stun' in services, mode + ': missing STUN service'
+        assert not any(key.startswith('CHAT_CALL_') for key in services['mongodb']['environment']), mode
+        assert environment['SPRING_PROFILES_ACTIVE'] == ('dev' if mode == 'dev' else 'prod'), mode
+        if mode != 'e2e':
+            assert environment['CHAT_CALL_STUN_PORT'] == probe['CHAT_CALL_STUN_PORT'], mode
+            assert environment['CHAT_CALL_STUN_URLS'] == probe['CHAT_CALL_STUN_URLS'], mode
+        if mode in ('prod', 'e2e'):
+            assert api['build']['args']['MYSCOUTEE_VERSION'] == '8.7.6', mode + ': release version not passed to Docker build'
+        if mode in ('prod', 'installed'):
+            assert environment['OPERATOR_UPDATE_TLS_CA_CERTIFICATE'] == '/fixture/ca.pem', mode + ': update CA ignored'
+        if mode == 'e2e':
+            mongo = services['mongodb']['environment']
+            assert mongo['MONGO_SEED_DIRECTORY'] == 'e2e_db'
+            assert environment['MONGODB_DATABASE'] == environment['MONGODB_DEMO_DATABASE'] == mongo['MONGO_E2E_DATABASE']
+            assert all(volume['type'] != 'bind' for service in services.values() for volume in service.get('volumes', [])), 'E2E contains host/source bind mounts'
+        for name, service in services.items():
+            build = service.get('build')
+            if build:
+                context = Path(build['context'])
+                assert context.is_dir(), mode + ': missing build context for ' + name
+                assert (context / build.get('dockerfile', 'Dockerfile')).is_file(), mode + ': missing Dockerfile for ' + name
+        print(f'PASS: {mode}: composed services, nondefault configuration wiring, version and deployment isolation')
+    for profile in ('dev', 'prod'):
+        resource = (ROOT / f'server/projects/profile/src/main/resources/application-{profile}.yaml').read_text()
+        assert '${EMAIL_SENDGRID_API_KEY:' in resource, profile + ': packaged email secret is ignored'
+        assert '${EMAIL_SENDGRID_ENDPOINT:' in resource, profile + ': email endpoint override is ignored'
+    for mode in ('prod', 'e2e'):
+        dockerfile = (ROOT / f'server/docker/images/profilemanagement/{mode}/Dockerfile').read_text()
+        assert 'ARG MYSCOUTEE_VERSION=' in dockerfile, mode
+        if mode == 'prod':
+            assert re.search(r'^COPY (?:--chown=\S+ )?profile-\$\{MYSCOUTEE_VERSION\}\.jar ', dockerfile, re.M), 'production selects an ambiguous JAR'
+        else:
+            assert 'ENV MYSCOUTEE_VERSION=${MYSCOUTEE_VERSION}' in dockerfile, 'E2E Gradle build ignores version'
+    print('PASS: DEV/PROD email credentials and exact production/E2E build version')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('stage', type=Path)
+    parser.add_argument('stage', type=Path, nargs='?')
+    parser.add_argument('--environments-only', action='store_true')
     parser.add_argument('--deb', type=Path)
     parser.add_argument('--images', action='store_true')
     args = parser.parse_args()
+    if args.environments_only:
+        audit_environments()
+        return
+    if args.stage is None:
+        parser.error('stage is required unless --environments-only is selected')
     project = json.loads((ROOT / 'packaging/scripts/release-project.json').read_text())
     package = project['packageName']
     installed = args.stage / 'opt' / package

@@ -77,3 +77,30 @@ The user authorized an intermediate native GitHub release, followed by another
 after the remaining manual QA. The user uploads all DEBs. Other assets may be
 uploaded, but each release stays draft until its matching DEB is present and
 verified. GitHub Actions and Netcup are outside this work.
+
+## Follow-up: environment wiring and retained index upgrade
+
+The next installed start exposed an old unique notification job index before
+Java could initialize the group-scoped replacement. The complete existing
+Mongo definition inventory was compared: 199 required indexes, 12 missing on
+the retained VMware database, zero changed definitions. Migration015 pins the
+complete existing catalog, creates replacement constraints before retiring the
+six explicitly obsolete constraints, and never changes documents. Fresh Mongo
+initialization now also includes the existing importer/runtime definitions.
+The live disposable-DB regression passed on VMware: all199 definitions,
+repeat execution, retained operator data, group inserts, duplicate rejection and
+an indexed scoped lookup examining exactly one document. Log:
+`/tmp/msc122-native-runtime-index-parity.log`. Installed startup is still pending
+with this correction; the previous candidate is not a successful deployment.
+
+Environment checks render DEV, source PROD, standalone E2E and installed PROD
+independently, using nondefault configuration probes. Corrections route DEV STUN
+settings to Java (not Mongo), pass the native E2E release version into its build,
+and expose existing updater origin/CA settings in source PROD. Template email
+configuration now consumes the packaged `EMAIL_SENDGRID_*` names and its PROD
+compositions pass the configured update CA. Both environment checks pass.
+
+User instruction: the next native and template releases are both **1.4.0**.
+The four remaining source QA tasks are separate; a fixes-only follow-up would
+be 1.4.1. Earlier1.0.0/template and1.3.1-qa.1/native artifacts remain historical
+qualification candidates and must not be published as the final release.
