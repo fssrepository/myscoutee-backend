@@ -7,15 +7,22 @@ umask 077
 # accepted from an update request.
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-STATE_DIR="${MYSCOUTEE_UPDATE_STATE_DIR:-/var/lib/myscoutee/update}"
-CACHE_DIR="${MYSCOUTEE_UPDATE_CACHE_DIR:-/var/cache/myscoutee-update}"
-AUDIT_DIR="${MYSCOUTEE_UPDATE_AUDIT_DIR:-/var/log/myscoutee/update}"
-RELEASE_PUBLIC_KEY="${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/myscoutee/update/release-public-key.pem}"
+source "${SCRIPT_DIR}/release-project.sh"
+policy_owner=0
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then policy_owner="$(id -u)"; fi
+release_project_load "${SCRIPT_DIR}" "${policy_owner}" || {
+  echo 'The package-owned release project policy is missing or unsafe.' >&2
+  exit 1
+}
+STATE_DIR="${MYSCOUTEE_UPDATE_STATE_DIR:-/var/lib/${RELEASE_PROJECT_NAME}/update}"
+CACHE_DIR="${MYSCOUTEE_UPDATE_CACHE_DIR:-/var/cache/${RELEASE_PROJECT_NAME}-update}"
+AUDIT_DIR="${MYSCOUTEE_UPDATE_AUDIT_DIR:-/var/log/${RELEASE_PROJECT_NAME}/update}"
+RELEASE_PUBLIC_KEY="${MYSCOUTEE_UPDATE_RELEASE_PUBLIC_KEY:-/etc/${RELEASE_PROJECT_NAME}/update/release-public-key.pem}"
 SAFE_COPY_HELPER="${MYSCOUTEE_UPDATE_SAFE_COPY_HELPER:-${SCRIPT_DIR}/myscoutee-safe-copy.py}"
 RESTART_HELPER="${MYSCOUTEE_UPDATE_RESTART_HELPER:-${SCRIPT_DIR}/restart-update-stack.sh}"
 IMAGE_CONTENT_FINGERPRINT_HELPER="${SCRIPT_DIR}/image-content-fingerprint.sh"
-INSTALLED_MANIFEST_PATH="${MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH:-/opt/myscoutee/packaging/IMAGE-MANIFEST.json}"
-PACKAGE_NAME="myscoutee"
+INSTALLED_MANIFEST_PATH="${MYSCOUTEE_UPDATE_INSTALLED_MANIFEST_PATH:-${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json}"
+PACKAGE_NAME="${RELEASE_PROJECT_NAME}"
 MAX_ARTIFACT_BYTES="${MYSCOUTEE_UPDATE_MAX_ARTIFACT_BYTES:-4294967296}"
 MAX_REQUEST_BYTES="${MYSCOUTEE_UPDATE_MAX_REQUEST_BYTES:-65536}"
 MAX_IMAGE_MANIFEST_BYTES=65536
@@ -402,7 +409,7 @@ extract_image_manifest() {
 
   tmp="$(mktemp "${destination}.XXXXXX")"
   if ! dpkg-deb --fsys-tarfile "${package_path}" \
-    | tar -xOf - ./opt/myscoutee/packaging/IMAGE-MANIFEST.json > "${tmp}" 2>/dev/null; then
+    | tar -xOf - ".${RELEASE_PROJECT_ROOT}/packaging/IMAGE-MANIFEST.json" > "${tmp}" 2>/dev/null; then
     rm -f -- "${tmp}"
     return 1
   fi
@@ -418,60 +425,7 @@ extract_image_manifest() {
 validate_image_manifest() {
   local manifest="$1"
 
-  [[ -f "${manifest}" && ! -L "${manifest}" ]] || return 1
-  (( $(stat -c '%s' "${manifest}") <= MAX_IMAGE_MANIFEST_BYTES )) || return 1
-  local has_mcp=false
-  if dpkg --compare-versions "${CURRENT_RELEASE_VERSION/-/\~}" ge "1.3.0~qa.1"; then
-    has_mcp=true
-  fi
-  jq -e --arg version "${CURRENT_RELEASE_VERSION}" --argjson hasMcp "$has_mcp" '
-    (["minio", "nginx", "nginx-base", "payment-simulator", "profilemanagement", "registry-demo"]
-      + (if $hasMcp then ["mcp"] else [] end) | sort) as $services
-    | type == "object"
-    and ((keys | sort) == ([
-      "bundled", "images", "releaseVersion", "schemaVersion"
-    ] | sort))
-    and .schemaVersion == 1
-    and .releaseVersion == $version
-    and .bundled == true
-    and (.images | type == "array" and length == ($services | length))
-    and ([.images[].service] | sort == $services)
-    and all(.images[];
-      type == "object"
-      and ((keys | sort) == ([
-        "container", "contentFingerprint", "imageId", "reference", "service"
-      ] | sort))
-      and (.imageId | test("^sha256:[0-9a-f]{64}$"))
-      and (.contentFingerprint | test("^sha256:[0-9a-f]{64}$")))
-    and any(.images[];
-      .service == "nginx-base"
-      and .container == null
-      and .reference == ("myscoutee-nginx:" + $version + "-base"))
-    and any(.images[];
-      .service == "nginx"
-      and .container == "nginx"
-      and .reference == ("myscoutee-nginx:" + $version + "-prod"))
-    and any(.images[];
-      .service == "profilemanagement"
-      and .container == "myscoutee"
-      and .reference == ("myscoutee-api:" + $version + "-prod"))
-    and any(.images[];
-      .service == "minio"
-      and .container == "minio"
-      and .reference == ("myscoutee-minio:" + $version + "-prod"))
-    and any(.images[];
-      .service == "registry-demo"
-      and .container == "registry-demo"
-      and .reference == ("myscoutee-registry:" + $version + "-prod"))
-    and any(.images[];
-      .service == "payment-simulator"
-      and .container == "payment-simulator"
-      and .reference == ("myscoutee-payment-simulator:" + $version + "-prod"))
-    and (if $hasMcp then any(.images[];
-      .service == "mcp"
-      and .container == "mcp"
-      and .reference == ("myscoutee-mcp:" + $version + "-prod")) else true end)
-  ' "${manifest}" >/dev/null
+  release_project_validate_manifest "${manifest}" "${CURRENT_RELEASE_VERSION}"
 }
 
 verify_and_cache_artifact() {
@@ -691,7 +645,7 @@ verify_running_release() {
     [[ "$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}missing{{end}}' \
       "${container}" 2>/dev/null || true)" == "healthy" ]] || return 1
   done
-  systemctl is-active --quiet myscoutee.service
+  systemctl is-active --quiet "${RELEASE_PROJECT_NAME}.service"
 }
 
 restart_and_verify_release() {
